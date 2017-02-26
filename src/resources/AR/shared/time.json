@@ -1,0 +1,226 @@
+{
+	"game-minute": {
+		"normal": 4000,
+		"fast": 16
+	},
+	"start": {
+		"year": 0,
+		"month": "Sowings",
+		"day": 29,
+		"hour": 6,
+		"minute": 0
+	},
+	"temperature-adjustment": [
+		"+-6F", "+-8F", "+-6F", "+-4F", "+-2F", "+0F",
+		"+0F", "+1F", "+2F", "+2F", "+3F", "+5F",
+		"+7F", "+10F", "+7F", "+5F", "+3F", "+2F",
+		"+2F", "+1F", "+0F", "+0F", "-2F", "-4F"
+	],
+	"months": [
+		{
+			"name": "Rebirth",
+			"days": 31,
+			"temperature": { "min": "0F", "max": "20F" },
+			"weather": {
+				"duration": { "min": "1D", "max": "5D" },
+				"types": [
+					{ "type": "sun-0", "weight": 1 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "sun-2", "weight": 2 },
+					{ "type": "precipitation-0", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 2 },
+					{ "type": "precipitation-2", "weight": 2 },
+					{ "type": "storm-0", "weight": 1 },
+					{ "type": "storm-1", "weight": 2 },
+					{ "type": "storm-2", "weight": 3 }
+				]
+			}
+		},
+		{
+			"name": "Awakening",
+			"days": 28,
+			"temperature": { "min": "10F", "max": "30F" },
+			"weather": {
+				"duration": { "min": "12H", "max": "4D" },
+				"types": [
+					{ "type": "sun-0", "weight": 2 },
+					{ "type": "sun-1", "weight": 3 },
+					{ "type": "sun-2", "weight": 3 },
+					{ "type": "precipitation-0", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 3 },
+					{ "type": "precipitation-2", "weight": 3 },
+					{ "type": "storm-2", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "Winds",
+			"days": 31,
+			"temperature": { "min": "20F", "max": "40F" },
+			"weather": {
+				"duration": { "min": "6H", "max": "3D" },
+				"types": [
+					{ "type": "sun-0", "weight": 4 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "sun-2", "weight": 3 },
+					{ "type": "sun-3", "weight": 2 },
+					{ "type": "precipitation-1", "weight": 2 },
+					{ "type": "precipitation-2", "weight": 3 }
+				]
+			}
+		},
+		{
+			"name": "precipitations",
+			"days": 30,
+			"temperature": { "min": "30F", "max": "50F" },
+			"weather": {
+				"duration": { "min": "3H", "max": "2D" },
+				"types": [
+					{ "type": "sun-0", "weight": 4 },
+					{ "type": "sun-1", "weight": 1 },
+					{ "type": "sun-2", "weight": 1 },
+					{ "type": "sun-3", "weight": 1 },
+					{ "type": "precipitation-0", "weight": 2 },
+					{ "type": "precipitation-1", "weight": 3 },
+					{ "type": "storm-1", "weight": 1 },
+					{ "type": "storm-4", "weight": 1 },
+					{ "type": "storm-6", "weight": 1 },
+					{ "type": "storm-7", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "Sowings",
+			"days": 31,
+			"temperature": { "min": "40F", "max": "60F" },
+			"weather": {
+				"duration": { "min": "3H", "max": "2D" },
+				"types": [
+					{ "type": "sun-0", "weight": 10 },
+					{ "type": "sun-1", "weight": 1 },
+					{ "type": "sun-2", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 1 },
+					{ "type": "storm-1", "weight": 1 },
+					{ "type": "storm-2", "weight": 1 },
+					{ "type": "storm-3", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "First Fruits",
+			"days": 30,
+			"temperature": { "min": "50F", "max": "70F" },
+			"weather": {
+				"duration": { "min": "6H", "max": "3D" },
+				"types": [
+					{ "type": "sun-0", "weight": 11 },
+					{ "type": "sun-1", "weight": 1 },
+					{ "type": "sun-2", "weight": 1 },
+					{ "type": "precipitation-0", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 2 }
+				]
+			}
+		},
+		{
+			"name": "Harvest",
+			"days": 31,
+			"temperature": { "min": "60F", "max": "80F" },
+			"weather": {
+				"duration": { "min": "12H", "max": "4D" },
+				"types": [
+					{ "type": "sun-0", "weight": 13 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "storm-4", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "Final Reaping",
+			"days": 31,
+			"temperature": { "min": "70F", "max": "90F" },
+			"weather": {
+				"duration": { "min": "1D", "max": "5D" },
+				"types": [
+					{ "type": "sun-0", "weight": 13 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "storm-4", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "The Fall",
+			"days": 30,
+			"temperature": { "min": "60F", "max": "80F" },
+			"weather": {
+				"duration": { "min": "12H", "max": "4D" },
+				"types": [
+					{ "type": "sun-0", "weight": 10 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "precipitation-0", "weight": 1 },
+					{ "type": "precipitation-2", "weight": 1 },
+					{ "type": "storm-0", "weight": 1 },
+					{ "type": "storm-7", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "Darkness",
+			"days": 31,
+			"temperature": { "min": "50F", "max": "70F" },
+			"weather": {
+				"duration": { "min": "6H", "max": "3D" },
+				"types": [
+					{ "type": "sun-0", "weight": 7 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "sun-2", "weight": 1 },
+					{ "type": "sun-3", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 1 },
+					{ "type": "precipitation-3", "weight": 1 },
+					{ "type": "storm-1", "weight": 1 },
+					{ "type": "storm-2", "weight": 1 },
+					{ "type": "storm-4", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "Cold Winds",
+			"days": 30,
+			"temperature": { "min": "30F", "max": "40F" },
+			"weather": {
+				"duration": { "min": "3H", "max": "2D" },
+				"types": [
+					{ "type": "sun-0", "weight": 7 },
+					{ "type": "sun-1", "weight": 2 },
+					{ "type": "sun-2", "weight": 1 },
+					{ "type": "sun-3", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 1 },
+					{ "type": "precipitation-3", "weight": 1 },
+					{ "type": "storm-1", "weight": 1 },
+					{ "type": "storm-2", "weight": 1 },
+					{ "type": "storm-4", "weight": 1 }
+				]
+			}
+		},
+		{
+			"name": "Lights",
+			"days": 31,
+			"temperature": { "min": "10F", "max": "30F" },
+			"weather": {
+				"duration": { "min": "6H", "max": "3D" },
+				"types": [
+					{ "type": "sun-0", "weight": 4 },
+					{ "type": "sun-1", "weight": 1 },
+					{ "type": "sun-2", "weight": 2 },
+					{ "type": "sun-3", "weight": 2 },
+					{ "type": "precipitation-0", "weight": 1 },
+					{ "type": "precipitation-1", "weight": 1 },
+					{ "type": "storm-2", "weight": 1 },
+					{ "type": "storm-3", "weight": 1 },
+					{ "type": "storm-4", "weight": 1 },
+					{ "type": "storm-6", "weight": 1 },
+					{ "type": "storm-7", "weight": 1 }
+				]
+			}
+		}
+	]
+}

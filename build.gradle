@@ -1,0 +1,158 @@
+
+plugins {
+	id "com.moowork.node" version "1.1.1"
+	id "com.moowork.gulp" version "1.1.1"
+}
+
+repositories {
+    jcenter()
+}
+
+node {
+	// Version of node to use.
+	version = '6.9.5'
+
+	// Version of npm to use.
+	//npmVersion = '2.1.5'
+
+	// Version of Yarn to use.
+	//yarnVersion = '0.16.1'
+
+	// Base URL for fetching node distributions (change if you have a mirror).
+	//distBaseUrl = 'https://nodejs.org/dist'
+
+	// If true, it will download node using above parameters.
+	// If false, it will try to use globally installed node.
+	download = true
+
+	// Set the work directory for unpacking node
+	//workDir = file("${project.buildDir}/nodejs")
+
+	// Set the work directory for NPM
+	npmWorkDir = file("${project.buildDir}/npm")
+
+	// Set the work directory for Yarn
+	//yarnWorkDir = file("${project.buildDir}/yarn")
+
+	// Set the work directory where node_modules should be located
+	//nodeModulesDir = file("${project.projectDir}")
+}
+
+gulp {
+	colors = true
+	//workDir = project.projectDir
+	//bufferedOutput = true	// Buffers output and writes it all at the end (for parallel tasks)
+}
+
+class MyNodeConvention {
+	private Project project;
+
+	public String reportsDirName = "reports";
+	public String testReportDirName = "tests";
+	public String testResultsDirName = "test-results";
+	public String libDirName = "libs";
+	public String distsDirName = "distributions";
+	public String docsDirName = "docs";
+	public String dependencyCacheDirName = "dependency-cache";
+
+	MyNodeConvention( final Project project ) {
+		this.project = project;
+	}
+
+	File getReportsDir() {
+		return new File(project.getBuildDir(), reportsDirName);
+	}
+
+	File getTestReportDir() {
+		return new File(getReportsDir(), testReportDirName);
+	}
+
+	File getTestResultsDir() {
+		return new File(project.getBuildDir(), testResultsDirName);
+	}
+
+	File getLibDir() {
+		return new File(project.getBuildDir(), libDirName);
+	}
+
+	File getDistsDir() {
+		return new File(project.getBuildDir(), distsDirName);
+	}
+
+	File getDocsDir() {
+		return new File(project.getBuildDir(), docsDirName);
+	}
+
+	File getDependencyCacheDir() {
+		return new File(project.getBuildDir(), dependencyCacheDirName);
+	}
+
+	Map<String,?> getNodeEnvironment() {
+		Map<String, ?> env = System.getenv() + [
+			"GIS_BUILD_DIR" : project.buildDir,
+			"GIS_REPORTS_DIR" : getReportsDir(),
+			"GIS_TEST_REPORT_DIR" : getTestReportDir(),
+			"GIS_TEST_RESULTS_DIR" : getTestResultsDir(),
+			"GIS_LIB_DIR" : getLibDir(),
+			"GIS_DISTS_DIR" : getDistsDir(),
+			"GIS_DOCS_DIR" : getDocsDir(),
+			"GIS_DEPENDENCY_CACHE_DIR" : getDependencyCacheDir()
+		];
+		return env;
+	}
+}
+MyNodeConvention nodeConvention = new MyNodeConvention(project);
+project.getConvention().getPlugins().put("node", nodeConvention);
+
+
+task clean(type: Delete) {
+	group = "clean"
+	description = "Removes the build folder so it is completely rebuilt by the next build"
+	delete project.buildDir
+	followSymlinks = false
+}
+
+task cleanNodeModules(type: Delete) {
+	group = "clean"
+	description = "Removes the node_modules folder so it is completely rebuilt by the next npm install"
+	delete "${node.nodeModulesDir}/node_modules"
+	followSymlinks = false
+}
+
+task cleanNode(type: Delete, dependsOn: ['cleanNodeModules']) {
+	group = "clean"
+	description = "Removes locally installed node.js, along with npm and all modules"
+	doFirst {
+		println "Node bin dir="+ node.variant.nodeBinDir.getAbsolutePath()
+		delete node.variant.nodeBinDir.getAbsolutePath()
+	}
+}
+
+task build(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+	description = "Builds all node/javascript/typescript source files";
+	group = "build";
+	inputs.file "gulpfile.js"
+	inputs.file "tsconfig.json"
+	inputs.dir "src/main"
+	outputs.dir project.buildDir
+	environment = project.nodeEnvironment
+	args = [ 'build' ];
+}
+
+task watch(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+	description = "Builds all node/javascript/typescript source files, waits and rebuilds on changes";
+	group = "build";
+	inputs.files(build.inputs)
+	inputs.files(build.outputs)
+	environment = project.nodeEnvironment
+	args = [ "watch" ];
+}
+
+task typedoc(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+	description = "Builds typedoc API documentation from the source typescript files";
+	group = "documentation";
+	inputs.files(build.inputs)
+	outputs.dir new File(project.docsDir, "typedoc")
+	environment = project.nodeEnvironment
+	args = [ 'typedoc' ];
+}

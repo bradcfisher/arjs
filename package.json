@@ -1,0 +1,27 @@
+{
+	"name": "arjs",
+	"version": "0.0.1",
+	"description": "Alternate Reality game engine reimagined in a web scripting language",
+	"main": "src/main/main.js",
+	"x-repository": {
+		"url": "https://example.com/your-username/my-new-project",
+		"type": "git"
+	},
+	"author": "Brad Fisher <bradcfisher@hotmail.com>",
+	"license": "non-commercial use",
+	"devDependencies": {
+		"typescript": "^2.1.6",
+		"browserify": "^14.1.0",
+		"watchify": "^3.9.0",
+		"tsify": "^3.0.1",
+		"typedoc": "^0.5.7",
+		"gulp-sourcemaps": "^2.4.1",
+		"gulp-typedoc": "^2.0.2",
+		"gulp-uglify": "^2.0.1",
+		"vinyl-source-stream": "^1.1.0",
+		"vinyl-buffer": "^1.0.0",
+		"babelify": "^7.3.0",
+		"babel-preset-es2015": "^6.22.0",
+		"escape-string-regexp": "^1.0.5"
+	}
+}

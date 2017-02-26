@@ -1,0 +1,10 @@
+{
+    "files": [
+        "src/main/typescript/**/*.ts"
+    ],
+    "compilerOptions": {
+        "noImplicitAny": true,
+		"strictNullChecks": true,
+        "target": "es2015"
+    }
+}
