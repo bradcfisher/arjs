@@ -4,7 +4,7 @@
  *
  * Stat values range from a minimum of 0 to a maximum of 255.
  */
-export class CharacterStat {
+export class Stat {
 
 	/**
 	 * The maximum value allowed for a character stat.
@@ -37,13 +37,13 @@ export class CharacterStat {
 	private _displayed?: number;
 
 	/**
-	 * Constructs a new CharacterStat instance with the specified base value.
+	 * Constructs a new Stat instance with the specified base value.
 	 * The stat is created with no bonus or penalty.
 	 * @param	base	The initial base value for the stat.  If not specified, the stat will be
 	 *					initialized to 0.
 	 */
 	constructor(base?: number) {
-		this.base = (base === undefined ? CharacterStat.MIN_VALUE : base);
+		this.base = (base === undefined ? Stat.MIN_VALUE : base);
 	} // constructor
 
 	/**
@@ -59,7 +59,7 @@ export class CharacterStat {
 	 * @param	base	The new base value for this stat.
 	 */
 	set base(base: number) {
-		this._base = Math.max(base, CharacterStat.MIN_VALUE);
+		this._base = Math.max(base, Stat.MIN_VALUE);
 	} // base
 
 	/**
@@ -119,9 +119,9 @@ export class CharacterStat {
 			: Math.min(
 				Math.max(
 					Math.trunc(displayed),
-					CharacterStat.MIN_VALUE
+					Stat.MIN_VALUE
 				),
-				CharacterStat.MAX_VALUE
+				Stat.MAX_VALUE
 			)
 		);
 	} // overrideDisplay
@@ -135,10 +135,10 @@ export class CharacterStat {
 		return Math.min(
 			Math.max(
 				Math.trunc(this._base) + this._bonus - this._penalty,
-				CharacterStat.MIN_VALUE
+				Stat.MIN_VALUE
 			),
-			CharacterStat.MAX_VALUE
+			Stat.MAX_VALUE
 		);
 	} // effective
 
-} // CharacterStat
+} // Stat

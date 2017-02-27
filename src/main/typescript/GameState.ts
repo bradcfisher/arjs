@@ -10,14 +10,22 @@ export class GameState {
 	private _time: GameTime;
 
 	/**
+	 * @see [[character]]
+	 */
+	private _character: Character;
+
+	/**
 	 * Constructs a new GameState instance.
 	 *
 	 * @parame	config	
 	 */
 	constructor(config: Object) {
-		this._time = new GameTime(new Calendar([
+//		this._time = new GameTime(Parse.getProp(config, null, "time"));
+/*
+		new Calendar([
 			// TODO: Need month configs here...
 		]));
+*/
 	} // constructor
 
 	/**
@@ -28,7 +36,11 @@ export class GameState {
 		return this._time;
 	} // time
 
-	// character data
+	get character(): Character {
+		return this._character;
+	} // character
+
+	// weather type definitions (no save)
 	// monsters (no save)
 	// maps
 	//	- monsters (no save)

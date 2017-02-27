@@ -1,8 +1,8 @@
 
 /**
- * Class for representing a character protection from damage (eg. `blunt`, `sharp`, `earth`, `air`, etc.)
+ * Class for representing a protection from damage (eg. `blunt`, `sharp`, `earth`, `air`, etc.)
  */
-export class CharacterProtection {
+export class Protection {
 
 	/**
 	 * @see [[base]]
@@ -12,7 +12,28 @@ export class CharacterProtection {
 	/**
 	 * @see [[proficiency]]
 	 */
-	private _proficiency: CharacterProtection.Proficiency = CharacterProtection.Proficiency.Normal;
+	private _proficiency: Protection.Proficiency = Protection.Proficiency.Normal;
+
+	/**
+	 * Constructs a new Protection instance.
+	 * @param	config	The config to inherit the protection values (base, proficiency) from.
+	 * Example:
+	 * ```typescript
+	 * {
+	 *   base: 25,
+	 *   proficiency: "Normal"
+	 * }
+	 ```
+	 */
+	constructor(config?: any) {
+		if (config) {
+			if (config.base != null)
+				this.base = config.base;
+
+			if (config.proficiency != null)
+				this.proficiency = config.proficiency;
+		}
+	} // constructor
 
 	/**
 	 * Retrieves the base value for this protection.
@@ -74,27 +95,21 @@ export class CharacterProtection {
 	 * @return	The computed efficiency factor.
 	 */
 	getDamageProficiencyFactor(): number {
-		if (this._proficiency == CharacterProtection.Proficiency.Low)
-			return 2;
-
-		if (this._proficiency == CharacterProtection.Proficiency.Normal)
-			return 1;
-
-		if (this._proficiency == CharacterProtection.Proficiency.High)
-			return 0.5;
-
-		return 0;
+		return [1, 0.5, 2, 0][this._proficiency];
 	} // getDamageProficiencyFactor
 
-} // CharacterProtection
+} // Protection
 
-export module CharacterProtection {
+export module Protection {
 
+	/**
+	 * Enumeration of protection proficiency levels.
+	 */
 	export enum Proficiency {
-		Low,
-		Normal,
-		High,
-		Immune
+		Normal = 0,
+		High = 1,
+		Low = 2,
+		Immune = 3
 	} // Proficiency
 
-} // CharacterProtection
+} // Protection

@@ -22,10 +22,14 @@ var paths = {
 	dependencyCacheDir: process.env.GIS_DEPENDENCY_CACHE_DIR,
 	docsDir: process.env.GIS_DOCS_DIR,
 
-    pages: ['src/main/*.html']
+    pages: [
+		'src/main/html/**/*.html',
+		'src/main/html/**/*.css',
+		'src/main/resources/**'
+	]
 };
 
-gulp.task('copyHtml', function () {
+gulp.task('copyStaticResources', function () {
     return gulp.src(paths.pages)
         .pipe(gulp.dest(paths.distsDir));
 });
@@ -34,6 +38,8 @@ function bundle(watch) {
 	var browserified = browserify({
 		basedir: '.',
 		debug: true,
+		//hasExports: true, // this causes the module to define a require() function for accessing exported objects
+		standalone: 'arjs',	// The module defines a global var with this name when loaded
 		entries: ['src/main/typescript/main.ts'],
 		cache: {},
 		packageCache: {}
@@ -86,7 +92,7 @@ function bundle(watch) {
 
 gulp.task('bundle', bundle(false));
 
-gulp.task('build', ['copyHtml', 'bundle', 'typedoc']);
+gulp.task('build', ['copyStaticResources', 'bundle', 'typedoc']);
 
 gulp.task('default', ['build']);
 
@@ -95,7 +101,7 @@ gulp.task("watchHelper", ["build"], function() {
 });
 
 gulp.task("watch", function() {
-	gulp.watch("src/**/*.*", ['watchHelper']);
+	gulp.watch([ "src/**/*.*", "package.json", "tsconfig.json" ], ['watchHelper']);
 });
 
 gulp.task("typedoc", ['bundle'], function() {

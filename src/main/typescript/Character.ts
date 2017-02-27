@@ -1,65 +1,18 @@
 import { Entity } from "./Entity"
-import { CharacterStat } from "./CharacterStat"
+import { Stat } from "./Stat"
+import { Denizen } from "./Denizen"
 
 /**
  * Class representing the player character.
  */
-export class Character {
-
-	/**
-	 * @see [[name]]
-	 */
-	private _name: String = "?";
+export class Character
+	extends Denizen
+{
 
 	/**
 	 * @see [[gender]]
 	 */
 	private _gender: Character.Gender = Character.Gender.Male;
-
-	/**
-	 * @see [[stamina]]
-	 */
-	private _stamina: CharacterStat;
-
-	/**
-	 * @see [[charisma]]
-	 */
-	private _charisma: CharacterStat;
-
-	/**
-	 * @see [[strength]]
-	 */
-	private _strength: CharacterStat;
-
-	/**
-	 * @see [[intelligence]]
-	 */
-	private _intelligence: CharacterStat;
-
-	/**
-	 * @see [[wisdom]]
-	 */
-	private _wisdom: CharacterStat;
-
-	/**
-	 * @see [[skill]]
-	 */
-	private _skill: CharacterStat;
-
-	/**
-	 * @see [[speed]]
-	 */
-	private _speed: CharacterStat;
-
-	/**
-	 * @see [[alignment]]
-	 */
-	private _alignment: number;
-
-	/**
-	 * @see [[stealth]]
-	 */
-	private _stealth: number;
 
 	/**
 	 * @see [[level]]
@@ -77,11 +30,6 @@ export class Character {
 	private _experience: number;
 
 	/**
-	 * @see [[hp]]
-	 */
-	private _hp: number;
-
-	/**
 	 * @see [[hpMaximum]]
 	 */
 	private _hpMaximum: number;
@@ -93,29 +41,19 @@ export class Character {
 	 * @param	gender	The character gender.
 	 */
 	constructor(name: String, gender: Character.Gender) {
+		super();
+
 		this.name = name;
 		this.gender = gender;
-
-		this._stamina = new CharacterStat();
-		this._charisma = new CharacterStat();
-		this._strength = new CharacterStat();
-		this._intelligence = new CharacterStat();
-		this._wisdom = new CharacterStat();
-		this._skill = new CharacterStat();
-		this._speed = new CharacterStat(13);
-
-		this.alignment = 128 / 255;
-		this.stealth = 32 / 255;	// Used for computing awareness in combat
-
-		this._level = 0;
 
 		this._requiredExperience = 200;	// For level up
 		this._experience = 0;
 
 		this.hp = this.hpMaximum = 10;
+		this._level = 0;
 
 		// TODO: Finish remaining character attributes
-		/*
+/*
 		//treasure finding = luck?
 		//this.treasureFinding = 0;
 		//this.luck = 0;
@@ -140,56 +78,9 @@ export class Character {
 		clarity
 		delusion
 		invisibility
-		paralysis
-
-		protections (base & efficiency)
-			Blunt
-			Sharp
-			Earth
-			Air
-			Fire
-			Water
-			Mental
-			Power
-			Good/Cleric
-			Evil
-			Cold
-
-	// The following can also be stored in a guild locker?  Should break out as separate object.
-		this.gold = 0;		//0-65535
-		this.silver = 0;	//0-65535
-		this.copper = 0;	//0-65535
-		//gems (0-65535)
-		//jewels (0-65535)
-		//food packets (0-255)
-		//water flasks (0-255)
-		//torches (0-255)
-		//crystals (0-255)
-		//keys (0-255)
-		//compasses (0-255)
-		//timepieces (0-255)
-
-		*/
+		paralysis (remaining turns)
+*/
 	} // constructor
-
-	/**
-	 * Retrieves the character's name.
-	 * @return	The character's name.
-	 */
-	get name(): String {
-		return this._name;
-	} // name
-
-	/**
-	 * Sets the character's name.
-	 * @param	name	The new name for the character.
-	 */
-	set name(name: String) {
-		name = name.trim();
-		if (!name.length)
-			throw new Error("The name cannot be empty");
-		this._name = name;
-	} // name
 
 	/**
 	 * Retrieves the character's gender.
@@ -208,96 +99,13 @@ export class Character {
 	} // gender
 
 	/**
-	 * Retrieves the character's `stamina` stat.
-	 * @return	The character's `stamina` stat.
+	 * Updates the character's hit points.
+	 * @param	hp	The new value to assign to the character's hit points.  Will be clamped between
+	 *				0 and the value of `hpMaximum`.
 	 */
-	get stamina(): CharacterStat {
-		return this._stamina;
-	} // stamina
-
-	/**
-	 * Retrieves the character's `charisma` stat.
-	 * @return	The character's `charisma` stat.
-	 */
-	get charisma(): CharacterStat {
-		return this._charisma;
-	} // charisma
-
-	/**
-	 * Retrieves the character's `strength` stat.
-	 * @return	The character's `strength` stat.
-	 */
-	get strength(): CharacterStat {
-		return this._strength;
-	} // strength
-
-	/**
-	 * Retrieves the character's `intelligence` stat.
-	 * @return	The character's `intelligence` stat.
-	 */
-	get intelligence(): CharacterStat {
-		return this._intelligence;
-	} // intelligence
-
-	/**
-	 * Retrieves the character's `wisdom` stat.
-	 * @return	The character's `wisdom` stat.
-	 */
-	get wisdom(): CharacterStat {
-		return this._wisdom;
-	} // wisdom
-
-	/**
-	 * Retrieves the character's `skill` stat.
-	 * @return	The character's `skill` stat.
-	 */
-	get skill(): CharacterStat {
-		return this._skill;
-	} // skill
-
-	/**
-	 * Retrieves the character's `speed` stat.
-	 * @return	The character's `speed` stat.
-	 */
-	get speed(): CharacterStat {
-		return this._speed;
-	} // speed
-
-	/**
-	 * Retrieves the character's alignment.
-	 * @return	The character's alignment as a number between 0 (pure evil) and 1.0 (pure good).
-	 */
-	get alignment(): number {
-		return this._alignment;
-	} // alignment
-
-	/**
-	 * Sets the character's alignment.
-	 * @param	alignment	The new value for the character's alignment as a number between
-	 *						0 (pure evil) and 1.0 (pure good).  Out of range values are clamped.
-	 */
-	set alignment(alignment: number) {
-		this._alignment = Math.min(Math.max(alignment, 0), 1);
-	} // alignment
-
-	/**
-	 * Retrieves the character's stealth.
-	 * @return	The character's stealth as a number between 0 (always noticed) and 1.0 (never
-	 *			noticed).
-	 */
-	get stealth(): number {
-		return this._stealth;
-	} // stealth
-
-	/**
-	 * Sets the character's stealth.
-	 * @param	stealth	The new value for the character's stealth as a number between
-	 *						0 (always noticed) and 1.0 (never noticed).  Out of range values are
-	 *						clamped.
-	 */
-	set stealth(stealth: number) {
-		this._stealth = Math.min(Math.max(stealth, 0), 1);
-	} // stealth
+	set hp(hp: number) {
+		super.hp = Math.min(hp, this._hpMaximum);
+	} // hp
 
 	/**
 	 * Retrieves the character's current level.
@@ -345,7 +153,7 @@ export class Character {
 			// HP & Max HP both increase based on effective stamina (note bonus & penalty included!)
 			let hpIncrease: number = Math.round(Math.random() * this.stamina.effective);
 			this._hpMaximum += hpIncrease;
-			this._hp += hpIncrease;
+			this.hp += hpIncrease;
 
 			this.increaseStatForLevelUp(this.stamina);
 			this.increaseStatForLevelUp(this.charisma);
@@ -367,26 +175,9 @@ export class Character {
 	 *
 	 * Therefore, the higher the base stat value is, the lower the amount that may awarded.
 	 */
-	private increaseStatForLevelUp(stat: CharacterStat): void {
-		stat.base += 0.5 + 0.5 * Math.random() * (CharacterStat.MAX_VALUE - stat.base) / CharacterStat.MAX_VALUE;
+	private increaseStatForLevelUp(stat: Stat): void {
+		stat.base += 0.5 + 0.5 * Math.random() * (Stat.MAX_VALUE - stat.base) / Stat.MAX_VALUE;
 	} // increaseStatForLevelUp
-
-	/**
-	 * Retrieves the character's hit points.
-	 * @return	The character's hit points.
-	 */
-	get hp(): number {
-		return this._hp;
-	} // hp
-
-	/**
-	 * Updates the character's hit points.
-	 * @param	hp	The new value to assign to the character's hit points.  Will be clamped between
-	 *				0 and the value of `hpMaximum`.
-	 */
-	set hp(hp: number) {
-		this._hp = Math.min(Math.max(hp, 0), this._hpMaximum);
-	} // hp
 
 	/**
 	 * Retrieves the character's maximum hit points.
@@ -407,8 +198,8 @@ export class Character {
 	 */
 	set hpMaximum(hpMaximum: number) {
 		this._hpMaximum = Math.max(1, hpMaximum);
-		if (this._hp > this._hpMaximum)
-			this._hp = this._hpMaximum;
+		if (this.hp > this._hpMaximum)
+			this.hp = this._hpMaximum;
 	} // hpMaximum
 
 } // Character

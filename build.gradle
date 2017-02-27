@@ -133,6 +133,7 @@ task build(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
 	group = "build";
 	inputs.file "gulpfile.js"
 	inputs.file "tsconfig.json"
+	inputs.file "package.json"
 	inputs.dir "src/main"
 	outputs.dir project.buildDir
 	environment = project.nodeEnvironment

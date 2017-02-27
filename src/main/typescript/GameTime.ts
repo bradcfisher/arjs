@@ -51,7 +51,7 @@ export class GameTime {
 	/**
 	 * The current day of the month [1 to number of days in month].
 	 */
-	private _day: number = 0;
+	private _day: number = 1;
 
 	/**
 	 * The current hour [0 to 23].
@@ -66,7 +66,7 @@ export class GameTime {
 	/**
 	 * Timestamp (in real-time) when the last game time update occurred.
 	 */
-	private _lastTick: number = Number.NaN;
+	private _lastTick: number;
 
 	/**
 	 * @see [[GameTime.tickDelay]]
@@ -82,6 +82,7 @@ export class GameTime {
 
 	constructor(calendar: Calendar) {
 		this._calendar = calendar;
+		this._lastTick = Date.now();
 	} // constructor 
 
 	/**
@@ -104,7 +105,7 @@ export class GameTime {
 			throw new Error("Unable to set current time when active timers exist");
 
 		this._lastTick = Date.now();
-		this.setCurrent(this._calendar.dateFromTimestamp(current));
+		this.setCurrent(this._calendar.timestampToDate(current));
 	} // current
 
 	/**
@@ -114,6 +115,9 @@ export class GameTime {
 	 * // Set the current game time to 12:00 Day 1 of Month 6, Year 0 since Abduction 
 	 * gameTime.setCurrent(0, 6, 1, 12, 0);
 	 * ```
+	 *
+	 * NOTE: Many time-based events will not fire when setting the current time in this way, such
+	 *       as hourly or daily triggers.
 	 *
 	 * @param	year	The new year value.
 	 * @param	month	The new month value.
@@ -140,11 +144,11 @@ export class GameTime {
 		date = this._calendar.normalizeDate(date);
 
 		this._year = date.year;
-		this._month = date.month;
+		this._month = date.month as number;
 		this._day = date.day;
 		this._hour = date.hour;
 		this._minute = date.minute;
-		this._current = this._calendar.timestampFromDate(date);
+		this._current = this._calendar.dateToTimestamp(date);
 	} // setCurrent
 
 	/**
@@ -237,6 +241,36 @@ export class GameTime {
 	 */
 	private handleTick(): void {
 		++this._current;
+
+		++this._minute;
+		if (this._minute == 60) {
+			this._minute = 0;
+			++this._hour;
+
+			if (this._hour == 24) {
+				++this._day;
+
+				if (this._day > this._calendar.getMonth(this._month).days) {
+					this._day = 1;
+					++this._month;
+
+					// Year
+					if (this._month == this._calendar.numMonths) {
+						this._month = 0;
+						++this._year;
+// TODO: Trigger yearly tasks
+					}
+
+// TODO: Trigger monthly tasks
+				}
+
+// TODO: Trigger daily tasks
+			}
+
+// TODO: Trigger hourly tasks
+		}
+
+		// Process expired timers
 		if (this._entries.length > 0) {
 			let e: GameTimerEx;
 			while ((e = (this._entries[0] as GameTimerEx))._triggerAt <= this._current) {

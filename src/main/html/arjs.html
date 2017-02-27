@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>arjs - Alternate Reality for the web</title>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="arjs.js"></script>
+</head>
+<body>
+
+<div>Timestamp: <span id="Timestamp">?</span></div>
+<div>Game date: <span id="GameTime">?</span></div>
+<div>Date from timestamp: <span id="TimestampDate">?</span></div>
+<div>NormalizedTime: <span id="NormalizedTime">?</span></div>
+
+<button onclick="gameTime.tickDelay = 16">Fast</button>
+<button onclick="gameTime.tickDelay = 200">Medium</button>
+<button onclick="gameTime.tickDelay = 4000">Normal</button>
+
+<script>
+
+let gameTime;
+
+$(document).ready(function() {
+	console.log("document ready");
+	$.getJSON("AR/shared/time.json").done(jsonLoaded);
+});
+
+function jsonLoaded(timeJson) {
+	let cal = new arjs.Calendar(timeJson.months);
+	gameTime = new arjs.GameTime(cal);
+
+	console.log("created calendar & game time");
+
+	let ts = document.getElementById("Timestamp");
+	let gt = document.getElementById("GameTime");
+	let td = document.getElementById("TimestampDate");
+	let nt = document.getElementById("NormalizedTime");
+
+	if (ts == null || gt == null || td == null || nt == null)
+		throw new Error("Unable to find required document element");
+
+	setInterval(function() {
+		ts.innerHTML = String(gameTime.current);
+		let a = gt.innerHTML = cal.dateToString(gameTime);
+		let b = td.innerHTML = cal.dateToString(cal.timestampToDate(gameTime.current));
+		let c = nt.innerHTML = cal.dateToString(cal.normalizeDate(gameTime));
+
+		gameTime.update();
+
+/*
+		if (a != b)
+			console.error("The timestamps do not match (a,b): "+ a +" != "+ b);
+
+		if (a != c)
+			console.error("The timestamps do not match (a,c): "+ a +" != "+ c);
+
+		if (b != c)
+			console.error("The timestamps do not match (b,c): "+ b +" != "+ c);
+*/
+	}, 100);
+}
+
+</script>
+
+</body>
+</html>

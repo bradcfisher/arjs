@@ -15,6 +15,11 @@ export class Calendar {
 	private _months: Month[];
 
 	/**
+	 * The month definitions mapped by lower-cased name.
+	 */
+	private _monthsByName: { [name:string]: Month };
+
+	/**
 	 * @see [[daysInYear]]
 	 */
 	private _daysInYear: number;
@@ -35,10 +40,15 @@ export class Calendar {
 	constructor(monthConfigs: Object[]) {
 		this._months = [];
 		this._daysInYear = 0;
+		this._monthsByName = {};
 
 		for (let o of monthConfigs) {
 			let month: Month = new Month(o, this._daysInYear);
 			this._months.push(month);
+			let name: string = month.name.toLowerCase();
+			if (this._monthsByName.hasOwnProperty(name))
+				throw new Error("Duplicate month name '"+ month.name +"'");
+			this._monthsByName[name] = month;
 			this._daysInYear += month.days;
 		}
 
@@ -63,12 +73,16 @@ export class Calendar {
 	} // numMonths
 
 	/**
-	 * Retrieves the Month definition for the specified 0-based month index.
-	 * @param	num	The index of the month to retrieve.
-	 * @return	The Month definition for the specified 0-based month index.
+	 * Retrieves the Month definition for the specified 0-based month index or by name.
+	 * @param	indexOrName	The index or name of the month to retrieve.
+	 * @return	The matching Month definition.
 	 */
-	getMonth(num: number): Month {
-		return this._months[num];
+	getMonth(indexOrName: number|string): Month {
+		let index: number = Number(indexOrName);
+		if (Number.isNaN(index))
+			return this._monthsByName[indexOrName];
+		else
+			return this._months[index];
 	} // getMonth
 
 	/**
@@ -76,7 +90,7 @@ export class Calendar {
 	 * @param	timestamp	The tiemstamp to compute the date from.
 	 * @return	The computed date.
 	 */
-	dateFromTimestamp(timestamp :number): GameDate {
+	timestampToDate(timestamp :number): GameDate {
 		let minute: number = timestamp % 60;
 		timestamp = Math.trunc(timestamp / 60);
 
@@ -103,23 +117,24 @@ export class Calendar {
 			hour: hour,
 			minute: minute
 		};
-	} // dateFromTimestamp
+	} // timestampToDate
 
 	/**
 	 * Computes a timestamp value (in game minutes) from the specified date.
 	 * @param	date	The date to compute the timestamp from.
 	 * @return	The computed timestamp value.
 	 */
-	timestampFromDate(date: GameDate): number {
+	dateToTimestamp(date: GameDate): number {
 		return (
-				(date.year * this._daysInYear + this._months[date.month].startDayOfYear + date.day - 1)
+				(date.year * this._daysInYear + this.getMonth(date.month).startDayOfYear + date.day - 1)
 				* 24
 				+ date.hour
 			) * 60 + date.minute;
-	} // timestampFromDate
+	} // dateToTimestamp
 
 	/**
-	 * Normalizes the given date, ensuring all of the date parts fall within their expected range.
+	 * Normalizes the given date, ensuring all of the date parts are numeric and fall within their
+	 * expected range.
 	 *
 	 * This method can be useful when performing date arithmetic (eg. adding days, months, years,
 	 * etc) which may have caused the date properties to go outside their range.
@@ -138,7 +153,17 @@ export class Calendar {
 	 * @return	The date object passed in, with the properties normalized.
 	 */
 	normalizeDate(date: GameDate): GameDate {
-		return this.dateFromTimestamp(this.timestampFromDate(date));
+		return this.timestampToDate(this.dateToTimestamp(date));
 	} // normalizeDate
 
+	/**
+	 * Converts a game date object to a string.
+	 * @param	date	The date to convert to a string.
+	 * @return	String version of the date (eg. "")
+	 */
+	dateToString(date: GameDate): string {
+		return (date.hour < 10 ? '0' : '') + date.hour +":"+ (date.minute < 10 ? '0' : '') + date.minute +" of day "+ date.day +
+				" in the month of "+ this.getMonth(date.month).name +
+				" in year "+ date.year +" since abduction.";
+	} // dateToString
 } // Calendar
