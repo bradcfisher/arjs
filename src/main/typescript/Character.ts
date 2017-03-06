@@ -1,4 +1,5 @@
-import { Entity } from "./Entity"
+
+import { Item } from "./Item"
 import { Stat } from "./Stat"
 import { Denizen } from "./Denizen"
 

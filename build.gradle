@@ -149,6 +149,15 @@ task watch(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
 	args = [ "watch" ];
 }
 
+task test(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+	description = "Runs tests and code coverage on the typescript source files";
+	group = "test";
+	inputs.files(build.inputs)
+	//outputs.files()
+	environment = project.nodeEnvironment
+	args = [ "test" ];
+}
+
 task typedoc(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
 	description = "Builds typedoc API documentation from the source typescript files";
 	group = "documentation";

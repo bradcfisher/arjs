@@ -54,6 +54,8 @@ export class Calendar {
 
 		if (this._daysInYear == 0)
 			throw new Error("At least one month must be defined");
+
+		console.log("Calendar: daysInYear=", this._daysInYear, "months=", this._months, "monthsByName=", this._monthsByName);
 	} // constructor
 
 	/**
@@ -97,8 +99,8 @@ export class Calendar {
 		let hour: number = timestamp % 24;
 		timestamp = Math.trunc(timestamp / 24);
 
-		let year: number = timestamp % this._daysInYear;
-		timestamp = Math.trunc(timestamp / this._daysInYear);
+		let year: number = Math.trunc(timestamp / this._daysInYear);
+		timestamp = timestamp % this._daysInYear;
 
 		let month: number = 0;
 		for (let m of this._months) { 
@@ -162,8 +164,13 @@ export class Calendar {
 	 * @return	String version of the date (eg. "")
 	 */
 	dateToString(date: GameDate): string {
+try {
 		return (date.hour < 10 ? '0' : '') + date.hour +":"+ (date.minute < 10 ? '0' : '') + date.minute +" of day "+ date.day +
 				" in the month of "+ this.getMonth(date.month).name +
 				" in year "+ date.year +" since abduction.";
+} catch (e) {
+	console.log("toString error:", date);
+	throw e;
+}
 	} // dateToString
 } // Calendar

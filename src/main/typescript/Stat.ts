@@ -40,10 +40,10 @@ export class Stat {
 	 * Constructs a new Stat instance with the specified base value.
 	 * The stat is created with no bonus or penalty.
 	 * @param	base	The initial base value for the stat.  If not specified, the stat will be
-	 *					initialized to 0.
+	 *					initialized to 0. The specified value will be clamped between 0 and 255.
 	 */
 	constructor(base?: number) {
-		this.base = (base === undefined ? Stat.MIN_VALUE : base);
+		this.base = (base == null ? Stat.MIN_VALUE : base);
 	} // constructor
 
 	/**
@@ -56,10 +56,11 @@ export class Stat {
 
 	/**
 	 * Sets the base value for this stat.
-	 * @param	base	The new base value for this stat.
+	 * @param	base	The new base value for this stat.  The specified value will be clamped
+	 *					between 0 and 255.
 	 */
 	set base(base: number) {
-		this._base = Math.max(base, Stat.MIN_VALUE);
+		this._base = Math.min(Math.max(base, Stat.MIN_VALUE), Stat.MAX_VALUE);
 	} // base
 
 	/**
@@ -113,7 +114,7 @@ export class Stat {
 	 * @param	displayed	The new override value to display for this stat, or `undefined`/`null`
 	 *						to remove any existing override value.
 	 */
-	overrideDisplay(displayed: number|undefined|null):void {
+	set displayed(displayed) {
 		this._displayed = (displayed == null
 			? undefined
 			: Math.min(
@@ -124,7 +125,7 @@ export class Stat {
 				Stat.MAX_VALUE
 			)
 		);
-	} // overrideDisplay
+	} // displayed
 
 	/**
 	 * Retrieves the effective value for this stat.

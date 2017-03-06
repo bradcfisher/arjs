@@ -1,11 +1,11 @@
 
-import { Entity } from "./Entity"
+import { Item } from "./Item"
 
 /**
  * Represents a spell item
  */
-export class SpellEntity
-	extends Entity
+export class SpellItem
+	extends Item
 {
 
 	private _id: Number;
@@ -29,8 +29,8 @@ export class SpellEntity
 		}
 	} // constructor
 
-	clone(): SpellEntity {
-		return new SpellEntity(this);
+	clone(): SpellItem {
+		return new SpellItem(this);
 	} // clone
 
 	get id(): Number {
@@ -107,4 +107,4 @@ export class SpellEntity
 		this._remainingLessons = remainingLessons;
 	} // remainingLessons
 
-} // SpellEntity
+} // SpellItem

@@ -10,6 +10,9 @@ var buffer = require('vinyl-buffer');
 var gutil = require("gulp-util");
 var rescape = require("escape-string-regexp");
 var typedoc = require("gulp-typedoc");
+var istanbul = require('gulp-istanbul');
+var mocha = require('gulp-mocha');
+
 
 var paths = {
 	buildDir: process.env.GIS_BUILD_DIR,
@@ -28,6 +31,30 @@ var paths = {
 		'src/main/resources/**'
 	]
 };
+
+//var tsProject = ts.createProject("tsconfig.json");
+
+gulp.task('pre-test', function () {
+/*
+  return gulp.src(['src/main/ * * / *.ts'])
+    // Covering files
+    .pipe(istanbul())
+    // Force `require` to return covered files
+    .pipe(istanbul.hookRequire());
+*/
+});
+
+gulp.task('test', ['pre-test'], function () {
+  return gulp.src(['src/test/typescript/**/*.ts'])
+    .pipe(mocha({
+		//globals: ['console']
+		compilers: "ts:ts-node/register,tsx:ts-node/register"
+	}))
+    // Creating the reports after tests ran
+//    .pipe(istanbul.writeReports())
+    // Enforce a coverage of at least 90%
+//    .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }));
+});
 
 gulp.task('copyStaticResources', function () {
     return gulp.src(paths.pages)
@@ -101,7 +128,7 @@ gulp.task("watchHelper", ["build"], function() {
 });
 
 gulp.task("watch", function() {
-	gulp.watch([ "src/**/*.*", "package.json", "tsconfig.json" ], ['watchHelper']);
+	gulp.watch([ "src/**/*.*", "tsconfig.json" ], ['watchHelper']);
 });
 
 gulp.task("typedoc", ['bundle'], function() {

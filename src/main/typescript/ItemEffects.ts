@@ -1,14 +1,15 @@
+
 import { Cloneable } from "./Cloneable"
-import { EntityEffect } from "./EntityEffect"
+import { ItemEffect } from "./ItemEffect"
 
 /**
- * Collection of effects associated with an Entity.
+ * Collection of effects associated with an Item.
  */
-export class EntityEffects
+export class ItemEffects
 	implements Cloneable
 {
 
-	private _effects: EntityEffect[] = [];
+	private _effects: ItemEffect[] = [];
 
 	constructor(clone?: any) {
 		if (clone != null) {
@@ -18,7 +19,7 @@ export class EntityEffects
 	}
 
 	clone() {
-		return new EntityEffects(this);
+		return new ItemEffects(this);
 	} // clone
 
-} // EntityEffects
+} // ItemEffects

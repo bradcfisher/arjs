@@ -10,14 +10,21 @@
 <div>Timestamp: <span id="Timestamp">?</span></div>
 <div>Game date: <span id="GameTime">?</span></div>
 <div>Date from timestamp: <span id="TimestampDate">?</span></div>
+<div>Timestamp from date: <span id="DateTimestamp">?</span></div>
 <div>NormalizedTime: <span id="NormalizedTime">?</span></div>
 
-<button onclick="gameTime.tickDelay = 16">Fast</button>
-<button onclick="gameTime.tickDelay = 200">Medium</button>
-<button onclick="gameTime.tickDelay = 4000">Normal</button>
+<div>
+	<button onclick="gameTime.tickDelay = 1">Ultra Fast</button>
+	<button onclick="gameTime.tickDelay = 16">Fast</button>
+	<button onclick="gameTime.tickDelay = 200">Medium</button>
+	<button onclick="gameTime.tickDelay = 4000">Normal</button>
+</div>
+
+<div>Timestamp: <input type="text" id="TimestampInput"/> <button onclick="gameTime.setCurrent($('#TimestampInput').val())">Apply</button></div>
 
 <script>
 
+let cal;
 let gameTime;
 
 $(document).ready(function() {
@@ -26,7 +33,7 @@ $(document).ready(function() {
 });
 
 function jsonLoaded(timeJson) {
-	let cal = new arjs.Calendar(timeJson.months);
+	cal = new arjs.Calendar(timeJson.months);
 	gameTime = new arjs.GameTime(cal);
 
 	console.log("created calendar & game time");
@@ -34,18 +41,20 @@ function jsonLoaded(timeJson) {
 	let ts = document.getElementById("Timestamp");
 	let gt = document.getElementById("GameTime");
 	let td = document.getElementById("TimestampDate");
+	let dt = document.getElementById("DateTimestamp");
 	let nt = document.getElementById("NormalizedTime");
 
-	if (ts == null || gt == null || td == null || nt == null)
+	if (ts == null || gt == null || td == null || dt == null || nt == null)
 		throw new Error("Unable to find required document element");
 
-	setInterval(function() {
+	function animate(now) {
 		ts.innerHTML = String(gameTime.current);
 		let a = gt.innerHTML = cal.dateToString(gameTime);
 		let b = td.innerHTML = cal.dateToString(cal.timestampToDate(gameTime.current));
-		let c = nt.innerHTML = cal.dateToString(cal.normalizeDate(gameTime));
+		let c = dt.innerHTML = cal.dateToTimestamp(gameTime);
+		let d = nt.innerHTML = cal.dateToString(cal.normalizeDate(gameTime));
 
-		gameTime.update();
+		gameTime.update(now);
 
 /*
 		if (a != b)
@@ -57,7 +66,11 @@ function jsonLoaded(timeJson) {
 		if (b != c)
 			console.error("The timestamps do not match (b,c): "+ b +" != "+ c);
 */
-	}, 100);
+
+		requestAnimationFrame(animate);
+	}
+
+	requestAnimationFrame(animate);
 }
 
 </script>

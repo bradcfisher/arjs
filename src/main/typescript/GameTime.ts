@@ -1,5 +1,6 @@
 
 import { Calendar } from "./Calendar";
+import { EventDispatcher } from "./EventDispatcher";
 import { GameDate } from "./GameDate";
 import { GameTimer } from "./GameTimer";
 
@@ -30,8 +31,17 @@ interface GameTimerEx {
  *   console.log("A half hour of game time has passed");
  * });
  * ```
+ *
+ * Events:
+ * @event	yearRollover	Fired when the in-game year changes.
+ * @event	monthRollover	Fired when the in-game month changes.
+ * @event	dayRollover		Fired when the in-game day changes.
+ * @event	hourRollover	Fired when the in-game hour changes.
+ * @event	minuteRollover	Fired when the in-game minute changes.
  */
-export class GameTime {
+export class GameTime
+	extends EventDispatcher
+{
 
 	/**
 	 * The total number of in-game minutes that have elapsed so far.
@@ -81,8 +91,9 @@ export class GameTime {
 	private _calendar: Calendar;
 
 	constructor(calendar: Calendar) {
+		super();
 		this._calendar = calendar;
-		this._lastTick = Date.now();
+		this._lastTick = performance.now();
 	} // constructor 
 
 	/**
@@ -104,7 +115,7 @@ export class GameTime {
 		if (this._entries.length > 0)
 			throw new Error("Unable to set current time when active timers exist");
 
-		this._lastTick = Date.now();
+		this._lastTick = performance.now();
 		this.setCurrent(this._calendar.timestampToDate(current));
 	} // current
 
@@ -119,26 +130,35 @@ export class GameTime {
 	 * NOTE: Many time-based events will not fire when setting the current time in this way, such
 	 *       as hourly or daily triggers.
 	 *
-	 * @param	year	The new year value.
+	 * @param	yearDateOrTimestamp
+	 *					If a number, either a new year value if the remaining parameters are set,
+	 *					or the new timestamp if none of the other parameters were provided.  If a
+	 *					GameDate, the date to use (in which case, the other parameters are ignored).
 	 * @param	month	The new month value.
 	 * @param	day		The new day of month.
 	 * @param	hour	The new hour.
 	 * @param	minute	The new minute.
 	 */
-	setCurrent(yearOrDate: GameDate): void;
-	setCurrent(yearOrDate: number, month: number, day: number, hour: number, minute: number): void;
-	setCurrent(yearOrDate: number|GameDate, month?: number, day?: number, hour?: number, minute?: number): void {
+	setCurrent(yearDateOrTimestamp: GameDate): void;
+	setCurrent(yearDateOrTimestamp: number): void;
+	setCurrent(yearDateOrTimestamp: number, month: number, day: number, hour: number, minute: number): void;
+	setCurrent(yearDateOrTimestamp: number|GameDate, month?: number, day?: number, hour?: number, minute?: number): void {
 		let date: GameDate;
-		if (yearOrDate instanceof Number) {
-			date = {
-				year: yearOrDate as number,
-				month: (month === undefined ? 0 : month),
-				day: (day === undefined ? 1 : day),
-				hour: (hour === undefined ? 0 : hour),
-				minute: (minute === undefined ? 0 : minute)
-			};
+		let year: number = Number(yearDateOrTimestamp);
+		if (!Number.isNaN(year)) {
+			if (month === undefined && day === undefined && hour === undefined && minute === undefined) {
+				date = this._calendar.timestampToDate(yearDateOrTimestamp as number);
+			} else {
+				date = {
+					year: yearDateOrTimestamp as number,
+					month: (month === undefined ? 0 : month),
+					day: (day === undefined ? 1 : day),
+					hour: (hour === undefined ? 0 : hour),
+					minute: (minute === undefined ? 0 : minute)
+				};
+			}
 		} else {
-			date = yearOrDate as GameDate;
+			date = yearDateOrTimestamp as GameDate;
 		}
 
 		date = this._calendar.normalizeDate(date);
@@ -197,7 +217,7 @@ export class GameTime {
 	 */
 	set tickDelay(delay: number) {
 		if (this._tickDelay <= 0)
-			this._lastTick = Date.now();
+			this._lastTick = performance.now();
 		this._tickDelay = Math.max(delay, 0);
 	} // tickDelay
 
@@ -225,7 +245,7 @@ export class GameTime {
 		if (this._tickDelay <= 0)
 			return;
 
-		let now = Date.now();
+		let now = performance.now();
 		let elapsed = now - this._lastTick;
 
 		while (elapsed > this._tickDelay) {
@@ -248,6 +268,7 @@ export class GameTime {
 			++this._hour;
 
 			if (this._hour == 24) {
+				this._hour = 0;
 				++this._day;
 
 				if (this._day > this._calendar.getMonth(this._month).days) {
@@ -258,17 +279,19 @@ export class GameTime {
 					if (this._month == this._calendar.numMonths) {
 						this._month = 0;
 						++this._year;
-// TODO: Trigger yearly tasks
+						this.trigger('yearRollover');
 					}
 
-// TODO: Trigger monthly tasks
+					this.trigger('monthRollover');
 				}
 
-// TODO: Trigger daily tasks
+				this.trigger('dayRollover');
 			}
 
-// TODO: Trigger hourly tasks
+			this.trigger('hourRollover');
 		}
+
+		this.trigger('minuteRollover');
 
 		// Process expired timers
 		if (this._entries.length > 0) {
@@ -311,7 +334,7 @@ export class GameTime {
 	 * @return	A new GameTimer instance.
 	 */
 	setTimeout(callback: GameTimer.Callback, delay: number): GameTimer {
-		return new GameTimer(this, delay).onTimer(callback).start(false);
+		return new GameTimer(this, delay).on('timer', callback).start(false);
 	} // setTimeout
 
 	/**
@@ -323,7 +346,7 @@ export class GameTime {
 	 * @return	A new GameTimer instance.
 	 */
 	setInterval(callback: GameTimer.Callback, delay: number): GameTimer {
-		return new GameTimer(this, delay, 0).onTimer(callback).start(false);
+		return new GameTimer(this, delay, 0).on('timer', callback).start(false);
 	} // setInterval
 
 	/**

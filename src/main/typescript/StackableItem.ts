@@ -1,11 +1,11 @@
 
-import { Entity } from "./Entity"
+import { Item } from "./Item"
 
 /**
  * Base class for all stackable items (coins, crystals, time pieces, etc)
  */
-export class StackableEntity
-	extends Entity
+export class StackableItem
+	extends Item
 {
 
 	private _quantity: Number;
@@ -18,8 +18,8 @@ export class StackableEntity
 		}
 	} // constructor
 
-	clone(): StackableEntity {
-		return new StackableEntity(this);
+	clone(): StackableItem {
+		return new StackableItem(this);
 	} // clone
 
 	get quantity(): Number {
@@ -32,4 +32,4 @@ export class StackableEntity
 		this._quantity = quantity;
 	} // quantity
 
-} // StackableEntity
+} // StackableItem

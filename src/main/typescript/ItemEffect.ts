@@ -1,24 +1,24 @@
 import { Cloneable } from "./Cloneable"
 import { GameState } from "./GameState"
-import { Entity } from "./Entity"
+import { Item } from "./Item"
 import { GameTimer } from "./GameTimer"
 
 /**
- * Base class of all entity effects.
+ * Base class of all item effects.
  */
-export class EntityEffect
+export class ItemEffect
 	implements Cloneable
 {
 
 	/**
-	 * The entity that this effect is defined for.
+	 * The item that this effect is defined for.
 	 */
-	private _entity: Entity;
+	private _item: Item;
 
 	/**
 	 * The effect type.
 	 */
-	private _type: EntityEffect.Type = EntityEffect.Type.Unknown;
+	private _type: ItemEffect.Type = ItemEffect.Type.Unknown;
 
 	/**
 	 * Whether the effect is currently incubating or not.
@@ -46,7 +46,7 @@ export class EntityEffect
 	 * The events/triggers which this effect is initiated by.
 	 * Bit field (0x00-0xff) containing Trigger flags.
 	 */
-	private _triggers: number = EntityEffect.Trigger.None;
+	private _triggers: number = ItemEffect.Trigger.None;
 
 	/**
 	 * Initial time to wait (in minutes) before executing the effect.
@@ -75,7 +75,7 @@ export class EntityEffect
 	/**
 	 * The action to perform when this effect is triggered.
 	 */
-	private _action: EntityEffect.Action = EntityEffect.Action.Set
+	private _action: ItemEffect.Action = ItemEffect.Action.Set
 
 	/**
 	 * The names of the properties to apply the action to.
@@ -83,9 +83,9 @@ export class EntityEffect
 	private _properties: String[] = [];
 
 	/**
-	 * Whether to apply the action to the entity the effect is defined for, or to the player character.
+	 * Whether to apply the action to the item the effect is defined for, or to the player character.
 	 */
-	private _applyTo: EntityEffect.ApplyTo = EntityEffect.ApplyTo.Character;
+	private _applyTo: ItemEffect.ApplyTo = ItemEffect.ApplyTo.Character;
 
 	/**
 	 * The value to apply when executing the action.
@@ -112,15 +112,15 @@ export class EntityEffect
 		}
 	} // constructor
 
-	clone() : EntityEffect {
-		return new EntityEffect(this);
+	clone() : ItemEffect {
+		return new ItemEffect(this);
 	} // clone
 
-	set type(type: EntityEffect.Type) {
+	set type(type: ItemEffect.Type) {
 		this._type = type;
 	} // type
 
-	get type(): EntityEffect.Type {
+	get type(): ItemEffect.Type {
 		return this._type;
 	} // type
 
@@ -211,12 +211,12 @@ export class EntityEffect
 		this._naturalCureProbability = naturalCureProbability;
 	} // naturalCureProbability
 
-	get action(): EntityEffect.Action {
+	get action(): ItemEffect.Action {
 		return this._action;
 	} // action
 
-	// TODO: Support custom closure actions?   function(entity: Entity, effect: EntityEffect, character: Character)
-	set action(action: EntityEffect.Action) {
+	// TODO: Support custom closure actions?   function(item: Item, effect: ItemEffect, character: Character)
+	set action(action: ItemEffect.Action) {
 		this._action = action;
 	} // action
 
@@ -229,11 +229,11 @@ export class EntityEffect
 		this._properties = properties;
 	} // properties
 
-	get applyTo(): EntityEffect.ApplyTo {
+	get applyTo(): ItemEffect.ApplyTo {
 		return this._applyTo;
 	} // applyTo
 
-	set applyTo(applyTo: EntityEffect.ApplyTo) {
+	set applyTo(applyTo: ItemEffect.ApplyTo) {
 		this._applyTo = applyTo;
 	} // applyTo
 
@@ -245,13 +245,13 @@ export class EntityEffect
 		this._amount = amount;
 	} // amount
 
-	processEvent(event: EntityEffect.Trigger, gameState: GameState) {
+	processEvent(event: ItemEffect.Trigger, gameState: GameState) {
 		if ((this._triggers & event) != 0) {
 			// The event matches one of this effect's triggers
 			// Start the initial timer
 			gameState.time.createTimer(
 				this.initialDelay
-			).onTimer(function(timer: GameTimer) {
+			).on('timer', function(timer: GameTimer) {
 				this.handleTimer(timer, gameState)
 			}).start(true);
 		}
@@ -269,11 +269,11 @@ export class EntityEffect
 		}
 	} // handleTimer
 
-} // EntityEffect
+} // ItemEffect
 
-export module EntityEffect {
+export module ItemEffect {
 	/**
-	 * Enumeration of entity effect types.
+	 * Enumeration of item effect types.
 	 */
 	export enum Type {
 		Unknown = 0,
@@ -281,13 +281,20 @@ export module EntityEffect {
 		Poison = 2,
 		Magic = 3,
 		Curse = 4,
-		//Unknown2 = 5,
+		//Unknown2 = 5,		// Tome / Scroll / Trump Card / Eye / Horn / Wand?
 		Potion = 6
-		//Unknown3 = 7
+		//Unknown3 = 7		// Tome / Scroll / Trump Card / Eye / Horn / Wand?
 	} // Type
 
+// Wands & Eyes generally seem to be more on the "weapon" side, otherwise "magic"?
+// Horns are 1/3 weapon, 2/3 magic?
+// Scrolls are basically magic
+// Trump Cards are mostly permanent effects, otherwise basically time-limited magic
+// Tomes are permanent effects
+
+
 	/**
-	 * Entity effect trigger flag values.
+	 * Item effect trigger flag values.
 	 */
 	export enum Trigger {
 		None = 0x0,
@@ -295,7 +302,8 @@ export module EntityEffect {
 		Drop = 0x2,
 		Use = 0x4,			// use/equip/cast
 		Unuse = 0x8,		// unequip
-		//Unknown = 0x10,		// delete?
+		Destroy = 0x10,		// destroy/delete/poof
+		// How are the following used?
 		AlignmentCheck = 0x20,
 		DrainCharge = 0x40,
 		SetTimer = 0x80
@@ -320,7 +328,7 @@ export module EntityEffect {
 	 * Enumeration of values indicating what game object the effect applies to.
 	 */
 	export enum ApplyTo {
-		Character,
-		Entity
+		Character,			// Effect applies to the character
+		Item				// Effect applies to the item itself
 	} // ApplyTo
-} // module EntityEffect
+} // module ItemEffect

@@ -1,4 +1,5 @@
 
+import { EventDispatcher } from "./EventDispatcher";
 import { GameTime } from "./GameTime";
 
 /**
@@ -16,12 +17,17 @@ interface GameTimeEx {
  * Example:
  * ```
  * // Create a timer that will fire every 30 minutes of game time.
- * GameTimer timer = new GameTimer(30, 0).onTimer(function(t) {
+ * GameTimer timer = new GameTimer(30, 0).on('timer', function(t) {
  *   console.log("A half hour of game time has passed");
  * })
  * ```
+ *
+ * Events:
+ * @event	timer	Fired each time the timer elapses/repeats.
  */
-export class GameTimer {
+export class GameTimer
+	extends EventDispatcher
+{
 
 	/**
 	 * @see [[time]]
@@ -37,13 +43,6 @@ export class GameTimer {
 	 * @see [[repetitions]]
 	 */
 	private _repetitions: number;
-
-	/**
-	 * List of registered timer event callbacks for this timer.
-	 * @see [[onTimer]]
-	 * @see [[offTimer]]
-	 */
-	private _callbacks: GameTimer.Callback[] = [];
 
 	/**
 	 * The timestamp when this timer will fire next, or `NaN` if this timer is not currently running.
@@ -71,6 +70,7 @@ export class GameTimer {
 	 *						negative value, indicates an unlimited number of repetitions.
 	 */
 	constructor(time: GameTime|GameTime&GameTimeEx, delay: number, repetitions: number = 1) {
+		super();
 		this._time = time as GameTime&GameTimeEx;
 		this.delay = delay;
 		this.repetitions = repetitions;
@@ -108,32 +108,6 @@ export class GameTimer {
 	set repetitions(repetitions: number) {
 		this._repetitions = Math.min(repetitions, 0);
 	} // repetitions
-
-	/**
-	 * Adds a timer event callback from this timer.
-	 * If the specified callback function is already registered, this function does nothing.
-	 * @param	callback	The callback function to add.
-	 * @return	The instance the method was called on, for chaining calls.
-	 */
-	onTimer(callback: GameTimer.Callback): this {
-		let index: number = this._callbacks.indexOf(callback);
-		if (index < 0)
-			this._callbacks.push(callback);
-		return this;
-	} // onTimer
-
-	/**
-	 * Removes a timer event callback from this timer.
-	 * If the specified callback function is not currently registered, this function does nothing.
-	 * @param	callback	The callback function to remove.
-	 * @return	The instance the method was called on, for chaining calls.
-	 */
-	offTimer(callback: GameTimer.Callback): this {
-		let index: number = this._callbacks.indexOf(callback);
-		if (index > -1)
-			this._callbacks.splice(index, 1);
-		return this;
-	} // offTimer
 
 	/**
 	 * Stops this timer if it is running.
@@ -214,8 +188,7 @@ export class GameTimer {
 		if (this._next != null)
 			this._next.triggerTimer();
 
-		for (let c of this._callbacks)
-			c(this);
+		this.trigger('timer');
 
 		// Restart the timer if it was not a one-shot timer
 		// (eg. repetitions = 0 or repetitions > 1)
