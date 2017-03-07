@@ -38,22 +38,32 @@ export class AudioClip
 	private _baseBuffer: AudioBuffer|undefined;
 
 	/**
-	 * The current view of the audio buffer, based of previous start/stop/pause/seek operations.
+	 * The current view of the audio buffer, based on previous start/stop/pause/seek operations.
 	 */
 	private _currentBuffer: AudioBuffer;
 
 	/**
-	 * The AudioManager that this clip was created under.
+	 * @see [[manager]]
 	 */
 	private _manager: AudioManager;
 
 	/**
 	 * The last position set.
+	 * @see [[position]]
 	 */
 	private _position: number = Number.NaN;
 
 	/**
+	 * @see [[paused]]
+	 */
+	private _paused: boolean = false;
+
+	/**
 	 * The time, relative to the audio context's clock when playing began.
+	 * This value is used for determining the current position as well as whether the clip is
+	 * currently playing or not.
+	 * @see [[playing]]
+	 * @see [[position]]
 	 */
 	private _startTime: number = 0;
 
@@ -70,7 +80,14 @@ export class AudioClip
 	/**
 	 * The ID of the current notification.
 	 */
-	private _currentNotificationId: number = Number.NaN;
+	private _currentNotificationId: number = 0;
+
+	/**
+	 * The ID of the registered stop event notification, if a stop is scheduled.
+	 * @see [[stop]]
+	 * @see [[pause]]
+	 */
+	private _stoppingNotificationId: number = 0;
 
 	/**
 	 * The WebAudio node for this audio clip.
@@ -124,7 +141,6 @@ export class AudioClip
 			duration = buffer.duration - startTime;
 
 		let numSamples: number = duration * buffer.sampleRate;
-console.log("cloneBuffer: startTime="+ startTime +" duration="+ duration +" | startSample="+ startSample +" numSamples="+ numSamples);
 		let rv: AudioBuffer = this.context.createBuffer(
 			buffer.numberOfChannels,
 			numSamples,
@@ -247,6 +263,14 @@ console.log("cloneBuffer: startTime="+ startTime +" duration="+ duration +" | st
 	} // playing
 
 	/**
+	 * Determines whether the clip is current paused or not.
+	 * @return	Whether the clip is current paused or not.
+	 */
+	get paused(): boolean {
+		return this._paused;
+	} // paused
+
+	/**
 	 * Retrieves the number of audio channels for this clip.
 	 * If the content has not completed loading, this property returns 0.
 	 * @return	The number of audio channels for this clip.
@@ -343,12 +367,17 @@ console.log("cloneBuffer: startTime="+ startTime +" duration="+ duration +" | st
 	 * Calling this method has no effect if the clip hasn't finished loading.
 	 *
 	 * @param	when	The timestamp when this clip should begin playing, relative to the
-	 *					associated context's clock.  If not specified, then playback will begin
-	 *					immediately.
+	 *					associated context's clock.  If not specified, or in the past, then playback
+	 *					will begin immediately.
 	 */
 	start(when?: number): void {
 		if (!this._baseBuffer)
 			return;
+
+		if (this.playing)
+			throw new Error("Clip already playing");
+
+		this._paused = false;
 
 		let pos: number = this.position;
 		if (pos == 0)
@@ -360,12 +389,13 @@ console.log("cloneBuffer: startTime="+ startTime +" duration="+ duration +" | st
 		this._node = this.context.createBufferSource();
 		this._node.buffer = this._currentBuffer;
 		this._node.connect(this._manager.destination);
-		this._node.addEventListener('ended', (function() {
+		this._node.addEventListener('ended', () => {
 			if (this.position >= this.duration)
-				this.trigger('stop');
-		}).bind(this));
+				this.stop();
+				// TODO: What about looping?
+		});
 
-		this._startTime = (when ? when : this._manager.currentTime);
+		this._startTime = (when && when >= this._manager.currentTime ? when : this._manager.currentTime);
 
 		if (this._notifications)
 			this.scheduleNextNotificationIfNeeded(this._notifications.nextOccurring(this.position));
@@ -374,42 +404,81 @@ console.log("cloneBuffer: startTime="+ startTime +" duration="+ duration +" | st
 	} // start
 
 	/**
-	 * Pauses the clip at its current position.
+	 * Pauses the clip at its current position at the specified time.
 	 * Calling this method has no effect if the clip hasn't been started.
+	 * @param	when	The timestamp when this clip should stop playing, relative to the
+	 *					associated context's clock.  If not specified, or in the past, then playback
+	 *					will stop immediately.
 	 */
-	pause(): void {
-		if (Number.isNaN(this._startTime))
-			return;
-
-// TODO: Allow scheduled pauses by passing a `when` parameter?
-		let pausePosition = this.position;
-		this.stop();
-		this._position = pausePosition;
-		this.trigger('pause', { target: this });
+	pause(when?: number): void {
+		let startTime: number = this._startTime;
+		this._stop(when, () => {
+			this._paused = true;
+			this.trigger('pause');
+		});
 	} // pause
 
 	/**
-	 * Stops playing the current clip.
+	 * Stops playing the current clip at the specified time, and resets the position to 0.
 	 * Calling this method has no effect if the clip hasn't been started.
+	 * @param	when	The timestamp when this clip should stop playing, relative to the
+	 *					associated context's clock.  If not specified, or in the past, then playback
+	 *					will stop immediately.
 	 */
 	stop(when?: number): void {
+		if (this.paused) {
+			this._paused = false;
+			this.position = 0;
+			this.trigger('stop');
+			return;
+		}
+
+		this._stop(when, () => {
+			this._position = 0;
+			this.trigger('stop');
+		});
+	} // stop
+
+	/**
+	 * Performs a scheduled stop, calling a custom callback when the audio stops.
+	 * @param	when		The timestamp when this clip should stop playing, relative to the
+	 *						associated context's clock.  If not specified, or in the past, then
+	 *						playback will stop immediately.
+	 * @param	callback	The callback to invoke when the playback stops.
+	 */
+	private _stop(when: number|undefined, callback: () => void): void {
 		if (Number.isNaN(this._startTime))
 			return;
 
+		if (this._stoppingNotificationId) {
+			this.manager.removeNotification(this._stoppingNotificationId);
+			this._stoppingNotificationId = 0;
+		}
+
+		let wrappedCallback = () => {
+			this.unscheduleCurrentNotification();
+			this._position = this.position;
+			this._startTime = Number.NaN;
+			this._stoppingNotificationId = 0;
+			callback();
+		};
+
+		when = (!when || when <= this.context.currentTime ? undefined : when);
+
 		if (this._node)
-			this._node.stop();
+			this._node.stop(when);
 
-		this.unscheduleCurrentNotification();
-
-		this._startTime = Number.NaN;
-		this._position = 0;
-	} // stop
+		if (when) {
+			this._stoppingNotificationId = this.manager.addNotification(when, wrappedCallback);
+		} else {
+			wrappedCallback();
+		}
+	} // _stop
 
 	/**
 	 * Invokes the current notification when it's time has come.
 	 */
 	private invokeCurrentNotification(): void {
-console.log("invokeCurrentNotification: hasCurrent="+ !!this._currentNotification);
 		if (this._currentNotification) {
 			this._currentNotification.invoke();
 
@@ -444,27 +513,22 @@ console.log("invokeCurrentNotification: hasCurrent="+ !!this._currentNotificatio
 		if (!this.playing || !notification || !this._baseBuffer)
 			return;
 
-console.log("AudioClip::scheduleNextNotificationIfNeeded: when="+ notification.when);
-
 		let now = this.position;
 		if (notification.when < now) {
-console.log("AudioClip::scheduleNextNotificationIfNeeded: when is in the past");
 			if (force) {
 				notification.invoke();
 				this.scheduleNextNotificationIfNeeded(notification.next, true);
-			} else
-				return;
+			}
+			return;
 		}
 
 		if (this._currentNotification) {
-console.log("AudioClip::scheduleNextNotificationIfNeeded: has current");
-			if (this._currentNotification.when <= notification.when)
+			if (this._currentNotification.when <= notification.when) {
 				return;
+			}
 
 			this.manager.removeNotification(this._currentNotificationId);
 		}
-
-console.log("AudioClip::scheduleNextNotificationIfNeeded: adding notification to manager");
 
 		// Start new notification
 		this._currentNotification = notification;
@@ -477,17 +541,17 @@ console.log("AudioClip::scheduleNextNotificationIfNeeded: adding notification to
 	 * Specifies that a notification event containing the given data be fired at the specified time
 	 * (relative to the start of the clip) each time the clip is played or repeats.
 	 *
-	 * @param	atTime	The time relative to the start of the clip when the event should be fired.
+	 * @param	when	The time relative to the start of the clip when the event should be fired.
 	 *					Times less than 0 and times greater than the length of the clip will be
 	 *					clamped.
 	 * @param	data	Additional data to attach to the event object for the notification.
 	 *					If a function, the function will be executed at the specified time, any
 	 *					other type of value will trigger a 'notification' event to be fired with
-	 *					the value assigned to the data property.
+	 *					the value passed as event data.
 	 *
 	 * @return	A value that can be used to unregister the notification at a later time.
 	 */
-	addNotification(atTime: number, data?: Object): number {
+	addNotification(when: number, data?: Object): number {
 		let notification: AudioNotificationEntry;
 		let callback: AudioNotificationEntry.Callback;
 
@@ -499,7 +563,7 @@ console.log("AudioClip::scheduleNextNotificationIfNeeded: adding notification to
 			};
 		}
 
-		notification = new AudioNotificationEntry(atTime, callback);
+		notification = new AudioNotificationEntry(when, callback);
 
 		this._notifications = (
 			this._notifications

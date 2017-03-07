@@ -26,7 +26,7 @@ export class AudioNotificationEntry {
 	private _callback: AudioNotificationEntry.Callback;
 
 	/**
-	 * The next entry in the linked list.
+	 * @see [[next]]
 	 */
 	private _next: AudioNotificationEntry|undefined;
 
@@ -75,28 +75,27 @@ export class AudioNotificationEntry {
 
 	/**
 	 * Inserts a new AudioNotificationEntry into the linked list rooted at this node.
-	 * Entries are maintained in sorted order.
+	 * Entries are maintained in sorted ascending order by their `when` property.
 	 * @param	entry	The new entry to add to the list.
 	 * @return	The new root node of the linked list.
 	 */
 	insert(entry: AudioNotificationEntry): AudioNotificationEntry {
-		let last: AudioNotificationEntry|undefined;
-		let cur: AudioNotificationEntry|undefined = this;
+		if (entry._when < this._when) {
+			entry._next = this;
+			return entry;
+		}
+
+		let last: AudioNotificationEntry = this;
+		let cur: AudioNotificationEntry|undefined = this._next;
 
 		while (cur && entry._when >= cur._when) {
-			//if (cur === entry) return this;	// Already in the list
 			last = cur;
 			cur = cur._next;
 		}
 
-		if (last) {
-			entry._next = last._next;
-			last._next = entry;
-			return this;
-		}
-
-		entry._next = this;
-		return entry;
+		entry._next = cur;
+		last._next = entry;
+		return this;
 	} // insert
 
 	/**

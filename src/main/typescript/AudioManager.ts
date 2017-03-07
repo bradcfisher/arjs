@@ -15,17 +15,22 @@ export class AudioManager
 {
 
 	/**
-	 * The associated audio context.
+	 * @see [[context]]
 	 */
 	private _context: AudioContext;
 
 	/**
 	 * The currently registered clips.
+	 * @see [[loadClip]]
+	 * @see [[loadClips]]
+	 * @see [[getClip]]
 	 */
 	private _clips: { [name:string]: AudioClip };
 
 	/**
 	 * Linked list of registered notifications.
+	 * @see [[addNotification]]
+	 * @see [[removeNotification]]
 	 */
 	private _notifications?: AudioNotificationEntry;
 
@@ -44,6 +49,12 @@ export class AudioManager
 	 * point in time is reached.
 	 */
 	private _currentNotificationNode: AudioBufferSourceNode|undefined;
+
+	/**
+	 * The current event callback function for the last registered notification.
+	 * Used for removing the event listener if the notification event is cancelled.
+	 */
+	private _currentNotificationCallback: (() => void)|undefined;
 
 	/**
 	 * Constructs a new AudioManager instance.
@@ -153,23 +164,40 @@ export class AudioManager
 	 * Invokes the current notification when it's time has come.
 	 */
 	private invokeCurrentNotification(): void {
-		if (this._notifications) {
-console.log("AudioManager::invokeCurrentNotification: current id="+ this._notifications.id +" at "+ this._context.currentTime);
-			this._notifications.invoke();
-			this._notifications = this._notifications.next;
+		if (this._currentNotification) {
+			let entry: AudioNotificationEntry = this._currentNotification;
+			if (this._notifications)
+				this._notifications = this._notifications.remove(this._currentNotification.id);
 			this._currentNotification = this._currentNotificationNode = undefined;
+
+			entry.invoke();
+
 			this.scheduleNextNotificationIfNeeded();
 		} else
-			console.warn("AudioManager::invokeCurrentNotification: no notifications to process");
+			console.warn("invokeCurrentNotification: no notifications to process at "+ this._context.currentTime);
 	} // invokeCurrentNotification
+
+	/**
+	 * Stops/unschedules current notification if one is scheduled.
+	 */
+	unscheduleCurrentNotification(): void {
+		if (this._currentNotification) {
+			if (this._currentNotificationNode) {
+				this._currentNotificationNode.stop();
+				this._currentNotificationNode.removeEventListener('ended', this._currentNotificationCallback);
+			}
+			this._currentNotification = undefined;
+			this._currentNotificationCallback = undefined;
+			this._currentNotificationNode = undefined;
+		}
+	} // unscheduleCurrentNotification
 
 	/**
 	 * Schedules the next notification node to fire an event at it's specified time, if an earlier
 	 * event isn't already scheduled.
 	 */
 	private scheduleNextNotificationIfNeeded(): void {
-		if (!this._notifications) {
-console.log("AudioManager::scheduleNextNotificationIfNeeded: nothing to schedule");
+		if (!this._notifications || this._currentNotification === this._notifications) {
 			return; // Nothing to schedule
 		}
 
@@ -177,13 +205,10 @@ console.log("AudioManager::scheduleNextNotificationIfNeeded: nothing to schedule
 
 		if (this._currentNotification) {
 			if (this._currentNotification.when <= notification.when) {
-console.log("AudioManager::scheduleNextNotificationIfNeeded: no need to reschedule");
 				return; // No need to reschedule
 			}
 
-			this._currentNotification = undefined;
-			if (this._currentNotificationNode)
-				this._currentNotificationNode.stop();
+			this.unscheduleCurrentNotification();
 		}
 
 		// Start new notification
@@ -193,16 +218,15 @@ console.log("AudioManager::scheduleNextNotificationIfNeeded: no need to reschedu
 
 		this._currentNotification = this._notifications;
 
-let currentId: number = this._currentNotification.id;
+		this._currentNotificationCallback = () => {
+			this.invokeCurrentNotification();
+		};
+
 		this._currentNotificationNode.addEventListener(
 			'ended',
-			() => {
-				console.log(">> invoking notification "+ currentId +" at "+ this._context.currentTime);
-				this.invokeCurrentNotification();
-			}
+			this._currentNotificationCallback
 		);
 
-console.log("AudioManager::scheduleNextNotificationIfNeeded: starting at "+ this._context.currentTime);
 		this._currentNotificationNode.start(
 			notification.when <= this._context.currentTime + 0.002 ? undefined : notification.when
 		);
@@ -211,29 +235,27 @@ console.log("AudioManager::scheduleNextNotificationIfNeeded: starting at "+ this
 	/**
 	 * Specifies that a notification event containing the given data be fired at the specified time.
 	 *
-	 * @param	atTime	The time relative to the audio context's clock when the event should be
+	 * @param	when	The time relative to the audio context's clock when the event should be
 	 *					fired.  If this time is in the past, no action is taken.
 	 * @param	data	Additional data to attach to the event object for the notification.
 	 *					If a function, the function will be executed at the specified time, any
 	 *					other type of value will trigger a 'notification' event to be fired with
-	 *					the value assigned to the data property.
+	 *					the value passed as event data.
 	 *
 	 * @return	A value that can be used to unregister the notification at a later time, or 0 if
 	 *			the notification was executed immediately or was specified to execute in the past.
 	 */
-	addNotification(atTime: number, data?: Object): number {
+	addNotification(when: number, data?: Object): number {
 		let now: number = this._context.currentTime;
-console.log("AudioManager::addNotification: atTime="+ atTime +" (now="+ now +")");
-		if (atTime < now - 0.005) {
-console.log("AudioManager::addNotification: atTime="+ atTime +": requested time expired", data);
+		if (when < now - 0.005) {
+			console.warn("requested time "+ when +" expired (now="+ now +")");
 			return 0;
-		} else if (atTime <= now + 0.005) {
+		} else if (when <= now + 0.005) {
 			if (typeof data === "function")
 				data();
 			else
 				this.trigger('notification', data);
 
-console.log("AudioManager::addNotification: atTime="+ atTime +": fired immediately", data);
 			return 0;
 		}
 
@@ -248,7 +270,7 @@ console.log("AudioManager::addNotification: atTime="+ atTime +": fired immediate
 			};
 		}
 
-		notification = new AudioNotificationEntry(atTime, callback);
+		notification = new AudioNotificationEntry(when, callback);
 
 		this._notifications = (
 			this._notifications
@@ -258,7 +280,6 @@ console.log("AudioManager::addNotification: atTime="+ atTime +": fired immediate
 
 		this.scheduleNextNotificationIfNeeded();
 
-console.log("AudioManager::addNotification: atTime="+ atTime +": registered id="+ notification.id, data);
 		return notification.id;
 	} // addNotification
 
@@ -270,8 +291,17 @@ console.log("AudioManager::addNotification: atTime="+ atTime +": registered id="
 	 */
 	removeNotification(notification: number): void {
 		if (this._notifications) {
+			let reschedule: boolean = false;
+
+			if (this._currentNotification && (this._currentNotification.id == notification)) {
+				reschedule = true;
+				this.unscheduleCurrentNotification();
+			}
+
 			this._notifications = this._notifications.remove(notification);
-			this.scheduleNextNotificationIfNeeded();
+
+			if (reschedule)
+				this.scheduleNextNotificationIfNeeded();
 		}
 	} // removeNotification
 
