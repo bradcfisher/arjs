@@ -1,7 +1,7 @@
 
 plugins {
-	id "com.moowork.node" version "1.1.1"
-	id "com.moowork.gulp" version "1.1.1"
+	id "com.moowork.node" version "1.3.1"
+	id "com.moowork.gulp" version "1.3.0"
 }
 
 repositories {
@@ -10,7 +10,7 @@ repositories {
 
 node {
 	// Version of node to use.
-	version = '6.9.5'
+	version = '10.15.3'
 
 	// Version of npm to use.
 	//npmVersion = '2.1.5'

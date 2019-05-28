@@ -1,8 +1,37 @@
 
+export interface AudioNotification {
+	/**
+	 * Retrieves the unique ID assigned to this notification.
+	 * @return	The unique ID assigned to this notification.
+	 */
+	readonly id: number;
+
+	/**
+	 * Retrieves the time when this notification should be invoked.
+	 * @return	The time when this notification should be invoked.
+	 */
+	readonly when: number;
+
+	/**
+	 * Retrieves the data associated with this notification.
+	 * @return	The data associated with this notification.
+	 */
+	readonly data: any;
+
+	/**
+	 * Retrieves the callback invoked when this notification's time is reached.
+	 * @return	The callback invoked when this notification's time is reached.
+	 */
+	readonly callback: AudioNotification.Callback;
+} // AudioNotification
+
+
 /**
  * Class representing a Notification entry linked list.
  */
-export class AudioNotificationEntry {
+export class AudioNotificationEntry
+	implements AudioNotification
+{
 
 	/**
 	 * ID allocated to the last AudioNotificationEntry created.
@@ -23,7 +52,12 @@ export class AudioNotificationEntry {
 	/**
 	 * @see [[callback]]
 	 */
-	private _callback: AudioNotificationEntry.Callback;
+	private _callback: AudioNotification.Callback;
+
+	/**
+	 * @see [[data]]
+	 */
+	private _data: any;
 
 	/**
 	 * @see [[next]]
@@ -35,15 +69,16 @@ export class AudioNotificationEntry {
 	 * @param	when		The time when this notification should be invoked.
 	 * @param	callback	The function to invoke for the notification.
 	 */
-	constructor(when: number, callback: AudioNotificationEntry.Callback) {
+	constructor(when: number, callback: AudioNotification.Callback, data?: any) {
 		this._id = ++AudioNotificationEntry._lastId;
 		this._when = when;
+		this._data = data;
 		this._callback = callback;
 	} // constructor
 
 	/**
-	 * Retrieves the unique ID assigned to this AudioNotificationEntry.
-	 * @return	The unique ID assigned to this AudioNotificationEntry.
+	 * Retrieves the unique ID assigned to this notification.
+	 * @return	The unique ID assigned to this notification.
 	 */
 	get id(): number {
 		return this._id;
@@ -58,20 +93,28 @@ export class AudioNotificationEntry {
 	} // when
 
 	/**
+	 * Retrieves the data associated with this notification.
+	 * @return	The data associated with this notification.
+	 */
+	get data(): any {
+		return this._data;
+	} // data
+
+	/**
+	 * Retrieves the callback invoked when this notification's time is reached.
+	 * @return	The callback invoked when this notification's time is reached.
+	 */
+	get callback(): AudioNotification.Callback {
+		return this._callback;
+	} // callback
+
+	/**
 	 * Retrieves the next entry in the linked list after this one.
 	 * @return	The next entry in the linked list after this one.
 	 */
 	get next(): AudioNotificationEntry|undefined {
 		return this._next;
 	} // next
-
-	/**
-	 * Retrieves the callback invoked when this notification entry's time is reached.
-	 * @return	The callback invoked when this notification entry's time is reached.
-	 */
-	get callback(): AudioNotificationEntry.Callback {
-		return this._callback;
-	} // callback
 
 	/**
 	 * Inserts a new AudioNotificationEntry into the linked list rooted at this node.
@@ -139,14 +182,23 @@ export class AudioNotificationEntry {
 		}
 	} // nextOccurring
 
+	/**
+	 * Invokes the associated callback function, passing this notification as the first parameter.
+	 */
 	invoke() {
-		this._callback();
+		this._callback(this);
 	} // invoke
-} // AudioNotificationEntry
-
-
-export module AudioNotificationEntry {
-
-	export type Callback = () => void;
 
 } // AudioNotificationEntry
+
+
+export module AudioNotification {
+
+	/**
+	 * Callback invoked for an [[AudioNotificationEntry]].
+	 *
+	 * @param	notification	The AudioNotificationEntry node the callback is being invoked for.
+	 */
+	export type Callback = (notification?: AudioNotification) => void;
+
+} // AudioNotification

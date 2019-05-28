@@ -1,0 +1,79 @@
+[
+	{ "when": 0, "line": "", "color": "CYAN" },
+	{ "when": 0, "text": "", "color": "WHITE" },
+
+	{ "when": 4400, "line": "THE DEVOURER" },
+	{ "when": "+0", "text": "THE " },
+	{ "when": 4620, "text": "DE" },
+	{ "when": 4940, "text": "VOUR" },
+	{ "when": 5660, "text": "ER" },
+
+	{ "when": 6480, "line": "IS IT HIM OR HER?" },
+	{ "when": "+0", "text": "IS " },
+	{ "when": 6600, "text": "IT " },
+	{ "when": 6700, "text": "HIM " },
+	{ "when": 7240, "text": "OR " },
+	{ "when": 7720, "text": "HER?" },
+
+	{ "when": 8500, "line": "IS IT SCALE OR FUR?" },
+	{ "when": "+0", "text": "IS " },
+	{ "when": 8660, "text": "IT " },
+	{ "when": 8760, "text": "SCALE " },
+	{ "when": 9300, "text": "OR " },
+	{ "when": 9800, "text": "FUR?" },
+
+	{ "when": 10850, "line": "DOES IT OCCUR" },
+	{ "when": "+0",  "text": "DOES " },
+	{ "when": 11280, "text": "IT " },
+	{ "when": 11640, "text": "OC" },
+	{ "when": 12100, "text": "CUR" },
+
+	{ "when": 12720, "line": "IN THE DARK OF NITE?" },
+	{ "when": "+0",  "text": "IN " },
+	{ "when": 12940, "text": "THE " },
+	{ "when": 13260, "text": "DARK " },
+	{ "when": 13460, "text": "OF " },
+	{ "when": 13960, "text": "NITE?" },
+
+	{ "when": 14800, "line": "CRYSTAL CAVERN LITE?" },
+	{ "when": "+0",  "text": "CRYS" },
+	{ "when": 14925, "text": "TAL " },
+	{ "when": 15020, "text": "CA" },
+	{ "when": 15560, "text": "VERN " },
+	{ "when": 16060, "text": "LITE?" },
+
+	{ "when": 16840, "line": "METAL APPETITE?" },
+	{ "when": "+0",  "text": "MET" },
+	{ "when": 17000, "text": "AL " },
+	{ "when": 17100, "text": "AP" },
+	{ "when": 17640, "text": "PE" },
+	{ "when": 18140, "text": "TITE?" },
+
+	{ "when": 19180, "line": "I WANT TO KNOW YOU?" },
+	{ "when": "+0",  "text": "I " },
+	{ "when": 19580, "text": "WANT " },
+	{ "when": 19940, "text": "TO " },
+	{ "when": 20280, "text": "KNOW " },
+	{ "when": 21260, "text": "YOU?" },
+
+	{ "when": 23340, "line": "I WANT TO KNOW YOU?" },
+	{ "when": "+0",  "text": "I " },
+	{ "when": 23880, "text": "WANT " },
+	{ "when": 24380, "text": "TO " },
+	{ "when": 24700, "text": "KNOW " },
+	{ "when": 25420, "text": "YOU?" },
+
+	{ "when": 27500, "line": "I WANT TO KNOW..." },
+	{ "when": "+0",  "text": "I " },
+	{ "when": 28020, "text": "WANT " },
+	{ "when": 28540, "text": "TO " },
+	{ "when": 28860, "text": "KNOW..." },
+
+	{ "when": 29360, "line": "THE DEVOURER?" },
+	{ "when": "+0",  "text": "THE " },
+	{ "when": 29480, "text": "DE" },
+	{ "when": 29580, "text": "VOUR" },
+	{ "when": 30610, "text": "ER?" },
+
+	{ "when": 46920, "line": "" }
+]

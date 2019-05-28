@@ -1,0 +1,88 @@
+[
+	{ "when":     0, "line": "", "color": "none" },
+	{ "when":     0, "text": "", "color": "WHITE" },
+
+	{ "when":   520, "line": "NOW THAT YOU'RE GONE" },
+	{ "when":  "+0", "text": "NOW " },
+	{ "when":  2200, "text": "THAT " },
+	{ "when":  3320, "text": "YOU'RE " },
+	{ "when":  3880, "text": "GONE" },
+
+	{ "when":  5550, "line": "SOME WILL GRIEVE" },
+	{ "when":  "+0", "text": "SOME " },
+	{ "when":  6120, "text": "WILL " },
+	{ "when":  6680, "text": "GRIEVE" },
+
+	{ "when":  7240, "line": "ON ON AND ON" },
+	{ "when":  "+0", "text": "ON " },
+	{ "when":  8920, "text": "ON " },
+	{ "when": 10040, "text": "AND " },
+	{ "when": 10600, "text": "ON" },
+
+	{ "when": 12280, "line": "I KNOW YOU'LL BE" },
+	{ "when":  "+0", "text": "I " },
+	{ "when": 12840, "text": "KNOW " },
+	{ "when": 13400, "text": "YOU'LL " },
+	{ "when": 13960, "text": "BE" },
+
+	{ "when": 15640, "line": "BACK AGAIN" },
+	{ "when":  "+0", "text": "BACK " },
+	{ "when": 16760, "text": "A" },
+	{ "when": 17320, "text": "GAIN" },
+
+	{ "when": 19000, "line": "MAYBE NEXT TIME" },
+	{ "when":  "+0", "text": "MAY" },
+	{ "when": 19560, "text": "BE " },
+	{ "when": 20120, "text": "NEXT " },
+	{ "when": 20680, "text": "TIME" },
+
+	{ "when": 22360, "line": "WILL BE THE TIME" },
+	{ "when":  "+0", "text": "WILL " },
+	{ "when": 22920, "text": "BE " },
+	{ "when": 23480, "text": "THE " },
+	{ "when": 24040, "text": "TIME" },
+
+	{ "when": 27420, "line": "NOW THAT YOU'RE GONE" },
+	{ "when":  "+0", "text": "NOW " },
+	{ "when": 29100, "text": "THAT " },
+	{ "when": 30220, "text": "YOU'RE " },
+	{ "when": 30780, "text": "GONE" },
+
+	{ "when": 32460, "line": "SOME WILL GRIEVE" },
+	{ "when":  "+0", "text": "SOME " },
+	{ "when": 33020, "text": "WILL " },
+	{ "when": 33580, "text": "GRIEVE" },
+
+	{ "when": 34140, "line": "ON ON AND ON" },
+	{ "when":  "+0", "text": "ON " },
+	{ "when": 35820, "text": "ON " },
+	{ "when": 36940, "text": "AND " },
+	{ "when": 37500, "text": "ON" },
+
+	{ "when": 39160, "line": "I KNOW YOU'LL BE" },
+	{ "when":  "+0", "text": "I " },
+	{ "when": 39740, "text": "KNOW " },
+	{ "when": 40300, "text": "YOU'LL " },
+	{ "when": 40860, "text": "BE" },
+
+	{ "when": 42540, "line": "BACK AGAIN" },
+	{ "when":  "+0", "text": "BACK " },
+	{ "when": 43660, "text": "A" },
+	{ "when": 44220, "text": "GAIN" },
+
+	{ "when": 45900, "line": "MAYBE NEXT TIME" },
+	{ "when":  "+0", "text": "MAY" },
+	{ "when": 46460, "text": "BE " },
+	{ "when": 47020, "text": "NEXT " },
+	{ "when": 47560, "text": "TIME" },
+
+	{ "when": 49260, "line": "WILL BE THE TIME YOU" },
+	{ "when":  "+0", "text": "WILL " },
+	{ "when": 49820, "text": "BE " },
+	{ "when": 50380, "text": "THE " },
+	{ "when": 50940, "text": "TIME " },
+	{ "when": 52620, "text": "YOU" },
+
+	{ "when": 54300, "line": "WIN", "color": "WHITE" },
+	{ "when": 57640, "line": "" }
+]

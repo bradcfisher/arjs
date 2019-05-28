@@ -1,6 +1,6 @@
 
 import { EventDispatcher } from "./EventDispatcher";
-import { AudioNotificationEntry } from "./AudioNotificationEntry";
+import { AudioNotificationEntry, AudioNotification } from "./AudioNotificationEntry";
 import { AudioClip } from "./AudioClip";
 
 /**
@@ -77,6 +77,26 @@ export class AudioManager
 	} // context
 
 	/**
+	 * Suspends the progression of time for the associated audio context.
+	 * @return	A Promise that resolves with void. The promise is rejected if the context
+	 *			has already been closed.
+	 */
+	suspend() {
+		console.log('suspending context', this._context, 'state='+ this._context.state);
+		return this._context.suspend().then((val) => { console.log('suspend OK', val); }, (err) => { console.log('suspend FAILED', err); });
+	} // suspend
+
+	/**
+	 * Resumes the progression of time for the associated audio context.
+	 * @return	A Promise that resolves with void. The promise is rejected if the context
+	 *			has already been closed.
+	 */
+	resume() {
+		console.log('resuming context', this._context, 'state='+ this._context.state);
+		return this._context.resume().then((val) => { console.log('resume OK', val); }, (err) => { console.log('resume FAILED', err); });
+	} // resume
+
+	/**
 	 * Retrieves the current audio clock timestamp.
 	 * @return	The current audio clock timestamp.
 	 */
@@ -103,53 +123,26 @@ export class AudioManager
 	} // registerClip
 
 	/**
-	 * Loads and registers an audio clip from a URL.
-	 * @param	name	The name to register the audio clip under.
-	 * @param	url		The URL to load the audio clip from.
-	 * @return	The new AudioClip instance.
-	 */
-	loadClip(name: string, url: string): AudioClip {
-		return new AudioClip(this, name, url);
-	}  // loadAudioClip
-
-	/**
-	 * Starts loading several clips at once.
+	 * Returns a Promise which resolves to a new AudioClip with the specified name
+	 * and audio data.
 	 *
-	 * @param	assetMap	Object whose values are URLs of clips to load, and whose keys are the
-	 *						names to assign those clips to.
-	 * ```typescript
-	 * {
-	 *   "clip1": "http://www.example.com/audio/someClip.ogg",
-	 *   "laser": "http://www.example.com/audio/coolLaser.ogg"
-	 * }
-	 * ```
-	 *
-	 * @return	A promise that will complete after all of the specified assets have loaded.
+	 * @param	name		The name to register the new clip under.
+	 * @param	audioData	The audio data to use for the clip.  Must be in a supported
+	 *						audio format.
 	 */
-	loadClips(assetMap: {[name:string]: string}): Promise<AudioClip[]> {
-		let promises: Promise<AudioClip>[] = [];
-		for (let name in assetMap) {
-			promises.push(
-				new Promise<AudioClip>((accept, reject) => {
-					let completeAction: EventDispatcher.Callback =
-						(target: AudioClip, event: string, data: any) => {
-							target.off('load', completeAction);
-							target.off('error', completeAction);
-							if (event == 'load') {
-								accept(target);
-							} else {
-								reject(data.error);
-							}
-						};
-
-					this.loadClip(name, assetMap[name])
-						.on('load', completeAction)
-						.on('error', completeAction);
-				})
-			);
-		}
-		return Promise.all(promises);
-	} // loadClips
+	clipFromArrayBuffer(name: string, audioData: ArrayBuffer): Promise<AudioClip> {
+console.log("clipFromArrayBuffer: ", name, audioData);
+		return new Promise<AudioClip>((accept, reject) => {
+			this._context.decodeAudioData(audioData).then(
+				(buffer) => {
+					accept(new AudioClip(this, name, buffer));
+				},
+				(error) => {
+					reject(error);
+				}
+			)
+		});
+	} // clipFromArrayBuffer
 
 	/**
 	 * Retrieves the audio clip registered with the provided name.
@@ -184,7 +177,8 @@ export class AudioManager
 		if (this._currentNotification) {
 			if (this._currentNotificationNode) {
 				this._currentNotificationNode.stop();
-				this._currentNotificationNode.removeEventListener('ended', this._currentNotificationCallback);
+        if (this._currentNotificationCallback)
+          this._currentNotificationNode.removeEventListener('ended', this._currentNotificationCallback);
 			}
 			this._currentNotification = undefined;
 			this._currentNotificationCallback = undefined;
@@ -233,44 +227,38 @@ export class AudioManager
 	} // scheduleNextNotificationIfNeeded
 
 	/**
-	 * Specifies that a notification event containing the given data be fired at the specified time.
+	 * Specifies that a notification event containing the given data be fired at the specified
+	 * time relative to the audio context's clock
 	 *
-	 * @param	when	The time relative to the audio context's clock when the event should be
-	 *					fired.  If this time is in the past, no action is taken.
-	 * @param	data	Additional data to attach to the event object for the notification.
-	 *					If a function, the function will be executed at the specified time, any
-	 *					other type of value will trigger a 'notification' event to be fired with
-	 *					the value passed as event data.
+	 * @param	when		The time relative to the audio context's clock when the event should be
+	 *						fired.  If this time is in the past, no action is taken.
+	 * @param	data		Additional data to associate with the triggered notification.
+	 * @param	callback	The [[AudioNotification.Callback]] to invoke when the notification time
+	 *						is reached.  If no callback is specified, will trigger a "notification"
+	 *						event instead.
 	 *
 	 * @return	A value that can be used to unregister the notification at a later time, or 0 if
 	 *			the notification was executed immediately or was specified to execute in the past.
 	 */
-	addNotification(when: number, data?: Object): number {
+	addNotification(when: number, data?: any, callback?: AudioNotification.Callback): number {
+		let notification: AudioNotificationEntry;
+
+		if (!callback) {
+			callback = (notification: AudioNotification) => {
+				this.trigger('notification', notification);
+			};
+		}
+
+		notification = new AudioNotificationEntry(when, callback, data);
+
 		let now: number = this._context.currentTime;
 		if (when < now - 0.005) {
 			console.warn("requested time "+ when +" expired (now="+ now +")");
 			return 0;
 		} else if (when <= now + 0.005) {
-			if (typeof data === "function")
-				data();
-			else
-				this.trigger('notification', data);
-
+			notification.invoke();
 			return 0;
 		}
-
-		let notification: AudioNotificationEntry;
-		let callback: AudioNotificationEntry.Callback; 
-
-		if (typeof data === "function") {
-			callback = data;
-		} else {
-			callback = () => {
-				this.trigger('notification', data);
-			};
-		}
-
-		notification = new AudioNotificationEntry(when, callback);
 
 		this._notifications = (
 			this._notifications

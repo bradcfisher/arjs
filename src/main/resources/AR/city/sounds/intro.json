@@ -1,0 +1,173 @@
+[
+	{ "when": 0, "line": "", "color": "BLUE" },
+	{ "when": 0, "text": "", "color": "YELLOW" },
+
+	{ "when":  356, "line": "THE EARLY MORNING" },
+	{ "when": "+0", "text": "THE " },
+	{ "when":  722, "text": "EAR" },
+	{ "when": 1086, "text": "LY " },
+	{ "when": 1440, "text": "MOR" },
+	{ "when": 1774, "text": "NING" },
+
+	{ "when": 2169, "line": "TURNS INTO EARLY DAY" },
+	{ "when": "+0", "text": "TURNS " },
+	{ "when": 2453, "text": "IN" },
+	{ "when": 2907, "text": "TO " },
+	{ "when": 3277, "text": "EAR" },
+	{ "when": 3638, "text": "LY " },
+	{ "when": 4004, "text": "DAY" },
+
+	{ "when": 6197, "line": "A SUNSET COMES THEY" },
+	{ "when": "+0", "text": "A " },
+	{ "when": 6571, "text": "SUN" },
+	{ "when": 6937, "text": "SET " },
+	{ "when": 7306, "text": "COMES " },
+	{ "when": 7656, "text": "THEY" },
+
+	{ "when": 8028, "line": "TAKE THE COLORS" },
+	{ "when": "+0", "text": "TAKE " },
+	{ "when": 8398, "text": "THE " },
+	{ "when": 8764, "text": "CO" },
+	{ "when": 9122, "text": "LORS" },
+
+	{ "when": 9495, "line": "AWAY" },
+	{ "when": "+0", "text": "A" },
+	{ "when": 9867, "text": "WAY" },
+
+	{ "when": 10966, "line": "WHERE YOU ARE" },
+	{ "when":  "+0", "text": "WHERE " },
+	{ "when": 11328, "text": "YOU " },
+	{ "when": 11698, "text": "ARE" },
+
+	{ "when": 13175, "line": "" },
+
+	{ "when": 16422, "line": "ALTERNATE REALITY" },
+	{ "when":  "+0", "text": "AL" },
+	{ "when": 16650, "text": "TER" },
+	{ "when": 16839, "text": "NATE " },
+	{ "when": 17191, "text": "RE" },
+	{ "when": 17557, "text": "AL" },
+	{ "when": 17913, "text": "I" },
+	{ "when": 18296, "text": "TY" },
+
+	{ "when": 20499, "line": "" },
+
+
+	{ "when": 23744, "line": "A BIT LIKE HOME YET" },
+	{ "when":  "+0", "text": "A " },
+	{ "when": 24147, "text": "BIT " },
+	{ "when": 24521, "text": "LIKE " },
+	{ "when": 24887, "text": "HOME " },
+	{ "when": 25249, "text": "YET" },
+
+	{ "when": 25619, "line": "UNMISTAKABLY NEW" },
+	{ "when":  "+0", "text": "UN" },
+	{ "when": 25986, "text": "MIS" },
+	{ "when": 26354, "text": "TAK" },
+	{ "when": 26710, "text": "A" },
+	{ "when": 27082, "text": "BLY " },
+	{ "when": 27452, "text": "NEW" },
+
+	{ "when": 29656, "line": "A MORNING RAIN THEN" },
+	{ "when":  "+0", "text": "A " },
+	{ "when": 30020, "text": "MOR" },
+	{ "when": 30380, "text": "NING " },
+	{ "when": 30750, "text": "RAIN " },
+	{ "when": 31119, "text": "THEN" },
+
+	{ "when": 31479, "line": "EVENING STARS COME" },
+	{ "when":  "+0", "text": "EVE" },
+	{ "when": 31851, "text": "NING " },
+	{ "when": 32213, "text": "STARS " },
+	{ "when": 32581, "text": "COME" },
+
+	{ "when": 32950, "line": "AND VIEW" },
+	{ "when": "+0", "text": "AND " },
+	{ "when": 33314, "text": "VIEW" },
+
+	{ "when": 34418, "line": "WHAT IS YOUR" },
+	{ "when":  "+0", "text": "WHAT " },
+	{ "when": 34783, "text": "IS " },
+	{ "when": 35147, "text": "YOUR" },
+
+	{ "when": 36754, "line": "" },
+
+	{ "when": 39915, "line": "ALTERNATE REALITY" },
+	{ "when":  "+0", "text": "AL" },
+	{ "when": 40103, "text": "TER" },
+	{ "when": 40282, "text": "NATE " },
+	{ "when": 40644, "text": "RE" },
+	{ "when": 41010, "text": "AL" },
+	{ "when": 41386, "text": "I" },
+	{ "when": 41746, "text": "TY" },
+
+	{ "when": 43939, "line": "" },
+
+
+	{ "when": 70696, "line": "YOU WALK AROUND EACH" },
+	{ "when":  "+0", "text": "YOU " },
+	{ "when": 71062, "text": "WALK " },
+	{ "when": 71425, "text": "A" },
+	{ "when": 71795, "text": "ROUND " },
+	{ "when": 72159, "text": "EACH" },
+
+	{ "when": 72527, "line": "CORNER HOPING TO SEE" },
+	{ "when":  "+0", "text": "COR" },
+	{ "when": 72895, "text": "NER " },
+	{ "when": 73264, "text": "HO" },
+	{ "when": 73630, "text": "PING " },
+	{ "when": 73992, "text": "TO " },
+	{ "when": 74362, "text": "SEE" },
+
+	{ "when": 76559, "line": "A WAY TO GET BACK" },
+	{ "when":  "+0", "text": "A " },
+	{ "when": 76928, "text": "WAY " },
+	{ "when": 77294, "text": "TO " },
+	{ "when": 77660, "text": "GET " },
+	{ "when": 78024, "text": "BACK" },
+
+	{ "when": 78392, "line": "HOME A WAY TO" },
+	{ "when":  "+0", "text": "HOME " },
+	{ "when": 78759, "text": "A " },
+	{ "when": 79123, "text": "WAY " },
+	{ "when": 79495, "text": "TO" },
+
+	{ "when": 79855, "line": "BREAK FREE" },
+	{ "when":  "+0", "text": "BREAK " },
+	{ "when": 80223, "text": "FREE" },
+
+	{ "when": 81326, "line": "AND TO LEAVE" },
+	{ "when":  "+0", "text": "AND " },
+	{ "when": 81688, "text": "TO " },
+	{ "when": 82054, "text": "LEAVE" },
+
+	{ "when": 83521, "line": "" },
+
+	{ "when": 86817, "line": "ALTERNATE REALITY" },
+	{ "when":  "+0", "text": "AL" },
+	{ "when": 87002, "text": "TER" },
+	{ "when": 87187, "text": "NATE " },
+	{ "when": 87547, "text": "RE" },
+	{ "when": 87918, "text": "AL" },
+	{ "when": 88280, "text": "I" },
+	{ "when": 88652, "text": "TY" },
+
+	{ "when": 90839, "line": "" },
+
+
+	{ "when": 93044, "line": "THIS IS YOUR" },
+	{ "when":  "+0", "text": "THIS " },
+	{ "when": 93415, "text": "IS " },
+	{ "when": 93779, "text": "YOUR" },
+
+	{ "when":  98541, "line": "ALTERNATE REALITY" },
+	{ "when":   "+0", "text": "AL" },
+	{ "when":  98724, "text": "TER" },
+	{ "when":  98910, "text": "NATE " },
+	{ "when":  99276, "text": "RE" },
+	{ "when":  99640, "text": "AL" },
+	{ "when": 100008, "text": "I" },
+	{ "when": 100372, "text": "TY" },
+
+	{ "when": 102572, "line": "" }
+]

@@ -1,14 +1,12 @@
 import { AudioManager } from "./AudioManager";
-import { AudioNotificationEntry } from "./AudioNotificationEntry";
+import { AudioNotificationEntry, AudioNotification } from "./AudioNotificationEntry";
 import { EventDispatcher } from "./EventDispatcher";
 
 
 /**
  * Represents an audio clip.
  *
- * Clip Events:
- *  - load			Sent when a load operation completes
- *  - error			Sent when a load operation fails
+ * Events:
  *  - start			Sent when a clip begins playing
  *  - stop			Sent when a clip stops playing
  *  - pause			Sent when a clip is paused
@@ -19,7 +17,6 @@ import { EventDispatcher } from "./EventDispatcher";
  * ```typescript
  * {
  *   data: <Data provided when the notification was defined>
- *   error: The error that occurred
  * }
  * ```
  */
@@ -35,7 +32,7 @@ export class AudioClip
 	/**
 	 * @see [[baseBuffer]]
 	 */
-	private _baseBuffer: AudioBuffer|undefined;
+	private _baseBuffer: AudioBuffer;
 
 	/**
 	 * The current view of the audio buffer, based on previous start/stop/pause/seek operations.
@@ -51,7 +48,7 @@ export class AudioClip
 	 * The last position set.
 	 * @see [[position]]
 	 */
-	private _position: number = Number.NaN;
+	private _position: number = 0;
 
 	/**
 	 * @see [[paused]]
@@ -65,7 +62,7 @@ export class AudioClip
 	 * @see [[playing]]
 	 * @see [[position]]
 	 */
-	private _startTime: number = 0;
+	private _startTime: number = Number.NaN;
 
 	/**
 	 * Linked list of registered notifications.
@@ -90,6 +87,13 @@ export class AudioClip
 	private _stoppingNotificationId: number = 0;
 
 	/**
+	 * The WebAudio GainNode used to control the gain for this audio clip.
+	 * @see [[gain]]
+	 * @see [[gainParam]]
+	 */
+	private _gainNode: GainNode;
+
+	/**
 	 * The WebAudio node for this audio clip.
 	 */
 	private _node: AudioBufferSourceNode|undefined;
@@ -98,10 +102,12 @@ export class AudioClip
 	 * Constructs a new AudioClip instance.
 	 *
 	 * @param	context		The audio context to create the clip under.
-	 * @param	source		The source AudioClip, AudioBuffer, or url string to retrieve the audio
+	 * @param	name		A name to associate with the audio clip instance.  This name is
+	 *						used to identify the clip in the containing [[AudioManager]].
+	 * @param	source		The source AudioClip or AudioBuffer to retrieve the audio
 	 *						data from.
 	 */
-	constructor(context: AudioManager|AudioClip, name: string, source: AudioClip|AudioBuffer|string|undefined) {
+	constructor(context: AudioManager|AudioClip, name: string, source: AudioClip|AudioBuffer) {
 		super();
 
 		if (context instanceof AudioClip) {
@@ -113,55 +119,83 @@ export class AudioClip
 		this._name = name;
 		this._manager.registerClip(this);
 
-		if (typeof source === "string") {
-			this.loadFromUrl(source as string);
-		} else {
-			if (source instanceof AudioClip)
-				source = (source as AudioClip)._baseBuffer;
+		this._gainNode = this.context.createGain();
 
+		if (source instanceof AudioClip) {
+			this._baseBuffer = (source as AudioClip)._baseBuffer;
+		} else {
 			this._baseBuffer = source as AudioBuffer;
 		}
 
+		this._currentBuffer = this._baseBuffer;
+
 		// Initialize the AudioBufferSourceNode for triggering start events for this clip
-		this.addNotification(0, () => { this.trigger('start'); });
+		this.addNotification(0, undefined, () => { this.trigger('start'); });
 	} // constructor
 
 	/**
 	 * Creates a copy of an AudioBuffer containing only the specified range of the audio data.
 	 *
 	 * @param	buffer		The AudioBuffer to clone.
-	 * @param	startTime	The starting timestamp within the buffer to use for the starting
-	 *						position of the new clone.
-	 * @param	duration	The duration to copy from the original buffer into the new clone.
+	 * @param	startTime	The starting timestamp, in seconds, within the buffer to use for the
+	 *						starting position of the new clone.  May be negative, in which case
+	 *						an appropriate amount of silence will be inserted into the beginning
+	 *						of the new buffer.
+	 * @param	duration	The duration to copy from the original buffer into the new clone, in
+	 *						seconds.  If not specified, the remainder of the buffer starting at
+	 *						`startTime` will be copied.  If the specified duration would exceed the
+	 *						duration of the source buffer, silence will be appended to the end of
+	 *						the new buffer to pad the clip to the specified duration.  Must be a
+	 *						positive value.
 	 */
 	private cloneBuffer(buffer: AudioBuffer, startTime: number, duration?: number): AudioBuffer {
-		let startSample: number = startTime * buffer.sampleRate;
+		let startSample: number = Math.trunc(startTime * buffer.sampleRate);
 
-		if (duration == null)
-			duration = buffer.duration - startTime;
+		let numSamples: number =
+			(duration == null
+				? buffer.length - startSample
+				: Math.ceil(duration * buffer.sampleRate)
+			);
 
-		let numSamples: number = duration * buffer.sampleRate;
-		let rv: AudioBuffer = this.context.createBuffer(
+		if (numSamples < 1)
+			numSamples = 1;
+
+		let endSample: number = startSample + numSamples;
+
+		if (endSample >= buffer.length)
+			endSample = buffer.length - 1;
+
+		let channelSampleOffset: number = 0;
+
+		if (startSample < 0) {
+			channelSampleOffset = -startSample;
+			startSample = 0;
+		}
+
+console.log("clone buffer: startSample=", startSample, ", numSamples=", numSamples, ", endSample=", endSample, ", channelSampleOffset=", channelSampleOffset);
+
+		let clonedBuffer: AudioBuffer = this.context.createBuffer(
 			buffer.numberOfChannels,
 			numSamples,
 			buffer.sampleRate
 		);
 
-		// Copy audio data within the specified range for each channel
-		for (let channel: number = buffer.numberOfChannels - 1; channel >= 0; --channel) {
-			rv.copyToChannel(
-				buffer.getChannelData(channel).subarray(startSample, startSample + numSamples),
-				channel
-			);
+		if (endSample >= 0) {
+			// Copy audio data within the specified range for each channel
+			for (let channel: number = buffer.numberOfChannels - 1; channel >= 0; --channel) {
+				clonedBuffer.copyToChannel(
+					buffer.getChannelData(channel).subarray(startSample, endSample),
+					channel,
+					channelSampleOffset
+				);
+			}
 		}
 
-		return rv;
+		return clonedBuffer;
 	} // cloneBuffer
 
 	/**
 	 * Creates a new AudioClip "sprite" based on this clip.
-	 *
-	 * Throws an Error if the content has not completed loading.
 	 *
 	 * @param	name		The name for the new sprite.
 	 * @param	startTime	The position within this clip to use as the start of the sprite, in
@@ -174,9 +208,6 @@ export class AudioClip
 	 *			Notifications are not cloned into the new sprite.
 	 */
 	createSprite(name: string, startTime: number, duration: number): AudioClip {
-		if (!this._baseBuffer)
-			throw new Error("Content not loaded");
-
 		return new AudioClip(
 			this._manager,
 			name,
@@ -185,46 +216,8 @@ export class AudioClip
 	} // createSprite
 
 	/**
-	 * Loads new audio content into this clip from the specified URL, stopping the clip if it's
-	 * currently playing.
-	 *
-	 * @param	url		The location to retrieve the new audio data from.
-	 *
-	 * @return	A Promise executing the asynchronous load operation.
-	 */
-	loadFromUrl(url: string): Promise<AudioClip> {
-		this.stop();
-		this._baseBuffer = undefined;
-		this._startTime = Number.NaN;
-
-		return new Promise<AudioClip>((accept, reject) => {
-			let request: XMLHttpRequest = new XMLHttpRequest();
-			request.open('GET', url);
-			request.responseType = 'arraybuffer';
-			request.onload = () => {
-				if (request.status == 200) {
-					this.context.decodeAudioData(request.response, (buffer) => {
-						this._baseBuffer = buffer;
-						this.trigger('load');
-						accept(this);
-					});
-				} else {
-					let error: Error = new Error(request.status +" "+ request.statusText);
-					this.trigger('error', error);
-					reject(error);
-				}
-			};
-			request.onerror = (error) => {
-				this.trigger('error', error);
-				reject(error);
-			};
-			request.send();
-		});
-	} // loadFromUrl
-
-	/**
 	 * Retrieves the name of this AudioClip, as registered with the associated AudioManager.
-	 * @return	The name of this AudioClip, as registered with the associated AudioManager.
+	 * @return	The name of this AudioClip, as registered with the associated [[AudioManager]].
 	 */
 	get name(): string {
 		return this._name;
@@ -247,14 +240,6 @@ export class AudioClip
 	} // manager
 
 	/**
-	 * Determines whether the audio content has been completely loaded or not.
-	 * @return	Whether the audio content has been completely loaded or not.
-	 */
-	get loaded(): boolean {
-		return (this._baseBuffer != null);
-	} // loaded
-
-	/**
 	 * Determines whether the clip is currently playing or not.
 	 * @return	Whether the clip is currently playing or not.
 	 */
@@ -272,57 +257,50 @@ export class AudioClip
 
 	/**
 	 * Retrieves the number of audio channels for this clip.
-	 * If the content has not completed loading, this property returns 0.
 	 * @return	The number of audio channels for this clip.
 	 */
 	get numberOfChannels(): number {
-		return (this._baseBuffer ? this._baseBuffer.numberOfChannels : 0);
+		return this._baseBuffer.numberOfChannels;
 	} // numberOfChannels
 
 	/**
 	 * Retrieves the sample rate of the underlying audio buffer, in Hz.
-	 * If the content has not completed loading, this property returns 0.
 	 * @return	The sample rate of the underlying audio buffer, in Hz.
 	 */
 	get sampleRate(): number {
-		return (this._baseBuffer ? this._baseBuffer.sampleRate : 0);
+		return this._baseBuffer.sampleRate;
 	} // sampleRate
 
 	/**
 	 * Retrieves the length of the clip, in samples.
-	 * If the content has not completed loading, this property returns 0.
 	 * @return	The length of the clip, in samples.
 	 */
 	get length(): number {
-		return (this._baseBuffer ? this._baseBuffer.length : 0);
+		return this._baseBuffer.length;
 	} // length
 
 	/**
 	 * Retrieves the duration of the clip, in seconds.
-	 * If the content has not completed loading, this property returns 0.
 	 * @return	The duration of the clip, in seconds.
 	 */
 	get duration(): number {
-		return (this._baseBuffer ? this._baseBuffer.duration : 0);
+		return this._baseBuffer.duration;
 	} // duration
 
 	/**
 	 * Retrieves the current position of the clip, in seconds relative to the start of the clip.
-	 * If the content has not completed loading, this property returns 0.
 	 * @return	The current position of the clip, in seconds relative to the start of the clip.
 	 */
 	get position(): number {
 		return (
-			this._baseBuffer // loaded
-				? Math.min(
-					(Number.isNaN(this._startTime)
-						? this._position	// not playing
-						: (this._baseBuffer.duration - this._currentBuffer.duration) +	// Offset of last start pos
-							(this._manager.currentTime - this._startTime)				// Current play duration
-					),
-					this.duration
-				)
-				: 0
+			Math.min(
+				(Number.isNaN(this._startTime)
+					? this._position	// not playing
+					: (this._baseBuffer.duration - this._currentBuffer.duration) +	// Offset of last start pos
+						(this._manager.currentTime - this._startTime)				// Current play duration
+				),
+				this.duration
+			)
 		);
 	} // position
 
@@ -334,14 +312,16 @@ export class AudioClip
 	 */
 	set position(position: number) {
 		let playing: boolean = this.playing;
-		if (playing) this.stop();
+		if (playing) {
+			this._stop();
+			this._startTime = Number.NaN;
+		}
 		this._position = Math.max(position, 0);
 		if (playing) this.start();
 	} // position
 
 	/**
 	 * Retrieves the current position of the clip, in samples relative to the start of the clip.
-	 * If the content has not completed loading, this property returns 0.
 	 * @return	The current position of the clip, in samples relative to the start of the clip.
 	 */
 	get samplePosition(): number {
@@ -349,31 +329,49 @@ export class AudioClip
 	} // samplePosition
 
 	/**
-	 * Sets the current position of the clip, in seconds relative to the start of the clip.
-	 * Note that setting this value before the clip is loaded will always result in the position
-	 * being set to 0, regardless of the value specified.
+	 * Sets the current position of the clip, in samples relative to the start of the clip.
 	 *
-	 * @param	position	The new position, in seconds relative to the start of the clip.
-	 *						Values less than 0 or past the end of the clip will be clamped.
+	 * @param	samplePosition	The new position, in samples relative to the start of the clip.
+	 *						Values less than 0 or greater than the number of samples in the the
+	 *						clip will be clamped.
 	 */
 	set samplePosition(samplePosition: number) {
-		this.position = samplePosition * this.sampleRate;
+		this.position = samplePosition / this.sampleRate;
 	} // samplePosition
+
+	/**
+	 * Retrieves the AudioParam for this clip's GainNode.
+	 * @return	The AudioParam for this clip's GainNode.
+	 */
+	get gainParam(): AudioParam {
+		return this._gainNode.gain;
+	} // gainParam
+
+	/**
+	 * Retrieves the current gain value for this clip.
+	 * @return	The current gain value for this clip.
+	 */
+	get gain(): number {
+		return this._gainNode.gain.value;
+	} // gain
+
+	/**
+	 * Sets the current gain value for this clip.
+	 * @param	value	The new gain value to assign to the clip.
+	 */
+	set gain(value: number) {
+		this._gainNode.gain.value = value;
+	} // gain
 
 	/**
 	 * Queues this AudioClip to begin playing at it's current position at the specified time
 	 * relative to the associated context's clock.
-	 *
-	 * Calling this method has no effect if the clip hasn't finished loading.
 	 *
 	 * @param	when	The timestamp when this clip should begin playing, relative to the
 	 *					associated context's clock.  If not specified, or in the past, then playback
 	 *					will begin immediately.
 	 */
 	start(when?: number): void {
-		if (!this._baseBuffer)
-			return;
-
 		if (this.playing)
 			throw new Error("Clip already playing");
 
@@ -385,10 +383,13 @@ export class AudioClip
 		else
 			this._currentBuffer = this.cloneBuffer(this._baseBuffer, pos);
 
+		// Enable the gain node
+		this._gainNode.connect(this.context.destination);
+
 		// Initialize the AudioBufferSourceNode for the clip
 		this._node = this.context.createBufferSource();
 		this._node.buffer = this._currentBuffer;
-		this._node.connect(this._manager.destination);
+		this._node.connect(this._gainNode);
 		this._node.addEventListener('ended', () => {
 			if (this.position >= this.duration)
 				this.stop();
@@ -411,7 +412,6 @@ export class AudioClip
 	 *					will stop immediately.
 	 */
 	pause(when?: number): void {
-		let startTime: number = this._startTime;
 		this._stop(when, () => {
 			this._paused = true;
 			this.trigger('pause');
@@ -426,17 +426,28 @@ export class AudioClip
 	 *					will stop immediately.
 	 */
 	stop(when?: number): void {
-		if (this.paused) {
+		let commonStopActions = (additionalActions?:Function) => {
 			this._paused = false;
-			this.position = 0;
-			this.trigger('stop');
-			return;
-		}
-
-		this._stop(when, () => {
 			this._position = 0;
+			if (additionalActions)
+				additionalActions();
 			this.trigger('stop');
-		});
+		};
+
+		if (this.paused)
+			commonStopActions();
+		else
+			this._stop(when, () => {
+				commonStopActions(() => {
+					if (this._node) {
+						this._node.disconnect();
+						this._node = undefined;
+
+						// Disable the gain node
+						this._gainNode.disconnect();
+					}
+				});
+			});
 	} // stop
 
 	/**
@@ -446,7 +457,7 @@ export class AudioClip
 	 *						playback will stop immediately.
 	 * @param	callback	The callback to invoke when the playback stops.
 	 */
-	private _stop(when: number|undefined, callback: () => void): void {
+	private _stop(when?: number, callback?: () => void): void {
 		if (Number.isNaN(this._startTime))
 			return;
 
@@ -455,23 +466,27 @@ export class AudioClip
 			this._stoppingNotificationId = 0;
 		}
 
-		let wrappedCallback = () => {
-			this.unscheduleCurrentNotification();
-			this._position = this.position;
-			this._startTime = Number.NaN;
-			this._stoppingNotificationId = 0;
-			callback();
-		};
+		let wrappedCallback;
+		if (callback) {
+			wrappedCallback = () => {
+				this.unscheduleCurrentNotification();
+				this._position = this.position;
+				this._startTime = Number.NaN;
+				this._stoppingNotificationId = 0;
+				callback();
+			};
+		}
 
 		when = (!when || when <= this.context.currentTime ? undefined : when);
-
 		if (this._node)
 			this._node.stop(when);
 
-		if (when) {
-			this._stoppingNotificationId = this.manager.addNotification(when, wrappedCallback);
-		} else {
-			wrappedCallback();
+		if (wrappedCallback) {
+			if (when) {
+				this._stoppingNotificationId = this.manager.addNotification(when, undefined, wrappedCallback);
+			} else {
+				wrappedCallback();
+			}
 		}
 	} // _stop
 
@@ -534,36 +549,33 @@ export class AudioClip
 		this._currentNotification = notification;
 
 		let when: number = (this._startTime - (this._baseBuffer.duration - this._currentBuffer.duration)) + notification.when;
-		this._currentNotificationId = this.manager.addNotification(when, () => { this.invokeCurrentNotification(); });
+		this._currentNotificationId = this.manager.addNotification(when, undefined, () => { this.invokeCurrentNotification(); });
 	} // scheduleNextNotificationIfNeeded
 
-	/**
-	 * Specifies that a notification event containing the given data be fired at the specified time
-	 * (relative to the start of the clip) each time the clip is played or repeats.
+	 /**
+	 * Specifies that a notification callback should be triggered at the specified time (relative
+	 * to the start of the clip) each time the clip is played or repeats.
 	 *
-	 * @param	when	The time relative to the start of the clip when the event should be fired.
-	 *					Times less than 0 and times greater than the length of the clip will be
-	 *					clamped.
-	 * @param	data	Additional data to attach to the event object for the notification.
-	 *					If a function, the function will be executed at the specified time, any
-	 *					other type of value will trigger a 'notification' event to be fired with
-	 *					the value passed as event data.
+	 * @param	when		The time relative to the start of the clip when the callback should be
+	 *						invoked. Times less than 0 and times greater than the length of the clip
+	 *						will be clamped.
+	 * @param	data		Additional data to associate with the triggered notification.
+	 * @param	callback	The [[AudioNotification.Callback]] to invoke when the notification time
+	 *						is reached.  If no callback is specified, will trigger a "notification"
+	 *						event instead.
 	 *
 	 * @return	A value that can be used to unregister the notification at a later time.
 	 */
-	addNotification(when: number, data?: Object): number {
+	addNotification(when: number, data?: any, callback?: AudioNotification.Callback): number {
 		let notification: AudioNotificationEntry;
-		let callback: AudioNotificationEntry.Callback;
 
-		if (typeof data === "function") {
-			callback = data;
-		} else {
-			callback = () => {
-				this.trigger('notification', data);
+		if (!callback) {
+			callback = (notification: AudioNotification) => {
+				this.trigger('notification', notification);
 			};
 		}
 
-		notification = new AudioNotificationEntry(when, callback);
+		notification = new AudioNotificationEntry(when, callback, data);
 
 		this._notifications = (
 			this._notifications
@@ -598,9 +610,23 @@ export class AudioClip
 		}
 	} // removeNotification
 
+	/**
+	 * Retrieves the currently defined notifications for this clip.
+	 * @return	An array of the currently defined notifications for this clip.  Modifications of
+	 *			the returned array will not affect the clip.
+	 */
+	get notifications(): AudioNotification[] {
+		let rv: AudioNotification[] = [];
+		let n: AudioNotificationEntry|undefined = this._notifications;
+		while (n) {
+			rv.push(n);
+			n = n.next;
+		}
+		return rv;
+	} // notifications
+
 /*
 	autoplay?
-	volume
 	loop/repeat
 */
 

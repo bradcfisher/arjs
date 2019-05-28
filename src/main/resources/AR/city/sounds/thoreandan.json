@@ -1,0 +1,79 @@
+[
+	{ "when": 0, "line": "", "color": "CYAN" },
+	{ "when": 0, "text": "", "color": "WHITE" },
+
+	{ "when": 120, "line": ["Let me tell you", "When you're tired", "Into danger"], "randomize": 3 },
+	{ "when": "+0", "text": ["Let ", "When ", "In"] },
+	{ "when": 620, "text": ["me ", "you're ", "to "] },
+	{ "when": 940, "text": ["tell ", "ti", "dan"] },
+	{ "when": 1120, "text": ["you", "red", "ger"] },
+
+	{ "when": 1440, "line": ["Bout Thoreandan", "You shouldn't retire", "Entrusting our sword"] },
+	{ "when": "+0", "text": ["Bout ", "You ", "En"] },
+	{ "when": 1740, "text": ["Thor", "should", "trus"] },
+	{ "when": 1920, "text": ["e", "n't ", "ting "] },
+	{ "when": 2240, "text": ["an", "re", "our "] },
+	{ "when": 2540, "text": ["dan", "tire", "sword"] },
+
+	{ "when": 3040, "line": ["The man who bit off", "In bad parts of town", "To ward off dragon"] },
+	{ "when": "+0", "text": ["The ", "In ", "To "] },
+	{ "when": 3340, "text": ["man ", "bad ", "ward "] },
+	{ "when": 3840, "text": ["who ", "parts ", "off "] },
+	{ "when": 4135, "text": ["bit ", "of ", "dra"] },
+	{ "when": 4340, "text": ["off", "town", "gon"] },
+
+	{ "when": 4635, "line": ["The dragon's hand", "They'll setcha afire", "Or evil horde"] },
+	{ "when": "+0", "text": ["The ", "They'll ", "Or "] },
+	{ "when": 4930, "text": ["dra", "setcha ", "e"] },
+	{ "when": 5440, "text": ["gon's ", "a", "vil "] },
+	{ "when": 5740, "text": ["hand", "fire", "horde"] },
+
+	{ "when": 6535, "line": ["No blows from his", "As they burn you", "We love danger"] },
+	{ "when": "+0", "text": ["No ", "As ", "We "] },
+	{ "when": 7035, "text": ["blows ", "they ", "love "] },
+	{ "when": 7335, "text": ["from ", "burn ", "dan"] },
+	{ "when": 7535, "text": ["his", "you", "ger"] },
+
+	{ "when": 7835, "line": ["Sword ever did land", "A circle they form", "And we love our wine"] },
+	{ "when": "+0", "text": ["Sword ", "A ", "And "] },
+	{ "when": 8130, "text": ["e", "cir", "we "] },
+	{ "when": 8320, "text": ["ver ", "cle ", "love "] },
+	{ "when": 8635, "text": ["did ", "they ", "our "] },
+	{ "when": 8920, "text": ["land", "form", "wine"] },
+
+	{ "when": 9435, "line": ["So he bit off", "They intend to", "Just like treasure"] },
+	{ "when": "+0", "text": ["So ", "They ", "Just "] },
+	{ "when": 9585, "text": ["he ", "in", "like "] },
+	{ "when": 9735, "text": ["bit ", "tend ", "trea"] },
+	{ "when": 9920, "text": ["off ", "to", "sure"] },
+
+	{ "when": 10230, "line": ["The dragon's hand", "Stay snug and warm", "We hope to find"] },
+	{ "when": "+0", "text": ["The ", "Stay ", "We "] },
+	{ "when": 10530, "text": ["dra", "snug ", "hope "] },
+	{ "when": 11030, "text": ["gon's ", "and ", "to "] },
+	{ "when": 11335, "text": ["hand", "warm", "find"] },
+
+	{ "when": 12130, "line": ["Paws and claws", "Do be kind", "Raise your mug"], "randomize": 3 },
+	{ "when": "+0", "text": ["Paws ", "Do ", "Raise "] },
+	{ "when": 12630, "text": ["and ", "be ", "your "] },
+	{ "when": 12970, "text": ["claws", "kind", "mug"] },
+
+	{ "when": 13465, "line": ["Could be the cause", "To poor and blind", "Another jug"] },
+	{ "when": "+0", "text": ["Could ", "To ", "A"] },
+	{ "when": 13765, "text": ["be ", "poor ", "no"] },
+	{ "when": 14265, "text": ["the ", "and ", "ther "] },
+	{ "when": 14565, "text": ["cause", "blind", "jug"] },
+
+	{ "when": 15065, "line": ["Of anyone here's", "See well out beyond", "Relax and stay thru"] },
+	{ "when": "+0", "text": ["Of ", "See ", "Re"] },
+	{ "when": 15365, "text": ["an", "well ", "lax "] },
+	{ "when": 15865, "text": ["y", "out ", "and "] },
+	{ "when": 16165, "text": ["one ", "be", "stay "] },
+	{ "when": 16885, "text": ["here's", "yond", "thru"] },
+
+	{ "when": 17465, "line": ["Demise", "Your eyes", "The night"] },
+	{ "when": "+0", "text": ["De", "Your ", "The "] },
+	{ "when": 17765, "text": ["mise", "eyes", "night"] },
+
+	{ "when": 24180, "seek": 0 }
+]

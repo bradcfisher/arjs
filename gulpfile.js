@@ -1,4 +1,7 @@
 
+var fs = require('fs');
+var path = require('path');
+
 var gulp = require('gulp');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
@@ -7,7 +10,8 @@ var tsify = require('tsify');
 var uglify = require('gulp-uglify');
 var sourcemaps = require('gulp-sourcemaps');
 var buffer = require('vinyl-buffer');
-var gutil = require("gulp-util");
+var log = require("fancy-log");
+var colors = require("ansi-colors");
 var rescape = require("escape-string-regexp");
 var typedoc = require("gulp-typedoc");
 var istanbul = require('gulp-istanbul');
@@ -26,15 +30,16 @@ var paths = {
 	docsDir: process.env.GIS_DOCS_DIR,
 
     pages: [
-		'src/main/html/**/*.html',
-		'src/main/html/**/*.css',
-		'src/main/resources/**'
+		'src/main/html/**/*.*',
+		'src/main/font/AlternateRealityTheDungeon.woff',
+		'src/main/resources/**',
+		'node_modules/jquery/dist/jquery.min.*'
 	]
 };
 
 //var tsProject = ts.createProject("tsconfig.json");
 
-gulp.task('pre-test', function () {
+gulp.task('pre-test', function (done) {
 /*
   return gulp.src(['src/main/ * * / *.ts'])
     // Covering files
@@ -42,9 +47,10 @@ gulp.task('pre-test', function () {
     // Force `require` to return covered files
     .pipe(istanbul.hookRequire());
 */
+  done();
 });
 
-gulp.task('test', ['pre-test'], function () {
+gulp.task('test', gulp.series('pre-test', function () {
   return gulp.src(['src/test/typescript/**/*.ts'])
     .pipe(mocha({
 		//globals: ['console']
@@ -54,12 +60,41 @@ gulp.task('test', ['pre-test'], function () {
 //    .pipe(istanbul.writeReports())
     // Enforce a coverage of at least 90%
 //    .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }));
-});
+}));
 
-gulp.task('copyStaticResources', function () {
+/**
+ * Tests whether a text file contains a specific string or matches a regex pattern.
+ *
+ * @param	file	The file name or descriptor of the file to test.
+ * @param	pattern	The literal string to search for, or a RegExp instance to match.
+ *
+ * @return	True if a match is found, false otherwise.
+ */
+function fileContainsString(file, pattern) {
+	fs.readFile(file, (err, data) => {
+		if (err) throw err;
+		if (!(pattern instanceof RegExp))
+			pattern = new RegExp(rescape(pattern));
+		return pattern.test(data);
+	});
+}
+
+gulp.task('copyStaticResourceFiles', function () {
     return gulp.src(paths.pages)
         .pipe(gulp.dest(paths.distsDir));
 });
+
+gulp.task('copyStaticResources', gulp.series('copyStaticResourceFiles', function(done) {
+	// Adds a source mapping URL to the jquery lib if it's not already there.
+	var jQueryMinFile = path.join(paths.distsDir, 'jquery.min.js');
+	if (!fileContainsString(jQueryMinFile, 'sourceMappingURL=')) {
+		log(colors.yellow("Adding sourceMappingURL to "+ jQueryMinFile));
+		fs.appendFile(jQueryMinFile, '\n//# sourceMappingURL=jquery.min.map\n', function(err) {
+      done(err);
+    });
+	} else
+    done();
+}));
 
 function bundle(watch) {
 	var browserified = browserify({
@@ -82,20 +117,18 @@ function bundle(watch) {
 //*/
 			.bundle()
 			.on('error', function(err) {
-				let c = gutil.colors;
-				//let c = chalk;
 				if (err.fileName) {
 					// regular error
-					gutil.log(
-						c.red(err.name)
-						+': '+ c.yellow(err.fileName.replace('src/main/', ''))
+					log(
+						colors.red(err.name)
+						+': '+ colors.yellow(err.fileName.replace('src/main/', ''))
 						+'['
-						+c.magenta(err.lineNumber || err.line) +':'+ c.magenta(err.columnNumber || err.column)
-						+']: '+ c.blue((err.description || err.message).replace(new RegExp(rescape(err.fileName) + "\\([0-9,]+\\):\\s*"), ''))
+						+colors.magenta(err.lineNumber || err.line) +':'+ colors.magenta(err.columnNumber || err.column)
+						+']: '+ colors.blue((err.description || err.message).replace(new RegExp(rescape(err.fileName) + "\\([0-9,]+\\):\\s*"), ''))
 					)
 				} else {
 					// browserify error..
-					gutil.log(c.red(err.name) +': '+ c.yellow(err.message))
+					log(colors.red(err.name) +': '+ colors.yellow(err.message))
 				}
 
 				this.emit('end');
@@ -111,7 +144,7 @@ function bundle(watch) {
 	if (watch) {
 		browserified = watchify(browserified);
 		browserified.on("update", rv);
-		browserified.on("log", gutil.log);
+		browserified.on("log", log);
 	}
 
 	return rv;
@@ -119,19 +152,7 @@ function bundle(watch) {
 
 gulp.task('bundle', bundle(false));
 
-gulp.task('build', ['copyStaticResources', 'bundle', 'typedoc']);
-
-gulp.task('default', ['build']);
-
-gulp.task("watchHelper", ["build"], function() {
-	process.stdout.write("\n---\n\n");
-});
-
-gulp.task("watch", function() {
-	gulp.watch([ "src/**/*.*", "tsconfig.json" ], ['watchHelper']);
-});
-
-gulp.task("typedoc", ['bundle'], function() {
+gulp.task("typedoc", gulp.series('bundle', function() {
 	let tsconfig = require("./tsconfig.json");
 
 	let config = tsconfig.compilerOptions;
@@ -160,4 +181,27 @@ gulp.task("typedoc", ['bundle'], function() {
 		.on('error', function(err) {
 			this.emit('end');
 		});
+}));
+
+gulp.task('build', gulp.series('copyStaticResources', 'bundle', 'typedoc'));
+
+gulp.task('default', gulp.series('build'));
+
+/*
+gulp.task("watchHelper", gulp.series("build", function() {
+	process.stdout.write("\n---\n\n");
+}));
+
+gulp.task("watch", function() {
+	gulp.watch([ "src/**
+/*.*", "tsconfig.json" ], ['watchHelper']);
+});
+*/
+
+gulp.task("watch", function(done) {
+	gulp.watch([ "src/**/*.*", "tsconfig.json" ], gulp.series("build", function(done) {
+    process.stdout.write("\n---\n\n");
+    done();
+  }));
+  done();
 });

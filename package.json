@@ -10,31 +10,39 @@
 	"author": "Brad Fisher <bradcfisher@hotmail.com>",
 	"license": "non-commercial use",
 	"devDependencies": {
-		"typescript": "^2.1.6",
-		"browserify": "^14.1.0",
-		"chai": "^3.5.0",
+		"typescript": "^3.4",
+		"browserify": "^15.1.0",
+		"chai": "^4.2.0",
 		"watchify": "^3.9.0",
-		"ts-node": "^2.1.0",
-		"tsify": "^3.0.1",
-		"typedoc": "^0.5.7",
-		"gulp-istanbul": "^1.1.1",
-		"gulp-mocha": "^4.0.1",
-		"gulp-sourcemaps": "^2.4.1",
-		"gulp-typedoc": "^2.0.2",
-		"gulp-uglify": "^2.0.1",
-		"vinyl-source-stream": "^1.1.0",
-		"vinyl-buffer": "^1.0.0",
-		"babelify": "^7.3.0",
+		"ts-node": "^8.2.0",
+		"tsify": "^4.0.1",
+		"typedoc": "^0.14.2",
+		"fancy-log": "^1.3.3",
+		"ansi-colors": "^3.2.4",
+		"gulp-istanbul": "^1.1.3",
+		"gulp-mocha": "^6.0.0",
+		"gulp-sourcemaps": "^2.6.5",
+		"gulp-typedoc": "^2.2.2",
+		"gulp-uglify": "^3.0.2",
+		"vinyl-source-stream": "^2.0.0",
+		"vinyl-buffer": "^1.0.1",
+		"babelify": "^10.0.0",
 		"babel-preset-es2015": "^6.22.0",
-		"escape-string-regexp": "^1.0.5",
-		"@types/chai": "^3.4.35",
-		"@types/mocha": "^2.2.39"
+		"escape-string-regexp": "^2.0.0",
+		"@types/chai": "^4.1.7",
+		"@types/mocha": "^5.2.6"
 	},
-	"xxx": {
-		"@types/mocha":"3.2.0"
+	"xxx-devDependencies": {
+		"@types/chai": "^4.1.7",
+		"@types/mocha": "^5.2.6"
 	},
 	"dependencies": {
-		"@types/jquery": "^2.0.40",
+		"@types/jquery": "^3.3.29",
+		"gulp": "^4.0.2",
 		"jquery": "^2.0.40"
+	},
+	"xxx-dependencies": {
+		"jquery": "^3.4.0",
+		"@types/jquery": "^3.3.29"
 	}
 }
