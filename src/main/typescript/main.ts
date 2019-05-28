@@ -4,8 +4,10 @@ export { Calendar } from "./Calendar";
 export { GameTime } from "./GameTime";
 export { GameTimer } from "./GameTimer";
 
+export { ResourceManager, ResourceMeta, ResourceEntry } from "./ResourceManager";
 export { AudioManager } from "./AudioManager";
 export { AudioClip } from "./AudioClip";
+export { Karaoke } from "./Karaoke";
 
 export { Item } from "./Item";
 export { SpellItem } from "./SpellItem";

@@ -429,7 +429,10 @@ console.log("loading single resource: ", source);
 				reject(new Error("Load aborted for: "+ meta.url));
 			});
 			reader.addEventListener("error", (e) => {
-				reject(new Error(reader.error.name +": "+ meta.url));
+				let name = (reader.error ? reader.error.name : null);
+				if (!name)
+					name = "<unknown error type>";
+				reject(new Error(name +": "+ meta.url));
 			});
 			reader.readAsText(blob, 'utf-8');
 		} catch (e) {
