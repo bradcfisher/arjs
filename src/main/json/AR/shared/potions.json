@@ -1,0 +1,865 @@
+[
+  {
+    "category": "potion",
+    "id": "potion-water",
+    "text": "Water",
+    "description": "Decreases thirst rate by 2/128 (1 hour).",
+    "weight": 2,
+    "color": "clear",
+    "taste": "plain",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.thirstRate.bonus.addAdjustment('potion', 'Water', 2/128, '1h')"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-beer",
+    "text": "Beer",
+    "description": "Increases inebriation by 2 (alcohol blood concentration).",
+    "weight": 2,
+    "color": "amber",
+    "taste": "sour",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.alcohol.bloodConcentration += 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-beer2",
+    "text": "Beer",
+    "description": "Increases inebriation by 2 (alcohol blood concentration).",
+    "weight": 2,
+    "color": "black",
+    "taste": "sour",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.alcohol.bloodConcentration += 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-wine",
+    "text": "Wine",
+    "description": "Increases inebriation by 3 (alcohol blood concentration).",
+    "weight": 2,
+    "color": "red",
+    "taste": "dry",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.alcohol.bloodConcentration += 3"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-spirits",
+    "text": "Spirits",
+    "description": "Increases inebriation by 4 (alcohol blood concentration).",
+    "weight": 2,
+    "color": "amber",
+    "taste": "sour",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.alcohol.bloodConcentration += 4"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-milk",
+    "text": "Milk",
+    "description": "Decreases thirst rate by 3/128 (1.5 hours).",
+    "weight": 2,
+    "color": "white",
+    "taste": "alkaline",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.thirstRate.bonus.addAdjustment('potion', 'Milk', 3/128, '1.5h')"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-fruit-juice",
+    "text": "Fruit Juice",
+    "description": "Decreases thirst rate by 3/128 (1.5 hours).",
+    "weight": 2,
+    "color": "red",
+    "taste": "sweet",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.thirstRate.bonus.addAdjustment('potion', 'Fruit Juice', 3/128, '1.5h')"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-mineral-water",
+    "text": "Mineral Water",
+    "description": "Decreases thirst rate by 2/128 (1 hour).",
+    "weight": 2,
+    "color": "clear",
+    "taste": "dry",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.thirstRate.bonus.addAdjustment('potion', 'Mineral Water', 2/128, '1h')"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-saltwater",
+    "text": "Saltwater",
+    "description": "Increases thirst by 3 (1.5 hours).",
+    "weight": 2,
+    "color": "clear",
+    "taste": "salty",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.thirstRate.penalty.addAdjustment('potion', 'Saltwater', 3, '1.5h')"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invisibility",
+    "text": "Invisibility",
+    "description": "Character becomes invisible (no time limit).",
+    "weight": 2,
+    "color": "clear",
+    "taste": "dry",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.invisibility = true"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-vinegar",
+    "text": "Vinegar",
+    "description": "Increases thirst by 2 (1 hour).",
+    "weight": 2,
+    "color": "red",
+    "taste": "acidic",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.thirstRate.penalty.addAdjustment('potion', 'Vinegar', 2, '1h')"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-acid",
+    "text": "ACID!",
+    "description": "Removes 5 hit points.",
+    "weight": 2,
+    "color": "clear",
+    "taste": "acidic",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.hp -= 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-weak-poison",
+    "text": "Weak Poison",
+    "description": "Removes 2 hit points every 30 minutes for 128 hours (5 days and 8 hours).",
+    "weight": 2,
+    "color": "silver",
+    "taste": "bitter",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "poison",
+        "triggers": ["use"],
+        "repetitionCount": 256,
+        "repetitionInterval": "30m",
+        "action": "gameState.character.hp -= 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-poison",
+    "text": "Poison!",
+    "description": "Removes 5 hit points every 30 minutes for 128 hours (5 days and 8 hours).",
+    "weight": 2,
+    "color": "white",
+    "taste": "alkaline",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "poison",
+        "triggers": ["use"],
+        "repetitionCount": 256,
+        "repetitionInterval": "30m",
+        "action": "gameState.character.hp -= 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-poison2",
+    "text": "Poison!",
+    "description": "Removes 5 hit points every 30 minutes for 128 hours (5 days and 8 hours).",
+    "weight": 2,
+    "color": "amber",
+    "taste": "plain",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "poison",
+        "triggers": ["use"],
+        "repetitionCount": 256,
+        "repetitionInterval": "30m",
+        "action": "gameState.character.hp -= 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-strong-poison",
+    "text": "Strong Poison!",
+    "description": "Removes 5 hit points every 15 minutes for 64 hours (2 days and 16 hours).",
+    "weight": 2,
+    "color": "black",
+    "taste": "sour",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "poison",
+        "triggers": ["use"],
+        "repetitionCount": 256,
+        "repetitionInterval": "15m",
+        "action": "gameState.character.hp -= 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-deadly-poison",
+    "text": "DEADLY POISION!",
+    "description": "Removes 5 hit points every 5 minutes for 32 hours (1 day and 8 hours).",
+    "weight": 2,
+    "color": "red",
+    "taste": "sweet",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "poison",
+        "triggers": ["use"],
+        "repetitionCount": 384,
+        "repetitionInterval": "5m",
+        "action": "gameState.character.hp -= 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-healing-minor",
+    "text": "Healing Minor Wounds",
+    "description": "Restores 5 hit points.",
+    "weight": 2,
+    "color": "green",
+    "taste": "sour",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.hp += 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-healing",
+    "text": "Healing Wounds",
+    "description": "Restores 8 hit points.",
+    "weight": 2,
+    "color": "yellow",
+    "taste": "plain",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.hp += 8"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-healing-major",
+    "text": "Healing Major Wounds",
+    "description": "Restores 11 hit points.",
+    "weight": 2,
+    "color": "silver",
+    "taste": "plain",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.hp += 11"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-healing-all",
+    "text": "Healing All Wounds",
+    "description": "Restores 255 hit points.",
+    "weight": 2,
+    "color": "white",
+    "taste": "salty",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.hp += 255"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-cure-poison",
+    "text": "Curing Poison",
+    "description": "Cures poisons (in incubation or not)",
+    "weight": 2,
+    "color": "amber",
+    "taste": "plain",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.effects.removeByType(ItemEffect.Type.Poison)"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-cure-disease",
+    "text": "Cleansing",
+    "description": "Cures diseases (in incubation or not)",
+    "weight": 2,
+    "color": "clear",
+    "taste": "acidic",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.effects.removeByType(ItemEffect.Type.Disease)"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-delusion",
+    "text": "Delusion",
+    "description": "Character suffers delusion.",
+    "weight": 2,
+    "color": "black",
+    "taste": "bitter",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.delusion = true;\nfor (stat of gameState.character.primaryStats) {\n  stat.displayed = math.Random() * 255;\n}\ngameState.character.delusionHp = math.Random() * 255;"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-blunt",
+    "text": "Invulnerability Blunt",
+    "description": "Immunizes to blunt damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "sweet",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.blunt.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.blunt.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-sharp",
+    "text": "Invulnerability Sharp",
+    "description": "Immunizes to sharp damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "plain",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.sharp.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.sharp.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-earth",
+    "text": "Invulnerability Earth",
+    "description": "Immunizes to earth damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "sour",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.earth.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.earth.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-air",
+    "text": "Invulnerability Air",
+    "description": "Immunizes to air damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "salty",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.air.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.air.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-fire",
+    "text": "Invulnerability Fire",
+    "description": "Immunizes to fire damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "acidic",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.fire.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.fire.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-water",
+    "text": "Invulnerability Water",
+    "description": "Immunizes to water damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "alkaline",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.water.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.water.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-power",
+    "text": "Invulnerability Power",
+    "description": "Immunizes to power damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "dry",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.power.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.power.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-mental",
+    "text": "Invulnerability Mental",
+    "description": "Immunizes to magic damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "bitter",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.magic.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.magic.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-invulnerability-cleric",
+    "text": "Invulnerability Cleric",
+    "description": "Immunizes to cleric/good damage for 8 hours.",
+    "weight": 2,
+    "color": "black",
+    "taste": "sweet",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.protection.good.overrideProficiency = Protection.Proficiency.Immune"
+      },
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "initialDelay": "8h",
+        "action": "gameState.character.protection.good.overrideProficiency = undefined"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-noticeability",
+    "text": "Noticeability",
+    "description": "Decreases stealth by 2.",
+    "weight": 2,
+    "color": "yellow",
+    "taste": "bitter",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.stealth.base -= 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-inebriation",
+    "text": "Inebriation",
+    "description": "Increases inebriation by 65 (alcohol blood concentration).",
+    "weight": 2,
+    "color": "orange",
+    "taste": "plain",
+    "sip": "caution",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.alcohol.bloodConcentration += 65"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-strength",
+    "text": "Strength",
+    "description": "Increases base strength by 1.",
+    "weight": 2,
+    "color": "red",
+    "taste": "bitter",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.strength.base += 1"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-intelligence",
+    "text": "Intelligence",
+    "description": "Increases base intelligence by 1.",
+    "weight": 2,
+    "color": "silver",
+    "taste": "bitter",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.intelligence.base += 1"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-charisma",
+    "text": "Charisma",
+    "description": "Increases base charisma by 1.",
+    "weight": 2,
+    "color": "silver",
+    "taste": "sweet",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.charisma.base += 1"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-ugliness",
+    "text": "Ugliness",
+    "description": "Decreases base charisma by 2.",
+    "weight": 2,
+    "color": "green",
+    "taste": "sweet",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.charisma.base -= 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-weakness",
+    "text": "Weakness",
+    "description": "Decreases base strength by 2.",
+    "weight": 2,
+    "color": "yellow",
+    "taste": "dry",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.strength.base -= 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-dumbness",
+    "text": "Dumbness",
+    "description": "Decreases base intelligence by 2.",
+    "weight": 2,
+    "color": "orange",
+    "taste": "sweet",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.intelligence.base -= 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-fleetness",
+    "text": "Fleetness",
+    "description": "Increases base speed by 1.",
+    "weight": 2,
+    "color": "black",
+    "taste": "plain",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.speed.base += 1"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-slowness",
+    "text": "Slowness",
+    "description": "Decreases base speed by 2.",
+    "weight": 2,
+    "color": "white",
+    "taste": "bitter",
+    "sip": "dangerous",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.speed.base -= 2"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-protection+1",
+    "text": "Protection+1",
+    "description": "Increases magical protection to each damage type by 1 for 90 minutes.",
+    "weight": 2,
+    "color": "orange",
+    "taste": "sweet",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "for (protection of gameState.character.protection) protection.bonus.addAdjustment('potion', 'Protection+1', 1, '90m');"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-protection+2",
+    "text": "Protection+2",
+    "description": "Increases magical protection to each damage type by 2 for 90 minutes.",
+    "weight": 2,
+    "color": "orange",
+    "taste": "sour",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "for (protection of gameState.character.protection) protection.bonus.addAdjustment('potion', 'Protection+2', 2, '90m');"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-treasure-finding",
+    "text": "TREASURE FINDING",
+    "description": "Increases treasure finding by 5.",
+    "weight": 2,
+    "color": "red",
+    "taste": "sweet",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.treasureFinding += 5"
+      }
+    ]
+  },
+  {
+    "category": "potion",
+    "id": "potion-unnoticeability",
+    "text": "Unnoticeability",
+    "description": "Increases stealth by 2.",
+    "weight": 2,
+    "color": "clear",
+    "taste": "bitter",
+    "sip": "safe",
+    "effects": [
+      {
+        "type": "potion",
+        "triggers": ["use"],
+        "action": "gameState.character.stealth.base += 2"
+      }
+    ]
+  }
+]

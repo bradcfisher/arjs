@@ -1,3 +1,4 @@
+import { LatentEffects } from "./LatentEffects";
 
 
 /*
@@ -13,20 +14,24 @@
 
 
 export class MapCell {
-	private _floor: number;
-	private _ceiling: number;
-	private _northWall: number;		// type, texture, height?
-	private _eastWall: number;
-	private _southWall: number;
-	private _westWall: number;
+	// TODO: Floor and ceiling may be based on zones?  Or perhaps an "indoor" flag instead of ceiling type?
+	private _floor: number = 0;
+	private _ceiling: number = 0;
 
-	private _description: string;
-	private _zone: number;
-	private _message: string;
-	private _special: number;		// Does this include Lighting?  Or is that based on zones?
+	private _northWall: number = 0;		// type, texture, height?
+	private _eastWall: number = 0;
+	private _southWall: number = 0;
+	private _westWall: number = 0;
+
+	private _description: string = "";
+	private _zone: number = 0;			// lighting / temperature / encounters / etc?
+	private _message: string = "";
+	private _special: number = 0;		// Does this include Lighting?  Or is that based on zones?
 
 //	private _items / _data;
-	private _events: any[];		// enter (first? every?), leave
+
+	// Perhaps these should just be on the zone instead?
+	private readonly _effects: LatentEffects = new LatentEffects();		// enter (first? every?), leave
 }
 
 

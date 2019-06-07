@@ -1,0 +1,45 @@
+{
+    "computation": "return gameState.character.carriedWeight - (gameState.character.strength.effective + 224)",
+    "types": [
+        {
+            "text": "",
+            "textVisible": false,
+            "max": 0
+        },
+        {
+            "text": "Burdened",
+            "max": 16,
+            "actions": {
+                "enter": {
+                    "increase": "/* Increase the fatigue rate by 25% */ gameState.character.fatigueRate *= 1.25;"
+                },
+                "leave": {
+                    "decrease": "/* Decrease the fatigue rate by 25% */ gameState.character.fatigueRate /= 1.25;"
+                }
+            }
+        },
+        {
+            "text": "Encumbered",
+            "max": 33,
+            "actions": {
+                "enter": {
+                    "increase": "/* Increase the speed penalty by 8 */gameState.character.speed.penalty.addAdjustment('encumbrance', 'Encumbered', 8);"
+                },
+                "leave": {
+                    "decrease": "/* Remove the Encumbered speed penalty */ gameState.character.speed.penalty.removeAdjustment('encumbrance', 'Encumbered');"
+                }
+            }
+        },
+        {
+            "text": "Immobilized",
+            "actions": {
+                "enter": {
+                    "increase": "/* Increase the speed penalty by 50 */ gameState.character.speed.penalty.addAdjustment('encumbrance', 'Immobilized', 50)"
+                },
+                "leave": {
+                    "decrease": "/* Remove the Immobilized speed penalty */ gameState.character.speed.penalty.removeAdjustment('encumbrance', 'Immobilized')"
+                }
+            }
+        }
+    ]
+}

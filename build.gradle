@@ -44,67 +44,6 @@ gulp {
 	//bufferedOutput = true	// Buffers output and writes it all at the end (for parallel tasks)
 }
 
-class MyNodeConvention {
-	private Project project;
-
-	public String reportsDirName = "reports";
-	public String testReportDirName = "tests";
-	public String testResultsDirName = "test-results";
-	public String libDirName = "libs";
-	public String distsDirName = "distributions";
-	public String docsDirName = "docs";
-	public String dependencyCacheDirName = "dependency-cache";
-
-	MyNodeConvention( final Project project ) {
-		this.project = project;
-	}
-
-	File getReportsDir() {
-		return new File(project.getBuildDir(), reportsDirName);
-	}
-
-	File getTestReportDir() {
-		return new File(getReportsDir(), testReportDirName);
-	}
-
-	File getTestResultsDir() {
-		return new File(project.getBuildDir(), testResultsDirName);
-	}
-
-	File getLibDir() {
-		return new File(project.getBuildDir(), libDirName);
-	}
-
-	File getDistsDir() {
-		return new File(project.getBuildDir(), distsDirName);
-	}
-
-	File getDocsDir() {
-		return new File(project.getBuildDir(), docsDirName);
-	}
-
-	File getDependencyCacheDir() {
-		return new File(project.getBuildDir(), dependencyCacheDirName);
-	}
-
-	Map<String,?> getNodeEnvironment() {
-		Map<String, ?> env = System.getenv() + [
-			"GIS_BUILD_DIR" : project.buildDir,
-			"GIS_REPORTS_DIR" : getReportsDir(),
-			"GIS_TEST_REPORT_DIR" : getTestReportDir(),
-			"GIS_TEST_RESULTS_DIR" : getTestResultsDir(),
-			"GIS_LIB_DIR" : getLibDir(),
-			"GIS_DISTS_DIR" : getDistsDir(),
-			"GIS_DOCS_DIR" : getDocsDir(),
-			"GIS_DEPENDENCY_CACHE_DIR" : getDependencyCacheDir()
-		];
-		return env;
-	}
-}
-MyNodeConvention nodeConvention = new MyNodeConvention(project);
-project.getConvention().getPlugins().put("node", nodeConvention);
-
-
 task clean(type: Delete) {
 	group = "clean"
 	description = "Removes the build folder so it is completely rebuilt by the next build"
@@ -128,7 +67,11 @@ task cleanNode(type: Delete, dependsOn: ['cleanNodeModules']) {
 	}
 }
 
-task build(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+task setupNodeTools(dependsOn: [ 'installGulp', 'npmInstall' ]) {
+  description = "Ensures Node, NPM and Gulp are installed into the project's .gradle folder"
+}
+
+task build(type: GulpTask, dependsOn: [ 'setupNodeTools' ]) {
 	description = "Builds all node/javascript/typescript source files";
 	group = "build";
 	inputs.file "gulpfile.js"
@@ -136,33 +79,29 @@ task build(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
 	inputs.file "package.json"
 	inputs.dir "src/main"
 	outputs.dir project.buildDir
-	environment = project.nodeEnvironment
 	args = [ 'build' ];
 }
 
-task watch(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+task watch(type: GulpTask, dependsOn: [ 'setupNodeTools' ]) {
 	description = "Builds all node/javascript/typescript source files, waits and rebuilds on changes";
 	group = "build";
 	inputs.files(build.inputs)
 	inputs.files(build.outputs)
-	environment = project.nodeEnvironment
 	args = [ "watch" ];
 }
 
-task test(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+task test(type: GulpTask, dependsOn: [ 'setupNodeTools' ]) {
 	description = "Runs tests and code coverage on the typescript source files";
 	group = "test";
 	inputs.files(build.inputs)
 	//outputs.files()
-	environment = project.nodeEnvironment
 	args = [ "test" ];
 }
 
-task typedoc(type: GulpTask, dependsOn: [ 'installGulp', 'npmInstall' ]) {
+task typedoc(type: GulpTask, dependsOn: [ 'setupNodeTools' ]) {
 	description = "Builds typedoc API documentation from the source typescript files";
 	group = "documentation";
 	inputs.files(build.inputs)
-	outputs.dir new File(project.docsDir, "typedoc")
-	environment = project.nodeEnvironment
+	outputs.dir new File(new File(project.buildDir, "docs"), "typedoc")
 	args = [ 'typedoc' ];
 }

@@ -8,54 +8,97 @@
 </head>
 <body>
 
+<div>Tick Delay: <span id="TickDelay">?</span></div>
 <div>Timestamp: <span id="Timestamp">?</span></div>
-<div>Game date: <span id="GameTime">?</span></div>
+<div>Game date: <span id="GameDate">?</span></div>
 <div>Date from timestamp: <span id="TimestampDate">?</span></div>
 <div>Timestamp from date: <span id="DateTimestamp">?</span></div>
 <div>NormalizedTime: <span id="NormalizedTime">?</span></div>
+<div>Numeric date: <span id="NumericDate">?</span></div>
 
 <div>
-	<button onclick="gameTime.tickDelay = 1">Ultra Fast</button>
-	<button onclick="gameTime.tickDelay = 16">Fast</button>
-	<button onclick="gameTime.tickDelay = 200">Medium</button>
-	<button onclick="gameTime.tickDelay = 4000">Normal</button>
+	<button onclick="gameClock.tickDelay = 0">Paused</button>
+	<button onclick="gameClock.tickDelay = 1">Ultra Fast</button>
+	<button onclick="gameClock.tickDelay = 16">Fast</button>
+	<button onclick="gameClock.tickDelay = 200">Medium</button>
+	<button onclick="gameClock.tickDelay = 4000">Normal</button>
 </div>
 
-<div>Timestamp: <input type="text" id="TimestampInput"/> <button onclick="gameTime.setCurrent($('#TimestampInput').val())">Apply</button></div>
+<div>Timestamp: <input type="text" id="TimestampInput"/> <button onclick="gameClock.setCurrent($('#TimestampInput').val())">Apply</button></div>
+
+<hr/>
+
+<div><b>Console</b></div>
+<div><textarea id="Console" style="width:100%">
+arjs.deserialize(arjs.serialize(gameState.hunger))
+</textarea></div>
+<button onclick="executeConsoleCode()">Execute</button>
 
 <script>
 
+function executeConsoleCode() {
+	let source = $("#Console").val();
+	let fn = arjs.Parse.action(source, null, ['arjs', 'gameState']);
+	fn(arjs, gameState);
+}
+
 let cal;
-let gameTime;
+let gameClock;
+let gameState;
 
 $(document).ready(function() {
 	console.log("document ready");
-	$.getJSON("AR/shared/time.json").done(jsonLoaded);
+
+	arjs.GameState.load("./AR.json").then((gs) => {
+		gameState = gs;
+		jsonLoaded();
+	});
 });
 
-function jsonLoaded(timeJson) {
-	cal = new arjs.Calendar(timeJson.months);
-	gameTime = new arjs.GameTime(cal);
+function jsonLoaded() {
+	cal = gameState.clock.calendar;
+	gameClock = gameState.clock;
 
-	console.log("created calendar & game time");
+/*
+	let action = arjs.Parse.listener("console.log(event);");
+	gameClock.on("minuteRollover", action);
+	gameClock.on("hourRollover", action);
+	gameClock.on("dayRollover", action);
+	gameClock.on("monthRollover", action);
+	gameClock.on("yearRollover", action);
+*/
 
-	let ts = document.getElementById("Timestamp");
-	let gt = document.getElementById("GameTime");
-	let td = document.getElementById("TimestampDate");
-	let dt = document.getElementById("DateTimestamp");
-	let nt = document.getElementById("NormalizedTime");
+	console.log("created game config");
 
-	if (ts == null || gt == null || td == null || dt == null || nt == null)
+	let tickDelaySpan = document.getElementById("TickDelay");
+	let timestampSpan = document.getElementById("Timestamp");
+	let gameDateSpan = document.getElementById("GameDate");
+	let tsToDateSpan = document.getElementById("TimestampDate");
+	let dateToTsSpan = document.getElementById("DateTimestamp");
+	let normTimeSpan = document.getElementById("NormalizedTime");
+	let numDateSpan = document.getElementById("NumericDate");
+
+	if (tickDelaySpan == null || timestampSpan == null || gameDateSpan == null || tsToDateSpan == null || dateToTsSpan == null || normTimeSpan == null || numDateSpan == null)
 		throw new Error("Unable to find required document element");
 
 	function animate(now) {
-		ts.innerHTML = String(gameTime.current);
-		let a = gt.innerHTML = cal.dateToString(gameTime);
-		let b = td.innerHTML = cal.dateToString(cal.timestampToDate(gameTime.current));
-		let c = dt.innerHTML = cal.dateToTimestamp(gameTime);
-		let d = nt.innerHTML = cal.dateToString(cal.normalizeDate(gameTime));
+		timestampSpan.innerHTML = String(gameClock.current);
+		tickDelaySpan.innerHTML = gameClock.tickDelay;
+		let a = gameDateSpan.innerHTML = cal.dateToString(gameClock);
+		let b = tsToDateSpan.innerHTML = cal.dateToString(cal.timestampToDate(gameClock.current));
+		let c = dateToTsSpan.innerHTML = cal.dateToTimestamp(gameClock);
+		let d = normTimeSpan.innerHTML = cal.dateToString(cal.normalizeDate(gameClock));
 
-		gameTime.update(now);
+		let month = gameClock.month + 1;
+		let e = numDateSpan.innerHTML =
+			(gameClock.year < 100 ? "0" : "") + (gameClock.year < 100 ? "0" : "") +
+			(gameClock.year < 10 ? "0" : "") + gameClock.year + "-" +
+			(month < 10 ? "0" : "") + month + "-" +
+			(gameClock.day < 10 ? "0" : "") + gameClock.day + " " +
+			(gameClock.hour < 10 ? "0" : "") + gameClock.hour + ":" +
+			(gameClock.minute < 10 ? "0" : "") + gameClock.minute;
+
+		gameClock.update(now);
 
 /*
 		if (a != b)

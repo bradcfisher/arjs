@@ -1,0 +1,18 @@
+{
+	"title": "Alternate Reality",
+	"weather": { "$import": "AR/shared/weather.json" },
+	"clock": { "$import": "AR/shared/clock.json" },
+	"hunger": { "$import": "AR/shared/hunger.json" },
+	"thirst": { "$import": "AR/shared/thirst.json" },
+	"fatigue": { "$import": "AR/shared/fatigue.json" },
+	"warmth": { "$import": "AR/shared/warmth.json" },
+	"encumbrance": { "$import": "AR/shared/encumbrance.json" },
+	"digestion": { "$import": "AR/shared/digestion.json" },
+	"inebriation": { "$import": "AR/shared/inebriation.json" },
+	"itemTypes": { "$import": [ "AR/shared/treasure.json", "AR/shared/potions.json", "AR/shared/spells.json" ] },
+	"scenarios": [
+		{ "$import": "AR/city/main.json" },
+		{ "$import": "AR/dungeon/main.json" }
+	],
+	"defaultScenario": "The City"
+}

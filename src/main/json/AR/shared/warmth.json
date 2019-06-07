@@ -1,0 +1,41 @@
+{
+    "computation": "return gameState.character.warmth",
+    "types": [
+        {
+            "text": "Cold!",
+            "max": "48F",
+            "actions": {
+                "enter": {
+                    "decrease": "/* Increase the speed penalty by 5 */ gameState.character.speed.penalty.addAdjustment('warmth', 'Cold!', 5); /* Increase the skill penalty by 5 */ gameState.character.skill.penalty.addAdjustment('warmth', 'Cold!', 5); /* Character loses clarity */ gameState.character.clarity = false;"
+                },
+                "leave": {
+                    "increase": "/* Remove the speed penalty */ gameState.character.speed.penalty.removeAdjustment('warmth', 'Cold!'); /* Remove the skill penalty */ gameState.character.skill.penalty.removeAdjustment('warmth', 'Cold!'); /* Character regains clarity */ gameState.character.clarity = true;"
+                }
+            }
+        },
+        {
+            "text": "Cool",
+            "max": "64F"
+        },
+        {
+            "text": "",
+            "textVisible": false,
+            "max": "79F"
+        },
+        {
+            "text": "Warm",
+            "max": "99F"
+        },
+        {
+            "text": "Hot!",
+            "actions": {
+                "enter": {
+                    "decrease": "/* Increase the thirst rate by 15.625% */ gameState.character.thirstRate *= 1.15625; /* Increase the fatigue rate by 15.625% */ gameState.character.fatigueRate *= 1.15625; /* Character loses clarity */ gameState.character.clarity = false;"
+                },
+                "leave": {
+                    "increase": "/* Decrease the thirst rate by 15.625% */ gameState.character.thirstRate /= 1.15625; /* Decrease the fatigue rate by 15.625% */ gameState.character.fatigueRate /= 1.15625; /* Character regains clarity */ gameState.character.clarity = true;"
+                }
+            }
+        }
+    ]
+}

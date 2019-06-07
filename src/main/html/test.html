@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>arjs - Alternate Reality for the web - Test page</title>
+	<script src="jquery.min.js"></script>
+	<script src="arjs.js"></script>
+</head>
+<body>
+
+<div>
+	<label>
+	<div>Source</div>
+	<select id="Source">
+		<option value="AR/city/sounds/intro.ogg">City Intro</option>
+		<option value="AR/shared/sounds/death.ogg">Death</option>
+		<option value="AR/dungeon/sounds/rathskeller.ogg">Rathskeller</option>
+		<option value="AR/dungeon/sounds/rathskeller2.ogg">Rathskeller 2</option>
+		<option value="AR/city/sounds/thoreandan.ogg">Thoreandan</option>
+	</select>
+	</label>
+</div>
+
+<style type="text/css">
+@font-face {
+	font-family: "AlternateRealityTheDungeon";
+	src: url("AlternateRealityTheDungeon.woff");
+}
+
+* {
+	font-family: "AlternateRealityTheDungeon", serif
+}
+
+#Slider .Bar {
+	display: inline-block;
+	width: 300px;
+	/*height: 1em;*/
+	background-color: grey;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	cursor: pointer;
+}
+
+#Slider .Position {
+	width: 5px;
+	background-color: black;
+	position: relative;
+	cursor: pointer;
+}
+
+#Message {
+	background-color: lightgray;
+	display: block;
+}
+
+#Notifications {
+	height: 250px;
+	overflow: auto;
+}
+
+#Notifications .Notification {
+	border: 1px solid gray;
+	background-color: #eee;
+}
+
+#Notifications .Notification:focus {
+	background-color: #bbb;
+}
+
+#Notifications .Notification span {
+	display: inline-block;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-right: 1px solid gray;
+	width: 75px;
+	text-align: right;
+}
+
+/*
+#Notifications .Notification span:last-of-type {
+	text-align: left;
+	border-right: none;
+	width: 320px;
+}
+*/
+
+.CYAN { color:cyan; }
+.WHITE { color:white; }
+.RED { color:red; }
+.GREEN { color:green; }
+.BLUE { color:blue; }
+.BLACK { color:black; }
+.YELLOW { color:yellow; }
+.MAGENTA { color:magenta; }
+
+</style>
+
+<div id="Slider">
+	<div class="Bar"><div class="Position">&nbsp;</div></div>
+	<span class="Time"></div>
+</div>
+
+<button id="Play" onclick="playAudio()" disabled>Play</button>
+<button id="Pause" onclick="pauseAudio()" style="display:none">Pause</button>
+<button id="Stop" onclick="stopAudio()" disabled>Stop</button>
+
+<button id="IncreaseGain" onclick="adjustGain(-0.1)">-</button>
+/
+<button id="IncreaseGain" onclick="adjustGain(+0.1)">+</button>
+
+<canvas id="Message" width="700" height="35"></canvas>
+
+<!-- <canvas id="Visualization" width="500" height="175"></canvas> -->
+
+<div id="Notifications"></div>
+
+<script>
+
+let audio;
+let currentClip;
+
+$(document).ready(function() {
+	console.log("document ready");
+
+	$("#Source").on("change", function(evt) {
+		setCurrentClip($(evt.target).val());
+	});
+
+	$("#Slider .Bar").on("mousedown", function(evt) {
+		if (currentClip) {
+			let P =
+				currentClip.duration * evt.offsetX / evt.currentTarget.offsetWidth;
+
+			console.log(evt, P);
+
+			currentClip.position = P;
+			updatePosition();
+		}
+	});
+
+	resources = new arjs.ResourceManager();
+	audio = new arjs.AudioManager();
+
+	resources.load(
+		new arjs.ResourceMeta(
+			"AR/city/sounds/intro.ogg",
+			"audio/ogg",
+			"Alternate Reality: The City - Intro",
+			["AR/city/sounds/intro.json"]
+		),
+		new arjs.ResourceMeta(
+			"AR/city/sounds/intro.json",
+			"Alternate Reality: The City - Intro lyrics",
+			["AR/city/sounds/intro.ogg"]
+		),
+
+		new arjs.ResourceMeta(
+			"AR/shared/sounds/death.ogg",
+			"audio/ogg",
+			"Alternate Reality: The Dungeon - Death",
+			["AR/shared/sounds/death.json"]
+		),
+		new arjs.ResourceMeta(
+			"AR/shared/sounds/death.json",
+			"Alternate Reality: The Dungeon - Death lyrics",
+			["AR/shared/sounds/death.ogg"]
+		),
+
+		new arjs.ResourceMeta(
+			"AR/dungeon/sounds/rathskeller.ogg",
+			"audio/ogg",
+			"Alternate Reality: The Dungeon - The Devourer",
+			["AR/dungeon/sounds/rathskeller.json"]
+		),
+		new arjs.ResourceMeta(
+			"AR/dungeon/sounds/rathskeller.json",
+			"Alternate Reality: The Dungeon - The Devourer lyrics",
+			["AR/dungeon/sounds/rathskeller.ogg"]
+		),
+
+		new arjs.ResourceMeta(
+			"AR/dungeon/sounds/rathskeller2.ogg",
+			"audio/ogg",
+			"Alternate Reality: The Dungeon - "
+			//["AR/dungeon/sounds/rathskeller2.json"]
+		),
+/*
+		new arjs.ResourceMeta(
+			"AR/dungeon/sounds/rathskeller2.json",
+			"Alternate Reality: The Dungeon -  lyrics",
+			["AR/dungeon/sounds/rathskeller2.ogg"]
+		),
+*/
+
+		new arjs.ResourceMeta(
+			"AR/city/sounds/thoreandan.ogg",
+			"audio/ogg",
+			"Alternate Reality: The City - Thoreandan",
+			["AR/city/sounds/thoreandan.json"]
+		),
+		new arjs.ResourceMeta(
+			"AR/city/sounds/thoreandan.json",
+			"Alternate Reality: The City - Thoreandan lyrics",
+			["AR/city/sounds/thoreandan.ogg"]
+		)
+	).then(
+		(loadedResources) => {
+			console.log("loaded resources: ", loadedResources);
+
+			function processClip(url) {
+console.log("creating promise for clip: "+ url, resources.get(url), resources.getEntry(url));
+
+				// Create audio clip
+				return audio.clipFromArrayBuffer(url, resources.get(url)).then(
+					(clip) => {
+console.log("processing clip: "+ clip.name, clip);
+
+						let callback = {
+							"processEvent": (target, event, data) => {
+								console.warn(event, "event for", target.name, "data=", data);
+							}
+						}
+						clip.on('start', callback);
+						clip.on('stop', callback);
+						clip.on('pause', callback);
+						clip.on('repeat', callback);
+						clip.on('notification', callback);
+
+						// Process JSON
+						let json = resources.get(url.replace(/\.[^.]*$/, '.json'));
+						if (json) {
+							arjs.Karaoke.registerNotifications(
+								clip,
+								json,
+								document.getElementById("Message"),
+								(notification) => {
+									let data = notification.data;
+									let el = $("#Notification_"+ notification.id);
+									if (el) {
+										el.focus();
+									}
+
+									console.log(data);
+								}
+							);
+						}
+					}
+				);
+			}
+
+			let promises = [];
+			for (var p in loadedResources) if (loadedResources.hasOwnProperty(p)) {
+				if (loadedResources[p].meta.type.substr(0,6) == 'audio/') {
+					promises.push(processClip(p));
+				}
+			};
+
+			Promise.all(promises)
+				.then((clips) => {
+					console.log("all audio resources loaded, continuing");
+					setCurrentClip("AR/shared/sounds/death.ogg");
+				}, (error) => {
+					console.log("Load failed:", error);
+					throw error;
+				});
+		}
+	)
+});
+
+function setCurrentClip(name) {
+	if (currentClip)
+		stopAudio();
+
+  $("#Source").val(name)
+
+  currentClip = audio.getClip(name);
+  updateNotifications(currentClip);
+  $("#Play").prop("disabled", false).css('display', 'inline');
+  $('#Pause').css('display', 'none');
+  $("#Stop").prop("disabled", true);
+} // setCurrentClip
+
+function playAudio() {
+	$('#Play').css('display', 'none');
+	$('#Pause').css('display', 'inline');
+	$("#Stop").prop("disabled", false);
+
+	currentClip = audio.getClip($("#Source").val());
+	currentClip.start();
+	currentClip.on('stop', {"processEvent":stopAudio});
+
+console.log('currentClip changed', currentClip);
+
+	currentClip.manager.resume();
+	requestAnimationFrame(updatePosition);
+} // playAudio
+
+
+function pauseAudio() {
+	$('#Play').css('display', 'inline');
+	$('#Pause').css('display', 'none');
+	currentClip.pause();
+} // pauseAudio
+
+
+function stopAudio() {
+	$('#Play').css('display', 'inline');
+	$('#Pause').css('display', 'none');
+	$("#Stop").prop("disabled", true);
+	currentClip.stop();
+	clearMessageContext()
+	//currentClip = undefined;
+} // stopAudio
+
+function adjustGain(delta) {
+	if (currentClip) {
+		let gain = currentClip.gain + delta;
+		currentClip.gain = (gain < 0 ? 0 : (gain > 1.0 ? 1.0 : gain));
+	}
+} // adjustGain
+
+function formatTime(seconds) {
+	let s = (seconds % 60).toFixed(1);
+	if (s.length == 3)
+		s = "0"+ s;
+	return Math.trunc(seconds / 60) +":"+ s;
+} //formatTime
+
+function updatePosition() {
+	let T;
+	let P = updatePosition.Position;
+	if (!P) {
+		P = updatePosition.Position = $("#Slider .Position");
+		T = updatePosition.Time = $("#Slider .Time");
+	} else
+		T = updatePosition.Time;
+
+	let x = (P.parent().width() - P.width()) * (currentClip ? currentClip.position / currentClip.duration : 0);
+	P.css({ 'left' : x +"px" });
+
+	if (currentClip)
+		T.text(formatTime(currentClip.position) +" / "+ formatTime(currentClip.duration) +" (gain: "+ currentClip.gain.toFixed(1) +")");
+	else
+		T.text("");
+
+	if (currentClip && currentClip.playing)
+		requestAnimationFrame(updatePosition);
+} // updatePosition
+
+function clearMessageContext() {
+	let messageCtx = document.getElementById("Message").getContext("2d");
+	messageCtx.clearRect(0, 0, messageCtx.canvas.width, messageCtx.canvas.height);
+} // clearMessageContext
+
+function updateNotifications(clip) {
+	let N = $("#Notifications");
+	N.empty();
+
+	for (let notification of clip.notifications) {
+		if (notification.data && notification.data.text) {
+			N.append(
+				'<div class="Notification" id="Notification_'+ notification.id +'" tabindex="0">'+
+				'<span>'+ notification.id +'</span>'+
+				'<span>'+ notification.when.toFixed(3) +'</span>'+
+				'<span'+ (notification.data.color ? 'class="'+ notification.data.color +'"' : '') +'>'+ notification.data.text +'</span>'+
+				'</div>'
+			);
+		}
+	}
+} // updateNotifications
+
+</script>
+
+</body>
+</html>

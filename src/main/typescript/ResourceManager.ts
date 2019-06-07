@@ -6,27 +6,29 @@ import { EventDispatcher } from "./EventDispatcher";
  */
 export class ResourceMeta {
 
-// TODO: These properties probably shouldn't be mutable.
-
 	/**
 	 * The URL to retrieve the resource from.
+   * @see [[url]]
 	 */
-	url: string;
+	private _url!: string;
 
 	/**
-	 * Content type (defaults to 'application/octet-stream')
+	 * Content type.
+   * @see [[type]]
 	 */
-	type: string = "*/*";
+	private _type: string = "*/*";
 
 	/**
-	 * User-friendly description of the content (defaults to the `url`)
+	 * User-friendly description of the content.
+   * @see [[description]]
 	 */
-	description: string = "";
+	private _description: string = "";
 
+// TODO: These properties probably shouldn't be mutable.
 	/**
 	 * Array of dependency resource names (defaults to an empty array)
 	 */
-	depends: string[] = [];
+	private _depends: string[] = [];
 
 //"callback": called when this resource and all dependencies complete loading
 
@@ -34,20 +36,20 @@ export class ResourceMeta {
 	 * The number of bytes of data for this resource.
 	 * Automatically updated by the ResourceManager as the load operation progresses.
 	 */
-	contentLength: number = 0;
+	private _contentLength: number = 0;
 
 	/**
 	 * The number of bytes of data that have been loaded for this resource.
 	 * Automatically updated by the ResourceManager as the load operation progresses.
 	 */
-	bytesLoaded: number = 0;
+	private _bytesLoaded: number = 0;
 
 	/**
 	 * Constructs a new ResourceMeta instance.
 	 *
 	 * @param	url			The URL to retrieve the resource from.
-	 * @param	type		Content type (defaults to 'application/octet-stream')
-	 * @param	description	User-friendly description of the content (defaults to the `url`)
+	 * @param	type		Content type (defaults to '* /*')
+	 * @param	description	User-friendly description of the content (defaults to empty string)
 	 * @param	depends		Array of dependency resource names (defaults to an empty array)
 	 */
 	constructor(url: string, type?: string, description?: string, depends?: string[]) {
@@ -62,6 +64,87 @@ export class ResourceMeta {
 		if (depends != null)
 			this.depends = depends;
 	} // constructor
+
+  /**
+	 * Retrieves the URL to retrieve the resource from.
+	 * @return	The URL to retrieve the resource from.
+	 */
+  get url(): string {
+    return this._url;
+	}
+
+	/** @internal */
+	set url(value : string) {
+		this._url = value;
+	}
+
+	/**
+	 * Retrieves the content type of the resource.
+	 * @return	The content type of the resource.
+	 */
+	get type(): string {
+    return this._type;
+  }
+
+	/** @internal */
+	set type(value : string) {
+		this._type = value;
+	}
+
+  /**
+	 * Retrieves the user-friendly description of the content.
+   * @return The user-friendly description of the content.
+	 */
+	get description(): string {
+		return this._description;
+	}
+
+	/** @internal */
+	set description(value : string) {
+		this._description = value;
+	}
+
+  /**
+	 * Retrieves the array of dependency resource names.
+   * @return The array of dependency resource names.
+	 */
+	get depends(): string[] {
+		return this._depends;
+	}
+
+	/** @internal */
+	set depends(value: string[]) {
+		this._depends = value;
+	}
+
+	/**
+	 * Retrieves the number of bytes of data for this resource.
+	 * Automatically updated by the ResourceManager as the load operation progresses.
+	 * @return The number of bytes of data for this resource.
+	 */
+	get contentLength(): number {
+		return this._contentLength;
+	}
+
+	/** @internal */
+	set contentLength(value: number) {
+		this._contentLength = value;
+	}
+
+	/**
+	 * Retrieves the number of bytes of data that have been loaded for this resource.
+	 * Automatically updated by the ResourceManager as the load operation progresses.
+	 * @return The number of bytes of data that have been loaded for this resource.
+	 */
+	get bytesLoaded(): number {
+		return this._bytesLoaded;
+	}
+
+	/** @internal */
+	set bytesLoaded(value: number) {
+		this._bytesLoaded = value;
+	}
+
 } // ResourceMeta
 
 /**
@@ -94,7 +177,7 @@ export class ResourceEntry {
 	 * Retrieves the `meta` property.
 	 * @return	The value of the `meta` property.
 	 */
-	get meta(): any {
+	get meta(): ResourceMeta {
 		return this._meta;
 	}
 } // ResourceEntry
@@ -323,7 +406,7 @@ console.log("loading single resource: ", source);
 				(error: Error) => {
 					reject(error);
 				}
-				
+
 			);
 		});
 	} // load
@@ -440,7 +523,7 @@ console.log("loading single resource: ", source);
 		}
 	} // decodeTextResource
 
-	decodeJavaScriptResource(
+	private decodeJavaScriptResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
 		accept: ((resource:any) => void),
@@ -449,7 +532,7 @@ console.log("loading single resource: ", source);
 		this.decodeTextResource(request, meta, accept, reject);
 	} // decodeJavaScriptResource
 
-	decodeJsonResource(
+	private decodeJsonResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
 		accept: ((resource:any) => void),

@@ -1,0 +1,28 @@
+{
+	"description": "This file contains the definitions for each type of encounter which is valid for the city",
+	"encounters": [
+		{
+			"name": "Dummy",
+			"hp": 1,
+			"weapons": [
+				{
+					"name":"wimpy weapon"
+				}
+			],
+			"items": [
+				{
+					"chanceToDrop":0,
+					"blah": 0
+				}
+			],
+			"animation": [
+				{
+					"texture": "someTexture.jpg",
+					"duration": 1,
+					"nextFrame": 0
+				}
+			],
+			"script": "do something awesome"
+		}
+	]
+}

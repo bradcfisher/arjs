@@ -1,23 +1,24 @@
+import { GameState } from "./GameState";
 
-export { GameDate } from "./GameDate";
-export { Calendar } from "./Calendar";
-export { GameTime } from "./GameTime";
-export { GameTimer } from "./GameTimer";
+export * from "./ResourceManager";
+export * from "./Serializer";
+export * from "./GameState";
+export * from "./AudioManager";
+export * from "./AudioClip";
+export * from "./Karaoke";
+export * from "./Parse";
 
-export { ResourceManager, ResourceMeta, ResourceEntry } from "./ResourceManager";
-export { AudioManager } from "./AudioManager";
-export { AudioClip } from "./AudioClip";
-export { Karaoke } from "./Karaoke";
+// /*
 
-export { Item } from "./Item";
-export { SpellItem } from "./SpellItem";
-export { StackableItem } from "./StackableItem";
+// Load the GameState with a configuration
+GameState.load("./AR.json")
+	.then((gameState: GameState): void => {
+		// TODO: Do something with the GameState here
+		console.log("GameState loaded successfully:", gameState);
+	})
+	.catch((reason): void => {
+		// TODO: Report the error to the user in a nicer way
+		alert("Unable to load main resource bundle: "+ reason)
+	});
 
-export { Denizen } from "./Denizen";
-export { Character } from "./Character";
-export { Opponent } from "./Opponent";
-
-
-//let x = new Item();
-//let y = new SpellItem();
-//let z = new StackableItem();
+//*/

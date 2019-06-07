@@ -1,14 +1,14 @@
 {
 	"name": "arjs",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Alternate Reality game engine reimagined in a web scripting language",
 	"main": "src/main/main.js",
-	"x-repository": {
-		"url": "https://example.com/your-username/my-new-project",
+	"repository": {
+		"url": "https://github.com/bradcfisher/arjs",
 		"type": "git"
 	},
 	"author": "Brad Fisher <bradcfisher@hotmail.com>",
-	"license": "non-commercial use",
+	"license": "CC-BY-NC-SA-3.0",
 	"devDependencies": {
 		"@types/chai": "^4.1.7",
 		"@types/mocha": "^5.2.6",
@@ -23,18 +23,15 @@
 		"gulp-mocha": "^6.0.0",
 		"gulp-sourcemaps": "^2.6.5",
 		"gulp-typedoc": "^2.2.2",
-		"gulp-uglify": "^3.0.2",
+		"gulp-terser": "^1.2.0",
 		"ts-node": "^8.2.0",
 		"tsify": "^4.0.1",
 		"typedoc": "^0.14.2",
 		"typescript": "^3.4",
 		"vinyl-buffer": "^1.0.1",
 		"vinyl-source-stream": "^2.0.0",
-		"watchify": "^3.11.1"
-	},
-	"xxx-devDependencies": {
-		"@types/chai": "^4.1.7",
-		"@types/mocha": "^5.2.6"
+		"watchify": "^3.11.1",
+		"json-merger": "^1.1.0"
 	},
 	"dependencies": {
 		"@types/jquery": "^3.3.29",

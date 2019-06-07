@@ -1,0 +1,113 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "build"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$gulp-tsc"
+            ]
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "test"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$gulp-tsc"
+            ]
+        },
+        {
+            "label": "watch",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "watch"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": [
+                "$gulp-tsc"
+            ]
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "clean"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean node",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "cleanNode"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean node_modules",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "cleanNodeModules"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "setup node tools",
+            "type": "shell",
+            "command": "${workspaceFolder}\\gradlew",
+            "args": [
+                "setupNodeTools"
+            ],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

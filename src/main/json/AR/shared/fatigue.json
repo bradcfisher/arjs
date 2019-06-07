@@ -1,0 +1,36 @@
+{
+    "_0": "The rate is increased by:",
+    "_1": "- 1/128 ~= 0.08 (+15.6%) when the character warmth is at stage Hot. (see warmth config)",
+    "_2": "- 16/128 = 0.125 (+25%) when the encumbrance is at stage Burdened. (see burden config)",
+    "interval": "15m",
+    "defaultRate": 0.5,
+    "computation": "gameState.character.fatigue += gameState.character.fatigueRate.effective; return gameState.character.fatigue",
+    "types": [
+        {
+            "_0": "Any fatigue penalties incurred are removed when entering this state",
+            "min": 0,
+            "max": 40,
+            "text": "",
+            "textVisible": false,
+            "actions": {
+                "enter": "gameState.character.speed.removeAdjustment('fatigue'); for (let stat of gameState.character.primaryStats) stat.penalty.removeAdjustment('fatigue');"
+            }
+        },
+        {
+            "max": 72,
+            "text": "Weary"
+        },
+        {
+            "max": 96,
+            "text": "Tired"
+        },
+        {
+            "_0": "When Very Tired, the character will have 50% chance for a random stat to be penalized by 1 every 15 minutes of game time.",
+            "max": 256,
+            "text": "Very Tired",
+            "actions": {
+                "recurring": "/* 50% chance to penalize stat */ if (Math.Random() < 0.5) return; /* Grab array of stats */ let stats = gameState.character.primaryStats(); stats.push(gameState.character.speed); /* Add one to random stat penalty */ stats[Math.floor(Math.random() * stats.length)].penalty.addAdjustment('fatigue', '', 1);"
+            }
+        }
+    ]
+}

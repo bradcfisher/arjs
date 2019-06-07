@@ -1,0 +1,33 @@
+{
+    "interval": "15m",
+    "defaultRate": 0.5,
+    "computation": "gameState.character.hunger += gameState.character.hungerRate.effective; return gameState.character.hunger;",
+    "types": [
+        {
+            "_1": "Any hunger penalties incurred due to starvation are removed when entering this state",
+            "min": 0,
+            "max": 16,
+            "text": "Satisfied",
+            "textVisible": false,
+            "actions": {
+                "enter": "gameState.character.speed.removeAdjustment('hunger'); for (let stat of gameState.character.primaryStats) stat.penalty.removeAdjustment('hunger');"
+            }
+        },
+        {
+            "max": 48,
+            "text": "Hungry"
+        },
+        {
+            "max": 96,
+            "text": "Famished"
+        },
+        {
+            "_1": "When Starving, the character will have 50% chance for a random stat to be penalized by 1 every 15 minutes of game time.",
+            "max": 256,
+            "text": "Starving",
+            "actions": {
+                "recurring": "/* 50% chance to penalize stat */ if (Math.Random() < 0.5) return; /* Grab array of stats */ let stats = gameState.character.primaryStats(); stats.push(gameState.character.speed); /* Add one to random stat penalty */ stats[Math.floor(Math.random() * stats.length)].penalty.addAdjustment('hunger', '', 1);"
+            }
+        }
+    ]
+}

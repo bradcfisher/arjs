@@ -1,0 +1,35 @@
+{
+    "_0": "The rate is increased by:",
+    "_1": "- 1/128 ~= 0.08 (+15.6%) when the character warmth is at stage Hot. (see warmth config)",
+    "interval": "15m",
+    "defaultRate": 0.5,
+    "computation": "gameState.character.thirst += gameState.character.thirstRate.effective; return gameState.character.thirst",
+    "types": [
+        {
+            "_1": "Any thirst penalties incurred are removed when entering this state",
+            "min": 0,
+            "max": 16,
+            "text": "",
+            "textVisible": false,
+            "actions": {
+                "enter": "gameState.character.speed.removeAdjustment('thirst'); for (let stat of gameState.character.primaryStats) stat.penalty.removeAdjustment('thirst');"
+            }
+        },
+        {
+            "max": 32,
+            "text": "Thirsty"
+        },
+        {
+            "max": 56,
+            "text": "Very Thirsty"
+        },
+        {
+            "_1": "When Parched, the character will have 50% chance for a random stat to be penalized by 1 every 15 minutes of game time.",
+            "max": 256,
+            "text": "Parched",
+            "actions": {
+                "recurring": "/* 50% chance to penalize stat */ if (Math.Random() < 0.5) return; /* Grab array of stats */ let stats = gameState.character.primaryStats(); stats.push(gameState.character.speed); /* Add one to random stat penalty */ stats[Math.floor(Math.random() * stats.length)].penalty.addAdjustment('thirst', '', 1);"
+            }
+        }
+    ]
+}

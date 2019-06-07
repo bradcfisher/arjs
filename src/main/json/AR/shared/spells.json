@@ -1,0 +1,1020 @@
+[
+    {
+        "category": "spell",
+        "id": "spell-dexterity",
+        "text": "Dexterity",
+        "description": "Increases the skill bonus by 5.",
+        "weight": 0,
+
+        "lessons": 6,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 38,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 1,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.skill.bonus.addAdjustment('spell', 'Dexterity', 5, '1.5h')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-strength",
+        "text": "Strength",
+        "description": "Increases the strength bonus by 5.",
+        "weight": 0,
+
+        "lessons": 7,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 32,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 1,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.strength.bonus.addAdjustment('spell', 'Strength', 5, '1.5h');"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-noticeability",
+        "text": "Noticeability",
+        "description": "Decreases stealth by 5.",
+        "weight": 0,
+
+        "lessons": 8,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 29,
+        "successSkillImprovement": 1,
+        "castingCost": 1,
+        "failureDamage": 5,
+        "uses": 30,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.stealth.penalty.addAdjustment('spell', 'Noticeability', 5, '8h')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-speed",
+        "text": "Physical Speed",
+        "description": "Increases the speed bonus by 5.",
+        "weight": 0,
+
+        "lessons": 7,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 29,
+        "successSkillImprovement": 1,
+        "castingCost": 10,
+        "failureDamage": 2,
+        "uses": 200,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.speed.bonus.addAdjustment('spell', 'Physical Speed', 5, '30m')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-glamour",
+        "text": "Glamour",
+        "description": "Increases the charisma bonus by 10.",
+        "weight": 0,
+
+        "lessons": 12,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 19,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 1,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.charisma.bonus.addAdjustment('spell', 'Glamour', 10, '30m')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-wisdom",
+        "text": "Wisdom",
+        "description": "Increases the wisdom bonus by 5.",
+        "weight": 0,
+
+        "lessons": 15,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 15,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 1,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.wisdom.bonus.addAdjustment('spell', 'Wisdom', 5, '90m')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-intelligence",
+        "text": "Intelligence",
+        "description": "Increases the intelligence bonus by 5.",
+        "weight": 0,
+
+        "lessons": 15,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 15,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 1,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.intelligence.bonus.addAdjustment('spell', 'Intelligence', 5, '90m')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-stamina",
+        "text": "Stamina",
+        "description": "Increases the stamina bonus by 5.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 23,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 1,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.stamina.bonus.addAdjustment('spell', 'Stamina', 5, '90m')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-luck",
+        "text": "Luck",
+        "description": "Increases treasure finding by 20 (for 12 hours).",
+        "weight": 0,
+
+        "lessons": 8,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 31,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 3,
+        "uses": 13,
+
+        "effects": [
+          {
+            "type": "spell",
+            "text": "Luck",
+            "triggers": ["use"],
+            "action": "gameState.character.treasureFinding.addAdjustment('spell', 'Luck', 20, '12h')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-continual-light",
+        "text": "Continual Light",
+        "description": " ?No effect? for 12 hours.",
+        "weight": 0,
+
+        "lessons": 5,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 45,
+        "successSkillImprovement": 1,
+        "castingCost": 1,
+        "failureDamage": 8,
+        "uses": 30,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* Perhaps emulate a torch? */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-healing-minor",
+        "text": "Healing Minor Wounds",
+        "description": "Restores 5 hit points.",
+        "weight": 0,
+
+        "lessons": 7,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 31,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 2,
+        "uses": 10,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.hp += 5"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-healing-moderate",
+        "text": "Healing Moderate Wounds",
+        "description": "Restores 8 hit points.",
+        "weight": 0,
+
+        "lessons": 9,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 25,
+        "successSkillImprovement": 1,
+        "castingCost": 4,
+        "failureDamage": 3,
+        "uses": 9,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.hp += 8"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-healing-major",
+        "text": "Healing Major Wounds",
+        "description": "Restores 16 hit points.",
+        "weight": 0,
+
+        "lessons": 12,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 19,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 5,
+        "uses": 7,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.hp += 16"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-stormy-weather",
+        "text": "Stormy Weather",
+        "description": "Changes the weather to type P (fully stormy) with a new duration (depending on the current month).",
+        "weight": 0,
+
+        "lessons": 8,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 29,
+        "successSkillImprovement": 1,
+        "castingCost": 12,
+        "failureDamage": 7,
+        "uses": 15,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: change the weather */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-heat",
+        "text": "Heat",
+        "description": "Sets weather temperature to 75°F (23.9°C).",
+        "weight": 0,
+
+        "lessons": 9,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 22,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 7,
+        "uses": 77,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: change the weather temperature */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-fair-weather",
+        "text": "Fair Weather",
+        "description": "Changes the weather to type A (fully sunny) with a new duration (depending on the current month).",
+        "weight": 0,
+
+        "lessons": 6,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 38,
+        "successSkillImprovement": 1,
+        "castingCost": 12,
+        "failureDamage": 7,
+        "uses": 21,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: change the weather */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-slowness",
+        "text": "Slowness",
+        "description": "Decreases the encounter speed by 5.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 19,
+        "successSkillImprovement": 1,
+        "castingCost": 4,
+        "failureDamage": 3,
+        "uses": 40,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: ?.encounter.speed.base -= 5 */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-numbness",
+        "text": "Numbness",
+        "description": "Decreases the encounter speed and skill by 5.",
+        "weight": 0,
+
+        "lessons": 8,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 27,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 5,
+        "uses": 37,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: ?.encounter.speed.base -= 5; ?.encounter.skill.base -= 5 */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-blindness",
+        "text": "Blindness",
+        "description": "Sets encounter skill to 0.",
+        "weight": 0,
+
+        "lessons": 7,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 26,
+        "successSkillImprovement": 1,
+        "castingCost": 8,
+        "failureDamage": 8,
+        "uses": 33,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: ?.encounter.skill.base = 0 */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-confusion",
+        "text": "Confusion",
+        "description": "Decreases encounter intelligence by 10.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 20,
+        "successSkillImprovement": 1,
+        "castingCost": 5,
+        "failureDamage": 5,
+        "uses": 73,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: ?.encounter.intelligence.base -= 10 */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-imprisonment",
+        "text": "Imprisonment",
+        "description": "Sets encounter speed to 0.",
+        "weight": 0,
+
+        "lessons": 14,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 15,
+        "successSkillImprovement": 1,
+        "castingCost": 6,
+        "failureDamage": 5,
+        "uses": 99,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: ?.encounter.speed.base = 0 */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-paralysis",
+        "text": "Paralysis",
+        "description": "Paralyses the encounter.",
+        "weight": 0,
+
+        "lessons": 12,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 16,
+        "successSkillImprovement": 1,
+        "castingCost": 11,
+        "failureDamage": 5,
+        "uses": 50,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: ?.encounter.paralysis = 3  should it be added or assigned? */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-fear",
+        "text": "Fear",
+        "description": "Frightens the encounter.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 22,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 5,
+        "uses": 117,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: Frighten the encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-water-hammer",
+        "text": "The Water Hammer",
+        "description": "Inflicts 8 water damage to the encounter.",
+        "weight": 0,
+
+        "lessons": 11,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 19,
+        "successSkillImprovement": 1,
+        "castingCost": 11,
+        "failureDamage": 7,
+        "uses": 20,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: apply water damage to the current encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-hot-foot",
+        "text": "The Hot Foot",
+        "description": "Inflicts 4 fire damage to the encounter.",
+        "weight": 0,
+
+        "lessons": 11,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 16,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 4,
+        "uses": 55,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: apply fire damage to the current encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-flame",
+        "text": "Flame",
+        "description": "Inflicts 8 fire damage to the encounter.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 20,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 6,
+        "uses": 60,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: apply fire damage to the current encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-fireball",
+        "text": "The Fireball",
+        "description": "Inflicts 12 fire damage to the encounter.",
+        "weight": 0,
+
+        "lessons": 12,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 18,
+        "successSkillImprovement": 1,
+        "castingCost": 11,
+        "failureDamage": 8,
+        "uses": 20,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: apply fire damage to the current encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-inflicting-serious-wounds",
+        "text": "Inflicting Serious Wounds",
+        "description": "Inflicts 12 'evil' damage to the encounter.",
+        "weight": 0,
+
+        "lessons": 13,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 16,
+        "successSkillImprovement": 1,
+        "castingCost": 13,
+        "failureDamage": 10,
+        "uses": 17,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: apply evil damage to the current encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-inflicting-moderate-wounds",
+        "text": "Inflicting Moderate Wounds",
+        "description": "Inflicts 8 'evil' damage to the encounter.",
+        "weight": 0,
+
+        "lessons": 13,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 15,
+        "successSkillImprovement": 1,
+        "castingCost": 9,
+        "failureDamage": 6,
+        "uses": 22,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: apply evil damage to the current encounter */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-poisoning",
+        "text": "Poisoning",
+        "description": "Removes 2 hit points to the encounter every minutes (probability of 0.3% each minute to naturally cure).",
+        "weight": 0,
+
+        "lessons": 11,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 16,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 10,
+        "uses": 45,
+
+        "effects": [
+          {
+            "type": "spell",
+            "text": "Poisoning",
+            "triggers": ["use"],
+            "repetitions": 20,
+            "interval": 1,
+            "_": "cure probability of 1/256 (0.39%)",
+            "naturalCureProbability": 1,
+            "action": " /* TODO: gameState.encounter.hp -= 2   what about multiple opponents? */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-ice-shield",
+        "text": "The Ice Shield",
+        "description": "Immunizes to fire damage.",
+        "weight": 0,
+
+        "lessons": 11,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 17,
+        "successSkillImprovement": 1,
+        "castingCost": 6,
+        "failureDamage": 1,
+        "uses": 40,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.protection.fire.bonus.addAdjustment('spell', 'The Ice Shield', 255, '45m')"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-energy-shield",
+        "text": "The Energy Shield",
+        "description": "Immunizes to power damage. Increases resistance by 50% to sharp and blunt damage.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 20,
+        "successSkillImprovement": 1,
+        "castingCost": 10,
+        "failureDamage": 9,
+        "uses": 38,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "/* Immunize to power damage. */ gameState.character.protection.power.bonus.addAdjustment('spell', 'The Energy Shield', 255, '45m');\n/* Increases resistance by 50% to sharp damage. */ gameState.character.protection.sharp.bonus.addAdjustment('spell', 'The Energy Shield', gameState.character.protection.sharp.base * 0.5, '45m');\n/* Increases resistance by 50% to blunt damage. */ gameState.character.protection.blunt.bonus.addAdjustment('spell', 'The Energy Shield', gameState.character.protection.blunt.base * 0.5, '45m');"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-stone-flesh",
+        "text": "Stone Flesh",
+        "description": "Immunizes to sharp damage.",
+        "weight": 0,
+
+        "lessons": 11,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 19,
+        "successSkillImprovement": 1,
+        "castingCost": 9,
+        "failureDamage": 1,
+        "uses": 43,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.protection.sharp.bonus.addAdjustment('spell', 'Stone Flesh', 255, '45m');"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-flame-shield",
+        "text": "The Flame Shield",
+        "description": "Immunizes to water damage.",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 19,
+        "successSkillImprovement": 1,
+        "castingCost": 9,
+        "failureDamage": 7,
+        "uses": 109,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.protection.water.bonus.addAdjustment('spell', 'The Flame Shield', 255, '45m');"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-deflecting-weapons",
+        "text": "Deflecting Weapons",
+        "description": "Immunizes to sharp and blunt damage.",
+        "weight": 0,
+
+        "lessons": 13,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 14,
+        "successSkillImprovement": 1,
+        "castingCost": 9,
+        "failureDamage": 7,
+        "uses": 44,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "/* Immunize to sharp damage */ gameState.character.protection.sharp.bonus.addAdjustment('spell', 'Deflecting Weapons', 255, '45m');\n/* Immunize to blunt damage */ gameState.character.protection.blunt.bonus.addAdjustment('spell', 'Deflecting Weapons', 255, '45m');"
+            }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-iron-flesh",
+        "text": "Iron Flesh",
+        "description": "Immunizes to sharp and blunt damage.",
+        "weight": 0,
+
+        "lessons": 14,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 13,
+        "successSkillImprovement": 1,
+        "castingCost": 9,
+        "failureDamage": 1,
+        "uses": 46,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "/* Immunize to sharp damage */ gameState.character.protection.sharp.bonus.addAdjustment('spell', 'Deflecting Weapons', 255, '45m');\n/* Immunize to blunt damage */ gameState.character.protection.blunt.bonus.addAdjustment('spell', 'Deflecting Weapons', 255, '45m');"
+            }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-the-force-field",
+        "text": "The Force Field",
+        "description": "Immunizes to sharp and blunt damage.",
+        "weight": 0,
+
+        "lessons": 14,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 14,
+        "successSkillImprovement": 1,
+        "castingCost": 9,
+        "failureDamage": 1,
+        "uses": 36,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "/* Immunize to sharp damage */ gameState.character.protection.sharp.bonus.addAdjustment('spell', 'Deflecting Weapons', 255, '45m');\n/* Immunize to blunt damage */ gameState.character.protection.blunt.bonus.addAdjustment('spell', 'Deflecting Weapons', 255, '45m');"
+            }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-clear-vision",
+        "text": "Clear Vision",
+        "description": "Removes delusion.",
+        "weight": 0,
+
+        "lessons": 7,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 27,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 5,
+        "uses": 255,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: Reset stats here */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-cure-hunger",
+        "text": "Curing Hunger",
+        "description": "Removes hunger.",
+        "weight": 0,
+
+        "lessons": 6,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 38,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 5,
+        "uses": 8,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.hunger = 0;"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-cure-thirst",
+        "text": "Curing Thirst",
+        "description": "Removes thirst.",
+        "weight": 0,
+
+        "lessons": 6,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 38,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 5,
+        "uses": 11,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.thirst = 0;"
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-purification",
+        "text": "Purification",
+        "description": "Cures diseases (in incubation or not).",
+        "weight": 0,
+
+        "lessons": 6,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 25,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 2,
+        "uses": 5,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: Cure them diseases */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-removing-poison",
+        "text": "Removing Poison",
+        "description": "Cures poisons (in incubation or not).",
+        "weight": 0,
+
+        "lessons": 9,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 26,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 2,
+        "uses": 6,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: Cure them poisons */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-removing-alcohol",
+        "text": "Removing Alcohol",
+        "description": "Cures inebriation. Clears alcohol blood and intestine concentration, digestion rate and blackouts.",
+        "weight": 0,
+
+        "lessons": 9,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 26,
+        "successSkillImprovement": 1,
+        "castingCost": 7,
+        "failureDamage": 5,
+        "uses": 2,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": " /* TODO: Cure dat alcohol */ "
+          }
+        ]
+    },
+    {
+        "category": "spell",
+        "id": "spell-endurance",
+        "text": "Endurance",
+        "description": "Decreases fatigue rate by 0.25 (-50%).",
+        "weight": 0,
+
+        "lessons": 10,
+        "baseSkill": 0,
+        "lessonSkillImprovement": 25,
+        "successSkillImprovement": 1,
+        "castingCost": 3,
+        "failureDamage": 1,
+        "uses": 16,
+
+        "effects": [
+          {
+            "type": "spell",
+            "triggers": ["use"],
+            "action": "gameState.character.fatigueRate.bonus.addAdjustment('spell', 'Endurance', 0.25, '2d');"
+          }
+        ]
+    }
+]

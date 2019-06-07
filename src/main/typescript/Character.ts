@@ -1,7 +1,7 @@
 
-import { Item } from "./Item"
 import { Stat } from "./Stat"
 import { Denizen } from "./Denizen"
+import { MetabolismStat } from "./MetabolismStat";
 
 /**
  * Class representing the player character.
@@ -18,22 +18,67 @@ export class Character
 	/**
 	 * @see [[level]]
 	 */
-	private _level: number;
+	private _level: number = 0;
 
 	/**
 	 * @see [[requiredExperience]]
 	 */
-	private _requiredExperience: number;
+	private _requiredExperience: number = 200;
 
 	/**
 	 * @see [[experience]]
 	 */
-	private _experience: number;
+	private _experience: number = 0;
 
 	/**
-	 * @see [[hpMaximum]]
+	 * @see [[delusion]]
 	 */
-	private _hpMaximum: number;
+	private _delusion: boolean = false;
+
+	/**
+	 * @see [[delusionHp]]
+	 */
+	private _delusionHp: number|undefined;
+
+	/**
+	 * @see [[hunger]]
+	 */
+	private _hunger: number = 0;
+
+	/**
+	 * @see [[hungerRate]]
+	 */
+	private readonly _hungerRate: MetabolismStat = new MetabolismStat(0.5);
+
+	/**
+	 * @see [[fatigue]]
+	 */
+	private _fatigue = 0;
+
+	/**
+	 * @see [[fatigueRate]]
+	 */
+	private readonly _fatigueRate: MetabolismStat = new MetabolismStat(0.5);
+
+	/**
+	 * @see [[thirst]]
+	 */
+	private _thirst = 0;
+
+	/**
+	 * @see [[thirstRate]]
+	 */
+	private readonly _thirstRate: MetabolismStat = new MetabolismStat(0.5);
+
+	/**
+	 * @see [[digestion]]
+	 */
+	private _digestion = 0;
+
+	/**
+	 * @see [[digestionRate]]
+	 */
+	private readonly _digestionRate: MetabolismStat = new MetabolismStat(0.5);
 
 	/**
 	 * Constructs a new character.
@@ -47,39 +92,49 @@ export class Character
 		this.name = name;
 		this.gender = gender;
 
-		this._requiredExperience = 200;	// For level up
-		this._experience = 0;
-
 		this.hp = this.hpMaximum = 10;
-		this._level = 0;
 
 		// TODO: Finish remaining character attributes
 /*
-		//treasure finding = luck?
-		//this.treasureFinding = 0;
-		//this.luck = 0;
+		//this.treasureFinding: TreasureFinding = new TreasureFinding(0);
+		// If you have treasure finding > 0, your chance to find treasure is increased
+		// by your treasure finding level, if you find that treasure you will get the
+		// maximum number of items possible for that monster, or at least 1 item in
+		// the event the maximum possible is 0. Then your treasure finding level drops
+		// by one.
+		// TODO: Perhaps this should be a list of adjustments with timeouts?  For example, the Treasure Finding spell will expire and should remove any remaining treasure finding for the spell, but probably shouldn't remove any due to a potion, etc.
 
-		hunger
-		hungerRate		// Determines how quickly the character gets hungry
-		thirst
-		thirstRate		// Determines how quickly the character gets thirsty
-		fatigue			// Determines when sleep is needed
-		fatigueRate		// Determines how quickly the character gets tired
 		morale/happiness?	// Reference on wikipedia & elsewhere.  Not sure how it's used?
 							// Decreases over time & increases when completing jobs, etc?
 							// What effects would it have?
-		digestion
-		alcohol.bloodConcentration
+
+		alcohol.bloodConcentration  // Can be cured over time, or by visiting healer
+		alcohol.bloodDigestionRate = 3;
+
 		alcohol.intestineConcentration
 		alcohol.digestionRate
-		coordination
-		balance
-		warmth
-		encumbrance
-		clarity
-		delusion
-		invisibility
-		paralysis (remaining turns)
+		alcohol.blackoutDuration // Number of game minutes before end of blackout
+
+		coordination // When affected, bottom status screen randomly changes. (boolean? set by inebriation)
+		balance  // When affected, random moves occur. (boolean? set by inebriation)
+
+		warmth/temperature
+		protectionFromLowTemperature - This probably doesn't exist in the original game, but could lead to some intersting items/effects
+		protectionFromHighTemperature - Affected by clothing worn
+
+		encumbrance: number;	// The character can carry a base weight of 224 units. The
+								// encumbrance is defined by the following formula:
+								// 	encumbrance = carried weight - (effective strength + 224)
+
+		blindness: number  // affected by inebriation (0 = can see; >0 sight affected (decreased brightness of screen?) [0-255])
+		clarity: boolean // affected by Cold/Hot effect
+		delusion: boolean // Character is delusional (cure by visiting healer)
+
+		invisibility: boolean // Invisible to all but magical and elemental monsters
+			// Nullified/cancelled by rain or removing all of your clothing
+
+		TODO: Need to track whether the character "knows" a particular potion?  Possibly only for potions held, and not for new potions?
+		TODO: Need to track item inventory (treasure/potions/spells/etc)
 */
 	} // constructor
 
@@ -98,15 +153,6 @@ export class Character
 	set gender(gender: Character.Gender) {
 		this._gender = gender;
 	} // gender
-
-	/**
-	 * Updates the character's hit points.
-	 * @param	hp	The new value to assign to the character's hit points.  Will be clamped between
-	 *				0 and the value of `hpMaximum`.
-	 */
-	set hp(hp: number) {
-		super.hp = Math.min(hp, this._hpMaximum);
-	} // hp
 
 	/**
 	 * Retrieves the character's current level.
@@ -140,6 +186,7 @@ export class Character
 		if (experienceGain > 0) {
 			this._experience += experienceGain;
 			this.checkLevelUp();
+			// TODO: Should an event be dispatched to notify of any level change, or should the method return something to indicate a level change occurred?
 		}
 	} // addExperience
 
@@ -153,7 +200,7 @@ export class Character
 
 			// HP & Max HP both increase based on effective stamina (note bonus & penalty included!)
 			let hpIncrease: number = Math.round(Math.random() * this.stamina.effective);
-			this._hpMaximum += hpIncrease;
+			this.hpMaximum += hpIncrease;
 			this.hp += hpIncrease;
 
 			this.increaseStatForLevelUp(this.stamina);
@@ -163,6 +210,8 @@ export class Character
 			this.increaseStatForLevelUp(this.wisdom);
 			this.increaseStatForLevelUp(this.skill);
 			this.increaseStatForLevelUp(this.speed);
+
+			// TODO: Should an event be dispatched to notify of the level change, or should the method return something to indicate a level change occurred?
 		}
 	} // checkLevelUp
 
@@ -180,30 +229,111 @@ export class Character
 		stat.base += 0.5 + 0.5 * Math.random() * (Stat.MAX_VALUE - stat.base) / Stat.MAX_VALUE;
 	} // increaseStatForLevelUp
 
-	/**
-	 * Retrieves the character's maximum hit points.
-	 * @return	The character's maximum hit points.
-	 */
-	get hpMaximum(): number {
-		return this._hpMaximum;
-	} // hpMaximum
+	get delusion(): boolean {
+		return this._delusion;
+	}
+
+	set delusion(value: boolean) {
+		this._delusion = value;
+	}
+
+	get delusionHp(): number|undefined {
+		return this._delusionHp;
+	}
+
+	set delusionHp(value: number|undefined) {
+		if (typeof value === "number")
+			this._delusionHp = Math.max(value, 0);
+		else
+			this._delusionHp = undefined;
+	}
 
 	/**
-	 * Updates the character's maximum hit points.
-	 *
-	 * If the new maximum is less than the current `hp`, the `hp` will also be clamped to the new
-	 * maximum value.
-	 *
-	 * @param	hpMaximum	The new value to assign to the character's maximum hit points.  If less
-	 *						than 1, will be clamped to 1.
+	 * The current hunger level for the character.
 	 */
-	set hpMaximum(hpMaximum: number) {
-		this._hpMaximum = Math.max(1, hpMaximum);
-		if (this.hp > this._hpMaximum)
-			this.hp = this._hpMaximum;
-	} // hpMaximum
+	get hunger(): number {
+		return this._hunger;
+	}
+
+	set hunger(value: number) {
+		if (Number.isNaN(value))
+			throw new Error("hunger must be a valid number");
+
+		this._hunger = Math.max(0, value);
+	}
+
+	/**
+	 * The amount at which the character's hunger increases for each hunger interval.
+	 */
+	hungerRate(): MetabolismStat {
+		return this._hungerRate;
+	}
+
+	/**
+	 * The current fatigue level for the character.
+	 */
+	get fatigue(): number {
+		return this._fatigue;
+	}
+
+	set fatigue(value: number) {
+		if (Number.isNaN(value))
+			throw new Error("fatigue must be a valid number");
+
+		this._fatigue = Math.max(0, value);
+	}
+
+	/**
+	 * The amount at which the character's fatigue increases for each fatigue interval.
+	 */
+	fatigueRate(): MetabolismStat {
+		return this._fatigueRate;
+	}
+
+	/**
+	 * The current thirst level for the character.
+	 */
+	get thirst(): number {
+		return this._thirst;
+	}
+
+	set thirst(value: number) {
+		if (Number.isNaN(value))
+			throw new Error("thirst must be a valid number");
+
+		this._thirst = Math.max(0, value);
+	}
+
+	/**
+	 * The amount at which the character's thirst increases for each thirst interval.
+	 */
+	thirstRate(): MetabolismStat {
+		return this._thirstRate;
+	}
+
+	/**
+	 * The current digestion level for the character.
+	 */
+	get digestion(): number {
+		return this._digestion;
+	}
+
+	set digestion(value: number) {
+		if (Number.isNaN(value))
+			throw new Error("digestion must be a valid number");
+
+		this._digestion = Math.max(0, value);
+	}
+
+	/**
+	 * The amount at which the character's digestion increases for each digestion interval.
+	 */
+	digestionRate(): MetabolismStat {
+		return this._digestionRate;
+	}
 
 } // Character
+
 
 export module Character {
 	export enum Gender {

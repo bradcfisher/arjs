@@ -1,5 +1,0 @@
-{
-	"title": "Alternate Reality",
-	"weather": "@shared/weather.json",
-	"time": "@shared/time.json",
-}

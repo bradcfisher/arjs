@@ -1,0 +1,19 @@
+{
+	"name": "The City",
+	"defaultLocation": {
+		"map": "city",
+		"x": 35,
+		"y": 27,
+		"orientation": "north"
+	},
+	"maps": {
+		"city": {
+			"format": "json",
+			"walls": { "$import": "cityWalls.json" },
+			"descriptions": { "$import": "cityDescriptions.json" },
+			"zones": { "$import": "cityZones.json" },
+			"messages": { "$import": "cityMessages.json" },
+			"encounters": { "$import": "cityEncounters.json" }
+		}
+	}
+}

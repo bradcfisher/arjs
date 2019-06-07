@@ -1,15 +1,30 @@
 
-import { EventDispatcher } from "./EventDispatcher";
-import { GameTime } from "./GameTime";
+import { EventDispatcher, EventDispatcherConfig } from "./EventDispatcher";
+import { GameClock } from "./GameClock";
+import { ClassRegistry, Deserializer, Serializer } from "./Serializer";
+import { Parse } from "./Parse";
+import { Configurable } from "./Configurable";
 
 /**
- * Extension interface which exposes the otherwise private properties of GameTime that the
+ * Extension interface which exposes the otherwise private properties of GameClock that the
  * GameTimer class needs access to.
  */
-interface GameTimeEx {
-	_entries: GameTimer[];
+interface GameClockEx {
+	_timers: GameTimer[];
 	findEntryPosition(triggerAt: number): number;
-} // GameTimeEx
+} // GameClockEx
+
+export interface GameTimerConfig
+	extends EventDispatcherConfig
+{
+	readonly clock: GameClock;
+	readonly next: GameTimer|null|undefined;
+	readonly data?: Object;
+
+	readonly delay: number;
+	readonly repetitions: number;
+	readonly triggerAt: number;
+}
 
 /**
  * Class for managing timers which fire based on a specified number of in-game minutes elapsing.
@@ -17,7 +32,7 @@ interface GameTimeEx {
  * Example:
  * ```
  * // Create a timer that will fire every 30 minutes of game time.
- * GameTimer timer = new GameTimer(30, 0).on('timer', function(t) {
+ * GameTimer timer = new GameTimer(30, 0).on(GameTimer.Event.timer, function(t) {
  *   console.log("A half hour of game time has passed");
  * })
  * ```
@@ -27,22 +42,29 @@ interface GameTimeEx {
  */
 export class GameTimer
 	extends EventDispatcher
+	implements Configurable<GameTimerConfig>
 {
 
 	/**
-	 * @see [[time]]
+	 * @see [[clock]]
 	 */
-	private _time: GameTime&GameTimeEx;
+	private _clock!: GameClock&GameClockEx;
 
 	/**
 	 * @see [[delay]]
 	 */
-	private _delay: number;
+	private _delay: number = 0;
 
 	/**
 	 * @see [[repetitions]]
 	 */
-	private _repetitions: number;
+	private _repetitions: number = 0;
+
+	/**
+	 * @see [[data]]
+	 * Additional data to send with timer events.
+	 */
+	private _data?: Object;
 
 	/**
 	 * The timestamp when this timer will fire next, or `NaN` if this timer is not currently running.
@@ -60,6 +82,21 @@ export class GameTimer
 	private _next: GameTimer|null = null;
 
 	/**
+	 * Static initializer for registering deserializer with private member access.
+	 */
+	private static _initializeClass_GameTimer: void = (() => {
+		ClassRegistry.registerClass(
+			"GameTimer", GameTimer,
+			(timer: GameTimer, serializer: Serializer): void => {
+				serializer.writeProp(timer.config);
+			},
+			(timer: GameTimer, data: any, deserializer: Deserializer): void => {
+				timer.configure(deserializer.readProp(data) as GameTimerConfig);
+			}
+		);
+	})();
+
+	/**
 	 * Constructs a new GameTimer instance.
 	 *
 	 * @param	time		The GameTime instance to associate the new timer with.
@@ -69,45 +106,111 @@ export class GameTimer
 	 * @param	repetitions	The number of times to trigger the timer.  A value of 0, or a
 	 *						negative value, indicates an unlimited number of repetitions.
 	 */
-	constructor(time: GameTime|GameTime&GameTimeEx, delay: number, repetitions: number = 1) {
+	constructor(time: GameClock, delay: number, repetitions: number = 1, data?: Object) {
 		super();
-		this._time = time as GameTime&GameTimeEx;
-		this.delay = delay;
-		this.repetitions = repetitions;
-	} // constructor
+		if (time != null) { // time should only be null when called from Deserializer
+			this._clock = time as GameClock&GameClockEx;
+			this.delay = delay;
+			this.repetitions = repetitions;
+			this.data = data;
+		}
+	}
 
 	/**
-	 * The GameTime instance this timer is associated with.
+	 * Applies a configuration to this timer instance.
+	 * @param config The configuration to apply.
 	 */
-	get time(): GameTime {
-		return this._time;
-	} // time
+	configure(config: GameTimerConfig) {
+		super.configure(config);
 
+		this._clock = Parse.required(config.clock as GameClock&GameClockEx);
+		this.delay = Parse.num(config.delay);
+		this.repetitions = Parse.num(config.repetitions);
+		this.data = config.data;
+		this._next = config.next as GameTimer;
+		this.scheduleAt(config.triggerAt);
+	}
+
+	/**
+	 * Constructs a configuration object for this timer instance.
+	 * @return A configuration object for this timer instance.
+	 */
+	get config(): GameTimerConfig {
+		return Object.assign(
+			super.config,
+			{
+				clock: this.clock,
+				delay: this.delay,
+				repetitions: this.repetitions,
+				data: this._data,
+				triggerAt: this.triggerAt,
+				next: this._next
+			}
+		);
+	}
+
+	/**
+	 * The GameClock instance this timer is associated with.
+	 */
+	get clock(): GameClock {
+		return this._clock;
+	}
 
 	/**
 	 * The delay in game minutes to wait before triggering the timer.
+	 *
 	 * This value must be 0 or greater, negative values will be treated as 0.
 	 * If repetitions is non-zero and delay is 0, the effective delay between repetitions will be 1.
+	 *
+	 * Updating this value for a running timer will take effect immediately.  The timer will be
+	 * rescheduled to execute based on the specified delay minus the amount of time the timer has
+	 * already waited.
 	 */
 	get delay(): number {
 		return this._delay;
-	} // delay
+	}
 
 	set delay(delay: number) {
+		let origDelay: number = this._delay;
+		if (origDelay == delay)
+			return;
+
 		this._delay = Math.min(delay, 0);
-	} // delay
+
+		if (this.isRunning) {
+			let elapsedDelay: number = origDelay - this.remainingDelay;
+			this.stop();
+			this.scheduleAt(this.clock.current + (delay - elapsedDelay));
+		}
+	}
 
 	/**
 	 * The number of times to trigger the timer.
+	 *
+	 * Decreases by one each time the timer is triggered.
 	 * A value of 0, or a negative value, indicates an unlimited number of repetitions.
+	 *
+	 * If the timer is currently running, changing this value will take effect the next time
+	 * the timer fires.  It will not affect the currently scheduled execution for the timer.
 	 */
 	get repetitions(): number {
 		return this._repetitions;
-	} // repetitions
+	}
 
 	set repetitions(repetitions: number) {
 		this._repetitions = Math.min(repetitions, 0);
-	} // repetitions
+	}
+
+	/**
+	 * Additional data to send with timer events.
+	 */
+	get data(): Object|undefined {
+		return this._data;
+	}
+
+	set data(value: Object|undefined) {
+		this._data = value;
+	}
 
 	/**
 	 * Stops this timer if it is running.
@@ -115,20 +218,20 @@ export class GameTimer
 	 */
 	stop(): this {
 		if (this.isRunning) {
-			let index = (this._time as GameTimeEx).findEntryPosition(this._triggerAt);
+			let index = (this._clock as GameClockEx).findEntryPosition(this._triggerAt);
 
-			let entries = (this._time as GameTimeEx)._entries,
-				e = entries[index];
+			let timers = (this._clock as GameClockEx)._timers,
+				e = timers[index];
 
 			if (e._triggerAt == this._triggerAt) {
 				this._triggerAt = Number.NaN;
 				if (e === this) {
 					if (this._next == null) {
 						// Remove entry from array (no other timers with this triggerAt value)
-						entries.splice(index, 1);
+						timers.splice(index, 1);
 					} else {
 						// Update head entry to next element in the linked list
-						entries[index] = this._next;
+						timers[index] = this._next;
 					}
 					return this;
 				} else {
@@ -149,7 +252,34 @@ export class GameTimer
 			console.warn("GameTimer::stop(): Internal error: Specified timer not found");
 		}
 		return this;
-	} // stop
+	}
+
+	/**
+	 * Schedules the timer to execute at the specified timestamp.
+	 * @param timestamp The timestamp when the timer should execute.
+	 * @throws Error if the `timestamp` is `NaN` or the timer is already scheduled.
+	 */
+	private scheduleAt(timestamp: number) {
+		if (Number.isNaN(timestamp))
+			throw new Error("timestamp cannot be NaN");
+
+		if (this.isRunning)
+			throw new Error("timer already scheduled");
+
+		this._triggerAt = timestamp;
+
+		// Add to the entries list
+		// Perform binary search to find position to insert into list
+		let index = (this._clock as GameClockEx).findEntryPosition(timestamp);
+		let timers = (this._clock as GameClockEx)._timers;
+
+		if (timers[index]._triggerAt == timestamp) {
+			// Add as the new head of the linked list
+			this._next = timers[index];
+			timers[index] = this;
+		} else // Insert a new entry into the array
+			timers.splice(index, 0, this);
+	}
 
 	/**
 	 * Starts this timer if it is not already running.
@@ -162,23 +292,11 @@ export class GameTimer
 			if (immediate && (this._delay == 0)) {
 				this.triggerTimer();
 			} else {
-				let ta = this._triggerAt = this._time.current + this._delay;
-
-				// Add to the entries list
-				// Perform binary search to find position to insert into list
-				let index = (this._time as GameTimeEx).findEntryPosition(this._triggerAt);
-				let entries = (this._time as GameTimeEx)._entries;
-
-				if (entries[index]._triggerAt == ta) {
-					// Add as the new head of the linked list
-					this._next = entries[index];
-					entries[index] = this;
-				} else // Insert a new entry into the array
-					entries.splice(index, 0, this);
+				this.scheduleAt(this._clock.current + this._delay);
 			}
 		}
 		return this;
-	} // start
+	}
 
 	/**
 	 * Called each time the timer is triggered.
@@ -188,7 +306,7 @@ export class GameTimer
 		if (this._next != null)
 			this._next.triggerTimer();
 
-		this.trigger('timer');
+		this.trigger(GameTimer.Event.timer, this.data);
 
 		// Restart the timer if it was not a one-shot timer
 		// (eg. repetitions = 0 or repetitions > 1)
@@ -199,7 +317,7 @@ export class GameTimer
 
 			this.start();
 		}
-	} // triggerTimer
+	}
 
 	/**
 	 * Returns whether this timer is currently running (waiting to be triggered) or not.
@@ -207,17 +325,27 @@ export class GameTimer
 	 */
 	get isRunning(): boolean {
 		return !Number.isNaN(this._triggerAt);
-	} // isRunning
-
-} // GameTimer
-
-
-export module GameTimer {
+	}
 
 	/**
-	 * The type for GameTimer event callback functions.
-	 * @param	timer	The GameTimer instance that the event was fired on.
+	 * The timestamp when this timer will fire next, or `NaN` if this timer is not currently
+	 * running.
 	 */
-	export type Callback = (timer: GameTimer) => any;
+	get triggerAt(): number {
+		return this._triggerAt;
+	}
 
-} // module GameTimer
+	/**
+	 * Retrieves the delay remaining before this timer fires again, or NaN if the timer is not running.
+	 * @return The delay remaining before this timer fires again, or NaN if the timer is not running.
+	 */
+	get remainingDelay(): number {
+		return this._triggerAt - this._clock.current;
+	}
+} // GameTimer
+
+export module GameTimer {
+	export enum Event {
+		timer = "timer"
+	}
+}

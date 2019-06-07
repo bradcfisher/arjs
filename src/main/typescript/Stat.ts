@@ -1,35 +1,49 @@
+import { Parse } from "./Parse"
+import { StatAdjustments } from "./StatAdjustments"
+import { StatAdjustmentConfig } from "./StatAdjustment";
+import { Configurable } from "./Configurable";
+import { ClassRegistry, Serializer, Deserializer } from "./Serializer";
+
+export interface StatConfig {
+	readonly base?: number;
+	readonly bonus?: ReadonlyArray<StatAdjustmentConfig>;
+	readonly penalty?: ReadonlyArray<StatAdjustmentConfig>;
+	readonly displayed?: number;
+}
 
 /**
  * Class for representing a character stat like `strength`, `intelligence`, etc.
  *
  * Stat values range from a minimum of 0 to a maximum of 255.
  */
-export class Stat {
+export class Stat
+	implements Configurable<StatConfig>
+{
 
 	/**
-	 * The maximum value allowed for a character stat.
+	 * The minimum value allowed for a character stat.
 	 */
 	static readonly MIN_VALUE: number = 0;
 
 	/**
-	 * The minimum value allowed for a character stat.
+	 * The maximum value allowed for a character stat.
 	 */
 	static readonly MAX_VALUE: number = 255;
 
 	/**
 	 * @see [[base]]
 	 */
-	private _base: number;
+	private _base: number = Stat.MIN_VALUE;
 
 	/**
 	 * @see [[bonus]]
 	 */
-	private _bonus: number = 0;
+	private readonly _bonus: StatAdjustments = new StatAdjustments();
 
 	/**
 	 * @see [[penalty]]
 	 */
-	private _penalty: number = 0;
+	private readonly _penalty: StatAdjustments = new StatAdjustments();
 
 	/**
 	 * @see [[displayed]]
@@ -37,14 +51,52 @@ export class Stat {
 	private _displayed?: number;
 
 	/**
+	 * Static initializer for registering deserializer with private member access.
+	 */
+	private static _initializeClass_Stat: void = (() => {
+		ClassRegistry.registerClass(
+			"Stat", Stat,
+			(obj: Stat, serializer: Serializer): void => {
+				serializer.writeProp(obj.config);
+			},
+			(obj: Stat, data: any, deserializer: Deserializer): void => {
+				obj.configure(deserializer.readProp(data) as StatConfig);
+			}
+		);
+	})();
+
+	/**
 	 * Constructs a new Stat instance with the specified base value.
 	 * The stat is created with no bonus or penalty.
-	 * @param	base	The initial base value for the stat.  If not specified, the stat will be
-	 *					initialized to 0. The specified value will be clamped between 0 and 255.
+	 *
+	 * @param	config	Configuration to apply to the stat, or the initial base value for the stat.
+	 *					If not specified, the stat will be initialized to 0. If a vase value is
+	 *					specified, it will be clamped to a minimum of `Stat.MIN_VALUE` and maximum
+	 *					of `Stat.MAX_VALUE`.
 	 */
-	constructor(base?: number) {
-		this.base = (base == null ? Stat.MIN_VALUE : base);
-	} // constructor
+	constructor(config?: StatConfig|number) {
+		if (typeof config === "number")
+			config = { "base": Parse.num(config) };
+
+		if (config != null)
+			this.configure(config);
+	}
+
+	configure(config: StatConfig): void {
+		this.base = Parse.num(Parse.getProp(config, Stat.MIN_VALUE, "base"));
+		this._bonus.configure(config.bonus);
+		this._penalty.configure(config.penalty);
+		this.displayed = Parse.num(Parse.getProp(config, null, "displayed"), Number.NaN);
+	}
+
+	get config(): StatConfig {
+		return {
+			base: this._base,
+			bonus: this._bonus.config,
+			penalty: this._penalty.config,
+			displayed: this._displayed
+		};
+	}
 
 	/**
 	 * Retrieves the base value for this stat.
@@ -52,94 +104,81 @@ export class Stat {
 	 */
 	get base(): number {
 		return this._base;
-	} // base
+	}
 
 	/**
 	 * Sets the base value for this stat.
 	 * @param	base	The new base value for this stat.  The specified value will be clamped
-	 *					between 0 and 255.
+	 *					to a minimum of `Stat.MIN_VALUE` and maximum of `Stat.MAX_VALUE`.
 	 */
 	set base(base: number) {
 		this._base = Math.min(Math.max(base, Stat.MIN_VALUE), Stat.MAX_VALUE);
-	} // base
+	}
 
 	/**
-	 * Retrieves the current bonus for this stat.
-	 * @return	The current bonus for this stat (always an integer).
+	 * Retrieves the current bonus adjustment state for this stat.
+	 * @return	The current bonus adjustment state for this stat.
 	 */
-	get bonus(): number {
+	get bonus(): StatAdjustments {
 		return this._bonus;
-	} // bonus
+	}
 
 	/**
-	 * Sets the current bonus for this stat.
-	 * @param	bonus	The new bonus to apply to this stat.  Any fractional portion of this value
-	 *					will be dropped, and negative values will be clamped to 0.
+	 * Retrieves the current penalty adjustment state for this stat.
+	 * @return	The current penalty adjustment state for this stat.
 	 */
-	set bonus(bonus: number) {
-		this._bonus = Math.max(Math.trunc(bonus), 0);
-	} // bonus
-
-	/**
-	 * Retrieves the current penalty for this stat.
-	 * @return	The current penalty for this stat (always an integer).
-	 */
-	get penalty(): number {
+	get penalty(): StatAdjustments {
 		return this._penalty;
-	} // penalty
-
-	/**
-	 * Sets the current penalty for this stat.
-	 * @param	bonus	The new penalty to apply to this stat.  Any fractional portion of this value
-	 *					will be dropped, and negative values will be clamped to 0.
-	 */
-	set penalty(penalty: number) {
-		this._penalty = Math.max(Math.trunc(penalty), 0);
-	} // penalty
+	}
 
 	/**
 	 * Retrieves the current value to display for this stat.
 	 * If a custom display value is assigned to this stat, then that value will be returned.
 	 * Otherwise, returns the effective value for the stat.
-	 * A custom display value is generally only assigned when the character is delusional, etc.
+	 * A custom display value is generally only assigned when the character is delusional.
 	 * @return	The current value to display for this stat (always an integer).
 	 */
 	get displayed(): number {
 		return (this._displayed !== undefined ? this._displayed : this.effective);
-	} // displayed
+	}
 
 	/**
 	 * Sets the override current value to display for this stat.
-	 * A custom display value is generally only assigned when the character is delusional, etc.
-	 * @param	displayed	The new override value to display for this stat, or `undefined`/`null`
-	 *						to remove any existing override value.
+	 * A custom display value is generally only assigned when the character is delusional.
+	 * @param	displayed	The new override value to display for this stat, or `NaN`
+	 *						to remove any existing override value.  The value provided is
+	 *						truncated and clamped to a minimum of `Stat.MIN_VALUE` and
+	 *						maximum of `Stat.MAX_VALUE`.
 	 */
-	set displayed(displayed) {
-		this._displayed = (displayed == null
+	set displayed(value: number) {
+		this._displayed = (value == null || Number.isNaN(value)
 			? undefined
 			: Math.min(
 				Math.max(
-					Math.trunc(displayed),
+					Math.trunc(value),
 					Stat.MIN_VALUE
 				),
 				Stat.MAX_VALUE
 			)
 		);
-	} // displayed
+	}
 
 	/**
 	 * Retrieves the effective value for this stat.
-	 * The effective value is computed as `Math.trunc(base) + bonus - penalty` and is clamped to 0.
+	 *
+	 * The effective value is computed as `Math.trunc(base) + Math.trunc(bonus - penalty)`
+	 * to a minimum of `Stat.MIN_VALUE` and maximum of `Stat.MAX_VALUE`.
+	 *
 	 * @return	The effective value for this stat.
 	 */
 	get effective(): number {
 		return Math.min(
 			Math.max(
-				Math.trunc(this._base) + this._bonus - this._penalty,
+				Math.trunc(this._base + Math.trunc(this._bonus.amount - this._penalty.amount)),
 				Stat.MIN_VALUE
 			),
 			Stat.MAX_VALUE
 		);
-	} // effective
+	}
 
 } // Stat

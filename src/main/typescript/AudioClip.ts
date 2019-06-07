@@ -12,7 +12,7 @@ import { EventDispatcher } from "./EventDispatcher";
  *  - pause			Sent when a clip is paused
  *  - repeat		Sent when a clip repeats
  *  - notification	Sent when a notification time is reached
- * 
+ *
  * Event data:
  * ```typescript
  * {
@@ -569,7 +569,7 @@ console.log("clone buffer: startSample=", startSample, ", numSamples=", numSampl
 	addNotification(when: number, data?: any, callback?: AudioNotification.Callback): number {
 		let notification: AudioNotificationEntry;
 
-		if (!callback) {
+		if (callback == null) {
 			callback = (notification: AudioNotification) => {
 				this.trigger('notification', notification);
 			};

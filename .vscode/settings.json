@@ -1,0 +1,13 @@
+{
+    "files.trimTrailingWhitespace": true,
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "terminal.integrated.env.windows": {
+        "PATH": "${workspaceFolder};${workspaceFolder}\\scripts;${workspaceFolder}\\node_modules\\.bin;${env:PATH}"
+    },
+    "terminal.integrated.env.linux": {
+        "PATH": "${workspaceFolder}:${workspaceFolder}/scripts:${workspaceFolder}/node_modules/.bin:${env:PATH}"
+    },
+    "terminal.integrated.env.osx": {
+        "PATH": "${workspaceFolder}:${workspaceFolder}/scripts:${workspaceFolder}/node_modules/.bin:${env:PATH}"
+    }
+}

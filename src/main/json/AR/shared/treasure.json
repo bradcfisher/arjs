@@ -1,0 +1,114 @@
+[
+    {
+        "category": "drink",
+        "id": "waterFlask",
+        "text": "Water Flask",
+        "weight": 0.0625,
+        "stackSize": 65535,
+        "effects": [
+            {
+                "triggers": "use",
+                "action": "gameState.character.thirst -= 15; gameState.character.digestion += 14;"
+            }
+        ]
+    },
+    {
+        "category": "food",
+        "id": "foodPacket",
+        "text": "Food Packet",
+        "weight": 0.0625,
+        "stackSize": 65535,
+        "effects": [
+            {
+                "triggers": "use",
+                "action": "gameState.character.hunger -= 16; gameState.character.digestion += 28;"
+            }
+        ]
+    },
+    {
+        "category": "currency",
+        "id": "copper",
+        "text": "Copper",
+        "weight": 0.0625,
+        "stackSize": 65535,
+        "value": 1
+    },
+    {
+        "category": "currency",
+        "id": "silver",
+        "text": "Silver",
+        "weight": 0.0625,
+        "stackSize": 65535,
+        "value": 10
+    },
+    {
+        "category": "currency",
+        "id": "gold",
+        "text": "Gold",
+        "weight": 0.0625,
+        "stackSize": 65535,
+        "value": 100
+    },
+    {
+        "category": "treasure",
+        "id": "gem",
+        "text": "Gem",
+        "weight": 0.0625,
+        "stackSize": 65535
+    },
+    {
+        "category": "treasure",
+        "id": "jewel",
+        "text": "Jewel",
+        "weight": 0.0625,
+        "stackSize": 65535
+    },
+    {
+        "category": "other",
+        "id": "watch",
+        "text": "Watch",
+        "stackSize": 65535,
+        "effects": [
+            {
+                "triggers": "use",
+                "action": "/* TODO: Display the time ('It is 1700 hours.')* /"
+            }
+        ]
+    },
+    {
+        "category": "other",
+        "id": "compass",
+        "text": "Compass",
+        "stackSize": 65535,
+        "effects": [
+            {
+                "triggers": "use",
+                "action": "/* TODO: Make the compass visible on screen */"
+            }
+        ]
+    },
+    {
+        "category": "other",
+        "id": "torch",
+        "text": "Torch",
+        "stackSize": 65535,
+        "effects": [
+            {
+                "triggers": "use",
+                "action": "/* TODO: Apply torch effect to screen (increased brightness) for a certain duration */"
+            }
+        ]
+    },
+    {
+        "category": "ammo",
+        "id": "crystal",
+        "text": "Crystal",
+        "stackSize": 65535,
+        "effects": [
+            {
+                "triggers": "use",
+                "action": "/* TODO: recharge a magical item (wand?) */"
+            }
+        ]
+    }
+]

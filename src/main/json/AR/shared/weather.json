@@ -1,0 +1,128 @@
+{
+	"types": [
+		{
+			"name": "sun-0",
+			"temperature-variation": { "max": "+6F", "min": "-1F" },
+			"effect": "sun"
+		},
+		{
+			"name": "sun-1",
+			"temperature-variation": { "max": "+5F", "min": "-2F" },
+			"effect": "sun"
+		},
+		{
+			"name": "sun-2",
+			"temperature-variation": { "max": "+4F", "min": "-3F" },
+			"effect": "sun"
+		},
+		{
+			"name": "sun-3",
+			"temperature-variation": { "max": "+3F", "min": "-4F" },
+			"effect": "sun"
+		},
+		{
+			"name": "precipitation-0",
+			"temperature-variation": { "max": "+2F", "min": "-5F" },
+			"effect": "precipitation",
+			"drops": 30
+		},
+		{
+			"name": "precipitation-1",
+			"temperature-variation": { "max": "+1F", "min": "-6F" },
+			"effect": "precipitation",
+			"drops": 36
+		},
+		{
+			"name": "precipitation-2",
+			"temperature-variation": { "max": "+0F", "min": "-7F" },
+			"effect": "precipitation",
+			"drops": 42
+		},
+		{
+			"name": "precipitation-3",
+			"temperature-variation": { "max": "-1F", "min": "-8F" },
+			"effect": "precipitation",
+			"drops": 48
+		},
+		{
+			"name": "storm-0",
+			"temperature-variation": { "max": "-2F", "min": "-9F" },
+			"effect": "storm",
+			"drops": 54,
+			"lightning": {
+				"frequency": { "min": "50M", "max": "100M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-1",
+			"temperature-variation": { "max": "-3F", "min": "-10F" },
+			"effect": "storm",
+			"drops": 60,
+			"lightning": {
+				"frequency": { "min": "30M", "max": "50M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-2",
+			"temperature-variation": { "max": "-4F", "min": "-11F" },
+			"effect": "storm",
+			"drops": 66,
+			"lightning": {
+				"frequency": { "min": "20M", "max": "30M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-3",
+			"temperature-variation": { "max": "-5F", "min": "-12F" },
+			"effect": "storm",
+			"drops": 72,
+			"lightning": {
+				"frequency": { "min": "12M", "max": "18M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-4",
+			"temperature-variation": { "max": "-6F", "min": "-13F" },
+			"effect": "storm",
+			"drops": 78,
+			"lightning": {
+				"frequency": { "min": "10M", "max": "16M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-5",
+			"temperature-variation": { "max": "-7F", "min": "-14F" },
+			"effect": "storm",
+			"drops": 84,
+			"lightning": {
+				"frequency": { "min": "6M", "max": "12M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-6",
+			"temperature-variation": { "max": "-8F", "min": "-15F" },
+			"effect": "storm",
+			"drops": 90,
+			"lightning": {
+				"frequency": { "min": "3M", "max": "8M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		},
+		{
+			"name": "storm-7",
+			"temperature-variation": { "max": "-9F", "min": "-16F" },
+			"effect": "storm",
+			"drops": 96,
+			"lightning": {
+				"frequency": { "min": "1M", "max": "5M" },
+				"duration": { "min": 100, "max": 230 }
+			}
+		}
+	]
+}

@@ -1,0 +1,3 @@
+#!/bin/sh
+BASE=`dirname $0`
+"`$BASE/node-dir`/npm" $*

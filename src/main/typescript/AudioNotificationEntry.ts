@@ -199,6 +199,6 @@ export module AudioNotification {
 	 *
 	 * @param	notification	The AudioNotificationEntry node the callback is being invoked for.
 	 */
-	export type Callback = (notification?: AudioNotification) => void;
+	export type Callback = (notification: AudioNotification) => void;
 
 } // AudioNotification

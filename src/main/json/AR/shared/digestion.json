@@ -1,0 +1,22 @@
+{
+    "interval": "15m",
+    "defaultRate": -3,
+    "computation": "gameState.character.digestion += gameState.character.digestionRate; return gameState.character.digestion",
+    "types": [
+        {
+            "text": "",
+            "textVisible": false,
+            "min": 0,
+            "max": 128
+        },
+        {
+            "text": "Bloated",
+            "min": 128,
+            "max": 256,
+            "actions": {
+                "enter": "gameState.character.speed.penalty.addAdjustment('digestion', 'Bloated', 4);",
+                "leave": "gameState.character.speed.penalty.removeAdjustment('digestion', 'Bloated');"
+            }
+        }
+    ]
+}

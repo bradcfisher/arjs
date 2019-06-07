@@ -1,0 +1,43 @@
+{
+	"name": "The Dungeon",
+	"defaultLocation": {
+		"map": "level1",
+		"x": 0,
+		"y": 0,
+		"orientation": "north"
+	},
+	"maps": {
+		"level1": {
+			"format": "json",
+			"walls": { "$import": "level1/walls.json" },
+			"descriptions": { "$import": "level1/descriptions.json" },
+			"zones": { "$import": "level1/zones.json" },
+			"messages": { "$import": "level1/messages.json" },
+			"encounters": { "$import": "level1/encounters.json" }
+		},
+		"level2": {
+			"format": "json",
+			"walls": { "$import": "level2/walls.json" },
+			"descriptions": { "$import": "level2/descriptions.json" },
+			"zones": { "$import": "level2/zones.json" },
+			"messages": { "$import": "level2/messages.json" },
+			"encounters": { "$import": "level2/encounters.json" }
+		},
+		"level3": {
+			"format": "json",
+			"walls": { "$import": "level3/walls.json" },
+			"descriptions": { "$import": "level3/descriptions.json" },
+			"zones": { "$import": "level3/zones.json" },
+			"messages": { "$import": "level3/messages.json" },
+			"encounters": { "$import": "level3/encounters.json" }
+		},
+		"level4": {
+			"format": "json",
+			"walls": { "$import": "level4/walls.json" },
+			"descriptions": { "$import": "level4/descriptions.json" },
+			"zones": { "$import": "level4/zones.json" },
+			"messages": { "$import": "level4/messages.json" },
+			"encounters": { "$import": "level4/encounters.json" }
+		}
+	}
+}

@@ -1,0 +1,13 @@
+#!/bin/sh
+BASE=`dirname $0`/..
+NODE_DIR=`find "$BASE/.gradle/nodejs" -type d -name node-v*`
+if [ "$NODE_DIR" = "" ]; then
+  "$BASE/gradlew" setupNodeTools
+
+  NODE_DIR=`find "$BASE/.gradle/nodejs" -type d -name node-v*`
+  if [ "$NODE_DIR" = "" ]; then
+    echo Unable to find local Node installation directory 1>&2
+    exit 1
+  fi
+fi
+echo $NODE_DIR
