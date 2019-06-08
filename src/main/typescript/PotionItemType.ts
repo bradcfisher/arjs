@@ -55,7 +55,7 @@ export class PotionItemType
 	})();
 
 	constructor(config?: PotionItemTypeConfig|PotionItemType) {
-		super(config);
+		super();
 		if (config != null)
 			this.configure(config);
 	}

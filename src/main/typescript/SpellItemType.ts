@@ -117,7 +117,9 @@ export class SpellItemType
 	})();
 
 	constructor(config: SpellItemTypeConfig|SpellItemType) {
-		super(config);
+		super();
+		if (config != null)
+			this.configure(config);
 	}
 
 	protected get triggerTypes(): typeof SpellItemTypeTrigger {

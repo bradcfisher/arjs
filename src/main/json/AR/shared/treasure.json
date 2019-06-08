@@ -71,7 +71,7 @@
         "effects": [
             {
                 "triggers": "use",
-                "action": "/* TODO: Display the time ('It is 1700 hours.')* /"
+                "action": "/* TODO: Display the time ('It is 1700 hours.') */"
             }
         ]
     },

@@ -8,6 +8,15 @@ export * from "./AudioClip";
 export * from "./Karaoke";
 export * from "./Parse";
 
+
+// These classes aren't directly referenced in any other code, so are
+// removed from the bundle without these refs.   They need to be included
+// a they register themselves as factories for the item loading process.
+export { PotionItemType } from "./PotionItemType";
+export { SpellItemType } from "./SpellItemType";
+
+
+
 // /*
 
 // Load the GameState with a configuration
