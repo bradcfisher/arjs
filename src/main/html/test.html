@@ -12,11 +12,12 @@
 	<label>
 	<div>Source</div>
 	<select id="Source">
-		<option value="AR/city/sounds/intro.ogg">City Intro</option>
+		<option value="AR/city/sounds/intro.ogg">City - Intro</option>
 		<option value="AR/shared/sounds/death.ogg">Death</option>
-		<option value="AR/dungeon/sounds/rathskeller.ogg">Rathskeller</option>
-		<option value="AR/dungeon/sounds/rathskeller2.ogg">Rathskeller 2</option>
-		<option value="AR/city/sounds/thoreandan.ogg">Thoreandan</option>
+		<option value="AR/dungeon/sounds/rathskeller.ogg">Dungeon - Rathskeller</option>
+		<option value="AR/dungeon/sounds/rathskeller2.ogg">Dungeon - Rathskeller 2</option>
+		<option value="AR/city/sounds/thoreandan.ogg">City - Thoreandan</option>
+		<option value="AR/city/sounds/waves.ogg">City - Waves</option>
 	</select>
 	</label>
 </div>
@@ -76,6 +77,10 @@
 	text-align: right;
 }
 
+#Notifications .Notification span.Line {
+	width: 225px;
+}
+
 /*
 #Notifications .Notification span:last-of-type {
 	text-align: left;
@@ -131,10 +136,7 @@ $(document).ready(function() {
 			let P =
 				currentClip.duration * evt.offsetX / evt.currentTarget.offsetWidth;
 
-			console.log(evt, P);
-
-			currentClip.position = P;
-			updatePosition();
+			setPosition(P);
 		}
 	});
 
@@ -202,6 +204,17 @@ $(document).ready(function() {
 			"AR/city/sounds/thoreandan.json",
 			"Alternate Reality: The City - Thoreandan lyrics",
 			["AR/city/sounds/thoreandan.ogg"]
+		),
+		new arjs.ResourceMeta(
+			"AR/city/sounds/waves.ogg",
+			"audio/ogg",
+			"Alternate Reality: The City - Waves",
+			["AR/city/sounds/waves.json"]
+		),
+		new arjs.ResourceMeta(
+			"AR/city/sounds/waves.json",
+			"Alternate Reality: The City - Waves lyrics",
+			["AR/city/sounds/waves.ogg"]
 		)
 	).then(
 		(loadedResources) => {
@@ -258,7 +271,7 @@ console.log("processing clip: "+ clip.name, clip);
 			Promise.all(promises)
 				.then((clips) => {
 					console.log("all audio resources loaded, continuing");
-					setCurrentClip("AR/shared/sounds/death.ogg");
+					setCurrentClip("AR/city/sounds/waves.ogg");
 				}, (error) => {
 					console.log("Load failed:", error);
 					throw error;
@@ -279,6 +292,16 @@ function setCurrentClip(name) {
   $('#Pause').css('display', 'none');
   $("#Stop").prop("disabled", true);
 } // setCurrentClip
+
+function setPosition(pos) {
+	if (currentClip) {
+		console.log("Setting position: ", pos);
+		currentClip.position = pos;
+		updatePosition();
+	} else {
+		console.log("Request to set position to", pos, ", but no current clip.");
+	}
+}
 
 function playAudio() {
 	$('#Play').css('display', 'none');
@@ -357,14 +380,33 @@ function updateNotifications(clip) {
 	N.empty();
 
 	for (let notification of clip.notifications) {
-		if (notification.data && notification.data.text) {
-			N.append(
-				'<div class="Notification" id="Notification_'+ notification.id +'" tabindex="0">'+
-				'<span>'+ notification.id +'</span>'+
-				'<span>'+ notification.when.toFixed(3) +'</span>'+
-				'<span'+ (notification.data.color ? 'class="'+ notification.data.color +'"' : '') +'>'+ notification.data.text +'</span>'+
+		if (notification.data && (notification.data.text || notification.data.line)) {
+			let elem = N.append(
+				'<div class="Notification" id="Notification_'+ notification.id +'" tabindex="0" _when="'+ notification.when +'">'+
+				'<span class="Id">'+ notification.id +'</span>'+
+				'<span class="Position">'+ notification.when.toFixed(3) +'</span>'+
+				'<span class="Text"'+ (notification.data.color ? ' style="color:'+ notification.data.color +'"' : '') +'>'+ (notification.data.text ? notification.data.text : "&nbsp;") +'</span>'+
+				'<span class="Line">'+ (notification.data.line ? notification.data.line : "&nbsp;") +'</span>'+
 				'</div>'
 			);
+			elem.on("click", function(evt) {
+				let row = $(evt.target);
+				if (row[0].tagName != "DIV") {
+					row = row.parent();
+				}
+				let pos = Number(row.attr("_when"));
+
+				if (currentClip) {
+					let playing = currentClip.playing;
+					if (playing)
+						currentClip.stop();
+
+					setPosition(pos - 0.01);
+
+					if (playing)
+						currentClip.start();
+				}
+			});
 		}
 	}
 } // updateNotifications

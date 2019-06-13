@@ -1,0 +1,23 @@
+Images in The City
+---
+
+Images may be stored in a raw format (no RLE or compression) at 2bpp
+Several of the images are 160 x 72 (e.g. guild, healer, etc)
+
+  160 x 72 = 11520 pixels
+  2880 bytes (4 pixels/byte? = 2bpp = 4color)
+
+Portal and Abduction Background are 160 x 192
+
+
+---
+
+Color table is stored in a separate file.
+It appears that different palette is used for every row of the image.
+The four colors in the image are each assigned a value from the color table.
+
+  432 bytes / 72 rows = 6 bytes per row
+
+Not quite sure how those 6 bytes are interpreted.
+Each image color should use one byte, though that would only require 4 bytes.
+It also seems that the values are not all distinct, which seems odd as the colors for the different image pixel values would be identical

@@ -1,0 +1,191 @@
+
+
+
+A note on zones: (from a post here http://www.crpgdev.com/2012/06/)
+>> Basically the Dungeon designers set up a system where you could define a “zone” by specifying a
+>> pair of X and Y co-ordinates on the Dungeon map. These are used to control the colours, textures
+>> used (eg. rock walls, ice crystals in the crystal caverns), types of encounters (e.g. lots of
+>> guards around the bank vaults) and anti-magic zones.
+
+
+The maps for the original Atari 8-bit version of AR: The Dungeon are stored in the following format:
+=====================
+
+
+There is a 1024 byte header:
+===
+
+The first byte appears to be a version or level number
+
+	00 Level 1 (first quadrant - NW)
+	01 Level 1 (second quadrant - NE)
+	02 Level 1 (third quadrant - SW)
+	03 Level 1 (fourth quadrant - SE)
+	04 Level 2
+	05 Level 3
+	06 Level 4
+
+---
+
+The second and third bytes are unknown
+
+	9a (80+1a / 154)	- ?
+	ac (80+2c / 172)	- always AC?
+ 
+---
+
+Starting at 0x4 and ending at 0x2FF are two tables with variable length records:
+
+A table of location description fragment strings (eg. dictionary for reducing data size)
+- Each fragment is terminated by a character with the high bit set (char ATASCII + 0x80)
+- Fragments are numbered starting at 0, based on their position in the file
+
+Example:
+	The byte sequence [69 6e 20 74 68 65 a0] encodes the fragment "in the " (the a0 is a space with the high bit set [20 + 80], indicating the end of the fragment)
+
+Parsing of the fragment table stops as soon as an entry terminated with a NUL byte is read.  That entry is NOT considered a part of the fragment table, but is rather the first (0th) entry in the location description table (e.g. "toast! LEV 1.1").
+
+---
+
+Location descriptions table:
+- Each location description is a NUL-terminated string
+- Descriptions are numbered starting at 0, based on their position in the file
+- If a character is encountered with the high bit set (char ATASCII + 0x80), the previously parsed description fragment corresponding to the character value with the high bit cleared is substituted for the character.
+
+Example:
+	Given the following fragments parsed from the preceeding table:
+		1 "in a "
+		5 "corridoor"
+	The byte sequence [81 6c 6f 6e 67 20 85 00], the 81 decodes to "in a ", the 85 decodes to "corridoor", and the 00 terminates the entry.  The remaining bytes indicate normal characters, so the entire sequence decodes to "in a long corridoor".
+
+The space allocated for the fragment/description tables ends at 0x2ff, however, the actual end of the entries is signalled when a 0xff character is encountered.  Any remaining space in the table is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
+
+---
+
+The zone table starts at 0x300 and extends through 0x37d (125 bytes / max. 25 entries):
+- The first byte in the table contains the number of entries in the table, minus one.
+- The zone entries follow.  Each entry is 5 bytes: [X1 Y1 X2 Y2 Ref]
+- The table extends through 0x37d, and any unused space is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
+
+	?? Ref is what?  Is this a message index (eg. 'A sign on the door says:\n"Damon & Pythias Shoppe"')?
+	This may also be a bitflag containing stuff such as no magic flag, texture to use, etc...  Or perhaps it's a reference to an entry in the following table where that information could be stored?
+
+---
+
+Another table starts at 0x37e and ends at 0x3ff (130 bytes):
+	- possibly items? or effects?
+	- seems as though each entry is 8 bytes, which would allow for 16 entries
+	- The table extends through 0x3ff, and any unused space is filled with NULs [00].
+
+56 - 8 x 7 / 4 x 14 / 2 x 28 / 1 x 56
+64 - 8 x 8
+96 - 8 x 12
+
+---
+
+- The map cell data starts at offset 0x400 (1024)
+>> 4096 bytes
+>> 4 bytes per cell (ABCD)
+>> Always 32 cells (80 bytes) per row
+>> Always 32 rows
+
+>> Starts at:
+>>   - top-left of the map (0,0) for map 01 (NW corner)
+>>   - top-center of the map (32,0) for map 02 (NE corner)
+>>   - center-left of the map (0,32) for map 03 (SW corner)
+>>   - center-center of the map (32,32) for map 04 (SE corner)
+
+
+
+Walls are encoded in the first 2 bytes (A & B)
+	There are 8 types of walls:
+	 0 (0000) = No wall / open
+   1 (0001) = Archway ?
+   3 (0011) = Regular Door
+   5 (0101) = Secret Door (~)
+   8 (1000) = Locked Door (L)
+   9 (1001) = Bolted Door (X)
+  10 (1010) = Enchanted Door (O)
+  13 (1101) = Wall
+
+A - Types for East and North walls
+	high nibble - East
+	low nibble - North
+
+B - Types for West and South walls
+	high nibble - West
+	low nibble - South
+
+C - Location description index
+
+D - Special Square Codes:
+  00-1F=Module (shoppe etc.)  20-7F=Effect/Dangerous
+  80-9F=Encounter 0-31        A0-BF=Treasure 0-31
+  C0-DF=Message 0-31          E0-FF=Teleport 0-31
+
+Varies depending on the map or the disk?  There appears to be something else used to determine the specific scenario, possibly the cell's description message number?
+
+Special:
+  - Scenarios/Modules -
+  03 (  3) = Fountain (Hit points)
+  04 (  4) = Entrance to Palace / Entrance to Wilderness
+  05 (  5) = Stairwell - to ??
+  06 (  6) = Grahm's Gold Exchange
+  07 (  7) = Goblin King's Palace
+  08 (  8) = Acrinimaril's Tomb
+  
+  0A ( 10) = Chapel
+  0B ( 11) = Palace Prison
+  0C ( 12) = Guild ( Wizards of Chaos Guild, Wizards of Law Guild, Wizards of Order Guild, Wizards of Light Guild, Wizards of Darkness Guild )
+  0D ( 13) = Damon & Pythias Shoppe
+  
+  0F ( 15) = The Retreat
+  10 ( 16) = Oracle
+  11 ( 17) = Enchantress
+  12 ( 18) = Dungeon Entrance - to City
+  
+  1D () = Der Rathskeller's Bar and Grille
+
+  - Effects -
+  
+  60 ( 96) = ? Increased encounter frequency ?
+
+  - Encounters -
+  88 () [Level 1.2] = Doppleganger
+  98 (152) [Level 1.2] = Ghost
+
+  - Treasure -
+
+  BD (189) [Level 1.2] = Gauss Rifle [95] ("There is evidence of small\nweapons fire here.")
+  BE (190) [Level 1.2] = Solar suit ("There are some disgusting stains\non the floor and an odd looking\nsilvery quilted vest.")
+
+  - Messages -
+
+  C0 (192) [Level 1.2] = 'A sign on the door says:\n"Damon & Pythias Shoppe"'
+
+  - Teleporters -
+
+  E8 (232) [Level 1.2] = Teleporter to level 1.2 (11,01)
+
+  EF (239) [Level 1.1] = Teleporter to level 1.3 (0,0)
+  F0 (240) [Level 1.1] = Teleporter to level 1.1 (0,31)
+  F1 (241) [Level 1.1] = Teleporter to level 1.2 (0,0)
+  F2 (242) [Level 1.2] = Teleporter to level 1.1 (31,0)
+  F3 (243) [Level 1.4] = Teleporter to level 1.2 (31,31)
+  F4 (244) [Level 1.2] = Teleporter to level 1.4 (31,0)
+  F5 (245) [Level 1.3] = Teleporter to level 1.4 (0,31)
+  F6 (246) [Level 1.4] = Teleporter to level 1.3 (31,31)
+
+  F9 (249) [Level 1.] = Teleporter to level 1.4 (3,0)
+  FA (250) [Level 1.] = Teleporter to level 1.2 (3,31)
+  FC (252) [Level 1.3] = Teleporter to level 1.2 (16,7)
+  FF (255) [Level 1.2] = Teleporter to level 1.3 (24 27)
+
+
+
+	Perhaps the message to display (eg. A sign on the door says:\n"Damon & Pythias Shoppe")
+	Does this include lighting (e.g. brightly lit area)?  Or is that based on zones?
+	Encounter? / Treasure? / Effect?
+
+
+

@@ -1,0 +1,248 @@
+NW Quarter, Level 1.1
+
+	Key:
+	00. You are toast! LEV 1.1
+	01. You are in The City's sewer system.
+	02. You are in Gram's Gold Exchange vault.
+	03. You are in a corridor.
+	04. You are in a hallway.
+	05. You are in a passage.
+	06. You are in a long corridor.
+	07. You are in a typical dungeon corridor.
+	08. You are in the Goblins' demesne.
+	09. You are at the Goblin king's palace.
+	0a. You are by a stairway leading down.
+	0b. You are inside The Loop.
+	0c. You are in a mausoleum.
+	0d. You are by Acrinimiril's tomb.
+	0e. You are in the tomb of Acrinimiril.
+	0f. You are in a nondescript room.
+	10. You are in a small room.
+	11. You are in the Exit room.
+	12. You are in a small area.
+	13. You are in the Dungeon Chapel.
+	14. You are in the Chapel Sanctuary.
+	15. You are in yet another small room.
+	16. You are in a large room.
+	17. You are in a room with three doors.
+	18. You are in a dim passage.
+	19. You are in the Chapel garden.
+	1a. You are in an open area.
+	1b. You are in a charred barracks room.
+	1c. You are in an empty officers' quarters.
+	1d. You are in an old storage room.
+	1e. You are in a dead-end passage.
+	1f. You are in a debris-filled room.
+	20. You are in a Goblin's room.
+	21. You are in the reject room.
+	22. You are at a stairway leading down.
+	23. You are in a room with four doors.
+
+	Zone 00: 00,20-01,00
+	Zone 01: 01,00-01,20
+	Zone 02: 00,01-1b,03
+	Zone 03: 1c,01-01,09
+	Zone 04: 05,10-01,02
+	Zone 05: 0d,06-10,05
+	Zone 06: 02,19-20,1e
+	Zone 07: 1b,03-0d,12
+
+	Special Square Codes:
+	00-1F=Module (shoppe etc.) 20-7F=Effect/Dangerous
+	80-9F=Encounter 0-31 A0-BF=Treasure 0-31
+	C0-DF=Message 0-31 E0-FF=Teleport 0-31
+
+==========
+
+NE Quarter, Level 1.2
+
+	Key:
+	00. You are toast! LEV 1.2
+	01. You are in a corridor.
+	02. You are in a hallway.
+	03. You are in a long corridor.
+	04. You are in a long hallway.
+	05. You are in a dim passage.
+	06. You are in a secret passage.
+	07. You are in a secret hallway.
+	08. You are by a Dungeon Entrance.
+	09. You are in a dead-end passage.
+	0a. You are at the Damon & Pythias Shoppe.
+	0b. You are not here!!!
+	0c. You are at the Retreat.
+	0d. You are at the Wizards of Chaos Guild.
+	0e. You are at the Guild of Order.
+	0f. You are at the Wizards of Law Guild.
+	10. You are at a strange machine.
+	11. You are at a stairway leading down.
+	12. You are in the Palace Prison.
+	13. You are at the Thieves' Guild.
+	14. You are in a well-lighted area.
+	15. You are in an open area.
+	16. You are in a treasure room.
+	17. You are in a musty room.
+	18. You are in a small room.
+	19. You are in a creepy room.
+	1a. You are in a large room.
+	1b. You are in a room with two doors.
+	1c. You are in a spacious room.
+	1d. You are in a secret room.
+	1e. You are in yet another small room.
+	1f. You are in another small room.
+	20. You are in a quiet area.
+	21. You are in a nondescript room.
+	22. You are in a dangerous area.
+	23. You are in a debris-littered room.
+	24. You are in a quiet room.
+	25. You are in The City's sewer system.
+	26. You are in a secret corridor.
+	27. You are by a stairway leading down.
+	28. You are in a typical Dungeon corridor.
+	29. You are at Der Rathskeller Bar & Grille
+	2a. You are in an enclosed booth.
+	2b. You are at the Palace entrance.
+
+	Zone 00: 00,1f-01,00
+	Zone 01: 01,00-20,20
+	Zone 02: 1f,01-0f,1f
+	Zone 03: 1e,1e-01,10
+	Zone 04: 1e,1d-17,01
+	Zone 05: 0f,17-1e,14
+	Zone 06: 01,10-14,13
+	Zone 07: 13,01-1a,14
+	Zone 08: 1d,13-01,14
+	Zone 09: 14,19-13,01
+	Zone 0a: 01,1f-09,15
+	Zone 0b: 02,03-15,06
+	Zone 0c: 0f,02-1b,10
+
+	Special Square Codes:
+	00-1F=Module (shoppe etc.) 20-7F=Effect/Dangerous
+	80-9F=Encounter 0-31 A0-BF=Treasure 0-31
+	C0-DF=Message 0-31 E0-FF=Teleport 0-31 
+
+==========
+
+SW Quarter, Level 1.3
+
+	Key:
+	00. You are toast! LEV 1.3
+	01. You are in the Taurean Maze.
+	02. You are in a hallway.
+	03. You are in a long corridor.
+	04. You are in a Pelinor's Puzzle.
+	05. You are in a blink-mine field.
+	06. You are lost.
+	07. You are in a secret hallway.
+	08. You are Aratna maze.
+	09. You are in a dead-end passage.
+	0a. You are in a damp area.
+	0b. You are in a dim hallway.
+	0c. You are at a bubbling fountain.
+	0d. You are in the First City Bank's vault.
+	0e. You are at the Light Wizards Guild.
+	0f. You are in a passage.
+	10. You are by a stairway leading down.
+	11. You are at a stairway leading down.
+	12. You are
+	13. You are
+	14. You are in a well-lighted area.
+	15. You are in an open area.
+	16. You are in a treasure room.
+	17. You are in a musty room.
+	18. You are in a small room.
+	19. You are in a creepy room.
+	1a. You are in a large room.
+	1b. You are
+	1c. You are
+	1d. You are in a secret room.
+	1e. You are in yet another small room.
+	1f. You are in another small room.
+	20. You are in a quiet area.
+	21. You are in a nondescript room.
+	22. You are in a dangerous area.
+	23. You are in a room filled with debris.
+	24. You are in a quiet room.
+	25. You are in The City's sewer system.
+
+	Zone 00: 00,01-20,00
+	Zone 01: 01,1f-20,20
+	Zone 02: 00,01-18,06
+	Zone 03: 1f,01-02,12
+	Zone 04: 08,18-01,03
+	Zone 05: 13,0a-18,01
+	Zone 06: 03,05-06,12
+	Zone 07: 01,04-00,20
+	Zone 08: 13,08-05,01
+	Zone 09: 08,12-06,05
+
+	Special Square Codes:
+	00-1F=Module (shoppe etc.) 20-7F=Effect/Dangerous
+	80-9F=Encounter 0-31 A0-BF=Treasure 0-31
+	C0-DF=Message 0-31 E0-FF=Teleport 0-31 
+
+==========
+
+SE Quarter, Level 1.4
+
+	Key:
+	00. You are toast! LEV 1.4
+	01. You are in a dim corridor.
+	02. You are in a hallway.
+	03. You are in a Cult room.
+	04. You are by a stairway leading down.
+	05. You are in a dim passage.
+	06. You are in a secret passage.
+	07. You are in the Pythoness' Maze.
+	08. You are by a Dungeon Entrance.
+	09. You are in a dead-end passage.
+	0a. You are in a damp area.
+	0b. You are in a dim hallway.
+	0c. You are NOT HERE!!!
+	0d. You are facing the Oracle of Wisdom.
+	0e. You are in the Troll King's demesne.
+	0f. You are at the Weapon Enchantress'.
+	10. You are at a stairway leading down.
+	11. You are
+	12. You are at the Troll King's Palace.
+	13. You are at the Dark Wizards Guild.
+	14. You are
+	15. You are in an open area.
+	16. You are in a treasure room.
+	17. You are in a musty room.
+	18. You are in a small room.
+	19. You are in a creepy room.
+	1a. You are in a large room.
+	1b. You are in a room with two doors.
+	1c. You are in a spacious room.
+	1d. You are in a secret room.
+	1e. You are in a typical Dungeon corridor.
+	1f. You are in another small room.
+	20. You are in a quiet area.
+	21. You are in a nondescript room.
+	22. You are in a dangerous area.
+	23. You are in a room littered with debris.
+	24. You are in a quiet room.
+	25. You are in The City's sewer system.
+	26. You are in a secret corridor.
+	27. You are in a Troll's room.
+	28. You are in a long passage.
+
+	Zone 00: 00,20-20,1f
+	Zone 01: 01,1f-20,20
+	Zone 02: 00,01-18,1a
+	Zone 03: 1f,16-02,18
+	Zone 04: 16,1b-15,02
+	Zone 05: 06,11-07,10
+	Zone 06: 03,09-03,0c
+	Zone 07: 00,04-00,1f
+	Zone 08: 0d,1a-05,1d
+	Zone 09: 1c,1f-1b,06
+	Zone 0a: 10,1d-1e,1c
+	Zone 0b: 06,00-08,09
+	Zone 0c: 00,07-10,1f
+
+	Special Square Codes:
+	00-1F=Module (shoppe etc.) 20-7F=Effect/Dangerous
+	80-9F=Encounter 0-31 A0-BF=Treasure 0-31
+	C0-DF=Message 0-31 E0-FF=Teleport 0-31

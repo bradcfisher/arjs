@@ -1,0 +1,59 @@
+
+
+A disk is arranged into 128 byte sectors.  Each sector of the disk is comprised of an 8 byte header, followed by 120 bytes of data.
+
+
+The following was extracted from arutil.cpp by James Norris (rainbarrel.com):
+
+// City 120 encode format:
+//   Each sector is encoded individually
+//   The first 8 bytes are used for encoding information, the last 120 are data
+//   Bytes 0,1 = encryption keys 1, 2. Encoding using these set to 0 0 leaves the data unencoded.
+//   Bytes 2,3 = sector checksum of bytes 4 through 127 before encoding - little endian (low byte first, then high)
+//   Bytes 4,5 = sector number - little endian (low byte first, then high)
+//   Bytes 6,7 = disk id (I refer to this value as if disk id is little endian, so disk id of 0x122 means
+//     byte 6 is 22, and byte 7 is 1)
+//   Bytes 8 to 127 = 120 bytes of data
+
+// Encoding algorithm:
+//   Bytes 4 through 120 are XORed with a value calculated from the 2 keys. This means running the
+//   encryption algorithm twice using the same key values gets you back where you started.
+//   For each byte starting at 4 and going through 127 do: (yes, the keys are updated for each byte)
+//     key1 = key1 + key2
+//     key2 = key2 XOR key1
+//     sectorbyte = sectorbyte XOR key2
+
+---------------------------------------------------
+
+The Dungeon uses a different encoding scheme where a 128 byte source sector is encoded using the contents of a different 128 byte key sector.
+
+Given an array containing the disk_data and zero-based source_sector and key_sector values:
+
+let source_offset = source_sector * 128
+let key_offset = key_sector * 128
+declare decrypted_sector[128]
+
+For i = 0 to 127
+	// Read the byte read from position i of the source sector
+	let B = disk_data[source_offset + i]
+	// Rotate the bits of B right one bit (bit 7 moves to bit 6, bit 6 to bit 5, and bit 0 wraps around to bit 7)
+	let B = ((B >> 1) & 0x7f) | ((B & 1) << 7)
+	// Read the encryption key from the key sector
+	let key = disk_data[key_offset + i % 16]
+	decrypted_sector[i] = B ^ key
+
+The key sector value can be computed from the file ID by taking the lowest 10 bits of the file ID as follows:
+	key_sector = fileid & 0x03ff
+
+In practice, it appears the key sector is almost always the sector immediately preceeding the data sector.
+
+The data in the key sector is 16 bytes long and has the following structure:
+	byte 0-1	The file ID of the file for which the key is defined
+	byte 2-3	16-bit file length as a little-endian value
+	byte 4-5	16-bit checksum of the file contents (before encryption) as a little-endian value
+	byte 6-15	additional key data used for encryption
+
+- There appears to be a special case for file ID 0x524C (D3S1 monster file)
+	Start sector 0xEC
+	Key sector 0x24C
+	Length 0xB000

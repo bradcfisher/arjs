@@ -1,0 +1,322 @@
+[
+	{ "when": 0, "line": "", "color": "#157dab", "_": "cyan-ish", "_around": "9s in video" },
+	{ "when": 0, "text": "", "color": "#e1ce00", "_": "yellow-ish" },
+
+	{ "when": 990, "line": "THE WAVES AT" },
+	{ "when": "+0", "text": "THE " },
+	{ "when": "+500", "text": "WAVES " },
+	{ "when": "+500", "text": "AT" },
+
+	{ "when": 2480, "line": "HOME ARE POUNDING" },
+	{ "when": "+0", "text": "HOME " },
+	{ "when": "+500", "text": "ARE " },
+	{ "when": "+470", "text": "POUN" },
+	{ "when": "+470", "text": "DING" },
+
+	{ "when": 4470, "line": "ON THE SHORE" },
+	{ "when": "+0", "text": "ON " },
+	{ "when": "+490", "text": "THE " },
+	{ "when": "+500", "text": "SHORE" },
+
+	{ "when": 7060, "line": "" },
+
+	{ "when": 8960, "line": "THE SNOW HERE'S" },
+	{ "when": "+0", "text": "THE " },
+	{ "when": "+490", "text": "SNOW " },
+	{ "when": "+490", "text": "HERE'S" },
+
+	{ "when": 10430, "line": "FALLING" },
+	{ "when": "+0", "text": "FAL" },
+	{ "when": "+300", "text": "LING " },
+
+	{ "when": 12000, "line": "JUST OUTSIDE MY DOOR" },
+	{ "when": "+0", "text": "JUST " },
+	{ "when": "+350", "text": "OUT" },
+	{ "when": "+100", "text": "SIDE " },
+	{ "when": "+700", "text": "MY " },
+	{ "when": "+300", "text": "DOOR" },
+
+	{ "when": 17000, "line": "AND ALL I WANT'S" },
+	{ "when": "+0", "text": "AND " },
+	{ "when": "+500", "text": "ALL " },
+	{ "when": "+500", "text": "I " },
+	{ "when": "+490", "text": "WANT'S" },
+
+	{ "when": 18970, "line": "TO BE WITH YOU" },
+	{ "when": "+0", "text": "TO " },
+	{ "when": "+500", "text": "BE " },
+	{ "when": "+525", "text": "WITH " },
+	{ "when": "+520", "text": "YOU" },
+
+	{ "when": 21000, "line": "ONCE MORE" },
+	{ "when": "+0", "text": "ONCE " },
+	{ "when": "+480", "text": "MORE" },
+
+	{ "when": 24000, "line": "BUT I'M TOLD" },
+	{ "when": "+0", "text": "BUT " },
+	{ "when": "+280", "text": "I'M " },
+	{ "when": "+240", "text": "TOLD" },
+
+	{ "when": 27760, "line": "THAT THIS IS ONE" },
+	{ "when": "+0", "text": "THAT " },
+	{ "when": "+250", "text": "THIS " },
+	{ "when": "+225", "text": "IS " },
+	{ "when": "+275", "text": "ONE" },
+
+	{ "when": 29750, "line": "THING THAT I BEST" },
+	{ "when": "+0", "text": "THING " },
+	{ "when": "+250", "text": "THAT " },
+	{ "when": "+250", "text": "I " },
+	{ "when": "+260", "text": "BEST" },
+
+	{ "when": 31000, "line": "STOP HOPING FOR" },
+	{ "when": "+0", "text": "STOP " },
+	{ "when": "+520", "text": "HO" },
+	{ "when": "+470", "text": "PING " },
+	{ "when": "+480", "text": "FOR" },
+
+	{ "when": 34250, "line": "THEY TELL ME TO" },
+	{ "when": "+0", "text": "THEY " },
+	{ "when": "+270", "text": "TELL " },
+	{ "when": "+730", "text": "ME " },
+	{ "when": "+260", "text": "TO" },
+
+	{ "when": 36250, "line": "GO ON" },
+	{ "when": "+0", "text": "GO " },
+	{ "when": "+250", "text": "ON" },
+
+	{ "when": 38250, "line": "I ASK THEM FOR" },
+	{ "when": "+0", "text": "I " },
+	{ "when": "+270", "text": "ASK " },
+	{ "when": "+730", "text": "THEM " },
+	{ "when": "+240", "text": "FOR" },
+
+	{ "when": 40275, "line": "HOW LONG" },
+	{ "when": "+0", "text": "HOW " },
+	{ "when": "+250", "text": "LONG" },
+
+	{ "when": 42280, "line": "THEY TELL ME TO" },
+	{ "when": "+0", "text": "THEY " },
+	{ "when": "+260", "text": "TELL " },
+	{ "when": "+740", "text": "ME " },
+	{ "when": "+250", "text": "TO" },
+
+	{ "when": 44300, "line": "BE STRONG" },
+	{ "when": "+0", "text": "BE " },
+	{ "when": "+240", "text": "STRONG" },
+
+	{ "when": 46300, "line": "TO WHAT YOU CAN'T" },
+	{ "when": "+0", "text": "TO " },
+	{ "when": "+260", "text": "WHAT " },
+	{ "when": "+740", "text": "YOU " },
+	{ "when": "+250", "text": "CAN'T" },
+
+	{ "when": 48300, "line": "BE WRONG" },
+	{ "when": "+0", "text": "BE " },
+	{ "when": "+250", "text": "WRONG" },
+
+	{ "when": 50300, "line": "I'M LOST WITHOUT" },
+	{ "when": "+0", "text": "I'M " },
+	{ "when": "+250", "text": "LOST " },
+	{ "when": "+760", "text": "WITH" },
+	{ "when": "+240", "text": "OUT" },
+
+	{ "when": 52300, "line": "YOUR LOVE" },
+	{ "when": "+0", "text": "YOUR " },
+	{ "when": "+270", "text": "LOVE" },
+
+	{ "when": 54300, "line": "I NEED YOU HERE WITH" },
+	{ "when": "+0", "text": "I " },
+	{ "when": "+270", "text": "NEED " },
+	{ "when": "+750", "text": "YOU " },
+	{ "when": "+570", "text": "HERE " },
+	{ "when": "+430", "text": "WITH " },
+
+	{ "when": 56630, "line": "ME" },
+	{ "when": "+0", "text": "ME" },
+
+	{ "when": 59290, "line": "IN THIS" },
+	{ "when": "+0", "text": "IN " },
+	{ "when": "+240", "text": "THIS" },
+
+	{ "when": 59770, "line": "REALITY" },
+	{ "when": "+0", "text": "RE" },
+	{ "when": "+280", "text": "AL" },
+	{ "when": "+350", "text": "I" },
+	{ "when": "+210", "text": "TY" },
+
+	{ "when": 64770, "line": "" },
+	{ "when": "+1000", "line": "THE REPLY" },
+	{ "when": "+2000", "line": "" },
+
+	{ "when": 69085, "line": "THEY WITHOUT WARNING" },
+	{ "when": "+0", "text": "THEY " },
+	{ "when": "+520", "text": "WITH" },
+	{ "when": "+490", "text": "OUT " },
+	{ "when": "+500", "text": "WAR" },
+	{ "when": "+510", "text": "NING " },
+
+	{ "when": 71560, "line": "TOOK AWAY" },
+	{ "when": "+0", "text": "TOOK " },
+	{ "when": "+500", "text": "A" },
+	{ "when": "+510", "text": "WAY" },
+
+	{ "when": 73060, "line": "FROM ME" },
+	{ "when": "+0", "text": "FROM " },
+	{ "when": "+480", "text": "ME" },
+
+	{ "when": 77050, "line": "THE HAPPINESS" },
+	{ "when": "+0", "text": "THE " },
+	{ "when": "+510", "text": "HAP" },
+	{ "when": "+460", "text": "PI" },
+	{ "when": "+490", "text": "NESS" },
+
+	{ "when": 78830, "line": "WE SHARED WHEN" },
+	{ "when": "+0", "text": "WE " },
+	{ "when": "+1260", "text": "SHARED " },
+	{ "when": "+240", "text": "WHEN" },
+
+	{ "when": 80570, "line": "YOU WERE FREE" },
+	{ "when": "+0", "text": "YOU " },
+	{ "when": "+760", "text": "WERE " },
+	{ "when": "+280", "text": "FREE" },
+
+	{ "when": 85100, "line": "I SEARCH THE SKY" },
+	{ "when": "+0", "text": "I " },
+	{ "when": "+500", "text": "SEARCH " },
+	{ "when": "+505", "text": "THE " },
+	{ "when": "+500", "text": "SKY" },
+
+	{ "when": 87100, "line": "MY LOVE RETURN" },
+	{ "when": "+0", "text": "MY " },
+	{ "when": "+500", "text": "LOVE " },
+	{ "when": "+505", "text": "RE" },
+	{ "when": "+510", "text": "TURN" },
+
+	{ "when": 89100, "line": "TO ME" },
+	{ "when": "+0", "text": "TO " },
+	{ "when": "+500", "text": "ME" },
+
+	{ "when": 92140, "line": "I AM COLD" },
+	{ "when": "+0", "text": "I " },
+	{ "when": "+260", "text": "AM " },
+	{ "when": "+220", "text": "COLD" },
+
+	{ "when": 95860, "line": "AND FEEL ALONE" },
+	{ "when": "+0", "text": "AND " },
+	{ "when": "+250", "text": "FEEL " },
+	{ "when": "+230", "text": "A" },
+	{ "when": "+265", "text": "LONE" },
+
+	{ "when": 97850, "line": "BLIND SILENT" },
+	{ "when": "+0", "text": "BLIND " },
+	{ "when": "+255", "text": "SI" },
+	{ "when": "+240", "text": "LENT" },
+
+	{ "when": 98620, "line": "THIS I'VE COME TO BE" },
+	{ "when": "+0", "text": "THIS " },
+	{ "when": "+490", "text": "I'VE " },
+	{ "when": "+515", "text": "COME " },
+	{ "when": "+475", "text": "TO " },
+	{ "when": "+480", "text": "BE" },
+
+	{ "when": 102350, "line": "FRIENDS TELL ME TO" },
+	{ "when": "+0", "text": "FRIENDS " },
+	{ "when": "+260", "text": "TELL " },
+	{ "when": "+740", "text": "ME " },
+	{ "when": "+250", "text": "TO" },
+
+	{ "when": 104370, "line": "GO ON" },
+	{ "when": "+0", "text": "GO " },
+	{ "when": "+260", "text": "ON" },
+
+	{ "when": 106370, "line": "NO ONE KNOWS WHERE" },
+	{ "when": "+0", "text": "NO " },
+	{ "when": "+260", "text": "ONE " },
+	{ "when": "+750", "text": "KNOWS " },
+	{ "when": "+245", "text": "WHERE" },
+
+	{ "when": 108380, "line": "YOU'VE GONE" },
+	{ "when": "+0", "text": "YOU'VE " },
+	{ "when": "+250", "text": "GONE" },
+
+	{ "when": 110380, "line": "THEY TELL ME TO" },
+	{ "when": "+0", "text": "THEY " },
+	{ "when": "+260", "text": "TELL " },
+	{ "when": "+740", "text": "ME " },
+	{ "when": "+250", "text": "TO" },
+
+	{ "when": 112400, "line": "BE STRONG" },
+	{ "when": "+0", "text": "BE " },
+	{ "when": "+250", "text": "STRONG" },
+
+	{ "when": 114410, "line": "ENDEAVOR TO" },
+	{ "when": "+0", "text": "EN" },
+	{ "when": "+265", "text": "DEA" },
+	{ "when": "+730", "text": "VOR " },
+	{ "when": "+260", "text": "TO" },
+
+	{ "when": 116420, "line": "LIVE ON" },
+	{ "when": "+0", "text": "LIVE " },
+	{ "when": "+250", "text": "ON" },
+
+	{ "when": 118410, "line": "I'M LOST WITHOUT" },
+	{ "when": "+0", "text": "I'M " },
+	{ "when": "+280", "text": "LOST " },
+	{ "when": "+740", "text": "WITH" },
+	{ "when": "+250", "text": "OUT" },
+
+	{ "when": 120440, "line": "YOUR LOVE" },
+	{ "when": "+0", "text": "YOUR " },
+	{ "when": "+255", "text": "LOVE" },
+
+	{ "when": 122430, "line": "I NEED YOU HERE WITH", "_around": "s in video" },
+	{ "when": "+0", "text": "I " },
+	{ "when": "+260", "text": "NEED " },
+	{ "when": "+725", "text": "YOU " },
+	{ "when": "+560", "text": "HERE " },
+	{ "when": "+415", "text": "WITH" },
+
+	{ "when": 124720, "line": "ME", "_around": "s in video" },
+	{ "when": "+0", "text": "ME" },
+
+	{ "when": 127325, "line": "COME TO", "_around": "s in video" },
+	{ "when": "+0", "text": "COME " },
+	{ "when": "+250", "text": "TO" },
+
+	{ "when": 127850, "line": "REALITY", "_around": "s in video" },
+	{ "when": "+0", "text": "RE" },
+	{ "when": "+310", "text": "AL" },
+	{ "when": "+370", "text": "I" },
+	{ "when": "+200", "text": "TY" },
+
+	{ "when": 131315, "line": "I KNOW THAT YOU'LL", "_around": "s in video" },
+	{ "when": "+0", "text": "I " },
+	{ "when": "+275", "text": "KNOW " },
+	{ "when": "+250", "text": "THAT " },
+	{ "when": "+250", "text": "YOU'LL" },
+
+	{ "when": 132330, "line": "AGREE", "_around": "s in video" },
+  { "when": "+0", "text": "A" },
+	{ "when": "+310", "text": "GREE" },
+
+	{ "when": 135320, "line": "TO HURRY HOME TO ME", "_around": "s in video" },
+  { "when": "+0", "text": "TO " },
+	{ "when": "+275", "text": "HUR" },
+	{ "when": "+250", "text": "RY " },
+	{ "when": "+275", "text": "HOME " },
+	{ "when": "+260", "text": "TO " },
+	{ "when": "+255", "text": "ME" },
+
+	{ "when": 139320, "line": "AS SOON AS YOU ARE", "_around": "s in video" },
+  { "when": "+0", "text": "AS " },
+	{ "when": "+380", "text": "SOON " },
+	{ "when": "+410", "text": "AS " },
+	{ "when": "+455", "text": "YOU " },
+	{ "when": "+430", "text": "ARE" },
+
+	{ "when": 141470, "line": "FREE", "_around": "s in video" },
+  { "when": "+0", "text": "FREE" },
+  
+  { "when": 146000, "line": "" }
+]

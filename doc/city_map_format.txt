@@ -1,0 +1,173 @@
+
+Note: Some areas can have roofs!  These protect against rain
+ - How are these encoded?  As zones, or as additional data for the cell beyond the wall data?
+
+---
+
+The maps for the original Atari 8-bit version of AR: The City are stored in in two files (CityMapWalls.xfd and CityMapLocations.xfd), each 4096 bytes in length.
+
+=====================
+
+The first file "CityMapWalls.xfd" contains 4096 bytes, each of which represents a square on a 64 x 64 grid.  X and Y coordinates for each square range from 0 to 63 and increase from left to right and top to bottom, respectively.  Each byte in the map encodes the walls to display for the corresponding element of the map grid as follows:
+
+ L| D| R| U
+--+--+--+--
+76|54|32|10
+
+  L = The type of wall to apply to the left edge of the cell
+  D = The type of wall to apply to the bottom edge of the cell
+  R = The type of wall to apply to the right edge of the cell
+  U = The type of wall to apply to the top edge of the cell
+
+The valid wall types are:
+
+  00 (0) - No wall / open
+  01 (1) - Wall
+  10 (2) - Secret door
+  11 (3) - Door
+
+=====================
+
+The second file "CityMapLocations.xfd" contains 4096 bytes, each representing a location ID assigned to the corresponding square on the 64 x 64 grid.  The coordinate system used for this file is identical to that of the "CityMapWalls.xfd" file.
+
+The location descriptions and logic associated with the various codes appears to be embedded within the game engine itself.
+The value appears to be a combination of an index in the lower nibble (A), and a set of flags in the high nibble (B).
+
+   B  | A
+  ----+----
+  7654|3210
+
+Flags for B
+-----------
+  0000 [0  0] - None
+  ???1 - Scenario
+    0001 [1  1] = Inn
+    0011 [3  3] = Tavern
+    0101 [4  4] = Bank
+    0111 [7  7] = Shop
+    1001 [9  9] = Smith
+    1011 [B 11] = Expansions/Addons (e.g. Dungeon, Palace, etc)
+    1101 [D 13] = Healer
+    1111 [F 15] = Guild
+  ??10 - Covered/enclosed area (perhaps these may affect encounter rate as well?)
+    0010 [2  2] - Goldenrod roof, Dark gray (almost black) floor
+    0110 [6  6] - Pink roof, Dark blue floor
+    1010 [A 10] - Cyan roof, Navy/purple floor
+    1110 [E 14] - Bright yellow roof, Black floor
+  ??00 - Encounter rate/danger level?
+    0100 [4  4] - lower encounter rate? nothing visible
+    1000 [8  8] - high encounter rate? nothing visible
+    1100 [C 12] - ? nothing visible
+
+The various codes are as follows:
+
+ - Basic descriptions -
+ These can all have any of the non-scenario flags (enclosed, encounter rate) in the high nibble as well.
+  00   0  "on a Street"
+  01   1  "on a Side Street"
+  02   2  "on a Back Alley"
+  03   3  "on a Main Street"
+  04   4  "in a Street"
+  05   5  "at the City Square"
+  06   6  "at the City Wall"
+  07   7  "in a Secret passage"
+  08   8  "in a Secret alley"
+  09   9  "at the Northern Gate"
+  0A  10  "at the Southern Gate"
+  0B  11  "at the Western Gate"
+  0C  12  "at the Royale Walkway"
+  0D  13  "in an Alley"
+  0E  14  "in an Enclosed Area"
+  0F  15  "in an Alcove"
+
+  - Inns -
+  10  16  "at the Green Boar Inn"
+  11  17  "at the Lazy Griffin Inn"
+  12  18  "at the Sleeping Dragon Inn"
+  13  19  "at the Travellers Inn"
+  14  20  "at the Midnight Inn"
+  15  21  "at the Warriors Retreat Inn"
+  16  22  "at the Royal Resort"
+
+  - Taverns -
+  30  48  "at the Flaming Dragon Tavern"
+  31  49  "at the Misty Mountain Tavern"
+  32  50  "at the Screaming Siren Bar"
+  33  51  "at the Happy Hunter Rest Stop"
+  34  52  "at the Dancing Nymph Tavern"
+  35  53  "at the Club"
+  36  54  "at the Black Devil Tavern"
+  37  55  "at the Lost Oasis Tavern"
+  38  56  "at the Last Stop"
+  39  57  "at the Tail of the Dog"
+  3A  58  "at Club Babalyon"
+  3B  59  "at the Lost Tears Tavern"
+  3C  60  "at Mom's Bar"
+  3D  61  "at Lusty Lloyds"
+
+  - Banks -
+  50  80  "at the First City Bank"
+  51  81  "at the Granite Bank"
+  52  82  "at the Grams Gold Exchange"
+
+  - Shops -
+  70 112  "at Smiley's Shop"
+  71 113  "at the Honest Trader"
+  72 114  "at the Adventurers Outfitters"
+  73 115  "at the Warrior's Supplies"
+  74 116  "at the General Store"
+  75 117  "at the Exclusive Outfitters"
+  76 118  "at the Ono Goods"
+  77 119  "at the Best Bargain Store"
+  78 120  "at the Grubron Imports"
+  79 121  "at the Betelguese Sales"
+  7A 122  "at the Merchants Grotto"
+  7B 123  "at the Sunset Market"
+  7C 124  "at Pauline's Emporium"
+  7D 125  "at Da Place"
+  7E 126  "at the Trade Winds"
+
+  - Smiths -
+  90 144  "at the Sharp Weaponsmiths"
+  91 145  "at Occum's Weaponsmiths"
+  92 146  "at the Best Armorers"
+  93 147  "at the Knights Armorers"
+
+  - Scenarios -
+  B0 176  "at the House of Ill-Repute"
+  B1 177  "at Acrinimiril's Gate"
+  B2 178  "at the Floating Gate"
+  B3 179  "at the Arena"
+  B4 180  "at the Palace"
+  B5 181  "at the Palace Gate"
+  B6 182  "at an entrance to The Dungeon"
+  B7 183  "at the Maximum Casino"
+  B8 184  "at the Arena Entrance"
+  B9 185  "at Jack's Fitness Academy"
+  BA 186  "at the Armstrong Builders"
+  BB 187  "at the Apollo Trainers"
+  BC 188  "at Grog's Weapons Trainers"
+  BD 189  "at the Flash Weapons Trainers"
+  BE 190  "at David's Weapons Trainers"
+
+  - Healers -
+  D0 208  "at the One Way Soothers"
+  D1 209  "at the Alpha Omega Healers"
+
+  - Guilds -
+  F0 240  "at the Thieves Guild"
+  F1 241  "at the Blue Wizards Guild"
+  F2 242  "at the Light Wizards Guild"
+  F3 243  "at the Paladins Guild"
+  F4 244  "at the Green Wizards Academy"
+  F5 245  "at the Red Wizards University"
+  F6 246  "at the Dark Wizards Guild"
+  F7 247  "at the Star Wizards Guild"
+  F8 248  "at the Wizards of Chaos Guild"
+  F9 249  "at the Wizards of Law Guild"
+  FA 250  "at the Mercenary Guild"
+  FB 251  "at the Guild of Order"
+  FC 252  "at the Physicians Guild"
+  FD 253  "at the Assassins Guild"
+
+    "by an entrance to The Dungeon"

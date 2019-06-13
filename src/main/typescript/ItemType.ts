@@ -19,6 +19,7 @@ export const ItemTypeCategory = {
 	food: lit("food"),
 	drink: lit("drink"),
 	spell: lit("spell"),
+	clothing: lit("clothing"),
 	other: lit("other")
 }
 export type ItemTypeCategory = (typeof ItemTypeCategory)[keyof typeof ItemTypeCategory];
@@ -107,6 +108,7 @@ export interface ItemTypeConfig {
 	//
 	// Max. number of times an item can be used (0 = infinite)
 	// May be used as upper limit when recharging item
+	// Also used to determine when weapon or armor has broken (decreased through use)
 	// readonly maxUses?: number = 0;
 
 	/**

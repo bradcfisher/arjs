@@ -2,8 +2,8 @@
 	"name": "The Dungeon",
 	"defaultLocation": {
 		"map": "level1",
-		"x": 0,
-		"y": 0,
+		"x": 43,
+		"y": 3,
 		"orientation": "north"
 	},
 	"maps": {
