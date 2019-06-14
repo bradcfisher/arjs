@@ -18,6 +18,7 @@
 		<option value="AR/dungeon/sounds/rathskeller2.ogg">Dungeon - Rathskeller 2</option>
 		<option value="AR/city/sounds/thoreandan.ogg">City - Thoreandan</option>
 		<option value="AR/city/sounds/waves.ogg">City - Waves</option>
+		<option value="AR/city/sounds/let_in_the_lite.ogg">City - Let in the Lite</option>
 	</select>
 	</label>
 </div>
@@ -215,6 +216,17 @@ $(document).ready(function() {
 			"AR/city/sounds/waves.json",
 			"Alternate Reality: The City - Waves lyrics",
 			["AR/city/sounds/waves.ogg"]
+		),
+		new arjs.ResourceMeta(
+			"AR/city/sounds/let_in_the_lite.ogg",
+			"audio/ogg",
+			"Alternate Reality: The City - Let in the Lite",
+			["AR/city/sounds/let_in_the_lite.json"]
+		),
+		new arjs.ResourceMeta(
+			"AR/city/sounds/let_in_the_lite.json",
+			"Alternate Reality: The City - Let in the Lite lyrics",
+			["AR/city/sounds/let_in_the_lite.ogg"]
 		)
 	).then(
 		(loadedResources) => {
@@ -271,7 +283,7 @@ console.log("processing clip: "+ clip.name, clip);
 			Promise.all(promises)
 				.then((clips) => {
 					console.log("all audio resources loaded, continuing");
-					setCurrentClip("AR/city/sounds/waves.ogg");
+					setCurrentClip("AR/city/sounds/let_in_the_lite.ogg");
 				}, (error) => {
 					console.log("Load failed:", error);
 					throw error;

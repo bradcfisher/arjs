@@ -1,5 +1,5 @@
 [
-	{ "when": 0, "line": "", "color": "#157dab", "_": "cyan-ish", "_around": "9s in video" },
+	{ "when": 0, "line": "", "color": "#157dab", "_": "cyan-ish" },
 	{ "when": 0, "text": "", "color": "#e1ce00", "_": "yellow-ish" },
 
 	{ "when": 990, "line": "THE WAVES AT" },
@@ -270,37 +270,37 @@
 	{ "when": "+0", "text": "YOUR " },
 	{ "when": "+255", "text": "LOVE" },
 
-	{ "when": 122430, "line": "I NEED YOU HERE WITH", "_around": "s in video" },
+	{ "when": 122430, "line": "I NEED YOU HERE WITH" },
 	{ "when": "+0", "text": "I " },
 	{ "when": "+260", "text": "NEED " },
 	{ "when": "+725", "text": "YOU " },
 	{ "when": "+560", "text": "HERE " },
 	{ "when": "+415", "text": "WITH" },
 
-	{ "when": 124720, "line": "ME", "_around": "s in video" },
+	{ "when": 124720, "line": "ME" },
 	{ "when": "+0", "text": "ME" },
 
-	{ "when": 127325, "line": "COME TO", "_around": "s in video" },
+	{ "when": 127325, "line": "COME TO" },
 	{ "when": "+0", "text": "COME " },
 	{ "when": "+250", "text": "TO" },
 
-	{ "when": 127850, "line": "REALITY", "_around": "s in video" },
+	{ "when": 127850, "line": "REALITY" },
 	{ "when": "+0", "text": "RE" },
 	{ "when": "+310", "text": "AL" },
 	{ "when": "+370", "text": "I" },
 	{ "when": "+200", "text": "TY" },
 
-	{ "when": 131315, "line": "I KNOW THAT YOU'LL", "_around": "s in video" },
+	{ "when": 131315, "line": "I KNOW THAT YOU'LL" },
 	{ "when": "+0", "text": "I " },
 	{ "when": "+275", "text": "KNOW " },
 	{ "when": "+250", "text": "THAT " },
 	{ "when": "+250", "text": "YOU'LL" },
 
-	{ "when": 132330, "line": "AGREE", "_around": "s in video" },
+	{ "when": 132330, "line": "AGREE" },
   { "when": "+0", "text": "A" },
 	{ "when": "+310", "text": "GREE" },
 
-	{ "when": 135320, "line": "TO HURRY HOME TO ME", "_around": "s in video" },
+	{ "when": 135320, "line": "TO HURRY HOME TO ME" },
   { "when": "+0", "text": "TO " },
 	{ "when": "+275", "text": "HUR" },
 	{ "when": "+250", "text": "RY " },
@@ -308,14 +308,14 @@
 	{ "when": "+260", "text": "TO " },
 	{ "when": "+255", "text": "ME" },
 
-	{ "when": 139320, "line": "AS SOON AS YOU ARE", "_around": "s in video" },
+	{ "when": 139320, "line": "AS SOON AS YOU ARE" },
   { "when": "+0", "text": "AS " },
 	{ "when": "+380", "text": "SOON " },
 	{ "when": "+410", "text": "AS " },
 	{ "when": "+455", "text": "YOU " },
 	{ "when": "+430", "text": "ARE" },
 
-	{ "when": 141470, "line": "FREE", "_around": "s in video" },
+	{ "when": 141470, "line": "FREE" },
   { "when": "+0", "text": "FREE" },
   
   { "when": 146000, "line": "" }
