@@ -37,7 +37,7 @@
     <div>
         <label>
         <div>Source</div>
-        <select id="Source" disabled><option>Select...</option></select>
+        <select id="Source" disabled><option value="">Select...</option></select>
         </label>
 
         <label>
@@ -205,17 +205,21 @@
         }
 
         function loadMap(type) {
-            let entry = mapTypes[type];
-
-            if (type == "city") {
-                let reader = new arjs.CityMapReader();
-                reader.readWalls(resources.get(entry.resources[0].url));
-                reader.readLocationCodes(resources.get(entry.resources[1].url));
-                renderer.map = reader.map;
+            if (type == "") {
+                renderer.map = null;
             } else {
-                let reader = new arjs.DungeonMapReader();
-                reader.read(resources.get(entry.resources[0].url));
-                renderer.map = reader.map;
+                let entry = mapTypes[type];
+
+                if (type == "city") {
+                    let reader = new arjs.CityMapReader();
+                    reader.readWalls(resources.get(entry.resources[0].url));
+                    reader.readLocationCodes(resources.get(entry.resources[1].url));
+                    renderer.map = reader.map;
+                } else {
+                    let reader = new arjs.DungeonMapReader();
+                    reader.readMap(resources.get(entry.resources[0].url));
+                    renderer.map = reader.map;
+                }
             }
 
             renderer.x = 0;

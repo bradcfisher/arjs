@@ -10,6 +10,7 @@ export * from "./Parse";
 
 export * from "./ScenarioMap";
 export * from "./CityMapReader";
+export * from "./DungeonMapReader";
 export * from "./MapRenderer";
 
 // These classes aren't directly referenced in any other code, so are

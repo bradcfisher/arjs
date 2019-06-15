@@ -19,6 +19,7 @@ export class MapRenderer {
     private _backgroundColor: string = "white";
     private _textColor: string = "black";
     private _gridColor: string = "#e0e0e0";
+    private _unknownColor: string = "red";
     private _archwayColor: string = "green";
     private _wallColor: string = "black";
     private _doorColor: string = "green";
@@ -154,6 +155,15 @@ export class MapRenderer {
         this.invalidate();
     }
 
+    get unknownColor(): string {
+        return this._unknownColor;
+    }
+
+    set unknownColor(value: string) {
+        this._unknownColor = value;
+        this.invalidate();
+    }
+
     get archwayColor(): string {
         return this._archwayColor;
     }
@@ -226,6 +236,11 @@ export class MapRenderer {
         this.invalidate();
     }
 
+    private drawUnknown(context: CanvasRenderingContext2D): void {
+        context.fillStyle = this._unknownColor;
+        context.fillRect(0, 0, 1, 0.1);
+    }
+
     private drawSolidWall(context: CanvasRenderingContext2D): void {
         context.strokeStyle = this._wallColor;
         context.beginPath();
@@ -238,7 +253,7 @@ export class MapRenderer {
         context.strokeStyle = this._archwayColor;
         context.beginPath();
         context.moveTo(0, 0);
-        context.bezierCurveTo(0.3, 0.25, 0.6, 0.25, 1, 0);
+        context.bezierCurveTo(0.3, 0.15, 0.7, 0.15, 1, 0);
         context.stroke();
     }
 
@@ -274,26 +289,26 @@ export class MapRenderer {
         this.drawDoor(context);
         context.strokeStyle = this._obstructionColor;
         context.beginPath();
-        context.moveTo(0.4, 0);
-        context.lineTo(0.4, 0.1);
-        context.lineTo(0.5, 0.1);
+        context.moveTo(0.4, 0.1);
+        context.lineTo(0.4, 0);
+        context.lineTo(0.6, 0);
         context.stroke();
     }
 
     private drawBoltedDoor(context: CanvasRenderingContext2D): void {
         this.drawDoor(context);
         context.strokeStyle = this._obstructionColor;
-        context.strokeRect(0.4, 0, 0.6, 0.1);
+        context.strokeRect(0.35, 0, 0.3, 0.1);
     }
 
     private drawEnchantedDoor(context: CanvasRenderingContext2D): void {
         this.drawDoor(context);
         context.strokeStyle = this._obstructionColor;
         context.beginPath();
-        context.moveTo(0.3, 0);
+        context.moveTo(0.35, 0);
         context.lineTo(0.5, 0.1);
         context.lineTo(0.5, 0);
-        context.lineTo(0.6, 0.1);
+        context.lineTo(0.65, 0.1);
         context.stroke();
     }
 
@@ -341,6 +356,7 @@ export class MapRenderer {
                 let overlay = this.getOverlayForType(type)
                 if (!overlay) {
                     console.log("Can't draw unknown wall type: ", type);
+                    this.drawUnknown(context);
                 } else {
                     context.drawImage(overlay, 0, 0, 1, 1);
                 }
@@ -357,7 +373,9 @@ export class MapRenderer {
                     case 9: this.drawBoltedDoor(context); break;
                     case 10: this.drawEnchantedDoor(context); break;
                     case 13: this.drawSolidWall(context); break;
-                    default: console.log("Can't draw unknown wall type: ", type);
+                    default:
+                        console.log("Can't draw unknown wall type: ", type);
+                        this.drawUnknown(context);
                 }
                 context.restore();
             }
