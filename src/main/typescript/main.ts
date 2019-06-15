@@ -8,6 +8,9 @@ export * from "./AudioClip";
 export * from "./Karaoke";
 export * from "./Parse";
 
+export * from "./ScenarioMap";
+export * from "./CityMapReader";
+export * from "./MapRenderer";
 
 // These classes aren't directly referenced in any other code, so are
 // removed from the bundle without these refs.   They need to be included

@@ -115,6 +115,11 @@ export class Karaoke {
 		if (!lyricCanvas)
 			throw new Error("lyricCanvas cannot be null");
 
+		// tmpCtx is a workaround for a possible TypeScript static analysis bug.
+		// While a nullable messageCtx should be usable here due to the null check,
+		// the TypeScript compiler then complains about it being potentially nullable
+		// within the lambda function created below.  That seems like a bug, since
+		// the lambda won't be executed unless it get's past the null check.
 		let tmpCtx: CanvasRenderingContext2D|null = lyricCanvas.getContext("2d");
 		let messageCtx: CanvasRenderingContext2D;
 		if (tmpCtx != null)

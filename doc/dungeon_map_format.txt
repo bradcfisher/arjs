@@ -64,7 +64,7 @@ The space allocated for the fragment/description tables ends at 0x2ff, however, 
 
 The zone table starts at 0x300 and extends through 0x37d (125 bytes / max. 25 entries):
 - The first byte in the table contains the number of entries in the table, minus one.
-- The zone entries follow.  Each entry is 5 bytes: [X1 Y1 X2 Y2 Ref]
+- The zone entries follow.  Each entry is 5 bytes: [Y1 X1 Y2 X2 Ref]
 - The table extends through 0x37d, and any unused space is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
 
 	?? Ref is what?  Is this a message index (eg. 'A sign on the door says:\n"Damon & Pythias Shoppe"')?
@@ -100,7 +100,7 @@ Another table starts at 0x37e and ends at 0x3ff (130 bytes):
 Walls are encoded in the first 2 bytes (A & B)
 	There are 8 types of walls:
 	 0 (0000) = No wall / open
-   1 (0001) = Archway ?
+   1 (0001) = Archway
    3 (0011) = Regular Door
    5 (0101) = Secret Door (~)
    8 (1000) = Locked Door (L)

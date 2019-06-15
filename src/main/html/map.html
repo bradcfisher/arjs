@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>arjs - Alternate Reality for the web - Test page</title>
+	<script src="jquery.min.js"></script>
+	<script src="arjs.js"></script>
+</head>
+<body>
+    <style type="text/css">
+        @font-face {
+            font-family: "AlternateRealityTheDungeon";
+            src: url("AlternateRealityTheDungeon.woff");
+        }
+
+        * {
+            font-family: "AlternateRealityTheDungeon", serif
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+        }
+
+        #Display {
+            /*
+            position: relative;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            */
+
+            border: 2px solid #a0a0e0;
+        }
+    </style>
+
+    <div>
+        <label>
+        <div>Source</div>
+        <select id="Source" disabled><option>Select...</option></select>
+        </label>
+
+        <label>
+        <div>Scale</div>
+        <input id="Scale" type="text" value="100">
+        %</label>
+
+        <label>
+        <div>X</div>
+        <input id="PositionX" type="text" value="0">
+        </label>
+
+        <label>
+        <div>Y</div>
+        <input id="PositionY" type="text" value="0">
+        </label>
+    </div>
+
+    <canvas id="Display" width="800" height="800"></canvas>
+
+    <script>
+        let mapTypes = {
+            "city" : {
+                "description": "The City",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/city/CityMapWalls.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The City - Map Wall Data",
+                        ["AR/city/CityMapLocations.bin"]
+                    ),
+                    new arjs.ResourceMeta(
+                        "AR/city/CityMapLocations.bin",
+                        "Alternate Reality: The City - Map Location Data",
+                        ["AR/city/CityMapWalls.bin"]
+                    )
+                ]
+            },
+            "dungeon-11" : {
+                "description": "The Dungeon - Level 1.1 (NW)",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap1.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 1.1 (NW)"
+                    )
+                ]
+            },
+            "dungeon-12" : {
+                "description": "The Dungeon - Level 1.2 (NE)",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap2.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 1.2 (NE)"
+                    )
+                ]
+            },
+            "dungeon-13" : {
+                "description": "The Dungeon - Level 1.3 (SW)",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap3.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 1.3 (SW)"
+                    )
+                ]
+            },
+            "dungeon-14" : {
+                "description": "The Dungeon - Level 1.4 (SE)",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap4.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 1.4 (SE)"
+                    )
+                ]
+            },
+            "dungeon-2" : {
+                "description": "The Dungeon - Level 2",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap5.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 2"
+                    )
+                ]
+            },
+            "dungeon-3" : {
+                "description": "The Dungeon - Level 3",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap6.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 3"
+                    )
+                ]
+            },
+            "dungeon-4" : {
+                "description": "The Dungeon - Level 4",
+                "resources": [
+                    new arjs.ResourceMeta(
+                        "AR/dungeon/DungeonMap7.bin",
+                        "application/octet-stream",
+                        "Alternate Reality: The Dungeon - Map Level 4"
+                    )
+                ]
+            }
+        };
+
+        let resources = new arjs.ResourceManager();
+        let renderer;
+        let resourcesReady = false;
+        let pageReady = false;
+
+        (function() {
+            let toLoad = [];
+
+            for (let key in mapTypes) if (mapTypes.hasOwnProperty(key)) {
+                let item = mapTypes[key];
+                $("#Source").append($("<option>", { value: key, html: item.description }));
+                toLoad.push(...item.resources);
+            }
+
+            resources.load(...toLoad).then(
+                (loadedResources) => {
+                    console.log("loaded resources: ", loadedResources);
+                    resourcesReady = true;
+                    checkReady();
+                }
+            );
+        })();
+
+        $(document).ready(function() {
+            console.log("document ready");
+
+            $("#Source").on("change", function(evt) {
+                loadMap($(evt.target).val());
+            });
+
+            $("#Scale").on("change", function(evt) {
+                renderer.scale = $(evt.target).val() / 100;
+            });
+
+            $("#PositionX").on("change", function(evt) {
+                renderer.x = Number($(evt.target).val());
+            });
+
+            $("#PositionY").on("change", function(evt) {
+                renderer.y = Number($(evt.target).val());
+            });
+
+            renderer = new arjs.MapRenderer(document.getElementById("Display").getContext("2d"));
+
+            pageReady = true;
+
+            checkReady();
+        });
+
+        function checkReady() {
+            if (pageReady && resourcesReady) {
+                $("#Source").prop('disabled', false)
+                //$("#Source").val("city");
+            }
+        }
+
+        function loadMap(type) {
+            let entry = mapTypes[type];
+
+            if (type == "city") {
+                let reader = new arjs.CityMapReader();
+                reader.readWalls(resources.get(entry.resources[0].url));
+                reader.readLocationCodes(resources.get(entry.resources[1].url));
+                renderer.map = reader.map;
+            } else {
+                let reader = new arjs.DungeonMapReader();
+                reader.read(resources.get(entry.resources[0].url));
+                renderer.map = reader.map;
+            }
+
+            renderer.x = 0;
+            renderer.y = 0;
+            renderer.scale = 1;
+        }
+
+    </script>
+</body>
+</html>

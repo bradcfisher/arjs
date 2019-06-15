@@ -63,14 +63,14 @@ export class ResourceMeta {
 
 		if (depends != null)
 			this.depends = depends;
-	} // constructor
+	}
 
-  /**
+	/**
 	 * Retrieves the URL to retrieve the resource from.
 	 * @return	The URL to retrieve the resource from.
 	 */
-  get url(): string {
-    return this._url;
+	get url(): string {
+		return this._url;
 	}
 
 	/** @internal */
@@ -83,8 +83,8 @@ export class ResourceMeta {
 	 * @return	The content type of the resource.
 	 */
 	get type(): string {
-    return this._type;
-  }
+		return this._type;
+	}
 
 	/** @internal */
 	set type(value : string) {
@@ -93,7 +93,7 @@ export class ResourceMeta {
 
   /**
 	 * Retrieves the user-friendly description of the content.
-   * @return The user-friendly description of the content.
+	 * @return The user-friendly description of the content.
 	 */
 	get description(): string {
 		return this._description;
@@ -106,7 +106,7 @@ export class ResourceMeta {
 
   /**
 	 * Retrieves the array of dependency resource names.
-   * @return The array of dependency resource names.
+	 * @return The array of dependency resource names.
 	 */
 	get depends(): string[] {
 		return this._depends;
@@ -239,7 +239,7 @@ export class ResourceManager
 				'application/javascript' : this.decodeJavaScriptResource,
 				'application/json' : this.decodeJsonResource
 			};
-	} // constructor
+	}
 
 	/**
 	 * Retrieves the current number of active (started, but not yet completed) resource
@@ -250,7 +250,7 @@ export class ResourceManager
 	 */
 	get numLoading(): number {
 		return this._numLoading;
-	} // numLoading
+	}
 
 	/**
 	 * Retrieves the number of bytes of data for all resources.
@@ -260,7 +260,7 @@ export class ResourceManager
 	 */
 	get contentLength(): number {
 		return this._contentLength;
-	} // contentLength
+	}
 
 	/**
 	 * Retrieves the number of bytes of data that have been loaded for all resources.
@@ -270,7 +270,7 @@ export class ResourceManager
 	 */
 	get bytesLoaded(): number {
 		return this._bytesLoaded;
-	} // bytesLoaded
+	}
 
 	/**
 	 * Loads a single resource described by a ResourceMeta instance.
@@ -368,7 +368,7 @@ console.log("loading single resource: ", source);
 				request.send();
 			});
 		}
-	} // loadOne
+	}
 
 	/**
 	 * Starts loading one or more resources into this ResourceManager.
@@ -409,13 +409,26 @@ console.log("loading single resource: ", source);
 
 			);
 		});
-	} // load
+	}
 
+	/**
+	 * Determines the Content-Type of the response, defaulting to
+	 * `application/octet-stream` if not available.
+	 *
+	 * @param request the XMLHttpRequest object to determine the content type for.
+	 * @return the content type determined for the request.
+	 */
 	private getContentType(request: XMLHttpRequest): string {
 		let contentType: string|null = request.getResponseHeader("Content-Type");
 		return (contentType != null ? contentType : 'application/octet-stream');
-	} // getContentType
+	}
 
+	/**
+	 * Determines the decoder method to use for a resource based on a content type.
+	 *
+	 * @param contentTypePieces the separate portions of the content type.
+	 * @return a function to be used to decode a resource of the specified type.
+	 */
 	private getResourceDecoder(contentTypePieces: string[]): ResourceManager.ResourceDecoder {
 		let decoder: ResourceManager.ResourceDecoder|undefined;
 
@@ -433,8 +446,18 @@ console.log("loading single resource: ", source);
 		}
 
 		return (decoder as ResourceManager.ResourceDecoder);
-	} // getResourceDecoder
+	}
 
+	/**
+	 * Decodes retrieved resource data based on its content type.
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.  The decoded data
+	 * 				is passed as an argument to this callback.
+	 * @param reject callback function to invoke on failure.  The error, if any,
+	 * 				is passed as an argument to this callback.
+	 */
 	private decodeResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -452,8 +475,16 @@ console.log("loading single resource: ", source);
 		// Split into separate components and retrieve appropriate decoder
 		let decoder: ResourceManager.ResourceDecoder = this.getResourceDecoder(contentType.split('/'));
 		decoder.call(this, request, meta, accept, reject);
-	} // decodeResource
+	}
 
+	/**
+	 * Decodes a retrieved resource as a plain ArrayBuffer.
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.
+	 * @param reject callback function to invoke on failure.
+	 */
 	private decodeArrayBuffer(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -461,8 +492,17 @@ console.log("loading single resource: ", source);
 		reject: ((error:Error) => void)
 	) {
 		accept(request.response);
-	} // decodeArrayBuffer
+	}
 
+	/**
+	 * Decodes a retrieved resource as an AudioClip.
+	 * TODO: This doesn't actually do that, it's an alias for decodeArrayBuffer.  To implement this better in the future, should probably implement a way to register new content type decoders so ResourceManager doesn't need to know about audio clips.
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.
+	 * @param reject callback function to invoke on failure.
+	 */
 	private decodeAudioResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -475,8 +515,16 @@ console.log("loading single resource: ", source);
 			});
 */
 		this.decodeArrayBuffer(request, meta, accept, reject);
-	} // decodeAudioResource
+	}
 
+	/**
+	 * Decodes a retrieved resource as an image.
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.
+	 * @param reject callback function to invoke on failure.
+	 */
 	private decodeImageResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -494,8 +542,16 @@ console.log("loading single resource: ", source);
 			reject(new Error("Unable to load image resource: "+ meta.url));
 		});
 		img.src = imageUrl;
-	} // decodeImageResource
+	}
 
+	/**
+	 * Decodes a retrieved resource as plain text.
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.
+	 * @param reject callback function to invoke on failure.
+	 */
 	private decodeTextResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -521,8 +577,17 @@ console.log("loading single resource: ", source);
 		} catch (e) {
 			reject(e);
 		}
-	} // decodeTextResource
+	}
 
+	/**
+	 * Decodes a retrieved resource as Javascript code.
+	 * TODO: Currently, this is a simple wrapper around decodeTextResource.  May want to consider creating a script tag to load the resource so it's executable with fewer restrictions?
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.
+	 * @param reject callback function to invoke on failure.
+	 */
 	private decodeJavaScriptResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -530,8 +595,16 @@ console.log("loading single resource: ", source);
 		reject: ((error:Error) => void)
 	) {
 		this.decodeTextResource(request, meta, accept, reject);
-	} // decodeJavaScriptResource
+	}
 
+	/**
+	 * Decodes a retrieved resource as JSON data.
+	 *
+	 * @param request the completed request containing the response data.
+	 * @param meta resource meta object describing the resource.
+	 * @param accept callback function to invoke on success.
+	 * @param reject callback function to invoke on failure.
+	 */
 	private decodeJsonResource(
 		request: XMLHttpRequest,
 		meta: ResourceMeta,
@@ -550,25 +623,44 @@ console.log("loading single resource: ", source);
 			},
 			reject
 		);
-	} // decodeJsonResource
+	}
 
+	/**
+	 * Retrieves an array of the URLs for all the currently managed resource entries.
+	 * @return array of resource URLs.
+	 */
 	getEntryUrls(): string[] {
 		let urls: string[] = [];
 		for (let url in this._entries) if (this._entries.hasOwnProperty(url))
 			urls.push(url);
 		return urls;
-	} // getEntryUrls
+	}
 
+	/**
+	 * Retrieves the ResourceEntry for a previously loaded resource URL.
+	 *
+	 * @param url the URL of the resource to retrieve the resource entry data for.
+	 * @return the resource entry for the specified URL, or undefined if
+	 * 		no resource with that URL.
+	 */
 	getEntry(url: string): ResourceEntry|null {
 		return this._entries[url];
-	} // getEntry
+	}
 
+	/**
+	 * Retrieves the decoded data for a previously loaded resource URL.
+	 *
+	 * @param url the URL of the resource to retrieve the data for.
+	 * @return the resource data for the specified URL, or undefined if
+	 * 		no resource with that URL.
+	 */
 	get(url: string): any {
 		let entry: ResourceEntry|null = this.getEntry(url);
 		if (entry != null)
 			return entry.data;
 		return undefined;
-	} // get
+	}
+
 } // ResourceManager
 
 
