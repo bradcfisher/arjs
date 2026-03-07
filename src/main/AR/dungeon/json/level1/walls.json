@@ -1,0 +1,106 @@
+{
+    "0": {
+        "name": "None",
+        "desription": "No wall",
+        "transparent": true,
+        "collision": false
+    },
+    "1": {
+        "name": "Archway",
+        "description": "An archway that you can pass through, primary texture.",
+        "texture": "/AR/dungeon/images/arch_1.jpg",
+        "transparent": true,
+        "collision": false
+    },
+    "3": {
+        "name": "Door",
+        "description": "A door you can pass through.",
+        "texture": "/AR/dungeon/images/door_1.jpg",
+        "transparent": false,
+        "collision": false
+    },
+    "5": {
+        "name": "SecretDoor",
+        "description": "A secret door. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": "/AR/dungeon/images/wall_1.jpg",
+        "transparent": false,
+        "collision": false
+    },
+    "8": {
+        "name": "LockedDoor",
+        "description": "A locked door that requires a key to unlock it. When a locked door is unlocked, that status is saved with the character.",
+        "texture": "/AR/dungeon/images/door_1.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "9": {
+        "name": "BoltedDoor",
+        "description": "A door that is secured with a deadbolt or bar. When a bolted door is forced open, that status is saved with the character.",
+        "texture": "/AR/dungeon/images/door_1.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "10": {
+        "name": "EnchantedDoor",
+        "description": "A door that is secured with magic. When an enchantment on a door is broken, that status is saved with the character.",
+        "texture": "/AR/dungeon/images/door_1.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "13": {
+        "name": "Wall",
+        "description": "A typical solid wall.",
+        "texture": "/AR/dungeon/images/wall_1.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "17": {
+        "name": "Archway2",
+        "decription": "An archway that you can pass through, alternate texture.",
+        "texture": "/AR/dungeon/images/arch_2.jpg",
+        "transparent": true,
+        "collision": false
+    },
+    "19": {
+        "name": "Door2",
+        "description": "A door you can pass through, alternate texture.",
+        "texture": "/AR/dungeon/images/door_2.jpg",
+        "transparent": false,
+        "collision": false
+    },
+    "21": {
+        "name": "SecretDoor2",
+        "description": "A secret door, alternate texture. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": "/AR/dungeon/images/wall_2.jpg",
+        "transparent": false,
+        "collision": false
+    },
+    "24": {
+        "name": "LockedDoor2",
+        "description": "A locked door that requires a key to unlock it, alternate texture. When a locked door is unlocked, that status is saved with the character.",
+        "texture": "/AR/dungeon/images/door_2.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "25": {
+        "name": "BoltedDoor2",
+        "description": "A door that is secured with a deadbolt or bar, alternate texture. When a bolted door is forced open, that status is saved with the character.",
+        "texture": "/AR/dungeon/images/door_2.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "26": {
+        "name": "EnchantedDoor2",
+        "description": "A door that is secured with magic, alternate texture. When an enchantment on a door is broken, that status is saved with the character.",
+        "texture": "/AR/dungeon/images/door_2.jpg",
+        "transparent": false,
+        "collision": true
+    },
+    "29": {
+        "name": "Wall2",
+        "description": "A typical solid wall, alternate texture.",
+        "texture": "/AR/dungeon/images/wall_2.jpg",
+        "transparent": false,
+        "collision": true
+    }
+}

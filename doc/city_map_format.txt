@@ -1,6 +1,5 @@
 
 Note: Some areas can have roofs!  These protect against rain
- - How are these encoded?  As zones, or as additional data for the cell beyond the wall data?
 
 ---
 

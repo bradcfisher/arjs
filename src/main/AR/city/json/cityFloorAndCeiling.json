@@ -1,0 +1,198 @@
+{
+    "floor": {
+        "missing": {
+            "description": "Texture used when outside the world boundaries",
+            "color": "#FF6060"
+        },
+        "default": {
+            "description": "Default floor texture",
+            "texture": {
+                "source": "/AR/city/images/floor/default_1.png",
+                "frames": [
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 0,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    }
+                ]
+            }
+        },
+        "enclosed_0": {
+            "description": "Floor texture for enclosed area type 0",
+            "color": "#ff0000",
+            "_texture": "/AR/city/images/floor/enclosed_0.png"
+        },
+        "enclosed_1": {
+            "description": "Floor texture for enclosed area type 1",
+            "color": "#00ff00",
+            "_texture": "/AR/city/images/floor/enclosed_1.png"
+        },
+        "enclosed_2": {
+            "description": "Floor texture for enclosed area type 2",
+            "color": "#0000ff",
+            "_texture": "/AR/city/images/floor/enclosed_2.png"
+        },
+        "enclosed_3": {
+            "description": "Floor texture for enclosed area type 3",
+            "color": "#ff00ff",
+            "_texture": "/AR/city/images/floor/enclosed_3.png"
+        }
+    },
+    "ceiling": {
+        "missing": {
+            "description": "The default ceiling texture displayed if no other texture is assigned",
+            "color": "#FF6060"
+        },
+        "ceiling_1": {
+            "description": "Test ceiling",
+            "color": "geeen",
+            "texture": {
+                "source": "/AR/city/images/ceiling/ceiling_1.png",
+                "frames": [
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 0,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    }
+                ]
+            }
+        },
+        "1": {
+            "description": "Ceiling texture for enclosed area type 0",
+            "color": "rgb(180, 180, 90)",
+            "texture": {
+                "source": "/AR/city/images/ceiling/ceiling_0.png",
+                "frames": [
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 0,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    }
+                ]
+            }
+        },
+        "2": {
+            "description": "Ceiling texture for enclosed area type 1",
+            "color": "rgb(180, 120, 120)",
+            "texture": {
+                "source": "/AR/city/images/ceiling/ceiling_1.png",
+                "frames": [
+                    {
+                        "x": 0,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 0,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 0,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    },
+                    {
+                        "x": 512,
+                        "y": 512,
+                        "width": 512,
+                        "height": 512,
+                        "duration": 250
+                    }
+                ]
+            }
+        },
+        "3": {
+            "description": "Ceiling texture for enclosed area type 2",
+            "color": "rgb(120, 120, 220)",
+            "texture": "/AR/city/images/ceiling/ceiling_2.png"
+        },
+        "4": {
+            "description": "Ceiling texture for enclosed area type 3",
+            "color": "rgb(90, 120, 90)",
+            "_texture": "/AR/city/images/ceiling/ceiling_3.png"
+        }
+    },
+    "sky": {
+        "description": "Skyline texture for uncovered areas",
+        "color": "#0066ff",
+        "texture": {
+            "source": "/AR/city/images/ceiling/sky_realistic_wide.png"
+        }
+    }
+}

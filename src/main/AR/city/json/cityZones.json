@@ -1,0 +1,76 @@
+[
+    {
+        "description": "Smithy hammer - [53,53] 0x27 Sharp Weaponsmiths",
+        "x": 52,
+        "y": 52,
+        "width": 4,
+        "height": 4,
+        "effect": {
+            "type": "sound",
+            "source": "/AR/city/sounds/Smithy.mp3",
+            "probability": 0.8,
+            "_timing": "only during open hours?",
+            "timing": "always"
+        }
+    },
+    {
+        "description": "Smithy hammer - [19,31] 0x28 Occum's Weaponsmiths",
+        "x": 18,
+        "y": 30,
+        "width": 3,
+        "height": 3,
+        "effect": {
+            "type": "sound",
+            "source": "/AR/city/sounds/Smithy.mp3",
+            "probability": 0.8,
+            "_timing": "only during open hours?",
+            "timing": "always"
+        }
+    },
+    {
+        "description": "Smithy hammer - [32,36] 0x29 Best Armorers",
+        "x": 31,
+        "y": 35,
+        "width": 3,
+        "height": 3,
+        "effect": {
+            "type": "sound",
+            "source": "/AR/city/sounds/Smithy.mp3",
+            "probability": 0.8,
+            "_timing": "only during open hours?",
+            "timing": "always"
+        }
+    },
+    {
+        "description": "Smithy hammer - [50,28] 0x2A Knight's Armorers",
+        "x": 49,
+        "y": 27,
+        "width": 3,
+        "height": 3,
+        "effect": {
+            "type": "sound",
+            "source": "/AR/city/sounds/Smithy.mp3",
+            "probability": 0.8,
+            "_timing": "only during open hours?",
+            "timing": "always"
+        }
+    },
+    {
+        "description": "Palace Fanfare",
+        "x": 50,
+        "y": 14,
+        "width": 14,
+        "height": 16,
+        "effect": {
+            "type": "sound",
+            "source": [
+                "/AR/city/sounds/Palace 1.mp3",
+                "/AR/city/sounds/Palace 2.mp3",
+                "/AR/city/sounds/Palace 3.mp3"
+            ],
+            "probability": 1,
+            "_timing": "even at night?",
+            "timing": "hourly"
+        }
+    }
+]

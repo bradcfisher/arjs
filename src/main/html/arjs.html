@@ -3,8 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>arjs - Alternate Reality for the web</title>
-	<script src="jquery.min.js"></script>
-	<script src="arjs.js"></script>
+	<script src="/js/arjs.js"></script>
 </head>
 <body>
 
@@ -24,7 +23,7 @@
 	<button onclick="gameClock.tickDelay = 4000">Normal</button>
 </div>
 
-<div>Timestamp: <input type="text" id="TimestampInput"/> <button onclick="gameClock.setCurrent($('#TimestampInput').val())">Apply</button></div>
+<div>Timestamp: <input type="text" id="TimestampInput"/> <button onclick="gameClock.setCurrent(document.getElementById('TimestampInput').value)">Apply</button></div>
 
 <hr/>
 
@@ -37,7 +36,7 @@ arjs.deserialize(arjs.serialize(gameState.hunger))
 <script>
 
 function executeConsoleCode() {
-	let source = $("#Console").val();
+	let source = document.getElementById("Console").value;
 	let fn = arjs.Parse.action(source, null, ['arjs', 'gameState']);
 	fn(arjs, gameState);
 }
@@ -46,10 +45,10 @@ let cal;
 let gameClock;
 let gameState;
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function () {
 	console.log("document ready");
 
-	arjs.GameState.load("./AR.json").then((gs) => {
+	arjs.GameState.load("/AR/shared/json/AR.json").then((gs) => {
 		gameState = gs;
 		jsonLoaded();
 	});
@@ -78,8 +77,9 @@ function jsonLoaded() {
 	let normTimeSpan = document.getElementById("NormalizedTime");
 	let numDateSpan = document.getElementById("NumericDate");
 
-	if (tickDelaySpan == null || timestampSpan == null || gameDateSpan == null || tsToDateSpan == null || dateToTsSpan == null || normTimeSpan == null || numDateSpan == null)
+	if (tickDelaySpan == null || timestampSpan == null || gameDateSpan == null || tsToDateSpan == null || dateToTsSpan == null || normTimeSpan == null || numDateSpan == null) {
 		throw new Error("Unable to find required document element");
+	}
 
 	function animate(now) {
 		timestampSpan.innerHTML = String(gameClock.current);

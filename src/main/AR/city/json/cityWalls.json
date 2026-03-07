@@ -1,0 +1,233 @@
+{
+    "0": {
+        "name": "None",
+        "desription": "No wall",
+        "transparent": true,
+        "collision": false,
+        "color": "test"
+    },
+    "3": {
+        "name": "Door",
+        "description": "A door you can pass through.",
+        "texture": {
+            "source": "/AR/city/images/wall/door_1.png",
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 0,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 512,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 512,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                }
+            ]
+        },
+        "color": "#66CC00",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.29
+            },
+            {
+                "start": 0.71,
+                "end": 1
+            }
+        ]
+    },
+    "5_": {
+        "name": "SecretDoor",
+        "description": "A secret door. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": {
+            "source": "/AR/city/images/wall/wall_1.png",
+            "frames": [
+                {
+                    "x": 512,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 500
+                },
+                {
+                    "x": 512,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 500
+                }
+            ]
+        },
+        "color": "#0080FF",
+        "transparent": false,
+        "collision": false
+    },
+    "5": {
+        "name": "SecretDoor-Arch",
+        "description": "A secret door. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": {
+            "source": "/AR/city/images/wall/arch_1.png",
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 512,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 0,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 512,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                }
+            ]
+        },
+        "color": "#0080FF",
+        "transparent": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.25
+            },
+            {
+                "start": 0.75,
+                "end": 1
+            }
+        ]
+    },
+    "_13": {
+        "name": "Wall",
+        "description": "A typical solid wall.",
+        "x-color": "#00FFFF",
+        "transparent": false,
+        "collision": true,
+        "texture": {
+            "source": "/AR/city/images/wall/wall_1.png",
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 1024,
+                    "height": 1024,
+                    "duration": 500
+                },
+                {
+                    "x": 1023,
+                    "y": 1023,
+                    "width": -1024,
+                    "height": -1024,
+                    "duration": 500
+                }
+            ]
+        }
+    },
+    "13": {
+        "name": "Wall",
+        "description": "A typical solid wall.",
+        "texture": {
+            "source":"/AR/city/images/wall/wall_1.png",
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 500
+                },
+                {
+                    "x": 0,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 500
+                }
+            ]
+        },
+        "color": "#00FFFF",
+        "transparent": false,
+        "collision": true
+    },
+    "___13": {
+        "name": "Wall",
+        "description": "A typical solid wall.",
+        "transparent": false,
+        "collision": true,
+        "color": "test"
+    },
+    "__13": {
+        "name": "Wall",
+        "description": "A typical solid wall.",
+        "texture": {
+            "source":"/AR/city/images/floor/default_1.png",
+            "frames": [
+                {
+                    "x": 0,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 0,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 512,
+                    "y": 0,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                },
+                {
+                    "x": 512,
+                    "y": 512,
+                    "width": 512,
+                    "height": 512,
+                    "duration": 250
+                }
+            ]
+        },
+        "color": "#00FFFF",
+        "transparent": false,
+        "collision": true
+    }
+
+}

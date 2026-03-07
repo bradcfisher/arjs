@@ -3,7 +3,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>arjs - Alternate Reality for the web - Test page</title>
-	<script src="jquery.min.js"></script>
 	<script src="arjs.js"></script>
 </head>
 <body>
@@ -64,13 +63,13 @@
                 "description": "The City",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/city/CityMapWalls.bin",
+                        "/AR/city/CityMapWalls.bin",
                         "application/octet-stream",
                         "Alternate Reality: The City - Map Wall Data",
                         ["AR/city/CityMapLocations.bin"]
                     ),
                     new arjs.ResourceMeta(
-                        "AR/city/CityMapLocations.bin",
+                        "/AR/city/CityMapLocations.bin",
                         "Alternate Reality: The City - Map Location Data",
                         ["AR/city/CityMapWalls.bin"]
                     )
@@ -80,7 +79,7 @@
                 "description": "The Dungeon - Level 1.1 (NW)",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap1.bin",
+                        "/AR/dungeon/DungeonMap1.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 1.1 (NW)"
                     )
@@ -90,7 +89,7 @@
                 "description": "The Dungeon - Level 1.2 (NE)",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap2.bin",
+                        "/AR/dungeon/DungeonMap2.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 1.2 (NE)"
                     )
@@ -100,7 +99,7 @@
                 "description": "The Dungeon - Level 1.3 (SW)",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap3.bin",
+                        "/AR/dungeon/DungeonMap3.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 1.3 (SW)"
                     )
@@ -110,7 +109,7 @@
                 "description": "The Dungeon - Level 1.4 (SE)",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap4.bin",
+                        "/AR/dungeon/DungeonMap4.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 1.4 (SE)"
                     )
@@ -120,7 +119,7 @@
                 "description": "The Dungeon - Level 2",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap5.bin",
+                        "/AR/dungeon/DungeonMap5.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 2"
                     )
@@ -130,7 +129,7 @@
                 "description": "The Dungeon - Level 3",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap6.bin",
+                        "/AR/dungeon/DungeonMap6.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 3"
                     )
@@ -140,7 +139,7 @@
                 "description": "The Dungeon - Level 4",
                 "resources": [
                     new arjs.ResourceMeta(
-                        "AR/dungeon/DungeonMap7.bin",
+                        "/AR/dungeon/DungeonMap7.bin",
                         "application/octet-stream",
                         "Alternate Reality: The Dungeon - Map Level 4"
                     )
@@ -153,12 +152,15 @@
         let resourcesReady = false;
         let pageReady = false;
 
+        /** @type {HTMLSelectElement} */
+        const source = document.getElementById("Source");
+
         (function() {
             let toLoad = [];
 
             for (let key in mapTypes) if (mapTypes.hasOwnProperty(key)) {
                 let item = mapTypes[key];
-                $("#Source").append($("<option>", { value: key, html: item.description }));
+                source.appendChild(new Option(item.description, key));
                 toLoad.push(...item.resources);
             }
 
@@ -171,23 +173,23 @@
             );
         })();
 
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function () {
             console.log("document ready");
 
-            $("#Source").on("change", function(evt) {
-                loadMap($(evt.target).val());
+            source.addEventListener("change", function(evt) {
+                loadMap(source.value);
             });
 
-            $("#Scale").on("change", function(evt) {
-                renderer.scale = $(evt.target).val() / 100;
+            document.getElementById("Scale").addEventListener("change", function(evt) {
+                renderer.scale = Number(evt.target.value) / 100;
             });
 
-            $("#PositionX").on("change", function(evt) {
-                renderer.x = Number($(evt.target).val());
+            document.getElementById("PositionX").addEventListener("change", function(evt) {
+                renderer.x = Number(evt.target.value);
             });
 
-            $("#PositionY").on("change", function(evt) {
-                renderer.y = Number($(evt.target).val());
+            document.getElementById("PositionY").addEventListener("change", function(evt) {
+                renderer.y = Number(evt.target.value);
             });
 
             renderer = new arjs.MapRenderer(document.getElementById("Display").getContext("2d"));
@@ -199,8 +201,7 @@
 
         function checkReady() {
             if (pageReady && resourcesReady) {
-                $("#Source").prop('disabled', false)
-                //$("#Source").val("city");
+                source.disabled = false;
             }
         }
 

@@ -1,0 +1,16 @@
+[
+    {
+        "_description": "[41,59] Changes the west wall to a secret door to remove a soft-lock room of death.",
+        "x": 41,
+        "y": 59,
+        "westWall": 5,
+        "description": "somewhere you should not be."
+    },
+    {
+        "_description": "[47,57] Changes the west wall to a secret door to remove a soft-lock room of death.",
+        "x": 47,
+        "y": 57,
+        "westWall": 5,
+        "description": "tired but cannot sleep here."
+    }
+]
