@@ -664,7 +664,7 @@ export class Parse {
 			val = defaultVal;
 		}
 
-		if (typeof val.constructor == 'function') {
+		if (typeof val == 'function') {
 			return val;
 		}
 

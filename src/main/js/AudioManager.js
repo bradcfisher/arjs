@@ -91,9 +91,16 @@ export class ActiveAudio extends EventDispatcher {
 	#scheduledNotificationId;
 
 	/**
-	 * Event handler to add to AudioBufferSourceNodes to handle the 'ended' event.
+	 * Event handler to add to AudioBufferSourceNodes to handle the 'ended' event
+	 * and dispatch a 'stop' event.
 	 */
 	#endedListener;
+
+	/**
+	 * Event handler to add to AudioBufferSourceNodes to handle the 'ended' event
+	 * without dispatching a 'stop' event.
+	 */
+	#endedListenerNoEvent;
 
 	/**
 	 * The current status of the audio. One of 'stopped', 'scheduled' or 'playing'.
@@ -154,6 +161,7 @@ export class ActiveAudio extends EventDispatcher {
 		};
 
 		this.#endedListener = () => { this.#handleStop(); };
+		this.#endedListenerNoEvent = () => { this.#handleStop(true); };
 
 		if (clip.gain != 1) {
 			this.#destination = new GainNode(this.#manager.context, {
@@ -202,6 +210,10 @@ export class ActiveAudio extends EventDispatcher {
 	 *        Typically used when repositioning the stream.
 	 */
 	#play(when, suppressStartEvent = false) {
+		if (this.#audioBufferSourceNode != null) {
+			throw new Error("#play called when #audioBufferSourceNode is assigned");
+		}
+
 		this.#startTime = this.#manager.currentTime + when;
 
 		this.#audioBufferSourceNode = new AudioBufferSourceNode(this.#manager.context, this.#config);
@@ -221,6 +233,14 @@ export class ActiveAudio extends EventDispatcher {
 		}
 	}
 
+	/**
+	 * Performs necessary actions when a clip starts to play.
+	 * This may include sending a 'start' event as well as scheduling the next notification to
+	 * fire at the appropriate time.
+	 *
+	 * @param {boolean} suppressStartEvent whether to suppress the dispatch of the 'start'
+	 *        event or not. Typically used when repositioning the stream.
+	 */
 	#handleStart(suppressStartEvent) {
 		this.#scheduledNotificationId = null;
 
@@ -361,16 +381,23 @@ export class ActiveAudio extends EventDispatcher {
 	 *        Typically used when repositioning the stream.
 	 */
 	#stop(when, suppressStopEvent = false) {
-
-		if (suppressStopEvent) {
-			// define a 2nd listener for suppressed event
-			// try removing both event listeners
-			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
-
-			// TODO: add new event listener if scheduled in future...
+		if (this.#audioBufferSourceNode == null) {
+			throw new Error("#stop called when #audioBufferSourceNode is unassigned");
 		}
 
-		// If stopping immediately, remove any ended listeners before stopping
+		const stopNow = when <= this.#manager.currentTime;
+		if (suppressStopEvent) {
+			// Remove any registered event listener
+			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
+			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListenerNoEvent);
+
+			if (!stopNow) {
+				this.#audioBufferSourceNode.addEventListener('ended', this.#endedListenerNoEvent);
+			}
+		} else if (stopNow) {
+			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
+			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListenerNoEvent);
+		}
 
 		this.#audioBufferSourceNode.stop(when);
 
@@ -378,7 +405,6 @@ export class ActiveAudio extends EventDispatcher {
 			// handle stop actions immediately
 			this.#handleStop(suppressStopEvent);
 		}
-
 	}
 
 	#handleStop(suppressStopEvent) {
@@ -386,19 +412,129 @@ export class ActiveAudio extends EventDispatcher {
 		this.#position = this.position;
 
 		// Remove any pending notification
-		this.#manager.removeNotification(this.#scheduledNotificationId);
-		this.#scheduledNotificationId = null;
+		if (this.#scheduledNotificationId) {
+			this.#manager.cancelNotification(this.#scheduledNotificationId);
+			this.#scheduledNotificationId = null;
+		}
 
 		this.#audioBufferSourceNode = null;
 
-
+		if (!suppressStopEvent) {
+			// Send stop event
+			this.triggerEvent('stop', {
+				target: this
+			});
+		}
 	}
 
 }
 
 
+export class ScheduledAudioNotificationEntry extends AudioNotification {
+	/**
+	 * @type {ScheduledAudioNotificationEntry?}
+	 */
+	#next;
 
+	/**
+	 * The next ScheduledAudioNotificationEntry scheduled to execute after this one.
+	 */
+	get next() {
+		return this.#next;
+	}
 
+	/**
+	 * @type {AudioManager}
+	 */
+	#manager;
+
+	/**
+	 * The AudioManager this notification was scheduled under.
+	 */
+	get manager() {
+		return this.#manager;
+	}
+
+	constructor(manager, when, callback) {
+		super(when, callback);
+		this.#manager = manager;
+	}
+
+	/**
+	 * Inserts a new entry into the list in chronological order.
+	 *
+	 * @param {ScheduledAudioNotificationEntry} notification the notification entry to
+	 *        insert.
+	 *
+	 * @returns {ScheduledAudioNotificationEntry} the start of the list. This value may be
+	 *          either the notification this method was called on or the new notification
+	 *          if it was inserted at the front of the list.
+	 */
+	insert(notification) {
+		if (notification.when < this.when) {
+			// Insert at the start of the list
+			notification.#next = this;
+			return notification;
+		}
+
+		let entry = this;
+		while (true) {
+			if (entry.#next == null) {
+				// Add at the end of the list
+				entry.#next = notification;
+				break;
+			}
+
+			if (notification.when < entry.#next.when) {
+				// Insert into the middle of the list
+				notification.#next = entry.#next;
+				entry.#next = notification;
+				break;
+			}
+
+			entry = entry.#next;
+		}
+
+		return this;
+	}
+
+	/**
+	 * Removes a notification from the linked list rooted at this entry.
+	 *
+	 * @param {ScheduledAudioNotificationEntry} notification the notification to remove from the
+	 *        list.
+	 *
+	 * @returns {ScheduledAudioNotificationEntry} the start of the list. This value may be
+	 *          either the notification this method was called on or the next notification
+	 *          in the list if this node was the node to remove.
+	 */
+	remove(notification) {
+		if (this == notification) {
+			const root = this.#next;
+			this.#next = null;
+			return root;
+		}
+
+		let entry = this;
+		while (true) {
+			if (notification == entry.#next) {
+				// Found a match, remove from the list
+				entry.#next = notification.#next;
+				notification.#next = null;
+				break;
+			}
+
+			entry = entry.#next;
+		}
+
+		return this;
+	}
+
+	cancel() {
+		this.#manager.cancelNotification(this.id);
+	}
+
+}
 
 
 
@@ -407,7 +543,6 @@ export class ActiveAudio extends EventDispatcher {
  * Events:
  *  - load			Sent when all currently loading clips have completed.
  *  - error			Sent when a clip load operation fails.
- *  - notification	Sent when a notification time is reached.
  */
 export class AudioManager
 	extends EventDispatcher
@@ -432,12 +567,12 @@ export class AudioManager
 	#loading;
 
 	/**
-	 * Linked list of registered notifications.
-	 * @see addNotification
-	 * @see removeNotification
-	 * @type {AudioNotification?}
+	 * Linked list of scheduled notifications.
+	 * @see scheduleNotification
+	 * @see cancelNotification
+	 * @type {ScheduledAudioNotificationEntry?}
 	 */
-	#notifications;
+	#pendingNotifications;
 
 	/**
 	 * The last notification entry that was scheduled.
@@ -614,8 +749,8 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	#invokeCurrentNotification() {
 		if (this.#currentNotification) {
 			const entry = this.#currentNotification;
-			if (this.#notifications) {
-				this.#notifications = this.#notifications.remove(this.#currentNotification.id);
+			if (this.#pendingNotifications) {
+				this.#pendingNotifications = this.#pendingNotifications.remove(this.#currentNotification.id);
 			}
 			this.#currentNotification = this.#currentNotificationNode = undefined;
 
@@ -632,27 +767,27 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	unscheduleCurrentNotification() {
 		if (this.#currentNotification) {
 			if (this.#currentNotificationNode) {
-				this.#currentNotificationNode.stop();
 				if (this.#currentNotificationCallback) {
 					this.#currentNotificationNode.removeEventListener('ended', this.#currentNotificationCallback);
 				}
+				this.#currentNotificationNode.stop();
 			}
 			this.#currentNotification = undefined;
 			this.#currentNotificationCallback = undefined;
 			this.#currentNotificationNode = undefined;
 		}
-	} // unscheduleCurrentNotification
+	}
 
 	/**
 	 * Schedules the next notification node to fire an event at it's specified time, if an earlier
 	 * event isn't already scheduled.
 	 */
 	#scheduleNextNotificationIfNeeded() {
-		if (!this.#notifications || this.#currentNotification === this.#notifications) {
+		if (!this.#pendingNotifications || this.#currentNotification === this.#pendingNotifications) {
 			return; // Nothing to schedule
 		}
 
-		const notification = this.#notifications;
+		const notification = this.#pendingNotifications;
 
 		if (this.#currentNotification) {
 			if (this.#currentNotification.when <= notification.when) {
@@ -667,7 +802,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 		this.#currentNotificationNode.buffer = this.#currentNotificationBuffer;
 		this.#currentNotificationNode.connect(this.#context.destination);
 
-		this.#currentNotification = this.#notifications;
+		this.#currentNotification = this.#pendingNotifications;
 
 		this.#currentNotificationCallback = () => {
 			this.#invokeCurrentNotification();
@@ -681,7 +816,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 		this.#currentNotificationNode.start(
 			notification.when <= this.#context.currentTime + 0.002 ? undefined : notification.when
 		);
-	} // scheduleNextNotificationIfNeeded
+	}
 
 	/**
 	 * Specifies that a notification event containing the given data be fired at the specified
@@ -689,41 +824,35 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	 *
 	 * @param {number} when The time relative to the audio context's clock when the event should be
 	 *        fired.  If this time is in the past, no action is taken.
-	 * @param {((notification: AudioNotification) => void)?} callback The callback to invoke when the
-	 *        notification time is reached.  If no callback is specified, will trigger a "notification"
-	 *        event instead.
+	 * @param {() => void} callback The callback to invoke when the notification time is reached.
+	 *        If no callback is specified, will trigger a "notification" event instead.
 	 *
 	 * @return {number} A value that can be used to unregister the notification at a later time, or 0 if
 	 *         the notification was executed immediately or was specified to execute in the past.
 	 */
 	scheduleNotification(when, callback) {
-		if (!callback) {
-			callback = (notification) => {
-				this.triggerEvent('notification', notification);
-			};
-		}
-
 		const notification = new AudioNotification(when, callback);
 
 		const now = this.#context.currentTime;
 		if (when < now - 0.005) {
-			console.warn("requested time "+ when +" expired (now="+ now +")");
+			console.warn("requested time " + when + " expired (now=" + now + ")");
 			return 0;
 		} else if (when <= now + 0.005) {
-			notification.invoke();
+			notification.callback();
 			return 0;
 		}
 
-		this.#notifications = (
-			this.#notifications
-				? this.#notifications.insert(notification)
+		// Add the notification to the list of pending notifications
+		this.#pendingNotifications = (
+			this.#pendingNotifications
+				? this.#pendingNotifications.insert(notification)
 				: notification
 		);
 
 		this.#scheduleNextNotificationIfNeeded();
 
 		return notification.id;
-	} // addNotification
+	}
 
 	/**
 	 * Removes the notification with the specified ID from the list of regsitered notifications.
@@ -731,8 +860,8 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	 * @param {number} notification The ID of the notification to unregister, as returned by
 	 *        {@link addNotification}.
 	 */
-	removeNotification(notification) {
-		if (this.#notifications) {
+	cancelNotification(notification) {
+		if (this.#pendingNotifications) {
 			let reschedule = false;
 
 			if (this.#currentNotification && (this.#currentNotification.id == notification)) {
@@ -740,14 +869,13 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 				this.unscheduleCurrentNotification();
 			}
 
-			this.#notifications = this.#notifications.remove(notification);
+			this.#pendingNotifications = this.#pendingNotifications.remove(notification);
 
 			if (reschedule) {
 				this.#scheduleNextNotificationIfNeeded();
 			}
 		}
-	} // removeNotification
-
+	}
 
 
 	// set listener orientation (angle)
