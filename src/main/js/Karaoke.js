@@ -1,8 +1,8 @@
 
-import { ResourceManager, ResourceMeta } from "./ResourceManager";
-import { AudioManager } from "./AudioManager";
-import { AudioClip } from "./AudioClip";
-import { AudioNotification } from "./AudioNotificationEntry";
+import { ResourceMeta } from "./ResourceManager.js";
+import { GameState } from "./GameState.js";
+import { AudioClip } from "./AudioClip.js";
+import { AudioNotification } from "./AudioNotificationEntry.js";
 
 /**
  * Represents the current state of the Karaoke player.
@@ -241,15 +241,11 @@ export class Karaoke {
 
 	/**
 	 *
-	 * @param {ResourceManager} resourceManager
-	 * @param {AudioManager} audioManager
 	 * @param {string|ResourceMeta} audioSource
 	 * @param {string|ResourceMeta} lyricSource
 	 * @returns {PromiseLike<AudioClip>}
 	 */
 	loadSong(
-		resourceManager,
-		audioManager,
 		audioSource,
 		lyricSource
 	) {
@@ -272,11 +268,11 @@ export class Karaoke {
 		lyricMeta.depends = [audioMeta.url];
 
 		return new Promise<AudioClip>((accept, reject) => {
-			resourceManager.load(audioMeta, lyricMeta)
+			GameState.getResourceManager().load(audioMeta, lyricMeta)
 				.then(
 					(loadedResources) => {
 						let audioClip = new AudioClip(
-							audioManager,
+							GameState.getAudioManager(),
 							audioMeta.url,
 							loadedResources[audioMeta.url].data
 						);

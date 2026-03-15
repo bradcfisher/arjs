@@ -331,11 +331,11 @@ export class StatAdjustments {
 
 	/**
 	 * Retrieves the remaining expiration delay for the specified adjustment.
-	 * This method is called from StatAdjustment to determine the expiration property value.
+	 * This is an internal method called from StatAdjustment to determine the expiration property value.
 	 * @param {StatAdjustment} adjustment The adjustment instance to retrieve the remaining expiration delay for.
 	 * @return {number}
 	 */
-	#getAdjustmentExpiration(adjustment) {
+	_getAdjustmentExpiration(adjustment) {
 		const timer = this.#expirationTimers.get(adjustment);
 		if (timer == null) {
 			return Number.NaN;
@@ -346,11 +346,11 @@ export class StatAdjustments {
 
 	/**
 	 * Updates/replaces the remaining expiration delay for the specified adjustment.
-	 * This method is called from StatAdjustment.
+	 * This is an internal method called from StatAdjustment.
 	 * @param {StatAdjustment} adjustment The adjustment to modify the expiration delay for.
 	 * @param {number?} expiration The new expiration delay.
 	 */
-	#setAdjustmentExpiration(adjustment, expiration) {
+	_setAdjustmentExpiration(adjustment, expiration) {
 		let timer = this.#expirationTimers.get(adjustment);
 		if (timer == null) {
 			throw new Error();

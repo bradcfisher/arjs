@@ -2,6 +2,10 @@
 import { EventDispatcher } from "./EventDispatcher.js";
 
 /**
+ * @typedef {(request: XMLHttpRequest, meta: ResourceMeta, accept: (resource:any) => void, reject: (error:Error) => void) => void} ResourceDecoder
+ */
+
+/**
  * Metadata related to a resource managed by a ResourceManager.
  */
 export class ResourceMeta {
@@ -196,16 +200,16 @@ export class ResourceManager
 	 * and 'application/json', the 'application/json' entry will be chosen when a resource is
 	 * loaded with that exact type, but the 'application/*' entry will be chosen for other types
 	 * in the 'application/*' category.
-	 * @type {{ [type:string] : (request: XMLHttpRequest, meta: ResourceMeta, accept: (resource:any) => void, reject: (error:Error) => void) => void }}
+	 * @type {{ [type:string] : ResourceDecoder }}
 	 */
 	#decoders;
 
 	/**
 	* The list of entries currently loaded and managed by this ResourceManager.
 	* A map of resource URL string to ResourceEntry instance associated with that URL.
-	* @type {{ [url:string]: ResourceEntry }}
+	* @type {Map<string, ResourceEntry>}
 	*/
-	#entries = {};
+	#entries = new Map();
 
 	/**
 	 * The number of bytes of data for all resources.
@@ -229,7 +233,6 @@ export class ResourceManager
 		super();
 		this.#decoders = {
 				'*/*' : this.#decodeArrayBuffer,
-				'audio/*' : this.#decodeAudioResource,
 				'image/*' : this.#decodeImageResource,
 				'text/*' : this.#decodeTextResource,
 				'application/javascript' : this.#decodeJavaScriptResource,
@@ -271,19 +274,22 @@ export class ResourceManager
 	/**
 	 * Loads a single resource described by a ResourceMeta instance.
 	 *
+	 * If a resource with the specified URL has already been loaded, the previously loaded
+	 * resource will be returned.
+	 *
 	 * @param {ResourceMeta} source The ResourceMeta describing the resource to load.
 	 *
 	 * @return {Promise<ResourceEntry>} A promise which will complete with the loaded resource entry if successful.
 	 */
 	#loadOne(source) {
-		const url = source.url;
+		const url = String(source.url);
 
 		// Load a single resource
-		if (this.#entries.hasOwnProperty(url)) {
+		if (this.#entries.has(url)) {
 console.log("requested resource already known: ", source);
 			// Resource data already loaded, simply return it
-			return new Promise<ResourceEntry>((accept, reject) => {
-					accept(this.#entries[url]);
+			return new Promise((accept, reject) => {
+					accept(this.#entries.get(url));
 				});
 		} else {
 console.log("loading single resource: ", source);
@@ -325,7 +331,7 @@ console.log("loading single resource: ", source);
 // TODO: Deal with race condition when multiple loads of same resource occur before the first one completes...
 
 								const entry = new ResourceEntry(source, value);
-								this.#entries[url] = entry;
+								this.#entries.set(url, entry);
 								accept(entry);
 								this.#checkComplete();
 							},
@@ -382,7 +388,7 @@ console.log("loading single resource: ", source);
 	/**
 	 * Starts loading one or more resources into this ResourceManager.
 	 *
-	 * @param {(string|ResourceMeta)[]} source A URL string, ResourceMeta instance, or array of URL string(s) or
+	 * @param {string|ResourceMeta|(string|ResourceMeta)[]} source A URL string, ResourceMeta instance, or array of URL string(s) or
 	 *					ResourceMeta instances which identify the resource(s) to load.
 	 *
 	 * @return {Promise<{ [url:string]: ResourceEntry }>} A Promise which will complete with a map of the
@@ -436,11 +442,10 @@ console.log("loading single resource: ", source);
 	 * Determines the decoder method to use for a resource based on a content type.
 	 *
 	 * @param {string[]} contentTypePieces the separate portions of the content type.
-	 * @return {(request: XMLHttpRequest, meta: ResourceMeta, accept: (resource:any) => void, reject: (error:Error) => void) => void}
-	 *         a function to be used to decode a resource of the specified type.
+	 * @return {ResourceDecoder} a function to be used to decode a resource of the specified type.
 	 */
 	#getResourceDecoder(contentTypePieces) {
-		/** @type {(request: XMLHttpRequest, meta: ResourceMeta, accept: (resource:any) => void, reject: (error:Error) => void) => void|undefined} */
+		/** @type {ResourceDecoder?} */
 		let decoder;
 
 		decoder = this.#decoders[contentTypePieces[0] +'/'+ contentTypePieces[1]];
@@ -457,6 +462,17 @@ console.log("loading single resource: ", source);
 		}
 
 		return decoder;
+	}
+
+	/**
+	 * Registers a custom resource decoder.
+	 *
+	 * @param {string} contentType the content type pattern matching content types which can be
+	 *        decoded by the provided decoder.
+	 * @param {ResourceDecoder} resourceDecoder a function to be used to decode a resource of the specified type.
+	 */
+	registerResourceDecoder(contentType, resourceDecoder) {
+		this.#decoders[contentType] = resourceDecoder;
 	}
 
 	/**
@@ -497,26 +513,6 @@ console.log("loading single resource: ", source);
 	 */
 	#decodeArrayBuffer(request, meta, accept, reject) {
 		accept(request.response);
-	}
-
-	/**
-	 * Decodes a retrieved resource as an AudioClip.
-	 * TODO: This doesn't actually do that, it's an alias for #decodeArrayBuffer.  To implement this better in the future, should probably implement a way to register new content type decoders so ResourceManager doesn't need to know about audio clips.
-	 *
-	 * @param {XMLHttpRequest} request the completed request containing the response data.
-	 * @param {ResourceMeta} meta resource meta object describing the resource.
-	 * @param {(resource:any) => void} accept callback function to invoke on success.  The decoded data
-	 * 				is passed as an argument to this callback.
-	 * @param {(error:Error) => void} reject callback function to invoke on failure.  The error, if any,
-	 * 				is passed as an argument to this callback.
-	 */
-	#decodeAudioResource(request, meta, accept, reject) {
-/*
-			this.audioContext.decodeAudioData(request.response, (buffer) => {
-				accept(buffer);
-			});
-*/
-		this.#decodeArrayBuffer(request, meta, accept, reject);
 	}
 
 	/**
@@ -631,32 +627,29 @@ console.log("loading single resource: ", source);
 	 * @return {string[]} array of resource URLs.
 	 */
 	#getEntryUrls() {
-		const urls = [];
-		for (let url in this.#entries) if (this.#entries.hasOwnProperty(url))
-			urls.push(url);
-		return urls;
+		return [this.#entries.keys()];
 	}
 
 	/**
 	 * Retrieves the ResourceEntry for a previously loaded resource URL.
 	 *
-	 * @param {string} url the URL of the resource to retrieve the resource entry data for.
+	 * @param {string|URL} url the URL of the resource to retrieve the resource entry data for.
 	 * @return {ResourceEntry|null} the resource entry for the specified URL, or undefined if
-	 * 		no resource with that URL.
+	 * 		no resource is registered with that URL.
 	 */
 	getEntry(url) {
-		return this.#entries[url];
+		return this.#entries.get(String(url));
 	}
 
 	/**
 	 * Retrieves the decoded data for a previously loaded resource URL.
 	 *
-	 * @param {string} url the URL of the resource to retrieve the data for.
+	 * @param {string|URL} url the URL of the resource to retrieve the data for.
 	 * @return {*} the resource data for the specified URL, or undefined if
 	 * 		no resource with that URL.
 	 */
 	get(url) {
-		const entry = this.getEntry(url);
+		const entry = this.getEntry(String(url));
 		if (entry != null)
 			return entry.data;
 		return undefined;

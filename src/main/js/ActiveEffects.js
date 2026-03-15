@@ -1,5 +1,5 @@
 import { Parse } from "./Parse.js"
-import { ActiveEffect, ActiveEffectConfig, Effect } from "./Effect.js"
+import { ActiveEffect, ActiveEffectConfig, EffectType } from "./Effect.js"
 import { EffectTarget } from "./Effect.js";
 import { Configurable } from "./Configurable.js";
 import { ClassRegistry } from "./Serializer.js";
@@ -29,7 +29,7 @@ export class ReadonlyActiveEffects {
 
 	/**
 	 *
-	 * @param {Effect.Type} type
+	 * @param {EffectType} type
 	 */
 	removeByType(type) {}
 
@@ -118,7 +118,7 @@ export class ActiveEffects extends Array {
 
 	/**
 	 * Removes all entries with the specified type value.
-	 * @param {Effect.Type} type the type of the items to remove.
+	 * @param {EffectType} type the type of the items to remove.
 	 */
 	removeByType(type) {
 		let vals = this.filter(item => item.type != type);

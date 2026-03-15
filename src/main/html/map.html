@@ -3,13 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>arjs - Alternate Reality for the web - Test page</title>
-	<script src="arjs.js"></script>
 </head>
 <body>
     <style type="text/css">
         @font-face {
             font-family: "AlternateRealityTheDungeon";
-            src: url("AlternateRealityTheDungeon.woff");
+            src: url("../font/AlternateRealityTheDungeon.woff");
         }
 
         * {
@@ -17,217 +16,42 @@
         }
 
         body, html {
-            width: 100%;
-            height: 100%;
+            position: relative; /* Needed for absolute positioning inside */
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
         }
 
         #Display {
-            /*
-            position: relative;
+            position: fixed;
             left: 10px;
-            right: 10px;
+            width: calc(100% - 20px);
+            height: calc(100% - 70px);
             bottom: 10px;
-            */
 
             border: 2px solid #a0a0e0;
         }
     </style>
 
-    <div>
-        <label>
-        <div>Source</div>
-        <select id="Source" disabled><option value="">Select...</option></select>
-        </label>
+    <table>
+        <tr>
+            <td><label for="Source">Source</label></td>
+            <td><select id="Source" disabled><option value="">Select...</option></select></td>
 
-        <label>
-        <div>Scale</div>
-        <input id="Scale" type="text" value="100">
-        %</label>
+            <td><label for="Scale">Scale</label></td>
+            <td><input id="Scale" type="text" value="100"> %</td>
+        </tr>
+        <tr>
+            <td><label for="PositionX">X</label></td>
+            <td><input id="PositionX" type="text" value="0"></td>
 
-        <label>
-        <div>X</div>
-        <input id="PositionX" type="text" value="0">
-        </label>
+            <td><label for="PositionY">Y</label></td>
+            <td><input id="PositionY" type="text" value="0"></td>
+        </tr>
+    </table>
 
-        <label>
-        <div>Y</div>
-        <input id="PositionY" type="text" value="0">
-        </label>
-    </div>
+    <canvas id="Display"></canvas>
 
-    <canvas id="Display" width="800" height="800"></canvas>
-
-    <script>
-        let mapTypes = {
-            "city" : {
-                "description": "The City",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/city/CityMapWalls.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The City - Map Wall Data",
-                        ["AR/city/CityMapLocations.bin"]
-                    ),
-                    new arjs.ResourceMeta(
-                        "/AR/city/CityMapLocations.bin",
-                        "Alternate Reality: The City - Map Location Data",
-                        ["AR/city/CityMapWalls.bin"]
-                    )
-                ]
-            },
-            "dungeon-11" : {
-                "description": "The Dungeon - Level 1.1 (NW)",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap1.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 1.1 (NW)"
-                    )
-                ]
-            },
-            "dungeon-12" : {
-                "description": "The Dungeon - Level 1.2 (NE)",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap2.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 1.2 (NE)"
-                    )
-                ]
-            },
-            "dungeon-13" : {
-                "description": "The Dungeon - Level 1.3 (SW)",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap3.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 1.3 (SW)"
-                    )
-                ]
-            },
-            "dungeon-14" : {
-                "description": "The Dungeon - Level 1.4 (SE)",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap4.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 1.4 (SE)"
-                    )
-                ]
-            },
-            "dungeon-2" : {
-                "description": "The Dungeon - Level 2",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap5.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 2"
-                    )
-                ]
-            },
-            "dungeon-3" : {
-                "description": "The Dungeon - Level 3",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap6.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 3"
-                    )
-                ]
-            },
-            "dungeon-4" : {
-                "description": "The Dungeon - Level 4",
-                "resources": [
-                    new arjs.ResourceMeta(
-                        "/AR/dungeon/DungeonMap7.bin",
-                        "application/octet-stream",
-                        "Alternate Reality: The Dungeon - Map Level 4"
-                    )
-                ]
-            }
-        };
-
-        let resources = new arjs.ResourceManager();
-        let renderer;
-        let resourcesReady = false;
-        let pageReady = false;
-
-        /** @type {HTMLSelectElement} */
-        const source = document.getElementById("Source");
-
-        (function() {
-            let toLoad = [];
-
-            for (let key in mapTypes) if (mapTypes.hasOwnProperty(key)) {
-                let item = mapTypes[key];
-                source.appendChild(new Option(item.description, key));
-                toLoad.push(...item.resources);
-            }
-
-            resources.load(...toLoad).then(
-                (loadedResources) => {
-                    console.log("loaded resources: ", loadedResources);
-                    resourcesReady = true;
-                    checkReady();
-                }
-            );
-        })();
-
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log("document ready");
-
-            source.addEventListener("change", function(evt) {
-                loadMap(source.value);
-            });
-
-            document.getElementById("Scale").addEventListener("change", function(evt) {
-                renderer.scale = Number(evt.target.value) / 100;
-            });
-
-            document.getElementById("PositionX").addEventListener("change", function(evt) {
-                renderer.x = Number(evt.target.value);
-            });
-
-            document.getElementById("PositionY").addEventListener("change", function(evt) {
-                renderer.y = Number(evt.target.value);
-            });
-
-            renderer = new arjs.MapRenderer(document.getElementById("Display").getContext("2d"));
-
-            pageReady = true;
-
-            checkReady();
-        });
-
-        function checkReady() {
-            if (pageReady && resourcesReady) {
-                source.disabled = false;
-            }
-        }
-
-        function loadMap(type) {
-            if (type == "") {
-                renderer.map = null;
-            } else {
-                let entry = mapTypes[type];
-
-                if (type == "city") {
-                    let reader = new arjs.CityMapReader();
-                    reader.readWalls(resources.get(entry.resources[0].url));
-                    reader.readLocationCodes(resources.get(entry.resources[1].url));
-                    renderer.map = reader.map;
-                } else {
-                    let reader = new arjs.DungeonMapReader();
-                    reader.readMap(resources.get(entry.resources[0].url));
-                    renderer.map = reader.map;
-                }
-            }
-
-            renderer.x = 0;
-            renderer.y = 0;
-            renderer.scale = 1;
-        }
-
-    </script>
+	<script type="module" src="./map.js"></script>
 </body>
 </html>

@@ -4,25 +4,6 @@ import { StatAdjustments } from "./StatAdjustments.js";
 import { Configurable } from "./Configurable.js";
 
 /**
- * @interface
- */
-class StatAdjustmentsEx extends StatAdjustments {
-	/**
-	 *
-	 * @param {StatAdjustment} adjustment
-	 * @return {number}
-	 */
-	#getAdjustmentExpiration(adjustment) {}
-
-	/**
-	 *
-	 * @param {StatAdjustment} adjustment
-	 * @param {number|undefined} expiration
-	 */
-	#setAdjustmentExpiration(adjustment, expiration) {}
-}
-
-/**
  * Configuration interface for stat adjustments.
  * @interface
  */
@@ -43,7 +24,7 @@ export class StatAdjustmentConfig {
 
 	/**
 	 * The amount of the adjustment.
-	 * Thsi value must be greater than 0.
+	 * This value must be greater than 0.
 	 * @type {number}
 	 * @readonly
 	 */
@@ -51,7 +32,10 @@ export class StatAdjustmentConfig {
 
 	/**
 	 * The current expiration delay for the adjustment. (optional)
+	 *
 	 * If provided, the value must be greater than 0.
+	 * If omitted, no expiration period is applied.
+	 *
 	 * @type {(string|number)?}
 	 * @readonly
 	 */
@@ -66,7 +50,7 @@ export class StatAdjustmentConfig {
 export class StatAdjustment {
 
 	/**
-	 * @type {StatAdjustmentsEx}
+	 * @type {StatAdjustments}
 	 * @reaodnly
 	 */
 	#root;
@@ -115,7 +99,7 @@ export class StatAdjustment {
 	}
 
 	/**
-	 * Updates this instances values using a configuration object.
+	 * Updates this instance's values using a configuration object.
 	 * @param {StatAdjustmentConfig} config The configuration to clone properties from.
 	 */
 	configure(config) {
@@ -140,7 +124,6 @@ export class StatAdjustment {
 
 	/**
 	 * The parent adjustments collection that this adjustment belongs to.
-	 * @type {StatAdjustments}
 	 */
 	get root() {
 		return this.#root;
@@ -192,7 +175,7 @@ export class StatAdjustment {
 	 * The expiration delay for this adjustment, or `NaN` if the adjustment does not expire.
 	 */
 	get expiration() {
-		return this.#root.#getAdjustmentExpiration(this);
+		return this.#root._getAdjustmentExpiration(this);
 	}
 
 	set expiration(value) {
@@ -203,17 +186,7 @@ export class StatAdjustment {
 				value = 0;
 			}
 
-			this.#root.#setAdjustmentExpiration(this, value);
+			this.#root._setAdjustmentExpiration(this, value);
 		}
 	}
 }
-
-ClassRegistry.registerClass(
-	"StatAdjustment", StatAdjustment,
-	(adj, serializer) => {
-		serializer.writeObject(adj.config);
-	},
-	(adj, data, deserializer) => {
-		adj.configure(deserializer.readObject(data));
-	}
-);

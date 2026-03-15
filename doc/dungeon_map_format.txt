@@ -1,5 +1,10 @@
 
 
+Altirra:
+  Search memory for ATASCII string
+    sa 0 L10000 "Damon"
+  Search memory for bytes
+    s 0 L10000 0a 1b 2c
 
 A note on zones: (from a post here http://www.crpgdev.com/2012/06/)
 >> Basically the Dungeon designers set up a system where you could define a “zone” by specifying a
@@ -11,6 +16,8 @@ A note on zones: (from a post here http://www.crpgdev.com/2012/06/)
 The maps for the original Atari 8-bit version of AR: The Dungeon are stored in the following format:
 =====================
 
+Map appears to be loaded into memory at both $ac00 AND $c000
+The $c000 location may be memory mapped I/O as data is copied from there to the $ac00 location after an encounter.
 
 There is a 1024 byte header:
 ===
@@ -31,7 +38,7 @@ The second and third bytes are unknown
 
 	9a (80+1a / 154)	- ?
 	ac (80+2c / 172)	- always AC?
- 
+
 ---
 
 Starting at 0x4 and ending at 0x2FF are two tables with variable length records:
@@ -62,24 +69,314 @@ The space allocated for the fragment/description tables ends at 0x2ff, however, 
 
 ---
 
-The zone table starts at 0x300 and extends through 0x37d (125 bytes / max. 25 entries):
+The zone ref table starts at 0x300 in the file ($af00 AND $c300 in memory) and extends through 0x37d (125 bytes / max. 25 entries):
 - The first byte in the table contains the number of entries in the table, minus one.
-- The zone entries follow.  Each entry is 5 bytes: [Y1 X1 Y2 X2 Ref]
+- The zone ref entries follow.  Each entry is 5 bytes: [Y1 X2 Y2 X1 Ref]
+  - The width of the zone is X2 - X1 (cells at X1 are included in the zone, cells at X2 are not)
+  - The height of the zone is Y2 - Y1 (cells at Y1 are included in the zone, cells at Y2 are not)
+  - The Ref is the index of the zone to apply to cells within the specified map range.
+    - Assigned values appear to start at 1. This may mean that 0 is used to indicate a null zone assignment.
+    - The actual definitions of what the zones mean must exist elsewhere.
 - The table extends through 0x37d, and any unused space is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
 
-	?? Ref is what?  Is this a message index (eg. 'A sign on the door says:\n"Damon & Pythias Shoppe"')?
-	This may also be a bitflag containing stuff such as no magic flag, texture to use, etc...  Or perhaps it's a reference to an entry in the following table where that information could be stored?
+Zone refs from Level 1.1 (Dungeon NW corner) - 9 zone refs defined (max ref 6)
+  - Entry  0: 00 20 01 00 01 [ 0 32  1  0  1] -> ( 1,  0)-(32,  1) ref 1 (sewers)
+  - Entry  1: 00 01 20 00 01 [ 0  1 32  0  1] -> ( 0,  0)-( 1, 32) ref 1 (sewers)
+  - Entry  2: 1b 03 1c 01 01 [27  3 28  1  1] -> ( 1, 27)-( 3, 28) ref 1 (sewers)
+  - Entry  3: 09 05 10 01 02 [ 9  5 16  1  2] -> ( 1,  9)-( 5, 16) ref 2
+  - Entry  4: 0d 06 10 05 02 [15  6 16  5  2] -> ( 5, 15)-( 6, 16) ref 2
+  - Entry  5: 19 20 1e 1b 03 [25 32 30 27  3] -> (27, 25)-(32, 30) ref 3
+  - Entry  6: 0d 12 15 08 04 [13 18 21  8  4] -> ( 8, 13)-(18, 21) ref 4
+  - Entry  7: 01 20 0b 11 05 [ 1 32 11 17  5] -> (17,  1)-(32, 11) ref 5
+  - Entry  8: 01 05 09 01 06 [ 1  5  9  1  6] -> ( 1,  1)-( 5,  9) ref 6
+
+Zone refs from Level 1.2 (Dungeon NE corner) - 14 zone refs defined (max ref 5)
+  - Entry  1: 00 1f 01 00 01 [ 0 31  1  0  1] -> ( 0,  0)-(31,  1) ref 1 (sewers)
+  - Entry  2: 00 20 20 1f 01 [ 0 32 32 31  1] -> (31,  0)-(32, 32) ref 1 (sewers)
+  - Entry  3: 0f 1f 1e 1e 01 [15 31 30 30  1] -> (30, 15)-(31, 30) ref 1 (sewers)
+  - Entry  4: 10 1e 1d 17 01 [16 30 29 23  1] -> (23, 16)-(30, 29) ref 1 (sewers)
+  - Entry  5: 0f 17 1e 14 01 [15 23 30 20  1] -> (20, 15)-(23, 30) ref 1 (sewers)
+  - Entry  6: 10 14 13 13 01 [16 20 19 19  1] -> (19, 16)-(20, 19) ref 1 (sewers)
+  - Entry  7: 1a 14 1d 13 01 [26 20 29 19  1] -> (19, 26)-(20, 29) ref 1 (sewers)
+  - Entry  8: 14 14 19 13 01 [20 20 25 19  1] -> (19, 20)-(20, 25) ref 1 (sewers)
+  - Entry  9: 01 1f 09 15 02 [ 1 31  9 21  2] -> (21,  1)-(31,  9) ref 2
+  - Entry 10: 03 15 06 0f 02 [ 3 21  6 15  2] -> (15,  3)-(21,  6) ref 2
+  - Entry 11: 1b 10 20 06 03 [27 16 32  6  3] -> ( 6, 27)-(16, 32) ref 3
+  - Entry 12: 1d 06 20 05 03 [29  6 32  5  3] -> ( 5, 29)-( 6, 32) ref 3
+  - Entry 13: 07 14 0b 10 04 [ 7 20 11 16  4] -> (16,  7)-(20, 11) ref 4
+  - Entry 14: 10 08 16 03 05 [16  8 22  3  5] -> ( 3, 16)-( 8, 22) ref 5
+
+Zone refs from Level 1.3 (Dungeon SW corner) - 11 zone refs defined (max ref 7)
+
+0a
+00 01 20 00 01
+1f 20 20 00 01
+18 06 1f 01 02
+12 08 18 01 03
+13 0a 18 01 03
+05 06 12 01 04
+00 20 13 08 05
+01 08 12 06 05
+00 08 01 07 05
+13 20 1f 19 06
+13 11 18 0a 07
+1d 06 20 05 03
+07 14 0b 10 04
+10 08 16 03 05
+
+Zone refs from Level 1.4 (Dungeon SE corner) - 14 zone refs defined (max ref 11)
+
+0d
+00 20 20 1f 01
+1f 20 20 00 01
+18 1a 1f 16 02
+18 16 1b 15 02
+06 11 07 10 03
+09 03 0c 00 04
+00 1f 0d 1a 05
+1d 1c 1f 1b 06
+10 1d 1e 1c 06
+00 08 09 00 07
+10 1f 13 1d 08
+13 1f 16 1d 09
+16 1f 19 1d 0a
+19 1f 1c 1d 0b
+
+Zone refs from Level 2 - 13 zone refs defined (max ref 9)
+
+0c
+04 0d 0c 06 01
+0c 09 0f 06 01
+14 20 20 11 02
+19 11 20 0d 02
+15 0a 1d 02 03
+15 0c 17 0a 03
+1d 09 1f 03 03
+05 1e 0d 18 04
+00 09 01 04 05
+0a 05 0c 03 06
+0f 1f 11 1b 07
+0e 1d 0f 1c 08
+11 0e 15 05 09
 
 ---
 
-Another table starts at 0x37e and ends at 0x3ff (130 bytes):
-	- possibly items? or effects?
-	- seems as though each entry is 8 bytes, which would allow for 16 entries
-	- The table extends through 0x3ff, and any unused space is filled with NULs [00].
+Another table starts at 0x37e ($af7e in memory) and ends at 0x3ff (130 bytes):
+	- This table appears to contain zone definitions.
+	- Each entry in the table is 8 bytes, up to 16 entries (though with 2 extra bytes left over)
+	- The table extends through 0x3ff, and unused space is filled with [00] (level 1.1 to 1.4, 3, 4) or [AA] (level 2).
 
-56 - 8 x 7 / 4 x 14 / 2 x 28 / 1 x 56
-64 - 8 x 8
-96 - 8 x 12
+Level 1.1 (Dungeon NW corner) has the following 7 entries:
+
+  - Entry 0: 01 80 00 24 00 0a 04 06 ("default")
+  - Entry 1: 01 7a 00 24 00 08 22 c0 (sewers)
+  - Entry 2: 04 82 00 54 0e 7a 06 02
+  - Entry 3: 05 8d 00 f8 22 1a 20 30
+  - Entry 4: 01 85 00 24 00 0a 04 06
+  - Entry 5: 01 89 01 0a 00 24 02 04
+  - Entry 6: 01 8f 00 0a 00 24 04 30
+  Fill bytes = [00]
+
+This aligns nicely with the idea that these are zone definitions, with the first entry
+being zone 0 (e.g. applied to all cells without an explicitly assigned zone) and
+subsequent entries corresponding to zone refs from the preceeding table.
+
+For Level 1.2 (Dungeon NE corner) we have the following 7 entries (This is one more entry
+than expected based on the zone ref table):
+
+ - Entry 0: 01 80 00 0a 00 24 04 06 ("default")
+ - Entry 1: 01 6a 00 24 00 08 22 c0 (sewers)
+ - Entry 2: 01 89 05 24 00 0a 28 06 (starting location / well lit area)
+ - Entry 3: 01 8b 00 24 00 0a 04 06
+ - Entry 4: 01 8b 00 24 00 0a 06 02
+ - Entry 5: 01 8a 00 0a 00 24 04 06
+ - Entry 6: 01 8f 00 0a 00 24 04 30 - Assuming this is a zone table, perhaps this entry is unused as it is not referenced in the previous table?
+ Fill bytes [00]
+
+For Level 1.3 (Dungeon SW corner) we have the following 8 entries (this aligns with the zone ref table):
+
+ - Entry 0: 01 80 00 24 00 0a 04 06
+ - Entry 1: 01 6a 00 24 00 08 22 c0
+ - Entry 2: 01 89 01 06 00 0a 0c 0e
+ - Entry 3: 01 a5 00 24 00 0a 04 06
+ - Entry 4: 04 98 00 54 0e 7a 54 24
+ - Entry 5: 01 80 00 24 00 0a 00 06
+ - Entry 6: 01 8f 00 24 00 0a 04 06
+ - Entry 7: 01 74 00 24 00 0a 98 06
+ Fill bytes [00]
+
+For level 1.4 (Dungeon SE corner) we have the following 12 entries (this aligns with the zone ref table):
+
+ - Entry  0: 01 80 00 24 00 0a 04 06
+ - Entry  1: 01 6a 00 24 00 08 22 c0
+ - Entry  2: 04 83 00 54 0e 7a 90 60
+ - Entry  3: 01 f5 00 28 00 0a 34 1a
+ - Entry  4: 01 31 00 00 00 00 04 04
+ - Entry  5: 01 8b 00 24 00 0a 04 06
+ - Entry  6: 01 80 05 24 00 0a 04 06
+ - Entry  7: 01 80 02 24 00 0a 04 06
+ - Entry  8: 01 67 00 04 00 0a 7a c4
+ - Entry  9: 01 86 00 0a 00 06 24 24
+ - Entry 10: 04 74 00 86 c4 ca 98 86
+ - Entry 11: 03 a5 00 34 00 1a 1a 34
+ Fill bytes [00]
+
+For Level 2 we have the following 12 entries: (10 expected)
+
+- Entry  0: 01 80 00 04 00 0a 24 00
+- Entry  1: 02 4c 00 0e 7a 86 0e 8e
+- Entry  2: 05 71 00 44 24 1a 04 00
+- Entry  3: 01 6d 00 90 72 00 00 00
+- Entry  4: 02 70 00 7a 1a 0e 28 0a
+- Entry  5: 01 9a 00 24 00 0a 04 34
+- Entry  6: 01 78 00 1e c4 f8 92 32
+- Entry  7: 05 80 00 44 86 1a 34 54
+- Entry  8: 05 45 00 44 00 28 34 54
+- Entry  9: 01 89 00 22 00 0a 04 06
+- Entry 10: 04 74 00 86 c4 ca 98 86
+- Entry 11: 03 a5 00 34 00 1a 1a 34
+Fill bytes [AA]
+
+
+Inspecting the memory copy at $af7e, the portion of the table containing "fill bytes" on disk appears to sometimes be populated with data.
+It is unknown whether that data is simply "garbage" due to only copying relevant entries or if it is used for some purpose.
+
+When returning from an encounter (perhaps when entering a cell) subroutine at $7e4d reads from the zone ref table AND this table
+(loop at $7e80 copies the 8 bytes for an entry).
+The subroutine checks the player's current location against the zone refs table, and copies the corresponding entry from this
+table ($af7e + zone ref * 8) to the 8 bytes starting at $194b (Actually, it ends up writing 9 bytes. See code below).
+
+Given zone 2 of Lvl1.2 (starting zone / well lit area):
+Map data is:
+  01 89 05 24 00 0a 28 06
+Decoded data written to $194b:
+  01 09 05 00 0a 24 28 06 80
+
+; $6313 is the player's X position (0 to 31, 0 = left edge of map)
+; $6314 is the player's Y position (0 to 31, 0 = top of map)
+; $1912 is the zone ID the player was last in (may be updated if the player position changed)
+; $1948 is the zone definition (updated if the zone changes)
+
+; ----------------
+; Identifies current zone for player's location
+
+sub_$7e4d:
+  ; Compute ($AF00 (e.g. Zone ref table size - 1) * 5) and store in X
+  ; This means X will be an offset to the last entry in the zone ref table
+  LDA $AF00        ; Load value at $AF00 into A (e.g. read the zone ref table size byte)
+  ASL              ; Multiply A by 2
+  ASL              ; Multiply A by 2
+  CLC              ; Clear carry flag
+  ADC $AF00        ; Add $AF00 to A
+  TAX              ; Store A in X
+
+  ; Check if player X is inside zone
+lbl_$7E57:
+  LDA $6313        ; Read value from $6313 into A (player X position)
+  CMP $AF04,X      ; Compare A to value at $AF04 plus X (Entry X1 pos)
+  BCC $7EB1        ; If A less, jump to sub_$7eb1
+  CMP $AF02,X      ; Compare A to value at $AF02 plus X (Entry X2 pos)
+  BCS $7EB1        ; If A greater or equal, jump to sub_$7eb1
+
+  ; Check if player Y is inside zone
+  LDA $6314        ; Read value from $6313 into A (player Y position)
+  CMP $AF01,X      ; Compare A to value at $AF01 plus X (Entry Y1 pos)
+  BCC $7EB1        ; If A less, jump to sub_$7eb1
+  CMP $AF03,X      ; Compare A to value at $AF03 plus X (Entry Y2 pos)
+  BCS $7EB1        ; If A greater or equal, jump to sub_$7eb1
+
+  ; Inside zone
+  ;
+
+  LDA $AF05,X      ; Load value at $Af05 plus X into A (Entry Zone Ref #)
+lbl_$7E74:
+  CMP $1912        ; Compare A to value at $1912 (current zone)
+  BEQ lbl_$7EB0    ; If equal, no change -> jump to end of sub
+
+  ; Entering new zone
+  STA $1912        ; Not equal, store zone ref ID in A to $1912
+
+  ; Compute offset into zone definition table (zone ref ID * 8)
+  ASL              ; Multiply A by 2
+  ASL              ; Multiply A by 2
+  ASL              ; Multiply A by 2
+  TAX              ; Store offset from A in X
+
+  ; Copy the 8 bytes of the corresponding zone defintion record from the map table
+  ; at $Af7E to the 8 bytes starting at $194b
+  LDY #$00         ; Store 0 into Y (loop control)
+
+lbl_$7E82:
+  LDA $AF7E,X      ; Read value from $A7FE plus X into A (one byte of zone definition entry)
+  STA $194B,Y      ; Store byte from A into $194b plus Y
+  INX              ; Move X offset forward one byte
+  INY              ; Move Y offset forward one byte
+  CPY #$08         ; Have we copied 8 bytes yet? (Compare Y to 8)
+  BCC lbl_$7E82    ; If Y less than 8, repeat loop
+
+  ; It would appear the active zone representation the engine uses is slightly different
+  ; than the format used in the map data. The following transforms the map format to
+  ; the engine format.
+
+  ; Rotate last 3 bytes of entry left one byte: AXY -> XYA
+  LDA $194E        ; Read value from $194E into A (offset 3 of copied zone def entry)
+  LDX $194F        ; Read value from $194F into X (offset 4 of copied zone def entry)
+  LDY $1950        ; Read value from $1950 into Y (offset 5 of copied zone def entry)
+  STA $1950        ; Write A to $1950
+  STX $194E        ; Write X to $194E
+  STY $194F        ; Write Y to $194F
+
+  ; Extract high nibble from offset 1 of copied entry and store at offset 8
+  ; Note this is one byte past the copied entry bytes
+  LDA $194C        ; Read value at $194C into A (offset 1 of copied zone def entry)
+  AND #$F0         ; Clear lower nibble / keep top 4 bits
+  STA $1953        ; Store value in A to $1953 (offset 8 of copied zone def entry)
+
+  ; Clear the high nibble of offset 1
+  LDA $194C        ; Read value at $194C into A (offset 1 of copied zone def entry)
+  AND #$0F         ; Clear high nibble / keep bottom 4 bits
+  STA $194C        ; Store value in A to $194C (offset 1 of copied zone def entry)
+
+lbl_$7EB0:
+  RTS              ; Return to caller
+
+; ----------------------
+; Selects to next/final zone definition entry
+
+sub_$7eb1:
+  TXA              ; Copy X into A (X holds offset into the Zone Ref table)
+  SEC              ; Set carry flag
+  SBC #$05         ; Subtract 5 from A (carry flag will be clear if A was less than 5. e.g. past end of table)
+  TAX              ; Copy A into X (does not update carry flag)
+  BCS lbl_$7E57    ; If X greater or equal to 0 (no borrow occurred), go back and check entry at new offset
+  LDA #$00         ; Set A to 0 (does not update carry flag)
+  BCC lbl_$7E74    ; Player is not in a zone (e.g. use zone 0). This should always branch here, since we know the BCS
+                   ; above did not and nothing else would have set the carry flag in between. (e.g the carry flag was
+                   ; not set earlier, and did not get updated, hence this condition is true)
+
+
+
+
+Speculation:
+  AA BL BH CL CH ?? ?? ??
+  Where:
+    - AA is possibly a type or index of some sort
+    - BL and BH are the low and high byte of a 16 bit memory offset (likely an in-memory table or code subroutine, possibly encounters, etc)
+    - CL and CH are the low and high byte of a 16 bit memory offset (likely an in-memory table or code subroutine, possibly encounters, etc)
+    - ??
+    - ??
+    - ??
+
+Per Copilot (arguably unreliable):
+  Zones in The Dungeon were not just spatial partitions — they were behavioral regions that controlled:
+  - Encounter tables
+  - Ambient messages
+  - Lighting rules
+  - Environmental hazards
+  - Music cues
+  - Special scripts (e.g., teleporters, alignment checks, faction reactions)
+
+
 
 ---
 
@@ -133,21 +430,21 @@ Special:
   06 (  6) = Grahm's Gold Exchange
   07 (  7) = Goblin King's Palace
   08 (  8) = Acrinimaril's Tomb
-  
+
   0A ( 10) = Chapel
   0B ( 11) = Palace Prison
   0C ( 12) = Guild ( Wizards of Chaos Guild, Wizards of Law Guild, Wizards of Order Guild, Wizards of Light Guild, Wizards of Darkness Guild )
   0D ( 13) = Damon & Pythias Shoppe
-  
+
   0F ( 15) = The Retreat
   10 ( 16) = Oracle
   11 ( 17) = Enchantress
   12 ( 18) = Dungeon Entrance - to City
-  
+
   1D () = Der Rathskeller's Bar and Grille
 
   - Effects -
-  
+
   60 ( 96) = ? Increased encounter frequency ?
 
   - Encounters -
@@ -162,6 +459,17 @@ Special:
   - Messages -
 
   C0 (192) [Level 1.2] = 'A sign on the door says:\n"Damon & Pythias Shoppe"'
+
+    Some messages are found on Disk 3 Side 1 Sector 605. These messages are encoded such that:
+    - Each line appears to start with 0xa5 (0x80 + 0x25 '%'). Perhaps this is a positioning or color indicator?
+    - 0x0d likely indicates a carriage return similar to ASCII (probably also line feed)
+    - 0xff ends the entry
+
+    Messages related to special/unique items are on Disk 1 Side 1 Sector 115
+    - In general, these follow a similar format to the above.
+    - 0xa7 is used in one message (the note from "A friend" for the map stone). This is likely a formatting code.
+    - The same message also executes code to dynamically insert text (possibly the player name as well as their gender)
+
 
   - Teleporters -
 
@@ -184,7 +492,7 @@ Special:
 
 
 	Perhaps the message to display (eg. A sign on the door says:\n"Damon & Pythias Shoppe")
-	Does this include lighting (e.g. brightly lit area)?  Or is that based on zones?
+	Does this include lighting (e.g. brightly lit area)?  Or is that based on zones? - Lighting is most likely zone-based.
 	Encounter? / Treasure? / Effect?
 
 

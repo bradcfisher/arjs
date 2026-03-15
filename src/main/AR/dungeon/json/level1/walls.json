@@ -1,106 +1,399 @@
 {
     "0": {
-        "name": "None",
-        "desription": "No wall",
+        "name": "(0) None",
+        "description": "No wall / open space",
         "transparent": true,
-        "collision": false
+        "collision": false,
+        "color": "test"
     },
     "1": {
-        "name": "Archway",
+        "name": "(1) Archway",
         "description": "An archway that you can pass through, primary texture.",
-        "texture": "/AR/dungeon/images/arch_1.jpg",
+        "texture": "../../images/arch.png",
         "transparent": true,
-        "collision": false
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.17
+            },
+            {
+                "start": 0.80,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
+    },
+    "2": {
+        "name": "(2) Archway",
+        "description": "An archway that you can pass through, primary texture.",
+        "texture": "../../images/arch.png",
+        "transparent": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.17
+            },
+            {
+                "start": 0.80,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
     },
     "3": {
-        "name": "Door",
+        "name": "(3) Door",
         "description": "A door you can pass through.",
-        "texture": "/AR/dungeon/images/door_1.jpg",
+        "texture": "../../images/door.png",
+        "color": "#66CC00",
         "transparent": false,
-        "collision": false
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32
+            },
+            {
+                "start": 0.67,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ],
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/dungeonDoor.wav"
+                    }
+                }
+            ]
+        }
+    },
+    "4": {
+        "name": "(4) Door",
+        "description": "A door you can pass through.",
+        "texture": "../../images/door.png",
+        "color": "#66CC00",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32
+            },
+            {
+                "start": 0.67,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ],
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/dungeonDoor.wav"
+                    }
+                }
+            ]
+        }
     },
     "5": {
-        "name": "SecretDoor",
+        "name": "(5) SecretDoor",
         "description": "A secret door. Looks like a regular wall to normal vision, but works like a door.",
-        "texture": "/AR/dungeon/images/wall_1.jpg",
+        "texture": "../../images/wall.png",
+        "color": "#0080FF",
         "transparent": false,
-        "collision": false
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/dungeonSecretDoor.wav"
+                    }
+                }
+            ]
+        }
+    },
+    "6": {
+        "name": "(6) SecretDoor",
+        "description": "A secret door. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": "../../images/wall.png",
+        "color": "#0080FF",
+        "transparent": false,
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/dungeonSecretDoor.wav"
+                    }
+                }
+            ]
+        }
+    },
+    "7": {
+        "name": "(7) IllusoryWall",
+        "description": "Looks like a regular wall to normal vision, but is an illusion with no physical substance.",
+        "texture": "../../images/wall.png",
+        "color": "#0080FF",
+        "transparent": false,
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/dungeonSecretDoor.wav"
+                    }
+                }
+            ]
+        }
     },
     "8": {
-        "name": "LockedDoor",
+        "name": "(8) LockedDoor",
         "description": "A locked door that requires a key to unlock it. When a locked door is unlocked, that status is saved with the character.",
-        "texture": "/AR/dungeon/images/door_1.jpg",
+        "texture": "../../images/door.png",
         "transparent": false,
-        "collision": true
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:checkLockedDoorCollision",
+                    "parameters": {
+                        "on": {
+                            "identified": [
+                                {
+                                    "action": "core:playSound",
+                                    "parameters": {
+                                        "source": "../../sounds/successfulIdentification.wav"
+                                    }
+                                },
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "8-visible"
+                                    }
+                                }
+                            ],
+                            "key": [],
+                            "force": [],
+                            "disenchant": [],
+                            "success": [
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
     },
     "9": {
-        "name": "BoltedDoor",
+        "name": "(9) BoltedDoor",
         "description": "A door that is secured with a deadbolt or bar. When a bolted door is forced open, that status is saved with the character.",
-        "texture": "/AR/dungeon/images/door_1.jpg",
+        "texture": "../../images/door.png",
         "transparent": false,
-        "collision": true
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:checkBoltedDoorCollision",
+                    "parameters": {
+                        "on": {
+                            "identified": [
+                                {
+                                    "action": "core:playSound",
+                                    "parameters": {
+                                        "source": "../../sounds/successfulIdentification.wav"
+                                    }
+                                },
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "9-visible"
+                                    }
+                                }
+                            ],
+                            "key": [],
+                            "force": [],
+                            "disenchant": [],
+                            "success": [
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
     },
     "10": {
-        "name": "EnchantedDoor",
+        "name": "(10) EnchantedDoor",
         "description": "A door that is secured with magic. When an enchantment on a door is broken, that status is saved with the character.",
-        "texture": "/AR/dungeon/images/door_1.jpg",
+        "texture": "../../images/door.png",
         "transparent": false,
-        "collision": true
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:checkEnchantedDoorCollision",
+                    "parameters": {
+                        "on": {
+                            "identified": [
+                                {
+                                    "action": "core:playSound",
+                                    "parameters": {
+                                        "source": "../../sounds/successfulIdentification.wav"
+                                    }
+                                },
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "10-visible"
+                                    }
+                                }
+                            ],
+                            "key": [],
+                            "force": [],
+                            "disenchant": [],
+                            "success": [
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "11": {
+        "name": "(11) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
+    },
+    "12": {
+        "name": "(12) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
     },
     "13": {
-        "name": "Wall",
+        "name": "(13) Wall",
         "description": "A typical solid wall.",
-        "texture": "/AR/dungeon/images/wall_1.jpg",
+        "texture": "../../images/wall.png",
         "transparent": false,
-        "collision": true
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
     },
-    "17": {
-        "name": "Archway2",
-        "decription": "An archway that you can pass through, alternate texture.",
-        "texture": "/AR/dungeon/images/arch_2.jpg",
-        "transparent": true,
-        "collision": false
-    },
-    "19": {
-        "name": "Door2",
-        "description": "A door you can pass through, alternate texture.",
-        "texture": "/AR/dungeon/images/door_2.jpg",
+    "14": {
+        "name": "(14) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
         "transparent": false,
-        "collision": false
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
     },
-    "21": {
-        "name": "SecretDoor2",
-        "description": "A secret door, alternate texture. Looks like a regular wall to normal vision, but works like a door.",
-        "texture": "/AR/dungeon/images/wall_2.jpg",
+    "15": {
+        "name": "(15) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
         "transparent": false,
-        "collision": false
-    },
-    "24": {
-        "name": "LockedDoor2",
-        "description": "A locked door that requires a key to unlock it, alternate texture. When a locked door is unlocked, that status is saved with the character.",
-        "texture": "/AR/dungeon/images/door_2.jpg",
-        "transparent": false,
-        "collision": true
-    },
-    "25": {
-        "name": "BoltedDoor2",
-        "description": "A door that is secured with a deadbolt or bar, alternate texture. When a bolted door is forced open, that status is saved with the character.",
-        "texture": "/AR/dungeon/images/door_2.jpg",
-        "transparent": false,
-        "collision": true
-    },
-    "26": {
-        "name": "EnchantedDoor2",
-        "description": "A door that is secured with magic, alternate texture. When an enchantment on a door is broken, that status is saved with the character.",
-        "texture": "/AR/dungeon/images/door_2.jpg",
-        "transparent": false,
-        "collision": true
-    },
-    "29": {
-        "name": "Wall2",
-        "description": "A typical solid wall, alternate texture.",
-        "texture": "/AR/dungeon/images/wall_2.jpg",
-        "transparent": false,
-        "collision": true
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "source": "../../sounds/bump.wav"
+                    }
+                }
+            ]
+        }
     }
 }

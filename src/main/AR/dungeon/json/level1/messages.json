@@ -1,3 +1,65 @@
 {
 
+// There are probably not all for level 1... they were extracted from the game disks and aren't encoded in the map data.
+
+// Location / permanent messages?
+
+    "0": "A sign on the door says:\n\n\"Damon & Pythias Shoppe\"",
+    "1": "A sign above the door reads:\n\n\"THE RETREAT\"",
+    "2": "A sign reads:\n\n\"Der Rathskeller Bar & Grille\"",
+    "3": "Carved above the doorway are the words:\n\n\"Fine Weapons & Armor\"",
+    "4": "An arrow painted on the floor\npoints South.",
+    "5": "Writing on the wall says:\n\n\"BEWARE OF THE DRAGON!\"",
+    "6": "Writing carved into the door reads:\n\n\"THE GAUNTLET\nDO NOT ENTER\"",
+    "7": "Glowing letters on the door proclaim:\n\n\"Enchantress\"",
+    "8": "Writing scrawled on the ground reads:\n\n\"GO BACK!\"",
+    "9": "Scratchings on the wall read:\n\n\"THERE IS NO ESCAPE!\"",
+    "10": "A red arrow on the ground points East.",
+    "11": "A dirty sign reads:\n\n\"Goblins only!\"",
+    "12": "A crooked sign says:\n\n\"TROLLS ONLY\"",
+    "13": "A plaque reads:\n\n\"Shrine of Monsters\"",
+    "14": "You hear the sound of running water.",
+    "15": "Glowing letters float in midair:\n\n\"SEEK THE LIGHT\"",
+    "16": "A note posted on the door reads:\n\n\"BEWARE!  THE CAVERNS!\"",
+    "17": "The stench is becoming unbearable.",
+    "18": "A sign above the door says:\n\n\"Welcome to the Chapel. Please come in!\"",
+    "19": "Black letters hovering slowly say:\n\n\"THE SHADOW WILL HIDE THEE\"",
+    "20": "The rune of the all-knowing eye is upon\n\nthe door.",
+    "21": "On the wall is a painting of\n\na purple pyramid.",
+    "22": "A skull hangs from the ceiling\n\nabove the door.",
+    "23": "You hear the crackle of electricity.",
+    "24": "You stand before an elaborate door.",
+
+// Item messages... Perhaps these are not shown after the item is claimed?
+
+    "trumpCard": "Sealed in an envelope is a trump card.",
+    "sandals": "A powerful but feminine voice says:\n\n\"For thy victory I give thee these\nsandals to make thee quick and agile.\"",
+    "potion": "After some prying, a small chest\nopens to reveal a potion vial.",
+    "crown": "You find a dainty little crown.",
+    "helm": "A helm glowing with runes floats\nin midair before you.",
+    "chainmail": "A chain-mail coat gleems with an\nalmost magical lustre.",
+    "cloak": "A cloak dances to and fro before you.",
+    "breastplate": "There is a glistening breastplate that\nlooks as if it was made just for you.",
+    "sword": "A straight, single-edged, evil-looking\nsword of oriental design lies here.",
+    "stone": "A curious-looking stone fastens\nitself around your neck.",
+    "vial": "Directions on a small vial here read:\n\n1. Pour over hands. \n2. Rub hands firmly.",
+    "trumpCard2": "Sealed in an envelope is a trump card.",
+    "sword2": "A sword protrudes from a slab\nof black marble.",
+    "katana": "A katana in a ribbed black lacquered\nscabbard rests against a wall.\n\nA pattern of snowflakes has been\nhoned along its single edge.",
+    "whetstone": "There is a small rectangular\nsharpening stone here.",
+    "brandy": "Signs of a great battle between a\nsingle warrior and a dozen or more\nadversaries litter this room.\nClutched tightly to the warrior's\nremains is a bottle filled with\ngreen liquid.",
+    "bluePearl": "Inscribed on the blade of a dagger\nare the words:\n\n\"Fear not The Reaper\"",
+    "sixPack": "The decaying remains of an adventurer\nsporting a bush hat and a very nasty\nknife are here. Inscribed on the broken\nblade is the word \"G'day\".  Lying next\nto him are six tall metal cylinders.",
+    "melvinsHelm": "There is golden helm with\nthirteen jewels here.",
+    "crossbow": "A crossbow of incredibly fine\nmechanical workmanship lies here.",
+    "amethystRod": "A blue-violet quartz rod lies\non a purple dais.",
+    "mapStone": "A note reads:\n{name},\n\n   Congratulations my good {man|woman} on\ngetting this far.\n\n{0xa7}A friend",
+    "quarrels": "There are 10 quarrels in\na metallic clip here.",
+    "staffOfAmber": "There is a long electrum rod here.",
+    "cowl": "There is a dark cowl here.",
+    "goldenApple": "A golden apple rests on a golden\npillow.  Inscribed on the apple\nare the words:\n\n\"For the pretty one.\"",
+    "gaussRifle": "There is evidence of small\nweapons fire here.",
+    "solarSuit": "There are some disgusting stains\non the floor and an odd looking\nsilvery quilted vest.",
+    "beamWeapon": "An energy pistol is hanging\non a wall rack."
+
 }

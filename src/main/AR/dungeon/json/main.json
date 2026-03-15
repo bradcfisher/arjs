@@ -2,42 +2,80 @@
 	"name": "The Dungeon",
 	"defaultLocation": {
 		"map": "level1",
-		"x": 43,
-		"y": 3,
-		"orientation": "north"
+		"x": 49.5,
+		"y": 3.5,
+		"orientation": "west"
+	},
+	"renderer": {
+		"renderDistance": 64,
+		"cameraDistance": 1,
+		"fieldOfView": 1.5707963,
+		"wallWidthToHeightRatio": 2,
+		"projectionPlaneOffset": 0
 	},
 	"maps": {
 		"level1": {
-			"format": "json",
-			"walls": { "$import": "level1/walls.json" },
-			"descriptions": { "$import": "level1/descriptions.json" },
-			"zones": { "$import": "level1/zones.json" },
-			"messages": { "$import": "level1/messages.json" },
-			"encounters": { "$import": "level1/encounters.json" }
+			"type": "dungeon",
+			"width": 64,
+			"height": 64,
+			"mapBinaryUrl": [
+				{
+					"idPrefix": "NW",
+					"x": 0,
+					"y": 0,
+					"url": "../DungeonMap1.bin"
+				},
+				{
+					"idPrefix": "NE",
+					"x": 32,
+					"y": 0,
+					"url": "../DungeonMap2.bin"
+				},
+				{
+					"idPrefix": "SW",
+					"x": 0,
+					"y": 32,
+					"url": "../DungeonMap3.bin"
+				},
+				{
+					"idPrefix": "SE",
+					"x": 32,
+					"y": 32,
+					"url": "../DungeonMap4.bin"
+				}
+			],
+			"wallTextureJsonUrl": "./level1/walls.json",
+			"floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
+			"zoneJsonUrl": "./level1/zones.json",
+			"messageJsonUrl": "./level1/messages.json",
+			"encounterJsonUrl": "./level1/encounters.json"
 		},
 		"level2": {
-			"format": "json",
-			"walls": { "$import": "level2/walls.json" },
-			"descriptions": { "$import": "level2/descriptions.json" },
-			"zones": { "$import": "level2/zones.json" },
-			"messages": { "$import": "level2/messages.json" },
-			"encounters": { "$import": "level2/encounters.json" }
+			"type": "dungeon",
+			"mapBinaryUrl": "../DungeonMap5.bin",
+			"wallTextureJsonUrl": "./level2/walls.json",
+			"floorAndCeilingTextureJsonUrl": "./level2/floorAndCeiling.json",
+			"zoneJsonUrl": "./level2/zones.json",
+			"messageJsonUrl": "./level2/messages.json",
+			"encounterJsonUrl": "./level2/encounters.json"
 		},
 		"level3": {
-			"format": "json",
-			"walls": { "$import": "level3/walls.json" },
-			"descriptions": { "$import": "level3/descriptions.json" },
-			"zones": { "$import": "level3/zones.json" },
-			"messages": { "$import": "level3/messages.json" },
-			"encounters": { "$import": "level3/encounters.json" }
+			"type": "dungeon",
+			"mapBinaryUrl": "../DungeonMap6.bin",
+			"wallTextureJsonUrl": "./level3/walls.json",
+			"floorAndCeilingTextureJsonUrl": "./level3/floorAndCeiling.json",
+			"zoneJsonUrl": "./level3/zones.json",
+			"messageJsonUrl": "./level3/messages.json",
+			"encounterJsonUrl": "./level3/encounters.json"
 		},
 		"level4": {
-			"format": "json",
-			"walls": { "$import": "level4/walls.json" },
-			"descriptions": { "$import": "level4/descriptions.json" },
-			"zones": { "$import": "level4/zones.json" },
-			"messages": { "$import": "level4/messages.json" },
-			"encounters": { "$import": "level4/encounters.json" }
+			"type": "dungeon",
+			"mapBinaryUrl": "../DungeonMap7.bin",
+			"wallTextureJsonUrl": "./level4/walls.json",
+			"floorAndCeilingTextureJsonUrl": "./level4/floorAndCeiling.json",
+			"zoneJsonUrl": "./level4/zones.json",
+			"messageJsonUrl": "./level4/messages.json",
+			"encounterJsonUrl": "./level4/encounters.json"
 		}
 	}
 }

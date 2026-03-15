@@ -1,5 +1,5 @@
 import { Parse } from "./Parse.js"
-import { LatentEffect, LatentEffectConfig, EffectTarget, Effect } from "./Effect.js"
+import { LatentEffect, LatentEffectConfig, EffectTarget, EffectType } from "./Effect.js"
 import { Configurable } from "./Configurable.js";
 import { ClassRegistry } from "./Serializer.js";
 
@@ -22,7 +22,7 @@ export class ReadonlyLatentEffects {
 
 	/**
 	 *
-	 * @param {Effect.Type} type
+	 * @param {EffectType} type
 	 */
 	removeByType(type) {}
 
@@ -107,7 +107,7 @@ export class LatentEffects extends Array {
 
 	/**
 	 * Removes all entries with the specified type value.
-	 * @param {Effect.Type} type the type of the items to remove.
+	 * @param {EffectType} type the type of the items to remove.
 	 */
 	removeByType(type) {
 		let vals = this.filter(item => item.type != type);

@@ -55,7 +55,7 @@ export class Renderer extends EventDispatcher {
          * Wider values zoom out, narrower values zoom in.
          * @type {number}
          */
-        this.fieldOfView = Math.PI / 4;
+        this.fieldOfView = Math.PI / 2;
 
         /**
          * Distance from the player position to the camera plane.
@@ -145,11 +145,11 @@ export class Renderer extends EventDispatcher {
 
     /**
      *
-     * @param {WallStyle} wallStyle
+     * @param {HitData} hitData
      * @returns {boolean?}
      */
-    #shouldRenderWallStyle(wallStyle) {
-        if (wallStyle.transparent) {
+    #shouldRenderWallStyle(hitData) {
+        if (hitData.wallStyle.transparent) {
             // Include, but don't stop looking for more
             return null;
         }
@@ -165,8 +165,8 @@ export class Renderer extends EventDispatcher {
      */
     #renderColumn(x, timestamp) {
         // Calculate ray vector relative to camera plane
-        const dirX = Math.cos(this.player.angle);
-        const dirY = Math.sin(this.player.angle);
+        const dirX = Math.cos(this.player.orientation);
+        const dirY = Math.sin(this.player.orientation);
         const cameraSweep = (-1 + (x * 2 / this.width));
         const cameraDirX = -dirY * this.cameraFovMagnitude;
         const cameraDirY = dirX * this.cameraFovMagnitude;
@@ -184,7 +184,8 @@ export class Renderer extends EventDispatcher {
 
             // Calculate wall height
             const wallHeight = (ray.distance < this.renderDistance && ray.wallType)
-                ? (this.width / this.wallWidthToHeightRatio) / (ray.distance * this.cameraFovMagnitude * 2) : 0;
+                ? Math.min(100000, (this.width / this.wallWidthToHeightRatio) / (ray.distance * this.cameraFovMagnitude * 2))
+                : 0;
 
             const playerYOffset = this.player.height + this.player.headBob;
             const wallTop = this.projectionPlaneCenter - wallHeight / 2 + playerYOffset * wallHeight;
@@ -196,9 +197,10 @@ export class Renderer extends EventDispatcher {
                 const destImageData = this.imageBuffer;
                 const imgWidth = destImageData.width;
                 const buf = destImageData.data;
+                const clr = 0xe0 + Math.sin((timestamp & 0xfff) / 1023 * Math.PI * 2) * 0x1f;
                 for (let y = 0; y < displayHeight; y++) {
                     let ofs = (x + y * imgWidth) * 4;
-                    buf[ofs] = 0xff;
+                    buf[ofs] = clr;
                     buf[ofs + 1] = 0;
                     buf[ofs + 2] = 0;
                     buf[ofs + 3] = 0xff;
@@ -388,10 +390,10 @@ export class Renderer extends EventDispatcher {
                 "yStep = " + yStep + "\n" +
                 "endY = " + endY + "\n" +
                 "drawHeight = " + drawHeight
-            );
+            )
         }
 
-        let skyScale = this.cameraFovMagnitude * 4;
+        const skyScale = this.cameraFovMagnitude * 4;
         let skyTexelYStep = skyScale / displayHeight;
         let skyTexelY = 1 - skyScale * (this.projectionPlaneCenter - startY) / displayHeight;
 
@@ -585,11 +587,12 @@ export class Renderer extends EventDispatcher {
                 //
 
                 ctx.lineWidth = 2;
+                const missingColorStrokeStyle = "#D04040";
 
                 // North wall
                 const northWall = cell.northWall;
                 if (northWall) {
-                    ctx.strokeStyle = worldMap.getWallStyle(northWall).color;
+                    ctx.strokeStyle = worldMap.getWallStyle(northWall).color || missingColorStrokeStyle;
                     ctx.beginPath();
                     ctx.moveTo(x1, y1);
                     ctx.lineTo(x2, y1);
@@ -599,7 +602,7 @@ export class Renderer extends EventDispatcher {
                 // East wall
                 const eastWall = cell.eastWall;
                 if (eastWall) {
-                    ctx.strokeStyle = worldMap.getWallStyle(eastWall).color;
+                    ctx.strokeStyle = worldMap.getWallStyle(eastWall).color || missingColorStrokeStyle;
                     ctx.beginPath();
                     ctx.moveTo(x2, y1);
                     ctx.lineTo(x2, y2);
@@ -609,7 +612,7 @@ export class Renderer extends EventDispatcher {
                 // South wall
                 const southWall = cell.southWall;
                 if (southWall) {
-                    ctx.strokeStyle = worldMap.getWallStyle(southWall).color;
+                    ctx.strokeStyle = worldMap.getWallStyle(southWall).color || missingColorStrokeStyle;
                     ctx.beginPath();
                     ctx.moveTo(x1, y2);
                     ctx.lineTo(x2, y2);
@@ -619,7 +622,7 @@ export class Renderer extends EventDispatcher {
                 // West wall
                 const westWall = cell.westWall;
                 if (westWall) {
-                    ctx.strokeStyle = worldMap.getWallStyle(westWall).color;
+                    ctx.strokeStyle = worldMap.getWallStyle(westWall).color || missingColorStrokeStyle;
                     ctx.beginPath();
                     ctx.moveTo(x1, y1);
                     ctx.lineTo(x1, y2);
@@ -633,22 +636,22 @@ export class Renderer extends EventDispatcher {
         const centerY = (player.y - relativeY) * cellSize + topY;
 
         // Draw a ray ahead of the player
-        this.#drawMapRay(player.angle - this.fieldOfView / 2, visibleCells, centerX, centerY, cellSize, '#0000ff');
-        this.#drawMapRay(player.angle + this.fieldOfView / 2, visibleCells, centerX, centerY, cellSize, '#0000ff');
-        this.#drawMapRay(player.angle, visibleCells, centerX, centerY, cellSize, '#00ff00');
+        this.#drawMapRay(player.orientation - this.fieldOfView / 2, visibleCells, centerX, centerY, cellSize, '#0000ff');
+        this.#drawMapRay(player.orientation + this.fieldOfView / 2, visibleCells, centerX, centerY, cellSize, '#0000ff');
+        this.#drawMapRay(player.orientation, visibleCells, centerX, centerY, cellSize, '#00ff00');
 
         // Draw player marker
         ctx.fillStyle = '#FF0000';
         ctx.beginPath();
         const rad = cellSize * 0.6;
         const sweep = Math.PI * 2 / 3;
-        ctx.moveTo(centerX + Math.cos(player.angle) * rad,
-            centerY + Math.sin(player.angle) * rad);
-        ctx.lineTo(centerX + Math.cos(player.angle + sweep) * rad,
-            centerY + Math.sin(player.angle + sweep) * rad);
+        ctx.moveTo(centerX + Math.cos(player.orientation) * rad,
+            centerY + Math.sin(player.orientation) * rad);
+        ctx.lineTo(centerX + Math.cos(player.orientation + sweep) * rad,
+            centerY + Math.sin(player.orientation + sweep) * rad);
         ctx.lineTo(centerX, centerY);
-        ctx.lineTo(centerX + Math.cos(player.angle + sweep * 2) * rad,
-            centerY + Math.sin(player.angle + sweep * 2) * rad);
+        ctx.lineTo(centerX + Math.cos(player.orientation + sweep * 2) * rad,
+            centerY + Math.sin(player.orientation + sweep * 2) * rad);
         ctx.closePath()
         ctx.fill();
 
@@ -665,7 +668,7 @@ export class Renderer extends EventDispatcher {
      * @param {string | CanvasGradient | CanvasPattern} color
      */
     #drawMapRay(angle, castDistance, drawX, drawY, cellSize, color) {
-        const hits = this.worldMap.castRayAtAngle(this.player.x, this.player.y, angle, castDistance, (wallStyle) => !wallStyle.transparent);
+        const hits = this.worldMap.castRayAtAngle(this.player.x, this.player.y, angle, castDistance, (hitData) => !hitData.wallStyle.transparent);
         const ray = hits[0];
         const ctx = this.ctx;
 
@@ -752,7 +755,7 @@ class AdvancedRenderer extends Renderer {
         const dy = sprite.y - this.player.y;
 
         // Rotate sprite to player's view
-        const angle = Math.atan2(dy, dx) - this.player.angle;
+        const angle = Math.atan2(dy, dx) - this.player.orientation;
 
         // Only render if sprite is in field of view
         if (Math.abs(angle) > this.fieldOfView / 2) return;

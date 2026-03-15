@@ -1,7 +1,8 @@
-import { Parse } from "./Parse.js";
-import { GameState } from "./GameState.js";
+import { ActionDefinition, Parse, RegisteredAction } from "./Parse.js";
 import { ClassRegistry } from "./Serializer.js";
 import { Configurable } from "./Configurable.js";
+
+/** @import {ActionCallback} from "./ActionManager.js" */
 
 /**
  * @interface
@@ -122,27 +123,13 @@ export class OptionConfig {
 }
 
 /**
- * @callback ActionCallback
- * @extends {ParseActionCallback}
- * @param {GameState} gameState
- * @return {void}
- */
-
-/**
- * @callback ComputationCallback
- * @extends {ParseActionCallback}
- * @param {GameState} gameState
- * @return {number}
- */
-
-/**
  * @interface
  */
 export class OptionsConfig {
 	/**
 	 * Computation to calculate the value used to identify the current state.
 	 * @readonly
-	 * @type {string|ComputationCallback}
+	 * @type {string|ActionCallback}
 	 */
 	computation;
 
@@ -155,9 +142,8 @@ export class OptionsConfig {
 }
 
 /**
- * @template T extends Parse.ActionCallback
- * @param {(string|T)?} action
- * @returns {T|undefined}
+ * @param {(string|ActionDefinition|RegisteredAction|ActionCallback)?} action
+ * @returns {ActionCallback?}
  */
 function parseCallback(action) {
 	if (action != null) {
@@ -165,7 +151,7 @@ function parseCallback(action) {
 			return action;
 		}
 
-		return Parse.action(action, undefined, ['gameState']);
+		return Parse.action(action);
 	}
 
 	return undefined;
@@ -176,6 +162,9 @@ function parseCallback(action) {
  */
 class ChangeActionCallbacks {
 
+	/**
+	 * @type {ActionCallback?}
+	 */
 	#always;
 
 	/**
@@ -207,9 +196,9 @@ class ChangeActionCallbacks {
 
 		if (actions != null) {
 			if (typeof actions === "string") {
-				this._always = parseCallback<ActionCallback>(actions);
+				this.#always = parseCallback(actions);
 			} else {
-				this._always = parseCallback(actions.always);
+				this.#always = parseCallback(actions.always);
 				this.#increase = parseCallback(actions.increase);
 				this.#decrease = parseCallback(actions.decrease);
 			}
@@ -271,6 +260,7 @@ export class OptionActions {
 	#leave = new ChangeActionCallbacks();
 
 	/**
+	 * @readonly
 	 * @type {ActionCallback?}
 	 */
 	#recurring;
@@ -334,7 +324,6 @@ export class OptionActions {
  * @param {Option} opt
  * @return {void}
  */
-
 export class Option {
 	/**
 	 * @type {string}
@@ -517,7 +506,7 @@ export class Option {
  */
 export class Options {
 	/**
-	 * @type {ComputationCallback}
+	 * @type {ActionCallback}
 	 */
 	#computation;
 

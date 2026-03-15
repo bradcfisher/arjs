@@ -1,5 +1,6 @@
 
-// TODO: Separate HeldItem from ItemType. HeldItem would simply reference an ItemType (by id), along with other properties like quantity held, remainingUses, etc.  A character's inventory would be a list of HeldItems (one per stack).
+// TODO: Separate HeldItem from ItemType. HeldItem would simply reference an ItemType (by id), along with other
+//  properties like quantity held, remainingUses, etc.  A player's inventory would be a list of HeldItems (one per stack).
 
 //	private _identified: boolean = true;
 

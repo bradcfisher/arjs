@@ -21,12 +21,12 @@ export class Opponent
 
 /*
 	animation
-	character level before encountering?
+	player level before encountering?
 	weapons [1 - 4?]
 	armor
 
 	encounter {
-		level: 1,	// Minimum character level before appearance
+		level: 1,	// Minimum player level before appearance
 		maximum: 1,	// Number that can appear an one time
 		timeOfDay: Day | Night,
 		weather: Clear | Rain | Invisible,

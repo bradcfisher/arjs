@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+        /*
         {
             "type": "node",
             "request": "launch",
@@ -19,6 +20,21 @@
             "address": "localhost",
             "port": 5858,
             "outFiles": []
+        }
+        */
+        {
+            "name": "Start Python HTTP Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "-m",
+            "args": [
+                "http.server",
+                "8000"
+                //, "--bind", "localhost"
+                , "--bind", "0.0.0.0"
+            ],
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}/src/main"
         }
     ]
 }

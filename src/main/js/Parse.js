@@ -1,23 +1,69 @@
 import { ClassRegistry, Deserializer, Serializer } from "./Serializer.js";
 import { EventListener } from "./EventDispatcher.js";
+import { GameState } from "./GameState.js";
+import { ActionCallbackConstructor } from "./ActionManager.js";
+
+/**
+ * @import { ActionCallback } from "./ActionManager.js"
+ */
 
 /**
  * @interface
  */
-export class ActionCallback {
-	/** @type {string} */
-	sourceCode;
-	/** @type {string[]} */
-	parameterNames;
+export class RegisteredAction {
+    /**
+     * The name of a previously registered action.
+     * @type {string}
+     */
+    action;
+
+    /**
+     * Parameters to provide to the action function.
+     * Any values provided will override any default parameters with the same key.
+     *
+     * @type {{[name:string]:any}?}
+     */
+    parameters;
 }
 
 /**
  * @interface
- * @extends {EventListener}
- * @extends {ActionCallback}
  */
-export class EventListenerCallback extends EventListener { };
+export class ActionDefinition {
+    /**
+     * Name to register this action as.
+     * If omitted, the action will not be registered for reuse.
+     * When provided, the name must be unique or an error will be reported.
+     *
+     * @type {string?}
+     */
+    name;
 
+	/**
+	 * The code to execute for the action.
+	 *
+	 * A variable named `parameters` is available within the scope of this code
+	 * to allow access to the action's parameter values.
+	 */
+	body;
+
+    /**
+     * Default parameters to provide to the action function.
+     *
+     * These properties will be provided by default, but may be overridden or augmented
+     * by values provided based on the context in which the action is invoked.
+     * @type {{[name:string]:any}?}
+     */
+    parameters;
+}
+
+/**
+ * @callback EventListenerCallback
+ * @param {{[name:string]: any}} parameters
+ * @returns {any}
+ * @extends ActionCallback
+ * @implements {EventListener}
+ */
 
 /**
  * Utility class providing methods for parsing object structures (usually JSON, but not always).
@@ -37,6 +83,104 @@ export class Parse {
 		"d": 60 * 24,		// Minutes in a day
 		"w": 60 * 24 * 7	// Minutes in a week
 	};
+
+	/**
+	 * Stack containing base URL values used for resolving relative resource references.
+	 * @type {URL[]}
+	 */
+	static #baseUrlStack = [];
+
+	/**
+	 * The currently effective base URL value.
+	 *
+	 * This is either the most recently added value in the base URL stack (added via `pushBaseUrl`)
+	 * or the current document location if there are no entries in the base URL stack.
+	 *
+	 * This property is read-only. Use {@link pushBaseUrl} and {@link popBaseUrl} to update the
+	 * effective value.
+	 */
+	static get baseUrl() {
+		const len = Parse.#baseUrlStack.length;
+		if (len) {
+			return Parse.#baseUrlStack[len - 1];
+		}
+
+		return new URL(window.location.href);
+	}
+
+	/**
+	 * Assigns a new base URL value to use for parsing relative references.
+	 *
+	 * This value is added to a stack of previously assigned values, with the most recently assigned
+	 * value being used as the current {@link baseUrl} for resolving relative resource references.
+	 *
+	 * @param {string|URL} baseUrl the new base URL to use. This may be a relative path itself, in
+	 *        which case it will be resolved to an absolute URL prior to assignment using the currently
+	 *        effective base URL.
+	 *
+	 * @return {URL} the new base URL value.
+	 */
+	static pushBaseUrl(baseUrl) {
+		baseUrl = Parse.url(baseUrl);
+		Parse.#baseUrlStack.push(baseUrl);
+		console.log("pushBaseUrl: " + baseUrl);
+		return baseUrl;
+	}
+
+	/**
+	 * Removes the most recently added base URL, reverting back to the previous base URL.
+	 * @see {@link baseUrl}
+	 * @returns the base URL value that was removed. May be undefined if there are no registered base URL values.
+	 */
+	static popBaseUrl() {
+		if (!Parse.#baseUrlStack.length) {
+			console.warn("popBaseUrl called with empty stack. Nothing to do.");
+			return;
+		}
+
+		console.log("popBaseUrl");
+		return Parse.#baseUrlStack.pop();
+	}
+
+	/**
+	 * Executes a callback function in the context of a provided base URL.
+	 *
+	 * This function applies the specified base URL before calling the callback and restores
+	 * it after the callback completes. Upon entry into the callback, {@link Parse.baseUrl} will
+	 * return the value of the baseUrl parameter resolved to an absolute URL.
+	 *
+	 * After completion, the value of {@link Parse.baseUrl} will be the same as it was before
+	 * `withBaseUrl` was invoked.
+	 *
+	 * If the callback throws an error, that error will be thrown by this method.
+	 *
+	 * @param {string|URL} baseUrl the base URL to apply while executing the callback.
+	 * @param {() => any} callback the callback to execute in the context of the provided base URL.
+	 * @returns {any} the value returned by the callback (if any)
+	 * @throws any error thrown by the callback
+	 */
+	static withBaseUrl(baseUrl, callback) {
+		if (baseUrl == null) {
+            baseUrl = Parse.baseUrl;
+        } else {
+			baseUrl = Parse.url(baseUrl);
+		}
+
+		let didPush = false;
+		if (baseUrl != Parse.baseUrl) {
+	        Parse.pushBaseUrl(baseUrl);
+			didPush = true;
+		}
+
+        try {
+			console.log("withBaseURL: " + Parse.baseUrl);
+			return callback();
+		} finally {
+			if (didPush) {
+				Parse.popBaseUrl();
+			}
+		}
+	}
 
 	/**
 	 * Extracts a value from the specified property of an object.
@@ -129,10 +273,10 @@ export class Parse {
 	 * Parses a value as a number.
 	 *
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to return if `val` is null/undefined.  Will throw
+	 * @param {any} defaultVal The default value to return if `val` is null/undefined.  Will throw
 	 *        an error if null/undefined and `val` is also null/undefined.
-	 * @param {boolean} allowNaN whether to allow the parsed result to be NaN or fail if a number
-	 *        cannot be parsed and the defaultVal is `Number.NaN`.
+	 * @param {boolean=} allowNaN whether to allow the parsed result to be NaN or fail if a number
+	 *        cannot be parsed and the defaultVal is `Number.NaN`. (default = false)
 	 *
 	 * @return {number} The parsed number value.  This value will not be `NaN`, unless `defaultVal` is
 	 * 			`Number.NaN` or `allowNaN` is true.
@@ -163,7 +307,7 @@ export class Parse {
 	 *   12    | 100   | 12     | 12
 	 *
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to return if `val` is null/undefined.  Will throw
+	 * @param {any} defaultVal The default value to return if `val` is null/undefined.  Will throw
 	 *        an error if null/undefined and `val` is also null/undefined.
 	 * @param {number} range If a value is parsed with a trailing % symbol ("12%"), this
 	 *        value will be multiplied with the percentage before being returned.
@@ -198,7 +342,7 @@ export class Parse {
 	 * Parses a value as an integer.
 	 *
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to return if `val` is null/undefined.  Will throw
+	 * @param {any} defaultVal The default value to return if `val` is null/undefined.  Will throw
 	 *        an error if null/undefined and `val` is also null/undefined.
 	 * @param {number} radix The radix to use for parsing the value (default is 10).
 	 *
@@ -223,7 +367,7 @@ export class Parse {
 	 * Parses a value as a boolean.
 	 *
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to return if `val` is null/undefined.  Will throw
+	 * @param {any} defaultVal The default value to return if `val` is null/undefined.  Will throw
 	 *        an error if null/undefined and `val` is also null/undefined.
 	 *
 	 * @return {boolean} The parsed boolean value.
@@ -261,7 +405,7 @@ export class Parse {
 	 * @template T the enumeration type
 	 * @param {T} enumType The type of enumeration to parse.
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to use, if val is null or undefined.
+	 * @param {any} defaultVal The default value to use, if val is null or undefined.
 	 *
 	 * @return {T[keyof T]} The parsed enumeration value.
 	 * @throws Error if both `val` and `defaultVal` are null/undefined or
@@ -291,8 +435,9 @@ export class Parse {
 	 *
 	 * @template T the element type of the array
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to use, if val is null or undefined.
-	 * @param {(val: any) => T} parseCallback parsing function to apply to each element in the input.
+	 * @param {any} defaultVal The default value to use, if val is null or undefined.
+	 * @param {((val: any) => T)=} parseCallback parsing function to apply to each element in the input.
+	 *        If not specified, `Parse.any` will be used.
 	 * @returns {T[]} the parsed array value.
 	 * @throws Error if both `val` and `defaultVal` are null/undefined or
 	 *         if the `parseCallback` throws an error while parsing a value.
@@ -323,11 +468,19 @@ export class Parse {
 	}
 
 	/**
+	 * Parse a value as a Set<T>.
+	 *
+	 * The value is parsed as an array-like value as if by calling `Parse.array` and
+	 * each item produced is added to the returned set.
+	 *
+	 * Since sets can only contain one instance of a given value, duplicate values are
+	 * removed and the result may contain fewer entries than the input.
 	 *
 	 * @template T the element type of the set
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to use, if val is null or undefined.
-	 * @param {(val: any) => T} parseCallback parsing function to apply to each element in the input.
+	 * @param {any} defaultVal The default value to use, if val is null or undefined.
+	 * @param {(val: any) => T} parseCallback parsing function to apply to each element in
+	 *        the input to produce items of the desired output element type.
 	 * @returns {Set<T>} the parsed set of values.
 	 * @throws Error if both `val` and `defaultVal` are null/undefined or
 	 *         if the `parseCallback` throws an error while parsing a value.
@@ -345,7 +498,7 @@ export class Parse {
 	/**
 	 * Returns `val` if not null or undefined, otherwise `defaultVal`
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The default value to use, if val is null or undefined.
+	 * @param {any} defaultVal The default value to use, if val is null or undefined.
 	 * @returns {any} `val` if not null or undefined, otherwise `defaultVal`
 	 */
 	static any(val, defaultVal) {
@@ -410,7 +563,7 @@ export class Parse {
 	 *  - `w` = weeks
 	 *
 	 * @param {any} val The value to parse.
-	 * @param {any?} defaultVal The value to parse if `val` is null/undefined.  If undefined, and `val`
+	 * @param {any} defaultVal The value to parse if `val` is null/undefined.  If undefined, and `val`
 	 *        is null/undefined, then an error will be thrown.
 	 * @param {string} defaultUnits The units to apply to unitless values and the return value.
 	 *
@@ -442,7 +595,7 @@ export class Parse {
 			}
 
 			const unitType = (m[2] == null ? defaultUnits : m[2].toLowerCase());
-			const unitMultiplier = Parse.durationUnitMap[unitType];
+			const unitMultiplier = Parse.#durationUnitMap[unitType];
 			if (unitMultiplier == null) {
 				throw new Error('Unable to parse value "'+ val +'" as duration (invalid units: '+ unitType +')');
 			}
@@ -457,18 +610,52 @@ export class Parse {
 			throw new Error('Unparseable value "'+ val.substr(lastPos) +'" when parsing duration: '+ lastPos +" "+ re.lastIndex +" "+ val.length);
 		}
 
-		return rv / Parse.durationUnitMap[defaultUnits];
+		return rv / Parse.#durationUnitMap[defaultUnits];
 	} // duration
 
 	/**
+	 * Parses a value as a URL, resolving relative URLs using the currently effective base URL.
 	 *
-	 * @param {any} val
-	 * @param {any?} defaultVal
-	 * @param {string[]?} parameters
+	 * @param {string|URL|null} val the URL to resolve.
+	 * @param {any} defaultVal the default Javascript code to use if val is undefined.
 	 *
-	 * @return {ActionCallback}
+	 * @return {URL} a URL instance representing the resolved absolute URL.
+	 * @see {@link baseUrl}
 	 */
-	static action(val, defaultVal, parameters) {
+	static url(val, defaultVal) {
+		if (val == null) {
+			if (defaultVal == null) {
+				throw new Error('URL value required');
+			}
+
+			val = defaultVal;
+		}
+
+		console.log("Parse.url: ref=" + val + " base=" + Parse.baseUrl + " result = " + new URL(val, Parse.baseUrl))
+		return new URL(val, Parse.baseUrl);
+	}
+
+	/**
+	 * Parses a string of Javascript into a Function object accepting the specified parameters.
+	 *
+	 * Example:
+	 * ```
+	 *     const sayHello = Parse.action("return 'Hello, ' + name + '!';", null, ["name"]);
+	 *     console.log(sayHello("Bob"));  // Outputs "Hello, Bob!"
+	 * ```
+	 *
+	 * @param {ActionDefinition|RegisteredAction|string|function|null} val the action
+	 *        definition, a reference to a previously registered action, Javascript
+	 *        code to use as the function body or a function. If code is provided, it
+	 *        is evaluated in strict mode.
+	 * @param {any} defaultVal the default action value to use if val is undefined.
+     * @param {(({[name:string]: any}) => void)?} parameterResolver function invoked with the
+	 *        parsed action parameters which can perform validation or augmentation, such as
+	 *        resolving resources from URLs, etc.
+	 *
+	 * @return {ActionCallback} a Function instance
+	 */
+	static action(val, defaultVal, parameterResolver) {
 		if (val == null) {
 			if (defaultVal == null) {
 				throw new Error('Action value required');
@@ -476,32 +663,59 @@ export class Parse {
 
 			val = defaultVal;
 		}
-		val = Parse.str(val);
 
-		if (parameters == null) {
-			parameters = [];
+		if (typeof val.constructor == 'function') {
+			return val;
 		}
 
 		/** @Type {ActionCallback} */
-		const actionCallback = new Function(...parameters, '"use strict";' + val);
-		actionCallback.sourceCode = val;
-		actionCallback.parameterNames = parameters.slice();
-		actionCallback.constructor = Parse.action;
+		let actionCallback;
+
+		if (val.action != null) {
+			if (parameterResolver && (val.parameters != null)) {
+				resourceResolver(val.parameters);
+			}
+
+			actionCallback = GameState.getActionManager().get(val.action, val.parameters);
+		} else if (val.body) {
+			const parameters = val.parameters;
+			const body = Parse.str(val.body);
+
+			if (parameterResolver && (parameters != null)) {
+				resourceResolver(parameters);
+			}
+
+			actionCallback = new Function(["parameters"], '"use strict";' + body);
+			actionCallback.actionConfig = { body, parameters };
+			actionCallback.constructor = ActionCallbackConstructor;
+
+			if (val.name) {
+				actionCallback.actionConfig.name = val.name;
+				GameState.getActionManager().registerAction(val.name, actionCallback, parameters);
+			}
+		} else {
+			const body = Parse.str(val);
+			actionCallback = new Function(["parameters"], '"use strict";' + body);
+			actionCallback.actionConfig = { body };
+			actionCallback.constructor = ActionCallbackConstructor;
+		}
+
 		return actionCallback;
 	}
 
 	/**
+	 * Parses the value as an event listener function taking a single Event parameter named "event".
 	 *
-	 * @param {any} val
+	 * @param {any} val the Javascript code to use as the function body. This code is evaluated in strict mode.
 	 * @param {any} defaultVal
 	 *
 	 * @return {EventListenerCallback}
 	 */
 	static listener(val, defaultVal) {
 		/** @type {EventListenerCallback} */
-		const callback = Parse.action(val, defaultVal, ['context', 'event', 'data']);
+		const callback = Parse.action(val, defaultVal);
 		callback.constructor = Parse.listener;
-		callback.processEvent = function(...args) { callback.apply(this, args); };
+		callback.processEvent = callback;
 		return callback;
 	}
 
@@ -513,8 +727,7 @@ export class Parse {
  * @param {Serializer} serializer
  */
 function serializeCallback(obj, serializer) {
-	serializer.writeProp("parameters", obj.parameterNames);
-	serializer.writeProp("source", obj.sourceCode);
+	serializer.writeProp(obj.actionConfig);
 }
 
 /**
@@ -528,20 +741,16 @@ function deserializeCallback(obj, data, deserializer) {
 }
 
 ClassRegistry.registerClass(
-	'ActionCallback', Parse.action, serializeCallback, deserializeCallback,
+	'ActionCallback', ActionCallbackConstructor, serializeCallback, deserializeCallback,
 	(entry, data, deserializer) => {
-		return Parse.action(
-			deserializer.readProp(data, "source"),
-			null,
-			deserializer.readProp(data, "parameters")
-		);
+		return Parse.action(data);
 	}
 );
 
 ClassRegistry.registerClass(
 	'EventListenerCallback', Parse.listener, serializeCallback, deserializeCallback,
 	(entry, data, deserializer) => {
-		return Parse.listener(deserializer.readProp(data, "source"));
+		return Parse.listener(data);
 	}
 );
 

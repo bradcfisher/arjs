@@ -180,7 +180,7 @@ export class TickDelays {
  * clock.setCurrent(0, 6, 1, 12, 0);
  *
  * // Create a timer that will fire every 30 minutes of game time.
- * GameTimer timer = clock.timer(30, 0).onTimer(function(t) {
+ * GameTimer timer = clock.timer(30, 0).on("timer", function(event) {
  *   console.log("A half hour of game time has passed");
  * });
  * ```
@@ -638,21 +638,21 @@ export class GameClock
 						++this.#year;
 						this.#month = 0;
 						this.#updateMonthEntry();
-						this.trigger('yearRollover');
+						this.triggerEvent('yearRollover');
 					} else {
 						this.#updateMonthEntry();
 					}
 
-					this.trigger('monthRollover');
+					this.triggerEvent('monthRollover');
 				}
 
-				this.trigger('dayRollover');
+				this.triggerEvent('dayRollover');
 			}
 
-			this.trigger('hourRollover');
+		this.triggerEvent('hourRollover');
 		}
 
-		this.trigger('minuteRollover');
+		this.triggerEvent('minuteRollover');
 
 		// Process expired timers
 		if (this._timers.length > 0) {
@@ -730,7 +730,7 @@ export class GameClock
 	 *        0, the effective delay between repetitions will be 1.
 	 * @param {number} repetitions The number of times to trigger the timer.  A value of 0, or a
 	 *        negative value, indicates an unlimited number of repetitions.
-	 * @param {(EventListener|function)?} listener The EventListener to invoke for each repetition.
+	 * @param {(EventListener|(event: EventDetail) => void)?} listener The EventListener to invoke for each repetition.
 	 *
 	 * @return {GameTimer} A new GameTimer instance.
 	 */

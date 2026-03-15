@@ -24,7 +24,7 @@ export { SpellItemType } from "./SpellItemType.js";
 // /*
 
 // Load the GameState with a configuration
-GameState.load("./AR.json")
+GameState.load("/AR/shared/json/AR.json")
 	.then((gameState) => {
 		// TODO: Do something with the GameState here
 		console.log("GameState loaded successfully:", gameState);

@@ -332,7 +332,7 @@ export class GameTimer
 			this.#next._triggerTimer();
 		}
 
-		this.trigger('timer', this.data);
+		this.triggerEvent('timer', this.data);
 
 		// Restart the timer if it was not a one-shot timer
 		// (eg. repetitions = 0 or repetitions > 1)

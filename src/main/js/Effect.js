@@ -62,7 +62,14 @@ export class LatentEffectConfig {
 	naturalCureProbability;
 
 	/**
-	 * @type {(string|Effect.ActionCallback)?}
+	 * The action to perform when this effect is triggered.
+	 *
+	 * When triggered, the parameters provided to the callback will include the following:
+	 *
+	 * - effect: ActiveEffect - the effect the action was triggered for
+	 * - target?: EffectTarget - the target object of the effect
+	 *
+	 * @type {(string|ActionCallback)?}
 	 */
 	action;
 
@@ -94,34 +101,9 @@ export class EffectTarget {
  * @typedef { [type:string]:string } TriggerTypesMap
  */
 
-/**
- * @typedef Effect.ActionCallback extends Parse.ActionCallback {
- *     (effect: ActiveEffect, gameState: GameState, target?: EffectTarget): void;
- */
 
 // TODO: triggers are not relevant for active effects...
 
-
-
-
-/**
- *
- * @param {*} val
- * @param {*?} defaultVal
- * @returns {Effect.ActionCallback}
- */
-function parseAction(val, defaultVal) {
-	return Parse.action(val, defaultVal, ['effect', 'gameState', 'item']);
-}
-
-/**
- * Default action callback for new instances.
- * This callback always throws and is intended as a placeholder that must be overridden.
- * @see [[Effect.ActionCallback]]
- * @type {Effect.ActionCallback}
- */
-const unimplementedAction =
-	parseAction('throw new Error("TODO: Effect action not implemented.");');
 
 /**
  * Base class of all item effects.
@@ -130,21 +112,23 @@ const unimplementedAction =
  */
 export class LatentEffect {
 	/**
-	 * The name/identifier of the effect.
-	 * Used for determining duplicates.
+	 * Default action callback for new instances.
+	 * This callback always throws and is intended as a placeholder that must be overridden.
+	 * @type {ActionCallback}
+	 */
+	#unimplementedAction = Parse.action('throw new Error("TODO: Effect action not implemented.");');
+
+	/**
 	 * @type {string?}
 	 */
 	#id;
 
 	/**
-	 * The text to display for this effect.
 	 * @type {string?}
 	 */
 	#text;
 
 	/**
-	 * Whether the text (if any) should be displayed or not.
-	 * The type of the effect determines where the text is displayed (eg. in diseases, magic effects, etc)
 	 * @type {boolean}
 	 */
 	#textVisible = false;
@@ -160,46 +144,35 @@ export class LatentEffect {
 	#allowMultiple = false;
 
 	/**
-	 * The events/triggers which this effect is initiated by.
 	 * @type {Set<string>}
 	 * @readonly
 	 */
 	#triggers = new Set();
 
 	/**
-	 * Initial time to wait (in minutes) before executing the effect.
-   * AKA, incubation period
-	 * May be different than the repetition interval.
 	 * @type {number}
 	 */
 	#initialDelay = 0;
 
 	/**
-	 * number of times the effect is executed before deactivated.
-	 * Decreased (if not 0) with each execution, and effect is removed when it reaches 0.
-	 * 0 means +oo (repeated forever)
 	 * @type {number}
 	 */
 	#repetitions = 1;
 
 	 /**
-	  * Time to wait (in minutes) between repetitions.
 	  * @type {number}
 	  */
 	#interval = 0;
 
 	/**
-	 * Probability of a natural cure (checked on each execution).
-	 * [0..1]
 	 * @type {number}
 	 */
 	#naturalCureProbability = 0;
 
 	/**
-	 * The action to perform when this effect is triggered.
-	 * @type {Effect.ActionCallback}
+	 * @type {ActionCallback}
 	 */
-	#action = unimplementedAction;
+	#action = this.#unimplementedAction;
 
 	/**
 	 *
@@ -229,7 +202,7 @@ export class LatentEffect {
 		let triggerType = ItemTypeTrigger;
 		this.triggers = Parse.set(config.triggers, [], (item) => { return Parse.enum(triggerType, item); });
 
-		this.action = parseAction(config.action, undefined);
+		this.action = Parse.action(config.action);
 	}
 
 	/**
@@ -247,7 +220,7 @@ export class LatentEffect {
 			repetitions: this.repetitions,
 			interval: this.interval,
 			naturalCureProbability: this.naturalCureProbability,
-			action: this.action.sourceCode
+			action: this.action
 		}
 	}
 
@@ -260,7 +233,7 @@ export class LatentEffect {
 	 * 		is found.
 	 */
 	assertProperties(triggerTypes) {
-		if (this.action == unimplementedAction) {
+		if (this.action == this.#unimplementedAction) {
 			throw new Error("Effect not configured");
 		}
 
@@ -304,6 +277,10 @@ export class LatentEffect {
 		this.#allowMultiple = allowMultiple;
 	}
 
+	/**
+	 * The name/identifier of the effect.
+	 * Used for determining duplicates.
+	 */
 	get id() {
 		return this.#id;
 	}
@@ -318,6 +295,9 @@ export class LatentEffect {
 		this.#id = value;
 	}
 
+	/**
+	 * The text to display for this effect.
+	 */
 	get text() {
 		return this.#text;
 	}
@@ -332,6 +312,10 @@ export class LatentEffect {
 		this.#text = value;
 	}
 
+	/**
+	 * Whether the text (if any) should be displayed or not.
+	 * The type of the effect determines where the text is displayed (eg. in diseases, magic effects, etc)
+	 */
 	get textVisible() {
 		return this.#textVisible;
 	}
@@ -340,6 +324,9 @@ export class LatentEffect {
 		this.#textVisible = value;
 	}
 
+	/**
+	 * The events/triggers which this effect is initiated by.
+	 */
 	get triggers() {
 		return this.#triggers;
 	}
@@ -351,6 +338,11 @@ export class LatentEffect {
 		}
 	}
 
+	/**
+	 * Initial time to wait (in minutes) before executing the effect.
+     * AKA, incubation period
+	 * May be different than the repetition interval.
+	 */
 	get initialDelay() {
 		return this.#initialDelay;
 	}
@@ -362,6 +354,11 @@ export class LatentEffect {
 		this.#initialDelay = value;
 	}
 
+	/**
+	 * Number of times the effect is executed before deactivated.
+	 * Decreased (if not 0) with each execution, and effect is removed when it reaches 0.
+	 * 0 means +oo (repeated forever)
+	 */
 	get repetitions() {
 		return this.#repetitions;
 	}
@@ -373,6 +370,9 @@ export class LatentEffect {
 		this.#repetitions = value;
 	}
 
+	/**
+	* Time to wait (in minutes) between repetitions.
+	 */
 	get interval() {
 		return this.#interval;
 	}
@@ -384,6 +384,10 @@ export class LatentEffect {
 		this.#interval = value;
 	}
 
+	/**
+	 * Probability of a natural cure (checked on each execution).
+	 * [0..1]
+	 */
 	get naturalCureProbability() {
 		return this.#naturalCureProbability;
 	}
@@ -394,6 +398,14 @@ export class LatentEffect {
 		this.#naturalCureProbability = value;
 	}
 
+	/**
+	 * The action to perform when this effect is triggered.
+	 *
+	 * When triggered, the parameters provided to the callback will include the following:
+	 *
+	 * - effect: ActiveEffect - the effect the action was triggered for
+	 * - target?: EffectTarget - the target object of the effect
+	 */
 	get action() {
 		return this.#action;
 	}
@@ -499,22 +511,24 @@ export class ActiveEffect
 
 	/**
 	 *
-	 * @param {string} event
-	 * @param {*} data
+	 * @param {EventDetail} event
 	 */
-	processEvent(event, data) {
-		if (event == GameTimer.Event.timer) {
+	processEvent(event) {
+		if (event.type == 'timer') {
 			/**
-			 * @type GameTimer
+			 * @type {GameTimer}
 			 */
-			let timer = data;
+			const timer = event.target;
 
 			if (this.incubating) {
 				this.#setIncubating(false);
 			}
 
 			// Execute the action
-			this.action(this, GameState.getInstance(), this.target);
+			this.action({
+				effect: this,
+				target: this.target
+			});
 
 			// Handle remaining repetitions
 			if (this.repetitions != 1) {
@@ -540,7 +554,7 @@ export class ActiveEffect
 		/*
 		if (this.isCleanup && this.incubating) {
 			// TODO: Force timer to fire immediately and execute the action
-			// Need to have access to the GameState, Character and Item here...
+			// Need to have access to the GameState, Player and Item here...
 		}
 
 		*/

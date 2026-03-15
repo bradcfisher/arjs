@@ -2,18 +2,29 @@
 	"name": "The City",
 	"defaultLocation": {
 		"map": "city",
-		"x": 35,
-		"y": 27,
+		"x": 35.5,
+		"y": 36.5,
 		"angle": "north"
+	},
+	"renderer": {
+		"renderDistance": 64,
+		"cameraDistance": 1,
+		"fieldOfView": 1.5707963,
+		"wallWidthToHeightRatio": 2,
+		"projectionPlaneOffset": 0
 	},
 	"maps": {
 		"city": {
-			"format": "json",
-			"walls": { "$import": "cityWalls.json" },
-			"descriptions": { "$import": "cityDescriptions.json" },
-			"zones": { "$import": "cityZones.json" },
-			"messages": { "$import": "cityMessages.json" },
-			"encounters": { "$import": "cityEncounters.json" }
+			"type": "city",
+			"wallBinaryUrl": "../CityMapWalls.bin",
+			"locationBinaryUrl": "../CityMapLocations.bin",
+			"wallTextureJsonUrl": "./cityWalls.json",
+			"floorAndCeilingTextureJsonUrl": "./cityFloorAndCeiling.json",
+			"descriptionJsonUrl": "./cityDescriptions.json",
+			"zoneJsonUrl": "./cityZones.json",
+			"messageJsonUrl": "./cityMessages.json",
+			"encounterJsonUrl": "./cityEncounters.json",
+			"patchJsonUrl": "./cityPatches.json"
 		}
 	}
 }

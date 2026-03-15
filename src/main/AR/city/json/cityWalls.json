@@ -1,7 +1,7 @@
 {
     "0": {
         "name": "None",
-        "desription": "No wall",
+        "description": "No wall",
         "transparent": true,
         "collision": false,
         "color": "test"
@@ -53,7 +53,21 @@
                 "start": 0.71,
                 "end": 1
             }
-        ]
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "source": "../sounds/bump.wav"
+                }
+            ],
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "source": "../sounds/cityDoor.wav"
+                }
+            ]
+        }
     },
     "5_": {
         "name": "SecretDoor",
@@ -79,7 +93,15 @@
         },
         "color": "#0080FF",
         "transparent": false,
-        "collision": false
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "source": "../sounds/citySecretDoor.wav"
+                }
+            ]
+        }
     },
     "5": {
         "name": "SecretDoor-Arch",
@@ -128,7 +150,21 @@
                 "start": 0.75,
                 "end": 1
             }
-        ]
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "source": "../sounds/bump.wav"
+                }
+            ],
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "source": "../sounds/citySecretDoor.wav"
+                }
+            ]
+        }
     },
     "_13": {
         "name": "Wall",
@@ -180,7 +216,15 @@
         },
         "color": "#00FFFF",
         "transparent": false,
-        "collision": true
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "source": "../sounds/bump.wav"
+                }
+            ]
+        }
     },
     "___13": {
         "name": "Wall",

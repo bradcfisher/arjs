@@ -2,23 +2,72 @@
 import { Renderer } from "./js/Renderer.js";
 import { Controls } from "./js/Controls.js";
 import { Player } from "./js/Player.js";
-import { ResourceManager } from "./js/ResourceManager.js";
 import { CityMapReader } from "./js/CityMapReader.js";
+import { DungeonMapReader } from "./js/DungeonMapReader.js";
 
 let resourcesReady = false;
 let domReady = false;
 
-const cityMapReader = new CityMapReader();
-cityMapReader.readMap(
-    "/AR/city/CityMapWalls.bin",
-    "/AR/city/CityMapLocations.bin",
-    "/AR/city/json/cityDescriptions.json",
-    "/AR/city/json/cityWalls.json",
-    "/AR/city/json/cityFloorAndCeiling.json",
-    "/AR/city/json/cityPatches.json");
+let mapReader;
+if (false) {
+    mapReader = new CityMapReader();
+    mapReader.readMap({
+                "wallBinaryUrl": "../CityMapWalls.bin",
+                "locationBinaryUrl": "../CityMapLocations.bin",
+                "wallTextureJsonUrl": "./cityWalls.json",
+                "floorAndCeilingTextureJsonUrl": "./cityFloorAndCeiling.json",
+                "descriptionJsonUrl": "./cityDescriptions.json",
+                "zoneJsonUrl": "./cityZones.json",
+                "messageJsonUrl": "./cityMessages.json",
+                "encounterJsonUrl": "./cityEncounters.json",
+                "patchJsonUrl": "./cityPatches.json"
+            },
+            "/AR/city/json/"
+        );
+} else {
+    mapReader = new DungeonMapReader();
+    mapReader.readMap({
+            "width": 64,
+            "height": 64,
+            "mapBinaryUrl": [
+                {
+                    "idPrefix": "NW",
+                    "x": 0,
+                    "y": 0,
+                    "url": "../DungeonMap1.bin"
+                },
+                {
+                    "idPrefix": "NE",
+                    "x": 32,
+                    "y": 0,
+                    "url": "../DungeonMap2.bin"
+                },
+                {
+                    "idPrefix": "SW",
+                    "x": 0,
+                    "y": 32,
+                    "url": "../DungeonMap3.bin"
+                },
+                {
+                    "idPrefix": "SE",
+                    "x": 32,
+                    "y": 32,
+                    "url": "../DungeonMap4.bin"
+                }
+            ],
+            "wallTextureJsonUrl": "./level1/walls.json",
+            "floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
+            "zoneJsonUrl": "./level1/zones.json",
+            "messageJsonUrl": "./level1/messages.json",
+            "encounterJsonUrl": "./level1/encounters.json",
+            "patchJsonUrl": "./level1/patches.json"
+        },
+        "/AR/dungeon/json/"
+    );
+}
 
-cityMapReader.on("complete", () => {
-    console.log("loaded map: " + cityMapReader.map.metadata.description);
+mapReader.on("complete", () => {
+    console.log("loaded map: " + mapReader.map.metadata.description);
     resourcesReady = true;
     checkReady();
 });
@@ -33,10 +82,10 @@ function checkReady() {
         return;
     }
 
-    const worldMap = cityMapReader.map;
+    const worldMap = mapReader.map;
 
     // TODO: Wall loader
-    
+
 
 /*
             0: new WallStyle({ transparent: true, collision: false }), // No wall (should never be drawn)
@@ -69,13 +118,14 @@ function checkReady() {
     const fpsElement = document.getElementById("fps");
     const descElement = document.getElementById("description");
 
-    player.on('move', (data) => {
+    player.on('move', (event) => {
+        const data = event.data;
         const cell = worldMap.getCell(Math.floor(data.position.x), Math.floor(data.position.y));
 
         statusElement.innerText =
             'x: ' + data.position.x.toFixed(2) +
             ' y: ' + data.position.y.toFixed(2) +
-            ' angle: ' + data.position.angle.toFixed(2) +
+            ' orientation: ' + data.position.orientation.toFixed(2) +
             ' height: ' + data.position.height.toFixed(2) +
             '\ncell: ' + cell;
 
@@ -91,26 +141,29 @@ function checkReady() {
         }
     });
 
-    player.on('collision', (data) => {
+    player.on('collision', (event) => {
+        const data = event.data;
         console.log('COLLISION: ' +
             'x: ' + data.position.x.toFixed(2) +
             ' y: ' + data.position.y.toFixed(2) +
-            ' angle: ' + data.position.angle.toFixed(2) +
+            ' orientation: ' + data.position.orientation.toFixed(2) +
             ' height: ' + data.position.height.toFixed(2) +
             ' hit: ', data.hit);
     });
 
-    player.on('passage', (data) => {
+    player.on('passage', (event) => {
+        const data = event.data;
         console.log('PASSAGE: ' +
             'x: ' + data.position.x.toFixed(2) +
             ' y: ' + data.position.y.toFixed(2) +
-            ' angle: ' + data.position.angle.toFixed(2) +
+            ' orientation: ' + data.position.orientation.toFixed(2) +
             ' height: ' + data.position.height.toFixed(2) +
             ' hit: ', data.hit);
     });
 
     let lastTimestamp = 0;
-    renderer.on('render', (data) => {
+    renderer.on('render', (event) => {
+        const data = event.data;
         fpsElement.innerText = ' fps: ' + data.fps.toFixed(2);
 
         // Add some visual effects to make it more interesting
@@ -142,8 +195,11 @@ function checkReady() {
     });
     */
 
-    // The floating gate
-    player.setPosition(35.5, 36.5, -Math.PI / 2);
+    // The City - The floating gate
+    //player.setPosition(35.5, 36.5, -Math.PI / 2);
+
+    // The Dungeon - Near Damon & Pythia's shop
+    player.setPosition(49.5, 3.5, -Math.PI);
 
     //player.setPosition(35.5, 27.5, Math.PI / 2);
     //player.setPosition(33.5, 33.5, -Math.PI / 2);

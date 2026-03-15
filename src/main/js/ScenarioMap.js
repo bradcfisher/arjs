@@ -1,50 +1,297 @@
 
 import { ColorUtil } from "./ColorUtil.js";
+import { Configurable } from "./Configurable.js";
+import { Parse, ActionDefinition, RegisteredAction } from "./Parse.js";
 import { TextureProvider, SolidColorTexture } from "./Texture.js";
+
+/** @import {ActionCallback} from "./ActionManager.js" */
+
+
+/**
+ * @implements {Configurable<MapZoneRef>}
+ */
+export class MapZoneRef {
+    /**
+     * The x position of the starting corner of the zone area.
+     * @type {number}
+     * @readonly
+     */
+    x;
+
+    /**
+     * The y position of the starting corner of the zone area.
+     * @type {number}
+     * @readonly
+     */
+    y;
+
+    /**
+     * The width of the zone area.
+     * @type {number}
+     * @readonly
+     */
+    width;
+
+    /**
+     * The height of the zone area.
+     * @type {number}
+     * @readonly
+     */
+    height;
+
+    /**
+     * The ID of the zone (or list of zone IDs) to apply to the cells within the area.
+     * @type {string|string[]}
+     * @readonly
+     */
+    zone;
+
+    /**
+     * Constructs a new MapZoneRef
+     * @param {MapZoneRef} config
+     */
+    constructor(config) {
+        if (config) {
+            this.configure(config);
+        }
+    }
+
+    configure(config) {
+        this.x = Parse.num(Parse.required(config.x, "x"));
+        this.y = Parse.num(Parse.required(config.y, "y"));
+        this.width = Parse.num(Parse.required(config.width, "width"));
+        this.height = Parse.num(Parse.required(config.height, "height"));
+        this.zone = Parse.array(Parse.required(config.zone, "zone"));
+    }
+
+    get config() {
+        return {
+            "x": this.x,
+            "y": this.y,
+            "width": this.width,
+            "height": this.height,
+            "zone": this.zone
+        };
+    }
+
+    toString() {
+        return `MapZoneRef[x=${this.x}, y=${this.y}, w=${this.width}}, h=${this.height}, zone=${this.zone}]`;
+    }
+} // MapZoneRef
+
+export class MapZone {
+    /**
+     * The zoneId.
+     * @type {string}
+     */
+    zoneId;
+
+    /**
+     * The binary data describing the zone.
+     * 9 bytes
+     * @type {byte[]}
+     */
+    data = [];
+
+    // TODO: Lots of stuff to make Zones cool
+    //   texture set
+    //   danger levels / encounters
+    //   recurring events (ambient sounds, etc)
+    //   light levels
+    //   messages
+    //
+
+    toString() {
+        const hex = "0123456789abcdef";
+        let data = "";
+        for (let i = 0; i < this.data.length; ++i) {
+            let d = this.data[i];
+            data += hex.charAt(d >>> 4) + hex.charAt(d & 0xf) + " ";
+        }
+
+        return `MapZone[id=${this.zoneId}, data=${data}]`;
+    }
+}
+
+/**
+ * @interface
+ */
+export class WallStyleConfig {
+    /**
+     * Optional name assigned to the wall style.
+     * @type {string?}
+     */
+    name;
+
+    /**
+     * Optional description associated with the wall style.
+     * @type {string?}
+     */
+    description;
+
+    /**
+     * Whether the wall is considered transparent for rendering purposes or not.
+     * If true, the wall will be rendered to the screen on top of any walls detected further in the distance.
+     * If false or unspecified, this type of wall will end the raycasting when rendering and will be the first
+     * wall drawn to the screen for the ray.
+     * @type {boolean?}
+     * @readonly
+     */
+    transparent;
+
+    /**
+     * Whether this wall type is considered solid to the player or not.
+     *
+     * May be a boolean value to indicate the wall is either fully solid or fully intangible.
+     *
+     * If an array is provided, each entry in the list is an object specifying the start and end of a
+     * region as a percentage of the wall's width where the wall is considered solid to the player.
+     * When ranges are provided, the start must be less than the end.
+     *
+     * `true` is equivalent to `[{'start': 0, 'end': 1}]` and `false` is equivalent to `[]`.
+     *
+     * @type {(boolean | [{start:number, end:number}])?}
+     * @readonly
+     */
+    collision;
+
+    /**
+     * Color assigned to the wall style.
+     * May be used for rendering the style in a map as well as for rendering the wall if
+     * no texture is defined.
+     * @type {string?}
+     * @readonly
+     */
+    color;
+
+    /**
+     * @type {TextureProvider?}
+     * @readonly
+     */
+    textureProvider;
+
+    /**
+     * Actions to associate with events that occur with walls of this type.
+     * Examples include playing sounds or triggering more complex checks such as locked doors or other actions/scenarios.
+     * @type {({[type:string]: [ActionDefinition|RegisteredAction|ActionCallback|string]})?}
+     * @readonly
+     */
+    on;
+}
 
 export class WallStyle {
     /**
-     * Constructs a new WallStyle.
-     * @param {{transparent?:boolean, collision?: boolean | [{start:number, end:number}], color?:string, textureProvider?:TextureProvider}} options
+     * Optional name assigned to the wall style.
+     * @type {string?}
      */
-    constructor(options) {
-        /**
-         * Whether the wall is considered transparent for rendering purposes or not.
-         * If true, the wall will be rendered to the screen on top of any walls detected further in the distance.
-         * If false, this wall will end the raycasting when rendering and will be the first wall drawn to the screen
-         * for the ray.
-         * @type {boolean}
-         */
-        this.transparent = false;
+    name;
 
-        /**
-         * Regions where the wall is considered solid to the player.
-         * Each entry in the list consists of a start and end of the region as a percentage of the wall's width
-         * where start < end.
-         * An empty list equates to no collision.
-         *
-         * @type {[{start:number, end:number}]}
-         */
-        this.collision = [];
+    /**
+     * Optional description associated with the wall style.
+     * @type {string?}
+     */
+    description;
 
-        /**
-         * @type {TextureProvider}
-         */
-        this.textureProvider = undefined;
+    /**
+     * Whether the wall is considered transparent for rendering purposes or not.
+     * If true, the wall will be rendered to the screen on top of any walls detected further in the distance.
+     * If false, this wall will end the raycasting when rendering and will be the first wall drawn to the screen
+     * for the ray.
+     * @type {boolean}
+     */
+    transparent = false;
 
-        if (options) {
-            Object.entries(options).forEach(([key, value]) => this[key] = value);
+    /**
+     * List of regions indicating areas where this wall type is considered solid to the player.
+     *
+     * Each entry in the list is an object specifying the start and end of a region as a
+     * percentage of the wall's width where the wall is considered solid to the player.
+     *
+     * `[{'start': 0, 'end': 1}]` would indicate a fully solid wall, while `[]` means the wall
+     * is fully intangible.
+     *
+     * @type {[{start:number, end:number}]}
+     */
+    collision = [];
 
-            if (this.collision === true) {
+    /**
+     * @type {TextureProvider}
+     */
+    textureProvider = undefined;
+
+    /**
+     * Color assigned to the wall style.
+     * May be used for rendering the style in a map as well as for rendering the wall if
+     * no texture is defined.
+     * @type {string}
+     */
+    color = 'rgb(255 0 0 / 50%)';
+
+    /**
+     * @type {Map<string, ActionCallback[]>}
+     */
+    on = new Map();
+
+    /**
+     * Constructs a new WallStyle.
+     * @param {WallStyleConfig} config
+     */
+    constructor(config) {
+        if (config) {
+            if (config.name != null) {
+                this.name = Parse.str(config.name);
+            }
+
+            if (config.description != null) {
+                this.description = Parse.str(config.description);
+            }
+
+            this.transparent = Parse.bool(Parse.getProp(config, false, "transparent"));
+
+            if (config.collision === true) {
                 this.collision = [{start: 0, end: 1}];
-            } else if (!this.collision) {
+            } else if (!config.collision) {
                 this.collision = [];
+            } else {
+                // Validate and normalize the "collision" ranges
+                const collision = [];
+                for (let item of config.collision) {
+                    const range = {
+                        start: Parse.num(Parse.getProp(item, null, "start")),
+                        end: Parse.num(Parse.getProp(item, null, "end"))
+                    };
+                    if (range.end < range.start) {
+                        let t = range.start;
+                        range.start = range.end;
+                        range.end = t;
+                    }
+                    collision.push(range);
+                }
+                this.collision = collision;
+            }
+
+            if (config.textureProvider != null) {
+                if (config.textureProvider instanceof TextureProvider) {
+                    this.textureProvider = config.textureProvider;
+                } else {
+                    throw new Error("textureProvider cannot be assigned to " + config.textureProvider);
+                }
+            }
+
+            if (config.color != null) {
+                this.color = config.color;
+            }
+
+            if (config.on) {
+                Object.entries(config.on).forEach(([type, item]) => {
+                    this.on.set(type, Parse.array(item, [], Parse.action));
+                });
             }
         }
 
         if (!this.textureProvider) {
             this.textureProvider =
-                new SolidColorTexture((options ? options.color : null) || 'rgb(255 0 0 / 50%)', "white", options.name || options.description);
+                new SolidColorTexture(this.color, "white", config.name || config.description);
         }
     }
 
@@ -107,7 +354,7 @@ export class MapCell {
      * @param {string=} southWall The wall type for the South wall.
      * @param {string=} westWall The wall type for the West wall.
      * @param {number=} descriptionIndex Index/key of the description for this cell withn the map's descriptions list.
-     * @param {number=} special Special attribute to apply or action to perform when character enters this square.
+     * @param {number=} special Special attribute to apply or action to perform when player enters this square.
      */
 	constructor(
         x,
@@ -162,7 +409,7 @@ export class MapCell {
         this.descriptionIndex = descriptionIndex;
 
         /**
-         * Special attribute to apply or action to perform when character enters this square.
+         * Special attribute to apply or action to perform when player enters this square.
          * May refer to an effect (lighting, heat, cold, increased encounter frequency,
          * stronger encounters), a message to display, an item, an encounter
          * (doppleganger, etc), or a scenario.
@@ -179,18 +426,16 @@ export class MapCell {
 		this.special = special;
 
         /**
+         * The set of zones assigned to this cell.
+         * @type {Set<string>?}
+         */
+        this.zones = undefined;
+
+        /**
          * The description to display for this cell.
-         * Populated by ScenarioMap.assignDescriptionsAndZones
          * @type {string?}
          */
         this.description = undefined;
-
-        /**
-         * The zone for this cell.
-         * Populated by ScenarioMap.assignDescriptionsAndZones
-         * @type {number?}
-         */
-        this.zone = undefined;
 
         /**
          * The ceiling type to use for the cell.
@@ -210,8 +455,10 @@ export class MapCell {
 
 //	private _items / _data;
 
+// _entities (e.g. in-game sprites for items/decor/encounters/etc)
+
 	// Perhaps these should just be on the zone instead?
-//	private readonly _effects: LatentEffects = new LatentEffects();		// enter (first? every?), leave
+//	private readonly _effects: LatentEffects = new LatentEffects();		// enter (first? every? count? random?), leave
 
 
 	toString() {
@@ -219,12 +466,64 @@ export class MapCell {
             `E=${this.eastWall}, ` +
             `S=${this.southWall}, ` +
             `W=${this.westWall}, ` +
-            `special=${this.special}, zone=${this.zone},` +
+            `special=${this.special}, zones=${this.zones ? [...this.zones] : undefined}, ` +
             `description=${this.descriptionIndex} "${this.description}">`;
 	}
 }
 
 
+/**
+ * @interface
+ */
+export class HitData {
+    /**
+     * The map cell the hit occurred in.
+     * @type {MapCell}
+     */
+    cell;
+
+    /**
+     * The integral horizontal map cell position of the end of the hit.
+     * @type {number}
+     */
+    cellX;
+
+    /**
+     * The integral vertical map cell position of the end of the hit.
+     * @type {number}
+     */
+    cellY;
+
+    /**
+     * The style for the intersected wall.
+     * @type {WallStyle}
+     */
+    wallStyle;
+
+    /**
+     * The type of wall that was intersected.
+     * @type {number}
+     */
+    wallType;
+
+    /**
+     * The position where the hit occurred on the wall, as a percentage of the cell's width.
+     * @type {number}
+     */
+    wallPosition;
+
+    /**
+     * The side of the cell with the intersected wall ('N', 'S', 'E', 'W')
+     * @type {WallSide}
+     */
+    side;
+
+}
+
+
+/**
+ * @implements {HitData}
+ */
 export class Ray {
     /**
      * Constructs a new ray.
@@ -542,6 +841,9 @@ export class ScenarioMap {
         /** @type {Map<string,string>} */
         this.descriptions = new Map();
 
+        /** @type {Map<string,MapZone>} */
+        this.zones = new Map();
+
         /**
          * @type {TextureProvider}
          */
@@ -597,11 +899,38 @@ export class ScenarioMap {
         }
     }
 
+    /**
+     * Applies a zone reference to the cells within the referenced region.
+     * @param {MapZoneRef} zoneRef the zone reference definition to apply.
+     */
+    applyZoneRef(zoneRef) {
+        const zonesToAdd = Parse.array(zoneRef.zone);
+
+		console.log(`Applying zone ref: (x=${zoneRef.x}, y=${zoneRef.y}) [w=${zoneRef.width} x h=${zoneRef.height}] ref=${zonesToAdd}`);
+
+        if (zonesToAdd.length == 0) {
+            return;
+        }
+
+        for (let y = 0; y < zoneRef.height; y++) {
+            for (let x = 0; x < zoneRef.width; x++) {
+                const cell = this.getCell(x + zoneRef.x, y + zoneRef.y);
+                if (!cell.zones) {
+                    cell.zones = new Set(zonesToAdd);
+                } else {
+                    for (let zone of zonesToAdd) {
+                        cell.zones.add(zone);
+                    }
+                }
+            }
+        }
+    }
+
     // TODO: This probably belongs somewhere else...
     useTarget(player) {
         // TODO: consider "interactible"/"useable" flag on wallStyle/cell?
         // TODO: apply isHit function to match "interesting" walls instead of just first found
-        const hits = this.castRay(player.x, player.y, player.angle, Number.POSITIVE_INFINITY);
+        const hits = this.castRay(player.x, player.y, player.orientation, Number.POSITIVE_INFINITY);
 
         console.log("Use the target here: hits=", hits);
 
@@ -619,8 +948,8 @@ export class ScenarioMap {
         }
 
         console.log(" -> fraction=", fraction);
-        console.log(" -> calcX=", player.x + Math.cos(player.angle) * ray.distance,
-            ", calcY=", player.y + Math.sin(player.angle) * ray.distance);
+        console.log(" -> calcX=", player.x + Math.cos(player.orientation) * ray.distance,
+            ", calcY=", player.y + Math.sin(player.orientation) * ray.distance);
     }
 
     /**
@@ -708,7 +1037,7 @@ export class ScenarioMap {
      * @param {number} posY vertical map position to cast from
      * @param {number} rayAngle the angle at which to cast the ray
      * @param {number} renderDistance the maximum distance to cast without encountering a collision
-     * @param {((wallStyle: WallStyle, position: number) => boolean)=} isHit the predicate to determine whether a
+     * @param {((hitData: HitData) => boolean)=} isHit the predicate to determine whether a
      *        wall with the given wall style and position should be included in the results and when to stop the search.
      *        The wall is not included if the predicate returns strictly false (not null), otherwise it will be included.
      *        When the return value is true, the search stops.
@@ -749,7 +1078,7 @@ export class ScenarioMap {
             }
 
             if (ray.wallStyle) {
-                ray.isHit = isHit(ray.wallStyle, ray.wallPosition);
+                ray.isHit = isHit(ray);
                 if (ray.isHit !== false) {
                     result.push(new Ray(ray));
                     if (ray.isHit === true) {

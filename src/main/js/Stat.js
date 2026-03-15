@@ -35,7 +35,7 @@ export class StatConfig {
 }
 
 /**
- * Base class for representing both character stats like `strength`, `intelligence`, as well as
+ * Base class for representing both player stats like `strength`, `intelligence`, as well as
  * metabolism change rates such as 'hunger', 'thrist', etc.
  *
  * Stat values range from a minimum of 0 to a maximum of 255.
@@ -46,14 +46,14 @@ export class StatConfig {
 export class Stat {
 
 	/**
-	 * The minimum value allowed for a character stat.
+	 * The minimum value allowed for a stat.
 	 * @readonly
 	 * @type {number}
 	 */
 	static MIN_VALUE = 0;
 
 	/**
-	 * The maximum value allowed for a character stat.
+	 * The maximum value allowed for a stat.
 	 * @readonly
 	 * @type {number}
 	 */
@@ -105,8 +105,8 @@ export class Stat {
 	 */
 	configure(config) {
 		this.base = Parse.num(Parse.getProp(config, Stat.MIN_VALUE, "base"));
-		this.#bonus.configure(config.bonus);
-		this.#penalty.configure(config.penalty);
+		this.#bonus.configure(config ? config.bonus : null);
+		this.#penalty.configure(config ? config.penalty : null);
 		this.displayed = Parse.num(Parse.getProp(config, null, "displayed"), Number.NaN);
 	}
 
@@ -156,7 +156,7 @@ export class Stat {
 	 * The current value to display for this stat.
 	 * If a custom display value is assigned to this stat, then that value will be returned.
 	 * Otherwise, returns the effective value for the stat.
-	 * A custom display value is generally only assigned when the character is delusional.
+	 * A custom display value is generally only assigned when the player is delusional.
 	 */
 	get displayed() {
 		return (this.#displayed != null ? this.#displayed : this.effective);
@@ -164,7 +164,7 @@ export class Stat {
 
 	/**
 	 * Sets the override current value to display for this stat.
-	 * A custom display value is generally only assigned when the character is delusional.
+	 * A custom display value is generally only assigned when the player is delusional.
 	 * @param {number} displayed The new override value to display for this stat, or `NaN`
 	 *        to remove any existing override value.  The value provided is clamped to a
 	 *        minimum of `Stat.MIN_VALUE` and maximum of `Stat.MAX_VALUE`.

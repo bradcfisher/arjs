@@ -1,7 +1,7 @@
-import { ItemTypeConfig, ItemType, ItemTypeCategory } from "./ItemType";
-import { Parse } from "./Parse";
-import { ClassRegistry } from "./Serializer";
-import { Configurable } from "./Configurable";
+import { ItemTypeConfig, ItemType, ItemTypeCategory } from "./ItemType.js";
+import { Parse } from "./Parse.js";
+import { ClassRegistry } from "./Serializer.js";
+import { Configurable } from "./Configurable.js";
 
 /**
  * Collection of ItemTypes.

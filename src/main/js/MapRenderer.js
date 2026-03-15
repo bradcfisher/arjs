@@ -1,4 +1,4 @@
-import { ScenarioMap, WallType, MapCell } from "./ScenarioMap.js";
+import { ScenarioMap, MapCell } from "./ScenarioMap.js";
 
 
 export class MapRenderer {
@@ -85,7 +85,7 @@ export class MapRenderer {
     constructor(context, map) {
         this.#context = context;
         this.#map = map;
-        this.invalidate();
+        this.invalidate(true);
     }
 
     /**
@@ -97,7 +97,15 @@ export class MapRenderer {
         this.#invalidated = false;
     }
 
-    invalidate() {
+    invalidate(resized) {
+        if (resized) {
+            const canvas = this.#context.canvas;
+            console.log("resize -> w=", canvas.clientWidth, "h=", canvas.clientHeight)
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+            //this.#context = canvas.getContext("2d");
+        }
+
         if (!this.#invalidated) {
             window.requestAnimationFrame((timestamp) => this.#handleAnimationFrame(timestamp));
             this.#invalidated = true;
@@ -382,7 +390,7 @@ export class MapRenderer {
 
     /**
      *
-     * @param {WallType} type
+     * @param {string} type
      *
      * @return {HTMLCanvasElement|undefined}
      */
@@ -432,7 +440,7 @@ export class MapRenderer {
 
     /**
      *
-     * @param {WallType} type
+     * @param {string} type
      * @param {CanvasRenderingContext2D} context
      */
     #drawWallType(type, context) {
@@ -551,10 +559,10 @@ export class MapRenderer {
         }
 
         // Draw the wall representations
-        this.#drawWallType(cell.north, context);
-        this.#drawWallType(cell.east, context);
-        this.#drawWallType(cell.south, context);
-        this.#drawWallType(cell.west, context);
+        this.#drawWallType(cell.northWall, context);
+        this.#drawWallType(cell.eastWall, context);
+        this.#drawWallType(cell.southWall, context);
+        this.#drawWallType(cell.westWall, context);
     }
 
     renderMap() {

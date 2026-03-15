@@ -54,6 +54,7 @@ Flags for B
     1010 [A 10] - Cyan roof, Navy/purple floor
     1110 [E 14] - Bright yellow roof, Black floor
   ??00 - Encounter rate/danger level?
+    0000 [0  0] - normal, nothing special?
     0100 [4  4] - lower encounter rate? nothing visible
     1000 [8  8] - high encounter rate? nothing visible
     1100 [C 12] - ? nothing visible

@@ -3,8 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>arjs - Alternate Reality for the web - Test page</title>
-	<script src="jquery.min.js"></script>
-	<script src="arjs.js"></script>
+	<script type="module" src="/js/arjs.js"></script>
 </head>
 <body>
 
@@ -12,13 +11,13 @@
 	<label>
 	<div>Source</div>
 	<select id="Source">
-		<option value="AR/city/sounds/intro.ogg">City - Intro</option>
-		<option value="AR/shared/sounds/death.ogg">Death</option>
-		<option value="AR/dungeon/sounds/rathskeller.ogg">Dungeon - Rathskeller</option>
-		<option value="AR/dungeon/sounds/rathskeller2.ogg">Dungeon - Rathskeller 2</option>
-		<option value="AR/city/sounds/thoreandan.ogg">City - Thoreandan</option>
-		<option value="AR/city/sounds/waves.ogg">City - Waves</option>
-		<option value="AR/city/sounds/let_in_the_lite.ogg">City - Let in the Lite</option>
+		<option value="/AR/city/sounds/intro.ogg">City - Intro</option>
+		<option value="/AR/shared/sounds/death.ogg">Death</option>
+		<option value="/AR/dungeon/sounds/rathskeller.ogg">Dungeon - Rathskeller</option>
+		<option value="/AR/dungeon/sounds/rathskeller2.ogg">Dungeon - Rathskeller 2</option>
+		<option value="/AR/city/sounds/thoreandan.ogg">City - Thoreandan</option>
+		<option value="/AR/city/sounds/waves.ogg">City - Waves</option>
+		<option value="/AR/city/sounds/let_in_the_lite.ogg">City - Let in the Lite</option>
 	</select>
 	</label>
 </div>
@@ -26,7 +25,7 @@
 <style type="text/css">
 @font-face {
 	font-family: "AlternateRealityTheDungeon";
-	src: url("AlternateRealityTheDungeon.woff");
+	src: url("/font/AlternateRealityTheDungeon.woff");
 }
 
 * {
@@ -125,14 +124,29 @@
 let audio;
 let currentClip;
 
-$(document).ready(function() {
+/** @type {HTMLSelectElement} */
+let sourceSelect;
+/** @type {HTMLButtonElement} */
+let playButton;
+/** @type {HTMLButtonElement} */
+let pauseButton;
+/** @type {HTMLButtonElement} */
+let stopButton;
+
+
+document.addEventListener('DOMContentLoaded', function () {
 	console.log("document ready");
 
-	$("#Source").on("change", function(evt) {
-		setCurrentClip($(evt.target).val());
+	sourceSelect = document.getElementById("Source");
+	playButton = document.getElementById("Play");
+	pauseButton = document.getElementById("Pause");
+	stopButton = document.getElementById("Stop");
+
+	sourceSelect.addEventListener("change", function(evt) {
+		setCurrentClip(sourceSelect.value);
 	});
 
-	$("#Slider .Bar").on("mousedown", function(evt) {
+	document.querySelector("#Slider .Bar").addEventListener("mousedown", function(evt) {
 		if (currentClip) {
 			let P =
 				currentClip.duration * evt.offsetX / evt.currentTarget.offsetWidth;
@@ -146,87 +160,87 @@ $(document).ready(function() {
 
 	resources.load(
 		new arjs.ResourceMeta(
-			"AR/city/sounds/intro.ogg",
+			"/AR/city/sounds/intro.ogg",
 			"audio/ogg",
 			"Alternate Reality: The City - Intro",
-			["AR/city/sounds/intro.json"]
+			["/AR/city/sounds/intro.json"]
 		),
 		new arjs.ResourceMeta(
-			"AR/city/sounds/intro.json",
+			"/AR/city/sounds/intro.json",
 			"Alternate Reality: The City - Intro lyrics",
-			["AR/city/sounds/intro.ogg"]
+			["/AR/city/sounds/intro.ogg"]
 		),
 
 		new arjs.ResourceMeta(
-			"AR/shared/sounds/death.ogg",
+			"/AR/shared/sounds/death.ogg",
 			"audio/ogg",
 			"Alternate Reality: The Dungeon - Death",
-			["AR/shared/sounds/death.json"]
+			["/AR/shared/sounds/death.json"]
 		),
 		new arjs.ResourceMeta(
-			"AR/shared/sounds/death.json",
+			"/AR/shared/sounds/death.json",
 			"Alternate Reality: The Dungeon - Death lyrics",
-			["AR/shared/sounds/death.ogg"]
+			["/AR/shared/sounds/death.ogg"]
 		),
 
 		new arjs.ResourceMeta(
-			"AR/dungeon/sounds/rathskeller.ogg",
+			"/AR/dungeon/sounds/rathskeller.ogg",
 			"audio/ogg",
 			"Alternate Reality: The Dungeon - The Devourer",
-			["AR/dungeon/sounds/rathskeller.json"]
+			["/AR/dungeon/sounds/rathskeller.json"]
 		),
 		new arjs.ResourceMeta(
-			"AR/dungeon/sounds/rathskeller.json",
+			"/AR/dungeon/sounds/rathskeller.json",
 			"Alternate Reality: The Dungeon - The Devourer lyrics",
-			["AR/dungeon/sounds/rathskeller.ogg"]
+			["/AR/dungeon/sounds/rathskeller.ogg"]
 		),
 
 		new arjs.ResourceMeta(
-			"AR/dungeon/sounds/rathskeller2.ogg",
+			"/AR/dungeon/sounds/rathskeller2.ogg",
 			"audio/ogg",
 			"Alternate Reality: The Dungeon - "
-			//["AR/dungeon/sounds/rathskeller2.json"]
+			//["/AR/dungeon/sounds/rathskeller2.json"]
 		),
 /*
 		new arjs.ResourceMeta(
-			"AR/dungeon/sounds/rathskeller2.json",
+			"/AR/dungeon/sounds/rathskeller2.json",
 			"Alternate Reality: The Dungeon -  lyrics",
-			["AR/dungeon/sounds/rathskeller2.ogg"]
+			["/AR/dungeon/sounds/rathskeller2.ogg"]
 		),
 */
 
 		new arjs.ResourceMeta(
-			"AR/city/sounds/thoreandan.ogg",
+			"/AR/city/sounds/thoreandan.ogg",
 			"audio/ogg",
 			"Alternate Reality: The City - Thoreandan",
-			["AR/city/sounds/thoreandan.json"]
+			["/AR/city/sounds/thoreandan.json"]
 		),
 		new arjs.ResourceMeta(
-			"AR/city/sounds/thoreandan.json",
+			"/AR/city/sounds/thoreandan.json",
 			"Alternate Reality: The City - Thoreandan lyrics",
-			["AR/city/sounds/thoreandan.ogg"]
+			["/AR/city/sounds/thoreandan.ogg"]
 		),
 		new arjs.ResourceMeta(
-			"AR/city/sounds/waves.ogg",
+			"/AR/city/sounds/waves.ogg",
 			"audio/ogg",
 			"Alternate Reality: The City - Waves",
-			["AR/city/sounds/waves.json"]
+			["/AR/city/sounds/waves.json"]
 		),
 		new arjs.ResourceMeta(
-			"AR/city/sounds/waves.json",
+			"/AR/city/sounds/waves.json",
 			"Alternate Reality: The City - Waves lyrics",
-			["AR/city/sounds/waves.ogg"]
+			["/AR/city/sounds/waves.ogg"]
 		),
 		new arjs.ResourceMeta(
-			"AR/city/sounds/let_in_the_lite.ogg",
+			"/AR/city/sounds/let_in_the_lite.ogg",
 			"audio/ogg",
 			"Alternate Reality: The City - Let in the Lite",
-			["AR/city/sounds/let_in_the_lite.json"]
+			["/AR/city/sounds/let_in_the_lite.json"]
 		),
 		new arjs.ResourceMeta(
-			"AR/city/sounds/let_in_the_lite.json",
+			"/AR/city/sounds/let_in_the_lite.json",
 			"Alternate Reality: The City - Let in the Lite lyrics",
-			["AR/city/sounds/let_in_the_lite.ogg"]
+			["/AR/city/sounds/let_in_the_lite.ogg"]
 		)
 	).then(
 		(loadedResources) => {
@@ -260,7 +274,7 @@ console.log("processing clip: "+ clip.name, clip);
 								document.getElementById("Message"),
 								(notification) => {
 									let data = notification.data;
-									let el = $("#Notification_"+ notification.id);
+									let el = document.getElementById("Notification_"+ notification.id);
 									if (el) {
 										el.focus();
 									}
@@ -283,7 +297,7 @@ console.log("processing clip: "+ clip.name, clip);
 			Promise.all(promises)
 				.then((clips) => {
 					console.log("all audio resources loaded, continuing");
-					setCurrentClip("AR/city/sounds/let_in_the_lite.ogg");
+					setCurrentClip("/AR/city/sounds/let_in_the_lite.ogg");
 				}, (error) => {
 					console.log("Load failed:", error);
 					throw error;
@@ -293,16 +307,20 @@ console.log("processing clip: "+ clip.name, clip);
 });
 
 function setCurrentClip(name) {
-	if (currentClip)
+	if (currentClip) {
 		stopAudio();
+	}
 
-  $("#Source").val(name)
+	sourceSelect.value = name;
 
-  currentClip = audio.getClip(name);
-  updateNotifications(currentClip);
-  $("#Play").prop("disabled", false).css('display', 'inline');
-  $('#Pause').css('display', 'none');
-  $("#Stop").prop("disabled", true);
+	currentClip = audio.getClip(name);
+	updateNotifications(currentClip);
+
+	playButton.disabled = false;
+	playButton.style.display = 'inline';
+	pauseButton.style.display = 'none';
+
+	stopButton.disabled = true;
 } // setCurrentClip
 
 function setPosition(pos) {
@@ -316,11 +334,11 @@ function setPosition(pos) {
 }
 
 function playAudio() {
-	$('#Play').css('display', 'none');
-	$('#Pause').css('display', 'inline');
-	$("#Stop").prop("disabled", false);
+	playButton.style.display = 'none';
+	pauseButton.style.display = 'inline';
+	stopButton.disabled = false;
 
-	currentClip = audio.getClip($("#Source").val());
+	currentClip = audio.getClip(sourceSelect.value);
 	currentClip.start();
 	currentClip.on('stop', {"processEvent":stopAudio});
 
@@ -332,16 +350,16 @@ console.log('currentClip changed', currentClip);
 
 
 function pauseAudio() {
-	$('#Play').css('display', 'inline');
-	$('#Pause').css('display', 'none');
+	playButton.style.display = 'inline';
+	pauseButton.style.display = 'none';
 	currentClip.pause();
 } // pauseAudio
 
 
 function stopAudio() {
-	$('#Play').css('display', 'inline');
-	$('#Pause').css('display', 'none');
-	$("#Stop").prop("disabled", true);
+	playButton.style.display = 'inline';
+	pauseButton.style.display = 'none';
+	stopButton.disabled = true;
 	currentClip.stop();
 	clearMessageContext()
 	//currentClip = undefined;
@@ -356,8 +374,9 @@ function adjustGain(delta) {
 
 function formatTime(seconds) {
 	let s = (seconds % 60).toFixed(1);
-	if (s.length == 3)
+	if (s.length == 3) {
 		s = "0"+ s;
+	}
 	return Math.trunc(seconds / 60) +":"+ s;
 } //formatTime
 

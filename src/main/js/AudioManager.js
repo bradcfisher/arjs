@@ -3,6 +3,257 @@ import { EventDispatcher } from "./EventDispatcher.js";
 import { AudioNotificationEntry, AudioNotification } from "./AudioNotificationEntry.js";
 import { AudioClip } from "./AudioClip.js";
 
+
+
+
+/**
+ * Represents an audio clip.
+ *
+ * Events:
+ * @event start			Sent when a clip begins playing
+ * @event stop			Sent when a clip stops playing
+ * @event loop			Sent when a clip repeats
+ */
+export class ActiveAudio extends EventDispatcher {
+
+	/**
+	 * @type {AudioManager}
+	 */
+	#manager;
+
+	/**
+	 * The AudioManager this instance was created by.
+	 */
+	get manager() {
+		return this.#manager;
+	}
+
+	/**
+	 * @type {number}
+	 */
+	#bufferStartTime;
+
+	/**
+	 * @type {number}
+	 */
+	#duration;
+
+	/**
+	 * The length of the clip in seconds. This value is based on the native sample rate of
+	 * the underlying buffer and independent of the playbackRate.
+	 */
+	get duration() {
+		return this.#duration;
+	}
+
+	/**
+	 * The configuration to apply to any AudioBufferSourceNodes created for playback.
+	 */
+	#config;
+
+	/**
+	 * @type {AudioBufferSourceNode?}
+	 */
+	#audioBufferSourceNode;
+
+	/**
+	 * The destination node the sound should be attached to.
+	 * If the clip has gain applied to it, this will be a GainNode.
+	 * Otherwise, this will be the context's destination node.
+	 * @type {AudioNode}
+	 */
+	#destination;
+
+	/**
+	 * @type {AudioNotification[]}
+	 */
+	#notifications = [];
+
+	/**
+	 * The time when playback was scheduled to begin.
+	 * @type {number?}
+	 */
+	#startTime;
+
+	/**
+	 * The time within the clip where playback should begin in seconds. This value is
+	 * based on the native sample rate of the underlying buffer and independent of the
+	 * playbackRate.
+	 *
+	 * @type {number}
+	 */
+	#position;
+
+	/**
+	 * The ID of any currently scheduled notification for this audio.
+	 */
+	#scheduledNotificationId;
+
+	/**
+	 * Event handler to add to AudioBufferSourceNodes to handle the 'ended' event.
+	 */
+	#endedListener;
+
+	/**
+	 * The current status of the audio. One of 'stopped', 'scheduled' or 'playing'.
+	 */
+	get status() {
+		if (this.#startTime != null) {
+			if (this.#manager.context.currentTime < this.#startTime) {
+				return 'scheduled';
+			}
+			return 'playing';
+		}
+		return 'stopped';
+	}
+
+	/**
+	 * The current playback position in seconds within the clip.
+	 *
+	 * @type {number}
+	 */
+	get position() {
+		if (this.#startTime == null || this.#manager.context.currentTime < this.#startTime) {
+			return this.#position;
+		}
+		return (this.#manager.context.currentTime - this.#startTime) * this.playbackRate + this.#position;
+	}
+
+	set position(when) {
+		if (when < 0) {
+			when = 0;
+		} else if (when >= this.length) {
+			when = this.length - 1;
+		}
+
+		this.#position = when;
+
+		if (this.#startTime != null) {
+			// Remove any pending notification
+			this.#manager.removeNotification(this.#scheduledNotificationId);
+			this.#scheduledNotificationId = null;
+
+			// Stop the audio
+			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
+			this.#audioBufferSourceNode.stop();
+
+			// Create a new source node starting at the new position
+
+			// TODO: if playing, reset playback to the specified position
+		}
+	}
+
+	/**
+	 *
+	 * @param {AudioManager} manager the AudioManager through which the playback will be performed.
+	 * @param {AudioClip} clip the AudioClip describing the audio and playback parameters.
+	 */
+	constructor(manager, clip) {
+		this.#manager = manager;
+		this.#config = {
+			"buffer": clip.buffer,
+			"detune": clip.detune,
+			"playbackRate": clip.playbackRate,
+			"loop": clip.loop,
+			"loopStart": clip.startSample,
+			"loopEnd": clip.endSample
+		};
+
+		this.#endedListener = () => { this.#handleStop(); };
+
+		if (clip.gain != 1) {
+			this.#destination = new GainNode(this.#manager.context, {
+				"gain": clip.gain
+			});
+
+			this.#destination.connect(this.#manager.destination);
+		} else {
+			this.#destination = this.#manager.destination;
+		}
+
+		this.#bufferStartTime = clip.start / clip.buffer.sampleRate;
+		this.#duration = clip.length / clip.buffer.sampleRate;
+
+		for (let notification of clip.notifications) {
+			this.addNotification(notification);
+		}
+	}
+
+	/**
+	 *
+	 * @param {number?} when The time, in seconds to wait before the sound should begin to play.
+	 *        The default value is 0.
+	 */
+	play(when) {
+		if (when == null || when < 0) {
+			when = 0;
+		}
+
+// TODO: Take into account the #position
+
+		this.#startTime = this.#manager.context.currentTime + when;
+
+		this.#audioBufferSourceNode = new AudioBufferSourceNode(this.#manager.context, this.#config);
+		this.#audioBufferSourceNode.connect(this.#destination);
+		this.#audioBufferSourceNode.addEventListener('ended', this.#endedListener);
+		this.#audioBufferSourceNode.start(this.#manager.context.currentTime + when, this.#startTime, this.#duration);
+
+		if (when > 0) {
+			// Start scheduled for the future, schedule the start event notification
+			this.#scheduledNotificationId =
+			    this.#manager.scheduleNotification(
+					this.#manager.context.currentTime + when,
+					() => { this.#handleStart(); }
+				);
+		} else {
+			this.#handleStart();
+		}
+	}
+
+	#handleStart() {
+		this.#scheduledNotificationId = null;
+
+		this.triggerEvent('start', {
+			target: this
+		});
+
+		let index = 0;
+		if (this.#position > 0) {
+			// Find the first notification on or after the position
+			for (let notification of this.#notifications) {
+				if (this.#position <= notification.when) {
+					break;
+				}
+			}
+		}
+		this.#scheduleNextNotification(index);
+	}
+
+
+// TODO: when: relative to NOW, using absolute position in context time, using position within the clip.
+
+	stop(when) {
+		// Record the current position for potential restart
+		this.#position = this.position;
+
+		this.#audioBufferSourceNode.stop(this.#manager.context.currentTime + when);
+		if (stopNow) {
+			this.#handleStop();
+		}
+	}
+
+	#handleStop() {
+		this.#audioBufferSourceNode = null;
+	}
+
+}
+
+
+
+
+
+
+
 /**
  *
  * Events:
@@ -21,12 +272,16 @@ export class AudioManager
 
 	/**
 	 * The currently registered clips.
-	 * @see loadClip
-	 * @see loadClips
-	 * @see getClip
-	 * @type {{ [name:string]: AudioClip }}
+	 * @type {Map<string, AudioClip>}
 	 */
 	#clips;
+
+	/**
+	 * Currently loading clips.
+	 * @see {@link clipFromArrayBuffer}
+	 * @type {Map<string, [any, PromiseLike<AudioClip>]>}
+	 */
+	#loading;
 
 	/**
 	 * Linked list of registered notifications.
@@ -68,7 +323,8 @@ export class AudioManager
 	constructor() {
 		super();
 
-		this.#clips = {};
+		this.#clips = new Map();
+		this.#loading = new Map();
 		this.#context = new AudioContext();
 
 		this.#currentNotificationBuffer = this.#context.createBuffer(1, 1, this.#context.sampleRate);
@@ -115,23 +371,29 @@ export class AudioManager
 		return this.#context.destination;
 	} // destination
 
+
 	/**
-	 *
+	 * Registeres an audio clip with the context for retrieval later.
 	 * @param {AudioClip} clip
 	 */
 	registerClip(clip) {
-		if (clip.manager !== this)
+		if (clip.manager !== this) {
 			throw new Error("Only clips created under this AudioManager can be registered");
+		}
 
-		if (this.#clips[clip.name])
+		const name = String(clip.name);
+		if (this.#clips.has(name)) {
 			throw new Error("A clip named '"+ name +"' has already been defined");
+		}
 
-		this.#clips[clip.name] = clip;
+		this.#clips.set(name, clip);
 	} // registerClip
 
 	/**
 	 * Returns a Promise which resolves to a new AudioClip with the specified name
 	 * and audio data.
+	 *
+	 * On fulfilment, the new AudioClip is registered with the AudioManager under the specified name.
 	 *
 	 * @param {string} name The name to register the new clip under.
 	 * @param {ArrayBuffer} audioData The audio data to use for the clip.  Must be in a supported
@@ -142,26 +404,61 @@ export class AudioManager
 	 */
 	clipFromArrayBuffer(name, audioData) {
 console.log("clipFromArrayBuffer: ", name, audioData);
-		return new Promise((accept, reject) => {
+		let entry = this.#loading.get(name);
+		if (entry) {
+			if (entry[0] !== audioData) {
+				throw new Error("A clip named '"+ name +"' has already been defined");
+			}
+
+			return entry[1]; /* Promise<AudioClip> */
+		}
+
+		const promise = new Promise((accept, reject) => {
 			this.#context.decodeAudioData(audioData).then(
 				(buffer) => {
+					this.#loading.delete(name);
 					accept(new AudioClip(this, name, buffer));
 				},
 				(error) => {
+					this.#loading.delete(name);
 					reject(error);
 				}
 			)
 		});
+
+		this.#loading.set(name, [audioData, promise]);
+
+		return promise;
 	} // clipFromArrayBuffer
 
 	/**
 	 * Retrieves the audio clip registered with the provided name.
 	 * @param {string} name The name the desired audio clip was registered under.
-	 * @return {AudioClip} The audio clip registered with the provided name.
+	 * @return {AudioClip?} The audio clip registered with the provided name or undefined
+	 *         if no clip exists with the given name.
 	 */
 	getClip(name) {
-		return this.#clips[name];
+		return this.#clips.get(String(name));
 	} // getClip
+
+	/**
+	 * Prepares an AudioClip for playback.
+	 *
+	 * @param {AudioClip|string} clipOrName the clip to prepare for playback. May be an
+	 *        AudioClip instance or the name of a previously registered clip.
+	 *
+	 * @returns {ActiveAudio} An ActiveAudio instance which can be used to control playback,
+	 *          schedule notifications, or listen for events.
+	 */
+	prepare(clip) {
+		if (!(clip instanceof AudioClip)) {
+			clip = this.getClip(clip);
+			if (clip == null) {
+				throw new Error("There is no clip named '" + clip + "' registered with this manager");
+			}
+		}
+		return ActiveAudio(this, clip);
+	}
 
 	/**
 	 * Invokes the current notification when it's time has come.
@@ -182,7 +479,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	} // invokeCurrentNotification
 
 	/**
-	 * Stops/unschedules current notification if one is scheduled.
+	 * Stops/unschedules the current notification if one is scheduled.
 	 */
 	unscheduleCurrentNotification() {
 		if (this.#currentNotification) {
@@ -244,18 +541,17 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	 *
 	 * @param {number} when The time relative to the audio context's clock when the event should be
 	 *        fired.  If this time is in the past, no action is taken.
-	 * @param {any} data Additional data to associate with the triggered notification.
-	 * @param {((notification: AudioNotification) => void)?} callback The callabck to invoke when the
+	 * @param {((notification: AudioNotification) => void)?} callback The callback to invoke when the
 	 *        notification time is reached.  If no callback is specified, will trigger a "notification"
 	 *        event instead.
 	 *
 	 * @return {number} A value that can be used to unregister the notification at a later time, or 0 if
 	 *         the notification was executed immediately or was specified to execute in the past.
 	 */
-	addNotification(when, data, callback) {
+	scheduleNotification(when, callback) {
 		if (!callback) {
 			callback = (notification) => {
-				this.trigger('notification', notification);
+				this.triggerEvent('notification', notification);
 			};
 		}
 
@@ -303,5 +599,12 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 			}
 		}
 	} // removeNotification
+
+
+
+	// set listener orientation (angle)
+	// set listener position (x, y, h)
+
+
 
 } // AudioManager

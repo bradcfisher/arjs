@@ -135,7 +135,7 @@ export class Controls extends EventDispatcher {
                     if (player.speedMultiplier != 1) {
                         player.speedMultiplier = 1;
                     } else {
-                        player.speedMultiplier = 1000000000000;
+                        player.speedMultiplier = 2;
                     }
                     break;
                 case 'Control':
@@ -184,44 +184,44 @@ export class Controls extends EventDispatcher {
                 // Face North
                 case 'i':
                 case 'I':
-                    player.angle = -Math.PI / 2;
+                    player.orientation = -Math.PI / 2;
                     break;
                 // Face North-West
                 case 'o':
                 case 'O':
-                    player.angle = -Math.PI / 4;
+                    player.orientation = -Math.PI / 4;
                     break;
                 // Face South
                 case 'k':
                 case 'K':
                 case '<':
                 case ',':
-                    player.angle = Math.PI / 2;
+                    player.orientation = Math.PI / 2;
                     break;
                 // Face South-West
                 case '.':
                 case '>':
-                    player.angle = Math.PI / 4;
+                    player.orientation = Math.PI / 4;
                     break;
                 // Face West
                 case 'j':
                 case 'J':
-                    player.angle = Math.PI;
+                    player.orientation = Math.PI;
                     break;
                 // Face South-East
                 case 'm':
                 case 'M':
-                    player.angle = Math.PI * 3 / 4;
+                    player.orientation = Math.PI * 3 / 4;
                     break;
                 // Face East
                 case 'l':
                 case 'L':
-                    player.angle = 0;
+                    player.orientation = 0;
                     break;
                 // Face North-East
                 case 'u':
                 case 'U':
-                    player.angle = -Math.PI * 3 / 4;
+                    player.orientation = -Math.PI * 3 / 4;
                     break;
                 // Move to center of North edge of current cell
                 case 't':
@@ -334,7 +334,7 @@ export class Controls extends EventDispatcher {
             }
         });
 
-        document.addEventListener('click', (e) => {
+        renderer.canvas.addEventListener('click', (e) => {
             console.log("click");
             renderer.worldMap.useTarget(player);
         })

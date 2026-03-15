@@ -299,11 +299,11 @@ export class Denizen
 	}
 
 	set name(name) {
-		name = name.trim();
+		name = name == null ? "" : String(name).trim();
 		if (!name.length) {
 			throw new Error("The name cannot be empty");
 		}
-		this._name = name;
+		this.#name = name;
 	} // name
 
 	/**
@@ -378,7 +378,7 @@ export class Denizen
 	}
 
 	set alignment(alignment) {
-		this._alignment = Math.min(Math.max(alignment, 0), 1);
+		this.#alignment = Math.min(Math.max(alignment, 0), 1);
 	}
 
 	/**
@@ -397,7 +397,7 @@ export class Denizen
 	}
 
 	set hp(value) {
-		this.hp = Math.max(Math.min(value, this.#hpMaximum), 0);
+		this.#hp = Math.max(Math.min(value, this.#hpMaximum), 0);
 	}
 
 	/**
@@ -413,7 +413,7 @@ export class Denizen
 	}
 
 	set hpMaximum(hpMaximum) {
-		this._hpMaximum = Math.max(1, hpMaximum);
+		this.#hpMaximum = Math.max(1, hpMaximum);
 		if (this.hp > this.#hpMaximum)
 			this.hp = this.#hpMaximum;
 	}
@@ -428,7 +428,7 @@ export class Denizen
 	}
 
 	set paralysis(value) {
-		this._paralysis = Math.max(0, value);
+		this.#paralysis = Math.max(0, value);
 	}
 
 	/**

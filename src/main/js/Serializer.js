@@ -406,21 +406,19 @@ export class Serializer {
 	 *
 	 * May only be called from within a serialization function for a registered class.
 	 *
-	 * @abstract
+	 * @overload
 	 *
 	 * @param {any} props an object containing the properties to write.
 	 *
 	 * @throws Error if not currently executing a serialization function, or if
 	 *		serialization fails.
 	 */
-	writeProp(props) {}
-
 	/**
 	 * Appends an object property to the serialized data for the current object.
 	 *
 	 * May only be called from within a serialization function for a registered class.
 	 *
-	 * @abstract
+	 * @overload
 	 *
 	 * @param {string} name the name of the property to write.
 	 * @param {any} value the value for the property.
@@ -428,10 +426,8 @@ export class Serializer {
 	 * @throws Error if not currently executing a serialization function, or if
 	 *		serialization fails.
 	 */
-	writeProp(nameOrProps, value) {}
-
 	/**
-	 *
+	 * @overload
 	 * @param {string|Object} nameOrProps
 	 * @param {any} value
 	 */

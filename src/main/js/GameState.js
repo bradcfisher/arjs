@@ -1,5 +1,5 @@
 import { Parse } from "./Parse.js"
-import { Character } from "./Character.js"
+import { Player } from "./Player.js"
 import { GameClock, GameClockConfig } from "./GameClock.js"
 import { OptionsConfig, RecurringOptionsConfig, Options, RecurringOptions, TemperatureOptionsConfig, TemperatureOptions } from "./ConfigOptions.js"
 import { ItemTypeConfig } from "./ItemType.js";
@@ -7,6 +7,8 @@ import { ItemTypes } from "./ItemTypes.js";
 import { ResourceManager } from "./ResourceManager.js";
 import { Configurable } from "./Configurable.js";
 import { ClassRegistry } from "./Serializer.js";
+import { AudioManager } from "./AudioManager.js";
+import { ActionManager } from "./ActionManager.js";
 
 /**
  * @interface
@@ -96,11 +98,23 @@ let loadingConfig;
  */
 let loadingPromise;
 
-/**
- * @type {ResourceManager}
- */
-let resourceManager = new ResourceManager();
+const audioManager = new AudioManager();
 
+const resourceManager = new ResourceManager();
+resourceManager.registerResourceDecoder(
+	"audio/*", (request, meta, accept, reject) => {
+		const url = String(meta.url);
+		const clip = audioManager.getClip(url);
+		if (clip) {
+			accept(clip);
+			return;
+		}
+
+		audioManager.clipFromArrayBuffer(url, request.response).then(accept, reject);
+	}
+);
+
+const actionManager = new ActionManager();
 
 /**
  * @implements {Configurable<GameStateConfig>}
@@ -163,9 +177,9 @@ export class GameState {
 
 	/**
 	 * @readonly
-	 * @type {Character?}
+	 * @type {Player?}
 	 */
-	#character;
+	#player;
 
 	/**
 	 * Static initializer for registering deserializer with private member access.
@@ -247,10 +261,24 @@ export class GameState {
 	}
 
 	/**
-	 * Retrieves the ResourceManager used by the GameState for loading assets.
+	 * Retrieves the global ResourceManager used by the GameState for loading assets.
 	 */
 	static getResourceManager() {
 		return resourceManager;
+	}
+
+	/**
+	 * Retrieves the global AudioManager.
+	 */
+	static getAudioManager() {
+		return audioManager;
+	}
+
+	/**
+	 * Retrieves the global ActionManager.
+	 */
+	static getActionManager() {
+		return actionManager;
 	}
 
 	/**
@@ -358,12 +386,12 @@ export class GameState {
 		return this.#itemTypes;
 	}
 
-	get character() {
-		if (this.#character == null) {
-			throw new Error("No character");
+	get player() {
+		if (this.#player == null) {
+			throw new Error("No player");
 		}
 
-		return this.#character;
+		return this.#player;
 	}
 
 	// weather type definitions (no save)

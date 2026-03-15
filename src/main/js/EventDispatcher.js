@@ -1,6 +1,58 @@
 import { ClassRegistry } from "./Serializer.js";
 import { Configurable } from "./Configurable.js";
 
+export class EventDetail {
+
+    /**
+     * Constructs an Event instance.
+     *
+     * @param {any} target the context object for the event.
+     * @param {string} type
+     * @param {any} data
+     */
+    constructor(target, type, data) {
+        /**
+         * The context object for the event.
+         * This is typically a subtype of EventDispatcher, but that may vary by event type.
+         * @readonly
+         */
+        this.target = target;
+
+        /**
+         * The type of event that was fired.
+         * @type {string}
+         * @readonly
+         */
+        this.type = type;
+
+        /**
+         * Type-specific data that was provided when the event was triggered.
+         * @type {any}
+         * @readonly
+         */
+        this.data = data;
+    }
+
+    #isCancelled = false;
+
+    /**
+     * Cancels the default behavior for an event.
+     * For many events, calling this method will have no effect.
+     * However, some events will allow the cancellation of default behavior that would
+     * otherwise occur following the dispatch of the event.
+     */
+    cancel() {
+        this.#isCancelled = true;
+    }
+
+    /**
+     * Whether the default behavior for the event has been cancelled or not.
+     */
+    get isCancelled() {
+        return this.#isCancelled;
+    }
+}
+
 /**
  * Interface that must be implemented by objects that receive notifications for events.
  * @interface
@@ -9,11 +61,9 @@ export class EventListener {
 	/**
 	 * Processes events.
 	 *
-	 * @param {any} context The source object the event was fired for.
-	 * @param {string} event The event type.
-	 * @param {any} data Additional event data
+	 * @param {EventDetail} event details of the event that was fired.
 	 */
-	processEvent(context, event, data) {};
+	processEvent(event) {};
 }
 
 /**
@@ -86,7 +136,7 @@ export class EventDispatcher {
 	 * does nothing.
      *
      * @param {string} eventType the event type name to add the handler to
-     * @param {EventListener|(data:any, event:string, context:any) => void} listener the callback to add
+     * @param {EventListener|(event:EventDetail) => void} listener the callback to add
      *
      * @return this
      */
@@ -108,7 +158,7 @@ export class EventDispatcher {
 	 * function does nothing.
      *
      * @param {string} eventType the event type name to remove the handler from
-     * @param {EventListener|(data:any, event:string, context:any) => void} listener the callback to remove
+     * @param {EventListener|(event:EventDetail) => void} listener the callback to remove
      *
      * @return this
      */
@@ -126,14 +176,15 @@ export class EventDispatcher {
      * @return this
      */
     triggerEvent(eventType, data) {
+        const event = new EventDetail(this.#eventContext, eventType, data);
         const listeners = this.#listeners[eventType];
         if (listeners) {
             for (let listener of listeners) {
                 try {
                     if (listener instanceof Function) {
-                        listener(data, eventType, this.#eventContext);
+                        listener(event);
                     } else {
-                        listener.processEvent(this.#eventContext, eventType, data);
+                        listener.processEvent(event);
                     }
                 } catch (error) {
                     console.error(`Error in event handler for ${eventType}:`, error);

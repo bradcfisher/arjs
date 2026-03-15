@@ -329,9 +329,9 @@ export class PotionItemType
 		// Sip may also confer some of the potion's effect...  Not sure on the rules for that.
 
 		// - If the potion is already identified, shows its name.
-		// - Else the result depends on the character wisdom and a random value:
+		// - Else the result depends on the player wisdom and a random value:
 		//    Wisdom/2 + Random [0; 255]	Result
-		//    [0; 128[						The character is unsure.
+		//    [0; 128[						The player is unsure.
 		//    [128; 256[					The risk is revealed.
 		//    [256; +oo[					The potion is identified.
 	}
