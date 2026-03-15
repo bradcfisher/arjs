@@ -1,13 +1,11 @@
 
 import { EventDispatcher } from "./EventDispatcher.js";
-import { AudioNotificationEntry, AudioNotification } from "./AudioNotificationEntry.js";
+import { AudioNotification } from "./AudioNotification.js";
 import { AudioClip } from "./AudioClip.js";
 
 
-
-
 /**
- * Represents an audio clip.
+ * Represents an audio instance prepared for playback by an AudioManager.
  *
  * Events:
  * @event start			Sent when a clip begins playing
@@ -31,11 +29,6 @@ export class ActiveAudio extends EventDispatcher {
 	/**
 	 * @type {number}
 	 */
-	#bufferStartTime;
-
-	/**
-	 * @type {number}
-	 */
 	#duration;
 
 	/**
@@ -48,6 +41,14 @@ export class ActiveAudio extends EventDispatcher {
 
 	/**
 	 * The configuration to apply to any AudioBufferSourceNodes created for playback.
+	 * @type {{
+	 *     buffer: AudioBuffer,
+	 *     detune: number,
+	 *     playbackRate: number,
+	 *     loop: boolean,
+	 *     loopStart: number,
+	 *     loopEnd: number
+	 * }}
 	 */
 	#config;
 
@@ -99,7 +100,7 @@ export class ActiveAudio extends EventDispatcher {
 	 */
 	get status() {
 		if (this.#startTime != null) {
-			if (this.#manager.context.currentTime < this.#startTime) {
+			if (this.#manager.currentTime < this.#startTime) {
 				return 'scheduled';
 			}
 			return 'playing';
@@ -113,10 +114,10 @@ export class ActiveAudio extends EventDispatcher {
 	 * @type {number}
 	 */
 	get position() {
-		if (this.#startTime == null || this.#manager.context.currentTime < this.#startTime) {
+		if (this.#startTime == null || this.#manager.currentTime < this.#startTime) {
 			return this.#position;
 		}
-		return (this.#manager.context.currentTime - this.#startTime) * this.playbackRate + this.#position;
+		return this.#contextTimeToClipTime(this.#manager.currentTime, this.#startTime, this.#position);
 	}
 
 	set position(when) {
@@ -126,20 +127,13 @@ export class ActiveAudio extends EventDispatcher {
 			when = this.length - 1;
 		}
 
-		this.#position = when;
-
 		if (this.#startTime != null) {
-			// Remove any pending notification
-			this.#manager.removeNotification(this.#scheduledNotificationId);
-			this.#scheduledNotificationId = null;
-
-			// Stop the audio
-			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
-			this.#audioBufferSourceNode.stop();
-
-			// Create a new source node starting at the new position
-
-			// TODO: if playing, reset playback to the specified position
+			// Stop and restart playing the audio starting at the new position
+			this.#stop(0, true);
+			this.#position = when;
+			this.#play(0, true);
+		} else {
+			this.#position = when;
 		}
 	}
 
@@ -171,7 +165,6 @@ export class ActiveAudio extends EventDispatcher {
 			this.#destination = this.#manager.destination;
 		}
 
-		this.#bufferStartTime = clip.start / clip.buffer.sampleRate;
 		this.#duration = clip.length / clip.buffer.sampleRate;
 
 		for (let notification of clip.notifications) {
@@ -180,70 +173,225 @@ export class ActiveAudio extends EventDispatcher {
 	}
 
 	/**
+	 * Schedules the audio to start playing at the specified time.
 	 *
 	 * @param {number?} when The time, in seconds to wait before the sound should begin to play.
-	 *        The default value is 0.
+	 *        The default value is 0, which starts playing the audio immediately.
+	 *
+	 * @throws {Error} if the audio has already been scheduled to play or is currently playing.
 	 */
 	play(when) {
+		if (this.status != 'stopped') {
+			throw new Error("play() called while audio is " + this.status +
+				". The audio must be stopped before play can be called.");
+		}
+
 		if (when == null || when < 0) {
 			when = 0;
 		}
 
-// TODO: Take into account the #position
+		this.#play(when);
+	}
 
-		this.#startTime = this.#manager.context.currentTime + when;
+	/**
+	 * Schedules the audio to start playing at the specified time.
+	 *
+	 * @param {number} when the time, in seconds to wait before the sound should begin to play.
+	 *        The default value is 0, which starts playing the audio immediately.
+	 * @param {boolean=} suppressStartEvent whether to suppress the dispatch of the 'start' event or not.
+	 *        Typically used when repositioning the stream.
+	 */
+	#play(when, suppressStartEvent = false) {
+		this.#startTime = this.#manager.currentTime + when;
 
 		this.#audioBufferSourceNode = new AudioBufferSourceNode(this.#manager.context, this.#config);
 		this.#audioBufferSourceNode.connect(this.#destination);
 		this.#audioBufferSourceNode.addEventListener('ended', this.#endedListener);
-		this.#audioBufferSourceNode.start(this.#manager.context.currentTime + when, this.#startTime, this.#duration);
+		this.#audioBufferSourceNode.start(this.#manager.currentTime + when, this.#position);
 
 		if (when > 0) {
-			// Start scheduled for the future, schedule the start event notification
+			// Start scheduled for the future, schedule the start notification
 			this.#scheduledNotificationId =
 			    this.#manager.scheduleNotification(
-					this.#manager.context.currentTime + when,
-					() => { this.#handleStart(); }
+					this.#manager.currentTime + when,
+					() => { this.#handleStart(suppressStartEvent); }
 				);
 		} else {
-			this.#handleStart();
+			this.#handleStart(suppressStartEvent);
 		}
 	}
 
-	#handleStart() {
+	#handleStart(suppressStartEvent) {
 		this.#scheduledNotificationId = null;
 
-		this.triggerEvent('start', {
-			target: this
-		});
+		if (!suppressStartEvent) {
+			this.triggerEvent('start', {
+				target: this
+			});
+		}
 
 		let index = 0;
 		if (this.#position > 0) {
-			// Find the first notification on or after the position
+			// Find the first notification on or after the current position
 			for (let notification of this.#notifications) {
 				if (this.#position <= notification.when) {
 					break;
 				}
 			}
 		}
+
 		this.#scheduleNextNotification(index);
 	}
 
+	/**
+	 * Converts a time in the context's clock to a time in the clip's timeline.
+	 *
+	 * The result is computed as `(when - clipStartTime) * clip.playbackRate + clipStartOffset`.
+	 *
+	 * @param {number} when a time in seconds, relative to the context's clock coordinate system.
+	 * @param {number=} clipStartTime time in the context timeline when the clip started
+	 *        playing. Defaults to 0.
+	 * @param {number=} clipStartOffset time offset in the clip's timeline indicating the
+	 *        offset where playback started. Defaults to 0.
+	 *
+	 * @returns the context time converted to a time relative to the clip's timeline.
+	 */
+	#contextTimeToClipTime(when, clipStartTime = 0, clipStartOffset = 0) {
+		return (when - clipStartTime) * this.playbackRate + clipStartOffset;
+	}
 
-// TODO: when: relative to NOW, using absolute position in context time, using position within the clip.
+	/**
+	 * Converts a time in the clip's clock to a time in the context's timeline.
+	 *
+	 * The result is computed as `((when - clipStartOffset) / clip.playbackRate) + clipStartTime`.
+	 *
+	 * @param {number} when a time in seconds, relative to the clip's timeline coordinate system.
+	 * @param {number=} clipStartTime time in the context timeline when the clip started
+	 *        playing. Defaults to 0.
+	 * @param {number=} clipStartOffset time offset in the clip's timeline indicating the
+	 *        offset where playback started. Defaults to 0.
+	 *
+	 * @returns the clip time converted to a time relative to the context's clock.
+	 */
+	#clipTimeToContextTime(when, clipStartTime = 0, clipStartOffset = 0) {
+		return ((when - clipStartOffset) / this.playbackRate) + clipStartTime;
+	}
 
-	stop(when) {
-		// Record the current position for potential restart
-		this.#position = this.position;
+	/**
+	 * Schedules the next notification
+	 *
+	 * @param {number} index the index of the notification to schedule.
+	 */
+	#scheduleNextNotification(index, suppressStopEvent = false) {
+		const now = this.#contextTimeToClipTime(this.#manager.currentTime, this.#startTime, this.#position);
 
-		this.#audioBufferSourceNode.stop(this.#manager.context.currentTime + when);
-		if (stopNow) {
-			this.#handleStop();
+		let when;
+		let callback;
+
+		while (index < this.#notifications.length) {
+			const notification = this.#notifications[index];
+			index++;
+
+			if (notification.when <= now) {
+				// execute the notification immediately
+				notification.callback();
+			} else {
+				when = this.#clipTimeToContextTime(notification.when, this.#startTime, this.#position);
+				callback = () => { notification.callback(); this.#scheduleNextNotification(index); }
+				break;
+			}
+		}
+
+		if (callback == null) {
+			when = this.#clipTimeToContextTime(this.duration, this.#startTime, this.#position);
+			callback = () => { this.#handleStop(suppressStopEvent); };
+		}
+
+		if (when <= now) {
+			this.#handleStop(suppressStopEvent);
+		} else {
+			this.#scheduledNotificationId = this.#manager.scheduleNotification(when, callback);
 		}
 	}
 
-	#handleStop() {
+	/**
+	 * Schedules the audio to stop playing at the specified time.
+	 *
+	 * This method does nothing if the audio is not currently scheduled or playing.
+	 *
+	 * @param {number} when the time, in seconds when the audio should stop playing.
+	 *        The interpretation of this value is dependent on the value of the
+	 *        `relativeTo` parameter. The default value is 0, which stops playing
+	 *        the audio immediately. Negative values or values in the past will
+	 *        also stop playing immediately.
+	 * @param {('now'|'context'|'clip')=} relativeTo how to interpret the when parameter.
+	 *        If 'now' (the default), the time is interpereted as the number of seconds in
+	 *        the future.
+	 *        If 'context', the time is interpreted as an absolute time in the context
+	 *        clock coordinate space.
+	 *        If 'clip', the time is interpreted as a position within the clip coordinate
+	 *        space. In this case, the value is based on the native sample rate of the
+	 *        underlying buffer and independent of the playbackRate.
+	 */
+	stop(when, relativeTo = 'now') {
+		if (this.status == 'stopped') {
+			console.debug("Ignoring stop request. Audio is not currently playing.");
+			return;
+		}
+
+		if (when == null || when < 0) {
+			when = 0;
+		}
+
+		if (relativeTo == 'now') {
+			when = this.#manager.currentTime + when;
+		} else if (relativeTo == 'clip') {
+			when = this.#clipTimeToContextTime(when, this.#startTime, this.#position);
+		}
+
+		this.#stop(when);
+	}
+
+	/**
+	 * Schedules the audio to stop playing at the specified time.
+	 *
+	 * @param {number} when the time to stop playing the audio, in the context's clock coordinate
+	 *        space.
+	 * @param {boolean=} suppressStopEvent whether to suppress the dispatch of the 'stop' event or not.
+	 *        Typically used when repositioning the stream.
+	 */
+	#stop(when, suppressStopEvent = false) {
+
+		if (suppressStopEvent) {
+			// define a 2nd listener for suppressed event
+			// try removing both event listeners
+			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
+
+			// TODO: add new event listener if scheduled in future...
+		}
+
+		// If stopping immediately, remove any ended listeners before stopping
+
+		this.#audioBufferSourceNode.stop(when);
+
+		if (stopNow) {
+			// handle stop actions immediately
+			this.#handleStop(suppressStopEvent);
+		}
+
+	}
+
+	#handleStop(suppressStopEvent) {
+		// Record the current position for potential restart
+		this.#position = this.position;
+
+		// Remove any pending notification
+		this.#manager.removeNotification(this.#scheduledNotificationId);
+		this.#scheduledNotificationId = null;
+
 		this.#audioBufferSourceNode = null;
+
+
 	}
 
 }
@@ -287,13 +435,13 @@ export class AudioManager
 	 * Linked list of registered notifications.
 	 * @see addNotification
 	 * @see removeNotification
-	 * @type {AudioNotificationEntry?}
+	 * @type {AudioNotification?}
 	 */
 	#notifications;
 
 	/**
 	 * The last notification entry that was scheduled.
-	 * @type {AudioNotificationEntry?}
+	 * @type {AudioNotification?}
 	 */
 	#currentNotification;
 
@@ -555,7 +703,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 			};
 		}
 
-		const notification = new AudioNotificationEntry(when, callback, data);
+		const notification = new AudioNotification(when, callback);
 
 		const now = this.#context.currentTime;
 		if (when < now - 0.005) {
