@@ -91,6 +91,13 @@ export class DungeonMapConfiguration {
     mapBinaryUrl;
 
     /**
+     * URL of the JSON sound clip definitions
+     * @type {string}
+     * @readonly
+     */
+    soundJsonUrl;
+
+    /**
      * URL of the JSON wall texture definitions
      * @type {string}
      * @readonly
@@ -433,6 +440,10 @@ export class DungeonMapReader extends MapReader {
                             config.url, config.idPrefix,
                             config.x, config.y, config.width, config.height);
                     });
+
+            if (config.soundJsonUrl) {
+                promises.push(this.readJsonSounds(config.soundJsonUrl));
+            }
 
             if (config.wallTextureJsonUrl) {
                 promises.push(this.readJsonWalls(config.wallTextureJsonUrl));

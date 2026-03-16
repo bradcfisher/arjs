@@ -183,6 +183,33 @@ export class Parse {
 	}
 
 	/**
+	 * Parses a value from the specified property of an object.
+	 *
+	 * @param {any=} obj The object to retrieve the value from.
+	 * @param {string[]} props The property names, in the order they should be resolved.  For
+	 *        example, if "protection" and "magic" are given, will attempt to retrieve the
+	 *        value of `obj.protection.magic`.
+	 * @param {any} defaultVal	The default value to return if not found (`obj` == null or a
+	 *        property doesn't exist).  If the requested property _does_ exist, it's value
+	 *        will always be returned, even if it is null.
+	 * @param {((val: any) => T)=} parseCallback parsing function to apply to each element in the
+	 *        input. If not specified, `Parse.any` will be used.
+	 *
+	 * @return {T} The parsed value.
+	 *
+	 * @throws {Error} If the value could not be parsed or if a non-null primitive value is
+	 *         encountered at a non-terminal node in the path (non-terminals should either be null
+	 *         or an object).
+	 */
+	static prop(obj, props, defaultVal, parseCallback = Parse.any) {
+		try {
+			return parseCallback(Parse.getProp(obj, defaultVal, props));
+		} catch (e) {
+			throw new Error("Unable to parse property " + String(propPath) + ": " + e);
+		}
+	}
+
+	/**
 	 * Extracts a value from the specified property of an object.
 	 *
 	 * @param {any=} obj The object to retrieve the value from.

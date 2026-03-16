@@ -26,7 +26,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]
@@ -52,7 +52,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]
@@ -79,7 +79,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ],
@@ -87,7 +87,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/dungeonDoor.wav"
+                        "clip": "../sounds.json#door"
                     }
                 }
             ]
@@ -114,7 +114,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ],
@@ -122,7 +122,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/dungeonDoor.wav"
+                        "clip": "../sounds.json#door"
                     }
                 }
             ]
@@ -140,7 +140,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/dungeonSecretDoor.wav"
+                        "clip": "../sounds.json#secretDoor"
                     }
                 }
             ]
@@ -158,7 +158,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/dungeonSecretDoor.wav"
+                        "clip": "../sounds.json#secretDoor"
                     }
                 }
             ]
@@ -176,7 +176,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/dungeonSecretDoor.wav"
+                        "clip": "../sounds.json#secretDoor"
                     }
                 }
             ]
@@ -198,7 +198,7 @@
                                 {
                                     "action": "core:playSound",
                                     "parameters": {
-                                        "source": "../../sounds/successfulIdentification.wav"
+                                        "clip": "../sounds.json#successfulIdentification"
                                     }
                                 },
                                 {
@@ -241,7 +241,7 @@
                                 {
                                     "action": "core:playSound",
                                     "parameters": {
-                                        "source": "../../sounds/successfulIdentification.wav"
+                                        "clip": "../sounds.json#successfulIdentification"
                                     }
                                 },
                                 {
@@ -284,7 +284,7 @@
                                 {
                                     "action": "core:playSound",
                                     "parameters": {
-                                        "source": "../../sounds/successfulIdentification.wav"
+                                        "clip": "../sounds.json#successfulIdentification"
                                     }
                                 },
                                 {
@@ -322,7 +322,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]
@@ -339,7 +339,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]
@@ -356,7 +356,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]
@@ -373,7 +373,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]
@@ -390,7 +390,7 @@
                 {
                     "action": "core:playSound",
                     "parameters": {
-                        "source": "../../sounds/bump.wav"
+                        "clip": "../sounds.json#bump"
                     }
                 }
             ]

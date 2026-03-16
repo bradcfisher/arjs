@@ -1,0 +1,15 @@
+{
+    "bump": {
+        "source": "../sounds/bump.wav"
+    },
+    "door": {
+        "source": "../sounds/dungeonDoor.wav"
+    },
+    "secretDoor": {
+        "source": "../sounds/dungeonSecretDoor.wav"
+    },
+    "successfulIdentification": {
+        "_": "TODO: use a unique sound",
+        "source": "../sounds/dungeonSecretDoor.wav"
+    }
+}

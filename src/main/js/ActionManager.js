@@ -20,12 +20,12 @@ export function ActionCallbackConstructor() {}
  */
 export class PlaySoundParameters {
     /**
-     * The source URL or AudioClip of the sound resource to play.
-     * @type {string|URL|AudioClip}
+     * The clip name or AudioClip of the sound resource to play.
+     * If the value contains a hash (#) character, it will be treated as a URL
+     * and resolved relative to the source file.
+     * @type {string|AudioClip}
      */
-    source;
-
-    // other options to apply to the clip? e.g. start offset, end offset, repeat, speed modifier, volume modifier, etc?
+    clip;
 }
 
 /**
@@ -107,11 +107,11 @@ export class CoreAction {
      * @param {PlaySoundParameters} parameters configuration specifying the resource to play.
      */
     static playSound(parameters) {
-        const clip = GameState.getAudioManager().getClip(parameters.source);
+        const clip = GameState.getAudioManager().prepare(parameters.clip);
         if (clip) {
-            clip.startSample();
+            clip.play();
         } else {
-            console.warn("Clip not registered with AudioManager: " + parameters.source);
+            console.warn("Clip not registered with AudioManager: " + parameters.clip);
         }
     }
 
@@ -220,10 +220,11 @@ export class ActionManager {
 
     constructor() {
         this.register("core:playSound", CoreAction.playSound, undefined, (parameters) => {
-                if (parameters.source) {
-                    parameters.source = Parse.url(parameters.source);
+                // If the clip name contains a hash, then resolve it as a URL
+                const clip = String(parameters.clip);
+                if (clip.indexOf("#") >= 0) {
+                    parameters.clip = Parse.url(parameters.clip);
                     console.log("playSound: resolve parameters: ", parameters);
-                    GameState.getResourceManager().load(parameters.source);
                 }
             })
             .register("core:checkLockedDoorCollision", CoreAction.checkLockedDoorCollision)

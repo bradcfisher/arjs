@@ -106,25 +106,28 @@ export class CityMapReader extends MapReader {
     /**
      * Reads the specified wall JSON definitions into the map using the global ResourceManager.
      *
-     * This operation may execute asynchronously and is not guaranteed to be complete when the method returns.
-     * In addition to the promose returned, a 'complete' listener may also be used to detect when all pending
-     * load operations have completed.
+     * This operation may execute asynchronously and is not guaranteed to be complete when the
+     * method returns. In addition to the promise returned, a 'complete' listener may also be used
+     * to detect when all pending load operations have completed.
      *
-     * @param {string} url the location of the JSON wall definitions to load.
+     * @param {string|string[]} source the location(s) of the description JSON to load. If a
+     *        relative reference is provided, it will be resolved using {@link Parse.url}.
      *
      * @return {PromiseLike<void>} a promise that will complete when the load completes
      */
-    async readJsonDescriptions(url) {
-        const loaded = await this.resourceManager.load(url);
-        const descriptions = loaded[url].data;
-        const map = this.map;
-        map.descriptions = [];
-        descriptions.forEach((entry) => {
-            let index = entry.startIndex;
-            entry.descriptions.forEach((description) => {
-                map.descriptions[index++] = description;
+    async readJsonDescriptions(source) {
+        for (let url of Parse.array(source, [], Parse.url)) {
+            const loaded = await this.resourceManager.load(url);
+            const descriptions = loaded[url].data;
+            const map = this.map;
+            map.descriptions = [];
+            descriptions.forEach((entry) => {
+                let index = entry.startIndex;
+                entry.descriptions.forEach((description) => {
+                    map.descriptions[index++] = description;
+                });
             });
-        });
+        }
     }
 
     /**
@@ -405,15 +408,31 @@ export class CityMapReader extends MapReader {
         const height = config.height || this.map.height;
         this.resize(width, height);
 
-        return Promise.all([
+        const promises = [
             this.readCellWalls(new URL(config.wallBinaryUrl, baseUrl)),
             this.readJsonDescriptions(new URL(config.descriptionJsonUrl, baseUrl))
-                .then(() => this.readCellLocationCodes(new URL(config.locationBinaryUrl, baseUrl))),
-            this.readJsonWalls(new URL(config.wallTextureJsonUrl, baseUrl)),
-            this.readJsonFloorAndCeiling(new URL(config.floorAndCeilingTextureJsonUrl, baseUrl)),
-            this.readJsonPatches(new URL(config.patchJsonUrl, baseUrl)),
-            this.readJsonZones(new URL(config.zoneJsonUrl, baseUrl))
-        ]);
+                .then(() => this.readCellLocationCodes(new URL(config.locationBinaryUrl, baseUrl)))
+        ];
+
+        if (config.soundJsonUrl) {
+            promises.push(this.readJsonSounds(config.soundJsonUrl));
+        }
+
+        if (config.wallTextureJsonUrl) {
+            promises.push(this.readJsonWalls(config.wallTextureJsonUrl));
+        }
+
+        if (config.floorAndCeilingTextureJsonUrl) {
+            promises.push(this.readJsonFloorAndCeiling(config.floorAndCeilingTextureJsonUrl));
+        }
+
+        if (config.patchJsonUrl) {
+            promises.push(this.readJsonPatches(config.patchJsonUrl));
+        }
+
+        if (config.zoneJsonUrl) {
+            promises.push(this.readJsonZones(config.zoneJsonUrl));
+        }
 
 	//messageJsonUrl;
 	//encounterJsonUrl;

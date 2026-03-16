@@ -6,8 +6,8 @@ import { Parse } from "./Parse.js";
  * Parses an audio sample position/duration value, returning the number of samples it represents
  * within an audio stream with the specified sample rate.
  *
- * @param {{number|string)?} position the value to parse.
- * @param {{number|string}?} defaultPosition the default value to use if the `position` is
+ * @param {(number|string)?} position the value to parse.
+ * @param {(number|string)?} defaultPosition the default value to use if the `position` is
  *        null. If this value is also null, the method will throw an error.
  * @param {number} sampleRate the number of samples per second for the audio.
  *
@@ -253,10 +253,14 @@ export class AudioClip {
 	}
 
 	/**
+	 * The ending sample for the clip (non-inclusive).
 	 * @type {number}
 	 */
 	#endSample;
 
+	/**
+	 * The ending sample for the clip (non-inclusive).
+	 */
 	get endSample() {
 		return this.#endSample;
 	}
@@ -265,7 +269,7 @@ export class AudioClip {
 	 * The length of playback in samples.
 	 */
 	get length() {
-		return this.#endSample - this.#startSample + 1;
+		return this.#endSample - this.#startSample;
 	}
 
 	/**
@@ -332,28 +336,28 @@ export class AudioClip {
 			options = {};
 		}
 
-		const length = parseSample(options.length);
-
 		this.#buffer = buffer;
 		this.#startSample = parseSample(options.start, 0, buffer.sampleRate);
-		this.#endSample = this.#startSample + length;
-		this.#detune = Parse.num(options.detune, 0);
-		this.#loop = Parse.bool(options.loop, false);
-		this.#gain = Parse.num(options.gain, 1);
-		this.#playbackRate = Parse.num(options.playbackRate, 1);
-		this.#x = (options.x == null ? null : Parse.num(options.x));
-		this.#y = (options.y == null ? null : Parse.num(options.y));
-		this.#height = Parse.num(options.height, 0);
+		this.#endSample = (options.length == null)
+			? buffer.length
+			: this.#startSample + parseSample(options.length, null, buffer.sampleRate);
+		this.#detune = Parse.prop(options, ["detune"], 0, Parse.num);
+		this.#loop = Parse.prop(options, ["loop"], false, Parse.bool);
+		this.#gain = Parse.prop(options, ["gain"], 1, Parse.num);
+		this.#playbackRate = Parse.prop(options, ["playbackRate"], 1, Parse.num);
+		this.#x = (options.x == null ? null : Parse.prop(options, ["x"], null, Parse.num));
+		this.#y = (options.y == null ? null : Parse.prop(options, ["y"], null, Parse.num));
+		this.#height = Parse.prop(options, ["height"], 0, Parse.num);
 
 		if (this.#startSample < 0 || this.#startSample >= buffer.length) {
 			throw new Error("Start sample must be between [0, " + buffer.length +
 					"): " + this.#startSample);
 		}
 
-		if (this.#endSample < this.#startSample || this.#endSample >= buffer.length) {
-			throw new Error("Sample length must be between [0, " +
-				(buffer.length - this.#startSample) + "): " +
-				(this.#endSample - this.#startSample + 1));
+		if (this.#endSample <= this.#startSample || this.#endSample > buffer.length) {
+			throw new Error("Sample length must be in [1, " +
+				(buffer.length - this.#startSample) + "]: " +
+				(this.#endSample - this.#startSample));
 		}
 
 		this.#notifications = Parse.array(options.notifications, [], (value) => {

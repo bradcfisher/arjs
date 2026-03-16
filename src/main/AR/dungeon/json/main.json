@@ -44,6 +44,10 @@
 					"url": "../DungeonMap4.bin"
 				}
 			],
+			"soundJsonUrl": [
+				"./sounds.json",
+				"./level1/sounds.json"
+			],
 			"wallTextureJsonUrl": "./level1/walls.json",
 			"floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
 			"zoneJsonUrl": "./level1/zones.json",
@@ -53,6 +57,10 @@
 		"level2": {
 			"type": "dungeon",
 			"mapBinaryUrl": "../DungeonMap5.bin",
+			"soundJsonUrl": [
+				"./sounds.json",
+				"./level2/sounds.json"
+			],
 			"wallTextureJsonUrl": "./level2/walls.json",
 			"floorAndCeilingTextureJsonUrl": "./level2/floorAndCeiling.json",
 			"zoneJsonUrl": "./level2/zones.json",
@@ -62,6 +70,10 @@
 		"level3": {
 			"type": "dungeon",
 			"mapBinaryUrl": "../DungeonMap6.bin",
+			"soundJsonUrl": [
+				"./sounds.json",
+				"./level3/sounds.json"
+			],
 			"wallTextureJsonUrl": "./level3/walls.json",
 			"floorAndCeilingTextureJsonUrl": "./level3/floorAndCeiling.json",
 			"zoneJsonUrl": "./level3/zones.json",
@@ -71,6 +83,10 @@
 		"level4": {
 			"type": "dungeon",
 			"mapBinaryUrl": "../DungeonMap7.bin",
+			"soundJsonUrl": [
+				"./sounds.json",
+				"./level3/sounds.json"
+			],
 			"wallTextureJsonUrl": "./level4/walls.json",
 			"floorAndCeilingTextureJsonUrl": "./level4/floorAndCeiling.json",
 			"zoneJsonUrl": "./level4/zones.json",

@@ -6,13 +6,8 @@ import { AudioClip } from "./AudioClip.js";
 
 /**
  * Represents an audio instance prepared for playback by an AudioManager.
- *
- * Events:
- * @event start			Sent when a clip begins playing
- * @event stop			Sent when a clip stops playing
- * @event loop			Sent when a clip repeats
  */
-export class ActiveAudio extends EventDispatcher {
+export class ActiveAudio {
 
 	/**
 	 * @type {AudioManager}
@@ -37,6 +32,18 @@ export class ActiveAudio extends EventDispatcher {
 	 */
 	get duration() {
 		return this.#duration;
+	}
+
+	/**
+	 * @type {number}
+	 */
+	#playbackRate;
+
+	/**
+	 * The playback rate for the underlying audio data.
+	 */
+	get playbackRate() {
+		return this.#playbackRate;
 	}
 
 	/**
@@ -83,7 +90,7 @@ export class ActiveAudio extends EventDispatcher {
 	 *
 	 * @type {number}
 	 */
-	#position;
+	#position = 0;
 
 	/**
 	 * The ID of any currently scheduled notification for this audio.
@@ -130,8 +137,8 @@ export class ActiveAudio extends EventDispatcher {
 	set position(when) {
 		if (when < 0) {
 			when = 0;
-		} else if (when >= this.length) {
-			when = this.length - 1;
+		} else if (when > this.length) {
+			when = this.length;
 		}
 
 		if (this.#startTime != null) {
@@ -145,7 +152,7 @@ export class ActiveAudio extends EventDispatcher {
 	}
 
 	/**
-	 *
+	 * Constructs a new instance.
 	 * @param {AudioManager} manager the AudioManager through which the playback will be performed.
 	 * @param {AudioClip} clip the AudioClip describing the audio and playback parameters.
 	 */
@@ -173,6 +180,7 @@ export class ActiveAudio extends EventDispatcher {
 			this.#destination = this.#manager.destination;
 		}
 
+		this.#playbackRate = clip.playbackRate;
 		this.#duration = clip.length / clip.buffer.sampleRate;
 
 		for (let notification of clip.notifications) {
@@ -206,10 +214,8 @@ export class ActiveAudio extends EventDispatcher {
 	 *
 	 * @param {number} when the time, in seconds to wait before the sound should begin to play.
 	 *        The default value is 0, which starts playing the audio immediately.
-	 * @param {boolean=} suppressStartEvent whether to suppress the dispatch of the 'start' event or not.
-	 *        Typically used when repositioning the stream.
 	 */
-	#play(when, suppressStartEvent = false) {
+	#play(when) {
 		if (this.#audioBufferSourceNode != null) {
 			throw new Error("#play called when #audioBufferSourceNode is assigned");
 		}
@@ -226,10 +232,10 @@ export class ActiveAudio extends EventDispatcher {
 			this.#scheduledNotificationId =
 			    this.#manager.scheduleNotification(
 					this.#manager.currentTime + when,
-					() => { this.#handleStart(suppressStartEvent); }
+					() => { this.#handleStart(); }
 				);
 		} else {
-			this.#handleStart(suppressStartEvent);
+			this.#handleStart();
 		}
 	}
 
@@ -237,18 +243,9 @@ export class ActiveAudio extends EventDispatcher {
 	 * Performs necessary actions when a clip starts to play.
 	 * This may include sending a 'start' event as well as scheduling the next notification to
 	 * fire at the appropriate time.
-	 *
-	 * @param {boolean} suppressStartEvent whether to suppress the dispatch of the 'start'
-	 *        event or not. Typically used when repositioning the stream.
 	 */
-	#handleStart(suppressStartEvent) {
+	#handleStart() {
 		this.#scheduledNotificationId = null;
-
-		if (!suppressStartEvent) {
-			this.triggerEvent('start', {
-				target: this
-			});
-		}
 
 		let index = 0;
 		if (this.#position > 0) {
@@ -302,7 +299,7 @@ export class ActiveAudio extends EventDispatcher {
 	 *
 	 * @param {number} index the index of the notification to schedule.
 	 */
-	#scheduleNextNotification(index, suppressStopEvent = false) {
+	#scheduleNextNotification(index) {
 		const now = this.#contextTimeToClipTime(this.#manager.currentTime, this.#startTime, this.#position);
 
 		let when;
@@ -324,11 +321,11 @@ export class ActiveAudio extends EventDispatcher {
 
 		if (callback == null) {
 			when = this.#clipTimeToContextTime(this.duration, this.#startTime, this.#position);
-			callback = () => { this.#handleStop(suppressStopEvent); };
+			callback = () => { this.#handleStop(); };
 		}
 
 		if (when <= now) {
-			this.#handleStop(suppressStopEvent);
+			this.#handleStop();
 		} else {
 			this.#scheduledNotificationId = this.#manager.scheduleNotification(when, callback);
 		}
@@ -377,24 +374,14 @@ export class ActiveAudio extends EventDispatcher {
 	 *
 	 * @param {number} when the time to stop playing the audio, in the context's clock coordinate
 	 *        space.
-	 * @param {boolean=} suppressStopEvent whether to suppress the dispatch of the 'stop' event or not.
-	 *        Typically used when repositioning the stream.
 	 */
-	#stop(when, suppressStopEvent = false) {
+	#stop(when) {
 		if (this.#audioBufferSourceNode == null) {
 			throw new Error("#stop called when #audioBufferSourceNode is unassigned");
 		}
 
 		const stopNow = when <= this.#manager.currentTime;
-		if (suppressStopEvent) {
-			// Remove any registered event listener
-			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
-			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListenerNoEvent);
-
-			if (!stopNow) {
-				this.#audioBufferSourceNode.addEventListener('ended', this.#endedListenerNoEvent);
-			}
-		} else if (stopNow) {
+		if (stopNow) {
 			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
 			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListenerNoEvent);
 		}
@@ -403,11 +390,11 @@ export class ActiveAudio extends EventDispatcher {
 
 		if (stopNow) {
 			// handle stop actions immediately
-			this.#handleStop(suppressStopEvent);
+			this.#handleStop();
 		}
 	}
 
-	#handleStop(suppressStopEvent) {
+	#handleStop() {
 		// Record the current position for potential restart
 		this.#position = this.position;
 
@@ -418,21 +405,14 @@ export class ActiveAudio extends EventDispatcher {
 		}
 
 		this.#audioBufferSourceNode = null;
-
-		if (!suppressStopEvent) {
-			// Send stop event
-			this.triggerEvent('stop', {
-				target: this
-			});
-		}
 	}
 
 }
 
 
-export class ScheduledAudioNotificationEntry extends AudioNotification {
+export class ScheduledAudioNotification extends AudioNotification {
 	/**
-	 * @type {ScheduledAudioNotificationEntry?}
+	 * @type {ScheduledAudioNotification?}
 	 */
 	#next;
 
@@ -463,10 +443,10 @@ export class ScheduledAudioNotificationEntry extends AudioNotification {
 	/**
 	 * Inserts a new entry into the list in chronological order.
 	 *
-	 * @param {ScheduledAudioNotificationEntry} notification the notification entry to
+	 * @param {ScheduledAudioNotification} notification the notification entry to
 	 *        insert.
 	 *
-	 * @returns {ScheduledAudioNotificationEntry} the start of the list. This value may be
+	 * @returns {ScheduledAudioNotification} the start of the list. This value may be
 	 *          either the notification this method was called on or the new notification
 	 *          if it was inserted at the front of the list.
 	 */
@@ -501,10 +481,10 @@ export class ScheduledAudioNotificationEntry extends AudioNotification {
 	/**
 	 * Removes a notification from the linked list rooted at this entry.
 	 *
-	 * @param {ScheduledAudioNotificationEntry} notification the notification to remove from the
+	 * @param {ScheduledAudioNotification} notification the notification to remove from the
 	 *        list.
 	 *
-	 * @returns {ScheduledAudioNotificationEntry} the start of the list. This value may be
+	 * @returns {ScheduledAudioNotification} the start of the list. This value may be
 	 *          either the notification this method was called on or the next notification
 	 *          in the list if this node was the node to remove.
 	 */
@@ -516,7 +496,7 @@ export class ScheduledAudioNotificationEntry extends AudioNotification {
 		}
 
 		let entry = this;
-		while (true) {
+		while (entry != null) {
 			if (notification == entry.#next) {
 				// Found a match, remove from the list
 				entry.#next = notification.#next;
@@ -538,15 +518,7 @@ export class ScheduledAudioNotificationEntry extends AudioNotification {
 
 
 
-/**
- *
- * Events:
- *  - load			Sent when all currently loading clips have completed.
- *  - error			Sent when a clip load operation fails.
- */
-export class AudioManager
-	extends EventDispatcher
-{
+export class AudioManager {
 
 	/**
 	 * @type {AudioContext}
@@ -560,23 +532,16 @@ export class AudioManager
 	#clips;
 
 	/**
-	 * Currently loading clips.
-	 * @see {@link clipFromArrayBuffer}
-	 * @type {Map<string, [any, PromiseLike<AudioClip>]>}
-	 */
-	#loading;
-
-	/**
 	 * Linked list of scheduled notifications.
 	 * @see scheduleNotification
 	 * @see cancelNotification
-	 * @type {ScheduledAudioNotificationEntry?}
+	 * @type {ScheduledAudioNotification?}
 	 */
 	#pendingNotifications;
 
 	/**
 	 * The last notification entry that was scheduled.
-	 * @type {AudioNotification?}
+	 * @type {ScheduledAudioNotification?}
 	 */
 	#currentNotification;
 
@@ -604,10 +569,7 @@ export class AudioManager
 	 * Constructs a new AudioManager instance.
 	 */
 	constructor() {
-		super();
-
 		this.#clips = new Map();
-		this.#loading = new Map();
 		this.#context = new AudioContext();
 
 		this.#currentNotificationBuffer = this.#context.createBuffer(1, 1, this.#context.sampleRate);
@@ -656,63 +618,19 @@ export class AudioManager
 
 
 	/**
-	 * Registeres an audio clip with the context for retrieval later.
-	 * @param {AudioClip} clip
+	 * Registers an audio clip with the context for retrieval later.
+	 *
+	 * @param {string} name the name to register the clip under.
+	 * @param {AudioClip} clip the clip to register.
 	 */
-	registerClip(clip) {
-		if (clip.manager !== this) {
-			throw new Error("Only clips created under this AudioManager can be registered");
-		}
-
-		const name = String(clip.name);
+	registerClip(name, clip) {
+		name = String(name);
 		if (this.#clips.has(name)) {
 			throw new Error("A clip named '"+ name +"' has already been defined");
 		}
 
 		this.#clips.set(name, clip);
 	} // registerClip
-
-	/**
-	 * Returns a Promise which resolves to a new AudioClip with the specified name
-	 * and audio data.
-	 *
-	 * On fulfilment, the new AudioClip is registered with the AudioManager under the specified name.
-	 *
-	 * @param {string} name The name to register the new clip under.
-	 * @param {ArrayBuffer} audioData The audio data to use for the clip.  Must be in a supported
-	 *        audio format.
-	 *
-	 * @return {PromiseLike<AudioClip>} a Promise which resolves to a new AudioClip with the specified name
-	 *         and audio data.
-	 */
-	clipFromArrayBuffer(name, audioData) {
-console.log("clipFromArrayBuffer: ", name, audioData);
-		let entry = this.#loading.get(name);
-		if (entry) {
-			if (entry[0] !== audioData) {
-				throw new Error("A clip named '"+ name +"' has already been defined");
-			}
-
-			return entry[1]; /* Promise<AudioClip> */
-		}
-
-		const promise = new Promise((accept, reject) => {
-			this.#context.decodeAudioData(audioData).then(
-				(buffer) => {
-					this.#loading.delete(name);
-					accept(new AudioClip(this, name, buffer));
-				},
-				(error) => {
-					this.#loading.delete(name);
-					reject(error);
-				}
-			)
-		});
-
-		this.#loading.set(name, [audioData, promise]);
-
-		return promise;
-	} // clipFromArrayBuffer
 
 	/**
 	 * Retrieves the audio clip registered with the provided name.
@@ -733,14 +651,17 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	 * @returns {ActiveAudio} An ActiveAudio instance which can be used to control playback,
 	 *          schedule notifications, or listen for events.
 	 */
-	prepare(clip) {
-		if (!(clip instanceof AudioClip)) {
-			clip = this.getClip(clip);
+	prepare(clipOrName) {
+		let clip;
+		if (clipOrName instanceof AudioClip) {
+			clip = clipOrName;
+		} else {
+			clip = this.getClip(clipOrName);
 			if (clip == null) {
-				throw new Error("There is no clip named '" + clip + "' registered with this manager");
+				throw new Error("There is no clip named '" + clipOrName + "' registered with this manager");
 			}
 		}
-		return ActiveAudio(this, clip);
+		return new ActiveAudio(this, clip);
 	}
 
 	/**
@@ -750,11 +671,11 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 		if (this.#currentNotification) {
 			const entry = this.#currentNotification;
 			if (this.#pendingNotifications) {
-				this.#pendingNotifications = this.#pendingNotifications.remove(this.#currentNotification.id);
+				this.#pendingNotifications = this.#pendingNotifications.remove(this.#currentNotification);
 			}
 			this.#currentNotification = this.#currentNotificationNode = undefined;
 
-			entry.invoke();
+			entry.callback();
 
 			this.#scheduleNextNotificationIfNeeded();
 		} else
@@ -764,7 +685,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	/**
 	 * Stops/unschedules the current notification if one is scheduled.
 	 */
-	unscheduleCurrentNotification() {
+	#unscheduleCurrentNotification() {
 		if (this.#currentNotification) {
 			if (this.#currentNotificationNode) {
 				if (this.#currentNotificationCallback) {
@@ -794,7 +715,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 				return; // No need to reschedule
 			}
 
-			this.unscheduleCurrentNotification();
+			this.#unscheduleCurrentNotification();
 		}
 
 		// Start new notification
@@ -831,7 +752,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 	 *         the notification was executed immediately or was specified to execute in the past.
 	 */
 	scheduleNotification(when, callback) {
-		const notification = new AudioNotification(when, callback);
+		const notification = new ScheduledAudioNotification(this, when, callback);
 
 		const now = this.#context.currentTime;
 		if (when < now - 0.005) {
@@ -866,7 +787,7 @@ console.log("clipFromArrayBuffer: ", name, audioData);
 
 			if (this.#currentNotification && (this.#currentNotification.id == notification)) {
 				reschedule = true;
-				this.unscheduleCurrentNotification();
+				this.#unscheduleCurrentNotification();
 			}
 
 			this.#pendingNotifications = this.#pendingNotifications.remove(notification);

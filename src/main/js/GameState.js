@@ -102,15 +102,12 @@ const audioManager = new AudioManager();
 
 const resourceManager = new ResourceManager();
 resourceManager.registerResourceDecoder(
+	// Decode into an AudioBuffer
 	"audio/*", (request, meta, accept, reject) => {
-		const url = String(meta.url);
-		const clip = audioManager.getClip(url);
-		if (clip) {
-			accept(clip);
-			return;
-		}
-
-		audioManager.clipFromArrayBuffer(url, request.response).then(accept, reject);
+		audioManager.context.decodeAudioData(request.response).then(
+						(buffer) => { accept(buffer); },
+						(error) => { reject(error); }
+					);
 	}
 );
 
