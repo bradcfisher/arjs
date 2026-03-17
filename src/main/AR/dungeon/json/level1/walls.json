@@ -187,9 +187,33 @@
         "description": "A locked door that requires a key to unlock it. When a locked door is unlocked, that status is saved with the character.",
         "texture": "../../images/door.png",
         "transparent": false,
-        "collision": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32,
+                "classifier": "wall"
+            },
+            {
+                "start": 0.32,
+                "end": 0.67,
+                "classifier": "door"
+            },
+            {
+                "start": 0.67,
+                "end": 1,
+                "classifier": "wall"
+            }
+        ],
         "on": {
-            "collision": [
+            "collision:wall": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "collision:door": [
                 {
                     "action": "core:checkLockedDoorCollision",
                     "parameters": {
@@ -230,9 +254,33 @@
         "description": "A door that is secured with a deadbolt or bar. When a bolted door is forced open, that status is saved with the character.",
         "texture": "../../images/door.png",
         "transparent": false,
-        "collision": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32,
+                "classifier": "wall"
+            },
+            {
+                "start": 0.32,
+                "end": 0.67,
+                "classifier": "door"
+            },
+            {
+                "start": 0.67,
+                "end": 1,
+                "classifier": "wall"
+            }
+        ],
         "on": {
-            "collision": [
+            "collision:wall": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "collision:door": [
                 {
                     "action": "core:checkBoltedDoorCollision",
                     "parameters": {
@@ -273,9 +321,33 @@
         "description": "A door that is secured with magic. When an enchantment on a door is broken, that status is saved with the character.",
         "texture": "../../images/door.png",
         "transparent": false,
-        "collision": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32,
+                "classifier": "wall"
+            },
+            {
+                "start": 0.32,
+                "end": 0.67,
+                "classifier": "door"
+            },
+            {
+                "start": 0.67,
+                "end": 1,
+                "classifier": "wall"
+            }
+        ],
         "on": {
-            "collision": [
+            "collision:wall": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "collision:door": [
                 {
                     "action": "core:checkEnchantedDoorCollision",
                     "parameters": {

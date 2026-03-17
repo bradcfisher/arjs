@@ -135,7 +135,7 @@ export class GameTimer
 	 * @param {GameClock} clock The clock to associate the timer with.
 	 */
 	configure(config, clock) {
-		super.configure(config);
+		//super.configure(config);
 		this.#clock = clock;
 		this.delay = Parse.num(config.delay);
 		this.repetitions = Parse.num(config.repetitions);

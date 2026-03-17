@@ -4,6 +4,7 @@ import { Controls } from "./js/Controls.js";
 import { Player } from "./js/Player.js";
 import { CityMapReader } from "./js/CityMapReader.js";
 import { DungeonMapReader } from "./js/DungeonMapReader.js";
+/** @import { EventDetail } from "./js/EventDispatcher.js" */
 
 let resourcesReady = false;
 let domReady = false;
@@ -55,6 +56,10 @@ if (false) {
                     "url": "../DungeonMap4.bin"
                 }
             ],
+			"soundJsonUrl": [
+				"./sounds.json",
+				"./level1/sounds.json"
+			],
             "wallTextureJsonUrl": "./level1/walls.json",
             "floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
             "zoneJsonUrl": "./level1/zones.json",
@@ -141,9 +146,9 @@ function checkReady() {
         }
     });
 
-    player.on('collision', (event) => {
+    player.on('collision', (/** @type {EventDetail} */ event) => {
         const data = event.data;
-        console.log('COLLISION: ' +
+        console.log('COLLISION (classifier=' + (event.classifier ? event.classifier : "") + '): ' +
             'x: ' + data.position.x.toFixed(2) +
             ' y: ' + data.position.y.toFixed(2) +
             ' orientation: ' + data.position.orientation.toFixed(2) +

@@ -322,7 +322,7 @@ export class GameClock
 		// at this point.  The Deserializer is depth-first, so the timers are deserialized
 		// before the clock's configure method is called.
 
-		super.configure(config);
+		//super.configure(config);
 
 		this.#calendar = new Calendar(Parse.array(config.months));
 		this.#tickDelays = new TickDelays(config.tickDelays);

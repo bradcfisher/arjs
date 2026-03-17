@@ -1,6 +1,7 @@
 
 import { ColorUtil } from "./ColorUtil.js";
 import { Configurable } from "./Configurable.js";
+import { EventDispatcher } from "./EventDispatcher.js";
 import { Parse, ActionDefinition, RegisteredAction } from "./Parse.js";
 import { TextureProvider, SolidColorTexture } from "./Texture.js";
 
@@ -144,13 +145,14 @@ export class WallStyleConfig {
      *
      * May be a boolean value to indicate the wall is either fully solid or fully intangible.
      *
-     * If an array is provided, each entry in the list is an object specifying the start and end of a
-     * region as a percentage of the wall's width where the wall is considered solid to the player.
-     * When ranges are provided, the start must be less than the end.
+     * If an array is provided, each entry in the list is an object specifying the start and end of
+     * a region as a percentage of the wall's width where the wall is considered solid to the
+     * player. A classifier value may also be provided for each region, in which case events
+     * triggered for the region will include the classifier.
      *
      * `true` is equivalent to `[{'start': 0, 'end': 1}]` and `false` is equivalent to `[]`.
      *
-     * @type {(boolean | [{start:number, end:number}])?}
+     * @type {(boolean | {start:number, end:number, classifier:string?}[])?}
      * @readonly
      */
     collision;
@@ -179,7 +181,7 @@ export class WallStyleConfig {
     on;
 }
 
-export class WallStyle {
+export class WallStyle extends EventDispatcher {
     /**
      * Optional name assigned to the wall style.
      * @type {string?}
@@ -206,11 +208,13 @@ export class WallStyle {
      *
      * Each entry in the list is an object specifying the start and end of a region as a
      * percentage of the wall's width where the wall is considered solid to the player.
+     * Entries may also have a classifier value which is assigned to any events triggered for
+     * the region.
      *
      * `[{'start': 0, 'end': 1}]` would indicate a fully solid wall, while `[]` means the wall
      * is fully intangible.
      *
-     * @type {[{start:number, end:number}]}
+     * @type {{start:number, end:number, classifier:string?}[]}
      */
     collision = [];
 
@@ -228,15 +232,12 @@ export class WallStyle {
     color = 'rgb(255 0 0 / 50%)';
 
     /**
-     * @type {Map<string, ActionCallback[]>}
-     */
-    on = new Map();
-
-    /**
      * Constructs a new WallStyle.
      * @param {WallStyleConfig} config
      */
     constructor(config) {
+        super();
+
         if (config) {
             if (config.name != null) {
                 this.name = Parse.str(config.name);
@@ -257,9 +258,12 @@ export class WallStyle {
                 const collision = [];
                 for (let item of config.collision) {
                     const range = {
-                        start: Parse.num(Parse.getProp(item, null, "start")),
-                        end: Parse.num(Parse.getProp(item, null, "end"))
+                        start: Parse.prop(item, ["start"], null, Parse.num),
+                        end: Parse.prop(item, ["end"], null, Parse.num)
                     };
+                    if (item.classifier != null) {
+                        range.classifier = Parse.str(item.classifier);
+                    }
                     if (range.end < range.start) {
                         let t = range.start;
                         range.start = range.end;
@@ -284,7 +288,16 @@ export class WallStyle {
 
             if (config.on) {
                 Object.entries(config.on).forEach(([type, item]) => {
-                    this.on.set(type, Parse.array(item, [], Parse.action));
+                    const actions = Parse.array(item, [], Parse.action);
+                    this.on(type, (event) => {
+                        for (let action of actions) {
+                            try {
+                                action({ event });
+                            } catch (e) {
+                                log.error(`Error in action for ${type}:`, event, error);
+                            }
+                        }
+                    });
                 });
             }
         }
@@ -298,12 +311,13 @@ export class WallStyle {
     /**
      * Whether the specified location lies in a collision region for this wall style.
      * @param {number} location position along the wall as a percentage of the wall's width.
-     * @returns
+     * @returns {{start: number, end: number, classifier: string?}|false} the collision region that
+     *          was hit or false if no collision.
      */
     isCollision(location) {
         for (let region of this.collision) {
             if (region.start <= location && location <= region.end) {
-                return true;
+                return region;
             }
         }
         return false;
@@ -518,6 +532,11 @@ export class HitData {
      */
     side;
 
+    /**
+     * The classifier value assigned to the collision region that was intersected.
+     * @type {string?}
+     */
+    classifier;
 }
 
 
@@ -672,6 +691,11 @@ export class Ray {
              */
             this.isHit = ray.isHit;
 
+            /**
+             * The class assigned to the collision region that was intersected.
+             * @type {string?}
+             */
+            this.classifier = ray.classifier;
         } else {
             this.startX = startX;
             this.startY = startY;
@@ -1030,17 +1054,21 @@ export class ScenarioMap {
     /**
      * Casts a ray from the given position travelling at the provided angle.
      *
-     * Distances returned by this algorithm will be equal to the Euclidean distance from the starting point
-     * to the hit.
+     * Distances returned by this algorithm will be equal to the Euclidean distance from the
+     * starting point to the hit.
      *
      * @param {number} posX horizontal map position to cast from
      * @param {number} posY vertical map position to cast from
      * @param {number} rayAngle the angle at which to cast the ray
      * @param {number} renderDistance the maximum distance to cast without encountering a collision
      * @param {((hitData: HitData) => boolean)=} isHit the predicate to determine whether a
-     *        wall with the given wall style and position should be included in the results and when to stop the search.
-     *        The wall is not included if the predicate returns strictly false (not null), otherwise it will be included.
-     *        When the return value is true, the search stops.
+     *        wall with the given wall style and position should be included in the results and
+     *        when to stop the search. The wall is not included if the predicate returns strictly
+     *        false (not null), otherwise it will be included. When the return value is true, the
+     *        search stops. The classifier of the hit data provided to this function will be
+     *        unassigned. This function may assign a value to the classifier property when
+     *        a collision is detected. This may be used to differentiate between different
+     *        collision regions and can be used as an event selector.
      *
      * @returns {Ray[]} list of hits encountered. This list always contains at least one entry,
      *          even when the max cast distance is reached without any hits.
@@ -1060,10 +1088,14 @@ export class ScenarioMap {
      * @param {number} rayDirX the horizontal component of the ray direction vector
      * @param {number} rayDirY the vertical component of the ray direction vector
      * @param {number} renderDistance the maximum distance to cast without encountering a hit
-     * @param {((wallStyle: WallStyle, position: number) => boolean)=} isHit the predicate to determine whether a wall
-     *        with the given wall style should be included in the results and when to stop the search. The wall is not
-     *        included if the predicate returns strictly false (not null), otherwise it will be included. When the
-     *        return value is true, the search stops.
+     * @param {((hitData: HitData) => boolean?)=} isHit the predicate to determine whether a
+     *        wall with the given wall style and position should be included in the results and
+     *        when to stop the search. The wall is not included if the predicate returns strictly
+     *        false (not null), otherwise it will be included. When the return value is true, the
+     *        search stops. The classifier of the hit data provided to this function will be
+     *        unassigned. This function may assign a value to the classifier property when
+     *        a collision is detected. This may be used to differentiate between different
+     *        collision regions and can be used as an event selector.
      *
      * @returns {Ray[]} list of hits encountered. This list always contains at least one entry,
      *          even when the max cast distance is reached without any hits.
@@ -1076,6 +1108,8 @@ export class ScenarioMap {
             if (!ray.iterate(this, renderDistance)) {
                 break;
             }
+
+            ray.classifier = undefined;
 
             if (ray.wallStyle) {
                 ray.isHit = isHit(ray);

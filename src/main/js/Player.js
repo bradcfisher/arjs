@@ -147,9 +147,6 @@ export class Player extends Denizen {
         super();
 
         this.#eventDispatcher = new EventDispatcher(this);
-        this.on = (type, listener) => this.#eventDispatcher.on(type, listener);
-        this.off = (type, listener) => this.#eventDispatcher.off(type, listener);
-        this.triggerEvent = (type, data) => this.#eventDispatcher.triggerEvent(type, data);
 
         this.name = name;
         this.gender = gender;
@@ -239,6 +236,38 @@ export class Player extends Denizen {
 */
     }
 
+    /**
+     * @param {string} eventType the event type name and optional classifiers to add the handler to.
+     * @param {EventListener|(event:EventDetail) => void} listener the callback to add.
+     * @returns {this}
+     * @see {@link EventDispatcher.on}
+     */
+    on(eventType, listener) {
+        return this.#eventDispatcher.on(eventType, listener);
+    }
+
+    /**
+     * @param {string} eventType the event type name and optional classifiers to remove the handler
+     *        from.
+     * @param {EventListener|(event:EventDetail) => void} listener the callback to remove.
+     * @returns {this}
+     * @see {@link EventDispatcher.off}
+     */
+    off(eventType, listener) {
+        return this.#eventDispatcher.off(eventType, listener);
+    }
+
+    /**
+     * Dispatches an event to all registered listeners.
+     * @param {string} eventType the event type name
+     * @param {any} data additional data associated with the event
+     * @return {this}
+     * @see {@link EventDispatcher.triggerEvent}
+     */
+    triggerEvent(eventType, data) {
+        return this.#eventDispatcher.triggerEvent(eventType, data);
+    }
+
     #triggerMovedEvent() {
         this.triggerEvent('move', {
             position: this.getPosition()
@@ -321,11 +350,18 @@ export class Player extends Denizen {
 
     /**
      * Determines whether a wall should be considered a hit for collision checking or not.
-     * @param {HitData} hitData the details of the potential collision.
+     *
+     * @param {HitData} hitData the details of the potential collision. If a collision is
+     *        detected, the classifier property of this object will be updated to the
+     *        classifier assigned to the collision region.
+     *
+     * @returns true if a collision occurred, otherwise null.
      */
     #isHit(hitData) {
-        if (hitData.wallStyle.isCollision(hitData.wallPosition)) {
+        const region = hitData.wallStyle.isCollision(hitData.wallPosition);
+        if (region) {
             // Stop for walls with collision
+            hitData.classifier = region.classifier;
             return true;
         }
         // Include other walls for passage events
@@ -352,6 +388,7 @@ export class Player extends Denizen {
         let y = toY;
         let eventCallback = () => null;
         let collision = false;
+        /** @type {HitData} */
         let hitData = {};
 
         const dx = x - this.#x;
@@ -389,11 +426,12 @@ export class Player extends Denizen {
                     wallStyle: hit.wallStyle,
                     wallType: hit.wallType,
                     wallPosition: hit.wallPosition,
-                    side: hit.side
+                    side: hit.side,
+                    classifier: hit.classifier
                 };
                 eventCallback = this.#compose(eventCallback, () => {
-                    this.#processWallStyleActions(hd, "passage");
-                    this.triggerEvent('passage', {
+                    const eventType = 'passage' + (hd.classifier ? ":" + hd.classifier : "");
+                    const data = {
                         position: {
                             x: hit.endX,
                             y: hit.endY,
@@ -401,7 +439,12 @@ export class Player extends Denizen {
                             orientation: this.#orientation
                         },
                         hit: hd
-                    });
+                    };
+
+                    if (hd.wallStyle) {
+                        hd.wallStyle.triggerEvent(eventType, data);
+                    }
+                    this.triggerEvent(eventType, data);
                 });
             }
 
@@ -417,6 +460,7 @@ export class Player extends Denizen {
                 hitData.wallType = hit.wallType;
                 hitData.wallPosition = hit.wallPosition;
                 hitData.side = hit.side;
+                hitData.classifier = hit.classifier;
 
                 break;
             }
@@ -505,16 +549,23 @@ export class Player extends Denizen {
 
         if (collision) {
             eventCallback = this.#compose(eventCallback, () => {
-                this.#processWallStyleActions(hitData, "collision");
-                this.triggerEvent('collision', {
-                    position: {
-                        x: x,
-                        y: y,
-                        height: this.#height,
-                        orientation: this.#orientation
-                    },
-                    hit: hitData
-                });
+                const eventType =
+                    'collision' + (hitData.classifier ? ":" + hitData.classifier : "");
+                const data =  {
+                        position: {
+                            x: x,
+                            y: y,
+                            height: this.#height,
+                            orientation: this.#orientation
+                        },
+                        hit: hitData
+                    };
+
+                if (hitData.wallStyle) {
+                    hitData.wallStyle.triggerEvent(eventType, data);
+                }
+
+                this.triggerEvent(eventType, data);
             });
         }
 
