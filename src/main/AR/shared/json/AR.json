@@ -1,23 +1,23 @@
 {
 	"title": "Alternate Reality",
-	"weather": {"$import": "AR/shared/weather.json"},
-	"clock": {"$import": "AR/shared/clock.json"},
-	"hunger": {"$import": "AR/shared/hunger.json"},
-	"thirst": {"$import": "AR/shared/thirst.json"},
-	"fatigue": {"$import": "AR/shared/fatigue.json"},
-	"warmth": {"$import": "AR/shared/warmth.json"},
-	"encumbrance": {"$import": "AR/shared/encumbrance.json"},
-	"digestion": {"$import": "AR/shared/digestion.json"},
-	"inebriation": {"$import": "AR/shared/inebriation.json"},
+	"weather": {"$import": "./weather.json"},
+	"clock": {"$import": "./clock.json"},
+	"hunger": {"$import": "./hunger.json"},
+	"thirst": {"$import": "./thirst.json"},
+	"fatigue": {"$import": "./fatigue.json"},
+	"warmth": {"$import": "./warmth.json"},
+	"encumbrance": {"$import": "./encumbrance.json"},
+	"digestion": {"$import": "./digestion.json"},
+	"inebriation": {"$import": "./inebriation.json"},
 	"itemTypes": {"$merge":	{"source": [],
 		"_": "Messy, but it works.  To add new file: copy the line below, change the file name, and add another group of }}} below",
-		"with":	{"$concat": {"$merge": {"source": {"$import": "AR/shared/treasure.json"},
-		"with": {"$concat": {"$merge": {"source": {"$import": "AR/shared/potions.json"},
-		"with": {"$concat": {"$import": "AR/shared/spells.json"}}
+		"with":	{"$concat": {"$merge": {"source": {"$import": "./treasure.json"},
+		"with": {"$concat": {"$merge": {"source": {"$import": "./potions.json"},
+		"with": {"$concat": {"$import": "./spells.json"}}
 	}}}	}}}	}},
 	"scenarios": [
-		{"$import": "AR/city/main.json"},
-		{"$import": "AR/dungeon/main.json"}
+		{"$import": "../../city/json/main.json"},
+		{"$import": "../../dungeon/json/main.json"}
 	],
 	"defaultScenario": "The City"
 }

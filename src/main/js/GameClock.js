@@ -324,7 +324,7 @@ export class GameClock
 
 		//super.configure(config);
 
-		this.#calendar = new Calendar(Parse.array(config.months));
+		this.#calendar = new Calendar(Parse.prop(config, ["months"], null, Parse.array));
 		this.#tickDelays = new TickDelays(config.tickDelays);
 		this.#tickDelay = this.#parseTickDelay(config.tickDelay);
 

@@ -2,7 +2,7 @@
 import { ResourceMeta } from "./ResourceManager.js";
 import { GameState } from "./GameState.js";
 import { AudioClip } from "./AudioClip.js";
-import { AudioNotification } from "./AudioNotificationEntry.js";
+import { AudioNotification } from "./AudioNotification.js";
 
 /**
  * Represents the current state of the Karaoke player.
@@ -47,6 +47,100 @@ class MessageStatus {
 }
 
 /**
+ * Configuration options for a karaoke notification.
+ *
+ * ```typescript
+ * {
+ *   {
+ *     "when": 0,
+ *     "text": "some text"|["option 1", "option 2", ...],
+ *     "line": "line of text"|["option 1", "option 2", ...],
+ *     "color": <a valid html canvas element fillStyle value>,
+ *     "reset": true|false,
+ *     "seek": 12345,
+ *     "randomize": <for verse randomization, specifies number of verses (text/line must be arrays)>,
+ *     "notify": <some JSON value to send with the notification event>
+ *   },
+ *   ...
+ * }
+ * ```
+ */
+export class KaraokeNotificationOptions {
+	/**
+	 * [REQUIRED] The timestamp to register the notification for, in seconds.  Interpreted as an
+	 * absolute timestamp when no sign is present (eg. `12.5`), or an offset from the timestamp of
+	 * the previous entry when preceeded by a '+' symbol (eg. `+0.2`).  Offsets are relative to the
+	 * start of the clip (0) if there is no previous entry.
+	 * @type {number}
+	 */
+	when;
+
+	/**
+	 * Text (usually a word or syllable) to output at the current position when this notification
+	 * is triggered.  This may be either a string or an array of strings.  If a string, it will
+	 * be output.  If an array of strings, the string corresponding to the currently selected
+	 * verse (see `randomize`) will be output.
+	 * @type {string|string[]|null}
+	 */
+	text;
+
+	/**
+	 * A full line of text to output.  The value of this property is rendered and also
+	 * used for positioning subsequent `text` output, which will be rendered starting at the
+	 * beginning of the line.  The last `line` value read will be output immediately before
+	 * rendering a `text` value.  To prevent this behavior, set the `color` of the `line` to
+	 * "none".  Note that the output area will still be cleared when a new `line` is set,
+	 * even when the `color` is "none".  The value may be either a string or an array of
+	 * strings.  If a string, it will be used.  If an array of strings, the string
+	 * corresponding to the currently selected verse (see `randomize`) will be used.
+	 * @type {string|string[]|null}
+	 */
+	line;
+
+	/**
+	 * Specifies a color to use for any text output.  May be set to any valid string value
+	 * assignable to the HTML Canvas element's `fillStyle` property.  If set to the string 'none',
+	 * no output will be performed, though all positioning calculations will still be
+	 * performed.
+	 * @type {string?}
+	 */
+	color;
+
+	/**
+	 * When `true`, causes the current output position to reset back to the computed position
+	 * for the start of the current line before rendering any associated `text`.  This
+	 * property would typically be used to reset the output position when rendering the first
+	 * word in a line.
+	 * @type {boolean?}
+	 */
+	reset;
+
+	/**
+	 * Indicates a position, in seconds, to seek the clip output to.
+	 * @type {number?}
+	 */
+	seek;
+
+	/**
+	 * If specified, causes the random selection of an integer 'verse' number between
+	 * 0 and the value specified.
+	 * @type {number?}
+	 */
+	randomize;
+
+	/**
+	 * Arbitrary data value to dispatch with a notification event.  Can be used by registered
+	 * listeners to perform arbitrary actions timed with the audio source.
+	 * An event is dispatched only when a non-null value is provided.
+	 *
+	 * TODO: What is the target of this event?
+	 *
+	 * @type {any}
+	 */
+	data;
+}
+
+/**
  * Utility class that handles registration of audio notifications for rendering of Karaoke lyrics.
  */
 export class Karaoke {
@@ -55,65 +149,16 @@ export class Karaoke {
 	 * @param {AudioClip} audioClip The AudioClip instance to register the notifications on.  This
 	 *        method will only add new notifications, and does not alter any
 	 *        existing notifications already defined for the clip.
-	 *
-	 * @param {any[]} notifications Array of objects defining the notifications to add to the clip.
-	 *        The JSON format for audio notifications is as follows:
-	 *
-	 * ```typescript
-	 * {
-	 *   {
-	 *     "when": 0,
-	 *     "text": "some text"|["option 1", "option 2", ...],
-	 *     "line": "line of text"|["option 1", "option 2", ...],
-	 *     "color": <a valid html canvas element fillStyle value>,
-	 *     "reset": true|false,
-	 *     "seek": 12345,
-	 *     "randomize": <for verse randomization, specifies number of verses (text/line must be arrays)>,
-	 *     "notify": <some JSON value to send with the notification event>
-	 *   },
-	 *   ...
-	 * }
-	 * ```
-	 *
-	 * `when` - [REQUIRED] The timestamp to register the notification for, in seconds.  May be an
-	 *			absolute timestamp (eg. `12.5`), or an offset from the timestamp of the previous
-	 *			entry (eg. `+0.2`).  Offsets are relative to the start of the clip if there is no
-	 *			previous entry.
-	 * `text` - Text (usually a syllable) to output at the current position when this notification is
-	 *			triggered.  This may be either a string or an array of strings.  If a string, it will
-	 *			be output.  If an array of strings, the string corresponding to the currently selected
-	 *			verse (see `randomize`) will be output.
-	 * `line` - A full line of text to output.  The value of this property is rendered and also
-	 *			used for positioning subsequent `text` output, which will be rendered starting at the
-	 *			beginning of the line.  The last `line` value read will be output immediately before
-	 *			rendering a `text` value.  To prevent this behavior, set the `color` of the `line` to
-	 *			"none".  Note that the output area will still be cleared when a new `line` is set,
-	 *			even when the `color` is "none".  The value may be either a string or an array of
-	 *			strings.  If a string, it will be used.  If an array of strings, the string
-	 *			corresponding to the currently selected verse (see `randomize`) will be used.
-	 * `color` - Specifies a color to use for any text output.  May be set to any valid string value
-	 *			assignable to the HTML Canvas element's `fillStyle` property.  If set to 'none',
-	 *			no output will be performed, though all positioning calculations will still be
-	 *			performed.
-	 * `reset` - When `true`, causes the current output position to reset back to the computed position
-	 *			for the start of the current line before rendering any associated `text`.  This
-	 *			property would typically be used to reset the output position when rendering the first
-	 *			word in a line.
-	 * `seek` - Indicates a position, in seconds, to seek the clip output to.
-	 * `randomize` - If specified, causes the random selection of an integer 'verse' number between
-	 *			0 and the value specified.
-	 * `data` - Arbitrary data value associated with the notification.  Can be used by registered
-	 *			listeners to perform arbitrary actions timed with the audio source.
-	 *
+	 * @param {KaraokeNotificationOptions[]} notifications Array of objects defining the
+	 *        notifications to add to the clip.
 	 * @param {HTMLCanvasElement} lyricCanvas The canvas element that Karaoke text should be rendered into.
 	 *        The rendered text will be centered within the canvas based on the current
 	 *        line length, and will use the height of the canvas for the font size.
-	 *
 	 * @param {AudioNotification.Callback?} callback An AudioNotification.Callback to invoke for each
 	 *        notification after the standard processing is executed.
 	 */
 	static registerNotifications(
-		audioClip,
+		//audioClip,
 		notifications,
 		lyricCanvas,
 		callback
@@ -149,6 +194,7 @@ export class Karaoke {
 		//		if the method is called multiple times on the same clip.
 		const messageStatus = new MessageStatus();
 
+		const result = [];
 		for (let entry of notifications) {
 			// Resolve relative time references
 			let p = entry.when;
@@ -159,6 +205,11 @@ export class Karaoke {
 			}
 
 			// TODO: Clone entry instead of modifying the value passed in?
+
+			result.push(new AudioNotification(pos, () => {
+
+			}));
+
 
 			entry.when = pos;
 			entry._id = audioClip.addNotification(
@@ -237,6 +288,8 @@ export class Karaoke {
 				}
 			);
 		}
+
+		return result;
 	} // registerNotifications
 
 	/**

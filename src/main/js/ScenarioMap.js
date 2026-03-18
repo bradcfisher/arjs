@@ -58,11 +58,11 @@ export class MapZoneRef {
     }
 
     configure(config) {
-        this.x = Parse.num(Parse.required(config.x, "x"));
-        this.y = Parse.num(Parse.required(config.y, "y"));
-        this.width = Parse.num(Parse.required(config.width, "width"));
-        this.height = Parse.num(Parse.required(config.height, "height"));
-        this.zone = Parse.array(Parse.required(config.zone, "zone"));
+        this.x = Parse.prop(config, ["x"], null, Parse.num);
+        this.y = Parse.prop(config, ["y"], null, Parse.num);
+        this.width = Parse.prop(config, ["width"], null, Parse.num);
+        this.height = Parse.prop(config, ["height"], null, Parse.num)
+        this.zone = Parse.prop(config, ["zone"], null, Parse.array)
     }
 
     get config() {
@@ -928,7 +928,7 @@ export class ScenarioMap {
      * @param {MapZoneRef} zoneRef the zone reference definition to apply.
      */
     applyZoneRef(zoneRef) {
-        const zonesToAdd = Parse.array(zoneRef.zone);
+        const zonesToAdd = Parse.prop(zoneRef, ["zone"], null, Parse.array);
 
 		console.log(`Applying zone ref: (x=${zoneRef.x}, y=${zoneRef.y}) [w=${zoneRef.width} x h=${zoneRef.height}] ref=${zonesToAdd}`);
 

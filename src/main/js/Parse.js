@@ -205,7 +205,7 @@ export class Parse {
 		try {
 			return parseCallback(Parse.getProp(obj, defaultVal, props));
 		} catch (e) {
-			throw new Error("Unable to parse property " + String(propPath) + ": " + e);
+			throw new Error("Unable to parse property " + String(props) + ": " + e);
 		}
 	}
 

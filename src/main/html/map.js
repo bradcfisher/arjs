@@ -22,7 +22,7 @@ const mapTypes = {
         "description": "The City (alt)",
         "config": {
             "type": "city",
-            "baseUrl": "/AR/city/json/",
+            "baseUrl": "../AR/city/json/",
             "wallBinaryUrl": "../CityMapWalls.bin",
             "locationBinaryUrl": "../CityMapLocations.bin",
             "wallTextureJsonUrl": "./cityWalls.json",
@@ -38,7 +38,7 @@ const mapTypes = {
         "description": "The Dungeon - Level 1 (alt)",
         "config": {
             "type": "dungeon",
-            "baseUrl": "/AR/dungeon/json/",
+            "baseUrl": "../AR/dungeon/json/",
 
             "width": 64,
             "height": 64,

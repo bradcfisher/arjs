@@ -24,14 +24,14 @@ export { SpellItemType } from "./SpellItemType.js";
 // /*
 
 // Load the GameState with a configuration
-GameState.load("/AR/shared/json/AR.json")
+GameState.load("../AR/shared/json/AR.json")
 	.then((gameState) => {
 		// TODO: Do something with the GameState here
 		console.log("GameState loaded successfully:", gameState);
 	})
 	.catch((reason) => {
 		// TODO: Report the error to the user in a nicer way
-		alert("Unable to load main resource bundle: "+ reason)
+		console.error("Unable to load main resource bundle '/AR/shared/json/AR.json': "+ reason)
 	});
 
 //*/

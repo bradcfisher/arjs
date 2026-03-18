@@ -1,5 +1,6 @@
 
 import { MapReader } from "./MapReader.js";
+import { Parse } from "./Parse.js";
 
 
 /**
@@ -178,6 +179,8 @@ export class CityMapReader extends MapReader {
      * @throws Error if an invalid buffer is provided.
      */
     async readCellWalls(url) {
+        url = Parse.url(url);
+
         const loaded = await this.resourceManager.load(url);
         const buffer = loaded[url].data;
         if (buffer == null) {
@@ -344,6 +347,8 @@ export class CityMapReader extends MapReader {
      * @return {PromiseLike<void>} a promise that will complete when the load completes
      */
     async readCellLocationCodes(url) {
+        url = Parse.url(url);
+
         const loaded = await this.resourceManager.load(url);
         const buffer = loaded[url].data;
         if (buffer == null) {
@@ -408,35 +413,40 @@ export class CityMapReader extends MapReader {
         const height = config.height || this.map.height;
         this.resize(width, height);
 
-        const promises = [
-            this.readCellWalls(new URL(config.wallBinaryUrl, baseUrl)),
-            this.readJsonDescriptions(new URL(config.descriptionJsonUrl, baseUrl))
-                .then(() => this.readCellLocationCodes(new URL(config.locationBinaryUrl, baseUrl)))
-        ];
+        return Parse.withBaseUrl(baseUrl, () => {
+            const promises = [
+                this.readCellWalls(config.wallBinaryUrl),
+                this.readJsonDescriptions(config.descriptionJsonUrl)
+                    .then(() => Parse.withBaseUrl(baseUrl, () => {
+                        return this.readCellLocationCodes(config.locationBinaryUrl);
+                    }))
+            ];
 
-        if (config.soundJsonUrl) {
-            promises.push(this.readJsonSounds(config.soundJsonUrl));
-        }
+            if (config.soundJsonUrl) {
+                promises.push(this.readJsonSounds(config.soundJsonUrl));
+            }
 
-        if (config.wallTextureJsonUrl) {
-            promises.push(this.readJsonWalls(config.wallTextureJsonUrl));
-        }
+            if (config.wallTextureJsonUrl) {
+                promises.push(this.readJsonWalls(config.wallTextureJsonUrl));
+            }
 
-        if (config.floorAndCeilingTextureJsonUrl) {
-            promises.push(this.readJsonFloorAndCeiling(config.floorAndCeilingTextureJsonUrl));
-        }
+            if (config.floorAndCeilingTextureJsonUrl) {
+                promises.push(this.readJsonFloorAndCeiling(config.floorAndCeilingTextureJsonUrl));
+            }
 
-        if (config.patchJsonUrl) {
-            promises.push(this.readJsonPatches(config.patchJsonUrl));
-        }
+            if (config.patchJsonUrl) {
+                promises.push(this.readJsonPatches(config.patchJsonUrl));
+            }
 
-        if (config.zoneJsonUrl) {
-            promises.push(this.readJsonZones(config.zoneJsonUrl));
-        }
+            if (config.zoneJsonUrl) {
+                promises.push(this.readJsonZones(config.zoneJsonUrl));
+            }
 
-	//messageJsonUrl;
-	//encounterJsonUrl;
+            //messageJsonUrl;
+            //encounterJsonUrl;
 
+            return Promise.all(promises);
+        });
     }
 
 }

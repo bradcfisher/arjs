@@ -1,5 +1,4 @@
 
-import { EventDispatcher } from "./EventDispatcher.js";
 import { AudioNotification } from "./AudioNotification.js";
 import { AudioClip } from "./AudioClip.js";
 
@@ -311,10 +310,10 @@ export class ActiveAudio {
 
 			if (notification.when <= now) {
 				// execute the notification immediately
-				notification.callback();
+				notification.callback(this);
 			} else {
 				when = this.#clipTimeToContextTime(notification.when, this.#startTime, this.#position);
-				callback = () => { notification.callback(); this.#scheduleNextNotification(index); }
+				callback = () => { notification.callback(this); this.#scheduleNextNotification(index); }
 				break;
 			}
 		}
