@@ -274,6 +274,7 @@ export class AudioClip {
 
 	/**
 	 * Notifications registered for this clip.
+	 * @type {AudioNotification[]}
 	 */
 	#notifications = [];
 
@@ -363,14 +364,14 @@ export class AudioClip {
 		this.#notifications = Parse.array(options.notifications, [], (value) => {
 			const whenSample = parseSample(value.when, null, buffer.sampleRate);
 
-			if (whenSample < 0 || whenSample >= length) {
-				throw new Error("Notification sample must be between [0, " + length +
+			if (whenSample < 0 || whenSample >= buffer.length) {
+				throw new Error("Notification sample must be between [0, " + buffer.length +
 					"): " + whenSample);
 			}
 
 			return new AudioNotification(whenSample, Parse.action(value.callback));
 		});
-		this.#notifications.sort((a, b) => (a < b) ? -1 : ((a > b) ? 1 : 0));
+		this.#notifications.sort((a, b) => (a.when < b.when) ? -1 : ((a.when > b.when) ? 1 : 0));
 	}
 
 }

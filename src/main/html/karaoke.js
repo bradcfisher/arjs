@@ -1,5 +1,6 @@
 
 import * as arjs from "../js/main.js";
+
 /** @type {arjs.AudioManager} */
 let audio;
 /** @type {arjs.ActiveAudio} */
@@ -19,9 +20,18 @@ document.addEventListener('DOMContentLoaded', function () {
 	console.log("document ready");
 
 	sourceSelect = document.getElementById("Source");
+
 	playButton = document.getElementById("Play");
+	playButton.addEventListener('click', playAudio);
+
 	pauseButton = document.getElementById("Pause");
+	pauseButton.addEventListener('click', pauseAudio);
+
 	stopButton = document.getElementById("Stop");
+	stopButton.addEventListener('click', stopAudio);
+
+	document.getElementById("DecreaseGain").addEventListener('click', () => adjustGain(-0.1));
+	document.getElementById("IncreaseGain").addEventListener('click', () => adjustGain(+0.1));
 
 	sourceSelect.addEventListener("change", function(evt) {
 		setCurrentClip(sourceSelect.value);
@@ -127,16 +137,14 @@ document.addEventListener('DOMContentLoaded', function () {
 		(loadedResources) => {
 			console.log("loaded resources: ", loadedResources);
 
-			function processClip(url) {
-console.log("creating promise for clip: "+ url, resources.get(url), resources.getEntry(url));
+			function processClip(url, resource) {
+console.log("creating promise for clip: "+ url, resource.data, resource.meta);
 
                 // Process JSON
-                const notifications = [];
+                let notifications = [];
                 const json = resources.get(url.replace(/\.[^.]*$/, '.json'));
                 if (json) {
-
-                    arjs.Karaoke.registerNotifications(
-                        clip,
+                    notifications = arjs.Karaoke.registerNotifications(
                         json,
                         document.getElementById("Message"),
                         (notification) => {
@@ -151,19 +159,24 @@ console.log("creating promise for clip: "+ url, resources.get(url), resources.ge
                     );
                 }
 
+				notifications.push(new arjs.AudioNotification(resource.data.length - 1,
+					(activeAudio) => activeAudio.triggerEvent('stop')));
+
                 // Create audio clip
-                const clip = new arjs.AudioClip(resources.get(url));
+                const clip = new arjs.AudioClip(resource.data, {
+					notifications
+				});
 				audio.registerClip(url, clip);
 			}
 
 			for (var p in loadedResources) if (loadedResources.hasOwnProperty(p)) {
 				if (loadedResources[p].meta.type.substring(0,6) == 'audio/') {
-					processClip(p);
+					processClip(p, loadedResources[p]);
 				}
 			};
 
             console.log("all audio resources loaded, continuing");
-            setCurrentClip(Parse.url("/AR/city/sounds/let_in_the_lite.ogg"));
+            setCurrentClip("/AR/city/sounds/let_in_the_lite.ogg");
 		}
 	)
 });
@@ -175,8 +188,9 @@ function setCurrentClip(name) {
 
 	sourceSelect.value = name;
 
-	currentClip = audio.prepare(name);
-	updateNotifications(currentClip);
+	const clip = audio.getClip(name);
+	currentClip = audio.prepare(clip);
+	updateNotifications(clip.notifications);
 
 	playButton.disabled = false;
 	playButton.style.display = 'inline';
@@ -201,10 +215,9 @@ function playAudio() {
 	stopButton.disabled = false;
 
 	currentClip = audio.prepare(sourceSelect.value);
-	currentClip.start();
+	currentClip.play();
 
-    // TODO...
-	currentClip.on('stop', {"processEvent":stopAudio});
+	currentClip.on('stop', stopAudio);
 
 console.log('currentClip changed', currentClip);
 
@@ -246,24 +259,29 @@ function formatTime(seconds) {
 } //formatTime
 
 function updatePosition() {
+	/** @type {HTMLElement?} */
 	let T;
+	/** @type {HTMLElement?} */
 	let P = updatePosition.Position;
 	if (!P) {
 		P = updatePosition.Position = document.querySelector("#Slider .Position");
 		T = updatePosition.Time = document.querySelector("#Slider .Time");
-	} else
+	} else {
 		T = updatePosition.Time;
+	}
 
-	let x = (P.parent().width() - P.width()) * (currentClip ? currentClip.position / currentClip.duration : 0);
-	P.css({ 'left' : x +"px" });
+	let x = (P.parentElement.clientWidth - P.clientWidth) * (currentClip ? currentClip.position / currentClip.duration : 0);
+	P.style.left = x +"px";
 
 	if (currentClip)
-		T.text(formatTime(currentClip.position) +" / "+ formatTime(currentClip.duration) +" (gain: "+ currentClip.gain.toFixed(1) +")");
+		T.innerText = formatTime(currentClip.position) +" / "+ formatTime(currentClip.duration)
+	// +" (gain: "+ currentClip.gain.toFixed(1) +")";
 	else
-		T.text("");
+		T.innerText = "";
 
-	if (currentClip && currentClip.status == 'playing')
+	if (currentClip && currentClip.status == 'playing') {
 		requestAnimationFrame(updatePosition);
+	}
 } // updatePosition
 
 function clearMessageContext() {
@@ -271,36 +289,42 @@ function clearMessageContext() {
 	messageCtx.clearRect(0, 0, messageCtx.canvas.width, messageCtx.canvas.height);
 } // clearMessageContext
 
-function updateNotifications(clip) {
+function updateNotifications(notifications) {
 	let N = document.getElementById("Notifications");
-	N.empty();
+	while (N.firstChild) {
+		N.removeChild(N.firstChild);
+	}
 
-	for (let notification of clip.notifications) {
+	const createContainer = document.createElement("SPAN");
+	for (let notification of notifications) {
 		if (notification.data && (notification.data.text || notification.data.line)) {
-			let elem = N.append(
-				'<div class="Notification" id="Notification_'+ notification.id +'" tabindex="0" _when="'+ notification.when +'">'+
+			createContainer.innerHTML = '<div class="Notification" id="Notification_'+ notification.id +'" tabindex="0" _when="'+ notification.when +'">'+
 				'<span class="Id">'+ notification.id +'</span>'+
 				'<span class="Position">'+ notification.when.toFixed(3) +'</span>'+
 				'<span class="Text"'+ (notification.data.color ? ' style="color:'+ notification.data.color +'"' : '') +'>'+ (notification.data.text ? notification.data.text : "&nbsp;") +'</span>'+
 				'<span class="Line">'+ (notification.data.line ? notification.data.line : "&nbsp;") +'</span>'+
-				'</div>'
-			);
-			elem.on("click", function(evt) {
-				let row = $(evt.target);
-				if (row[0].tagName != "DIV") {
-					row = row.parent();
+				'</div>';
+
+			let elem = N.appendChild(createContainer.firstChild);
+			elem.addEventListener("click", function(evt) {
+				/** @type {HTMLElement} */
+				let row = evt.target;
+				if (row.nodeName != "DIV") {
+					row = row.parentElement;
 				}
-				let pos = Number(row.attr("_when"));
+				let pos = Number(row.getAttribute("_when"));
 
 				if (currentClip) {
-					let playing = currentClip.playing;
-					if (playing)
+					let playing = (currentClip.status == 'playing');
+					if (playing) {
 						currentClip.stop();
+					}
 
 					setPosition(pos - 0.01);
 
-					if (playing)
-						currentClip.start();
+					if (playing) {
+						currentClip.play();
+					}
 				}
 			});
 		}

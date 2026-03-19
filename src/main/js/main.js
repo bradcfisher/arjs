@@ -4,6 +4,7 @@ export * from "./ResourceManager.js";
 export * from "./Serializer.js";
 export * from "./GameState.js";
 export * from "./AudioManager.js";
+export * from "./AudioNotification.js";
 export * from "./AudioClip.js";
 export * from "./Karaoke.js";
 export * from "./Parse.js";

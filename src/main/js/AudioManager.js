@@ -1,12 +1,13 @@
 
 import { AudioNotification } from "./AudioNotification.js";
 import { AudioClip } from "./AudioClip.js";
+import { EventDispatcher } from "./EventDispatcher.js";
 
 
 /**
  * Represents an audio instance prepared for playback by an AudioManager.
  */
-export class ActiveAudio {
+export class ActiveAudio extends EventDispatcher {
 
 	/**
 	 * @type {AudioManager}
@@ -93,6 +94,7 @@ export class ActiveAudio {
 
 	/**
 	 * The ID of any currently scheduled notification for this audio.
+	 * @type {number}
 	 */
 	#scheduledNotificationId;
 
@@ -156,6 +158,8 @@ export class ActiveAudio {
 	 * @param {AudioClip} clip the AudioClip describing the audio and playback parameters.
 	 */
 	constructor(manager, clip) {
+		super();
+
 		this.#manager = manager;
 		this.#config = {
 			"buffer": clip.buffer,
@@ -182,9 +186,7 @@ export class ActiveAudio {
 		this.#playbackRate = clip.playbackRate;
 		this.#duration = clip.length / clip.buffer.sampleRate;
 
-		for (let notification of clip.notifications) {
-			this.addNotification(notification);
-		}
+		this.#notifications = clip.notifications.slice();
 	}
 
 	/**

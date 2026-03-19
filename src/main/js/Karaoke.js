@@ -158,7 +158,6 @@ export class Karaoke {
 	 *        notification after the standard processing is executed.
 	 */
 	static registerNotifications(
-		//audioClip,
 		notifications,
 		lyricCanvas,
 		callback
@@ -206,87 +205,75 @@ export class Karaoke {
 
 			// TODO: Clone entry instead of modifying the value passed in?
 
-			result.push(new AudioNotification(pos, () => {
-
-			}));
-
-
-			entry.when = pos;
-			entry._id = audioClip.addNotification(
-				pos,
-				entry,
-				(notification) => {
-					const data = notification.data;
-
-					if (data.randomize != null) {
-						if (data.randomize < 1) {
-							data.randomize = 1;
-						}
-
-						messageStatus.verse = Math.trunc(Math.random() * data.randomize);
+			result.push(new AudioNotification(pos, (activeAudio) => {
+				if (entry.randomize != null) {
+					if (entry.randomize < 1) {
+						entry.randomize = 1;
 					}
 
-					if (data.line != null) {
-						let line = data.line;
-						if (Array.isArray(line)) {
-							line = line[messageStatus.verse];
-							if (line == null) {
-								line = "";
-							}
-						}
-
-						messageStatus.line = line;
-
-						messageStatus.width = messageCtx.measureText(line).width;
-
-						messageStatus.lineStart =
-							messageStatus.x =
-								(messageCtx.canvas.width - messageStatus.width) / 2;
-
-						messageCtx.clearRect(0, 0, messageCtx.canvas.width, messageCtx.canvas.height);
-					} else if (data.reset) {
-						messageStatus.x = messageStatus.lineStart;
-					}
-
-					if (data.color) {
-						if (data.line != null) {
-							messageStatus.lineColor = data.color;
-						} else {
-							messageCtx.fillStyle = data.color.toLowerCase();
-						}
-					}
-
-					if ((messageStatus.line != null) && (messageStatus.lineColor != "none")) {
-						const currentColor = messageCtx.fillStyle;
-						messageCtx.fillStyle = messageStatus.lineColor;
-						messageCtx.fillText(messageStatus.line, messageStatus.lineStart, messageCtx.canvas.height);
-						messageCtx.fillStyle = currentColor;
-					}
-
-					if (data.text) {
-						let text = data.text;
-						if (Array.isArray(text)) {
-							text = text[messageStatus.verse];
-						}
-
-						const width = messageCtx.measureText(text).width;
-						messageCtx.clearRect(messageStatus.x, 0, Math.round(width), messageCtx.canvas.height);
-						messageCtx.fillText(text, messageStatus.x, messageCtx.canvas.height);
-						messageStatus.x += width;
-					}
-
-					if (data.seek != null) {
-						requestAnimationFrame(function() {
-							audioClip.position = data.seek;
-							if (!audioClip.playing) {
-								audioClip.start();
-							}
-						});
-					}
-
-					if (callback) callback(notification);
+					messageStatus.verse = Math.trunc(Math.random() * entry.randomize);
 				}
-			);
+
+				if (entry.line != null) {
+					let line = entry.line;
+					if (Array.isArray(line)) {
+						line = line[messageStatus.verse];
+						if (line == null) {
+							line = "";
+						}
+					}
+
+					messageStatus.line = line;
+
+					messageStatus.width = messageCtx.measureText(line).width;
+
+					messageStatus.lineStart =
+						messageStatus.x =
+							(messageCtx.canvas.width - messageStatus.width) / 2;
+
+					messageCtx.clearRect(0, 0, messageCtx.canvas.width, messageCtx.canvas.height);
+				} else if (entry.reset) {
+					messageStatus.x = messageStatus.lineStart;
+				}
+
+				if (entry.color) {
+					if (entry.line != null) {
+						messageStatus.lineColor = entry.color;
+					} else {
+						messageCtx.fillStyle = entry.color.toLowerCase();
+					}
+				}
+
+				if ((messageStatus.line != null) && (messageStatus.lineColor != "none")) {
+					const currentColor = messageCtx.fillStyle;
+					messageCtx.fillStyle = messageStatus.lineColor;
+					messageCtx.fillText(messageStatus.line, messageStatus.lineStart, messageCtx.canvas.height);
+					messageCtx.fillStyle = currentColor;
+				}
+
+				if (entry.text) {
+					let text = entry.text;
+					if (Array.isArray(text)) {
+						text = text[messageStatus.verse];
+					}
+
+					const width = messageCtx.measureText(text).width;
+					messageCtx.clearRect(messageStatus.x, 0, Math.round(width), messageCtx.canvas.height);
+					messageCtx.fillText(text, messageStatus.x, messageCtx.canvas.height);
+					messageStatus.x += width;
+				}
+
+				if (entry.seek != null) {
+					requestAnimationFrame(function() {
+						activeAudio.position = entry.seek;
+						if (audioClip.status == 'stopped') {
+							activeAudio.play();
+						}
+					});
+				}
+
+				if (callback) callback(entry);
+			}));
 		}
 
 		return result;
