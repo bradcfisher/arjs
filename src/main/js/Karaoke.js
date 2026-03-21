@@ -3,6 +3,7 @@ import { ResourceMeta } from "./ResourceManager.js";
 import { GameState } from "./GameState.js";
 import { AudioClip } from "./AudioClip.js";
 import { AudioNotification } from "./AudioNotification.js";
+import { Parse } from "./Parse.js";
 
 /**
  * Represents the current state of the Karaoke player.
@@ -70,8 +71,10 @@ export class KaraokeNotificationOptions {
 	 * [REQUIRED] The timestamp to register the notification for, in seconds.  Interpreted as an
 	 * absolute timestamp when no sign is present (eg. `12.5`), or an offset from the timestamp of
 	 * the previous entry when preceeded by a '+' symbol (eg. `+0.2`).  Offsets are relative to the
-	 * start of the clip (0) if there is no previous entry.
-	 * @type {number}
+	 * start of the clip (0) if there is no previous entry. Values may be provided in any format
+	 * supported by {@link Parse.duration}.
+	 *
+	 * @type {number|string}
 	 */
 	when;
 
@@ -146,15 +149,12 @@ export class KaraokeNotificationOptions {
 export class Karaoke {
 
 	/**
-	 * @param {AudioClip} audioClip The AudioClip instance to register the notifications on.  This
-	 *        method will only add new notifications, and does not alter any
-	 *        existing notifications already defined for the clip.
 	 * @param {KaraokeNotificationOptions[]} notifications Array of objects defining the
 	 *        notifications to add to the clip.
 	 * @param {HTMLCanvasElement} lyricCanvas The canvas element that Karaoke text should be rendered into.
 	 *        The rendered text will be centered within the canvas based on the current
 	 *        line length, and will use the height of the canvas for the font size.
-	 * @param {AudioNotification.Callback?} callback An AudioNotification.Callback to invoke for each
+	 * @param {((options: KaraokeNotificationOptions) => void)?} callback callback to invoke for each
 	 *        notification after the standard processing is executed.
 	 */
 	static registerNotifications(
@@ -196,16 +196,16 @@ export class Karaoke {
 		const result = [];
 		for (let entry of notifications) {
 			// Resolve relative time references
-			let p = entry.when;
-			if (typeof p == "string" && p.substring(0, 1) == "+") {
-				pos += Number(p) / 1000;
+			let p = String(entry.when);
+			if (p.substring(0, 1) == "+") {
+				pos += Parse.duration(p, null, "s");
 			} else {
-				pos = Number(p) / 1000;
+				pos = Parse.duration(p, null, "s");
 			}
 
 			// TODO: Clone entry instead of modifying the value passed in?
 
-			result.push(new AudioNotification(pos, (activeAudio) => {
+			const notif = new AudioNotification(pos, (activeAudio, data) => {
 				if (entry.randomize != null) {
 					if (entry.randomize < 1) {
 						entry.randomize = 1;
@@ -266,14 +266,20 @@ export class Karaoke {
 				if (entry.seek != null) {
 					requestAnimationFrame(function() {
 						activeAudio.position = entry.seek;
-						if (audioClip.status == 'stopped') {
+						if (activeAudio.status == 'stopped') {
 							activeAudio.play();
 						}
 					});
 				}
 
 				if (callback) callback(entry);
-			}));
+			},
+			entry);
+
+			entry.id = notif.id;
+
+			result.push(notif);
+			console.log("Notif = ", notif);
 		}
 
 		return result;

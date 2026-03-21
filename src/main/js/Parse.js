@@ -592,7 +592,8 @@ export class Parse {
 	 * @param {any} val The value to parse.
 	 * @param {any} defaultVal The value to parse if `val` is null/undefined.  If undefined, and `val`
 	 *        is null/undefined, then an error will be thrown.
-	 * @param {string} defaultUnits The units to apply to unitless values and the return value.
+	 * @param {string=} defaultUnits The units to apply to unitless values and the return value. Defaults
+	 *        to "m" (minutes) if not specified.
 	 *
 	 * @return {number} The parsed duration value, in the units specified for `defaultUnits`.
 	 * @throws Error if both `val` and `defaultVal` are null/undefined or

@@ -6,7 +6,8 @@ import { Parse } from "./Parse.js";
  * Parses an audio sample position/duration value, returning the number of samples it represents
  * within an audio stream with the specified sample rate.
  *
- * @param {(number|string)?} position the value to parse.
+ * @param {(number|string)?} position the value to parse, in seconds. This value may be specified in any format
+ *        supported by {@link Parse.duration}.
  * @param {(number|string)?} defaultPosition the default value to use if the `position` is
  *        null. If this value is also null, the method will throw an error.
  * @param {number} sampleRate the number of samples per second for the audio.
@@ -23,9 +24,7 @@ function parseSample(position, defaultPosition, sampleRate) {
 		position = defaultPosition;
 	}
 
-	if (isNaN(position)) {
-		position = Parse.duration(position, defaultPosition, "s") * sampleRate;
-	}
+	position = Parse.duration(position, defaultPosition, "s") * sampleRate;
 
 	// Absolute sample position
 	return Math.trunc(position);
@@ -364,12 +363,16 @@ export class AudioClip {
 		this.#notifications = Parse.array(options.notifications, [], (value) => {
 			const whenSample = parseSample(value.when, null, buffer.sampleRate);
 
-			if (whenSample < 0 || whenSample >= buffer.length) {
+			if (whenSample < 0 || whenSample > buffer.length) {
 				throw new Error("Notification sample must be between [0, " + buffer.length +
 					"): " + whenSample);
 			}
 
-			return new AudioNotification(whenSample, Parse.action(value.callback));
+			if (value instanceof AudioNotification) {
+				return value;
+			}
+
+			return new AudioNotification(value.when, Parse.action(value.callback), value.data);
 		});
 		this.#notifications.sort((a, b) => (a.when < b.when) ? -1 : ((a.when > b.when) ? 1 : 0));
 	}

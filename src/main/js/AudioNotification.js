@@ -9,12 +9,19 @@ export class AudioNotificationOptions {
 	when;
 
 	/**
+	 * Additional data associated with the notification.
+	 * The value of this property will be provided to the callback function.
+	 */
+	data;
+
+	/**
 	 * The callback invoked when the notification's time is reached.
+	 *
 	 * The `activeAudio` parameter will be assigned for notifications associated with an audio
 	 * clip and undefined for notifications scheduled directly on the AudioManager.
 	 *
 	 * @readonly
-	 * @type {(activeAudio: ActiveAudio?) => void}
+	 * @type {(activeAudio: ActiveAudio?, data: any) => void}
 	 */
 	callback;
 }
@@ -41,6 +48,8 @@ export class AudioNotification {
 	 */
 	#when;
 
+	#data;
+
 	/**
 	 * @type {(activeAudio: ActiveAudio?) => void}
 	 */
@@ -48,16 +57,19 @@ export class AudioNotification {
 
 	/**
 	 * Constructs a new AudioNotification.
-	 * @param {number} when The time when this notification should be invoked.
-	 * @param {(activeAudio: ActiveAudio?) => void} callback The function to invoke for the
+	 * @param {number} when The time when this notification should be invoked, in seconds relative to the
+	 *        clip's timeline.
+	 * @param {(activeAudio: ActiveAudio?, data: any) => void} callback The function to invoke for the
 	 *        notification. The `activeAudio` parameter will be assigned for notifications
 	 *        associated with an audio clip and undefined for notifications scheduled directly
 	 *        on the AudioManager.
+	 * @param {any} data additional data to provide to the callback when it is invoked.
 	 */
-	constructor(when, callback) {
+	constructor(when, callback, data) {
 		this.#id = ++AudioNotification.#lastId;
 		this.#when = when;
 		this.#callback = callback;
+		this.#data = data;
 	}
 
 	/**
@@ -68,10 +80,17 @@ export class AudioNotification {
 	}
 
 	/**
-	 * The time when this notification should be invoked.
+	 * The time when this notification should be invoked, in seconds relative to the clip's timeline.
 	 */
 	get when() {
 		return this.#when;
+	}
+
+	/**
+	 * Additional data to provide to the callback when it is invoked.
+	 */
+	get data() {
+		return this.#data;
 	}
 
 	/**

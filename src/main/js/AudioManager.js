@@ -78,7 +78,7 @@ export class ActiveAudio extends EventDispatcher {
 	#notifications = [];
 
 	/**
-	 * The time when playback was scheduled to begin.
+	 * The time when playback was scheduled to begin, relative to the context clock.
 	 * @type {number?}
 	 */
 	#startTime;
@@ -105,12 +105,6 @@ export class ActiveAudio extends EventDispatcher {
 	#endedListener;
 
 	/**
-	 * Event handler to add to AudioBufferSourceNodes to handle the 'ended' event
-	 * without dispatching a 'stop' event.
-	 */
-	#endedListenerNoEvent;
-
-	/**
 	 * The current status of the audio. One of 'stopped', 'scheduled' or 'playing'.
 	 */
 	get status() {
@@ -124,7 +118,9 @@ export class ActiveAudio extends EventDispatcher {
 	}
 
 	/**
-	 * The current playback position in seconds within the clip.
+	 * The current playback position in seconds within the clip. This value is
+	 * based on the native sample rate of the underlying buffer and independent of the
+	 * playbackRate.
 	 *
 	 * @type {number}
 	 */
@@ -171,7 +167,6 @@ export class ActiveAudio extends EventDispatcher {
 		};
 
 		this.#endedListener = () => { this.#handleStop(); };
-		this.#endedListenerNoEvent = () => { this.#handleStop(true); };
 
 		if (clip.gain != 1) {
 			this.#destination = new GainNode(this.#manager.context, {
@@ -255,6 +250,7 @@ export class ActiveAudio extends EventDispatcher {
 				if (this.#position <= notification.when) {
 					break;
 				}
+				++index;
 			}
 		}
 
@@ -384,7 +380,6 @@ export class ActiveAudio extends EventDispatcher {
 		const stopNow = when <= this.#manager.currentTime;
 		if (stopNow) {
 			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListener);
-			this.#audioBufferSourceNode.removeEventListener('ended', this.#endedListenerNoEvent);
 		}
 
 		this.#audioBufferSourceNode.stop(when);
@@ -406,6 +401,7 @@ export class ActiveAudio extends EventDispatcher {
 		}
 
 		this.#audioBufferSourceNode = null;
+		this.#startTime = null;
 	}
 
 }
@@ -436,8 +432,8 @@ export class ScheduledAudioNotification extends AudioNotification {
 		return this.#manager;
 	}
 
-	constructor(manager, when, callback) {
-		super(when, callback);
+	constructor(manager, when, callback, data) {
+		super(when, callback, data);
 		this.#manager = manager;
 	}
 
@@ -482,7 +478,7 @@ export class ScheduledAudioNotification extends AudioNotification {
 	/**
 	 * Removes a notification from the linked list rooted at this entry.
 	 *
-	 * @param {ScheduledAudioNotification} notification the notification to remove from the
+	 * @param {ScheduledAudioNotification|number} notification the notification to remove from the
 	 *        list.
 	 *
 	 * @returns {ScheduledAudioNotification} the start of the list. This value may be
@@ -490,7 +486,11 @@ export class ScheduledAudioNotification extends AudioNotification {
 	 *          in the list if this node was the node to remove.
 	 */
 	remove(notification) {
-		if (this == notification) {
+		if (notification instanceof ScheduledAudioNotification) {
+			notification = notification.id;
+		}
+
+		if (this.id == notification) {
 			const root = this.#next;
 			this.#next = null;
 			return root;
@@ -498,10 +498,11 @@ export class ScheduledAudioNotification extends AudioNotification {
 
 		let entry = this;
 		while (entry != null) {
-			if (notification == entry.#next) {
+			if (notification == entry.#next.id) {
 				// Found a match, remove from the list
-				entry.#next = notification.#next;
-				notification.#next = null;
+				const newNext = entry.#next.#next;
+				entry.#next.#next = null;
+				entry.#next = newNext;
 				break;
 			}
 

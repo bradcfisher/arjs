@@ -51,22 +51,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
 	resources.load(
 		new arjs.ResourceMeta(
-			"../AR/city/sounds/intro.ogg",
+			"/AR/city/sounds/intro.ogg",
 			"audio/ogg",
 			"Alternate Reality: The City - Intro",
-			["../AR/city/sounds/intro.json"]
+			["/AR/city/sounds/intro.json"]
 		),
 		new arjs.ResourceMeta(
 			"/AR/city/sounds/intro.json",
 			"Alternate Reality: The City - Intro lyrics",
-			["../AR/city/sounds/intro.ogg"]
+			["/AR/city/sounds/intro.ogg"]
 		),
 
 		new arjs.ResourceMeta(
-			"../AR/shared/sounds/death.ogg",
+			"/AR/shared/sounds/death.ogg",
 			"audio/ogg",
 			"Alternate Reality: The Dungeon - Death",
-			["../AR/shared/sounds/death.json"]
+			["/AR/shared/sounds/death.json"]
 		),
 		new arjs.ResourceMeta(
 			"/AR/shared/sounds/death.json",
@@ -147,9 +147,8 @@ console.log("creating promise for clip: "+ url, resource.data, resource.meta);
                     notifications = arjs.Karaoke.registerNotifications(
                         json,
                         document.getElementById("Message"),
-                        (notification) => {
-                            let data = notification.data;
-                            let el = document.getElementById("Notification_"+ notification.id);
+                        (data) => {
+                            let el = document.getElementById("Notification_"+ data.id);
                             if (el) {
                                 el.focus();
                             }
@@ -159,7 +158,7 @@ console.log("creating promise for clip: "+ url, resource.data, resource.meta);
                     );
                 }
 
-				notifications.push(new arjs.AudioNotification(resource.data.length - 1,
+				notifications.push(new arjs.AudioNotification(resource.data.duration,
 					(activeAudio) => activeAudio.triggerEvent('stop')));
 
                 // Create audio clip
@@ -169,13 +168,29 @@ console.log("creating promise for clip: "+ url, resource.data, resource.meta);
 				audio.registerClip(url, clip);
 			}
 
+			let options = [];
 			for (var p in loadedResources) if (loadedResources.hasOwnProperty(p)) {
 				if (loadedResources[p].meta.type.substring(0,6) == 'audio/') {
 					processClip(p, loadedResources[p]);
+
+					const option = document.createElement('option');
+					option.value = p;
+					option.text = loadedResources[p].meta.description;
+					options.push(option);
 				}
 			};
 
+			while (sourceSelect.firstChild) {
+				sourceSelect.removeChild(sourceSelect.firstChild);
+			}
+
+			options.sort((a, b) => a.text < b.text ? -1 : (a.text > b.text ? 1 : 0));
+			for (let option of options) {
+				sourceSelect.appendChild(option);
+			}
+
             console.log("all audio resources loaded, continuing");
+
             setCurrentClip("/AR/city/sounds/let_in_the_lite.ogg");
 		}
 	)
@@ -190,6 +205,7 @@ function setCurrentClip(name) {
 
 	const clip = audio.getClip(name);
 	currentClip = audio.prepare(clip);
+	currentClip.on('stop', stopAudio);
 	updateNotifications(clip.notifications);
 
 	playButton.disabled = false;
@@ -197,6 +213,8 @@ function setCurrentClip(name) {
 	pauseButton.style.display = 'none';
 
 	stopButton.disabled = true;
+
+	console.log('currentClip changed', currentClip);
 } // setCurrentClip
 
 function setPosition(pos) {
@@ -214,12 +232,8 @@ function playAudio() {
 	pauseButton.style.display = 'inline';
 	stopButton.disabled = false;
 
-	currentClip = audio.prepare(sourceSelect.value);
+	//currentClip = audio.prepare(sourceSelect.value);
 	currentClip.play();
-
-	currentClip.on('stop', stopAudio);
-
-console.log('currentClip changed', currentClip);
 
 	currentClip.manager.resume();
 	requestAnimationFrame(updatePosition);
@@ -303,6 +317,7 @@ function updateNotifications(notifications) {
 				'<span class="Position">'+ notification.when.toFixed(3) +'</span>'+
 				'<span class="Text"'+ (notification.data.color ? ' style="color:'+ notification.data.color +'"' : '') +'>'+ (notification.data.text ? notification.data.text : "&nbsp;") +'</span>'+
 				'<span class="Line">'+ (notification.data.line ? notification.data.line : "&nbsp;") +'</span>'+
+				'<span class="Json">'+ JSON.stringify(notification.data) +'</span>' +
 				'</div>';
 
 			let elem = N.appendChild(createContainer.firstChild);
