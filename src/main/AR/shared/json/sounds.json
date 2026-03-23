@@ -1,0 +1,14 @@
+{
+    "rain": {
+        "source": "../sounds/Rain.mp3"
+    },
+    "wind": {
+        "source": "../sounds/Wind.mp3"
+    },
+    "storm-1": {
+        "source": "../sounds/Storm 1.mp3"
+    },
+    "storm-2": {
+        "source": "../sounds/Storm 2.mp3"
+    }
+}

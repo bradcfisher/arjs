@@ -71,7 +71,7 @@
 			}
 		},
 		{
-			"name": "precipitations",
+			"name": "Precipitations",
 			"days": 30,
 			"temperature": { "min": "30F", "max": "50F" },
 			"weather": {

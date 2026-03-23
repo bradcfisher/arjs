@@ -1,95 +1,7 @@
 
 import { MapReader } from "./MapReader.js";
 import { Parse } from "./Parse.js";
-
-
-/**
- * @interface
- */
-export class CityMapConfiguration {
-
-    /**
-     * Width of the map in cells.
-     * If not provided, the map defaults to 64 cells wide.
-     * @type {number?}
-     * @readonly
-     */
-    width;
-
-    /**
-     * Height of the map in cells.
-     * If not provided, the map defaults to 64 cells tall.
-     * @type {number?}
-     * @readonly
-     */
-    height;
-
-    /**
-     * URL of the binary map walls.
-     * The dimensions of this map data must match the specified width and height.
-     * @type {string}
-     * @readonly
-     */
-    wallBinaryUrl;
-
-    /**
-     * URL of the binary map locations.
-     * The dimensions of this map data must match the specified width and height.
-     * @type {string}
-     * @readonly
-     */
-    locationBinaryUrl;
-
-    /**
-     * URL of the JSON wall texture definitions
-     * @type {string}
-     * @readonly
-     */
-    wallTextureJsonUrl;
-
-    /**
-     * URL of the JSON floor and ceiling texture definitions
-     * @type {string}
-     * @readonly
-     */
-	floorAndCeilingTextureJsonUrl;
-
-    /**
-     * URL of the JSON description definitions
-     * @type {string}
-     * @readonly
-     */
-	descriptionJsonUrl;
-
-    /**
-     * URL of the JSON zone definitions
-     * @type {string}
-     * @readonly
-     */
-	zoneJsonUrl;
-
-    /**
-     * URL of the JSON message definitions
-     * @type {string}
-     * @readonly
-     */
-	messageJsonUrl;
-
-    /**
-     * URL of the encounter definitions
-     * @type {string}
-     * @readonly
-     */
-	encounterJsonUrl;
-
-    /**
-     * URL of the patch definitions
-     * @type {string}
-     * @readonly
-     */
-	patchJsonUrl;
-
-}
+import { CityMapOptionsConfig } from "./Scenario.js";
 
 
 export class CityMapReader extends MapReader {
@@ -398,7 +310,7 @@ export class CityMapReader extends MapReader {
 
     /**
      * Reads a City format map described by the provided configuration.
-     * @param {CityMapConfiguration} config the map configuration to load.
+     * @param {CityMapOptionsConfig} config the map configuration to load.
      * @param {string} baseUrl the base URL to use for relative paths.
      * @returns {PromiseLike<void>} a promise that will complete when the load completes
      */

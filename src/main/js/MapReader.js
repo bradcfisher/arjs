@@ -4,10 +4,11 @@ import { Parse } from "./Parse.js";
 import { GameState } from "./GameState.js";
 import { ScenarioMap, WallStyle } from "./ScenarioMap.js";
 import { Texture, TextureFrame, AnimatedTextureProvider, SolidColorTexture } from "./Texture.js";
-import { AudioClip } from "./AudioClip.js";
+import { AudioReader } from "./AudioReader.js";
 
 /**
- * Provides a resource manager and uninitialized map as well as utility functions to read map definitions from JSON files.
+ * Provides a resource manager and uninitialized map as well as utility
+ * functions to read map definitions from JSON files.
  */
 export class MapReader extends EventDispatcher {
 
@@ -218,47 +219,19 @@ export class MapReader extends EventDispatcher {
     /**
      * Reads JSON sound clip definitions for the map.
      *
-     * This operation may execute asynchronously and is not guaranteed to be complete when the
-     * method returns. In addition to the promise returned, a 'complete' listener may also be used
-     * to detect when all pending load operations have completed.
+     * This operation may execute asynchronously and is not guaranteed to be complete
+     * when the method returns. In addition to the promise returned, a 'complete'
+     * listener may also be used to detect when all pending load operations have
+     * completed.
      *
-     * @param {string|string[]} source the location(s) of the zone JSON to load. If a relative
-     *        reference is provided, it will be resolved using {@link Parse.url}.
+     * @param {string|URL|(string|URL)[]} source the location(s) of the sound JSON
+     *        to load. If a relative reference is provided, it will be resolved
+     *        using {@link Parse.url}.
      *
      * @return {Promise} a promise that will complete when the load completes
      */
     async readJsonSounds(source) {
-        for (let url of Parse.array(source, [], Parse.url)) {
-            const loaded = await this.#resourceManager.load(url);
-            const data = loaded[url].data;
-
-            Parse.withBaseUrl(url, () => {
-                console.log("Loaded sounds.json: ", data);
-
-                Object.entries(data).forEach(async ([key, val]) => {
-                    console.log("Registering sound clip: " + key, val);
-                    const source = Parse.prop(val, ["source"], null, Parse.url);
-                    const loaded = await this.#resourceManager.load(source);
-
-                    let clipName = new URL(String(url));
-                    clipName.hash = "#" + key;
-
-                    const clip = new AudioClip(loaded[source].data, {
-                        "start": val.start,
-                        "length": val.length,
-                        "loop": val.loop,
-                        "detune": val.detune,
-                        "gain": val.gain,
-                        "playbackRate": val.playbackRate,
-                        "x": val.x,
-                        "y": val.y,
-                        "height": val.height,
-                        "notifications": val.notifications
-                    });
-                    GameState.getAudioManager().registerClip(String(clipName), clip);
-                });
-            });
-        }
+        await AudioReader.loadSoundsJson(source);
     }
 
 }

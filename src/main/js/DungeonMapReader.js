@@ -1,145 +1,7 @@
 import { MapReader } from "./MapReader.js";
 import { Parse } from "./Parse.js";
+import { DungeonMapOptionsConfig } from "./Scenario.js";
 import { MapZone, MapZoneRef } from "./ScenarioMap.js";
-
-/**
- * @interface
- */
-export class DungeonMapBinaryConfiguration {
-    /**
-     * Prefix to assign to description and zone IDs loaded from this map binary.
-     *
-     * When multiple binary maps are combined into a single logical map, each binary
-     * must be assigned a unique ID prefix.
-     *
-     * @type {string}
-     * @readonly
-     */
-    idPrefix;
-
-    /**
-     * The horizontal location within the underlying map to start writing the loaded map data.
-     * @type {number}
-     * @readonly
-     */
-    x;
-
-    /**
-     * The vertical locaton within the underlying map to start writing the loaded map data.
-     * @type {number}
-     * @readonly
-     */
-    y;
-
-    /**
-     * The width of the binary map data.
-     * If omitted, defaults to 32.
-     * @type {number?}
-     * @readonly
-     */
-    width;
-
-    /**
-     * The height of the binary map data.
-     * If omitted, defaults to 32.
-     * @type {number?}
-     * @readonly
-     */
-    height;
-
-    /**
-     * The URL of the map binary file to load.
-     * @type {string|URL}
-     * @readonly
-     */
-    url;
-}
-
-
-/**
- * @interface
- */
-export class DungeonMapConfiguration {
-
-    /**
-     * Width of the map in cells.
-     * If not provided, the map defaults to 32 cells wide.
-     * @type {number?}
-     * @readonly
-     */
-    width;
-
-    /**
-     * Height of the map in cells.
-     * If not provided, the map defaults to 32 cells tall.
-     * @type {number?}
-     * @readonly
-     */
-    height;
-
-    /**
-     * URL of the binary map file containing wall, location, description and zone data
-     * OR an array of binary map file descriptions to load into a combined map.
-     *
-     * If a single URL is provided, the dimensions of this map data must match the specified
-     * width and height.
-     *
-     * @readonly
-     * @type {string|DungeonMapBinaryConfiguration[]}
-     * @readonly
-     */
-    mapBinaryUrl;
-
-    /**
-     * URL of the JSON sound clip definitions
-     * @type {string}
-     * @readonly
-     */
-    soundJsonUrl;
-
-    /**
-     * URL of the JSON wall texture definitions
-     * @type {string}
-     * @readonly
-     */
-    wallTextureJsonUrl;
-
-    /**
-     * URL of the JSON floor and ceiling texture definitions
-     * @type {string}
-     * @readonly
-     */
-	floorAndCeilingTextureJsonUrl;
-
-    /**
-     * URL of the JSON zone definitions
-     * @type {string}
-     * @readonly
-     */
-	zoneJsonUrl;
-
-    /**
-     * URL of the JSON message definitions
-     * @type {string}
-     * @readonly
-     */
-	messageJsonUrl;
-
-    /**
-     * URL of the encounter definitions
-     * @type {string}
-     * @readonly
-     */
-	encounterJsonUrl;
-
-    /**
-     * URL of the patch definitions
-     * @type {string}
-     * @readonly
-     */
-	patchJsonUrl;
-
-}
 
 export class DungeonMapReader extends MapReader {
 
@@ -423,7 +285,7 @@ export class DungeonMapReader extends MapReader {
 
     /**
      * Reads a Dungeon format map described by the provided configuration.
-     * @param {DungeonMapConfiguration} config the map configuration to load.
+     * @param {DungeonMapOptionsConfig} config the map configuration to load.
      * @param {string=} baseUrl the base URL to use for relative paths. If not given,
      *        the value of {@link Parse.baseUrl} will be used.
      * @returns {PromiseLike<void>} a promise that will complete when the load completes
@@ -463,9 +325,6 @@ export class DungeonMapReader extends MapReader {
 
 	//messageJsonUrl;
 	//encounterJsonUrl;
-
-    // TODO: messages
-    // TODO: city MapZoneRefs for the various environmental effects (smithy hammer, palace fanfare, etc?)
 
             return Promise.all(promises);
         });

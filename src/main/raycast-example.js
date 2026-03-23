@@ -4,7 +4,10 @@ import { Controls } from "./js/Controls.js";
 import { Player } from "./js/Player.js";
 import { CityMapReader } from "./js/CityMapReader.js";
 import { DungeonMapReader } from "./js/DungeonMapReader.js";
+import { GameState } from "./js/GameState.js";
 /** @import { EventDetail } from "./js/EventDispatcher.js" */
+
+
 
 let resourcesReady = false;
 let domReady = false;

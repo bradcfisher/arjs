@@ -3,7 +3,6 @@
 <head>
 	<meta charset="UTF-8">
 	<title>arjs - Alternate Reality for the web</title>
-	<script type="module" src="/js/arjs.js"></script>
 </head>
 <body>
 
@@ -16,14 +15,15 @@
 <div>Numeric date: <span id="NumericDate">?</span></div>
 
 <div>
-	<button onclick="gameClock.tickDelay = 0">Paused</button>
-	<button onclick="gameClock.tickDelay = 1">Ultra Fast</button>
-	<button onclick="gameClock.tickDelay = 16">Fast</button>
-	<button onclick="gameClock.tickDelay = 200">Medium</button>
-	<button onclick="gameClock.tickDelay = 4000">Normal</button>
+	<button class="GameSpeed" _speed="0">Paused</button>
+	<button class="GameSpeed" _speed="1">Ultra Fast</button>
+	<button class="GameSpeed" _speed="16">Fast</button>
+	<button class="GameSpeed" _speed="200">Medium</button>
+	<button class="GameSpeed" _speed="4000">Normal</button>
 </div>
 
-<div>Timestamp: <input type="text" id="TimestampInput"/> <button onclick="gameClock.setCurrent(document.getElementById('TimestampInput').value)">Apply</button></div>
+<div>Timestamp: <input type="text" id="TimestampInput"/>
+	<button id="ApplyCurrentTime">Apply</button></div>
 
 <hr/>
 
@@ -31,93 +31,9 @@
 <div><textarea id="Console" style="width:100%">
 arjs.deserialize(arjs.serialize(gameState.hunger))
 </textarea></div>
-<button onclick="executeConsoleCode()">Execute</button>
+<button id="ExecuteConsoleCode">Execute</button>
 
-<script>
-
-function executeConsoleCode() {
-	let source = document.getElementById("Console").value;
-	let fn = arjs.Parse.action(source, null, ['arjs', 'gameState']);
-	fn(arjs, gameState);
-}
-
-let cal;
-let gameClock;
-let gameState;
-
-document.addEventListener('DOMContentLoaded', function () {
-	console.log("document ready");
-
-	arjs.GameState.load("/AR/shared/json/AR.json").then((gs) => {
-		gameState = gs;
-		jsonLoaded();
-	});
-});
-
-function jsonLoaded() {
-	cal = gameState.clock.calendar;
-	gameClock = gameState.clock;
-
-/*
-	let action = arjs.Parse.listener("console.log(event);");
-	gameClock.on("minuteRollover", action);
-	gameClock.on("hourRollover", action);
-	gameClock.on("dayRollover", action);
-	gameClock.on("monthRollover", action);
-	gameClock.on("yearRollover", action);
-*/
-
-	console.log("created game config");
-
-	let tickDelaySpan = document.getElementById("TickDelay");
-	let timestampSpan = document.getElementById("Timestamp");
-	let gameDateSpan = document.getElementById("GameDate");
-	let tsToDateSpan = document.getElementById("TimestampDate");
-	let dateToTsSpan = document.getElementById("DateTimestamp");
-	let normTimeSpan = document.getElementById("NormalizedTime");
-	let numDateSpan = document.getElementById("NumericDate");
-
-	if (tickDelaySpan == null || timestampSpan == null || gameDateSpan == null || tsToDateSpan == null || dateToTsSpan == null || normTimeSpan == null || numDateSpan == null) {
-		throw new Error("Unable to find required document element");
-	}
-
-	function animate(now) {
-		timestampSpan.innerHTML = String(gameClock.current);
-		tickDelaySpan.innerHTML = gameClock.tickDelay;
-		let a = gameDateSpan.innerHTML = cal.dateToString(gameClock);
-		let b = tsToDateSpan.innerHTML = cal.dateToString(cal.timestampToDate(gameClock.current));
-		let c = dateToTsSpan.innerHTML = cal.dateToTimestamp(gameClock);
-		let d = normTimeSpan.innerHTML = cal.dateToString(cal.normalizeDate(gameClock));
-
-		let month = gameClock.month + 1;
-		let e = numDateSpan.innerHTML =
-			(gameClock.year < 100 ? "0" : "") + (gameClock.year < 100 ? "0" : "") +
-			(gameClock.year < 10 ? "0" : "") + gameClock.year + "-" +
-			(month < 10 ? "0" : "") + month + "-" +
-			(gameClock.day < 10 ? "0" : "") + gameClock.day + " " +
-			(gameClock.hour < 10 ? "0" : "") + gameClock.hour + ":" +
-			(gameClock.minute < 10 ? "0" : "") + gameClock.minute;
-
-		gameClock.update(now);
-
-/*
-		if (a != b)
-			console.error("The timestamps do not match (a,b): "+ a +" != "+ b);
-
-		if (a != c)
-			console.error("The timestamps do not match (a,c): "+ a +" != "+ c);
-
-		if (b != c)
-			console.error("The timestamps do not match (b,c): "+ b +" != "+ c);
-*/
-
-		requestAnimationFrame(animate);
-	}
-
-	requestAnimationFrame(animate);
-}
-
-</script>
+<script type="module" src="./arjs.js"></script>
 
 </body>
 </html>

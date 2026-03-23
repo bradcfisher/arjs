@@ -71,12 +71,16 @@ export class LatentEffects extends Array {
 	}
 
 	/**
+	 * Applies a configuration to this instance, resetting the entries to match those
+	 * specified by the configuration.
 	 *
-	 * @param {ReadonlyArray<LatentEffect|LatentEffectConfig>?} config
+	 * @param {(LatentEffecst|ReadonlyArray<LatentEffect|LatentEffectConfig>)?} config the
+	 *        configuration to apply.
 	 */
 	configure(config) {
-		if (config instanceof LatentEffects)
+		if (config instanceof LatentEffects) {
 			config = config.config;
+		}
 
 		this.length = 0;
 		if (config != null) {
@@ -95,9 +99,12 @@ export class LatentEffects extends Array {
 	}
 
 	/**
+	 * Initiates any latent effects in this collection which respond to the provided
+	 * trigger type.
 	 *
-	 * @param {string} triggerType
-	 * @param {EffectTarget} target
+	 * @param {string} triggerType the trigger type.
+	 * @param {EffectTarget} target the target of any effects which are triggered. This
+	 *        may be the player or another denizen.
 	 */
 	trigger(triggerType, target) {
 		for (let effect of this) {

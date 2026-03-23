@@ -9,15 +9,14 @@
 	"encumbrance": {"$import": "./encumbrance.json"},
 	"digestion": {"$import": "./digestion.json"},
 	"inebriation": {"$import": "./inebriation.json"},
-	"itemTypes": {"$merge":	{"source": [],
-		"_": "Messy, but it works.  To add new file: copy the line below, change the file name, and add another group of }}} below",
-		"with":	{"$concat": {"$merge": {"source": {"$import": "./treasure.json"},
-		"with": {"$concat": {"$merge": {"source": {"$import": "./potions.json"},
-		"with": {"$concat": {"$import": "./spells.json"}}
-	}}}	}}}	}},
-	"scenarios": [
-		{"$import": "../../city/json/main.json"},
-		{"$import": "../../dungeon/json/main.json"}
+	"itemTypes": [
+		{"$import": "./treasure.json", "flatten": true},
+		{"$import": "./potions.json", "flatten": true},
+		{"$import": "./spells.json", "flatten": true}
 	],
+	"scenarios": {
+		"The City": {"$import": "../../city/json/main.json"},
+		"The Dungeon": {"$import": "../../dungeon/json/main.json"}
+	},
 	"defaultScenario": "The City"
 }

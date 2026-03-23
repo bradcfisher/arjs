@@ -1,7 +1,7 @@
 import { Parse } from "./Parse.js"
 import { Player } from "./Player.js"
 import { GameClock, GameClockConfig } from "./GameClock.js"
-import { OptionsConfig, RecurringOptionsConfig, Options, RecurringOptions, TemperatureOptionsConfig, TemperatureOptions } from "./ConfigOptions.js"
+import { OptionsConfig, RecurringOptionsConfig, Options, RecurringOptions, TemperatureOptionsConfig, TemperatureOptions, InebriationOptions, InebriationOptionsConfig } from "./ConfigOptions.js"
 import { ItemTypeConfig } from "./ItemType.js";
 import { ItemTypes } from "./ItemTypes.js";
 import { ResourceManager } from "./ResourceManager.js";
@@ -9,6 +9,8 @@ import { Configurable } from "./Configurable.js";
 import { ClassRegistry } from "./Serializer.js";
 import { AudioManager } from "./AudioManager.js";
 import { ActionManager } from "./ActionManager.js";
+import { Scenario } from "./Scenario.js";
+import { WeatherType, WeatherTypeConfig } from "./WeatherType.js";
 
 /**
  * @interface
@@ -20,7 +22,11 @@ export class GameStateConfig {
 	 */
 	title;
 
-	//readonly weather?: WeatherConfig;
+	/**
+	 * @readonly
+	 * @type {{[name:string]: WeatherTypeConfig}}
+	 */
+	weather;
 
 	/**
 	 * @readonly
@@ -64,7 +70,11 @@ export class GameStateConfig {
 	 */
 	encumbrance;
 
-	//readonly inebriation?: InebriationConfig;
+	/**
+	 * @readonly
+	 * @type {InebriationOptionsConfig?}
+	 */
+	inebriation;
 
 	/**
 	 * @readonly
@@ -72,8 +82,18 @@ export class GameStateConfig {
 	 */
 	 itemTypes;
 
-	//readonly scenarios: ScenarioConfig[];
-	//readonly defaultScenario: string;
+	 /**
+	  * @readonly
+	  * @type {{[name: string]: ScenarioConfig}}
+	  */
+	 scenarios;
+
+	 /**
+	  * @readonly
+	  * @type {string}
+	  */
+	 defaultScenario;
+
 }
 
 
@@ -123,9 +143,13 @@ export class GameState {
 	 */
 	#title = "<Untitled>";
 
-	//private _weather: Weather;
+	/**
+	 * @type {{[name: string]: WeatherType}}
+	 */
+	#weather;
 
 	/**
+	 * @readonly
 	 * @type {GameClock}
 	 */
 	#clock = new GameClock();
@@ -168,6 +192,12 @@ export class GameState {
 
 	/**
 	 * @readonly
+	 * @type {InebriationOptions}
+	 */
+	#inebriation = new InebriationOptions();
+
+	/**
+	 * @readonly
 	 * @type {ItemTypes}
 	 */
 	#itemTypes = new ItemTypes();
@@ -177,6 +207,16 @@ export class GameState {
 	 * @type {Player?}
 	 */
 	#player;
+
+	/**
+	 * @type {{[name: string]: Scenario}}
+	 */
+	#scenarios;
+
+	/**
+	 * @type {string}
+	 */
+	#defaultScenario;
 
 	/**
 	 * Static initializer for registering deserializer with private member access.
@@ -204,6 +244,10 @@ export class GameState {
 	 * 		the specified configuration on success.
 	 */
 	static load(config) {
+		if (config instanceof URL || typeof config == 'string') {
+			config = String(Parse.url(config));
+		}
+
 		/** @type {Promise<GameState>} */
 		let rv;
 
@@ -223,19 +267,25 @@ export class GameState {
 
 			if (typeof config === "string") {
 				loadingPromise = rv = resourceManager.load(config).then((entry) => {
-					let confJson = entry[config].data;
+					let configJson = entry[config].data;
+
 					if (instance == null) {
-						instance = new GameState(confJson);
+						instance = new GameState(configJson);
 					} else {
-						instance.configure(confJson);
+						instance.configure(configJson);
 					}
+
 					loading = false;
 					return instance;
 				})
 			} else {
 				loadingPromise = rv = new Promise<GameState>((resolve, reject) => {
-					let inst = this.getInstance();
-					inst.configure(config);
+					if (instance == null) {
+						instance = new GameState(config);
+					} else {
+						instance.configure(config);
+					}
+
 					loading = false;
 					resolve(inst);
 				});
@@ -293,7 +343,16 @@ export class GameState {
 	 */
 	configure(config) {
 		this.title = Parse.str(config.title, "<Untitled>");
-		//this._weather = new Weather(config.weather);
+
+		this.#weather = {};
+		if (config.weather) {
+			Object.entries(config.weather)
+				.forEach(([key, val]) => {
+					this.#weather[key] = new WeatherType(val);
+				});
+		}
+		Object.freeze(this.#weather);
+
 		this.#clock.configure(Parse.required(config.clock, "clock"));
 
 		// TODO: Validate the weather types against the calendar month weather refs
@@ -304,22 +363,36 @@ export class GameState {
 		this.#digestion.configure(Parse.required(config.digestion, "digestion"));
 		this.#warmth.configure(Parse.required(config.warmth, "warmth"));
 		this.#encumbrance.configure(Parse.required(config.encumbrance, "encumbrance"));
-		//this._inebriation.configure(Parse.required(config.inebriation, "inebriation"));
-
+		this.#inebriation.configure(Parse.required(config.inebriation, "inebriation"));
 		this.#itemTypes.configure(Parse.required(config.itemTypes, "itemTypes"));
 
-		/*
-		"scenarios"
-		*/
+		this.#scenarios = {};
+		Object.entries(Parse.required(config.scenarios, "scenarios"))
+			.forEach(([key, val]) => {
+				this.#scenarios[key] = new Scenario(val);
+			});
+		Object.freeze(this.#scenarios);
+
+		this.#defaultScenario = Parse.prop(config, ["defaultScenario"], null, Parse.str);
 	}
 
 	/**
 	 * @type {GameStateConfig}
 	 */
 	get config() {
+		const weather = {};
+		Object.entries(this.#weather).forEach(([key, val]) => {
+			weather[key] = val.config;
+		});
+
+		const scenarios = {};
+		Object.entries(this.#scenarios).forEach(([key, val]) => {
+			scenarios[key] = val.config;
+		});
+
 		return {
 			title: this.title,
-			//weather: this.weather.config,
+			weather: weather,
 			clock: this.clock.config,
 
 			hunger: this.hunger.config,
@@ -328,11 +401,11 @@ export class GameState {
 			digestion: this.digestion.config,
 			warmth: this.warmth.config,
 			encumbrance: this.encumbrance.config,
-			//inebriation: this.inebriation.config,
+			inebriation: this.inebriation.config,
 
 			itemTypes: this.itemTypes.config,
-			//scenarios: this.scenarios.config,
-			//defaultScenario: this.defaultScenario
+			scenarios: scenarios,
+			defaultScenario: this.defaultScenario
 		};
 	}
 
@@ -345,7 +418,14 @@ export class GameState {
 	}
 
 	set title(value) {
-		this._title = value;
+		this.#title = value;
+	}
+
+	/**
+	 * The defined weather types.
+	 */
+	get weather() {
+		return this.#weather;
 	}
 
 	/**
@@ -383,6 +463,14 @@ export class GameState {
 		return this.#itemTypes;
 	}
 
+	get scenarios() {
+		return this.#scenarios;
+	}
+
+	get defaultScenario() {
+		return this.#defaultScenario;
+	}
+
 	get player() {
 		if (this.#player == null) {
 			throw new Error("No player");
@@ -391,11 +479,10 @@ export class GameState {
 		return this.#player;
 	}
 
-	// weather type definitions (no save)
-	// monsters (no save)
+	// encounters (no save)
 	// scenarios
 	//  - maps
-	//	- monsters (no save)
+	//	- encounters (no save)
 	//	- shops
 	//	- smithies
 	//	- banks

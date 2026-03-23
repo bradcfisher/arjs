@@ -499,7 +499,7 @@ export class ItemType {
 	}
 
 	/**
-	 * The base value for the item.
+	 * The base value for the item, in coppers.
 	 * Values less than 0 will be clamped at 0.
 	 */
 	get value() {

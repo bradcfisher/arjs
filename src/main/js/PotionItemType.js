@@ -14,46 +14,63 @@ export const PotionItemTypeColor = Object.freeze({
 	 * @readonly
 	 */
 	Clear: 0,
+	0: "Clear",
+
 	/**
 	 * (1) - Amber
 	 * @readonly
 	 */
 	Amber: 1,
+	1: "Amber",
+
 	/**
 	 * (2) - Silver
 	 * @readonly
 	 */
 	Silver: 2,
+	2: "Silver",
+
 	/**
 	 * (3) - Black
 	 * @readonly
 	 */
 	Black: 3,
+	3: "Black",
+
 	/**
 	 * (4) - Red
 	 * @readonly
 	 */
 	Red: 4,
+	4: "Red",
+
 	/**
 	 * (5) - White
 	 * @readonly
 	 */
 	White: 5,
+	5: "White",
+
 	/**
 	 * (6) - Green
 	 * @readonly
 	 */
 	Green: 6,
+	6: "Green",
+
 	/**
 	 * (7) - Yellow
 	 * @readonly
 	 */
 	Yellow: 7,
+	7: "Yellow",
+
 	/**
 	 * (8) - Orange
 	 * @readonly
 	 */
-	Orange: 8
+	Orange: 8,
+	8: "Orange"
 }); // Color
 
 /**
@@ -66,41 +83,56 @@ export const PotionItemTypeTaste = Object.freeze({
 	 * @readonly
 	 */
 	Bitter: 0,
+	0: "Bitter",
+
 	/**
 	 * (1) - Sweet
 	 * @readonly
 	 */
 	Sweet: 1,
+	1: "Sweet",
+
 	/**
 	 * (2) - Plain
 	 * @readonly
 	 */
 	Plain: 2,
+	2: "Plain",
+
 	/**
 	 * (3) - Sour
 	 * @readonly
 	 */
 	Sour: 3,
+	3: "Sour",
+
 	/**
 	 * (4) - Salty
 	 * @readonly
 	 */
 	Salty: 4,
+	4: "Salty",
+
 	/**
 	 * (5) - Acidic
 	 * @readonly
 	 */
 	Acidic: 5,
+	5: "Acidic",
+
 	/**
 	 * (6) - Alkaline
 	 * @readonly
 	 */
 	Alkaline: 6,
+	6: "Alkaline",
+
 	/**
 	 * (7) - Dry
 	 * @readonly
 	 */
-	Dry: 7
+	Dry: 7,
+	7: "Dry"
 }); // Taste
 
 /**
@@ -113,18 +145,21 @@ export const PotionItemTypeSip = Object.freeze({
 	 * @readonly
 	 */
 	Safe: 0,
+	0: "Safe",
 
 	/**
 	 * (1) - Caution
 	 * @readonly
 	 */
 	Caution: 1,
+	1: "Caution",
 
 	/**
 	 * (2) - Dangerous
 	 * @readonly
 	 */
-	Dangerous: 2
+	Dangerous: 2,
+	2: "Dangerous"
 }); // Sip
 
 
@@ -248,10 +283,17 @@ export class PotionItemType
 	configure(config) {
 		super.configure(config);
 
-		this.color = Parse.enum(PotionItemType.Color, Parse.required(config.color, "color"));
-		this.taste = Parse.enum(PotionItemType.Taste, Parse.required(config.taste, "taste"));
-		this.sip = Parse.enum(PotionItemType.Sip, Parse.required(config.sip, "sip"));
-		this.instability = Parse.percent(config.instability, 40, 255);
+		this.#color = Parse.prop(config, ["color"], null,
+			(val) => Parse.enum(PotionItemTypeColor, val));
+
+		this.#taste = Parse.prop(config, ["taste"], null,
+			(val) => Parse.enum(PotionItemTypeTaste, val));
+
+		this.#sip = Parse.prop(config, ["sip"], null,
+			(val) => Parse.enum(PotionItemTypeSip, val));
+
+		this.#instability = Parse.prop(config, ["instability"], null,
+			(val) => Parse.percent(val, 40, 255));
 	}
 
 	/**

@@ -1,5 +1,6 @@
 
 import { EventDispatcher } from "./EventDispatcher.js";
+import { Parse } from "./Parse.js";
 
 /**
  * @typedef {(request: XMLHttpRequest, meta: ResourceMeta, accept: (resource:any) => void, reject: (error:Error) => void) => void} ResourceDecoder
@@ -338,13 +339,15 @@ console.log("loading single resource: ", source);
 							wrappedReject
 						);
 					} else {
-						const error = new Error(request.status +" "+ request.statusText);
+						const error = new Error(request.status +" "+ request.statusText +
+							": " + source.url);
 						this.triggerEvent('error', error);
 						wrappedReject(error);
 					}
 				};
 				request.onerror = (evt) => {
-					const error = new Error(request.statusText + ": "+ source.url);
+					const error = new Error(request.status +" "+ request.statusText +
+						": "+ source.url);
 					console.error("Sending error for source ", source, " event: ", error);
 					this.triggerEvent('error', error);
 					wrappedReject(error);
@@ -613,13 +616,151 @@ console.log("loading single resource: ", source);
 			meta,
 			(text) => {
 				try {
-					accept(JSON.parse(text));
+					this.#resolveImports(JSON.parse(text), meta.url).then((json) => accept(json));
 				} catch (e) {
 					reject(e);
 				}
 			},
 			reject
 		);
+	}
+
+	/**
+	 * Check whether a value is an $import object reference.
+	 *
+	 * ```
+	 * {
+	 *   "$import": "./data-to-import.json",
+	 *   "flatten": true
+	 * }
+	 * ```
+	 *
+	 * The `$import` property is required and any object passed to this method
+	 * with such a property will be detected as an import reference.
+	 *
+	 * The `flatten` property controls how a resolved array value is merged
+	 * into a parent array. When true, the parsed array will be merged in as
+	 * flattened elements of the parent array. When false, the returned array
+	 * will be merged as a single array item within the parent array.
+	 *
+	 * For example, given the following:
+	 *
+	 * child-array.json
+	 * ```
+	 * [ "item2", "item3" ]
+	 * ```
+	 *
+	 * Array to update
+	 * ```
+	 * [
+	 *   "item1",
+	 *   { "$import": "child-array.json", "flatten": true}
+	 * ]
+	 * ```
+	 *
+	 * The following would be produced
+	 *
+	 * ```
+	 * [ "item1", "item2", "item3" ]
+	 * ```
+	 *
+	 * If the `flatten` property is false, it would instead produce the following:
+	 *
+	 * ```
+	 * [ "item1", [ "item2", "item3" ] ]
+	 * ```
+	 *
+	 * @param {any} value the value to test.
+	 * @returns {boolean} true if the provided value looks like an $import
+	 *          reference object.
+	 */
+	#isImport(value) {
+		return (value instanceof Object) && value.$import;
+	}
+
+	/**
+	 * Recurisvely resolves any $import references in the provided value.
+	 *
+	 * @param {any} value the JSON to resolve $import references for
+	 * @param {string|URL} sourceUrl the source URL of the JSON being resolved
+	 * @param {string?} path the property path being resolved. Typically omitted,
+	 *        as it is updated as the data is processed recurisvely.
+	 *
+	 * @returns {PromiseLike<any>} a promise which produces the resolved value
+	 *          on fulfillment.
+	 */
+	#resolveImports(value, sourceUrl, path) {
+		if (!path) {
+			path = "{" + sourceUrl +"}";
+		}
+		const promises = [];
+
+		if (Array.isArray(value)) {
+			/** @type {PromiseLike<any>[]} */
+			const arrayPromises = [];
+			/** @type {(resolved: any[]) => void} */
+			const arrayResolvers = [];
+
+			// Process the array in reverse order.
+			for (let index = value.length - 1; index >= 0; index--) {
+				const item = value[index];
+				if (this.#isImport(item)) {
+					arrayPromises.push(this.#resolveImports(item, sourceUrl, path + "[" + index + "]"));
+					arrayResolvers.push((resolved) => {
+							if (item.flatten) {
+								console.log(path + "[" + index + "]: flatten: removing " +
+									index + ": replacing with " + resolved);
+								value.splice(index, 1, ...resolved);
+							} else {
+								console.log(path + "[" + index + "]: NOT flatten: removing " +
+									index + ": replacing with " + resolved);
+								value.splice(index, 1, resolved);
+							}
+							return resolved;
+						});
+				}
+			}
+
+			if (arrayPromises.length > 0) {
+				promises.push(Promise.all(arrayPromises).then((allResolved) => {
+					for (let index = 0; index < allResolved.length; ++index) {
+						arrayResolvers[index](allResolved[index]);
+					}
+				}));
+			}
+		} else if (this.#isImport(value)) {
+			return Parse.withBaseUrl(sourceUrl, () => {
+				const importUrl = Parse.url(value.$import);
+				path += "{" + importUrl + "}";
+
+				console.log(sourceUrl + ": Importing '" + path + "'");
+
+				return this.load(importUrl).then((loaded) => {
+					const result = loaded[importUrl].data;
+					console.log("Done reading '" + path + "':", result);
+
+					return this.#resolveImports(result, importUrl, path);
+				});
+			});
+		} else if (value instanceof Object) {
+			Object.entries(value).forEach(([key, val]) => {
+				if (val != null && (Array.isArray(val) || (typeof val === 'object'))) {
+					promises.push(
+						this.#resolveImports(val, sourceUrl, path + "." + key)
+							.then((resolved) => { value[key] = resolved; }));
+				}
+			});
+		}
+
+		if (promises.length == 0) {
+			return Promise.resolve(value);
+		} else if (promises.length == 1) {
+			return promises[0].then((v) => value);
+		}
+
+		return Promise.all(
+			promises
+		).then((v) => value);
 	}
 
 	/**

@@ -7,13 +7,14 @@ import { Configurable } from "./Configurable.js";
 const MINUTES_IN_DAY = 24 * 60;
 
 /**
+ * A reference to a Weather type.
  * @interface
  */
 export class WeatherTypeRefConfig {
 	/**
-	 * A weather type name defined elsewhere.
+	 * A weather type name defined within the GameState.
 	 * @readonly
-	 * @type string
+	 * @type {string}
 	 */
 	type;
 
@@ -22,15 +23,16 @@ export class WeatherTypeRefConfig {
 	 * This value is used to determine a percentage chance that this weather
 	 * type is chosen when a weather effect begins.
 	 * @readonly
-	 * @type number
+	 * @type {number}
 	 */
 	weight;
 }
 
 /**
+ * The weather options defined for a game calendar month.
  * @interface
  */
-export class WeatherConfig {
+export class WeatherOptionsConfig {
 	/**
 	 * Minimum and maximum duration for weather effects.
 	 *
@@ -45,19 +47,20 @@ export class WeatherConfig {
 	/**
 	 * References to weather types assigned to the month.
 	 * @readonly
-	 * @type ReadonlyArray<WeatherTypeRefConfig>
+	 * @type {ReadonlyArray<WeatherTypeRefConfig>}
 	 */
 	types;
 }
 
 /**
+ * Configuration describing a game calendar month.
  * @interface
  */
 export class MonthConfig {
 	/**
 	 * The name of the month to be displayed in game.
 	 * @readonly
-	 * @type string
+	 * @type {string}
 	 */
 	name;
 
@@ -67,12 +70,14 @@ export class MonthConfig {
 	 * If omitted, the month will default to 31 days.
 	 *
 	 * @readonly
-	 * @type number?
+	 * @type {number?}
 	 */
 	days;
 
 	/**
 	 * The min and max base temperature for the month.
+	 * Values must be a number (interpreted as degrees Fahrenheit) or a temperature
+	 * value parsable by {@link Parse.temperature}.
 	 *
 	 * If min is not provided, a default minimum temperature of 60 degrees F will be applied.
 	 * If max is not provided, a default maximum temperature of 80 degrees F will be applied.
@@ -88,7 +93,7 @@ export class MonthConfig {
 	 * If not provided, no weather effects will be assigned.
 	 *
 	 * @readonly
-	 * @type WeatherConfig?
+	 * @type {WeatherOptionsConfig?}
 	 */
 	weather;
 }
@@ -99,33 +104,33 @@ export class MonthConfig {
 export class Month {
 
 	/**
-	 * @type string
+	 * @type {string}
 	 */
 	#name;
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#startDayOfYear;
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#days;
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#minTemperature;
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#maxTemperature;
 
 	/**
 	 * @readonly
-	 * @type Weather
+	 * @type {WeatherOptions}
 	 */
 	#weather;
 
@@ -139,27 +144,25 @@ export class Month {
 	constructor(config, startDayOfYear) {
 		this.#startDayOfYear = startDayOfYear;
 
-		this.#name = Parse.str(config.name).trim();
-		if (this.#name == '')
+		this.#name = Parse.prop(config, ["name"], null, Parse.str).trim();
+		if (this.#name == '') {
 			throw new Error("'name' cannot be empty string");
+		}
 
-		const days = Parse.num(Parse.getProp(config, 31, "days"));
+		const days = Math.trunc(Parse.prop(config, ["days"], 31, Parse.num));
 		if (!(days >= 1)) { // Also catches NaN
 			throw new Error("'days' must be 1 or greater");
 		}
-		this.#days = Math.trunc(days);
+		this.#days = days;
 
-		this.#minTemperature = Parse.temperature(Parse.getProp(config, 60, "temperature", "min"));
-		if (Number.isNaN(this.#minTemperature))
-			throw new Error("'minTemperature' cannot be NaN");
+		this.#minTemperature = Parse.prop(config, ["temperature", "min"], 60, Parse.temperature);
+		this.#maxTemperature = Parse.prop(config, ["temperature", "max"], 80, Parse.temperature);
 
-		this.#maxTemperature = Parse.temperature(Parse.getProp(config, 80, "temperature", "max"));
-
-		this.#weather = new Weather(config.weather);
+		this.#weather = new WeatherOptions(config.weather);
 	}
 
 	/**
-	 * @type MonthConfig
+	 * @type {MonthConfig}
 	 */
 	get config() {
 		return {
@@ -174,55 +177,49 @@ export class Month {
 	}
 
 	/**
-	 * Retrieves the name for this month.
-	 * @return {string} The name for this month.
+	 * The name for the month.
 	 */
 	get name() {
 		return this.#name;
 	}
 
 	/**
-	 * Retrieves the 0-based starting day of the year for this month.
-	 * @return {number} The 0-based starting day of the year for this month.
+	 * The 0-based starting day of the year for the month.
 	 */
 	get startDayOfYear() {
 		return this.#startDayOfYear;
 	}
 
 	/**
-	 * Retrieves the number of days in this month.
-	 * @return {number} The number of days in this month.
+	 * The number of days in the month.
 	 */
 	get days() {
 		return this.#days;
 	}
 
 	/**
-	 * Retrieves the number of minutes in this month.
-	 * @return {number} The number of minutes in this month.
+	 * The number of minutes in the month.
 	 */
 	get minutesInMonth() {
 		return this.#days * MINUTES_IN_DAY;
 	}
 
 	/**
-	 * Retrieves the minimum temperature for this month.
-	 * @return {number} The minimum temperature for this month.
+	 *  The minimum temperature for the month.
 	 */
 	get minTemperature() {
 		return this.#minTemperature;
 	}
 
 	/**
-	 * Retrieves the maximum temperature for this month.
-	 * @return {number} The maximum temperature for this month.
+	 * The maximum temperature for the month.
 	 */
 	get maxTemperature() {
 		return this.#maxTemperature;
 	}
 
 	/**
-	 * @type Weather
+	 * The weather options for the month.
 	 */
 	get weather() {
 		return this.#weather;
@@ -235,12 +232,12 @@ export class Month {
  */
 export class WeatherTypeRef {
 	/**
-	 * @type string
+	 * @type {string}
 	 */
 	#type;
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#weight;
 
@@ -255,7 +252,7 @@ export class WeatherTypeRef {
 		}
 		this.#type = type;
 
-		if (weight <= 0) {
+		if (!(weight > 0)) { // Catches NaN
 			throw new Error("The weight must be greater than 0");
 		}
 
@@ -263,7 +260,7 @@ export class WeatherTypeRef {
 	}
 
 	/**
-	 * @type WeatherTypeRefConfig
+	 * @type {WeatherTypeRefConfig}
 	 */
 	get config() {
 		return {
@@ -291,74 +288,81 @@ export class WeatherTypeRef {
 
 /**
  * Class representing the weather characteristics for a month.
+ * @implements {Configurable<WeatherOptionsConfig>}
  */
-export class Weather {
+export class WeatherOptions {
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#minDuration = MINUTES_IN_DAY;		// 1 day
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#maxDuration = MINUTES_IN_DAY * 3;	// 3 days
 
 	/**
 	 * @readonly
-	 * @type WeatherTypeRef[]
+	 * @type {WeatherTypeRef[]}
 	 */
 	#types = [];
 
 	/**
-	 * @type number
+	 * @type {number}
 	 */
 	#totalWeight = 0;
 
 	/**
 	 * Constructs a new Weather instance.
 	 *
-	 * @param {WeatherConfig?} config Object containing the properties to assign to the new instance.
-	 *        If not provided, will create an empty weather collection.
+	 * @param {WeatherOptionsConfig?} config configuration to apply to the new
+	 *        instance. If not provided, will create an empty weather collection.
 	 */
 	constructor(config) {
 		if (config != null) {
-			this.#configure(config);
+			this.configure(config);
 		}
 	}
 
 	/**
-	 *
-	 * @param {WeatherConfig} config
+	 * @param {WeatherOptionsConfig} config the configuration to apply.
 	 */
-	#configure(config) {
-		let minDuration = Parse.duration(Parse.getProp(config, "1D", "duration", "min"));
-		let maxDuration = Parse.duration(Parse.getProp(config, "3D", "duration", "max"));
+	configure(config) {
+		const minDuration = Parse.prop(config, ["duration", "min"], "1D", Parse.duration);
+		if (minDuration <= 0) {
+			throw new Error("'duration.min' must be greater than 0");
+		}
+
+		const maxDuration = Parse.prop(config, ["duration", "max"], "3D", Parse.duration);
+		if (maxDuration <= 0) {
+			throw new Error("'duration.max' must be greater than 0");
+		}
 
 		if (minDuration > maxDuration) {
-			this.#setMinDuration(maxDuration);
-			this.#setMaxDuration(minDuration);
+			this.#minDuration = maxDuration;
+			this.#maxDuration = minDuration;
 		} else {
-			this.#setMinDuration(minDuration);
-			this.#setMaxDuration(maxDuration);
+			this.#minDuration = minDuration;
+			this.#maxDuration = maxDuration;
 		}
 
 		this.#totalWeight = 0; // May be updated by types parsing
 
 		this.#types.length = 0;
-		this.#types.push(...Parse.array(
-			config.types, [], (/** @type WeatherTypeRefConfig */ item) => {
+		this.#types.push(...Parse.prop(config, ["types"], [],
+			(val) => Parse.array(val, null, (/** @type WeatherTypeRefConfig */ item) => {
 				this.#totalWeight += item.weight;
 
 				return new WeatherTypeRef(
-					item.type,
-					item.weight
+					Parse.prop(item, ["type"], null, Parse.str),
+					Parse.prop(item, ["weight"], null, Parse.num)
 				)
 			}
-		));
+		)));
 	}
 
 	/**
-	 * @type WeatherConfig
+	 * @type {WeatherOptionsConfig}
 	 */
 	get config() {
 		return {
@@ -371,64 +375,28 @@ export class Weather {
 	}
 
 	/**
-	 * Retrieves the minimum duration value for this weather instance.
-	 * @return {number} The minimum duration value for this weather instance.
+	 * The minimum duration value for this weather instance.
 	 */
 	get minDuration() {
 		return this.#minDuration;
 	}
 
 	/**
-	 * Sets the minimum duration value for this weather instance.
-	 * @param {number} minDuration The new minimum duration value for this weather instance.
-	 */
-	#setMinDuration(minDuration) {
-		if (Number.isNaN(minDuration)) {
-			throw new Error("'minDuration' cannot be NaN");
-		}
-
-		if (minDuration <= 0) {
-			throw new Error("'minDuration' must be greater than 0");
-		}
-
-		this.#minDuration = minDuration;
-	}
-
-	/**
-	 * Retrieves the maximum duration value for this weather instance.
-	 * @return {number} The maximum duration value for this weather instance.
+	 * The maximum duration value for this weather instance.
 	 */
 	get maxDuration() {
 		return this.#maxDuration;
 	}
 
 	/**
-	 * Sets the maximum duration value for this weather instance.
-	 * @param {number} maxDuration The new maximum duration value for this weather instance.
-	 */
-	#setMaxDuration(maxDuration) {
-		if (Number.isNaN(maxDuration)) {
-			throw new Error("'maxDuration' cannot be NaN");
-		}
-
-		if (maxDuration <= 0) {
-			throw new Error("'maxDuration' must be greater than 0");
-		}
-
-		this.#maxDuration = maxDuration;
-	}
-
-	/**
-	 * Retrieves the list of weather types assigned to this month.
-	 * @type ReadonlyArray<WeatherTypeRef>
+	 * The list of weather types assigned to this month.
 	 */
 	get types() {
 		return this.#types;
 	}
 
 	/**
-	 * Retrieves the total weight of all associated weather type reference entries.
-	 * @return {number} The total weight of all associated weather type reference entries.
+	 * The total weight of all associated weather type reference entries.
 	 */
 	get totalWeight() {
 		return this.#totalWeight;
@@ -443,15 +411,19 @@ export class Weather {
 // TODO: If there are no entries, what should be returned?
 
 		let weight = Math.random() * this.#totalWeight;
-		/** @type WeatherTypeRef|null */
+		/** @type {WeatherTypeRef?} */
 		let t = null;
 		for (t of this.#types) {
 			weight -= t.weight;
-			if (weight <= 0)
+			if (weight <= 0) {
 				return t;
+			}
 		}
-		if (t == null)
+
+		if (t == null) {
 			throw new Error("Unable to determine weather type");
+		}
+
 		return t;
 	}
 }

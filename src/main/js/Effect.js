@@ -106,7 +106,7 @@ export class EffectTarget {
 
 
 /**
- * Base class of all item effects.
+ * Base class of all effects.
  *
  * @implements {Configurable<LatentEffectConfig>}
  */
@@ -189,20 +189,22 @@ export class LatentEffect {
 	 * @param {LatentEffectConfig} config
 	 */
 	configure(config) {
-		this.type = Parse.enum(EffectType, Parse.getProp(config, EffectType.Unknown, "type"));
-		this.allowMultiple = Parse.bool(Parse.getProp(config, false, "allowMultiple"));
-		this.id = (config.id != null ? Parse.str(config.id) : undefined);
-		this.text = (config.text != null ? Parse.str(config.text) : undefined);
-		this.textVisible = Parse.bool(Parse.getProp(config, false, "textVisible"));
-		this.initialDelay = Parse.duration(Parse.getProp(config, 0, "initialDelay"));
-		this.repetitions = Parse.int(Parse.getProp(config, 1, "repetitions"));
-		this.interval = Parse.duration(Parse.getProp(config, 0, "interval"));
-		this.naturalCureProbability = Parse.num(Parse.getProp(config, 0, "naturalCureProbability"));
+		this.type = Parse.prop(config, ["type"], EffectType.Unknown, (val) => Parse.enum(EffectType, val));
+		this.allowMultiple = Parse.prop(config, ["allowMultiple"], false, Parse.bool);
+		this.id = (config.id != null ? Parse.prop(config, ["id"], null, Parse.str) : undefined);
+		this.text = (config.text != null ? Parse.prop(config, ["text"], null, Parse.str) : undefined);
+		this.textVisible = Parse.prop(config, ["textVisible"], false, Parse.bool);
+		this.initialDelay = Parse.prop(config, ["initialDelay"], 0, Parse.duration);
+		this.repetitions = Parse.prop(config, ["repetitions"], 1, Parse.int);
+		this.interval = Parse.prop(config, ["interval"], 0, Parse.duration);
+		this.naturalCureProbability = Parse.prop(config, ["naturalCureProbability"], 0, Parse.num);
 
 		let triggerType = ItemTypeTrigger;
-		this.triggers = Parse.set(config.triggers, [], (item) => { return Parse.enum(triggerType, item); });
+		this.triggers = Parse.prop(config, ["triggers"], [], (val) => {
+			return Parse.set(val, [], (item) => { return Parse.enum(triggerType, item); });
+		});
 
-		this.action = Parse.action(config.action);
+		this.action = Parse.prop(config, ["action"], null, Parse.action);
 	}
 
 	/**
@@ -252,10 +254,6 @@ export class LatentEffect {
 		this.#type = value;
 	}
 
-	/**
-	 * Retrieves the effect type.
-	 * @type {EffectType}
-	 */
 	get type() {
 		return this.#type;
 	}
@@ -270,9 +268,6 @@ export class LatentEffect {
 		return this.#allowMultiple;
 	}
 
-	/**
-	 * @param {boolean} allowMultiple
-	 */
 	set allowMultiple(allowMultiple) {
 		this.#allowMultiple = allowMultiple;
 	}
@@ -355,7 +350,7 @@ export class LatentEffect {
 	}
 
 	/**
-	 * Number of times the effect is executed before deactivated.
+	 * Number of times the effect is executed before deactivating.
 	 * Decreased (if not 0) with each execution, and effect is removed when it reaches 0.
 	 * 0 means +oo (repeated forever)
 	 */
@@ -587,30 +582,35 @@ export const EffectType = Object.freeze({
 	 * @readonly
 	 */
 	Unknown: 0,
+	0: "Unknown",
 
 	/**
 	 * (1) - Disease
 	 * @readonly
 	 */
 	Disease: 1,
+	1: "Disease",
 
 	/**
 	 * (2) - Poison
 	 * @readonly
 	 */
 	Poison: 2,
+	2: "Poison",
 
 	/**
 	 * (3) - Spell
 	 * @readonly
 	 */
 	Spell: 3,
+	3: "Spell",
 
 	/**
 	 * (4) - Curse
 	 * @readonly
 	 */
 	Curse: 4,
+	4: "Curse",
 
 	/**
 	 * (5) - Unknown2
@@ -622,7 +622,8 @@ export const EffectType = Object.freeze({
 	 * (6) - Potion
 	 * @readonly
 	 */
-	Potion: 6
+	Potion: 6,
+	6: "Potion",
 
 	/**
 	 * (7) - Unknown3

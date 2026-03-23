@@ -575,6 +575,12 @@ export class AudioManager {
 		this.#context = new AudioContext();
 
 		this.#currentNotificationBuffer = this.#context.createBuffer(1, 1, this.#context.sampleRate);
+
+		const listener = this.#context.listener;
+		listener.upZ.value = 1;
+		listener.upX.value = 0;
+		listener.upY.value = 0;
+		listener.forwardZ.value = 0;
 	} // constructor
 
 	/**
@@ -800,10 +806,15 @@ export class AudioManager {
 		}
 	}
 
+	setListenerPosition(x, y, height, orientation) {
+		const listener = this.#context.listener;
 
-	// set listener orientation (angle)
-	// set listener position (x, y, h)
+		listener.forwardX.value = Math.cos(orientation);
+		listener.forwardY.value = Math.sin(orientation);
 
-
+		listener.positionX = x;
+		listener.positionY = y;
+		listener.positionZ = height;
+	}
 
 } // AudioManager

@@ -6,8 +6,8 @@ import { Parse } from "./Parse.js";
  * Parses an audio sample position/duration value, returning the number of samples it represents
  * within an audio stream with the specified sample rate.
  *
- * @param {(number|string)?} position the value to parse, in seconds. This value may be specified in any format
- *        supported by {@link Parse.duration}.
+ * @param {(number|string)?} position the value to parse. This value may be specified
+ *        in any format supported by {@link Parse.duration} with a default unit of seconds.
  * @param {(number|string)?} defaultPosition the default value to use if the `position` is
  *        null. If this value is also null, the method will throw an error.
  * @param {number} sampleRate the number of samples per second for the audio.
@@ -34,8 +34,8 @@ function parseSample(position, defaultPosition, sampleRate) {
 export class AudioClipOptions {
 
 	/**
-	 * Gain amount to apply to the clip.
-	 * @type {number}
+	 * Gain amount to apply to the clip. Defaults to 1 if not provided.
+	 * @type {number?}
 	 * @readonly
 	 */
 	gain;
@@ -46,7 +46,9 @@ export class AudioClipOptions {
 	 * For example, values of +100 and -100 detune the source up or down by one
 	 * semitone, while +1200 and -1200 detune it up or down by one octave.
 	 *
-	 * @type {number}
+	 * Defaults to 0 if not provided.
+	 *
+	 * @type {number?}
 	 * @readonly
 	 */
 	detune;
@@ -57,20 +59,25 @@ export class AudioClipOptions {
 	 * A value of 1.0 indicates it should play at the same speed as its sampling rate,
 	 * values less than 1.0 cause the sound to play more slowly, while values greater
 	 * than 1.0 result in audio playing faster than normal.
-	 * @type {number}
+	 *
+	 * Defaults to 1 if not provided.
+	 *
+	 * @type {number?}
 	 * @readonly
 	 */
 	playbackRate;
 
 	/**
-	 * Whether the clip should loop repeatedly or not.
-	 * @type {boolean}
+	 * Whether the clip should loop repeatedly or not. Defaults to false if not
+	 * provided.
+	 * @type {boolean?}
 	 * @readonly
 	 */
 	loop;
 
 	/**
 	 * X position of the audio in map space.
+	 * If this property is assigned, `y` must also be assigned.
 	 * @type {number?}
 	 * @readonly
 	 */
@@ -78,35 +85,48 @@ export class AudioClipOptions {
 
 	/**
 	 * Y position of the audio in map space.
-	 * @type {number}
+	 * If this property is assigned, `x` must also be assigned.
+	 * @type {number?}
 	 * @readonly
 	 */
 	y;
 
 	/**
 	 * Height of the audio clip in map space.
-	 * @type {number}
+	 * Defaults to 0 if not provided. This property has no effect unless
+	 * `x` and `y` are assigned.
+	 * @type {number?}
 	 * @readonly
 	 */
 	height;
 
 	/**
-	 * The sample position within the buffer where playback will begin.
-	 * @type {number}
+	 * The position within the audio buffer where playback will begin.
+	 * Defaults to 0 if not provided. This value may be specified in any format
+	 * supported by {@link Parse.duration} with a default unit of seconds.
+	 * The time is relative to the buffer's timeline based on its sampleRate and
+	 * is independent of the playbackRate.
+	 *
+	 * @type {(number|string)?}
 	 * @readonly
 	 */
 	start;
 
 	/**
-	 * The length of playback in samples.
-	 * @type {number}
+	 * The length of playback for the clip.
+	 * Defaults to the remaining length of the audio buffer remaining beyond the
+	 * start position if not provided. This value may be specified in any format
+	 * supported by {@link Parse.duration} with a default unit of seconds. The
+	 * time is relative to the buffer's timeline based on its sampleRate and is
+	 * independent of the playbackRate.
+	 * @type {(number|string)?}
 	 * @readonly
 	 */
 	length;
 
 	/**
 	 * Notifications registered for this clip.
-	 * @type {AudioNotification[]}
+	 * @type {AudioNotification[]?}
 	 * @readonly
 	 */
 	notifications;

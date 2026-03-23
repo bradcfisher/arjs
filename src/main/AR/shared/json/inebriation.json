@@ -1,9 +1,7 @@
 {
     "interval": "15m",
-    "defaultRate": {
-        "blood": -3,
-        "intestine": -6
-    },
+    "defaultBloodRate": -3,
+    "defaultIntestineRate": -6,
     "computation": "/* Scale/normalize BAC relative to STA */ return gameState.character.alcohol.bloodConcentration / gameState.character.stamina.effective;",
     "types": [
         {
@@ -18,7 +16,7 @@
             "max": 1,
             "actions": {
                 "enter": {
-                    "increase": "XXX:TODO: /* Loss of coordination: bottom status screen randomly changes. */"
+                    "increase": "/* TODO: Loss of coordination: bottom status screen randomly changes. */"
                 },
                 "leave": {
                     "decrease": ""
@@ -32,7 +30,7 @@
             "max": 2,
             "actions": {
                 "enter": {
-                    "increase": "XXX:TODO: /* Loss of balance: movement is hampered (random moves). Bank and inn jobs are forbidden. */"
+                    "increase": "/* TODO: Loss of balance: movement is hampered (random moves). Bank and inn jobs are forbidden. */"
                 },
                 "leave": {
                     "decrease": ""
@@ -45,7 +43,7 @@
             "_": "Range is ]2*Sta; +Inf]",
             "actions": {
                 "enter": {
-                    "increase": "XXX:TODO: /* Loss of sight: random blackouts. Entering smithies, shops and taverns are forbidden. */"
+                    "increase": "/* TODO: Loss of sight: random blackouts. Entering smithies, shops and taverns are forbidden. */"
                 },
                 "leave": {
                     "decrease": ""

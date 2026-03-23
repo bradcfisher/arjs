@@ -4,7 +4,7 @@
 		"map": "city",
 		"x": 35.5,
 		"y": 36.5,
-		"angle": "north"
+		"orientation": "north"
 	},
 	"renderer": {
 		"renderDistance": 64,

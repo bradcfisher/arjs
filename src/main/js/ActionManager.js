@@ -41,13 +41,13 @@ export class DoorActionParameters {
 
     /**
      * Interaction event actions.
-     * @type {{[type:string]: {
-     *         key: ActionCallback[],
-     *         force: ActionCallback[],
-     *         disenchant: ActionCallback[],
-     *         success: ActionCallback[],
-     *         identified: ActionCallback[]
-     *       }}}
+     * @type {{
+     *         key: ActionCallback[] | undefined,
+     *         force: ActionCallback[] | undefined,
+     *         disenchant: ActionCallback[] | undefined,
+     *         success: ActionCallback[] | undefined,
+     *         identified: ActionCallback[] | undefined
+     *       }}
      */
     on;
 

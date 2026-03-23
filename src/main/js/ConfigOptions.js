@@ -1,5 +1,5 @@
 import { ActionDefinition, Parse, RegisteredAction } from "./Parse.js";
-import { ClassRegistry } from "./Serializer.js";
+import { ClassRegistry, Serializer } from "./Serializer.js";
 import { Configurable } from "./Configurable.js";
 
 /** @import {ActionCallback} from "./ActionManager.js" */
@@ -210,9 +210,9 @@ class ChangeActionCallbacks {
 	 */
 	get config() {
 		return {
-			always: (this.always ? this.always.sourceCode : undefined),
-			decrease: (this.decrease ? this.decrease.sourceCode : undefined),
-			increase: (this.increase ? this.increase.sourceCode : undefined)
+			always: this.always,
+			decrease: this.decrease,
+			increase: this.increase
 		};
 	}
 
@@ -282,7 +282,9 @@ export class OptionActions {
 	configure(config) {
 		this.#enter.configure(config.enter);
 		this.#leave.configure(config.leave);
-		this.#recurring = parseCallback(config.recurring);
+		this.#recurring = (config.recurring == null
+			? undefined
+			: Parse.prop(config, ["recurring"], null, Parse.action) );
 	}
 
 	/**
@@ -292,7 +294,7 @@ export class OptionActions {
 		return {
 			enter: this.enter.config,
 			leave: this.leave.config,
-			recurring: (this.recurring ? this.recurring.sourceCode : undefined)
+			recurring: this.recurring
 		};
 	}
 
@@ -358,8 +360,8 @@ export class Option {
 	 * @param {((value: any) => number)?} minMaxParser
 	 */
 	constructor(config, accumulate, minMaxParser) {
-		this.#text = Parse.str(config.text);
-		this.#textVisible = Parse.bool(config.textVisible == null ? true : config.textVisible);
+		this.#text = Parse.prop(config, ["text"], null, Parse.str);
+		this.#textVisible = Parse.prop(config, ["textVisible"], true, Parse.bool);
 		this.#actions = new OptionActions(config.actions);
 
 		if (minMaxParser == null) {
@@ -368,12 +370,12 @@ export class Option {
 
 		this.#min = Number.NaN;
 		if (config.min != null) {
-			this.#min = minMaxParser(config.min);
+			this.#min = Parse.prop(config, ["min"], null, minMaxParser);
 		}
 
 		this.#max = Number.NaN;
 		if (config.max != null) {
-			this.#max = minMaxParser(config.max);
+			this.#max = Parse.prop(config, ["max"], null, minMaxParser);
 		}
 
 		accumulate(this);
@@ -541,6 +543,11 @@ export class Options {
 	}
 
 	/**
+	 * The function used to parse the min and max properties.
+	 * For example, this can be used to parse time or temperature values specified
+	 * with a more flexible or natural notation. If unspecified, the min and max
+	 * properties will be parsed as plain numbers.
+	 *
 	 * @protected
 	 * @type {undefined|((value:any) => number)}
 	 */
@@ -549,17 +556,16 @@ export class Options {
 	}
 
 	/**
-	 *
-	 * @param {OptionsConfig} config
+	 * Applies the specified configuration.
+	 * @param {OptionsConfig} config the configuration to apply.
 	 */
 	configure(config) {
-		this.computation = Parse.required(parseCallback(config.computation), "computation");
+		this.computation = Parse.prop(config, ["computation"], null, Parse.action);
 
 		const accumulator = Option.accumulator();
-		this.#types = Parse.array(
-			config.types, [],
-			(item) => new Option(item, accumulator, this.minMaxParseFunction)
-		);
+		this.#types = Parse.prop(config, ["types"], [], (val) => {
+			return Parse.array(val, [], (item) => new Option(item, accumulator, this.minMaxParseFunction));
+		});
 	}
 
 	/**
@@ -567,7 +573,7 @@ export class Options {
 	 */
 	get config() {
 		return {
-			computation: this.computation.sourceCode,
+			computation: this.computation,
 			types: this.#types.map((item) => item.config)
 		};
 	}
@@ -580,7 +586,7 @@ export class Options {
 	}
 
 	set computation(value) {
-		this._computation = value;
+		this.#computation = value;
 	}
 
 	/**
@@ -677,7 +683,7 @@ export class RecurringOptions
 	/**
 	 * Static initializer for registering deserializer with private member access.
 	 */
-	static #initializeClass_RecurringOptions = (() => {
+	static #initializeClass = (() => {
 		ClassRegistry.registerClass(
 			"RecurringOptions", RecurringOptions,
 			(obj, serializer) => {
@@ -704,8 +710,8 @@ export class RecurringOptions
 	configure(config) {
 		super.configure(config);
 
-		this.interval = Parse.duration(config.interval, "15M");
-		this.defaultRate = Parse.num(config.defaultRate);
+		this.interval = Parse.prop(config, ["interval"], "15M", Parse.duration);
+		this.defaultRate = Parse.prop(config, ["defaultRate"], null, Parse.num);
 	}
 
 	/**
@@ -713,8 +719,8 @@ export class RecurringOptions
 	 */
 	get config() {
 		const config = super.config;
-		config.defaultRate = this.defaultRate;
-		config.interval = this.interval;
+		config.defaultRate = this.#defaultRate;
+		config.interval = this.#interval;
 		return config;
 	}
 
@@ -739,14 +745,135 @@ export class RecurringOptions
 			throw new Error("defaultRate cannot be NaN");
 		}
 
-		this._defaultRate = value;
+		this.#defaultRate = value;
 	}
 }
 
+/**
+ * @interface
+ */
+export class InebriationOptionsConfig
+	extends OptionsConfig
+{
+	/**
+	 * @readonly
+	 * @type {(string|number)?}
+	 */
+	interval;
 
-/*
+	/**
+	 * @readonly
+	 * @type {number}
+	 */
+	defaultBloodRate;
 
-Inebriation: InebriationOptions<MaxOption> (will need subtype for separate defaultRate values)
+	/**
+	 * @readonly
+	 * @type {number}
+	 */
+	defaultIntestineRate;
+}
 
-*/
+/**
+ * @implements {Configurable<InebriationOptionsConfig>}
+ */
+export class InebriationOptions
+	extends Options
+{
+	/**
+	 * @type {number}
+	 */
+	#defaultBloodRate = 0;
 
+	/**
+	 * @type {number}
+	 */
+	#defaultIntestineRate = 0;
+
+	/**
+	 * @type {number}
+	 */
+	#interval = 0;
+
+	/**
+	 * Static initializer for registering deserializer with private member access.
+	 */
+	static #initializeClass = (() => {
+		ClassRegistry.registerClass(
+			"InebriationOptions", InebriationOptions,
+			(obj, serializer) => {
+				serializer.writeProp(obj.config);
+			},
+			(obj, data, deserializer) => {
+				obj.configure(deserializer.readProp(data));
+			}
+		);
+	})();
+
+	/**
+	 *
+	 * @param {InebriationOptionsConfig?} config
+	 */
+	constructor(config) {
+		super(config);
+	}
+
+	/**
+	 *
+	 * @param {InebriationOptionsConfig} config
+	 */
+	configure(config) {
+		super.configure(config);
+
+		this.interval = Parse.prop(config, ["interval"], "15M", Parse.duration);
+		this.defaultBloodRate = Parse.prop(config, ["defaultBloodRate"], null, Parse.num);
+		this.defaultIntestineRate = Parse.prop(config, ["defaultIntestineRate"], null, Parse.num);
+	}
+
+	/**
+	 * @type {InebriationOptionsConfig}
+	 */
+	get config() {
+		const config = super.config;
+		config.defaultBloodRate = this.#defaultBloodRate;
+		config.defaultIntestineRate = this.#defaultIntestineRate;
+		config.interval = this.#interval;
+		return config;
+	}
+
+	get interval() {
+		return this.#interval;
+	}
+
+	set interval(value) {
+		if (!(value > 0)) {
+			throw new Error("interval must be greater than 0");
+		}
+
+		this.#interval = value;
+	}
+
+	get defaultBloodRate() {
+		return this.#defaultBloodRate;
+	}
+
+	set defaultBloodRate(value) {
+		if (Number.isNaN(value)) {
+			throw new Error("defaultBloodRate cannot be NaN");
+		}
+
+		this.#defaultBloodRate = value;
+	}
+
+	get defaultIntestineRate() {
+		return this.#defaultIntestineRate;
+	}
+
+	set defaultIntestineRate(value) {
+		if (Number.isNaN(value)) {
+			throw new Error("defaultIntestineRate cannot be NaN");
+		}
+
+		this.#defaultIntestineRate = value;
+	}
+}
