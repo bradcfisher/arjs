@@ -1,5 +1,6 @@
-import { AudioClipOptions } from "./AudioClip.js";
+import { AudioClip, AudioClipOptions } from "./AudioClip.js";
 import { GameState } from "./GameState.js";
+import { Parse } from "./Parse.js";
 
 /**
  * @interface

@@ -5,6 +5,9 @@ import { EventDispatcher } from "./EventDispatcher.js";
 import { Parse, ActionDefinition, RegisteredAction } from "./Parse.js";
 import { TextureProvider, SolidColorTexture } from "./Texture.js";
 
+// TODO: Add support for items present in a cell (dropped or default).
+// TODO: Add support for action(s) to execute when entering (or leaving?) a cell (e.g. teleport or other environmental effects)
+
 /** @import {ActionCallback} from "./ActionManager.js" */
 
 
@@ -294,7 +297,7 @@ export class WallStyle extends EventDispatcher {
                             try {
                                 action({ event });
                             } catch (e) {
-                                log.error(`Error in action for ${type}:`, event, error);
+                                console.error(`Error in action for ${type}:`, event, error);
                             }
                         }
                     });

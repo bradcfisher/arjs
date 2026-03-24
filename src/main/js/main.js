@@ -5,6 +5,7 @@ export * from "./Serializer.js";
 export * from "./GameState.js";
 export * from "./AudioManager.js";
 export * from "./AudioNotification.js";
+export * from "./AudioReader.js";
 export * from "./AudioClip.js";
 export * from "./Karaoke.js";
 export * from "./Parse.js";
@@ -16,7 +17,7 @@ export * from "./MapRenderer.js";
 
 // These classes aren't directly referenced in any other code, so are
 // removed from the bundle without these refs.   They need to be included
-// a they register themselves as factories for the item loading process.
+// as they register themselves as factories for the item loading process.
 export { PotionItemType } from "./PotionItemType.js";
 export { SpellItemType } from "./SpellItemType.js";
 

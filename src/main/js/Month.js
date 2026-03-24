@@ -328,6 +328,7 @@ export class WeatherOptions {
 	 * @param {WeatherOptionsConfig} config the configuration to apply.
 	 */
 	configure(config) {
+		// TODO: Consider reusing DurationRange here
 		const minDuration = Parse.prop(config, ["duration", "min"], "1D", Parse.duration);
 		if (minDuration <= 0) {
 			throw new Error("'duration.min' must be greater than 0");

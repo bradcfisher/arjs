@@ -496,16 +496,18 @@ export class ScheduledAudioNotification extends AudioNotification {
 			return root;
 		}
 
-		let entry = this;
+		let last = this;
+		let entry = this.#next;
+
 		while (entry != null) {
-			if (notification == entry.#next.id) {
+			if (notification == entry.id) {
 				// Found a match, remove from the list
-				const newNext = entry.#next.#next;
-				entry.#next.#next = null;
-				entry.#next = newNext;
+				last.#next = entry.#next;
+				entry.#next = null;
 				break;
 			}
 
+			last = entry;
 			entry = entry.#next;
 		}
 
