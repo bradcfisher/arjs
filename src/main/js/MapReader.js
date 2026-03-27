@@ -5,10 +5,12 @@ import { GameState } from "./GameState.js";
 import { ScenarioMap, WallStyle } from "./ScenarioMap.js";
 import { Texture, TextureFrame, AnimatedTextureProvider, SolidColorTexture } from "./Texture.js";
 import { AudioReader } from "./AudioReader.js";
+import { ScenarioMapOptionsConfig } from "./Scenario.js";
 
 /**
  * Provides a resource manager and uninitialized map as well as utility
  * functions to read map definitions from JSON files.
+ * @abstract
  */
 export class MapReader extends EventDispatcher {
 
@@ -22,6 +24,16 @@ export class MapReader extends EventDispatcher {
         this.#map = new ScenarioMap(width, height);
 
         this.#resourceManager.on("complete", (event) => this.triggerEvent("complete", event.data));
+    }
+
+    /**
+     * Reads a map described by the provided configuration.
+     * @param {ScenarioMapOptionsConfig} config the map configuration to load.
+     * @param {string} baseUrl the base URL to use for relative paths.
+     * @returns {PromiseLike<ScenarioMap>} a promise that will complete when the load completes
+     */
+    readMap(config, baseUrl) {
+        throw new Error("readMap is abstract and must be implemented by a subclass");
     }
 
     /**

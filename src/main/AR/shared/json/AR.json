@@ -15,8 +15,14 @@
 		{"$import": "./spells.json", "flatten": true}
 	],
 	"scenarios": {
-		"The City": {"$import": "../../city/json/main.json"},
-		"The Dungeon": {"$import": "../../dungeon/json/main.json"}
+		"city": {"$import": "../../city/json/main.json"},
+		"dungeon": {"$import": "../../dungeon/json/main.json"}
 	},
-	"defaultScenario": "The City"
+	"defaultLocation": {
+		"scenario": "city",
+		"map": "city",
+		"x": 35.5,
+		"y": 36.5,
+		"orientation": "north"
+	}
 }

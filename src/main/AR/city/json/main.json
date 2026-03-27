@@ -1,6 +1,7 @@
 {
 	"name": "The City",
 	"defaultLocation": {
+		"scenario": "city",
 		"map": "city",
 		"x": 35.5,
 		"y": 36.5,
@@ -13,6 +14,9 @@
 		"wallWidthToHeightRatio": 2,
 		"projectionPlaneOffset": 0
 	},
+	"teleportDestinations": {
+		"$import": "./teleportDestinations.json"
+	},
 	"maps": {
 		"city": {
 			"type": "city",
@@ -24,7 +28,8 @@
 			"zoneJsonUrl": "./cityZones.json",
 			"messageJsonUrl": "./cityMessages.json",
 			"encounterJsonUrl": "./cityEncounters.json",
-			"patchJsonUrl": "./cityPatches.json"
+			"patchJsonUrl": "./cityPatches.json",
+			"soundJsonUrl": "./sounds.json"
 		}
 	}
 }

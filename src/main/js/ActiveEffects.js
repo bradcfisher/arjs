@@ -71,7 +71,7 @@ export class ActiveEffects extends Array {
 	 */
 	constructor(target, config) {
 		super();
-		this._target = target;
+		this.#target = target;
 		this.configure(config);
 	}
 

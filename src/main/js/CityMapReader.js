@@ -2,6 +2,7 @@
 import { MapReader } from "./MapReader.js";
 import { Parse } from "./Parse.js";
 import { CityMapOptionsConfig } from "./Scenario.js";
+import { ScenarioMap } from "./ScenarioMap.js";
 
 
 export class CityMapReader extends MapReader {
@@ -312,7 +313,7 @@ export class CityMapReader extends MapReader {
      * Reads a City format map described by the provided configuration.
      * @param {CityMapOptionsConfig} config the map configuration to load.
      * @param {string} baseUrl the base URL to use for relative paths.
-     * @returns {PromiseLike<void>} a promise that will complete when the load completes
+     * @returns {PromiseLike<ScenarioMap>} a promise that will complete when the load completes
      */
     async readMap(config, baseUrl) {
         if (baseUrl != null) {
@@ -357,7 +358,7 @@ export class CityMapReader extends MapReader {
             //messageJsonUrl;
             //encounterJsonUrl;
 
-            return Promise.all(promises);
+            return Promise.all(promises).then(() => this.map);
         });
     }
 

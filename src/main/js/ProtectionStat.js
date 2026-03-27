@@ -163,7 +163,7 @@ export class ProtectionStat
 	 *
 	 * The computation performed is:
 	 *  - Multiply the damage by the damage proficiency factor (see [[getDamageProficiencyFactor]])
-	 *  - Subtract Math.random() * this._base from the damage
+	 *  - Subtract Math.random() * this.base from the damage
 	 *
 	 * @param {number} damage The damage amount to adjust.
 	 * @return Adjusted damage value after application of this protection.

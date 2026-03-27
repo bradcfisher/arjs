@@ -1,10 +1,10 @@
 
 import { EventDispatcher } from "./EventDispatcher.js";
-import { Player } from "./Player.js";
 import { AnimationManager } from "./Animation.js";
 import { FrameRateTimer } from "./FrameRateTimer.js";
-import { ScenarioMap, MapCell, WallStyle, Ray } from "./ScenarioMap.js";
+import { ScenarioMap, MapCell, Ray } from "./ScenarioMap.js";
 import { Texture } from "./Texture.js";
+import { GameState } from "./GameState.js";
 
 export class Renderer extends EventDispatcher {
 
@@ -13,10 +13,9 @@ export class Renderer extends EventDispatcher {
     /**
      *
      * @param {HTMLCanvasElement} canvas the canvas to draw into
-     * @param {ScenarioMap} worldMap the world map to render
-     * @param {Player} player the player
+     * @param {GameState} gameState the game state containing the map and player data to render
      */
-    constructor(canvas, worldMap, player) {
+    constructor(canvas, gameState) {
         super();
 
         /**
@@ -36,12 +35,9 @@ export class Renderer extends EventDispatcher {
         //this.ctx.imageSmoothingQuality = "low";
 
         /**
-         * @type {ScenarioMap}
+         * @type {GameState}
          */
-        this.worldMap = worldMap;
-
-        // Camera properties
-        this.player = player;
+        this.gameState = gameState;
 
         // Rendering settings
         /**
@@ -164,16 +160,18 @@ export class Renderer extends EventDispatcher {
      * @param {DOMHighResTimeStamp} timestamp
      */
     #renderColumn(x, timestamp) {
+        const player = this.gameState.player;
+
         // Calculate ray vector relative to camera plane
-        const dirX = Math.cos(this.player.orientation);
-        const dirY = Math.sin(this.player.orientation);
+        const dirX = Math.cos(player.orientation);
+        const dirY = Math.sin(player.orientation);
         const cameraSweep = (-1 + (x * 2 / this.width));
         const cameraDirX = -dirY * this.cameraFovMagnitude;
         const cameraDirY = dirX * this.cameraFovMagnitude;
         const rayDirX = dirX + cameraDirX * cameraSweep;
         const rayDirY = dirY + cameraDirY * cameraSweep;
 
-        const hits = this.worldMap.castRay(this.player.x, this.player.y, rayDirX, rayDirY, this.renderDistance, this.#shouldRenderWallStyle);
+        const hits = this.gameState.map.castRay(player.x, player.y, rayDirX, rayDirY, this.renderDistance, this.#shouldRenderWallStyle);
 
         // Draw each hit in reverse order (painter's algorithm)
         let n = hits.length;
@@ -187,7 +185,7 @@ export class Renderer extends EventDispatcher {
                 ? Math.min(100000, (this.width / this.wallWidthToHeightRatio) / (ray.distance * this.cameraFovMagnitude * 2))
                 : 0;
 
-            const playerYOffset = this.player.height + this.player.headBob;
+            const playerYOffset = player.height + player.headBob;
             const wallTop = this.projectionPlaneCenter - wallHeight / 2 + playerYOffset * wallHeight;
 
             if (firstPass) {
@@ -353,13 +351,14 @@ export class Renderer extends EventDispatcher {
             dstOfsStep = this.width * 4;
         }
 
+        const worldMap = this.gameState.map;
         const destImageData = this.imageBuffer;
         const dstData = destImageData.data;
 
         // Retrieve texture for current cell
         let txtCellX = ray.cellX;
         let txtCellY = ray.cellY;
-        let texture = textureProvider(this.worldMap, ray.cell, timestamp);
+        let texture = textureProvider(worldMap, ray.cell, timestamp);
         let textureW = texture.width;
         let textureH = texture.height;
         let srcData = texture.imageData.data;
@@ -422,15 +421,15 @@ export class Renderer extends EventDispatcher {
                 txtCellX = cellX;
                 txtCellY = cellY;
 
-                const cell = this.worldMap.getCell(cellX, cellY);
+                const cell = worldMap.getCell(cellX, cellY);
 
-                texture = textureProvider(this.worldMap, cell, timestamp);
+                texture = textureProvider(worldMap, cell, timestamp);
                 textureW = texture.width;
                 textureH = texture.height;
                 srcData = texture.imageData.data;
                 srcDataWidth = texture.imageData.width;
 
-                if (!cell && (cellX < -1 || cellY < -1 || cellX > this.worldMap.width || cellY > this.worldMap.height)) {
+                if (!cell && (cellX < -1 || cellY < -1 || cellX > worldMap.width || cellY > worldMap.height)) {
                     // If outside the map, draw the first pixel in red for a nice grid effect
                     let shade = this.wallShading ? Math.max(0, 1 - currentDist / this.renderDistance) : 1;
                     dstData[dstOfs] = 160;
@@ -507,8 +506,8 @@ export class Renderer extends EventDispatcher {
         const leftX = this.width - width - 10;
         const topY = 10;
         const ctx = this.ctx;
-        const worldMap = this.worldMap;
-        const player = this.player;
+        const worldMap = this.gameState.map;
+        const player = this.gameState.player;
 
         const cellSize = width / visibleCells;
         const height = cellSize * visibleCells;
@@ -554,7 +553,7 @@ export class Renderer extends EventDispatcher {
                 let cellBackground;
                 if (cell.ceiling) {
                     // Enclosed area
-                    cellBackground = this.worldMap.getCeilingStyle(cell.ceiling).color;
+                    cellBackground = worldMap.getCeilingStyle(cell.ceiling).color;
                 } else if (cell.special & 1) {
                     // Establishment
                     let establishmentColors = [
@@ -668,7 +667,8 @@ export class Renderer extends EventDispatcher {
      * @param {string | CanvasGradient | CanvasPattern} color
      */
     #drawMapRay(angle, castDistance, drawX, drawY, cellSize, color) {
-        const hits = this.worldMap.castRayAtAngle(this.player.x, this.player.y, angle, castDistance, (hitData) => !hitData.wallStyle.transparent);
+        const player = this.gameState.player;
+        const hits = this.gameState.map.castRayAtAngle(player.x, player.y, angle, castDistance, (hitData) => !hitData.wallStyle.transparent);
         const ray = hits[0];
         const ctx = this.ctx;
 
@@ -703,79 +703,12 @@ export class Renderer extends EventDispatcher {
         }
     }
 
+    // TODO: Remove this when no longer needed
     setFoo(txt) {
         if (!this._foo) {
             this._foo = document.getElementById("foo");
         }
         this._foo.innerText = txt;
-    }
-
-}
-
-
-
-// For a more advanced version with sprites:
-class AdvancedRenderer extends Renderer {
-    constructor(canvasId, worldMap) {
-        super(canvasId, worldMap);
-        this.sprites = [];
-        this.spriteCache = new Map();
-    }
-
-    addSprite(x, y, type, size = 1) {
-        this.sprites.push({
-            x,
-            y,
-            type,
-            size,
-            id: Date.now() + Math.random()
-        });
-    }
-
-    renderSprites() {
-        // Sort sprites by distance from player
-        const sortedSprites = this.sprites
-            .map(sprite => {
-                const dx = sprite.x - this.player.x;
-                const dy = sprite.y - this.player.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                return { ...sprite, distance };
-            })
-            .sort((a, b) => b.distance - a.distance);
-
-        // Render each sprite
-        sortedSprites.forEach(sprite => {
-            this.renderSprite(sprite);
-        });
-    }
-
-    renderSprite(sprite) {
-        // Calculate sprite position on screen
-        const dx = sprite.x - this.player.x;
-        const dy = sprite.y - this.player.y;
-
-        // Rotate sprite to player's view
-        const angle = Math.atan2(dy, dx) - this.player.orientation;
-
-        // Only render if sprite is in field of view
-        if (Math.abs(angle) > this.fieldOfView / 2) return;
-
-        // Calculate distance and screen position
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const spriteHeight = Math.min(this.height / distance, this.height);
-        const spriteWidth = spriteHeight;
-
-        const screenX = (angle / this.fieldOfView + 0.5) * this.width;
-        const screenY = (this.height - spriteHeight) / 2;
-
-        // Draw sprite
-        this.ctx.fillStyle = '#FF0000';
-        this.ctx.fillRect(screenX - spriteWidth / 2, screenY, spriteWidth, spriteHeight);
-    }
-
-    render(timestamp) {
-        super.render(timestamp);
-        this.renderSprites();
     }
 
 }

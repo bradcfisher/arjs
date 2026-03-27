@@ -1,7 +1,7 @@
 import { MapReader } from "./MapReader.js";
 import { Parse } from "./Parse.js";
 import { DungeonMapOptionsConfig } from "./Scenario.js";
-import { MapZone, MapZoneRef } from "./ScenarioMap.js";
+import { MapZone, MapZoneRef, ScenarioMap } from "./ScenarioMap.js";
 
 export class DungeonMapReader extends MapReader {
 
@@ -288,7 +288,7 @@ export class DungeonMapReader extends MapReader {
      * @param {DungeonMapOptionsConfig} config the map configuration to load.
      * @param {string=} baseUrl the base URL to use for relative paths. If not given,
      *        the value of {@link Parse.baseUrl} will be used.
-     * @returns {PromiseLike<void>} a promise that will complete when the load completes
+     * @returns {PromiseLike<ScenarioMap>} a promise that will complete when the load completes
      */
     async readMap(config, baseUrl) {
         return Parse.withBaseUrl(baseUrl, () => {
@@ -326,7 +326,7 @@ export class DungeonMapReader extends MapReader {
 	//messageJsonUrl;
 	//encounterJsonUrl;
 
-            return Promise.all(promises);
+            return Promise.all(promises).then(() => this.map);
         });
     }
 

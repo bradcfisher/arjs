@@ -473,7 +473,7 @@ export class GameClock
 		this.#day = normalizedDate.day;
 		this.#hour = normalizedDate.hour;
 		this.#minute = normalizedDate.minute;
-		this._current = normalizedDate.current;
+		this.#current = normalizedDate.current;
 	}
 
 	/**

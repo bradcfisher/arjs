@@ -154,7 +154,8 @@ export class Parse {
 	 *
 	 * If the callback throws an error, that error will be thrown by this method.
 	 *
-	 * @param {string|URL} baseUrl the base URL to apply while executing the callback.
+	 * @param {string|URL|null} baseUrl the base URL to apply while executing the callback. If not
+	 *        provided, the current base URL value is used instead.
 	 * @param {() => any} callback the callback to execute in the context of the provided base URL.
 	 * @returns {any} the value returned by the callback (if any)
 	 * @throws any error thrown by the callback
@@ -661,6 +662,76 @@ export class Parse {
 
 		console.log("Parse.url: ref=" + val + " base=" + Parse.baseUrl + " result = " + new URL(val, Parse.baseUrl))
 		return new URL(val, Parse.baseUrl);
+	}
+
+	/**
+	 * Parses a character/map orientation value.
+	 *
+	 * The value to parse may be an angle in radians (0 = East, -Pi/2 = North, Pi/2 = South, etc) or one of
+	 * the following cardinal compass direction names/patterns:
+     *
+     * - "north" or "n" = -Pi / 2 (approximately 1.57080)
+     * - "northeast" or "ne" = -Pi / 4 (approximately 0.78540)
+     * - "northwest" or "nw" = -Pi * 3 / 4 (approximately 2.35619)
+     * - "east" or "e" = 0
+     * - "west" or "w" = Pi (approximately 3.14159)
+     * - "southeast" or "se" = Pi / 4 (approximately -0.78540)
+     * - "south" or "s" = Pi / 2 (approximately -1.57080)
+     * - "southwest" or "sw" = Pi * 3 / 4 (approximately -2.35619)
+	 * - "random" = A random orientation in any direction
+	 * - "random:north,south" - a random orientation chosen from the specified list (no whitespace allowed)
+	 *
+	 * @param {any} val the orientation value to parse.
+	 * @param {any} defaultVal The value to parse if `val` is null/undefined.  If undefined, and `val`
+	 *        is null/undefined, then an error will be thrown.
+	 *
+	 * @return {number} The parsed orientation value, in radians.
+	 * @throws Error if both `val` and `defaultVal` are null/undefined or
+	 *         if the value cannot be parsed.
+	 */
+	static orientation(val, defaultVal) {
+		if (val == null) {
+			if (defaultVal == null) {
+				throw new Error('Orientation value required');
+			}
+
+			val = defaultVal;
+		}
+
+		if (!isNaN(val)) {
+			return Number(val);
+		}
+
+		val = String(val).toLowerCase();
+		switch (val) {
+            case "north":
+                return -Math.PI / 2;
+            case "northeast":
+                return -Math.PI / 4;
+            case "northwest":
+                return -Math.PI * 3 / 4;
+            case "east":
+                return 0;
+            case "south":
+                return Math.PI / 2;
+            case "southeast":
+                return Math.PI / 4;
+            case "southwest":
+                return Math.PI * 3 / 4;
+            case "west":
+                return Math.PI;
+			case "random":
+				return Math.PI * 2 * Math.random();
+		}
+
+		// Select random option from provided list
+		const m = /^random:([a-z]+(?:,[a-z]+)*)$/.exec(val);
+		if (!m) {
+			throw new Error("Unable to parse orientation: " + val);
+		}
+
+		const options = m[1].split(",").map((o) => Parse.orientation(o));
+		return options[Math.trunc(Math.random() * options.length)];
 	}
 
 	/**

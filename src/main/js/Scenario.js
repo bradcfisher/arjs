@@ -7,6 +7,13 @@ import { Parse } from "./Parse.js";
  */
 export class ScenarioLocationConfig {
     /**
+     * The name of the scenario.
+     * @readonly
+     * @type {string}
+     */
+    scenario;
+
+    /**
      * The name of the map containing the location.
      * @readonly
      * @type {string}
@@ -29,21 +36,10 @@ export class ScenarioLocationConfig {
 
     /**
      * The orientation of the character.
-     * May be an angle in radians using a right-handed coordinate system
-     * (0 = east, Pi/2 = north, etc) or one of the following cardinal compass
-     * directions:
-     *
-     * - `north` = Pi / 2 (approximately 1.57080)
-     * - `northeast` = Pi / 4 (approximately 0.78540)
-     * - `northwest`= Pi * 3 / 4 (approximately 2.35619)
-     * - `east` = 0
-     * - `west` = Pi (approximately 3.14159)
-     * - `southeast` = -Pi / 4 (approximately -0.78540)
-     * - `south` = -Pi / 2 (approximately -1.57080)
-     * - `southwest` = -Pi * 3 / 4 (approximately -2.35619)
-     *
+     * May be any value acceptable to {@link Parse.orientation}.
+     * The player's current orientation will not be updated if this value is omitted.
      * @readonly
-     * @type {number|"north"|"northeast"|"northwest"|"east"|"west"|"south"|"southeast"|"southwest"}
+     * @type {number|string|null}
      */
     orientation;
 }
@@ -430,6 +426,10 @@ export class RendererOptions {
  * @implements {ScenarioLocationConfig}
  */
 export class ScenarioLocation {
+    /**
+     * @type {string}
+     */
+    #scenario;
 
     /**
      * @type {string}
@@ -460,23 +460,13 @@ export class ScenarioLocation {
     }
 
     configure(config) {
+        this.#scenario = Parse.prop(config, ["scenario"], null, Parse.str);
         this.#map = Parse.prop(config, ["map"], null, Parse.str);
         this.#x = Parse.prop(config, ["x"], null, Parse.num);
         this.#y = Parse.prop(config, ["y"], null, Parse.num);
-        this.#orientation = Parse.prop(config, ["orientation"], "north",
-            (val) => {
-                switch (val) {
-                    case "north": return Math.PI / 2;
-                    case "northeast": return Math.PI / 4;
-                    case "northwest": return Math.PI * 3 / 4;
-                    case "east": return 0;
-                    case "west": return Math.PI;
-                    case "southeast": return -Math.PI / 4;
-                    case "south": return -Math.PI / 2;
-                    case "southwest": return -Math.PI * 3 / 4;
-                    default: return Parse.num(val);
-                }
-            });
+        this.#orientation = (config.orientation == null
+            ? null
+            : Parse.prop(config, ["orientation"], "north", Parse.orientation));
     }
 
     /**
@@ -484,6 +474,13 @@ export class ScenarioLocation {
      */
     get config() {
         return this;
+    }
+
+    /**
+     * The name of the scenario.
+     */
+    get scenario() {
+        return this.#scenario;
     }
 
     /**
@@ -596,14 +593,16 @@ export class ScenarioMapOptions {
 
         this.#width = Parse.prop(config, ["width"], defaultSize, Parse.num);
         this.#height = Parse.prop(config, ["height"], defaultSize, Parse.num);
-        this.#wallTextureJsonUrl = this.#parseUrl(config, "wallTextureJsonUrl", true);
-        this.#floorAndCeilingTextureJsonUrl =
-            this.#parseUrl(config, "floorAndCeilingTextureJsonUrl", true);
-        this.#zoneJsonUrl = this.#parseUrl(config, "zoneJsonUrl");
-        this.#messageJsonUrl = this.#parseUrl(config, "messageJsonUrl");
-        this.#encounterJsonUrl = this.#parseUrl(config, "encounterJsonUrl");
-        this.#patchJsonUrl = this.#parseUrl(config, "patchJsonUrl");
-        this.#soundJsonUrl = this.#parseUrl(config, "soundJsonUrl");
+        Parse.withBaseUrl(config.$source, () => {
+            this.#wallTextureJsonUrl = this.#parseUrl(config, "wallTextureJsonUrl", true);
+            this.#floorAndCeilingTextureJsonUrl =
+                this.#parseUrl(config, "floorAndCeilingTextureJsonUrl", true);
+            this.#zoneJsonUrl = this.#parseUrl(config, "zoneJsonUrl");
+            this.#messageJsonUrl = this.#parseUrl(config, "messageJsonUrl");
+            this.#encounterJsonUrl = this.#parseUrl(config, "encounterJsonUrl");
+            this.#patchJsonUrl = this.#parseUrl(config, "patchJsonUrl");
+            this.#soundJsonUrl = this.#parseUrl(config, "soundJsonUrl");
+        });
     }
 
     /**
@@ -727,12 +726,14 @@ export class CityMapOptions extends ScenarioMapOptions {
     configure(config) {
         super.configure(config);
 
-        this.#wallBinaryUrl =
-            Parse.prop(config, ["wallBinaryUrl"], null, (val) => String(Parse.url(val)));
-        this.#locationBinaryUrl =
-            Parse.prop(config, ["locationBinaryUrl"], null, (val) => String(Parse.url(val)));
-        this.#descriptionJsonUrl =
-            Parse.prop(config, ["descriptionJsonUrl"], null, (val) => String(Parse.url(val)));
+        Parse.withBaseUrl(config.$source, () => {
+            this.#wallBinaryUrl =
+                Parse.prop(config, ["wallBinaryUrl"], null, (val) => String(Parse.url(val)));
+            this.#locationBinaryUrl =
+                Parse.prop(config, ["locationBinaryUrl"], null, (val) => String(Parse.url(val)));
+            this.#descriptionJsonUrl =
+                Parse.prop(config, ["descriptionJsonUrl"], null, (val) => String(Parse.url(val)));
+        });
     }
 
     /**
@@ -827,7 +828,9 @@ export class DungeonMapBinary {
         this.#height = Parse.prop(config, ["height"], 32, Parse.num);
         this.#x = Parse.prop(config, ["x"], 0, Parse.num);
         this.#y = Parse.prop(config, ["y"], 0, Parse.num);
-        this.#url = Parse.prop(config, ["url"], null, (val) => String(Parse.url(val)));
+        Parse.withBaseUrl(config.$source, () => {
+            this.#url = Parse.prop(config, ["url"], null, (val) => String(Parse.url(val)));
+        });
     }
 
     get config() {
@@ -913,13 +916,15 @@ export class DungeonMapOptions extends ScenarioMapOptions {
     configure(config) {
         super.configure(config);
 
-        this.#mapBinaryUrl = Object.freeze(Parse.prop(config, ["mapBinaryUrl"], null,
-            (val) => Parse.array(val, [], (val) => {
-                if (typeof val === "string" || val instanceof URL) {
-                    val = {url: val};
-                }
-                return new DungeonMapBinary(val);
-            })));
+        Parse.withBaseUrl(config.$source, () => {
+            this.#mapBinaryUrl = Object.freeze(Parse.prop(config, ["mapBinaryUrl"], null,
+                (val) => Parse.array(val, [], (val) => {
+                    if (typeof val === "string" || val instanceof URL) {
+                        val = {url: val};
+                    }
+                    return new DungeonMapBinary(val);
+                })));
+            });
 
         // Verify that each idPrefix is unique
         const s = new Set();
@@ -969,7 +974,7 @@ export class Scenario {
     #renderer;
 
     /**
-     * @type {{[name: string]: CityMapOptions|DungeonMapOptions}}
+     * @type {Map<string, ScenarioMapOptions>}
      */
     #maps;
 
@@ -989,13 +994,13 @@ export class Scenario {
             (config) => new RendererOptions(config));
 
         this.#maps = Parse.prop(config, ["maps"], null, (maps) => {
-            const result = {};
+            const result = new Map();
             Object.entries(maps).forEach(([name, config]) => {
                 try {
                     if (config.type == "city") {
-                        result[name] = new CityMapOptions(config);
+                        result.set(name, new CityMapOptions(config));
                     } else if (config.type == "dungeon") {
-                        result[name] = new DungeonMapOptions(config);
+                        result.set(name, new DungeonMapOptions(config));
                     } else {
                         throw new Error("Invalid 'type': " + config.type);
                     }
@@ -1003,7 +1008,7 @@ export class Scenario {
                     throw new Error("Unable to parse maps[" + name + "]: " + e);
                 }
             });
-            return Object.freeze(result);
+            return result;
         });
     }
 
@@ -1012,7 +1017,7 @@ export class Scenario {
      */
     get config() {
         const maps = {};
-        Object.entries(this.#maps).forEach(([key, val]) => {
+        this.#maps.forEach((val, key) => {
             maps[key] = val.config;
         });
 

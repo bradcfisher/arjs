@@ -1,84 +1,24 @@
 
 import { Renderer } from "./js/Renderer.js";
 import { Controls } from "./js/Controls.js";
-import { Player } from "./js/Player.js";
-import { CityMapReader } from "./js/CityMapReader.js";
-import { DungeonMapReader } from "./js/DungeonMapReader.js";
 import { GameState } from "./js/GameState.js";
 /** @import { EventDetail } from "./js/EventDispatcher.js" */
 
 
-
-let resourcesReady = false;
+/** @type {GameState} */
+let gameState = null;
 let domReady = false;
 
-let mapReader;
-if (false) {
-    mapReader = new CityMapReader();
-    mapReader.readMap({
-                "wallBinaryUrl": "../CityMapWalls.bin",
-                "locationBinaryUrl": "../CityMapLocations.bin",
-                "wallTextureJsonUrl": "./cityWalls.json",
-                "floorAndCeilingTextureJsonUrl": "./cityFloorAndCeiling.json",
-                "descriptionJsonUrl": "./cityDescriptions.json",
-                "zoneJsonUrl": "./cityZones.json",
-                "messageJsonUrl": "./cityMessages.json",
-                "encounterJsonUrl": "./cityEncounters.json",
-                "patchJsonUrl": "./cityPatches.json"
-            },
-            "/AR/city/json/"
-        );
-} else {
-    mapReader = new DungeonMapReader();
-    mapReader.readMap({
-            "width": 64,
-            "height": 64,
-            "mapBinaryUrl": [
-                {
-                    "idPrefix": "NW",
-                    "x": 0,
-                    "y": 0,
-                    "url": "../DungeonMap1.bin"
-                },
-                {
-                    "idPrefix": "NE",
-                    "x": 32,
-                    "y": 0,
-                    "url": "../DungeonMap2.bin"
-                },
-                {
-                    "idPrefix": "SW",
-                    "x": 0,
-                    "y": 32,
-                    "url": "../DungeonMap3.bin"
-                },
-                {
-                    "idPrefix": "SE",
-                    "x": 32,
-                    "y": 32,
-                    "url": "../DungeonMap4.bin"
-                }
-            ],
-			"soundJsonUrl": [
-				"./sounds.json",
-				"./level1/sounds.json"
-			],
-            "wallTextureJsonUrl": "./level1/walls.json",
-            "floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
-            "zoneJsonUrl": "./level1/zones.json",
-            "messageJsonUrl": "./level1/messages.json",
-            "encounterJsonUrl": "./level1/encounters.json",
-            "patchJsonUrl": "./level1/patches.json"
-        },
-        "/AR/dungeon/json/"
-    );
-}
+GameState.load("./AR/shared/json/AR.json")
+    .then(async (gs) => {
+        gameState = gs;
 
-mapReader.on("complete", () => {
-    console.log("loaded map: " + mapReader.map.metadata.description);
-    resourcesReady = true;
-    checkReady();
-});
+        await gameState.loadPlayer();
+        await gameState.loadLocation(gameState.defaultLocation);
+
+        console.log("loaded map: " + gameState.map.metadata.description);
+        checkReady();
+    });
 
 document.addEventListener('DOMContentLoaded', function () {
     domReady = true;
@@ -86,14 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function checkReady() {
-    if (!(resourcesReady && domReady)) {
+    if (!(gameState && domReady)) {
         return;
     }
 
-    const worldMap = mapReader.map;
-
-    // TODO: Wall loader
-
+    const player = gameState.player;
 
 /*
             0: new WallStyle({ transparent: true, collision: false }), // No wall (should never be drawn)
@@ -116,10 +53,8 @@ function checkReady() {
 0
     // Initialize the game when page loads
     const canvasElement = document.getElementById("gameCanvas");
-    const player = new Player();
-    player.map = worldMap;
 
-    const renderer = new Renderer(canvasElement, worldMap, player);
+    const renderer = new Renderer(canvasElement, gameState);
     renderer.drawMap = true;
 
     const statusElement = document.getElementById("status");
@@ -128,7 +63,7 @@ function checkReady() {
 
     player.on('move', (event) => {
         const data = event.data;
-        const cell = worldMap.getCell(Math.floor(data.position.x), Math.floor(data.position.y));
+        const cell = gameState.map.getCell(Math.floor(data.position.x), Math.floor(data.position.y));
 
         statusElement.innerText =
             'x: ' + data.position.x.toFixed(2) +
@@ -184,30 +119,11 @@ function checkReady() {
 
     const controls = new Controls(renderer); // for side-effects. registers key event listeners, etc
 
-    /*
-    Object.entries({
-        0x1: "/images/brickbard-strawberries-8832147_1920.png",
-        0x2: "/images/andrey_and_olesya-leaves-5825458_1920.jpg",
-        0x3: "/images/monstreh-pattern-3296033_1920.png",
-        0x4: "/images/prawny-seamless-1315302_1920.jpg",
-        0x5: "/images/arzusumer-cat-7635983_1920.png",
-        0x6: "/images/davidzydd-beige-756197_1920.jpg",
-        0x7: "/images/macey11-waves-9273752_1920.jpg",
-        0x8: "/images/prawny-seamless-2030343_1920.jpg",
-        0xd: "/images/canvas_create_pattern.png"
-    }).forEach(([wallType, src]) => {
-
-        worldMap.loadImage('wall_texture_' + wallType, src, (id, img) => {
-            worldMap.getWallStyle(wallType).textureProvider = (timestamp) => img;
-        });
-    });
-    */
-
     // The City - The floating gate
     //player.setPosition(35.5, 36.5, -Math.PI / 2);
 
     // The Dungeon - Near Damon & Pythia's shop
-    player.setPosition(49.5, 3.5, -Math.PI);
+    //player.setPosition(49.5, 3.5, -Math.PI);
 
     //player.setPosition(35.5, 27.5, Math.PI / 2);
     //player.setPosition(33.5, 33.5, -Math.PI / 2);

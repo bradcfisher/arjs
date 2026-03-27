@@ -1,0 +1,11 @@
+{
+    "bump": {
+        "source": "../sounds/bump.wav"
+    },
+    "door": {
+        "source": "../sounds/cityDoor.wav"
+    },
+    "secretDoor": {
+        "source": "../sounds/citySecretDoor.wav"
+    }
+}

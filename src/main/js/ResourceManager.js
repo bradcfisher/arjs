@@ -638,6 +638,10 @@ console.log("loading single resource: ", source);
 	 * The `$import` property is required and any object passed to this method
 	 * with such a property will be detected as an import reference.
 	 *
+	 * Imported objects will have a "$source" property added to them assigned to
+	 * the URL from which they were loaded. This property may be used in later processing
+	 * where additional relative path dereferencing may be necessary.
+	 *
 	 * The `flatten` property controls how a resolved array value is merged
 	 * into a parent array. When true, the parsed array will be merged in as
 	 * flattened elements of the parent array. When false, the returned array
@@ -690,7 +694,7 @@ console.log("loading single resource: ", source);
 	 *          on fulfillment.
 	 */
 	#resolveImports(value, sourceUrl, path) {
-		if (!path) {
+		if (path == null) {
 			path = "{" + sourceUrl +"}";
 		}
 		const promises = [];
@@ -704,20 +708,26 @@ console.log("loading single resource: ", source);
 			// Process the array in reverse order.
 			for (let index = value.length - 1; index >= 0; index--) {
 				const item = value[index];
-				if (this.#isImport(item)) {
+
+				if (item != null && (Array.isArray(item) || ((typeof item === 'object') && (item["$source"] == null)))) {
 					arrayPromises.push(this.#resolveImports(item, sourceUrl, path + "[" + index + "]"));
-					arrayResolvers.push((resolved) => {
-							if (item.flatten) {
-								console.log(path + "[" + index + "]: flatten: removing " +
-									index + ": replacing with " + resolved);
-								value.splice(index, 1, ...resolved);
-							} else {
-								console.log(path + "[" + index + "]: NOT flatten: removing " +
-									index + ": replacing with " + resolved);
-								value.splice(index, 1, resolved);
-							}
-							return resolved;
-						});
+
+					if (this.#isImport(item)) {
+						arrayResolvers.push((resolved) => {
+								if (item.flatten) {
+									console.log(path + "[" + index + "]: flatten: removing " +
+										index + ": replacing with " + resolved);
+									value.splice(index, 1, ...resolved);
+								} else {
+									console.log(path + "[" + index + "]: NOT flatten: removing " +
+										index + ": replacing with " + resolved);
+									value.splice(index, 1, resolved);
+								}
+								return resolved;
+							});
+					} else {
+						arrayResolvers.push((resolved) => resolved);
+					}
 				}
 			}
 
@@ -742,12 +752,16 @@ console.log("loading single resource: ", source);
 					return this.#resolveImports(result, importUrl, path);
 				});
 			});
-		} else if (value instanceof Object) {
+		} else if ((value != null) && (typeof value === "object") && (value["$source"] == null)) {
 			Object.entries(value).forEach(([key, val]) => {
-				if (val != null && (Array.isArray(val) || (typeof val === 'object'))) {
+				if (val != null && (Array.isArray(val) || ((typeof val === 'object') && (val["$source"] == null)))) {
 					promises.push(
 						this.#resolveImports(val, sourceUrl, path + "." + key)
-							.then((resolved) => { value[key] = resolved; }));
+							.then((resolved) => {
+								Object.defineProperty(resolved, "$source", { value: String(sourceUrl) });
+
+								value[key] = resolved;
+							}));
 				}
 			});
 		}

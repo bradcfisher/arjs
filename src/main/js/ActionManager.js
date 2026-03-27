@@ -3,6 +3,7 @@ import { AudioClip } from "./AudioClip.js"
 import { GameState } from "./GameState.js";
 import { Parse } from "./Parse.js";
 import { HitData, WallSide } from "./ScenarioMap.js";
+/** @import { ScenarioLocationConfig } from "./Scenario.js" */
 
 /**
  * Callback which executes an action or computation.
@@ -68,35 +69,6 @@ export class PatchDoorConfig {
      * @type {string}
      */
     wallType;
-}
-
-/**
- * @interface
- */
-export class TeleportActionParameters {
-    /**
-     * The map to teleport to. If omitted the player will teleport within the current map.
-     * @type {string?}
-     */
-    map;
-
-    /**
-     * The new X position for the player.
-     * @type {number}
-     */
-    x;
-
-    /**
-     * The new y position for the player.
-     * @type {number}
-     */
-    y;
-
-    /**
-     * The new orientation for the player. If omitted, the player orientation remains unchanged.
-     * @type {number?}
-     */
-    orientation;
 }
 
 
@@ -196,16 +168,12 @@ export class CoreAction {
 
     /**
      * Teleports the player to a new location.
-     * @param {TeleportActionParameters} parameters configuration parameters
+     * @param {ScenarioLocationConfig|string} parametersOrName configuration parameters or
+     *        teleport destination name. If a string is specified, the actual destination is
+     *        retrieved from the GameState using the specified identifier.
      */
-    static teleport(parameters) {
-        // TODO: Load the map...
-
-        GameState.getInstance().player.setPosition(parameters.x, parameters.y, parameters.orientation);
-
-        // TODO: Trigger 'teleport' event? What context should this be dispatched on? player? map? gamestate?
-        //   Player seems most obvious, but 'teleport' is not an intrinsic event.
-        console.warn("TODO Trigger 'teleport' event");
+    static teleport(parametersOrName) {
+        GameState.getInstance().loadLocation(parametersOrName);
     }
 
 }

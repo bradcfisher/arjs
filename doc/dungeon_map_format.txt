@@ -6,6 +6,18 @@ Altirra:
   Search memory for bytes
     s 0 L10000 0a 1b 2c
 
+  Add a memory access read breakpoint
+    ba r $194b 9L
+
+  Add a memory watch
+
+Atari Memory Locations
+  https://atariwiki.org/wiki/Wiki.jsp?page=Memory%20Map
+
+6502 Instruction Set
+  https://www.masswerk.at/6502/6502_instruction_set.html
+
+
 A note on zones: (from a post here http://www.crpgdev.com/2012/06/)
 >> Basically the Dungeon designers set up a system where you could define a “zone” by specifying a
 >> pair of X and Y co-ordinates on the Dungeon map. These are used to control the colours, textures
@@ -41,7 +53,7 @@ The second and third bytes are unknown
 
 ---
 
-Starting at 0x4 and ending at 0x2FF are two tables with variable length records:
+Starting at 0x3 ($ac03 in memory) and ending at 0x2FF are two tables with variable length records:
 
 A table of location description fragment strings (eg. dictionary for reducing data size)
 - Each fragment is terminated by a character with the high bit set (char ATASCII + 0x80)
@@ -244,7 +256,7 @@ It is unknown whether that data is simply "garbage" due to only copying relevant
 When returning from an encounter (perhaps when entering a cell) subroutine at $7e4d reads from the zone ref table AND this table
 (loop at $7e80 copies the 8 bytes for an entry).
 The subroutine checks the player's current location against the zone refs table, and copies the corresponding entry from this
-table ($af7e + zone ref * 8) to the 8 bytes starting at $194b (Actually, it ends up writing 9 bytes. See code below).
+table ($af7e + zone ref * 8) to the 9 bytes starting at $194b (Yes, it ends up writing 9 bytes from the original 8. See code below).
 
 Given zone 2 of Lvl1.2 (starting zone / well lit area):
 Map data is:
@@ -302,7 +314,7 @@ lbl_$7E74:
   ASL              ; Multiply A by 2
   TAX              ; Store offset from A in X
 
-  ; Copy the 8 bytes of the corresponding zone defintion record from the map table
+  ; Copy the 8 bytes of the corresponding zone definition record from the map table
   ; at $Af7E to the 8 bytes starting at $194b
   LDY #$00         ; Store 0 into Y (loop control)
 
@@ -355,6 +367,43 @@ sub_$7eb1:
                    ; not set earlier, and did not get updated, hence this condition is true)
 
 
+----
+
+// Give yourself 16 torches...
+eb $63BD $0f
+// Give yourself a compass
+eb $63C0 $01
+// Give yourself some gold
+eb $63B1 $00 $ff
+// Set max hp / hp to 255
+eb $6345 $00 $ff
+eb $6347 $00 $ff
+
+// set breakpoint for reads of any of the bytes in the zone data
+  ba r $194b L9
+
+0: $194b
+1: $194c - byte?
+  -
+
+2: $194d - bitfield
+ ? ? ? ? ? C ? A
+ | | | | | | | +- Light level/blindness? Checked when display is updated. 0 = dark, 1 = light
+ | | | | | | |    Sub @ $: ORd with value at $6390 (01 if carrying lit torch) then compared with value at $77fb.
+ | | | | | | |    If different, $77fb is updated to match and $1956 is decremented.
+ | | | | | | |    Either way, $1956 is read and if it is 0
+ | | | | | | +---
+ | | | | | +----- Sub @ $aa19: Used during encounters.
+ | | | | |        If clear, loads the value $11 into $194c
+ | | | | |        If value in $194c is $0E, stores $ff into $6320 (character status related)
+ | | | | |        If $633c (player experience lvl) = 0,
+
+3: $194e
+4: $194f
+5: $1950
+6: $1951
+7: $1952
+8: $1953
 
 
 Speculation:
@@ -496,4 +545,62 @@ Special:
 	Encounter? / Treasure? / Effect?
 
 
+
+Teleporters:
+  Table starts at $3BA7 in RAM (128 bytes @ 4 bytes/teleporter = 32 entries)
+  Sub @ $35C1
+
+  X Y M O
+  | | | +- Specifies character orientation after teleport
+  | | |    If FF (-1), then leave current orientation unchanged
+  | | |    Else if sign bit set, assign a random orientation
+  | | |    Else use the value of O as the new orientation
+  | | |      0 = North, 1 = East, 2 = South, 3 = West
+  | | +--- New map number
+  | +----- New Y location
+  +------- New X location
+
+3BA7: 12 1E 00 FF 12 1B 00 03 13 1B 00 01 0F 17 00 00 |................|
+3BB7: 1D 17 00 00 05 1A 00 FF 14 1F 00 00 10 01 00 FF |................|
+3BC7: 0B 01 01 FF 11 07 01 FF 11 0A 01 FF 0B 1C 01 FF |................|
+3BD7: 0B 1F 01 FF 08 0F 01 80 12 09 02 80 00 01 02 FF |................|
+3BE7: 00 1E 00 FF 01 00 01 FF 1E 00 00 FF 1F 1E 01 FF |................|
+3BF7: 1F 01 03 FF 01 1F 03 FF 1E 1F 02 FF 00 12 05 FF |................|
+3C07: 0D 0F 05 FF 03 01 03 FF 03 1E 01 FF 0B 00 04 FF |................|
+3C17: 16 07 01 02 1A 05 01 00 1C 07 01 02 18 1B 02 03 |................|
+
+E0-FF
+
+ 0: 12 1E 00 FF
+ 1: 12 1B 00 03
+ 2: 13 1B 00 01
+ 3: 0F 17 00 00
+ 4: 1D 17 00 00
+ 5: 05 1A 00 FF
+ 6: 14 1F 00 00
+ 7: 10 01 00 FF
+ 8: 0B 01 01 FF
+ 9: 11 07 01 FF
+10: 11 0A 01 FF
+11: 0B 1C 01 FF
+12: 0B 1F 01 FF
+13: 08 0F 01 80
+14: 12 09 02 80
+15: 00 01 02 FF
+16: 00 1E 00 FF
+17: 01 00 01 FF
+18: 1E 00 00 FF
+19: 1F 1E 01 FF
+20: 1F 01 03 FF
+21: 01 1F 03 FF
+22: 1E 1F 02 FF
+23: 00 12 05 FF
+24: 0D 0F 05 FF
+25: 03 01 03 FF
+26: 03 1E 01 FF
+27: 0B 00 04 FF
+28: 16 07 01 02
+29: 1A 05 01 00
+30: 1C 07 01 02
+31: 18 1B 02 03
 

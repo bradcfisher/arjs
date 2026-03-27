@@ -296,7 +296,7 @@ export class WallStyle extends EventDispatcher {
                         for (let action of actions) {
                             try {
                                 action({ event });
-                            } catch (e) {
+                            } catch (error) {
                                 console.error(`Error in action for ${type}:`, event, error);
                             }
                         }

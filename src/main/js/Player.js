@@ -384,6 +384,12 @@ export class Player extends Denizen {
      *          appropriate collision and passage events).
      */
     #checkCollision(toX, toY) {
+        const map = this.map;
+
+        if (map == null) {
+            return [toX, toY, () => null];
+        }
+
         let x = toX;
         let y = toY;
         let eventCallback = () => null;
@@ -398,7 +404,7 @@ export class Player extends Denizen {
         const maxCastDistance = movementDistance + this.minWallDist * 2;
         const movementAngle = Math.atan2(dy, dx);
 
-        const hits = this.map.castRayAtAngle(this.#x, this.#y, movementAngle, maxCastDistance, this.#isHit);
+        const hits = map.castRayAtAngle(this.#x, this.#y, movementAngle, maxCastDistance, this.#isHit);
 
         for (let hit of hits) {
             if (hit.isHit === false) {
@@ -469,7 +475,7 @@ export class Player extends Denizen {
         // Check edges of current cell
         const cellX = Math.floor(x);
         const cellY = Math.floor(y);
-        const cell = this.map.getCell(cellX, cellY);
+        const cell = map.getCell(cellX, cellY);
 
         if (cell) {
             const xDelta = x - cellX;
@@ -479,7 +485,7 @@ export class Player extends Denizen {
                     cell,
                     cellX,
                     cellY,
-                    wallStyle: this.map.getWallStyle(cell.westWall),
+                    wallStyle: map.getWallStyle(cell.westWall),
                     wallType: cell.westWall,
                     wallPosition: yDelta,
                     side: WallSide.WEST
@@ -494,7 +500,7 @@ export class Player extends Denizen {
                     cell,
                     cellX,
                     cellY,
-                    wallStyle: this.map.getWallStyle(cell.eastWall),
+                    wallStyle: map.getWallStyle(cell.eastWall),
                     wallType: cell.eastWall,
                     wallPosition: yDelta,
                     side: WallSide.EAST
@@ -511,7 +517,7 @@ export class Player extends Denizen {
                     cell,
                     cellX,
                     cellY,
-                    wallStyle: this.map.getWallStyle(cell.northWall),
+                    wallStyle: map.getWallStyle(cell.northWall),
                     wallType: cell.northWall,
                     wallPosition: xDelta,
                     side: WallSide.NORTH
@@ -526,7 +532,7 @@ export class Player extends Denizen {
                     cell,
                     cellX,
                     cellY,
-                    wallStyle: this.map.getWallStyle(cell.southWall),
+                    wallStyle: map.getWallStyle(cell.southWall),
                     wallType: cell.southWall,
                     wallPosition: xDelta,
                     side: WallSide.SOUTH

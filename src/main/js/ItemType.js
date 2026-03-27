@@ -438,7 +438,7 @@ export class ItemType {
 		if (value == null || value == '') {
 			throw new Error("text cannot be empty");
 		}
-		this._text = value;
+		this.#text = value;
 	}
 
 	/**
@@ -495,7 +495,7 @@ export class ItemType {
 			throw new Error("invalid alignment");
 		}
 		// TODO: Clamp value, etc
-		this._alignment = value;
+		this.#alignment = value;
 	}
 
 	/**
@@ -510,7 +510,7 @@ export class ItemType {
 		if (!(value >= 0)) {
 			throw new Error("value must be 0 or more");
 		}
-		this._value = Math.max(0, value);
+		this.#value = Math.max(0, value);
 	}
 
 	/**

@@ -21,7 +21,7 @@ export class Controls extends EventDispatcher {
      * @param {Renderer} renderer
      */
     setupControls(renderer) {
-        const player = renderer.player;
+        const player = renderer.gameState.player;
         const animations = renderer.animations;
         const headBobDuration = 500;
         const headBobHeight = 0.02;
@@ -319,7 +319,7 @@ export class Controls extends EventDispatcher {
                     jumpAnimation.repetitions = 1;
                     break;
                 case 'Tab':
-                    renderer.worldMap.useTarget(player);
+                    renderer.gameState.map.useTarget(player);
                     break;
                 case 'Shift':
                     //player.speedMultiplier = 1;
@@ -336,7 +336,7 @@ export class Controls extends EventDispatcher {
 
         renderer.canvas.addEventListener('click', (e) => {
             console.log("click");
-            renderer.worldMap.useTarget(player);
+            renderer.gameState.map.useTarget(player);
         })
     }
 

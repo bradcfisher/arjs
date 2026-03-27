@@ -1,6 +1,7 @@
 {
 	"name": "The Dungeon",
 	"defaultLocation": {
+		"scenario": "dungeon",
 		"map": "level1",
 		"x": 49.5,
 		"y": 3.5,
@@ -12,6 +13,9 @@
 		"fieldOfView": 1.5707963,
 		"wallWidthToHeightRatio": 2,
 		"projectionPlaneOffset": 0
+	},
+	"teleportDestinations": {
+		"$import": "./teleportDestinations.json"
 	},
 	"maps": {
 		"level1": {
