@@ -1,0 +1,14 @@
+{
+    "dungeon_23": {
+        "x": 0.5,
+        "y": 18.5,
+        "scenario": "dungeon",
+        "map": "level3"
+    },
+    "dungeon_24": {
+        "x": 13.5,
+        "y": 15.5,
+        "scenario": "dungeon",
+        "map": "level3"
+    }
+}

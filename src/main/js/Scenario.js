@@ -1,6 +1,7 @@
 
 import { Configurable } from "./Configurable.js";
 import { Parse } from "./Parse.js";
+import { ProxyMap } from "./ProxyMap.js";
 
 /**
  * @interface
@@ -124,52 +125,59 @@ export class ScenarioMapOptionsConfig {
 
     /**
      * URL of the JSON wall texture definitions to load.
-     * @type {string|URL}
+     * @type {(string|URL|(string|URL)[])}
      * @readonly
      */
     wallTextureJsonUrl;
 
     /**
      * URL of the JSON floor and ceiling texture definitions to load.
-     * @type {string|URL}
+     * @type {(string|URL|(string|URL)[])}
      * @readonly
      */
     floorAndCeilingTextureJsonUrl;
 
     /**
      * Optional URL of the JSON zone definitions to load.
-     * @type {(string|URL)?}
+     * @type {(string|URL|(string|URL)[])?}
      * @readonly
      */
     zoneJsonUrl;
 
     /**
      * Optional URL of the JSON message definitions to load.
-     * @type {(string|URL)?}
+     * @type {(string|URL|(string|URL)[])?}
      * @readonly
      */
     messageJsonUrl;
 
     /**
      * Optional URL of the encounter definitions to load.
-     * @type {(string|URL)?}
+     * @type {(string|URL|(string|URL)[])?}
      * @readonly
      */
     encounterJsonUrl;
 
     /**
      * Optional URL of the patch definitions to load.
-     * @type {(string|URL)?}
+     * @type {(string|URL|(string|URL)[])?}
      * @readonly
      */
     patchJsonUrl;
 
     /**
      * Optional URL of the JSON sound clip definitions to load.
-     * @type {(string|URL)?}
+     * @type {(string|URL|(string|URL)[])?}
      * @readonly
      */
     soundJsonUrl;
+
+    /**
+     * Mapping of named teleport destinations associated with the map.
+	 * @readonly
+	 * @type {{[name: string]: ScenarioLocationConfig}}
+	 */
+    teleportDestinations;
 }
 
 /**
@@ -201,7 +209,7 @@ export class CityMapOptionsConfig extends ScenarioMapOptionsConfig {
 
     /**
      * URL of the JSON description definitions
-     * @type {string}
+     * @type {(string|URL|(string|URL)[])?}
      * @readonly
      */
     descriptionJsonUrl;
@@ -321,6 +329,33 @@ export class ScenarioConfig {
      */
     maps;
 
+}
+
+/**
+ * @template T
+ * @param {any} config the configuration object containing the property to parse.
+ * @param {string} prop the name of the property to parse.
+ * @param {(val) => T|null} parseFunc parsing function. If omitted, defaults to
+ *        `(val) => String(Parse.url(val))`
+ * @param {boolean=} required whether a non-empty value is required or not.
+ * @returns {T[]} an array of parsed values.
+ * @throws {Error} if required is true and the property is not assigned or an empty list.
+ */
+function parseArrayProp(config, prop, parseFunc, required = false) {
+    if (parseFunc == null) {
+        parseFunc = (val) => String(Parse.url(val));
+    }
+
+    const result = Parse.prop(config, [prop], null,
+        (val) => Parse.array(val, [], (val) => {
+            return parseFunc(val);
+        }));
+
+    if (required && result.length == 0) {
+        throw new Error("A value is required for '" + prop + "'");
+    }
+
+    return result;
 }
 
 /**
@@ -530,50 +565,44 @@ export class ScenarioMapOptions {
     #height;
 
     /**
-     * @type {string}
+     * @type {string[]}
      */
     #wallTextureJsonUrl;
 
     /**
-     * @type {string}
+     * @type {string[]}
      */
     #floorAndCeilingTextureJsonUrl;
 
     /**
-     * @type {string?}
+     * @type {string[]?}
      */
     #zoneJsonUrl;
 
     /**
-     * @type {string?}
+     * @type {string[]?}
      */
     #messageJsonUrl;
 
     /**
-     * @type {string?}
+     * @type {string[]?}
      */
     #encounterJsonUrl;
 
     /**
-     * @type {string?}
+     * @type {string[]?}
      */
     #patchJsonUrl;
 
     /**
-     * @type {string?}
+     * @type {string[]?}
      */
     #soundJsonUrl;
 
-    #parseUrl(config, property, required = false) {
-        const val = config[property];
-
-        if (!required && val == null) {
-            return undefined;
-        }
-
-        return Parse.prop(config, [property], null,
-            (val) => String(Parse.url(val)));
-    }
+    /**
+     * @type {Map<string, ScenarioLocation>}
+     */
+    #teleportDestinations;
 
     /**
      * @param {ScenarioMapOptionsConfig} config the configuration to apply.
@@ -593,15 +622,24 @@ export class ScenarioMapOptions {
 
         this.#width = Parse.prop(config, ["width"], defaultSize, Parse.num);
         this.#height = Parse.prop(config, ["height"], defaultSize, Parse.num);
+        this.#teleportDestinations = Parse.prop(config, ["teleportDestinations"], {},
+            (val) => {
+                const result = new Map();
+                Object.entries(val).forEach(([key, val]) => {
+                    result.set(key, new ScenarioLocation(val));
+                });
+                return result;
+            });
+
         Parse.withBaseUrl(config.$source, () => {
-            this.#wallTextureJsonUrl = this.#parseUrl(config, "wallTextureJsonUrl", true);
+            this.#wallTextureJsonUrl = parseArrayProp(config, "wallTextureJsonUrl", null, true);
             this.#floorAndCeilingTextureJsonUrl =
-                this.#parseUrl(config, "floorAndCeilingTextureJsonUrl", true);
-            this.#zoneJsonUrl = this.#parseUrl(config, "zoneJsonUrl");
-            this.#messageJsonUrl = this.#parseUrl(config, "messageJsonUrl");
-            this.#encounterJsonUrl = this.#parseUrl(config, "encounterJsonUrl");
-            this.#patchJsonUrl = this.#parseUrl(config, "patchJsonUrl");
-            this.#soundJsonUrl = this.#parseUrl(config, "soundJsonUrl");
+                parseArrayProp(config, "floorAndCeilingTextureJsonUrl", null, true);
+            this.#zoneJsonUrl = parseArrayProp(config, "zoneJsonUrl");
+            this.#messageJsonUrl = parseArrayProp(config, "messageJsonUrl");
+            this.#encounterJsonUrl = parseArrayProp(config, "encounterJsonUrl");
+            this.#patchJsonUrl = parseArrayProp(config, "patchJsonUrl");
+            this.#soundJsonUrl = parseArrayProp(config, "soundJsonUrl");
         });
     }
 
@@ -634,8 +672,15 @@ export class ScenarioMapOptions {
     }
 
     /**
+     * Named teleport destinations associated with the map.
+     */
+    get teleportDestinations() {
+        return this.#teleportDestinations;
+    }
+
+    /**
      * URL of the JSON wall texture definitions to load.
-     * @type {string}
+     * @type {string[]}
      */
     get wallTextureJsonUrl() {
         return this.#wallTextureJsonUrl;
@@ -643,7 +688,7 @@ export class ScenarioMapOptions {
 
     /**
      * URL of the JSON floor and ceiling texture definitions to load.
-     * @type {string}
+     * @type {string[]}
      */
     get floorAndCeilingTextureJsonUrl() {
         return this.#floorAndCeilingTextureJsonUrl;
@@ -651,7 +696,7 @@ export class ScenarioMapOptions {
 
     /**
      * Optional URL of the JSON zone definitions to load.
-     * @type {string?}
+     * @type {string[]?}
      */
     get zoneJsonUrl() {
         return this.#zoneJsonUrl;
@@ -659,7 +704,7 @@ export class ScenarioMapOptions {
 
     /**
      * Optional URL of the JSON message definitions to load.
-     * @type {string?}
+     * @type {string[]?}
      */
     get messageJsonUrl() {
         return this.#messageJsonUrl;
@@ -667,7 +712,7 @@ export class ScenarioMapOptions {
 
     /**
      * Optional URL of the encounter definitions to load.
-     * @type {string?}
+     * @type {string[]?}
      */
     get encounterJsonUrl() {
         return this.#encounterJsonUrl;
@@ -675,7 +720,7 @@ export class ScenarioMapOptions {
 
     /**
      * Optional URL of the patch definitions to load.
-     * @type {string?}
+     * @type {string[]?}
      */
     get patchJsonUrl() {
         return this.#patchJsonUrl;
@@ -683,7 +728,7 @@ export class ScenarioMapOptions {
 
     /**
      * Optional URL of the JSON sound clip definitions to load.
-     * @type {string?}
+     * @type {string[]?}
      */
     get soundJsonUrl() {
         return this.#soundJsonUrl;
@@ -707,7 +752,7 @@ export class CityMapOptions extends ScenarioMapOptions {
     #locationBinaryUrl;
 
     /**
-     * @type {string}
+     * @type {string[]}
      */
     #descriptionJsonUrl;
 
@@ -731,8 +776,7 @@ export class CityMapOptions extends ScenarioMapOptions {
                 Parse.prop(config, ["wallBinaryUrl"], null, (val) => String(Parse.url(val)));
             this.#locationBinaryUrl =
                 Parse.prop(config, ["locationBinaryUrl"], null, (val) => String(Parse.url(val)));
-            this.#descriptionJsonUrl =
-                Parse.prop(config, ["descriptionJsonUrl"], null, (val) => String(Parse.url(val)));
+            this.#descriptionJsonUrl = parseArrayProp(config, "descriptionJsonUrl");
         });
     }
 
@@ -752,7 +796,6 @@ export class CityMapOptions extends ScenarioMapOptions {
 
     /**
      * URL of the binary map walls.
-     * @type {string}
      */
     get wallBinaryUrl() {
         return this.#wallBinaryUrl;
@@ -760,7 +803,6 @@ export class CityMapOptions extends ScenarioMapOptions {
 
     /**
      * URL of the binary map locations.
-     * @type {string}
      */
     get locationBinaryUrl() {
         return this.#locationBinaryUrl;
@@ -768,7 +810,7 @@ export class CityMapOptions extends ScenarioMapOptions {
 
     /**
      * URL of the JSON description definitions
-     * @type {string}
+     * @type {string[]?}
      */
     get descriptionJsonUrl() {
         return this.#descriptionJsonUrl;
@@ -917,22 +959,23 @@ export class DungeonMapOptions extends ScenarioMapOptions {
         super.configure(config);
 
         Parse.withBaseUrl(config.$source, () => {
-            this.#mapBinaryUrl = Object.freeze(Parse.prop(config, ["mapBinaryUrl"], null,
-                (val) => Parse.array(val, [], (val) => {
+            this.#mapBinaryUrl = Object.freeze(parseArrayProp(config, "mapBinaryUrl",
+                (val) => {
                     if (typeof val === "string" || val instanceof URL) {
                         val = {url: val};
                     }
                     return new DungeonMapBinary(val);
-                })));
-            });
+                }, true));
+        });
 
         // Verify that each idPrefix is unique
-        const s = new Set();
+        const usedIdPrefixes = new Set();
+
         this.#mapBinaryUrl.forEach((item, index) => {
-            if (s.has(item.idPrefix)) {
+            if (usedIdPrefixes.has(item.idPrefix)) {
                 throw new Error("Duplicate 'idPrefix' for mapBinaryUrl[" + index + "]");
             }
-            s.add(item.idPrefix);
+            usedIdPrefixes.add(item.idPrefix);
         });
     }
 
@@ -1056,5 +1099,17 @@ export class Scenario {
      */
     get maps() {
         return this.#maps;
+    }
+
+    /**
+     * Scenario defined teleport destinations.
+     * @type {Map<string, ScenarioLocationConfig>}
+     */
+    get teleportDestinations() {
+        const destinations = [];
+        this.#maps.forEach((map) => {
+            destinations.push(map.teleportDestinations);
+        });
+        return new ProxyMap(...destinations);
     }
 }

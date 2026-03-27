@@ -323,8 +323,8 @@ export class DungeonMapReader extends MapReader {
                 promises.push(this.readJsonZones(config.zoneJsonUrl));
             }
 
-	//messageJsonUrl;
-	//encounterJsonUrl;
+            //messageJsonUrl;
+            //encounterJsonUrl;
 
             return Promise.all(promises).then(() => this.map);
         });

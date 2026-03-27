@@ -15,6 +15,7 @@ import { MapReader } from "./MapReader.js";
 import { CityMapReader } from "./CityMapReader.js";
 import { DungeonMapReader } from "./DungeonMapReader.js";
 import { ScenarioMap } from "./ScenarioMap.js";
+import { ProxyMap } from "./ProxyMap.js";
 
 /**
  * @interface
@@ -85,12 +86,6 @@ export class GameStateConfig {
 	 * @type {ReadonlyArray<ItemTypeConfig>?}
 	 */
 	 itemTypes;
-
-	/**
-	  * @readonly
-	  * @type {{[name: string]: ScenarioLocationConfig}}
-	  */
-	 teleportDestinations;
 
 	 /**
 	  * @readonly
@@ -212,12 +207,6 @@ export class GameState {
 	 * @type {ItemTypes}
 	 */
 	#itemTypes = new ItemTypes();
-
-	/**
-	 * @readonly
-	 * @type {Map<string, ScenarioLocationConfig>}
-	 */
-	#teleportDestinations = new Map();
 
 	/**
 	 * @type {Map<string, Scenario>}
@@ -397,12 +386,6 @@ export class GameState {
 		this.#inebriation.configure(Parse.required(config.inebriation, "inebriation"));
 		this.#itemTypes.configure(Parse.required(config.itemTypes, "itemTypes"));
 
-		this.#teleportDestinations = new Map();
-		Object.entries(Parse.prop(config, ["teleportDestinations"], {}))
-			.forEach(([key, val]) => {
-				this.#teleportDestinations.set(key, new ScenarioLocation(val));
-			});
-
 		this.#scenarios = new Map();
 		Object.entries(Parse.required(config.scenarios, "scenarios"))
 			.forEach(([key, val]) => {
@@ -420,11 +403,6 @@ export class GameState {
 		const weather = {};
 		this.#weather.forEach((val, key) => {
 			weather[key] = val.config;
-		});
-
-		const teleportDestinations = {};
-		this.#teleportDestinations.forEach((val, key) => {
-			teleportDestinations[key] = val.config;
 		});
 
 		const scenarios = {};
@@ -446,7 +424,6 @@ export class GameState {
 			inebriation: this.inebriation.config,
 
 			itemTypes: this.itemTypes.config,
-			teleportDestinations: teleportDestinations,
 			scenarios: scenarios,
 			defaultLocation: this.defaultLocation.config
 		};
@@ -508,10 +485,14 @@ export class GameState {
 
 	/**
 	 * Globally defined teleport destinations.
-	 * See {@link GameState.loadLocation}
+	 * @type {Map<string, ScenarioLocationConfig>}
 	 */
 	get teleportDestinations() {
-		return this.#teleportDestinations;
+		const destinations = [];
+		this.#scenarios.forEach((scenario) => {
+			destinations.push(scenario.teleportDestinations);
+		});
+		return new ProxyMap(...destinations);
 	}
 
 	/**
@@ -590,7 +571,7 @@ export class GameState {
      */
 	async loadLocation(parametersOrName) {
         const parameters = ((typeof parametersOrName === "string")
-            ? this.#teleportDestinations.get(parametersOrName)
+            ? this.teleportDestinations.get(parametersOrName)
             : parametersOrName);
 
 		if (parameters == null) {

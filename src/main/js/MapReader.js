@@ -106,25 +106,32 @@ export class MapReader extends EventDispatcher {
      *
      * @return {Promise} a promise that will complete when the load completes
      */
-    async readJsonWalls(source) {
-        for (let url of Parse.array(source, [], Parse.url)) {
-            const loaded = await this.#resourceManager.load(url);
-            const walls = loaded[url].data;
+    readJsonWalls(source) {
+        const promises = [];
 
-            Parse.withBaseUrl(url, () => {
-                console.log("Loading walls JSON: " + url);
-                Object.entries(walls).forEach(([key, value]) => {
-                    this.#loadTexture(value, "wall style '" + key + "'", (textureProvider) => {
-                        value.textureProvider = textureProvider;
-                        Parse.withBaseUrl(url, () => {
-                            this.#map.wallStyles[key] = new WallStyle(value);
+        for (let url of Parse.array(source, [], Parse.url)) {
+            promises.push(this.#resourceManager.load(url)
+                .then((loaded) => {
+                    const walls = loaded[url].data;
+
+                    Parse.withBaseUrl(url, () => {
+                        console.log("Loading walls JSON: " + url);
+                        Object.entries(walls).forEach(([key, value]) => {
+                            this.#loadTexture(value, "wall style '" + key + "'", (textureProvider) => {
+                                value.textureProvider = textureProvider;
+                                Parse.withBaseUrl(url, () => {
+                                    this.#map.wallStyles[key] = new WallStyle(value);
+                                });
+                                console.log("Registered wall style: ", key, " = ", this.#map.wallStyles[key]);
+                            });
                         });
-                        console.log("Registered wall style: ", key, " = ", this.#map.wallStyles[key]);
+                        console.log("DONE loading walls JSON: " + url);
                     });
-                });
-                console.log("DONE loading walls JSON: " + url);
-            });
+                })
+            );
         }
+
+        return Promise.all(promises);
     }
 
     /**
@@ -139,38 +146,45 @@ export class MapReader extends EventDispatcher {
      *
      * @return {Promise} a promise that will complete when the load completes
      */
-    async readJsonFloorAndCeiling(source) {
-        for (let url of Parse.array(source, [], Parse.url)) {
-            const loaded = await this.#resourceManager.load(url);
-            const floorAndCeiling = loaded[url].data;
+    readJsonFloorAndCeiling(source) {
+        const promises = [];
 
-            Parse.withBaseUrl(url, () => {
-                // Load the sky texture
-                if (floorAndCeiling.sky) {
-                    this.#loadTexture(floorAndCeiling.sky, "sky texture", (textureProvider) => {
-                        this.#map.skyTexture = textureProvider;
-                        console.log("Registered sky texture: ", this.#map.skyTexture);
-                    }, { "isSky": true });
-                }
-                // Load floor styles
-                if (floorAndCeiling.floor) {
-                    Object.entries(floorAndCeiling.floor).forEach(([key, floorStyle]) => {
-                        this.#loadTexture(floorStyle, "floor texture '" + key + "'", (textureProvider_1) => {
-                            this.#map.floorTextures[key] = textureProvider_1;
-                            console.log("Registered floor texture: ", key, " = ", this.#map.floorTextures[key]);
-                        });
+        for (let url of Parse.array(source, [], Parse.url)) {
+            promises.push(this.#resourceManager.load(url)
+                .then((loaded) => {
+                    const floorAndCeiling = loaded[url].data;
+
+                    Parse.withBaseUrl(url, () => {
+                        // Load the sky texture
+                        if (floorAndCeiling.sky) {
+                            this.#loadTexture(floorAndCeiling.sky, "sky texture", (textureProvider) => {
+                                this.#map.skyTexture = textureProvider;
+                                console.log("Registered sky texture: ", this.#map.skyTexture);
+                            }, { "isSky": true });
+                        }
+                        // Load floor styles
+                        if (floorAndCeiling.floor) {
+                            Object.entries(floorAndCeiling.floor).forEach(([key, floorStyle]) => {
+                                this.#loadTexture(floorStyle, "floor texture '" + key + "'", (textureProvider_1) => {
+                                    this.#map.floorTextures[key] = textureProvider_1;
+                                    console.log("Registered floor texture: ", key, " = ", this.#map.floorTextures[key]);
+                                });
+                            });
+                        }
+                        if (floorAndCeiling.ceiling) {
+                            Object.entries(floorAndCeiling.ceiling).forEach(([key_1, ceilingStyle]) => {
+                                this.#loadTexture(ceilingStyle, "ceiling texture '" + key_1 + "'", (textureProvider_2) => {
+                                    this.#map.ceilingTextures[key_1] = textureProvider_2;
+                                    console.log("Registered ceiling texture: ", key_1, " = ", this.#map.ceilingTextures[key_1]);
+                                });
+                            });
+                        }
                     });
-                }
-                if (floorAndCeiling.ceiling) {
-                    Object.entries(floorAndCeiling.ceiling).forEach(([key_1, ceilingStyle]) => {
-                        this.#loadTexture(ceilingStyle, "ceiling texture '" + key_1 + "'", (textureProvider_2) => {
-                            this.#map.ceilingTextures[key_1] = textureProvider_2;
-                            console.log("Registered ceiling texture: ", key_1, " = ", this.#map.ceilingTextures[key_1]);
-                        });
-                    });
-                }
-            });
+                })
+            );
         }
+
+        return Promise.all(promises);
     }
 
     /**
@@ -185,27 +199,33 @@ export class MapReader extends EventDispatcher {
      *
      * @return {Promise} a promise that will complete when the load completes
      */
-    async readJsonPatches(source) {
+    readJsonPatches(source) {
+        const promises = [];
+
         for (let url of Parse.array(source, [], Parse.url)) {
-            const loaded = await this.#resourceManager.load(url);
+            promises.push(this.#resourceManager.load(url)
+                .then((loaded) => {
+                    loaded[url].data.forEach((patch) => {
+                        const cell = this.map.getCell(patch.x, patch.y);
+                        if (!cell) {
+                            console.warn("Unable to apply patch to cell at [", patch.x, ", ", patch.y,
+                                "]. No such cell in map for patch ", patch);
+                            return;
+                        }
 
-            loaded[url].data.forEach((patch) => {
-                const cell = this.map.getCell(patch.x, patch.y);
-                if (!cell) {
-                    console.warn("Unable to apply patch to cell at [", patch.x, ", ", patch.y,
-                        "]. No such cell in map for patch ", patch);
-                    return;
-                }
+                        console.log("Applying patch to cell at [", patch.x, ", ", patch.y, "] with ", patch);
 
-                console.log("Applying patch to cell at [", patch.x, ", ", patch.y, "] with ", patch);
-
-                Object.entries(patch).forEach(([key, value]) => {
-                    if (key.charAt(0) != '_') {
-                        cell[key] = value;
-                    }
-                });
-            });
+                        Object.entries(patch).forEach(([key, value]) => {
+                            if (key.charAt(0) != '_') {
+                                cell[key] = value;
+                            }
+                        });
+                    });
+                })
+            );
         }
+
+        return Promise.all(promises);
     }
 
     /**
@@ -220,12 +240,18 @@ export class MapReader extends EventDispatcher {
      *
      * @return {Promise} a promise that will complete when the load completes
      */
-    async readJsonZones(source) {
-        for (let url of Parse.array(source, [], Parse.url)) {
-            const loaded = await this.#resourceManager.load(url);
+    readJsonZones(source) {
+        const promises = [];
 
-            console.warn("TODO: Parse and apply zone data: ", loaded[url].data);
+        for (let url of Parse.array(source, [], Parse.url)) {
+            promises.push(this.#resourceManager.load(url)
+                .then((loaded) => {
+                    console.warn("TODO: Parse and apply zone data: ", loaded[url]);
+                })
+            );
         }
+
+        return Promise.all(promises);
     }
 
     /**
@@ -242,8 +268,8 @@ export class MapReader extends EventDispatcher {
      *
      * @return {Promise} a promise that will complete when the load completes
      */
-    async readJsonSounds(source) {
-        await AudioReader.loadSoundsJson(source);
+    readJsonSounds(source) {
+        return AudioReader.loadSoundsJson(source);
     }
 
 }

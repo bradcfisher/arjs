@@ -14,9 +14,6 @@
 		"wallWidthToHeightRatio": 2,
 		"projectionPlaneOffset": 0
 	},
-	"teleportDestinations": {
-		"$import": "./teleportDestinations.json"
-	},
 	"maps": {
 		"level1": {
 			"type": "dungeon",
@@ -56,7 +53,10 @@
 			"floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
 			"zoneJsonUrl": "./level1/zones.json",
 			"messageJsonUrl": "./level1/messages.json",
-			"encounterJsonUrl": "./level1/encounters.json"
+			"encounterJsonUrl": "./level1/encounters.json",
+			"teleportDestinations": {
+				"$import": "./level1/teleportDestinations.json"
+			}
 		},
 		"level2": {
 			"type": "dungeon",
@@ -69,7 +69,10 @@
 			"floorAndCeilingTextureJsonUrl": "./level2/floorAndCeiling.json",
 			"zoneJsonUrl": "./level2/zones.json",
 			"messageJsonUrl": "./level2/messages.json",
-			"encounterJsonUrl": "./level2/encounters.json"
+			"encounterJsonUrl": "./level2/encounters.json",
+			"teleportDestinations": {
+				"$import": "./level2/teleportDestinations.json"
+			}
 		},
 		"level3": {
 			"type": "dungeon",
@@ -82,7 +85,10 @@
 			"floorAndCeilingTextureJsonUrl": "./level3/floorAndCeiling.json",
 			"zoneJsonUrl": "./level3/zones.json",
 			"messageJsonUrl": "./level3/messages.json",
-			"encounterJsonUrl": "./level3/encounters.json"
+			"encounterJsonUrl": "./level3/encounters.json",
+			"teleportDestinations": {
+				"$import": "./level3/teleportDestinations.json"
+			}
 		},
 		"level4": {
 			"type": "dungeon",

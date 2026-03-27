@@ -24,24 +24,31 @@ export class CityMapReader extends MapReader {
      * method returns. In addition to the promise returned, a 'complete' listener may also be used
      * to detect when all pending load operations have completed.
      *
-     * @param {string|string[]} source the location(s) of the description JSON to load. If a
-     *        relative reference is provided, it will be resolved using {@link Parse.url}.
+     * @param {string|URL|(string|URL)[]} source the location(s) of the description JSON to load.
+     *        If a relative reference is provided, it will be resolved using {@link Parse.url}.
      *
      * @return {PromiseLike<void>} a promise that will complete when the load completes
      */
     async readJsonDescriptions(source) {
+        const promises = [];
+
         for (let url of Parse.array(source, [], Parse.url)) {
-            const loaded = await this.resourceManager.load(url);
-            const descriptions = loaded[url].data;
-            const map = this.map;
-            map.descriptions = [];
-            descriptions.forEach((entry) => {
-                let index = entry.startIndex;
-                entry.descriptions.forEach((description) => {
-                    map.descriptions[index++] = description;
-                });
-            });
+            promises.push(this.resourceManager.load(url)
+                .then((loaded) => {
+                    const descriptions = loaded[url].data;
+                    const map = this.map;
+                    map.descriptions = [];
+                    descriptions.forEach((entry) => {
+                        let index = entry.startIndex;
+                        entry.descriptions.forEach((description) => {
+                            map.descriptions[index++] = description;
+                        });
+                    });
+                })
+            );
         }
+
+        return Promise.all(promises);
     }
 
     /**

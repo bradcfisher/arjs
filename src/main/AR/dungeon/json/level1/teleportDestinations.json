@@ -144,18 +144,6 @@
         "scenario": "dungeon",
         "map": "level1"
     },
-    "dungeon_23": {
-        "x": 0.5,
-        "y": 18.5,
-        "scenario": "dungeon",
-        "map": "level3"
-    },
-    "dungeon_24": {
-        "x": 13.5,
-        "y": 15.5,
-        "scenario": "dungeon",
-        "map": "level3"
-    },
     "dungeon_25": {
         "x": 35.5,
         "y": 33.5,
@@ -167,12 +155,6 @@
         "y": 30.5,
         "scenario": "dungeon",
         "map": "level1"
-    },
-    "dungeon_27": {
-        "x": 11.5,
-        "y": 0.5,
-        "scenario": "dungeon",
-        "map": "level2"
     },
     "dungeon_28": {
         "x": 54.5,

@@ -14,9 +14,6 @@
 		"wallWidthToHeightRatio": 2,
 		"projectionPlaneOffset": 0
 	},
-	"teleportDestinations": {
-		"$import": "./teleportDestinations.json"
-	},
 	"maps": {
 		"city": {
 			"type": "city",
@@ -29,7 +26,10 @@
 			"messageJsonUrl": "./cityMessages.json",
 			"encounterJsonUrl": "./cityEncounters.json",
 			"patchJsonUrl": "./cityPatches.json",
-			"soundJsonUrl": "./sounds.json"
+			"soundJsonUrl": "./sounds.json",
+			"teleportDestinations": {
+				"$import": "./teleportDestinations.json"
+			}
 		}
 	}
 }
