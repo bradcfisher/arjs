@@ -2,6 +2,8 @@
 import { Configurable } from "./Configurable.js";
 import { Parse } from "./Parse.js";
 import { ProxyMap } from "./ProxyMap.js";
+import { EventDispatcher } from "./EventDispatcher.js"
+/** @import { EventCallback } from "./EventDispatcher.js" */
 
 /**
  * @interface
@@ -106,6 +108,26 @@ export class ScenarioMapOptionsConfig {
     type;
 
     /**
+     * Identifier used to reference the map within the game.
+     * This property is automatically assigned to the key used to identify the map in the scenario JSON.
+     * @type {string?}
+     */
+    name;
+
+    /**
+     * Identifier of the Scenario the map belongs to.
+     * This property is automatically assigned to the key used to identify the map's scenario in the game JSON.
+     * @type {string?}
+     */
+    scenario;
+
+    /**
+     * Informational description of the map.
+     * @type {string?}
+     */
+    description;
+
+    /**
      * Width of the map in cells.
      * If not provided, the map defaults to 64 cells wide if `type` = "city" and
      * 32 cells wide if `type` = "dungeon".
@@ -178,6 +200,14 @@ export class ScenarioMapOptionsConfig {
 	 * @type {{[name: string]: ScenarioLocationConfig}}
 	 */
     teleportDestinations;
+
+    /**
+     * Actions to associate with player events that occur within this map.
+     * Examples include general handling of special location codes, etc.
+     * @type {({[type:string]: [ActionDefinition|RegisteredAction|ActionCallback|string]})?}
+     * @readonly
+     */
+    on;
 }
 
 /**
@@ -555,6 +585,21 @@ export class ScenarioLocation {
  */
 export class ScenarioMapOptions {
     /**
+     * @type {string}
+     */
+    #name;
+
+    /**
+     * @type {string}
+     */
+    #scenario;
+
+    /**
+     * @type {string?}
+     */
+    #description;
+
+    /**
      * @type {number}
      */
     #width;
@@ -605,6 +650,11 @@ export class ScenarioMapOptions {
     #teleportDestinations;
 
     /**
+     * @type {Map<string, (EventListener|EventCallback>)[]}
+     */
+    #on;
+
+    /**
      * @param {ScenarioMapOptionsConfig} config the configuration to apply.
      */
     configure(config) {
@@ -620,6 +670,9 @@ export class ScenarioMapOptions {
                 throw new Error("Invalid 'type': " + config.type);
         }
 
+        this.#name = Parse.prop(config, ["name"], null, Parse.str);
+        this.#scenario = Parse.prop(config, ["scenario"], null, Parse.str);
+        this.#description = Parse.str(config.description);
         this.#width = Parse.prop(config, ["width"], defaultSize, Parse.num);
         this.#height = Parse.prop(config, ["height"], defaultSize, Parse.num);
         this.#teleportDestinations = Parse.prop(config, ["teleportDestinations"], {},
@@ -630,6 +683,7 @@ export class ScenarioMapOptions {
                 });
                 return result;
             });
+        this.#on = Parse.prop(config, ["on"], {}, Parse.listeners);
 
         Parse.withBaseUrl(config.$source, () => {
             this.#wallTextureJsonUrl = parseArrayProp(config, "wallTextureJsonUrl", null, true);
@@ -658,6 +712,27 @@ export class ScenarioMapOptions {
     }
 
     /**
+     * Identifier used to reference the map within the game.
+     */
+    get name() {
+        return this.#name;
+    }
+
+    /**
+     * Identifier of the Scenario the map belongs to.
+     */
+    get scenario() {
+        return this.#scenario;
+    }
+
+    /**
+     * Informational description of the map.
+     */
+    get description() {
+        return this.#description;
+    }
+
+    /**
      * Width of the map in cells.
      */
     get width() {
@@ -676,6 +751,13 @@ export class ScenarioMapOptions {
      */
     get teleportDestinations() {
         return this.#teleportDestinations;
+    }
+
+    /**
+     * Event listeners to register on the loaded map.
+     */
+    get on() {
+        return this.#on;
     }
 
     /**
@@ -999,12 +1081,17 @@ export class DungeonMapOptions extends ScenarioMapOptions {
  * @implements {Configurable<ScenarioConfig>}
  * @implements {ScenarioConfig}
  */
-export class Scenario {
+export class Scenario extends EventDispatcher {
 
     /**
      * @type {string}
      */
     #name;
+
+    /**
+     * @type {string}
+     */
+    #description;
 
     /**
      * @type {ScenarioLocation}
@@ -1026,11 +1113,13 @@ export class Scenario {
      * @param {ScenarioConfig?} config
      */
     constructor(config) {
+        super();
         this.configure(config || {});
     }
 
     configure(config) {
-        this.#name = Parse.prop(config, ["name"], "<Unnamed>", Parse.str);
+        this.#name = Parse.prop(config, ["name"], null, Parse.str);
+        this.#description = Parse.prop(config, ["description"], "<Unnamed Scenario>", Parse.str);
         this.#defaultLocation = Parse.prop(config, ["defaultLocation"], {},
             (config) => new ScenarioLocation(config));
         this.#renderer = Parse.prop(config, ["renderer"], {},
@@ -1040,6 +1129,9 @@ export class Scenario {
             const result = new Map();
             Object.entries(maps).forEach(([name, config]) => {
                 try {
+                    config.scenario = this.#name;
+                    config.name = name;
+
                     if (config.type == "city") {
                         result.set(name, new CityMapOptions(config));
                     } else if (config.type == "dungeon") {
@@ -1053,6 +1145,11 @@ export class Scenario {
             });
             return result;
         });
+
+        Parse.prop(config, ["on"], null, Parse.listeners)
+            .forEach((listener, eventType) => {
+                this.on(eventType, listener);
+            });
     }
 
     /**
@@ -1073,10 +1170,17 @@ export class Scenario {
     }
 
     /**
-     * The name of the scenario.
+     * Identifier used to reference the scenario within the game.
      */
     get name() {
         return this.#name;
+    }
+
+    /**
+     * Informational description of the scenario.
+     */
+    get description() {
+        return this.#description;
     }
 
     /**

@@ -1,5 +1,5 @@
 {
-	"name": "The City",
+	"description": "Alternate Reality: The City",
 	"defaultLocation": {
 		"scenario": "city",
 		"map": "city",
@@ -17,6 +17,7 @@
 	"maps": {
 		"city": {
 			"type": "city",
+			"description": "Map for Alternate Reality: The City",
 			"wallBinaryUrl": "../CityMapWalls.bin",
 			"locationBinaryUrl": "../CityMapLocations.bin",
 			"wallTextureJsonUrl": "./cityWalls.json",

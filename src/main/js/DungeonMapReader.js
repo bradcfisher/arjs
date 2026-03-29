@@ -12,7 +12,7 @@ export class DungeonMapReader extends MapReader {
      */
     constructor(width = 32, height = 32) {
         super(width, height);
-        this.map.metadata.description = "Map for Alternate Reality: The Dungeon";
+        this.map.description = "Map for Alternate Reality: The Dungeon";
     }
 
     /**
@@ -325,6 +325,8 @@ export class DungeonMapReader extends MapReader {
 
             //messageJsonUrl;
             //encounterJsonUrl;
+
+            this.addEventListeners(config.on);
 
             return Promise.all(promises).then(() => this.map);
         });

@@ -1,5 +1,5 @@
 {
-	"name": "The Dungeon",
+	"description": "Alternate Reality: The Dungeon",
 	"defaultLocation": {
 		"scenario": "dungeon",
 		"map": "level1",
@@ -17,6 +17,7 @@
 	"maps": {
 		"level1": {
 			"type": "dungeon",
+			"description": "Map for Alternate Reality: The Dungeon - Level 1",
 			"width": 64,
 			"height": 64,
 			"mapBinaryUrl": [
@@ -53,6 +54,7 @@
 			"floorAndCeilingTextureJsonUrl": "./level1/floorAndCeiling.json",
 			"zoneJsonUrl": "./level1/zones.json",
 			"messageJsonUrl": "./level1/messages.json",
+			"patchJsonUrl": "./level1/patches.json",
 			"encounterJsonUrl": "./level1/encounters.json",
 			"teleportDestinations": {
 				"$import": "./level1/teleportDestinations.json"
@@ -60,6 +62,7 @@
 		},
 		"level2": {
 			"type": "dungeon",
+			"description": "Map for Alternate Reality: The Dungeon - Level 2",
 			"mapBinaryUrl": "../DungeonMap5.bin",
 			"soundJsonUrl": [
 				"./sounds.json",
@@ -69,6 +72,7 @@
 			"floorAndCeilingTextureJsonUrl": "./level2/floorAndCeiling.json",
 			"zoneJsonUrl": "./level2/zones.json",
 			"messageJsonUrl": "./level2/messages.json",
+			"patchJsonUrl": "./level2/patches.json",
 			"encounterJsonUrl": "./level2/encounters.json",
 			"teleportDestinations": {
 				"$import": "./level2/teleportDestinations.json"
@@ -76,6 +80,7 @@
 		},
 		"level3": {
 			"type": "dungeon",
+			"description": "Map for Alternate Reality: The Dungeon - Level 3",
 			"mapBinaryUrl": "../DungeonMap6.bin",
 			"soundJsonUrl": [
 				"./sounds.json",
@@ -85,6 +90,7 @@
 			"floorAndCeilingTextureJsonUrl": "./level3/floorAndCeiling.json",
 			"zoneJsonUrl": "./level3/zones.json",
 			"messageJsonUrl": "./level3/messages.json",
+			"patchJsonUrl": "./level3/patches.json",
 			"encounterJsonUrl": "./level3/encounters.json",
 			"teleportDestinations": {
 				"$import": "./level3/teleportDestinations.json"
@@ -92,6 +98,7 @@
 		},
 		"level4": {
 			"type": "dungeon",
+			"description": "Map for Alternate Reality: The Dungeon - Level 4",
 			"mapBinaryUrl": "../DungeonMap7.bin",
 			"soundJsonUrl": [
 				"./sounds.json",
@@ -101,6 +108,7 @@
 			"floorAndCeilingTextureJsonUrl": "./level4/floorAndCeiling.json",
 			"zoneJsonUrl": "./level4/zones.json",
 			"messageJsonUrl": "./level4/messages.json",
+			"patchJsonUrl": "./level4/patches.json",
 			"encounterJsonUrl": "./level4/encounters.json"
 		}
 	}

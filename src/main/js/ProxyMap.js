@@ -1,5 +1,6 @@
 
 /**
+ * Multi-map proxy wrapper.
  * @template K the key type
  * @template V the value type
  * @extends {Map<K,V>}
@@ -8,7 +9,7 @@ export class ProxyMap extends Map {
 	#maps;
 
     /**
-     * @param  {...Map<K, V>} maps
+     * @param  {...Map<K, V>} maps the list of maps to proxy.
      */
 	constructor(...maps) {
 		super();

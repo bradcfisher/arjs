@@ -1,8 +1,12 @@
 
-import { EventDispatcher } from "./EventDispatcher.js"
-import { ScenarioMap, WallSide, HitData } from "./ScenarioMap.js";
-import { Stat } from "./Stat.js"
-import { Denizen } from "./Denizen.js"
+import { EventDispatcher } from "./EventDispatcher.js";
+import { ScenarioMap, WallSide, HitData, MapCell } from "./ScenarioMap.js";
+import { Stat } from "./Stat.js";
+import { Denizen } from "./Denizen.js";
+/**
+ * @import { EventCallback } from "./EventDispatcher.js"
+ * @import { GameState } from "./GameState.js"
+ */
 
 /**
  * @readonly
@@ -28,7 +32,10 @@ export const Gender = Object.freeze({
  * @implements {EventDispatcher}
  *
  * Events:
- * @event move - sent when the player's position is updated. Position details for the event are in `data.position`.
+ * @event move - sent when the player's position is updated. Position details for the event are in
+ *               `parameters.event.data.position`.
+ * @event enterCell - sent when the player moves into a new map cell. Position details for the event are in
+ *                    `parameters.event.data.position`.
  * @event collision - sent when the player attempts to move into a colliding wall
  * @event passage - sent when the player moves through a non-colliding wall
  */
@@ -109,6 +116,16 @@ export class Player extends Denizen {
 	#digestionRate = new Stat(0.5);
 
     /**
+     * @type {MapCell?}
+     */
+    #cell;
+
+    /**
+     * @type {ScenarioMap}
+     */
+    #map;
+
+    /**
      * The player's horizontal map position.
      * @type {number}
      */
@@ -184,12 +201,6 @@ export class Player extends Denizen {
          */
         this.minWallDist = 0.1;
 
-        /**
-         * The map the player is currently on.
-         * @type ScenarioMap?
-         */
-        this.map = undefined;
-
 
 		// TODO: Finish remaining player attributes
 /*
@@ -238,7 +249,7 @@ export class Player extends Denizen {
 
     /**
      * @param {string} eventType the event type name and optional classifiers to add the handler to.
-     * @param {EventListener|(event:EventDetail) => void} listener the callback to add.
+     * @param {EventListener|EventCallback} listener the callback to add.
      * @returns {this}
      * @see {@link EventDispatcher.on}
      */
@@ -249,7 +260,7 @@ export class Player extends Denizen {
     /**
      * @param {string} eventType the event type name and optional classifiers to remove the handler
      *        from.
-     * @param {EventListener|(event:EventDetail) => void} listener the callback to remove.
+     * @param {EventListener|EventCallback} listener the callback to remove.
      * @returns {this}
      * @see {@link EventDispatcher.off}
      */
@@ -268,10 +279,32 @@ export class Player extends Denizen {
         return this.#eventDispatcher.triggerEvent(eventType, data);
     }
 
-    #triggerMovedEvent() {
-        this.triggerEvent('move', {
-            position: this.getPosition()
-        });
+    /**
+     * Dispatches 'move' events on the player as well as 'enterCell' events
+     * on the cell, map and player.
+     * @param {boolean} enterCell whether the player moved into a new cell or not.
+     *        If true, 'enterCell' events will be dispatched.
+     */
+    #triggerMovedEvent(enterCell) {
+        const position = this.getPosition();
+        const data = { position };
+
+        if (enterCell) {
+            this.#cell = this.map.getCell(this.#x, this.#y);
+            position.cell = this.#cell;
+
+            this.triggerEvent('enterCell', data);
+            if (this.#cell != null) {
+                this.#cell.triggerEvent('enterCell', data);
+                this.#map.triggerEvent('enterCell', data);
+
+                /** @type {GameState} */
+                const gameState = globalThis.gameState;
+                gameState.scenarios.get(this.#map.scenario).triggerEvent('enterCell', data);
+            }
+        }
+
+        this.triggerEvent('move', data);
     }
 
     get effectiveSpeed() {
@@ -282,13 +315,29 @@ export class Player extends Denizen {
         return this.turnSpeed * this.speedMultiplier;
     }
 
+
+    /**
+     * The map the player is currently on.
+     */
+    get map() {
+        return this.#map;
+    }
+
+    /**
+     * The map cell the player is currently within.
+     */
+    get cell() {
+        return this.#cell;
+    }
+
     /**
      * @fires moved when updated
      */
     set x(value) {
         if (value != this.#x) {
+            const enterCell = Math.trunc(this.#x) != Math.trunc(value);
             this.#x = value;
-            this.#triggerMovedEvent();
+            this.#triggerMovedEvent(enterCell);
         }
     }
 
@@ -304,8 +353,9 @@ export class Player extends Denizen {
      */
     set y(value) {
         if (value != this.#y) {
+            const enterCell = Math.trunc(this.#y) != Math.trunc(value);
             this.#y = value;
-            this.#triggerMovedEvent();
+            this.#triggerMovedEvent(enterCell);
         }
     }
 
@@ -609,19 +659,28 @@ export class Player extends Denizen {
             : this.#checkCollision(this.#x + deltaX, this.#y + deltaY));
 
         let moved = false;
+        let enterCell = false;
 
         if (x != this.#x) {
+            if (Math.trunc(this.#x) != Math.trunc(x)) {
+                enterCell = true;
+            }
+
             this.#x = x;
             moved = true;
         }
 
         if (y != this.#y) {
+            if (Math.trunc(this.#y) != Math.trunc(y)) {
+                enterCell = true;
+            }
+
             this.#y = y;
             moved = true;
         }
 
         if (moved) {
-            this.#triggerMovedEvent();
+            this.#triggerMovedEvent(enterCell);
             eventCallback();
         }
     }
@@ -753,16 +812,28 @@ export class Player extends Denizen {
      *
      * @param {number} x the new horizontal map position for the player
      * @param {number} y the new vertical map position for the player
-     * @param {number=} orientation the new orientation for the player
-     * @param {number=} height the new height for the player
+     * @param {number=} orientation the new orientation for the player. Only updated if a
+     *        value is provided.
+     * @param {number=} height the new height for the player. Only updated if a value
+     *        is provided.
+     * @param {ScenarioMap=} map the new map to assign to the player. Only updated if a
+     *        value is provided.
      */
-    setPosition(x, y, orientation, height) {
+    setPosition(x, y, orientation, height, map) {
         let moved = false;
+        let enterCell = false;
+
         if (x != this.#x) {
+            if (Math.trunc(x) != Math.trunc(this.#x)) {
+                enterCell = true;
+            }
             this.#x = x;
             moved = true;
         }
         if (y != this.#y) {
+            if (Math.trunc(y) != Math.trunc(this.#y)) {
+                enterCell = true;
+            }
             this.#y = y;
             moved = true;
         }
@@ -780,13 +851,20 @@ export class Player extends Denizen {
             moved = true;
         }
 
+        if (map != null) {
+            this.#map = map;
+            enterCell = true;
+        }
+
         if (moved) {
-            this.#triggerMovedEvent();
+            this.#triggerMovedEvent(enterCell);
         }
     }
 
     getPosition() {
         return {
+            map: this.#map,
+            cell: this.#cell,
             x: this.#x,
             y: this.#y,
             height: this.#height,

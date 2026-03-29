@@ -16,6 +16,7 @@ import { CityMapReader } from "./CityMapReader.js";
 import { DungeonMapReader } from "./DungeonMapReader.js";
 import { ScenarioMap } from "./ScenarioMap.js";
 import { ProxyMap } from "./ProxyMap.js";
+import { EventDispatcher } from "./EventDispatcher.js";
 
 /**
  * @interface
@@ -102,13 +103,6 @@ export class GameStateConfig {
 
 }
 
-
-/**
- * The singleton GameState instance.
- * @type {GameState}
- */
-let instance;
-
 /**
  * @type {boolean}
  */
@@ -124,25 +118,35 @@ let loadingConfig;
  */
 let loadingPromise;
 
-const audioManager = new AudioManager();
+/**
+ * @type {AudioManager}
+ */
+globalThis.audioManager = new AudioManager();
 
-const resourceManager = new ResourceManager();
-resourceManager.registerResourceDecoder(
+/**
+ * @type {ResourceManager}
+ */
+globalThis.resourceManager = new ResourceManager();
+globalThis.resourceManager.registerResourceDecoder(
 	// Decode into an AudioBuffer
 	"audio/*", (request, meta, accept, reject) => {
-		audioManager.context.decodeAudioData(request.response).then(
+		globalThis.audioManager.context.decodeAudioData(request.response).then(
 						(buffer) => { accept(buffer); },
 						(error) => { reject(error); }
 					);
 	}
 );
 
-const actionManager = new ActionManager();
+/**
+ * @type {ActionManager}
+ */
+globalThis.actionManager = new ActionManager();
 
 /**
  * @implements {Configurable<GameStateConfig>}
+ * @implements {EventDispatcher}
  */
-export class GameState {
+export class GameState extends EventDispatcher {
 
 	/**
 	 * @type {string}
@@ -278,28 +282,28 @@ export class GameState {
 			loadingConfig = config;
 
 			if (typeof config === "string") {
-				loadingPromise = rv = resourceManager.load(config).then((entry) => {
+				loadingPromise = rv = globalThis.resourceManager.load(config).then((entry) => {
 					let configJson = entry[config].data;
 
-					if (instance == null) {
-						instance = new GameState(configJson);
+					if (globalThis.gameState == null) {
+						globalThis.gameState = new GameState(configJson);
 					} else {
-						instance.configure(configJson);
+						globalThis.gameState.configure(configJson);
 					}
 
 					loading = false;
-					return instance;
+					return globalThis.gameState;
 				})
 			} else {
 				loadingPromise = rv = new Promise<GameState>((resolve, reject) => {
-					if (instance == null) {
-						instance = new GameState(config);
+					if (globalThis.gameState == null) {
+						globalThis.gameState = new GameState(config);
 					} else {
-						instance.configure(config);
+						globalThis.gameState.configure(config);
 					}
 
 					loading = false;
-					resolve(inst);
+					resolve(globalThis.gameState);
 				});
 			}
 		}
@@ -309,35 +313,54 @@ export class GameState {
 
 	/**
 	 * Retrieves the GameState singleton object.
+	 *
+	 * Note: The GameState singleton can also be retrieved using `globalThis.gameState`.
+	 * Using the global will not report an error when it is not defined, however, that is
+	 * usually not an issue as the GameState should be initialized before any other game
+	 * logic executes. Using the global can be useful to avoid causing reference loops between
+	 * the GameState module and other modules.
+	 *
 	 * @return the GameState singleton.
 	 * @throws Error if the load() method has not yet been called to initialize the GameState.
 	 */
 	static getInstance() {
-		if (instance == null) {
+		if (globalThis.gameState == null) {
 			throw new Error("GameState not loaded");
 		}
-		return instance;
+		return globalThis.gameState;
 	}
 
 	/**
 	 * Retrieves the global ResourceManager used by the GameState for loading assets.
+	 *
+	 * Note: The ResourceManager singleton can also be retrieved using `globalThis.resourceManager`.
+	 * Using the global can be useful to avoid causing reference loops between the GameState module
+	 * and other modules.
 	 */
 	static getResourceManager() {
-		return resourceManager;
+		return globalThis.resourceManager;
 	}
 
 	/**
 	 * Retrieves the global AudioManager.
+	 *
+	 * Note: The AudioManager singleton can also be retrieved using `globalThis.audioManager`.
+	 * Using the global can be useful to avoid causing reference loops between the GameState module
+	 * and other modules.
 	 */
 	static getAudioManager() {
-		return audioManager;
+		return globalThis.audioManager;
 	}
 
 	/**
 	 * Retrieves the global ActionManager.
+	 *
+	 * Note: The ActionManager singleton can also be retrieved using `globalThis.actionManager`.
+	 * Using the global can be useful to avoid causing reference loops between the GameState module
+	 * and other modules.
 	 */
 	static getActionManager() {
-		return actionManager;
+		return globalThis.actionManager;
 	}
 
 	/**
@@ -346,6 +369,7 @@ export class GameState {
 	 * @parame {GameStateConfig} config
 	 */
 	constructor(config) {
+		super();
 		this.configure(config);
 	}
 
@@ -388,8 +412,9 @@ export class GameState {
 
 		this.#scenarios = new Map();
 		Object.entries(Parse.required(config.scenarios, "scenarios"))
-			.forEach(([key, val]) => {
-				this.#scenarios.set(key, new Scenario(val));
+			.forEach(([key, config]) => {
+				config.name = key;
+				this.#scenarios.set(key, new Scenario(config));
 			});
 
 		this.#defaultLocation = Parse.prop(config, ["defaultLocation"], null,
@@ -557,7 +582,13 @@ export class GameState {
 			throw new Error("Unsupported map type: " + mapConfig.type);
 		}
 
-		return mapReader.readMap(mapConfig, mapConfig["$source"]);
+		return mapReader.readMap(mapConfig, mapConfig["$source"])
+			.then((map) => {
+				map.name = mapConfig.name;
+				map.scenario = mapConfig.scenario;
+				map.description = mapConfig.description;
+				return map;
+			});
 	}
 
 	/**
@@ -570,6 +601,8 @@ export class GameState {
 	 * @return {PromiseLike<GameState>}
      */
 	async loadLocation(parametersOrName) {
+		this.triggerEvent("suspendInput");
+
         const parameters = ((typeof parametersOrName === "string")
             ? this.teleportDestinations.get(parametersOrName)
             : parametersOrName);
@@ -585,13 +618,13 @@ export class GameState {
             orientation = Parse.orientation(parameters.orientation);
         }
 
-		this.player.map = this.#map;
-        this.player.setPosition(parameters.x, parameters.y, orientation);
+        this.player.setPosition(parameters.x, parameters.y, orientation, undefined, this.#map);
 
         // TODO: Trigger 'teleport' event? What context should this be dispatched on? player? map? gamestate?
         //   Player seems most obvious, but 'teleport' is not an intrinsic event.
         console.warn("TODO Trigger 'teleport' event");
 
+		this.triggerEvent("resumeInput");
 		return this;
 	}
 

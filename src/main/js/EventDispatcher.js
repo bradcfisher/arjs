@@ -1,5 +1,6 @@
 import { ClassRegistry } from "./Serializer.js";
 import { Configurable } from "./Configurable.js";
+/** @import { GameState } from "./GameState.js" */
 
 export class EventDetail {
 
@@ -55,9 +56,14 @@ export class EventListener {
 	 * Processes events.
 	 *
 	 * @param {EventDetail} event details of the event that was fired.
+     * @param {GameState} gameState the GameState instance.
 	 */
-	processEvent(event) {};
+	processEvent(event, gameState) {};
 }
+
+/**
+ * @typedef {(event: EventDetail, gameState: GameState) => void} EventCallback
+ */
 
 /**
  * @typedef {[EventListener, Set<string>?]} EventListenerEntry
@@ -167,7 +173,7 @@ export class EventDispatcher {
      *        values are used to further filter calls to the listener method to only events tagged
      *        with one of the provided classifier values. If no classifier values are given, all
      *        events are matched, regardless of the event's associated class.
-     * @param {EventListener|(event:EventDetail) => void} listener the callback to add
+     * @param {EventListener|EventCallback} listener the callback to add
      *
      * @return {this}
      */
@@ -214,7 +220,7 @@ export class EventDispatcher {
      *        may also include a colon ":" followed by a list of comma-separated event classifier
      *        values (each containing only "-", "\_" or alpha-numeric characters). If classifie
      *        values are present, only associations for those values will be removed.
-     * @param {EventListener|(event:EventDetail) => void} listener the callback to remove
+     * @param {EventListener|EventCallback} listener the callback to remove
      *
      * @return {this}
      */
@@ -273,9 +279,9 @@ export class EventDispatcher {
                 try {
                     if (!classifiers || classifiers.has(classifier)) {
                         if (listener instanceof Function) {
-                            listener(event);
+                            listener(event, globalThis.gameState);
                         } else {
-                            listener.processEvent(event);
+                            listener.processEvent(event, globalThis.gameState);
                         }
                     }
                 } catch (error) {

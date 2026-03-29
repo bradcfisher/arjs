@@ -6,6 +6,7 @@ import { Parse } from "./Parse.js";
 import { MonthConfig, Month } from "./Month.js"
 import { ClassRegistry } from "./Serializer.js";
 import { Configurable } from "./Configurable.js";
+/** @import { EventCallback } from "./EventDispatcher.js" */
 
 /**
  * Configuration interface for delay between clock ticks/minutes (0 = time stands still).
@@ -730,7 +731,7 @@ export class GameClock
 	 *        0, the effective delay between repetitions will be 1.
 	 * @param {number} repetitions The number of times to trigger the timer.  A value of 0, or a
 	 *        negative value, indicates an unlimited number of repetitions.
-	 * @param {(EventListener|(event: EventDetail) => void)?} listener The EventListener to invoke for each repetition.
+	 * @param {(EventListener|EventCallback)?} listener The EventListener to invoke for each repetition.
 	 *
 	 * @return {GameTimer} A new GameTimer instance.
 	 */

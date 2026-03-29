@@ -6,6 +6,7 @@ import { ScenarioMap, WallStyle } from "./ScenarioMap.js";
 import { Texture, TextureFrame, AnimatedTextureProvider, SolidColorTexture } from "./Texture.js";
 import { AudioReader } from "./AudioReader.js";
 import { ScenarioMapOptionsConfig } from "./Scenario.js";
+/** @import { EventCallback } from "./EventDispatcher.js"; */
 
 /**
  * Provides a resource manager and uninitialized map as well as utility
@@ -206,20 +207,7 @@ export class MapReader extends EventDispatcher {
             promises.push(this.#resourceManager.load(url)
                 .then((loaded) => {
                     loaded[url].data.forEach((patch) => {
-                        const cell = this.map.getCell(patch.x, patch.y);
-                        if (!cell) {
-                            console.warn("Unable to apply patch to cell at [", patch.x, ", ", patch.y,
-                                "]. No such cell in map for patch ", patch);
-                            return;
-                        }
-
-                        console.log("Applying patch to cell at [", patch.x, ", ", patch.y, "] with ", patch);
-
-                        Object.entries(patch).forEach(([key, value]) => {
-                            if (key.charAt(0) != '_') {
-                                cell[key] = value;
-                            }
-                        });
+                        this.#map.applyPatch(patch.x, patch.y, patch);
                     });
                 })
             );
@@ -270,6 +258,19 @@ export class MapReader extends EventDispatcher {
      */
     readJsonSounds(source) {
         return AudioReader.loadSoundsJson(source);
+    }
+
+    /**
+     * Adds the provided mapping of event listeners to the underlying map.
+     * @param {Map<string, EventListener|EventCallback>} eventListeners the
+     *        event listener mapping to apply.
+     */
+    addEventListeners(eventListeners) {
+        if (eventListeners != null) {
+            eventListeners.forEach((listener, eventType) => {
+                this.#map.on(eventType, listener);
+            });
+        }
     }
 
 }

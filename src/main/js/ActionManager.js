@@ -1,15 +1,18 @@
 
-import { AudioClip } from "./AudioClip.js"
-import { GameState } from "./GameState.js";
+import { AudioClip } from "./AudioClip.js";
 import { Parse } from "./Parse.js";
 import { HitData, WallSide } from "./ScenarioMap.js";
-/** @import { ScenarioLocationConfig } from "./Scenario.js" */
+/**
+ * @import { ScenarioLocationConfig } from "./Scenario.js"
+ * @import { GameState } from "./GameState.js"
+ */
 
 /**
  * Callback which executes an action or computation.
  *
  * @callback ActionCallback
  * @param {{[name:string]: any}?} parameters map of parameter values
+ * @param {GameState} gameState the GameState instance
  * @return {any} the result of the action (if any)
  */
 
@@ -77,9 +80,10 @@ export class CoreAction {
     /**
      * Plays a sound resource
      * @param {PlaySoundParameters} parameters configuration specifying the resource to play.
+     * @param {GameState} gameState the GameState instance.
      */
-    static playSound(parameters) {
-        const clip = GameState.getAudioManager().prepare(parameters.clip);
+    static playSound(parameters, gameState) {
+        const clip = globalThis.audioManager.prepare(parameters.clip);
         if (clip) {
             clip.play();
         } else {
@@ -91,8 +95,9 @@ export class CoreAction {
      * Triggers a player interaction to interact with a locked door.
      *
      * @param {DoorActionParameters} parameters configuration parameters
+     * @param {GameState} gameState the GameState instance.
      */
-    static checkLockedDoorCollision(parameters) {
+    static checkLockedDoorCollision(parameters, gameState) {
         // trigger interaction when attempting to pass through a locked door
         // the player can examine/try a key/try to force/try to disenchant the door
         console.warn("TODO Interact with locked door");
@@ -102,8 +107,9 @@ export class CoreAction {
      * Triggers a player interaction to interact with a barred door.
      *
      * @param {DoorActionParameters} parameters configuration parameters
+     * @param {GameState} gameState the GameState instance.
      */
-    static checkBoltedDoorCollision(parameters) {
+    static checkBoltedDoorCollision(parameters, gameState) {
         // trigger interaction when attempting to pass through a bolted door
         // the player can examine/try a key/try to force/try to disenchant the door
         console.warn("TODO Interact with locked door");
@@ -113,8 +119,9 @@ export class CoreAction {
      * Triggers a player interaction to interact with an enchanted door.
      *
      * @param {DoorActionParameters} parameters configuration parameters
+     * @param {GameState} gameState the GameState instance.
      */
-    static checkEnchantedDoorCollision(parameters) {
+    static checkEnchantedDoorCollision(parameters, gameState) {
         // trigger interaction when attempting to pass through an enchanted door
         // the player can examine/try a key/try to force/try to disenchant the door
         console.warn("TODO Interact with locked door");
@@ -127,8 +134,9 @@ export class CoreAction {
      * or to permanently unobstruct a locked/barred/enchanted door.
      *
      * @param {PatchDoorConfig} parameters door patching parameters
+     * @param {GameState} gameState the GameState instance.
      */
-    static patchDoor(parameters) {
+    static patchDoor(parameters, gameState) {
         const patchConfig = {
             x: parameters.cellX,
             y: parameters.cellY
@@ -152,11 +160,16 @@ export class CoreAction {
         CoreAction.patchCell(patchConfig);
     }
 
-    static patchCell(parameters) {
+    /**
+     *
+     * @param {any} parameters cell patching parameters
+     * @param {GameState} gameState the GameState instance.
+     */
+    static patchCell(parameters, gameState) {
         // x, y (or omit to use current player pos)
         // cell options to apply
 
-        const cell = GameState.getInstance().map.getCell(parameters.x, parameters.y);
+        const cell = gameState.map.getCell(parameters.x, parameters.y);
 
         // TODO: Apply the patch to the map cell
         console.warn("TODO Apply patch to map cell");
@@ -171,9 +184,10 @@ export class CoreAction {
      * @param {ScenarioLocationConfig|string} parametersOrName configuration parameters or
      *        teleport destination name. If a string is specified, the actual destination is
      *        retrieved from the GameState using the specified identifier.
+     * @param {GameState} gameState the GameState instance.
      */
-    static teleport(parametersOrName) {
-        GameState.getInstance().loadLocation(parametersOrName);
+    static teleport(parametersOrName, gameState) {
+        gameState.loadLocation(parametersOrName);
     }
 
 }
@@ -262,7 +276,7 @@ export class ActionManager {
             return actionCallback;
         }
 
-        const boundCallback = (parameters) => {
+        const boundCallback = (parameters, gameState) => {
             const params = {};
             Object.assign(params, defaultParameters);
 
@@ -270,7 +284,7 @@ export class ActionManager {
                 Object.assign(params, parameters);
             }
 
-            actionCallback(params);
+            actionCallback(params, gameState);
         };
 
         boundCallback.actionConfig = actionCallback.actionConfig;
@@ -304,9 +318,11 @@ export class ActionManager {
      * Executes a previously registered action.
      * @param {string} name name of the action to execute.
      * @param {{[name:string]:any}?} parameters parameters to provide to the action.
+     * @param {GameState} gameState the GameState instance. If not provided, will default
+     *        to the standard GameState singleton returned by {@link GameState.getInstance}.
      * @return {any} the value produced by the action.
      */
-    execute(name, parameters) {
+    execute(name, parameters, gameState) {
         const [ action, parameterResolver ] = this.#registeredActions.get(name);
         if (action == null) {
             throw new Error("No action registered with name '" + name + "'");
@@ -316,7 +332,7 @@ export class ActionManager {
             parameterResolver(parameters);
         }
 
-        return action(parameters);
+        return action(parameters, gameState || globalThis.gameState);
     }
 
 }

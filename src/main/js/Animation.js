@@ -1,5 +1,6 @@
 
-import { EventDetail, EventDispatcher } from "./EventDispatcher.js"
+import { EventDispatcher } from "./EventDispatcher.js";
+/** @import { EventCallback } from "./EventDispatcher.js" */
 
 export class AnimationManager extends EventDispatcher {
     /**
@@ -51,7 +52,7 @@ export class AnimationManager extends EventDispatcher {
             animation.applyOptions(options);
         }
 
-        /** @type {(event: EventDetail) => void} */
+        /** @type {EventCallback} */
         const endCallback = (event) => {
             this.#activeAnimations.delete(event.data.id);
             animation.off('end', endCallback);

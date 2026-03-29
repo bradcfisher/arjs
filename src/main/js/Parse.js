@@ -1,5 +1,4 @@
 import { ClassRegistry, Deserializer, Serializer } from "./Serializer.js";
-import { EventListener } from "./EventDispatcher.js";
 import { GameState } from "./GameState.js";
 import { ActionCallbackConstructor } from "./ActionManager.js";
 
@@ -56,14 +55,6 @@ export class ActionDefinition {
      */
     parameters;
 }
-
-/**
- * @callback EventListenerCallback
- * @param {{[name:string]: any}} parameters
- * @returns {any}
- * @extends ActionCallback
- * @implements {EventListener}
- */
 
 /**
  * Utility class providing methods for parsing object structures (usually JSON, but not always).
@@ -735,12 +726,23 @@ export class Parse {
 	}
 
 	/**
-	 * Parses a string of Javascript into a Function object accepting the specified parameters.
+	 * Parses a string of Javascript into a Function object accepting a single parameter named 'parameters'.
 	 *
-	 * Example:
+	 * Example with literal Javascript code:
 	 * ```
-	 *     const sayHello = Parse.action("return 'Hello, ' + name + '!';", null, ["name"]);
-	 *     console.log(sayHello("Bob"));  // Outputs "Hello, Bob!"
+	 *     const sayHello = Parse.action("return 'Hello, ' + parameters.name + '!';");
+	 *     console.log(sayHello({ name: "Bob" }));  // Outputs "Hello, Bob!"
+	 * ```
+	 *
+	 * Example referencing a reusable action registered with the ActionManager:
+	 *
+	 * ```
+	 *     GameState.getActionManager().register("myAction", (parameters, gameState) => {
+	 *	   	   return 'Hello, ' + parameters.name + '!';
+	 *     });
+	 *
+	 * 	   const myAction = Parse.action({action:"myAction"});
+	 *     console.log(sayHello({ name: "Bob" }));  // Outputs "Hello, Bob!"
 	 * ```
 	 *
 	 * @param {ActionDefinition|RegisteredAction|string|function|null} val the action
@@ -784,7 +786,7 @@ export class Parse {
 				resourceResolver(parameters);
 			}
 
-			actionCallback = new Function(["parameters"], '"use strict";' + body);
+			actionCallback = new Function(["parameters", "gameState"], '"use strict";' + body);
 			actionCallback.actionConfig = { body, parameters };
 			actionCallback.constructor = ActionCallbackConstructor;
 
@@ -794,7 +796,7 @@ export class Parse {
 			}
 		} else {
 			const body = Parse.str(val);
-			actionCallback = new Function(["parameters"], '"use strict";' + body);
+			actionCallback = new Function(["parameters", "gameState"], '"use strict";' + body);
 			actionCallback.actionConfig = { body };
 			actionCallback.constructor = ActionCallbackConstructor;
 		}
@@ -803,19 +805,50 @@ export class Parse {
 	}
 
 	/**
-	 * Parses the value as an event listener function taking a single Event parameter named "event".
+	 * Parses a mapping of event type to event handler actions.
 	 *
-	 * @param {any} val the Javascript code to use as the function body. This code is evaluated in strict mode.
-	 * @param {any} defaultVal
+	 * ```
+	 * {
+	 *     "eventType1": "console.log('Hello, world!', parameters)",
+	 *     "eventType2": [
+	 *         { "action": "core:playSound", "clip": "myClip.mp3" },
+	 *         (parameters, gameState) => console.log("eventType2 occurred!", parameters.event)
+	 *     ]
+	 * }
+	 * ```
 	 *
-	 * @return {EventListenerCallback}
+	 * @param {any} val the value to parse. It will be parsed as an object of key-value pairs
+	 *        where the values are parseable by {@link Parse.action} (or arrays of such values).
+	 * @param {any} defaultVal the default action value to use if val is undefined.
+	 *
+	 * @return {Map<string, EventCallback>} a mapping of event types to callback functions.
+	 *         Each event type in the map will be mapped to a single event listener callback, even
+	 *         if the input contains a list of multiple handlers. Each handler in the list will be invoked
+	 *         in order by the listener.
 	 */
-	static listener(val, defaultVal) {
-		/** @type {EventListenerCallback} */
-		const callback = Parse.action(val, defaultVal);
-		callback.constructor = Parse.listener;
-		callback.processEvent = callback;
-		return callback;
+	static listeners(val, defaultVal) {
+		const result = new Map();
+
+		if (val == null) {
+			val = defaultVal;
+		}
+
+		if (val != null) {
+            Object.entries(val).forEach(([type, item]) => {
+                const actions = Parse.array(item, [], Parse.action);
+                result.set(type, (event, gameState) => {
+                    for (let action of actions) {
+                        try {
+                            action({ event }, gameState);
+                        } catch (error) {
+                            console.error(`Error in action for ${type}:`, event, error);
+                        }
+                    }
+                });
+            });
+        }
+
+		return result;
 	}
 
 } // Parse
@@ -843,13 +876,6 @@ ClassRegistry.registerClass(
 	'ActionCallback', ActionCallbackConstructor, serializeCallback, deserializeCallback,
 	(entry, data, deserializer) => {
 		return Parse.action(data);
-	}
-);
-
-ClassRegistry.registerClass(
-	'EventListenerCallback', Parse.listener, serializeCallback, deserializeCallback,
-	(entry, data, deserializer) => {
-		return Parse.listener(data);
 	}
 );
 

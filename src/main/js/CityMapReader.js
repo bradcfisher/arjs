@@ -14,7 +14,7 @@ export class CityMapReader extends MapReader {
      */
     constructor(width = 64, height = 64) {
         super(width, height);
-        this.map.metadata.description = "Map for Alternate Reality: The City";
+        this.map.description = "Map for Alternate Reality: The City";
     }
 
     /**
@@ -364,6 +364,8 @@ export class CityMapReader extends MapReader {
 
             //messageJsonUrl;
             //encounterJsonUrl;
+
+            this.addEventListeners(config.on);
 
             return Promise.all(promises).then(() => this.map);
         });

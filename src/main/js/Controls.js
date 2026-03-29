@@ -21,6 +21,7 @@ export class Controls extends EventDispatcher {
      * @param {Renderer} renderer
      */
     setupControls(renderer) {
+        const gameState = renderer.gameState;
         const player = renderer.gameState.player;
         const animations = renderer.animations;
         const headBobDuration = 500;
@@ -86,9 +87,30 @@ export class Controls extends EventDispatcher {
             }
         });
 
-        let jumping = false;
+        let inputSuspended = false;
+
+        gameState.on("suspendInput", () => {
+            inputSuspended = true;
+
+            // Stop active animations
+            animations.end(moveForwardAnimation);
+            animations.end(moveBackwardAnimation);
+            animations.end(strafeLeftAnimation);
+            animations.end(strafeRightAnimation);
+            animations.end(turnLeftAnimation);
+            animations.end(turnRightAnimation);
+            jumpAnimation.repetitions = 1;
+        });
+
+        gameState.on("resumeInput", () => {
+            inputSuspended = false;
+        });
 
         document.addEventListener('keydown', (e) => {
+            if (inputSuspended) {
+                return;
+            }
+
             switch (e.key) {
                 case 'ArrowUp':
                 case 'w':
@@ -128,7 +150,6 @@ export class Controls extends EventDispatcher {
                     break;
                 case ' ':
                     jumpAnimation.repetitions = Infinity;
-                    jumping = true;
                     animations.addIfNotPresent(jumpAnimation);
                     break;
                 case 'Shift':
@@ -319,7 +340,9 @@ export class Controls extends EventDispatcher {
                     jumpAnimation.repetitions = 1;
                     break;
                 case 'Tab':
-                    renderer.gameState.map.useTarget(player);
+                    if (!inputSuspended) {
+                        renderer.gameState.map.useTarget(player);
+                    }
                     break;
                 case 'Shift':
                     //player.speedMultiplier = 1;
@@ -335,8 +358,10 @@ export class Controls extends EventDispatcher {
         });
 
         renderer.canvas.addEventListener('click', (e) => {
-            console.log("click");
-            renderer.gameState.map.useTarget(player);
+            if (!inputSuspended) {
+                console.log("click");
+                renderer.gameState.map.useTarget(player);
+            }
         })
     }
 

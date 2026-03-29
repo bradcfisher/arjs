@@ -13,10 +13,15 @@ GameState.load("./AR/shared/json/AR.json")
     .then(async (gs) => {
         gameState = gs;
 
+        gameState.on("resumeInput", () => {
+            document.getElementById("title").innerHTML =
+                gameState.scenarios.get(gameState.map.scenario).description;
+        });
+
         await gameState.loadPlayer();
         await gameState.loadLocation(gameState.defaultLocation);
 
-        console.log("loaded map: " + gameState.map.metadata.description);
+        console.log("loaded map: " + gameState.map.description);
         checkReady();
     });
 

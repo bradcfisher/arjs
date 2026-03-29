@@ -178,7 +178,7 @@ export class WallStyleConfig {
     /**
      * Actions to associate with events that occur with walls of this type.
      * Examples include playing sounds or triggering more complex checks such as locked doors or other actions/scenarios.
-     * @type {({[type:string]: [ActionDefinition|RegisteredAction|ActionCallback|string]})?}
+     * @type {({[type:string]: ActionDefinition|RegisteredAction|ActionCallback|string|(ActionDefinition|RegisteredAction|ActionCallback|string)[]})?}
      * @readonly
      */
     on;
@@ -289,20 +289,9 @@ export class WallStyle extends EventDispatcher {
                 this.color = config.color;
             }
 
-            if (config.on) {
-                Object.entries(config.on).forEach(([type, item]) => {
-                    const actions = Parse.array(item, [], Parse.action);
-                    this.on(type, (event) => {
-                        for (let action of actions) {
-                            try {
-                                action({ event });
-                            } catch (error) {
-                                console.error(`Error in action for ${type}:`, event, error);
-                            }
-                        }
-                    });
-                });
-            }
+            Parse.listeners(config.on).forEach((listener, eventType) => {
+                this.on(eventType, listener);
+            });
         }
 
         if (!this.textureProvider) {
@@ -358,8 +347,16 @@ export const WallSide = Object.freeze({
 
 /**
  * Object representing a cell in a level map.
+ *
+ * Events:
+ * @event enterCell dispatched when the player enters a cell. Event data.position contains
+ *        the player position.
+ * @event pickup dispatched when an item is picked up. Event data.item contains the item that
+ *        was picked up.
+ * @event drop dispatched when an item is dropped. Event data.item contains the item that
+ *        was dropped.
  */
-export class MapCell {
+export class MapCell extends EventDispatcher {
 	// TODO: wall heights?
 
     /**
@@ -383,6 +380,8 @@ export class MapCell {
 		descriptionIndex = 0,
 		special = 0
 	) {
+        super();
+
         /**
          * The horizontal location of the cell within the map.
          * @type {number}
@@ -477,6 +476,22 @@ export class MapCell {
 	// Perhaps these should just be on the zone instead?
 //	private readonly _effects: LatentEffects = new LatentEffects();		// enter (first? every? count? random?), leave
 
+    applyPatch(patchDetails) {
+        Object.entries(patchDetails).forEach(([key, value]) => {
+            if (key.charAt(0) != '_') {
+                if (key == "on") {
+                    Parse.listeners(value).forEach((listener, eventType) => {
+                        this.on(eventType, listener);
+                    });
+                } else if (key == "zones") {
+                    this.zones = new Set(...Parse.array(value, [], Parse.str));
+                } else if (key != "x" && key != "y") {
+                    this[key] = value;
+                }
+            }
+        });
+        return this;
+    }
 
 	toString() {
 		return `MapCell<N=${this.northWall}, ` +
@@ -846,8 +861,16 @@ export class Ray {
 }
 
 
-
-export class ScenarioMap {
+/**
+ * Events:
+ * @event enterCell dispatched when the player enters a cell. Event data.position contains
+ *        the player position.
+ * @event pickup dispatched when an item is picked up. Event data.item contains the item that
+ *        was picked up.
+ * @event drop dispatched when an item is dropped. Event data.item contains the item that
+ *        was dropped.
+ */
+export class ScenarioMap extends EventDispatcher {
 
     /**
      * Creates a new map instance.
@@ -857,10 +880,19 @@ export class ScenarioMap {
      *        is not positive.
      */
     constructor(width = 0, height = 0) {
+        super();
+
+        /** @type {string?} */
+        this.scenario;
+
+        /** @type {string?} */
+        this.name;
+
+        /** @type {string?} */
+        this.description = "Unnamed map";
+
         /** @type {any} */
-        this.metadata = {
-            description: "Unnamed map"
-        };
+        this.metadata = {};
 
         /** @type {MapCell[][]} */
         this.cellData = [];
@@ -993,6 +1025,21 @@ export class ScenarioMap {
             return this.cellData[y][x];
         }
         return undefined;
+    }
+
+    applyPatch(x, y, patchDetails) {
+        const cell = this.getCell(x, y);
+        if (!cell) {
+            console.warn("Unable to apply patch to cell at [", x, ", ", y,
+                "]. No such cell in map for patch ", patchDetails);
+            return;
+        }
+
+        console.log("Applying patch to cell at [", x, ", ", y, "] with ", patchDetails);
+
+        cell.applyPatch(patchDetails);
+
+        return this;
     }
 
     /**
