@@ -1,27 +1,125 @@
+; Useful link https://www.atariarchives.org/mapping/memorymap.php#54272
 
-0401 DISP_NAME
-0425 DISP_LEVEL
-0453 DISP_TIME_SPINNER
-0459 DISP_STA_VAL
-045E DISP_CHA_VAL
-0463 DISP_STR_VAL
-0468 DISP_INT_VAL
-046D DISP_WIS_VAL
-0472 DISP_SKL_VAL
-0484 DISP_EXP_VAL
-0499 DISP_HP_SEP_CHAR
-049A DISP_HP_VAL
-04A1 DISP_LOC_DESC
-0685 DISP_FOOD_PKT_VAL
-0692 DISP_TORCH_VAL
-06A1 DISP_WATER_VAL
-06EC DISP_MAP_LEVEL
+024A VDSLST_A_LO        ; Holds low byte of VDSLST interrupt handler A (read in VDSLST handler @ 1B2F)
+024B VDSLST_A_HI        ; Holds low byte of VDSLST interrupt handler A (read in VDSLST handler @ 1B2F)
 
-1912 ZONE_ID
+024C UNK_BYTE_024C
+024D UNK_BYTE_024D
+
+0252 VBLK_COUNTER       ; Counter incremented on each VBLKI interrupt call
+0253 UNK_BYTE_0253      ; Assigned to 3 (may be index value relative to HPOSP0 player 0 horiz position, ofs 3 would be HPOSP3)
+0254 UNK_BYTE_0254
+0255 UNK_BYTE_0255
+0256 UNK_BYTE_0256
+
+0401 DISP_NAME          ; Position in display buffer to write player name (text)
+0425 DISP_LEVEL         ; Position in display buffer to write player level (text - 2 chars, left justified)
+0453 DISP_TIME_SPINNER  ; Position in display buffer to write time spinner char (text - 1 char)
+0459 DISP_STA_VAL       ; Position in display buffer to write STA stat (text - 3 chars, left justified)
+045E DISP_CHA_VAL       ; Position in display buffer to write CHA stat (text - 3 chars, left justified)
+0463 DISP_STR_VAL       ; Position in display buffer to write STR stat (text - 3 chars, left justified)
+0468 DISP_INT_VAL       ; Position in display buffer to write INT stat (text - 3 chars, left justified)
+046D DISP_WIS_VAL       ; Position in display buffer to write WIS stat (text - 3 chars, left justified)
+0472 DISP_SKL_VAL       ; Position in display buffer to write SKL stat (text - 3 chars, left justified)
+0484 DISP_EXP_VAL       ; Position in display buffer to write player experience points (text- 10 chars, left justified)
+0499 DISP_HP_SEP_CHAR   ; Position in display buffer to write ':' (HP < Max) or '=' (HP = Max) (text - 1 char)
+049A DISP_HP_VAL        ; Position in display buffer to write current HP (text - 5 chars, left justified)
+04A1 DISP_LOC_DESC      ; Position in display buffer to write location description (text - 40 chars, left justified)
+04C9 DISP_SOMETHING_HERE ; Position in display buffer to write "There is something here." (text - 40 chars, left justified)
+0685 DISP_FOOD_PKT_VAL  ; Position in display buffer to write number of food packets (text - 3 chars, left justified)
+0692 DISP_TORCH_VAL     ; Position in display buffer to write number of toches (text - 3 chars, left justified)
+06A1 DISP_WATER_VAL     ; Position in display buffer to write number of water flasks (text - 3 chars, left justified)
+06EC DISP_MAP_LEVEL     ; Position in display buffer to write current map level (text - 1 char)
+068C DISP_DISEASED      ; Position in display buffer to write "Diseased!" (text - 12 chars, right justified)
+0756 DISP_CURSED        ; Position in display buffer to write "Cursed!" (text - 12 chars, center justified)
+
+; Table of JMP instructions to subroutines (3 bytes each / 61 entries)
+1800 JMP_SUB_1800       ; Jumps to SUB code to execute ($2979 is one example)
+1803 JMP_SUB_1803       ; Jumps to SUB code to execute ($2f80 is one example)
+1806 JMP_SUB_1806       ; Jumps to SUB code to execute ($2FF3 is one example)
+1809 JMP_SUB_1809       ; Jumps to SUB code to execute ($30E3 is one example)
+180C JMP_SUB_180C       ; Jumps to SUB code to execute ($3183 is one example)
+180F JMP_SUB_180F       ; Jumps to SUB code to execute ($1A0D is one example)
+1812 JMP_SUB_1812       ; Jumps to SUB code to execute ($1C84 is one example)
+1815 JMP_SUB_1815       ; Jumps to SUB code to execute ($1C88 is one example)
+1818 JMP_SUB_1818       ; Jumps to SUB code to execute ($1C8C is one example)
+181B JMP_SUB_181B       ; Jumps to SUB code to execute ($1C2C is one example)
+181E JMP_SUB_181E       ; Jumps to SUB code to execute ($2643 is one example)
+1821 JMP_SUB_1821       ; Jumps to SUB code to execute ($262F is one example)
+1824 JMP_SUB_1824       ; Jumps to SUB code to execute ($275B is one example)
+1827 JMP_SUB_1827       ; Jumps to SUB code to execute ($245D is one example)
+182A JMP_SUB_182A       ; Jumps to SUB code to execute ($28A1 is one example)
+182D JMP_SUB_182D       ; Jumps to SUB code to execute ($248E is one example)
+1830 JMP_SUB_1830       ; Jumps to SUB code to execute ($24C6 is one example)
+1833 JMP_SUB_1833       ; Jumps to SUB code to execute ($2494 is one example)
+1836 JMP_SUB_1836       ; Jumps to SUB code to execute ($3C61 is one example)
+1839 JMP_SUB_1839       ; Jumps to SUB code to execute ($2A41 is one example)
+183C JMP_SUB_183C       ; Jumps to SUB code to execute ($2BB0 is one example)
+183F JMP_SUB_183F       ; Jumps to SUB code to execute ($2BA5 is one example)
+1842 JMP_SUB_1842       ; Jumps to SUB code to execute ($2CAD is one example)
+1845 JMP_SUB_1845       ; Jumps to SUB code to execute ($3C27 is one example)
+1848 JMP_SUB_1848       ; Jumps to SUB code to execute ($3C2D is one example)
+184B JMP_SUB_184B       ; Jumps to SUB code to execute ($3CA5 is one example)
+184E JMP_SUB_184E       ; Jumps to SUB code to execute ($3CC2 is one example)
+1851 JMP_SUB_1851       ; Jumps to SUB code to execute ($3C5C is one example)
+1854 JMP_SUB_1854       ; Jumps to SUB code to execute ($2D8F is one example)
+1857 JMP_SUB_1857       ; Jumps to SUB code to execute ($2C6F is one example)
+185A JMP_SUB_185A       ; Jumps to SUB code to execute ($2BFC is one example)
+185D JMP_SUB_185D       ; Jumps to SUB code to execute ($2C9B is one example)
+1860 JMP_SUB_1860       ; Jumps to SUB code to execute ($2DAB is one example)
+1863 JMP_SUB_1863       ; Jumps to SUB code to execute ($2DE3 is one example)
+1866 JMP_SUB_1866       ; Jumps to SUB code to execute ($2E0D is one example)
+1869 JMP_SUB_1869       ; Jumps to SUB code to execute ($2E31 is one example)
+186C JMP_SUB_186C       ; Jumps to SUB code to execute ($2E6B is one example)
+186F JMP_SUB_186F       ; Jumps to SUB code to execute ($2E69 is one example)
+1872 JMP_SUB_1872       ; Jumps to SUB code to execute ($2E66 is one example)
+1875 JMP_SUB_1875       ; Jumps to SUB code to execute ($2E45 is one example)
+1878 JMP_SUB_1878       ; Jumps to SUB code to execute ($2E43 is one example)
+187B JMP_SUB_187B       ; Jumps to SUB code to execute ($2E40 is one example)
+187E JMP_SUB_187E       ; Jumps to SUB code to execute ($2E9E is one example)
+1881 JMP_SUB_1881       ; Jumps to SUB code to execute ($2CC2 is one example)
+1884 JMP_SUB_1884       ; Jumps to SUB code to execute ($4B4D is one example)
+1887 JMP_SUB_1887       ; Jumps to SUB code to execute ($4B74 is one example)
+188A JMP_SUB_188A       ; Jumps to SUB code to execute ($4AC9 is one example)
+188D JMP_SUB_188D       ; Jumps to SUB code to execute ($4E06 is one example)
+1890 JMP_SUB_1890       ; Jumps to SUB code to execute ($49B0 is one example)
+1893 JMP_SUB_1893       ; Jumps to SUB code to execute ($55B7 is one example)
+1896 JMP_SUB_1896       ; Jumps to SUB code to execute ($4EC4 is one example)
+1899 JMP_SUB_1899       ; Jumps to SUB code to execute ($2B6B is one example)
+189C JMP_SUB_189C       ; Jumps to SUB code to execute ($5471 is one example)
+189F JMP_SUB_189F       ; Jumps to SUB code to execute ($375F is one example)
+18A2 JMP_SUB_18A2       ; Jumps to SUB code to execute ($2B47 is one example)
+18A5 JMP_SUB_18A5       ; Jumps to SUB code to execute ($408B is one example)
+18A8 JMP_SUB_18A8       ; Jumps to SUB code to execute ($3771 is one example)
+18AB JMP_SUB_18AB       ; Jumps to SUB code to execute ($5BB8 is one example)
+18AE JMP_SUB_18AE       ; Jumps to SUB code to execute ($2AA0 is one example)
+18B1 JMP_SUB_18B1       ; Jumps to SUB code to execute ($5492 is one example)
+18B4 JMP_SUB_18B4       ; Jumps to SUB code to execute ($2EC6 is one example)
+
+18B8 UNK_1C19OFS_18B8   ; Offset to values at 1C19 (WSYNC / COLPF2 value table?)
+18B9 UNK_2307OFS_18B9   ; Offset to values at 2307
+
+18BA COLPF0_SET_18BA    ; Value assigned to COLPF0 (playfield 0 color) during display rendering
+18BB COLPF1_SET_18BB    ; Value assigned to COLPF1 during display rendering
+18BC COLPF2_SET_18BC    ; Value assigned to COLPF2 during display rendering
+18BD WSYNC_COLBK_SET_18BD ; Value assigned to WSYNC and COLBK during display rendering
+18BE WSYNC_COLBK_SET_18BE ; Value assigned to WSYNC and COLBK during display rendering
+18BF COLPF3_SET_18BF    ; Value assigned to COLPF3 during display rendering
+
+1909 UNK_BYTE_1909
+190B UNK_BYTE_190B
+190C UNK_BYTE_190C
+190E UNK_BYTE_190E
+
+1912 ZONE_ID            ; Zone ID value to apply in PROCESS_HOURLY_UPDATES
+192A UNK_BYTE_192A      ; Assigned to 0
+1933 UNK_BYTE_1933      ; Assigned to 0
+1938 UNK_BYTE_1938
+1939 UNK_BYTE_1939
 
 194b ZONE_A
-194c ZONE_B_BYTE
-194d ZONE_C_BF_LITE
+194c ZONE_B_BYTE        ; Byte value (not bitfield)
+194d ZONE_C_BF_LITE     ; Bit field containing light/dark area bit
 194e ZONE_D
 194f ZONE_E
 1950 ZONE_F
@@ -29,9 +127,51 @@
 1952 ZONE_H
 1953 ZONE_I
 
-195A TELEPORT_INDEX
 
-35C1 DO_TELEPORT_PLAYER
+1956 UNK_BYTE_COUNTER   ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
+                        ; Decremented
+195A TELEPORT_INDEX     ; Holds teleport number parameter value used by DO_TELEPORT_PLAYER
+
+195F UNK_BYTE_195F
+1960 UNK_BYTE_1960
+196A UNK_BYTE_196A
+
+1974 UNK_BYTE_1974
+1975 UNK_BYTE_1975      ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
+1977 UNK_MEMREF_LO_1977 ; Low byte of a memory reference   (is assigned to $7641, $7648)
+1978 UNK_MEMREF_HI_1978 ; High byte of a memory reference
+
+19EF UNK_BYTE_TBL_19EF  ; Table of 3? bytes read and stored at 0255
+19F2 UNK_BYTE_TBL_19F2  ; Table of 3? bytes read and stored at 0254
+
+1A0D DISPLAY_SUB_1A0D   ; Sets HPOSP0-HOPSP3 to 0; Waits for vblank;
+
+1A41 UNK_BYTE_1A41      ;
+1A44 UNK_BYTE_1A44      ;
+
+1B2F HANDLE_VDSLST_1B2F ; Interrupt handler for VDSLST
+1B56 HANDLE_VDSLST_1B56 ; Interrupt handler for VDSLST
+1BA2 HANDLE_VDSLST_1BA2 ; Interrupt handler for VDSLST
+1BD6 HANDLE_VDSLST_1BD6 ; Interrupt handler for VDSLST
+
+1C21 UNK_BYTE_TBL_1C21  ; Table of 3? bytes indicating how may 0's to fill starting at 04C8 and filling downward (4C7, 4C6, etc)
+
+2347 HANDLE_VBLKI       ; Interrupt handler for VBLKI
+
+2454 WAIT_FOR_VBLK_A    ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_B)
+2457 VBLK_WAIT_LOOP_A
+
+
+2C66 WAIT_FOR_VBLK_B    ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A)
+2C69 VBLK_WAIT_LOOP_B
+
+314A DO_MOVE_FORWARD    ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
+
+3296 END_SUB_RTS_3296
+
+
+
+35C1 DO_TELEPORT_PLAYER ; Teleports the player to the teleport at TELEPORT_INDEX*4 of TELEPORT_TBL
 35E7 TLPSKIP1
 35EA TLPSKIP2
 35EC TLPCPYL1
@@ -41,39 +181,44 @@
 3616 TLPCPYL4
 3630 TLPTMPBUF
 
-3BA7 TELEPORT_TBL_X
-3BA8 TELEPORT_TBL_Y
-3BA9 TELEPORT_TBL_MAP
-3BAA TELEPORT_TBL_ORIENT
+3BA7 TELEPORT_TBL_X     ; X location to teleport player to
+3BA8 TELEPORT_TBL_Y     ; Y location to teleport player to
+3BA9 TELEPORT_TBL_MAP   ; Map to teleport player to (corresponds to MAP_NUMBER value)
+3BAA TELEPORT_TBL_ORIENT ; Orientation to assign to player (FF = no chg; <0 = random; 0 = N; 1 = E; 2 = S; 3 = W)
 
-43CF PROCESS_HOURLY_UPDATES
+43CF PROCESS_HOURLY_UPDATES ; Sub called at the start of each in-game hour
 43E2 HP_NOT_MAX_43E2
 43D6 HP_LOOP
 43F1 STAT_LOOP
 
-6309 TME_MINUTES
-630A TME_HOURS
+445F MOVEMENT_SPEED_TBL ; Table of 16 x 1 byte values indexed by CHR_SPD_EFFECTIVE/16
 
-6312 CHR_LOC_ORIENT
-6313 CHR_LOC_X
-6314 CHR_LOC_Y
-6315 CHR_LOC_MAP
+6309 TME_MINUTES        ; Current in-game time in minutes
+630A TME_HOURS          ; Current in-game time in hours
 
-6321 CHR_NAME
+6312 CHR_LOC_ORIENT     ; Player orientation
+6313 CHR_LOC_X          ; Player position X
+6314 CHR_LOC_Y          ; Player position Y
+6315 CHR_LOC_MAP        ; Player map number
 
-633C CHR_EXPLVL
+631E CHR_UNK_BYTE_631E  ; Sub @ 2F70 Jumps to 2FBA if this value is equal to 1
+631F CHR_UNK_BYTE_631F  ; Sub @ 2F70 Jumps to 2FBA if this value is equal to 1 or 2
+
+6321 CHR_NAME           ; Player name
+
+633C CHR_EXPLVL         ; Player level
 
 6345 CHR_HP_CURRENT_HI
 6346 CHR_HP_CURRENT_LO
 6347 CHR_HP_MAX_HI
 6348 CHR_HP_MAX_LO
-6349 CHR_STA_EFFECTIVE
-634A CHR_STA_BASE
-634B CHR_STA_BONUS
-634C CHR_STA_PENALTY1
-634D CHR_STA_PENALTY2
-634E CHR_STA_PENALTY3
-634F CHR_STA_PENALTY4
+6349 CHR_STA_EFFECTIVE  ; Effective STA value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+634A CHR_STA_BASE       ; Base STA value
+634B CHR_STA_BONUS      ; Bonus to STA value
+634C CHR_STA_PENALTY1   ; First penalty to STA value
+634D CHR_STA_PENALTY2   ; Second penalty to STA value
+634E CHR_STA_PENALTY3   ; Third penalty to STA value
+634F CHR_STA_PENALTY4   ; Fourth penalty to STA value
 6350 CHR_STA_UNKNOWN
 6351 CHR_CHR_EFFECTIVE
 6352 CHR_CHR_BASE
@@ -116,18 +261,20 @@
 6377 CHR_SKL_PENALTY4
 6378 CHR_SKL_UNKNOWN
 
-6379 CHR_UNK_EFFECTIVE
-637A CHR_UNK_BASE
-637B CHR_UNK_BONUS
-637C CHR_UNK_PENALTY1
-637D CHR_UNK_PENALTY2
-637E CHR_UNK_PENALTY3
-637F CHR_UNK_PENALTY4
-6380 CHR_UNK_UNKNOWN
+6379 CHR_SPD_EFFECTIVE
+637A CHR_SPD_BASE
+637B CHR_SPD_BONUS
+637C CHR_SPD_PENALTY1
+637D CHR_SPD_PENALTY2
+637E CHR_SPD_PENALTY3
+637F CHR_SPD_PENALTY4
+6380 CHR_SPD_UNKNOWN
+6383 CHR_MOVE_SPEED     ; Player movement speed (read from $445F + CHR_SPD_EFFECTIVE/16)
+                        ; Also affected by CHR_STOMACH?? and CHR_BURDEN??
 
 6385 CHR_ALIGN
 6386 CHR_MOOD
-638E byte_638E
+638E CHR_BYTE_638E
 6391 CHR_DISEASE
 6392 CHR_POISON
 6393 CHR_CURSE
@@ -153,29 +300,59 @@
 640B INV_ARR_START
 644B INV_ARR_END
 
-7649 CHK_IF_MAP4_ZONE1
-766E CHK_IF_MAP4_ZONE8
-7E4D DETERMINE_ZONE
-7E57 IS_PLYR_IN_ZONE
+7601 JMP_SUB_7601           ; Indirect jump to sub ($7612 is one example)
+7604 JMP_SUB_7604           ; Indirect jump to sub ($760C is one example)
+7607 JMP_SUB_7607           ; Indirect jump to sub ($760C is one example)
+
+7649 CHK_IF_MAP4_ZONE1      ; Appears to check if the player is in ZONE 1 of MAP 4 (Dungeon Level 2)
+766E CHK_IF_MAP4_ZONE8      ; Appears to check if the player is in ZONE 8 of MAP 4 (Dungeon Level 2)
+
+7A9A ORIENT_VAL1            ; Value read from $7ABC+CHAR_LOC_ORIENT
+7AA0 ORIENT_VAL2            ; Value read from $7AC0+CHAR_LOC_ORIENT
+7AAB ORIENT_VAL3            ; Value read from $7AC4+CHAR_LOC_ORIENT
+7AB1 ORIENT_VAL4            ; Value read from $7AC8+CHAR_LOC_ORIENT
+
+7ABC ORIENT_VAL1_TBL        ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7A9A) [$04 $80 $fc $80]
+7AC0 ORIENT_VAL2_TBL        ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7AA0) [$00 $00 $ff $ff]
+7AC4 ORIENT_VAL3_TBL        ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7AAB) [$54 $7c $ac $84]
+7AC8 ORIENT_VAL4_TBL        ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7AB1) [$00 $fa $ff $05]
+
+7E4D DETERMINE_ZONE         ;
+7E57 IS_PLYR_IN_ZONE        ;
 7E74 APPLY_NEW_ZONE
-7E82 COPY_ZONE_BYTES_LOOP
-7eb1 SELECT_NEXT_ZONE
+7E82 COPY_ZONE_BYTES_LOOP   ; Copies zone definition bytes from matched zone into current zone data at $194b
+7eb1 SELECT_NEXT_ZONE       ; Moves to the next zone region to check if the player is inside it
 7EB0 NO_ZONE_CHANGE
+
+77FC UNK_NUM_COMPASSES_77FC ; Updated to value in INV_COMPASSES if different (used in display rendering?)
+
+7855 UNK_BYTE_7855          ;
 
 AA19 BEGIN_ENCOUNTER
 
-ac00 MAP_NUMBER
-ac01 MAP_HEADER_UNK_A
-ac02 MAP_HEADER_UNK_B
-ac03 MAP_MESSAGE_TBL
-af00 MAP_ZONERGN_TBL_SIZE
-af01 MAP_ZONERGN_Y1
-AF02 MAP_ZONERGN_X2
-AF03 MAP_ZONERGN_Y2
-AF04 MAP_ZONERGN_X1
-AF04 MAP_ZONERGN_REF
-af7e MAP_ZONEDEF_TBL
+; Start of map data
+ac00 MAP_NUMBER             ; Number/ID of the loaded map
+ac01 MAP_HEADER_RTCLOK0     ; Value assigned to RTCLOK0 when loading the map
+ac02 MAP_HEADER_RTCLOK1     ; Value assigned to RTCLOK1 when loading the map
+ac03 MAP_MESSAGE_TBL        ; Start of message table
+af00 MAP_ZONERGN_TBL_SIZE   ; Number of zone regions
+; Table of zone region definitions (5 bytes per entry)
+af01 MAP_ZONERGN_Y1         ; Y1 coordinate of zone region
+AF02 MAP_ZONERGN_X2         ; X2 coordinate of zone region
+AF03 MAP_ZONERGN_Y2         ; Y2 coordinate of zone region
+AF04 MAP_ZONERGN_X1         ; X1 coordinate of zone region
+AF04 MAP_ZONERGN_REF        ; Zone definition ID the region applies to
+; Table of zone definitions (8 bytes per entry; entry 0 is default and not ref from zone regions)
+af7e MAP_ZONEDEF_A          ; Zone definition byte A
+af7f MAP_ZONEDEF_B          ; Zone definition byte B
+af80 MAP_ZONEDEF_C          ; Zone definition byte C
+af81 MAP_ZONEDEF_D          ; Zone definition byte D
+af82 MAP_ZONEDEF_E          ; Zone definition byte E
+af83 MAP_ZONEDEF_F          ; Zone definition byte F
+af84 MAP_ZONEDEF_G          ; Zone definition byte G
+af85 MAP_ZONEDEF_H          ; Zone definition byte H
 b000 MAP_WALL_E_N
 b001 MAP_WALL_W_S
 b002 MAP_LOC_DESCR
 b003 MAP_SPECIAL
+

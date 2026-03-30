@@ -17,7 +17,13 @@
 35E5: 29 03             AND #$03                    ; Bit AND with 3 (A = 0..3) (random orientation)
 35E7: 8D 12 63 TLPSKIP1 STA CHR_LOC_ORIENT          ; Store A into character orientation
                     ; The following section likely flashes the screen a few times
-                    ; The next loop copies 5 bytes to 5 byte area just past this sub.
+                    ; 1. Copy 5 bytes from 18BA to 5 byte temp area just past this sub.
+                    ; 2. The value #$1A is loaded into the 5 bytes at 18BA
+                    ; 3. Wait for 5 VBLKI to pass
+                    ; 4. The value 0 is loaded into the 5 bytes at 18BA
+                    ; 5. Wait for 5 VBLKI to pass
+                    ; 6. Repeat 7 more iterations from 2 (e.g. 8 loops total)
+                    ; 7 Restore the original 5 bytes to 18BA
 35EA: A2 04    TLPSKIP2 LDX #$04                    ; Load 4 into X (loop 5 times)
 35EC: BD BA 18 TLPCPYL1 LDA $18BA,X                 ; Copy current value from $18BA+X
 35EF: 9D 30 36          STA $TLPTMPBUF,X            ;   into temp buffer storage
@@ -29,13 +35,13 @@
 35FB: 9D BA 18 TLPCPYL2 STA $18BA,X
 35FE: CA                DEX                         ; Subtract 1 from X
 35FF: 10 FA             BPL TLPCPYL2                ; Loop while X >= 0 (5 iterations)
-3601: 20 66 2C          JSR $2C66               ; This sub appears to wait for a value to change
+3601: 20 66 2C          JSR WAIT_FOR_VBLK_B         ; Wait for next vertical blank period
 3604: A9 00             LDA #$00                    ; Load 0 into A
 3606: A2 04             LDX #$04                    ; Load 4 into X (loop 5 times)
 3608: 9D BA 18 TLPCPYL3 STA $18BA,X
 360B: CA                DEX                         ; Subtract 1 from X
 360C: 10 FA             BPL TLPCPYL3                ; Loop while X >= 0 (5 iterations)
-360E: 20 66 2C          JSR $2C66               ; This sub appears to wait for a value to change
+360E: 20 66 2C          JSR WAIT_FOR_VBLK_B         ; Wait for next vertical blank period
 3611: 88                DEY                         ; Subtract 1 from Y
 3612: D0 E3             BNE TLPFLSLP                ; Loop while Y > 0 (8 iterations)
                     ; Restore 5 bytes previously copied to temp storage

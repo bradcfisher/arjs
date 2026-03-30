@@ -283,6 +283,49 @@ export class DungeonMapReader extends MapReader {
         this.#readWalls(buf, idPrefix, xOfs, yOfs, width, height);
 	}
 
+    applySpecials() {
+        for (let y = 0; y < this.map.height; ++y) {
+            for (let x = 0; x < this.map.width; ++x) {
+                let cell = this.map.getCell(x, y);
+                if (cell != null) {
+                    let special = cell.special;
+
+                    if (special > 0x00 && special <= 0x1f) {
+                        // Module / shop
+                        cell.on("enterCell", (parameters, gameState) => {
+                            console.log("Load a module here:", special);
+                        });
+                    } else if (special > 0x20 && special <= 0x7f) {
+                        // Dangeous
+                        cell.on("enterCell", (parameters, gameState) => {
+                            console.log("There is something dangerous here:", (special - 0x20));
+                        });
+                    } else if (special > 0x80 && special <= 0x9f) {
+                        // Encounter
+                        cell.on("enterCell", (parameters, gameState) => {
+                            console.log("An encounter occurs here:", (special - 0xa0));
+                        });
+                    } else if (special > 0xa0 && special <= 0xbf) {
+                        // Treasure
+                        cell.on("enterCell", (parameters, gameState) => {
+                            console.log("There may be treasure here:", (special - 0xa0));
+                        });
+                    } else if (special > 0xc0 && special <= 0xdf) {
+                        // Message
+                        cell.on("enterCell", (parameters, gameState) => {
+                            console.log("Should show a message here:", (special - 0xc0));
+                        });
+                    } else if (special >= 0xE0 && special <= 0xff) {
+                        // Teleporters
+                        cell.on("enterCell", (parameters, gameState) => {
+                            gameState.loadLocation("dungeon_" + (special - 0xE0));
+                        });
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Reads a Dungeon format map described by the provided configuration.
      * @param {DungeonMapOptionsConfig} config the map configuration to load.
@@ -326,9 +369,12 @@ export class DungeonMapReader extends MapReader {
             //messageJsonUrl;
             //encounterJsonUrl;
 
-            this.addEventListeners(config.on);
+            return Promise.all(promises).then(() => {
+                this.addEventListeners(config.on);
+                this.applySpecials();
 
-            return Promise.all(promises).then(() => this.map);
+                return this.map;
+            });
         });
     }
 

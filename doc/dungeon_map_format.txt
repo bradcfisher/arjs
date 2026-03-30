@@ -474,8 +474,32 @@ Varies depending on the map or the disk?  There appears to be something else use
 Special:
   - Scenarios/Modules -
   03 (  3) = Fountain (Hit points)
+
   04 (  4) = Entrance to Palace / Entrance to Wilderness
-  05 (  5) = Stairwell - to ??
+
+  05 (  5) = Stairwell leading down (level 1 NW [16,17] to level 2 [0,0,N])
+  05 (  5) = Stairwell leading down (level 1 NE [49,17] to level 2 [0,0,N] (BUG? - should probably go to [30,0,W] instead))
+    - TP to L1 48,17:
+        eb CHR_LOC_MAP $1
+        eb CHR_LOC_X $30
+        eb CHR_LOC_Y $11
+        eb CHR_LOC_ORIENT 1
+  05 (  5) = Stairwell leading down (level 1 SW [16,48] to level 2 [1,31,E])
+  05 (  5) = Stairwell leading down (level 1 SE [48,47] to level 2 [30,31,W])
+
+  05 (  5) = Stairwell leading up (level 2 [0,1]) to level 1 [16,16,N]
+  05 (  5) = Stairwell leading up (level 2 [31,0] to level 1 [48,17,W])
+  05 (  5) = Stairwell leading up (level 2 [31,31] to level 1 [47,47,W])
+  05 (  5) = Stairwell leading up (level 2 [0,31] to level 1 [17,48,E])
+
+  05 (  5) = Stairwell leading down (level 2 [17,12] to level 3 [9,3,W])
+  05 (  5) = Stairwell leading up (level 3 [8,3] to level 2 [16,12,W])
+
+// TODO: Verify the 2 below in game...
+  05 (  5) = Stairwell leading down (level 3 [6,15] to level 4 [?,?,?])
+  05 (  5) = Stairwell leading up (level 4 [?,?] to level 3 [7?,15?,E?])
+
+
   06 (  6) = Grahm's Gold Exchange
   07 (  7) = Goblin King's Palace
   08 (  8) = Acrinimaril's Tomb

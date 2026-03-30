@@ -1,0 +1,19 @@
+{
+    "floor": {
+        "missing": {
+            "description": "Texture used when outside the world boundaries",
+            "color": "#FF6060"
+        },
+        "default": {
+            "description": "Default floor texture",
+            "_texture": "/AR/dungeon/images/",
+            "color": "#606060"
+        }
+    },
+    "ceiling": {
+        "missing": {
+            "description": "The default ceiling texture displayed if no other texture is assigned",
+            "color": "#FF6060"
+        }
+    }
+}
