@@ -31,6 +31,7 @@
 06A1 DISP_WATER_VAL     ; Position in display buffer to write number of water flasks (text - 3 chars, left justified)
 06EC DISP_MAP_LEVEL     ; Position in display buffer to write current map level (text - 1 char)
 068C DISP_DISEASED      ; Position in display buffer to write "Diseased!" (text - 12 chars, right justified)
+073C DISP_TEMP          ; Position in display buffer to write "Chilly" (text - 12 chars, right justified)
 0756 DISP_CURSED        ; Position in display buffer to write "Cursed!" (text - 12 chars, center justified)
 
 ; Table of JMP instructions to subroutines (3 bytes each / 61 entries)
@@ -307,6 +308,23 @@
 7649 CHK_IF_MAP4_ZONE1      ; Appears to check if the player is in ZONE 1 of MAP 4 (Dungeon Level 2)
 766E CHK_IF_MAP4_ZONE8      ; Appears to check if the player is in ZONE 8 of MAP 4 (Dungeon Level 2)
 
+; Table of stairwell locations used by the stairwell module (5)
+7751 MOD_STAIR_FROM_TBL1_X   ; New x position for the player on the new map
+7752 MOD_STAIR_FROM_TBL1_Y   ; New y position for the player on the new map
+7753 MOD_STAIR_FROM_TBL1_MAP ; Number/ID of the new map to load
+7754 MOD_STAIR_FROM_TBL1_ORIENT ; Orientation to leave player in after loading the new map
+
+; Table of ?? (at least 6...) 4 byte teleport records. Offset into table read from LOGCOL ($0063)
+777D MOD_STAIR_TO_TBL_X     ; New x position for the player on the new map
+777E MOD_STAIR_TO_TBL_Y     ; New y position for the player on the new map
+777F MOD_STAIR_TO_TBL_MAP   ; Number/ID of the new map to load
+7780 MOD_STAIR_TO_TBL_ORIENT ; Orientation to leave player in after loading the new map
+
+
+77FC UNK_NUM_COMPASSES_77FC ; Updated to value in INV_COMPASSES if different (used in display rendering?)
+
+7855 UNK_BYTE_7855          ;
+
 7A9A ORIENT_VAL1            ; Value read from $7ABC+CHAR_LOC_ORIENT
 7AA0 ORIENT_VAL2            ; Value read from $7AC0+CHAR_LOC_ORIENT
 7AAB ORIENT_VAL3            ; Value read from $7AC4+CHAR_LOC_ORIENT
@@ -323,10 +341,6 @@
 7E82 COPY_ZONE_BYTES_LOOP   ; Copies zone definition bytes from matched zone into current zone data at $194b
 7eb1 SELECT_NEXT_ZONE       ; Moves to the next zone region to check if the player is inside it
 7EB0 NO_ZONE_CHANGE
-
-77FC UNK_NUM_COMPASSES_77FC ; Updated to value in INV_COMPASSES if different (used in display rendering?)
-
-7855 UNK_BYTE_7855          ;
 
 AA19 BEGIN_ENCOUNTER
 

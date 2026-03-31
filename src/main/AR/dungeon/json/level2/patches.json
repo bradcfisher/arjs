@@ -1,3 +1,87 @@
 [
-
+    {
+        "_description": "[0,1] Stairway up to level 1 [16,16]",
+        "x": 0,
+        "y": 1,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level1",
+                    "x": 16.5,
+                    "y": 16.5,
+                    "orientation": "north"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[31,0] Stairway up to level 1 [48,17]",
+        "x": 31,
+        "y": 0,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level1",
+                    "x": 48.5,
+                    "y": 17.5,
+                    "orientation": "west"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[0,31] Stairway up to level 1 [17,48]",
+        "x": 0,
+        "y": 31,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level1",
+                    "x": 17.5,
+                    "y": 48.5,
+                    "orientation": "east"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[31,31] Stairway up to level 1 [47,47]",
+        "x": 31,
+        "y": 31,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level1",
+                    "x": 47.5,
+                    "y": 47.5,
+                    "orientation": "west"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[17,12] Stairway down to level 3 [9,3]",
+        "x": 17,
+        "y": 12,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level3",
+                    "x": 9.5,
+                    "y": 3.5,
+                    "orientation": "west"
+                }
+            }
+        }
+    }
 ]

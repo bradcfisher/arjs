@@ -1,3 +1,36 @@
 [
-
+    {
+        "_description": "[6,15] Stairway up to level 2 [14,22]",
+        "x": 6,
+        "y": 15,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level2",
+                    "x": 14.5,
+                    "y": 22.5,
+                    "orientation": "north"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[10,3] Stairway up to level 2 [16,12]",
+        "x": 10,
+        "y": 3,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level2",
+                    "x": 16.5,
+                    "y": 12.5,
+                    "orientation": "west"
+                }
+            }
+        }
+    }
 ]

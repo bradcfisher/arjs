@@ -33,16 +33,16 @@ export class MapRenderer {
     #gridColor = "#e0e0e0";
     /** @type {string} */
     #unknownColor = "red";
-    /** @type {string} */
-    #archwayColor = "green";
-    /** @type {string} */
-    #wallColor = "black";
-    /** @type {string} */
-    #doorColor = "green";
+    /** @type {string[]} */
+    #archwayColor = [ "green", "cyan" ];
+    /** @type {string[]} */
+    #wallColor = ["red", "green", "black", "cyan", "blue"];
+    /** @type {string[]} */
+    #doorColor = [ "green", "cyan" ];
     /** @type {string} */
     #obstructionColor = "red";
-    /** @type {string} */
-    #secretColor = "green";
+    /** @type {string[]} */
+    #secretColor = [ "green", "cyan", "blue" ];
 
     /** @type {boolean} */
     #showPointsOfInterest = true;
@@ -208,29 +208,50 @@ export class MapRenderer {
         this.invalidate();
     }
 
+    /**
+     * Colors to use for the archway variants.
+     * Value is an array of 2 colors.
+     */
     get archwayColor() {
         return this.#archwayColor;
     }
 
     set archwayColor(value) {
+        if (!Array.isArray(value) || value.length != 2) {
+            throw new Error("The value must be an array of two colors");
+        }
         this.#archwayColor = value;
         this.invalidate();
     }
 
+    /**
+     * Colors to use for the Wall variants.
+     * Value is an array of 5 colors.
+     */
     get wallColor() {
         return this.#wallColor;
     }
 
     set wallColor(value) {
+        if (!Array.isArray(value) || value.length != 5) {
+            throw new Error("The value must be an array of five colors");
+        }
         this.#wallColor = value;
         this.invalidate();
     }
 
+    /**
+     * Colors to use for the door variants.
+     * Value is an array of 2 colors.
+     */
     get doorColor() {
         return this.#doorColor;
     }
 
     set doorColor(value) {
+        if (!Array.isArray(value) || value.length != 2) {
+            throw new Error("The value must be an array of two colors");
+        }
         this.#doorColor = value;
         this.invalidate();
     }
@@ -244,11 +265,18 @@ export class MapRenderer {
         this.invalidate();
     }
 
+    /**
+     * Colors to use for the secret door variants.
+     * Value is an array of 3 colors.
+     */
     get secretColor() {
         return this.#secretColor;
     }
 
     set secretColor(value) {
+        if (!Array.isArray(value) || value.length != 3) {
+            throw new Error("The value must be an array of three colors");
+        }
         this.#secretColor = value;
         this.invalidate();
     }
@@ -292,9 +320,10 @@ export class MapRenderer {
     /**
      *
      * @param {CanvasRenderingContext2D} context
+     * @param {number} variant
      */
-    #drawSolidWall(context) {
-        context.strokeStyle = this.#wallColor;
+    #drawSolidWall(context, variant) {
+        context.strokeStyle = this.#wallColor[variant];
         context.beginPath();
         context.moveTo(0, 0);
         context.lineTo(1, 0);
@@ -304,9 +333,10 @@ export class MapRenderer {
     /**
      *
      * @param {CanvasRenderingContext2D} context
+     * @param {number} variant
      */
-    #drawArchway(context) {
-        context.strokeStyle = this.#archwayColor;
+    #drawArchway(context, variant) {
+        context.strokeStyle = this.#archwayColor[variant];
         context.beginPath();
         context.moveTo(0, 0);
         context.bezierCurveTo(0.3, 0.15, 0.7, 0.15, 1, 0);
@@ -316,9 +346,10 @@ export class MapRenderer {
     /**
      *
      * @param {CanvasRenderingContext2D} context
+     * @param {number} variant
      */
-    #drawSecretDoor(context) {
-        context.strokeStyle = this.#secretColor;
+    #drawSecretDoor(context, variant) {
+        context.strokeStyle = this.#secretColor[variant];
         let oldDash = context.getLineDash();
         context.setLineDash([0.7 / 4, 0.1]);
         context.beginPath();
@@ -331,9 +362,10 @@ export class MapRenderer {
     /**
      *
      * @param {CanvasRenderingContext2D} context
+     * @param {number} variant
      */
-    #drawDoor(context) {
-        context.strokeStyle = this.#doorColor;
+    #drawDoor(context, variant) {
+        context.strokeStyle = this.#doorColor[variant];
         context.beginPath();
         context.moveTo(0, 0);
         context.lineTo(0.3, 0);
@@ -354,7 +386,7 @@ export class MapRenderer {
      * @param {CanvasRenderingContext2D} context
      */
     #drawLockedDoor(context) {
-        this.#drawDoor(context);
+        this.#drawDoor(context, 0);
         context.strokeStyle = this.#obstructionColor;
         context.beginPath();
         context.moveTo(0.4, 0.1);
@@ -368,7 +400,7 @@ export class MapRenderer {
      * @param {CanvasRenderingContext2D} context
      */
     #drawBoltedDoor(context) {
-        this.#drawDoor(context);
+        this.#drawDoor(context, 0);
         context.strokeStyle = this.#obstructionColor;
         context.strokeRect(0.35, 0, 0.3, 0.1);
     }
@@ -378,7 +410,7 @@ export class MapRenderer {
      * @param {CanvasRenderingContext2D} context
      */
     #drawEnchantedDoor(context) {
-        this.#drawDoor(context);
+        this.#drawDoor(context, 0);
         context.strokeStyle = this.#obstructionColor;
         context.beginPath();
         context.moveTo(0.35, 0);
@@ -397,13 +429,21 @@ export class MapRenderer {
     #getOverlayForType(type) {
         if (this.#wallOverlays == null) {
             this.#wallOverlays = {};
-            this.#wallOverlays[1] = this.#createWallOverlay(this.#drawArchway);
-            this.#wallOverlays[3] = this.#createWallOverlay(this.#drawDoor);
-            this.#wallOverlays[5] = this.#createWallOverlay(this.#drawSecretDoor);
+            this.#wallOverlays[1] = this.#createWallOverlay(this.#drawArchway, 0);
+            this.#wallOverlays[2] = this.#createWallOverlay(this.#drawArchway, 1);
+            this.#wallOverlays[3] = this.#createWallOverlay(this.#drawDoor, 0);
+            this.#wallOverlays[4] = this.#createWallOverlay(this.#drawDoor, 1);
+            this.#wallOverlays[5] = this.#createWallOverlay(this.#drawSecretDoor, 0);
+            this.#wallOverlays[6] = this.#createWallOverlay(this.#drawSecretDoor, 1);
+            this.#wallOverlays[7] = this.#createWallOverlay(this.#drawSecretDoor, 2);
             this.#wallOverlays[8] = this.#createWallOverlay(this.#drawLockedDoor);
             this.#wallOverlays[9] = this.#createWallOverlay(this.#drawBoltedDoor);
             this.#wallOverlays[10] = this.#createWallOverlay(this.#drawEnchantedDoor);
-            this.#wallOverlays[13] = this.#createWallOverlay(this.#drawSolidWall);
+            this.#wallOverlays[11] = this.#createWallOverlay(this.#drawSolidWall, 0);
+            this.#wallOverlays[12] = this.#createWallOverlay(this.#drawSolidWall, 1);
+            this.#wallOverlays[13] = this.#createWallOverlay(this.#drawSolidWall, 2);
+            this.#wallOverlays[14] = this.#createWallOverlay(this.#drawSolidWall, 3);
+            this.#wallOverlays[15] = this.#createWallOverlay(this.#drawSolidWall, 4);
         }
 
         return this.#wallOverlays[type & 0xf];
@@ -412,9 +452,10 @@ export class MapRenderer {
     /**
      *
      * @param {(context: CanvasRenderingContext2D) => void} drawFunction
+     * @param {number=} variant
      * @returns {HTMLCanvasElement}
      */
-    #createWallOverlay(drawFunction) {
+    #createWallOverlay(drawFunction, variant) {
         const canvas = new HTMLCanvasElement();
         canvas.width = canvas.height = this.#cellSize;
 
@@ -433,7 +474,7 @@ export class MapRenderer {
         context.lineWidth = lineWidth / this.#cellSize;
         context.translate(context.lineWidth / 2, context.lineWidth / 2);
 
-        drawFunction(context);
+        drawFunction(context, variant);
 
         return canvas;
     }
@@ -459,13 +500,28 @@ export class MapRenderer {
                 context.translate(context.lineWidth / 2, context.lineWidth / 2);
                 context.scale(s, s);
                 switch (type) {
-                    case 1: this.#drawArchway(context); break;
-                    case 3: this.#drawDoor(context); break;
-                    case 5: this.#drawSecretDoor(context); break;
+                    case 1:
+                    case 2:
+                        this.#drawArchway(context, type - 1);
+                        break;
+                    case 3:
+                    case 4:
+                        this.#drawDoor(context, type - 3);
+                        break;
+                    case 5:
+                    case 6:
+                    case 7:
+                        this.#drawSecretDoor(context, type - 5);
+                        break;
                     case 8: this.#drawLockedDoor(context); break;
                     case 9: this.#drawBoltedDoor(context); break;
                     case 10: this.#drawEnchantedDoor(context); break;
-                    case 13: this.#drawSolidWall(context); break;
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
+                    case 15:
+                        this.#drawSolidWall(context, type - 11); break;
                     default:
                         console.log("Can't draw unknown wall type: ", type);
                         this.#drawUnknown(context);

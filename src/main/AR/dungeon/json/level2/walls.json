@@ -1,3 +1,471 @@
 {
-
+    "0": {
+        "name": "(0) None",
+        "description": "No wall / open space",
+        "transparent": true,
+        "collision": false,
+        "color": "test"
+    },
+    "1": {
+        "name": "(1) Archway",
+        "description": "An archway that you can pass through, primary texture.",
+        "texture": "../../images/arch.png",
+        "transparent": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.17
+            },
+            {
+                "start": 0.80,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    },
+    "2": {
+        "name": "(2) Crystal Archway",
+        "description": "An archway that you can pass through in the Crystal Caverns.",
+        "texture": "../../images/crystal/crystalArch.png",
+        "transparent": true,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.17
+            },
+            {
+                "start": 0.80,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    },
+    "3": {
+        "name": "(3) Door",
+        "description": "A door you can pass through.",
+        "texture": "../../images/door.png",
+        "color": "#66CC00",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32
+            },
+            {
+                "start": 0.67,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#door"
+                    }
+                }
+            ]
+        }
+    },
+    "4": {
+        "name": "(4) Crystal Door",
+        "description": "A door you can pass through in the Crystal Caverns.",
+        "texture": "../../images/crystal/crystalWall.png",,
+        "color": "#66CC00",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32
+            },
+            {
+                "start": 0.67,
+                "end": 1
+            }
+        ],
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#door"
+                    }
+                }
+            ]
+        }
+    },
+    "5": {
+        "name": "(5) SecretDoor",
+        "description": "A secret door. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": "../../images/wall.png",
+        "color": "#0080FF",
+        "transparent": false,
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#secretDoor"
+                    }
+                }
+            ]
+        }
+    },
+    "6": {
+        "name": "(6) Crystal SecretDoor",
+        "description": "A secret door in the Crystal Caverns. Looks like a regular wall to normal vision, but works like a door.",
+        "texture": "../../images/crystal/crystalWall.png",
+        "color": "#0080FF",
+        "transparent": false,
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#secretDoor"
+                    }
+                }
+            ]
+        }
+    },
+    "7": {
+        "name": "(7) IllusoryWall",
+        "description": "Looks like a regular wall to normal vision, but is an illusion with no physical substance.",
+        "texture": "../../images/wall.png",
+        "color": "#0080FF",
+        "transparent": false,
+        "collision": false,
+        "on": {
+            "passage": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#secretDoor"
+                    }
+                }
+            ]
+        }
+    },
+    "8": {
+        "name": "(8) LockedDoor",
+        "description": "A locked door that requires a key to unlock it. When a locked door is unlocked, that status is saved with the character.",
+        "texture": "../../images/door.png",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32,
+                "classifier": "wall"
+            },
+            {
+                "start": 0.32,
+                "end": 0.67,
+                "classifier": "door"
+            },
+            {
+                "start": 0.67,
+                "end": 1,
+                "classifier": "wall"
+            }
+        ],
+        "on": {
+            "collision:wall": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "collision:door": [
+                {
+                    "action": "core:checkLockedDoorCollision",
+                    "parameters": {
+                        "on": {
+                            "identified": [
+                                {
+                                    "action": "core:playSound",
+                                    "parameters": {
+                                        "clip": "../sounds.json#successfulIdentification"
+                                    }
+                                },
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "8-visible"
+                                    }
+                                }
+                            ],
+                            "key": [],
+                            "force": [],
+                            "disenchant": [],
+                            "success": [
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "9": {
+        "name": "(9) BoltedDoor",
+        "description": "A door that is secured with a deadbolt or bar. When a bolted door is forced open, that status is saved with the character.",
+        "texture": "../../images/door.png",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32,
+                "classifier": "wall"
+            },
+            {
+                "start": 0.32,
+                "end": 0.67,
+                "classifier": "door"
+            },
+            {
+                "start": 0.67,
+                "end": 1,
+                "classifier": "wall"
+            }
+        ],
+        "on": {
+            "collision:wall": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "collision:door": [
+                {
+                    "action": "core:checkBoltedDoorCollision",
+                    "parameters": {
+                        "on": {
+                            "identified": [
+                                {
+                                    "action": "core:playSound",
+                                    "parameters": {
+                                        "clip": "../sounds.json#successfulIdentification"
+                                    }
+                                },
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "9-visible"
+                                    }
+                                }
+                            ],
+                            "key": [],
+                            "force": [],
+                            "disenchant": [],
+                            "success": [
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "10": {
+        "name": "(10) EnchantedDoor",
+        "description": "A door that is secured with magic. When an enchantment on a door is broken, that status is saved with the character.",
+        "texture": "../../images/door.png",
+        "transparent": false,
+        "collision": [
+            {
+                "start": 0,
+                "end": 0.32,
+                "classifier": "wall"
+            },
+            {
+                "start": 0.32,
+                "end": 0.67,
+                "classifier": "door"
+            },
+            {
+                "start": 0.67,
+                "end": 1,
+                "classifier": "wall"
+            }
+        ],
+        "on": {
+            "collision:wall": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ],
+            "collision:door": [
+                {
+                    "action": "core:checkEnchantedDoorCollision",
+                    "parameters": {
+                        "on": {
+                            "identified": [
+                                {
+                                    "action": "core:playSound",
+                                    "parameters": {
+                                        "clip": "../sounds.json#successfulIdentification"
+                                    }
+                                },
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "10-visible"
+                                    }
+                                }
+                            ],
+                            "key": [],
+                            "force": [],
+                            "disenchant": [],
+                            "success": [
+                                {
+                                    "action": "core:patchDoor",
+                                    "parameters": {
+                                        "wallStyle": "3"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    },
+    "11": {
+        "name": "(11) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    },
+    "12": {
+        "name": "(12) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    },
+    "13": {
+        "name": "(13) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    },
+    "14": {
+        "name": "(14) Crystal Wall",
+        "description": "A typical solid wall in the crystal caverns.",
+        "texture": "../../images/crystal/crystalWall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    },
+    "15": {
+        "name": "(15) Wall",
+        "description": "A typical solid wall.",
+        "texture": "../../images/wall.png",
+        "transparent": false,
+        "collision": true,
+        "on": {
+            "collision": [
+                {
+                    "action": "core:playSound",
+                    "parameters": {
+                        "clip": "../sounds.json#bump"
+                    }
+                }
+            ]
+        }
+    }
 }

@@ -43,5 +43,73 @@
                 }
             }
         }
+    },
+    {
+        "_description": "[16,17] Stairway down to level 2 [0,0]",
+        "x": 16,
+        "y": 17,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level2",
+                    "x": 0.5,
+                    "y": 0.5,
+                    "orientation": "north"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[49,17] Stairway down to level 2 [30,0]",
+        "x": 49,
+        "y": 17,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level2",
+                    "x": 30.5,
+                    "y": 0.5,
+                    "orientation": "west"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[16,48] Stairway down to level 2 [1,31]",
+        "x": 16,
+        "y": 48,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level2",
+                    "x": 1.5,
+                    "y": 31.5,
+                    "orientation": "east"
+                }
+            }
+        }
+    },
+    {
+        "_description": "[48,47] Stairway down to level 2 [30,31]",
+        "x": 48,
+        "y": 47,
+        "on": {
+            "enterCell": {
+                "action": "core:teleport",
+                "parameters": {
+                    "scenario": "dungeon",
+                    "map": "level2",
+                    "x": 30.5,
+                    "y": 31.5,
+                    "orientation": "west"
+                }
+            }
+        }
     }
 ]

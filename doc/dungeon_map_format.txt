@@ -487,18 +487,62 @@ Special:
   05 (  5) = Stairwell leading down (level 1 SW [16,48] to level 2 [1,31,E])
   05 (  5) = Stairwell leading down (level 1 SE [48,47] to level 2 [30,31,W])
 
-  05 (  5) = Stairwell leading up (level 2 [0,1]) to level 1 [16,16,N]
-  05 (  5) = Stairwell leading up (level 2 [31,0] to level 1 [48,17,W])
-  05 (  5) = Stairwell leading up (level 2 [31,31] to level 1 [47,47,W])
-  05 (  5) = Stairwell leading up (level 2 [0,31] to level 1 [17,48,E])
+  05 (  5) = Stairwell leading up (level 2 [0,1]) to level 1 NW [16,16,N]
+  05 (  5) = Stairwell leading up (level 2 [31,0] to level 1 NE [48,17,W])
+  05 (  5) = Stairwell leading up (level 2 [0,31] to level 1 SW [17,48,E])
+  05 (  5) = Stairwell leading up (level 2 [31,31] to level 1 SE [47,47,W])
 
   05 (  5) = Stairwell leading down (level 2 [17,12] to level 3 [9,3,W])
   05 (  5) = Stairwell leading up (level 3 [8,3] to level 2 [16,12,W])
 
 // TODO: Verify the 2 below in game...
-  05 (  5) = Stairwell leading down (level 3 [6,15] to level 4 [?,?,?])
-  05 (  5) = Stairwell leading up (level 4 [?,?] to level 3 [7?,15?,E?])
+  05 (  5) = Stairwell leading up (level 3 [6,15] to level 2 [?,?,?])
 
+   (level 4 [?,?] to level 3 [7?,15?,E?])
+
+  05 (  5) = Stairwell leading up / down
+
+    // These are based on a table lookup of the player's current position
+    // There are 2 tables of 4-byte entries.
+    //   - The first table is the locations of the actual stairwells on the maps (that is the cells which
+    //     are assigned module 5) The player's current position is matched against this table to derive the
+    //     index into the second table.
+    //        X Y M D
+    //        | | | +- The "direction" of the stairwell. 0 = up, 1 = down
+    //        | | +--- The map number the stairwell is on
+    //        | +----- The Y coordinate of the stairwell
+    //        +------- The X coordinate of the stairwell
+    //   - The second table appears to be the locations that the player is moved to (e.g. the
+    //     destination location or other end of the stairwell)
+    //        X Y M O
+    //        | | | +- The new player orientation (0 = N, 1 = E, 2 = S, 3 = W)
+    //        | | +--- The new map number
+    //        | +----- The new X coordinate
+    //        +------- The new Y coordinate
+    //
+    7751: 10 11 00 01   - Level 1 NW [16, 17, D]
+    7755: 11 11 01 01   - Level 1 NE [49, 17, D]
+    7759: 10 10 02 01   - Level 1 SW [16, 48, D]
+    775D: 10 0F 03 01   - Level 1 SE [48, 47, D]
+    7761: 00 01 04 00   - Level 2    [ 0,  1, U]
+    7765: 1F 00 04 00   - Level 2    [31,  0, U]
+    7769: 00 1F 04 00   - Level 2    [ 0, 31, U]
+    776D: 1F 1F 04 00   - Level 2    [31, 31, U]
+    7771: 11 0C 04 01   - Level 2    [17, 12, D]
+    7775: 06 0F 05 00   - Level 3    [ 6, 15, U]
+    7779: 0A 03 05 00   - Level 3    [10,  3, U]
+    // This entry is the start of the second (destination) table
+    777D: 00 00 04 00   - Level 2    [ 0,  0, N]
+    7781: 1E 00 04 03   - Level 2    [30,  0, W]
+    7785: 01 1F 04 01   - Level 2    [ 1, 31, E]
+    7789: 1E 1F 04 03   - Level 2    [30, 31, W]
+    778D: 10 10 00 00   - Level 1 NW [16, 16, N]
+    7791: 10 11 01 03   - Level 1 NE [48, 17, W]
+    7795: 11 10 02 01   - Level 1 SW [17, 48, E]
+    7799: 0F 0F 03 03   - Level 1 SE [47, 47, W]
+    779D: 09 03 05 03   - Level 3    [ 9,  3, W]
+    77A1: 0E 16 04 00   - Level 2    [14, 22, N]
+    77A5: 10 0C 04 03   - Level 2    [16, 12, W]
 
   06 (  6) = Grahm's Gold Exchange
   07 (  7) = Goblin King's Palace
