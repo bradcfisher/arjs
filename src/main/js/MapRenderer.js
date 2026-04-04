@@ -50,6 +50,8 @@ export class MapRenderer {
     #showEnclosedAreas = true;
     /** @type {boolean} */
     #showSpecialCode = true;
+    /** @type {boolean} */
+    #showZones = true;
 
     /**
      * @readonly
@@ -74,6 +76,56 @@ export class MapRenderer {
         "#809052", // type 2
         "#8c5e5e"  // type 3
     ];
+
+    #zoneColors = [
+        "#FF8C00", //0
+        "#BDB76B", //1
+        "#AFDCDF", //2
+        "#42AB42", //3
+        "#2F4F4F", //4
+        "#696969", //5
+        "#00CED1", //6
+        "#FF69B4", //7
+        "#4B0082", //8
+
+        "#FFBC20", //9
+        "#DDD78B", //10
+        "#8FBC8F", //11
+        "#228B22", //12
+        "#4F6F6F", //13
+        "#898989", //14
+        "#20EEF1", //15
+        "#FF89D4", //16
+        "#6B20A2", //17
+
+        "#FFDC40", //18
+        "#FDF79B", //19
+        "#AFCCAF", //20
+        "#42AB42", //21
+        "#6F8F8F", //22
+        "#A9A9A9", //23
+        "#40FFFF", //24
+        "#FFA9F4", //25
+        "#8B40C2", //26
+
+        "#FFFC60", //27
+        "#FFFFBB", //28
+        "#CFECCF", //29
+        "#62CB62", //30
+        "#8FAFAF", //31
+        "#C9C9C9", //32
+        "#66FFFF", //33
+        "#FFCCFF", //34
+        "#AB60D2", //35
+
+        "#6F9C6F"  //36
+    ];
+
+    /**
+     * Map of zone names to colors.
+     * @type {Map<string,string>}
+     */
+    #zoneColorMap;
 
     // TODO: Additional configuration
 
@@ -127,6 +179,20 @@ export class MapRenderer {
 
     set map(value) {
         this.#map = value;
+
+        this.#zoneColorMap = new Map();
+        for (let y = 0; y < value.height; ++y) {
+            for (let x = 0; x < value.width; ++x) {
+                const zones = value.getCell(x, y).zones;
+                if (zones && zones.size) {
+                    let firstZone = zones.values().next().value;
+                    if (!this.#zoneColorMap.has(firstZone)) {
+                        this.#zoneColorMap.set(firstZone, this.#zoneColors[this.#zoneColorMap.size]);
+                    }
+                }
+            }
+        }
+
         this.invalidate();
     }
 
@@ -286,7 +352,7 @@ export class MapRenderer {
     }
 
     set showPointsOfInterest(value) {
-        this.#showPointsOfInterest = value;
+        this.#showPointsOfInterest = !!value;
         this.invalidate();
     }
 
@@ -295,7 +361,7 @@ export class MapRenderer {
     }
 
     set showEnclosedAreas(value) {
-        this.#showEnclosedAreas = value;
+        this.#showEnclosedAreas = !!value;
         this.invalidate();
     }
 
@@ -304,7 +370,16 @@ export class MapRenderer {
     }
 
     set showSpecialCode(value) {
-        this.#showSpecialCode = value;
+        this.#showSpecialCode = !!value;
+        this.invalidate();
+    }
+
+    get showZones() {
+        return this.#showZones;
+    }
+
+    set showZones(value) {
+        this.#showZones = !!value;
         this.invalidate();
     }
 
@@ -593,6 +668,8 @@ export class MapRenderer {
             color = this.#enclosedColors[cell.ceiling - 1];
         } else if (this.#showPointsOfInterest && (cell.special & 0x10)) {
             color = this.#poiColors[cell.special >> 5];
+        } else if (this.#showZones && cell.zones != null && cell.zones.size > 0) {
+            color = this.#zoneColorMap.get(cell.zones.values().next().value);
         }
         if (color) {
             context.fillStyle = color;
@@ -612,6 +689,9 @@ export class MapRenderer {
         if (this.#showSpecialCode && cell.special) {
             context.fillStyle = this.#textColor;
             this.#fillCenteredText(0, 0, 1, 1, 0.6, this.#byteToHex(cell.special));
+        } else if (this.#showZones && cell.zones && cell.zones.size > 0) {
+            context.fillStyle = this.#textColor;
+            this.#fillCenteredText(0, 0, 1, 1, 0.4, [...cell.zones].join(",\n"));
         }
 
         // Draw the wall representations

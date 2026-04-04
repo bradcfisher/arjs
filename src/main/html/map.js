@@ -162,6 +162,11 @@ const positionXInput = document.getElementById("PositionX");
 const positionYInput = document.getElementById("PositionY");
 const canvasElement = document.getElementById("Display");
 
+const showPointsOfInterestInput = document.getElementById("showPointsOfInterest");
+const showSpecialCodeInput = document.getElementById("showSpecialCode");
+const showEnclosedAreasInput = document.getElementById("showEnclosedAreas");
+const showZonesInput = document.getElementById("showZones");
+
 (function() {
     let toLoad = [];
 
@@ -242,6 +247,17 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     renderer = new arjs.MapRenderer(canvasElement.getContext("2d"));
+
+    showPointsOfInterestInput.addEventListener("change",
+        (evt) => renderer.showPointsOfInterest = showPointsOfInterestInput.checked);
+    showSpecialCodeInput.addEventListener("click", (evt) => renderer.showSpecialCode = showSpecialCodeInput.checked);
+    showEnclosedAreasInput.addEventListener("click", (evt) => renderer.showEnclosedAreas = showEnclosedAreasInput.checked);
+    showZonesInput.addEventListener("click", (evt) => renderer.showZones = showZonesInput.checked);
+
+    showPointsOfInterestInput.checked = renderer.showPointsOfInterest;
+    showSpecialCodeInput.checked = renderer.showSpecialCode;
+    showEnclosedAreasInput.checked = renderer.showEnclosedAreas;
+    showZonesInput.checked = renderer.showZones;
 
     pageReady = true;
 

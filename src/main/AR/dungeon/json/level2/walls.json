@@ -96,7 +96,7 @@
     "4": {
         "name": "(4) Crystal Door",
         "description": "A door you can pass through in the Crystal Caverns.",
-        "texture": "../../images/crystal/crystalWall.png",,
+        "texture": "../../images/crystal/crystalWall.png",
         "color": "#66CC00",
         "transparent": false,
         "collision": [

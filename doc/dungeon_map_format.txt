@@ -87,89 +87,91 @@ The zone ref table starts at 0x300 in the file ($af00 AND $c300 in memory) and e
   - The width of the zone is X2 - X1 (cells at X1 are included in the zone, cells at X2 are not)
   - The height of the zone is Y2 - Y1 (cells at Y1 are included in the zone, cells at Y2 are not)
   - The Ref is the index of the zone to apply to cells within the specified map range.
-    - Assigned values appear to start at 1. This may mean that 0 is used to indicate a null zone assignment.
-    - The actual definitions of what the zones mean must exist elsewhere.
+    - Assigned values appear to start at 1. This may mean that 0 is used to indicate a null/default zone assignment.
+    - The actual definitions of what the zones mean is in the next table.
 - The table extends through 0x37d, and any unused space is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
 
 Zone refs from Level 1.1 (Dungeon NW corner) - 9 zone refs defined (max ref 6)
-  - Entry  0: 00 20 01 00 01 [ 0 32  1  0  1] -> ( 1,  0)-(32,  1) ref 1 (sewers)
-  - Entry  1: 00 01 20 00 01 [ 0  1 32  0  1] -> ( 0,  0)-( 1, 32) ref 1 (sewers)
-  - Entry  2: 1b 03 1c 01 01 [27  3 28  1  1] -> ( 1, 27)-( 3, 28) ref 1 (sewers)
-  - Entry  3: 09 05 10 01 02 [ 9  5 16  1  2] -> ( 1,  9)-( 5, 16) ref 2
-  - Entry  4: 0d 06 10 05 02 [15  6 16  5  2] -> ( 5, 15)-( 6, 16) ref 2
-  - Entry  5: 19 20 1e 1b 03 [25 32 30 27  3] -> (27, 25)-(32, 30) ref 3
-  - Entry  6: 0d 12 15 08 04 [13 18 21  8  4] -> ( 8, 13)-(18, 21) ref 4
-  - Entry  7: 01 20 0b 11 05 [ 1 32 11 17  5] -> (17,  1)-(32, 11) ref 5
-  - Entry  8: 01 05 09 01 06 [ 1  5  9  1  6] -> ( 1,  1)-( 5,  9) ref 6
+  - Size byte: 08 (8)
+  - Entry  0: 00 20 01 00 01 [ 0 32  1  0  1] -> ( 1,  0)-(32,  1) ref 1 (The City's sewers)
+  - Entry  1: 00 01 20 00 01 [ 0  1 32  0  1] -> ( 0,  0)-( 1, 32) ref 1 (The City's sewers)
+  - Entry  2: 1b 03 1c 01 01 [27  3 28  1  1] -> ( 1, 27)-( 3, 28) ref 1 (The City's sewers)
+  - Entry  3: 09 05 10 01 02 [ 9  5 16  1  2] -> ( 1,  9)-( 5, 16) ref 2 (Goblins' demesne)
+  - Entry  4: 0d 06 10 05 02 [15  6 16  5  2] -> ( 5, 15)-( 6, 16) ref 2 (Goblins' demesne)
+  - Entry  5: 19 20 1e 1b 03 [25 32 30 27  3] -> (27, 25)-(32, 30) ref 3 (Mausoleum - Acrinimiril's tomb)
+  - Entry  6: 0d 12 15 08 04 [13 18 21  8  4] -> ( 8, 13)-(18, 21) ref 4 ()
+  - Entry  7: 01 20 0b 11 05 [ 1 32 11 17  5] -> (17,  1)-(32, 11) ref 5 (Chapel)
+  - Entry  8: 01 05 09 01 06 [ 1  5  9  1  6] -> ( 1,  1)-( 5,  9) ref 6 (Gram's Gold Exchange Vault)
 
 Zone refs from Level 1.2 (Dungeon NE corner) - 14 zone refs defined (max ref 5)
-  - Entry  1: 00 1f 01 00 01 [ 0 31  1  0  1] -> ( 0,  0)-(31,  1) ref 1 (sewers)
-  - Entry  2: 00 20 20 1f 01 [ 0 32 32 31  1] -> (31,  0)-(32, 32) ref 1 (sewers)
-  - Entry  3: 0f 1f 1e 1e 01 [15 31 30 30  1] -> (30, 15)-(31, 30) ref 1 (sewers)
-  - Entry  4: 10 1e 1d 17 01 [16 30 29 23  1] -> (23, 16)-(30, 29) ref 1 (sewers)
-  - Entry  5: 0f 17 1e 14 01 [15 23 30 20  1] -> (20, 15)-(23, 30) ref 1 (sewers)
-  - Entry  6: 10 14 13 13 01 [16 20 19 19  1] -> (19, 16)-(20, 19) ref 1 (sewers)
-  - Entry  7: 1a 14 1d 13 01 [26 20 29 19  1] -> (19, 26)-(20, 29) ref 1 (sewers)
-  - Entry  8: 14 14 19 13 01 [20 20 25 19  1] -> (19, 20)-(20, 25) ref 1 (sewers)
-  - Entry  9: 01 1f 09 15 02 [ 1 31  9 21  2] -> (21,  1)-(31,  9) ref 2
-  - Entry 10: 03 15 06 0f 02 [ 3 21  6 15  2] -> (15,  3)-(21,  6) ref 2
-  - Entry 11: 1b 10 20 06 03 [27 16 32  6  3] -> ( 6, 27)-(16, 32) ref 3
-  - Entry 12: 1d 06 20 05 03 [29  6 32  5  3] -> ( 5, 29)-( 6, 32) ref 3
-  - Entry 13: 07 14 0b 10 04 [ 7 20 11 16  4] -> (16,  7)-(20, 11) ref 4
-  - Entry 14: 10 08 16 03 05 [16  8 22  3  5] -> ( 3, 16)-( 8, 22) ref 5
+  - Size byte: 0d (13)
+  - Entry  1: 00 1f 01 00 01 [ 0 31  1  0  1] -> ( 0,  0)-(31,  1) ref 1 (The City's sewers)
+  - Entry  2: 00 20 20 1f 01 [ 0 32 32 31  1] -> (31,  0)-(32, 32) ref 1 (The City's sewers)
+  - Entry  3: 0f 1f 1e 1e 01 [15 31 30 30  1] -> (30, 15)-(31, 30) ref 1 (The City's sewers)
+  - Entry  4: 10 1e 1d 17 01 [16 30 29 23  1] -> (23, 16)-(30, 29) ref 1 (The City's sewers)
+  - Entry  5: 0f 17 1e 14 01 [15 23 30 20  1] -> (20, 15)-(23, 30) ref 1 (The City's sewers)
+  - Entry  6: 10 14 13 13 01 [16 20 19 19  1] -> (19, 16)-(20, 19) ref 1 (The City's sewers)
+  - Entry  7: 1a 14 1d 13 01 [26 20 29 19  1] -> (19, 26)-(20, 29) ref 1 (The City's sewers)
+  - Entry  8: 14 14 19 13 01 [20 20 25 19  1] -> (19, 20)-(20, 25) ref 1 (The City's sewers)
+  - Entry  9: 01 1f 09 15 02 [ 1 31  9 21  2] -> (21,  1)-(31,  9) ref 2 (The Well Lit Area)
+  - Entry 10: 03 15 06 0f 02 [ 3 21  6 15  2] -> (15,  3)-(21,  6) ref 2 (The Well Lit Area)
+  - Entry 11: 1b 10 20 06 03 [27 16 32  6  3] -> ( 6, 27)-(16, 32) ref 3 ()
+  - Entry 12: 1d 06 20 05 03 [29  6 32  5  3] -> ( 5, 29)-( 6, 32) ref 3 ()
+  - Entry 13: 07 14 0b 10 04 [ 7 20 11 16  4] -> (16,  7)-(20, 11) ref 4 ()
+  - Entry 14: 10 08 16 03 05 [16  8 22  3  5] -> ( 3, 16)-( 8, 22) ref 5 ()
 
 Zone refs from Level 1.3 (Dungeon SW corner) - 11 zone refs defined (max ref 7)
-
-0a
-00 01 20 00 01
-1f 20 20 00 01
-18 06 1f 01 02
-12 08 18 01 03
-13 0a 18 01 03
-05 06 12 01 04
-00 20 13 08 05
-01 08 12 06 05
-00 08 01 07 05
-13 20 1f 19 06
-13 11 18 0a 07
-1d 06 20 05 03
-07 14 0b 10 04
-10 08 16 03 05
+  - Size byte: 0a (10)
+  - Entry  1: 00 01 20 00 01 [ 0  1 32  0  1] -> ( 0,  0)-( 1, 32) ref 1 (The City's sewers)
+  - Entry  2: 1f 20 20 00 01 [31 32 32  0  1] -> ( 0, 31)-(32, 32) ref 1 (The City's sewers)
+  - Entry  3: 18 06 1f 01 02 [24  6 31  1  2] -> ( 1, 24)-( 6, 31) ref 2 (Well-lighted area / Light Wizards)
+  - Entry  4: 12 08 18 01 03 [18  8 24  1  3] -> ( 1, 19)-( 8, 24) ref 3 (Blink-mine field)
+  - Entry  5: 13 0a 18 01 03 [19 10 24  1  3] -> ( 1, 19)-(10, 24) ref 3 (Blink-mine field)
+  - Entry  6: 05 06 12 01 04 [ 5  6 18  1  4] -> ( 1,  5)-( 6, 18) ref 4 (Dangerous area)
+  - Entry  7: 00 20 13 08 05 [ 0 32 19  8  5] -> ( 8,  0)-(32, 19) ref 5 (Taurean Maze)
+  - Entry  8: 01 08 12 06 05 [ 1  8 18  6  5] -> ( 6,  1)-( 8, 18) ref 5 (Taurean Maze)
+  - Entry  9: 00 08 01 07 05 [ 0  8  1  7  5] -> ( 7,  0)-( 8,  1) ref 5 (Taurean Maze)
+  - Entry 10: 13 20 1f 19 06 [19 32 31 25  6] -> (25, 19)-(32, 31) ref 6 (First City Bank's Vault)
+  - Entry 11: 13 11 18 0a 07 [19 17 24 10  7] -> (10, 19)-(17, 24) ref 7 (Fountain)
+  - Entry 12: 1d 06 20 05 03 [29  6 32  5  3] -> ( 5, 29)-( 6, 32) ref 3 (Blink-mine field)
+  - Entry 13: 07 14 0b 10 04 [ 7 20 11 16  4] -> (16,  7)-(20, 11) ref 4 (Dangerous area)
+  - Entry 14: 10 08 16 03 05 [16  8 22  3  5] -> ( 3, 16)-( 8, 22) ref 5 (Taurean Maze)
 
 Zone refs from Level 1.4 (Dungeon SE corner) - 14 zone refs defined (max ref 11)
-
-0d
-00 20 20 1f 01
-1f 20 20 00 01
-18 1a 1f 16 02
-18 16 1b 15 02
-06 11 07 10 03
-09 03 0c 00 04
-00 1f 0d 1a 05
-1d 1c 1f 1b 06
-10 1d 1e 1c 06
-00 08 09 00 07
-10 1f 13 1d 08
-13 1f 16 1d 09
-16 1f 19 1d 0a
-19 1f 1c 1d 0b
+  - Size byte: 0d (13)
+  - Entry  1: 00 20 20 1f 01 [ 0 32 32 31  1] -> (31,  0)-(32, 32) ref  1 (The City's sewers)
+  - Entry  2: 1f 20 20 00 01 [31 32 32  0  1] -> ( 0, 31)-(32, 32) ref  1 (The City's sewers)
+  - Entry  3: 18 1a 1f 16 02 [24 26 31 22  2] -> (22, 24)-(26, 31) ref  2 ()
+  - Entry  4: 18 16 1b 15 02 [24 22 27 21  2] -> (21, 24)-(22, 27) ref  2 ()
+  - Entry  5: 06 11 07 10 03 [ 6 17  7 16  3] -> (16,  6)-(27,  7) ref  3 ()
+  - Entry  6: 09 03 0c 00 04 [ 9  3 12  0  4] -> ( 0,  9)-( 3, 12) ref  4 (Dark Wizards Guild)
+  - Entry  7: 00 1f 0d 1a 05 [ 0 31 13 26  5] -> (26,  0)-(31, 13) ref  5 ()
+  - Entry  8: 1d 1c 1f 1b 06 [29 28 31 27  6] -> (27, 29)-(38, 31) ref  6 ()
+  - Entry  9: 10 1d 1e 1c 06 [16 29 30 28  6] -> (28, 16)-(39, 30) ref  6 ()
+  - Entry 10: 00 08 09 00 07 [ 0  8  9  0  7] -> ( 0,  0)-( 8,  9) ref  7 (The Pythoness' maze)
+  - Entry 11: 10 1f 13 1d 08 [16 31 19 29  8] -> (29, 16)-(31, 19) ref  8 ()
+  - Entry 12: 13 1f 16 1d 09 [19 31 22 29  9] -> (29, 19)-(31, 22) ref  9 ()
+  - Entry 13: 16 1f 19 1d 0a [22 31 25 29 10] -> (29, 22)-(31, 25) ref 10 ()
+  - Entry 14: 19 1f 1c 1d 0b [25 31 28 29 11] -> (29, 25)-(31, 28) ref 11 ()
 
 Zone refs from Level 2 - 13 zone refs defined (max ref 9)
 
-0c
-04 0d 0c 06 01
-0c 09 0f 06 01
-14 20 20 11 02
-19 11 20 0d 02
-15 0a 1d 02 03
-15 0c 17 0a 03
-1d 09 1f 03 03
-05 1e 0d 18 04
-00 09 01 04 05
-0a 05 0c 03 06
-0f 1f 11 1b 07
-0e 1d 0f 1c 08
-11 0e 15 05 09
+  - Size byte: 0c (12)
+  - Entry  1: 04 0d 0c 06 01 [ 4 13 12  6  1] -> ( 6,  4)-(13, 12) ref 1 (The City's sewers)
+  - Entry  2: 0c 09 0f 06 01 [12  9 15  6  1] -> ( 6, 12)-( 9, 15) ref 1 (The City's sewers)
+  - Entry  3: 14 20 20 11 02 [20 32 32 17  2] -> (17, 20)-(32, 32) ref 2 ()
+  - Entry  4: 19 11 20 0d 02 [25 17 32 13  2] -> (13, 25)-(17, 32) ref 2 ()
+  - Entry  5: 15 0a 1d 02 03 [21 10 29  2  3] -> ( 2, 21)-(10, 29) ref 3 ()
+  - Entry  6: 15 0c 17 0a 03 [21 12 23 10  3] -> (10, 21)-(12, 23) ref 3 ()
+  - Entry  7: 1d 09 1f 03 03 [29  9 31  3  3] -> ( 3, 29)-( 9, 31) ref 3 ()
+  - Entry  8: 05 1e 0d 18 04 [ 5 30 13 24  4] -> (24,  5)-(30, 13) ref 4 ()
+  - Entry  9: 00 09 01 04 05 [ 0  9  1  4  5] -> ( 4,  0)-( 9,  1) ref 5 ()
+  - Entry 10: 0a 05 0c 03 06 [10  5 12  3  6] -> ( 3, 10)-( 5, 12) ref 6 ()
+  - Entry 11: 0f 1f 11 1b 07 [15 31 17 27  7] -> (27, 15)-(31, 17) ref 7 ()
+  - Entry 12: 0e 1d 0f 1c 08 [14 29 15 28  8] -> (28, 14)-(29, 15) ref 8 ()
+  - Entry 13: 11 0e 15 05 09 [17 14 21  5  9] -> ( 5, 17)-(14, 21) ref 9 ()
+
+Zone refs from Level 3 -
 
 ---
 
@@ -180,74 +182,243 @@ Another table starts at 0x37e ($af7e in memory) and ends at 0x3ff (130 bytes):
 
 Level 1.1 (Dungeon NW corner) has the following 7 entries:
 
-  - Entry 0: 01 80 00 24 00 0a 04 06 ("default")
-  - Entry 1: 01 7a 00 24 00 08 22 c0 (sewers)
-  - Entry 2: 04 82 00 54 0e 7a 06 02
-  - Entry 3: 05 8d 00 f8 22 1a 20 30
-  - Entry 4: 01 85 00 24 00 0a 04 06
-  - Entry 5: 01 89 01 0a 00 24 02 04
-  - Entry 6: 01 8f 00 0a 00 24 04 30
+  - Entry 0: 01 80 00 24 00 0a 04 06  ("default")
+    - Normal walls
+    - Ceiling: Dark Grey
+    - Floor: Grey
+  - Entry 1: 01 7a 00 24 00 08 22 c0  (The City's sewers)
+    - Normal walls
+    - Ceiling: Dark brown
+    - Floor: Pale black / Very dark grey
+  - Entry 2: 04 82 00 54 0e 7a 06 02  (Goblins' demesne)
+    - Goblin walls
+    - Ceiling: Grey
+    - Floor: Pale black / Very dark grey
+  - Entry 3: 05 8d 00 f8 22 1a 20 30  (Mausoleum - Acrinimiril's tomb)
+    - Mausoleum walls
+    - Ceiling: Almost black
+    - Floor: Dark reddish-brown
+  - Entry 4: 01 85 00 24 00 0a 04 06  ()
+    - Very close to zone 0, except for the second byte's low nibble...
+    - Normal walls
+    - Ceiling: Dark grey
+    - Floor: Grey
+    - Novice, Slime, Pauper
+  - Entry 5: 01 89 01 0a 00 24 02 04  (Chapel)
+    - Brown walls
+    - Ceiling: Dark grey
+    - Floor: Grey
+  - Entry 6: 01 8f 00 0a 00 24 04 30  Gram's Gold Exchange Vault
+    - Brown walls
+    - Ceiling: Grey
+    - Floor: Dark reddish-brown
+
   Fill bytes = [00]
 
-This aligns nicely with the idea that these are zone definitions, with the first entry
-being zone 0 (e.g. applied to all cells without an explicitly assigned zone) and
-subsequent entries corresponding to zone refs from the preceeding table.
 
 For Level 1.2 (Dungeon NE corner) we have the following 7 entries (This is one more entry
 than expected based on the zone ref table):
 
- - Entry 0: 01 80 00 0a 00 24 04 06 ("default")
- - Entry 1: 01 6a 00 24 00 08 22 c0 (sewers)
- - Entry 2: 01 89 05 24 00 0a 28 06 (starting location / well lit area)
- - Entry 3: 01 8b 00 24 00 0a 04 06
- - Entry 4: 01 8b 00 24 00 0a 06 02
- - Entry 5: 01 8a 00 0a 00 24 04 06
- - Entry 6: 01 8f 00 0a 00 24 04 30 - Assuming this is a zone table, perhaps this entry is unused as it is not referenced in the previous table?
- Fill bytes [00]
+  - Entry 0: 01 80 00 0a 00 24 04 06  ("default")
+    - Brown walls
+    - Ceiling: Dark grey (04?)
+    - Floor: Grey (06?)
+    - Pauper
+  - Entry 1: 01 6a 00 24 00 08 22 c0  (The City's sewers)
+    - Walls w/ Brown edges
+    - Ceiling: Dark reddish brown (22?)
+    - Floor: Light black/Very dark grey (c0? very dk grn?)
+  - Entry 2: 01 89 05 24 00 0a 28 06  (The Well Lit Area)
+    - Normal walls
+    - Ceiling: Yellowish-brown (28?)
+    - Floor: grey (06?)
+    - Acolyte, Giant Rat, Slime, Healer
+  - Entry 3: 01 8b 00 24 00 0a 04 06  ()
+    - Normal Walls
+    - Ceiling: Dark grey (04?)
+    - Floor: Grey (06?)
+  - Entry 4: 01 8b 00 24 00 0a 06 02  ()
+    - Normal Walls
+    - Ceiling: Grey  (0A?) (06?)
+    - Floor: Light black (02?)
+  - Entry 5: 01 8a 00 0a 00 24 04 06  ()
+    -
+  - Entry 6: 01 8f 00 0a 00 24 04 30
+    - This entry appears unused as it is not referenced in the previous table
+
+  Fill bytes [00]
 
 For Level 1.3 (Dungeon SW corner) we have the following 8 entries (this aligns with the zone ref table):
 
- - Entry 0: 01 80 00 24 00 0a 04 06
- - Entry 1: 01 6a 00 24 00 08 22 c0
- - Entry 2: 01 89 01 06 00 0a 0c 0e
- - Entry 3: 01 a5 00 24 00 0a 04 06
- - Entry 4: 04 98 00 54 0e 7a 54 24
- - Entry 5: 01 80 00 24 00 0a 00 06
- - Entry 6: 01 8f 00 24 00 0a 04 06
- - Entry 7: 01 74 00 24 00 0a 98 06
- Fill bytes [00]
+  - Entry 0: 01 80 00 24 00 0a 04 06  ("default")
+    - Texture:
+    - Ceiling:
+    - Floor:
+  - Entry 1: 01 6a 00 24 00 08 22 c0  (The City's sewers)
+    - Texture: Normal Walls
+    - Ceiling: Dark Brown
+    - Floor: Pale Black
+  - Entry 2: 01 89 01 06 00 0a 0c 0e  (Well-lighted area / Light Wizards)
+    - Texture: Grey Walls
+    - Ceiling: Light Grey
+    - Floor: White
+  - Entry 3: 01 a5 00 24 00 0a 04 06  (Blink-mine field)
+    - Texture: Regular Walls
+    - Ceiling: Dark gray
+    - Floor: Gray
+  - Entry 4: 04 98 00 54 0e 7a 54 24  (Dangerous area)
+    - Texture: Goblin
+    - Floor: Purple
+    - Ceiling: Dark Brownish
+  - Entry 5: 01 80 00 24 00 0a 00 06  (Taurean Maze)
+    - Texture: Normal walls
+    - Ceiling: Black
+    - Floor: Gray
+  - Entry 6: 01 8f 00 24 00 0a 04 06  (First City Bank's Vault)
+    - Texture: Normal walls
+    - Ceiling: Dark Gray
+    - Floor: Gray
+  - Entry 7: 01 74 00 24 00 0a 98 06  (Fountain)
+    - Texture: Normal walls
+    - Ceiling: Blue
+    - Floor: Gray
+
+  Fill bytes [00]
 
 For level 1.4 (Dungeon SE corner) we have the following 12 entries (this aligns with the zone ref table):
 
- - Entry  0: 01 80 00 24 00 0a 04 06
- - Entry  1: 01 6a 00 24 00 08 22 c0
- - Entry  2: 04 83 00 54 0e 7a 90 60
- - Entry  3: 01 f5 00 28 00 0a 34 1a
- - Entry  4: 01 31 00 00 00 00 04 04
- - Entry  5: 01 8b 00 24 00 0a 04 06
- - Entry  6: 01 80 05 24 00 0a 04 06
- - Entry  7: 01 80 02 24 00 0a 04 06
- - Entry  8: 01 67 00 04 00 0a 7a c4
- - Entry  9: 01 86 00 0a 00 06 24 24
- - Entry 10: 04 74 00 86 c4 ca 98 86
- - Entry 11: 03 a5 00 34 00 1a 1a 34
- Fill bytes [00]
+  - Entry  0: 01 80 00 24 00 0a 04 06 ("default")
+  - Entry  1: 01 6a 00 24 00 08 22 c0 (The City's sewers)
+    - Texture: Normal walls
+    - Ceiling: Dark Brown
+    - Floor: Pale Black
+  - Entry  2: 04 83 00 54 0e 7a 90 60 ()
+    - Texture: Goblin
+    - Ceiling:
+    - Floor:
+  - Entry  3: 01 f5 00 28 00 0a 34 1a ()
+    - Texture:
+    - Ceiling:
+    - Floor:
+  - Entry  4: 01 31 00 00 00 00 04 04 (Dark Wizards Guild)
+    - Texture: Black walls
+    - Ceiling: Dark gray
+    - Floor: Dark Gray
+  - Entry  5: 01 8b 00 24 00 0a 04 06 ()
+    - Texture: Normal walls
+    - Ceiling: Dark gray
+    - Floor: Gray
+  - Entry  6: 01 80 05 24 00 0a 04 06 ()
+    - Texture: Normal walls
+    - Ceiling: Dark gray
+    - Floor: Gray
+  - Entry  7: 01 80 02 24 00 0a 04 06 (The Pythoness' maze)
+    - Texture: Normal walls
+    - Ceiling: Dark gray
+    - Floor: Gray
+  - Entry  8: 01 67 00 04 00 0a 7a c4
+  - Entry  9: 01 86 00 0a 00 06 24 24
+  - Entry 10: 04 74 00 86 c4 ca 98 86
+ goblin?
+  - Entry 11: 03 a5 00 34 00 1a 1a 34
+ ?dragon
+  Fill bytes [00]
 
 For Level 2 we have the following 12 entries: (10 expected)
 
 - Entry  0: 01 80 00 04 00 0a 24 00
+  - Gray walls
+  - Ceiling: Brown
+  - Floor: Black
 - Entry  1: 02 4c 00 0e 7a 86 0e 8e
+  - Crystal caverns
+  - Chilly
+  - Textures could be specified in zone, but different wall codes are also used here
+  - Crystal walls
+  - Ceiling: white
+  - Floor: bluish-white
 - Entry  2: 05 71 00 44 24 1a 04 00
+  - Mausoleum walls
+  - Ceiling: Grey
+  - Floor: Black
 - Entry  3: 01 6d 00 90 72 00 00 00
+  - Dark blue walls
+  - Ceiling: Black
+  - Floor: Black
 - Entry  4: 02 70 00 7a 1a 0e 28 0a
+  - Mirror walls
+  - Ceiling: orangish brown
+  - Floor: light grey
+  - Enemy: Doppleganger
 - Entry  5: 01 9a 00 24 00 0a 04 34
+  - Brown walls
+  - Ceiling: Grey
+  - Floor: Orangish floor
 - Entry  6: 01 78 00 1e c4 f8 92 32
+  - Yellow-ish walls (normal appearance, yellowish coloring)
+  - Ceiling: Dark blue
+  - Floor: Magenta
 - Entry  7: 05 80 00 44 86 1a 34 54
+mausoleum walls?
+  - Adept walls (same as mausoleum, diff colors)
+  - Ceiling: Brown
+  - Floor: Mauve
 - Entry  8: 05 45 00 44 00 28 34 54
+mausoleum walls?
+  - Black adept walls (same as mausoleum, diff colors)
+  -
+  - Salamander, Phoenix
 - Entry  9: 01 89 00 22 00 0a 04 06
+reg walls?
+  - Brown walls
+  - Ceiling: Dk grey
+  - Floor: Lt grey
 - Entry 10: 04 74 00 86 c4 ca 98 86
+level 3? goblin?
+unused??
 - Entry 11: 03 a5 00 34 00 1a 1a 34
+dragon walls?
+unused??
+
 Fill bytes [AA]
+
+Level 3
+
+- Entry  0: 04 80 00 54 86 06 04 00
+  - Texture: Level 3 walls
+  - Ceiling: Grey
+  - Floor: Black
+- Entry  1: 01 F5 00 24 00 0A 34 28
+  - Texture: Normal walls
+  - Ceiling: Yellow-ish/Green-ish
+  - Floor: Redd-ish/Brown-ish
+- Entry  2: 01 80 02 24 00 0A 06 02
+  - Texture: Normal walls (byte 3? (24)) or combine with byte 0 (01) texture 01, color 24?
+  - Ceiling: Dark Grey
+  - Floor: Light Grey
+- Entry  3: 03 F5 00 34 00 1A 34 02
+  - Texture: Dragon walls (byte 3? 34?)
+  - Ceiling: Dark orange
+  - Floor: Dark grey
+- Entry  4: 01 64 00 0A 00 04 0E 24
+  - Texture: Grey walls (byte 3? 0A?)
+  - Ceiling: Off-white
+  - Floor: Brown
+- Entry  5: 01 86 00 24 00 0A 24 C4
+  - Texture: Normal walls (byte 3? 24?)
+  - Ceiling: Brown
+  - Floor: Dark green
+- Entry  6: 01 87 00 24 00 0A 7A 7A
+  - Texture: Normal walls (byte 3? 24?)
+  - Ceiling: Violet
+  - Floor: Violet
+- Entry  7: 05 80 00 44 86 1A 34 54
+- Entry  8: 05 45 00 44 00 28 34 54
+- Entry  9: 01 89 00 22 00 0A 04 06
+- Entry 10: 04 74 00 86 C4 CA 98 86
+- Entry 11: 03 A5 00 34 00 1A 1A 34
+
+
 
 
 Inspecting the memory copy at $af7e, the portion of the table containing "fill bytes" on disk appears to sometimes be populated with data.
@@ -382,9 +553,15 @@ eb $6347 $00 $ff
 // set breakpoint for reads of any of the bytes in the zone data
   ba r $194b L9
 
-0: $194b
+0: $194b - Texture-set to load
+      01 = Typical wall
+      02 = Mirror (pri) / Crystal Cavern (alt)
+      03 = Dragon?
+      04 = Goblin?
+      05 = Mausoleum/adept
+      ??
 1: $194c - byte?
-  -
+  - ??
 
 2: $194d - bitfield
  ? ? ? ? ? C ? A
@@ -397,24 +574,21 @@ eb $6347 $00 $ff
  | | | | |        If clear, loads the value $11 into $194c
  | | | | |        If value in $194c is $0E, stores $ff into $6320 (character status related)
  | | | | |        If $633c (player experience lvl) = 0,
+ | | | | +------- ?
+ | | | +--------- ?
+ | | +----------- ?
+ | +------------- ?
+ +--------------- ?
 
-3: $194e
-4: $194f
-5: $1950
-6: $1951
-7: $1952
-8: $1953
+3: $194e = Wall color #1 (e.g. normal walls = 26 Brownish)
+4: $194f = Wall color #2 (e.g. normal walls = 00 Black)
+5: $1950 = Wall color #3 (e.g. normal walls = 0A Grey)
+6: $1951 = Ceiling color
+7: $1952 = Floor color
+8: $1953 = ?
 
+For color codes see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
 
-Speculation:
-  AA BL BH CL CH ?? ?? ??
-  Where:
-    - AA is possibly a type or index of some sort
-    - BL and BH are the low and high byte of a 16 bit memory offset (likely an in-memory table or code subroutine, possibly encounters, etc)
-    - CL and CH are the low and high byte of a 16 bit memory offset (likely an in-memory table or code subroutine, possibly encounters, etc)
-    - ??
-    - ??
-    - ??
 
 Per Copilot (arguably unreliable):
   Zones in The Dungeon were not just spatial partitions — they were behavioral regions that controlled:
@@ -442,17 +616,25 @@ Per Copilot (arguably unreliable):
 >>   - center-center of the map (32,32) for map 04 (SE corner)
 
 
-
 Walls are encoded in the first 2 bytes (A & B)
-	There are 8 types of walls:
+	There are 8 types of walls generally used (primary texture),
+  and 8 others used infrequently or not at all (alternate textures):
 	 0 (0000) = No wall / open
    1 (0001 / 0x1) = Archway
+   2 (0002 / 0x2) = Archway (alt) - Crystal Caverns
    3 (0011 / 0x3) = Regular Door
+   4 (0100 / 0x4) = Regular Door (alt)
    5 (0101 / 0x5) = Secret Door (~)
+   5 (0110 / 0x6) = Secret Door (~) (alt)
+   5 (0111 / 0x7) = Secret Door (~) (alt)
    8 (1000 / 0x8) = Locked Door (L)
    9 (1001 / 0x9) = Bolted Door (X)
   10 (1010 / 0xa) = Enchanted Door (O)
+  11 (1011 / 0xb) = Wall (alt)
+  12 (1100 / 0xc) = Wall (alt)
   13 (1101 / 0xd) = Wall
+  14 (1110 / 0xe) = Wall (alt)
+  15 (1111 / 0xf) = Wall (alt)
 
 A - Types for East and North walls
 	high nibble - East
@@ -472,36 +654,18 @@ D - Special Square Codes:
 Varies depending on the map or the disk?  There appears to be something else used to determine the specific scenario, possibly the cell's description message number?
 
 Special:
-  - Scenarios/Modules -
+===========
+
+- Scenarios/Modules (00-1F) -
   03 (  3) = Fountain (Hit points)
-
+    - Level 1.3 (14, 20)
+    - Level 1.3 (13, 21)
+    - Level 1.3 (15, 21)
+    - Level 1.3 (14, 22)
   04 (  4) = Entrance to Palace / Entrance to Wilderness
-
-  05 (  5) = Stairwell leading down (level 1 NW [16,17] to level 2 [0,0,N])
-  05 (  5) = Stairwell leading down (level 1 NE [49,17] to level 2 [0,0,N] (BUG? - should probably go to [30,0,W] instead))
-    - TP to L1 48,17:
-        eb CHR_LOC_MAP $1
-        eb CHR_LOC_X $30
-        eb CHR_LOC_Y $11
-        eb CHR_LOC_ORIENT 1
-  05 (  5) = Stairwell leading down (level 1 SW [16,48] to level 2 [1,31,E])
-  05 (  5) = Stairwell leading down (level 1 SE [48,47] to level 2 [30,31,W])
-
-  05 (  5) = Stairwell leading up (level 2 [0,1]) to level 1 NW [16,16,N]
-  05 (  5) = Stairwell leading up (level 2 [31,0] to level 1 NE [48,17,W])
-  05 (  5) = Stairwell leading up (level 2 [0,31] to level 1 SW [17,48,E])
-  05 (  5) = Stairwell leading up (level 2 [31,31] to level 1 SE [47,47,W])
-
-  05 (  5) = Stairwell leading down (level 2 [17,12] to level 3 [9,3,W])
-  05 (  5) = Stairwell leading up (level 3 [8,3] to level 2 [16,12,W])
-
-// TODO: Verify the 2 below in game...
-  05 (  5) = Stairwell leading up (level 3 [6,15] to level 2 [?,?,?])
-
-   (level 4 [?,?] to level 3 [7?,15?,E?])
+    - Level 1.2 (20, 22) - Entrance to the Palace
 
   05 (  5) = Stairwell leading up / down
-
     // These are based on a table lookup of the player's current position
     // There are 2 tables of 4-byte entries.
     //   - The first table is the locations of the actual stairwells on the maps (that is the cells which
@@ -543,39 +707,169 @@ Special:
     779D: 09 03 05 03   - Level 3    [ 9,  3, W]
     77A1: 0E 16 04 00   - Level 2    [14, 22, N]
     77A5: 10 0C 04 03   - Level 2    [16, 12, W]
-
-  06 (  6) = Grahm's Gold Exchange
+  06 (  6) = Bank Vault
+    - Level 1.1 ( 2, 2) - Gram's Gold Exchange
+    - Level 1.3 (30,25) - First City Bank
   07 (  7) = Goblin King's Palace
+    - Level 1.1 ( 2,14)
   08 (  8) = Acrinimaril's Tomb
-
+    - Level 1.1 (31,27)
   0A ( 10) = Chapel
+    - Level 1.1 (27,  8)
+    - Level 1.1 (28,  8)
+    - Level 1.1 (31,  8)
   0B ( 11) = Palace Prison
+    - Level 1.2 (26, 27)
+    - Level 1.2 (27, 27)
+    - Level 1.2 (28, 27)
   0C ( 12) = Guild ( Wizards of Chaos Guild, Wizards of Law Guild, Wizards of Order Guild, Wizards of Light Guild, Wizards of Darkness Guild )
+    - Level 1.2 (18,  4) - Guild of Chaos
+    - Level 1.2 (26, 14) - Guild of Order
+    - Level 1.2 (30, 14) - Wizards of Law Guild
+    - Level 1.2 (12, 30) - Thieves' Guild
+    - Level 1.3 ( 2, 27) - Light Wizards Guild
+    - Level 1.4 ( 1, 10) - Dark Wizards Guild
   0D ( 13) = Damon & Pythias Shoppe
-
+    - Level 1.2 (14,  4)
   0F ( 15) = The Retreat
+    - Level 1.2 (23,  3)
   10 ( 16) = Oracle
+    - Level 1.4 ( 3,  4)
   11 ( 17) = Enchantress
-  12 ( 18) = Dungeon Entrance - to City
+    -
+  12 ( 18) = (Level 1) Dungeon Entrance - to City
+    - Level 1.2 (18,  3)
+    - Level 1.4 ()
+  12 ( 18) = (Level 3) Dragon's Lair
 
-  1D () = Der Rathskeller's Bar and Grille
-
-  - Effects -
+  1D ( 29) = Der Rathskeller's Bar and Grille
+    - Level 1.2 (28,  2)
+- Effects (20-7F) -
 
   60 ( 96) = ? Increased encounter frequency ?
 
-  - Encounters -
-  88 () [Level 1.2] = Doppleganger
-  98 (152) [Level 1.2] = Ghost
+- Encounters (80-9F) -
 
-  - Treasure -
+  80 (128) [Level  (, )] =
+  81 (129) [Level  (, )] =
+  82 (130) [Level  (, )] =
+  83 (131) [Level  (, )] =
+  84 (132) [Level  (, )] =
+  85 (133) [Level  (, )] =
+  86 (134) [Level  (, )] =
+  87 (135) [Level  (, )] =
+  88 (136) [Level 1.2 (19, 4)] = Doppleganger
+  89 (137) [Level 1.2 (15,25)] = Lich
+  8A (138) [Level 1.2 (15,19)] = Valkyrie
+  8B (139) [Level 1.2 (12,25)] = Great Naga
+  8C (140) [Level 1.2 (12,19)] = 3 Wraiths
+  8D (141) [Level 1.2 ( 9,18)] = 4 Flame Demons
+  8E (142) [Level 1.2 ( 9,25)] = 7 Dwarves
+  8F (143) [Level  (, )] =
+  90 (144) [Level  (, )] =
+  91 (145) [Level 1.3  (mult)] = Small Dragon (Taurian maze)
+    - Level 1.3 (25, 0)
+    - Level 1.3 (18, 7)
+    - Level 1.3 ( 6,11)
+    - Level 1.3 ( 7,16)
+  92 (146) [Level 1.3  (mult)] = 3 Giant Wolves (Taurian maze)
+    - Level 1.3 (21, 9)
+    - Level 1.3 (18,11)
+    - Level 1.3 (19,13)
+  93 (147) [Level  (, )] =
+  94 (148) [Level  (, )] =
+  95 (149) [Level 1.2 (22, 5)] = 7 Homunculii of The Blue Wizards
+  96 (150) [Level 1.2 (26, 7)] = 8 Skeletons
+  97 (151) [Level 1.4 ( 4,25)] =
+  98 (152) [Level 1.2 (28, 5)] = Ghost
+  99 (153) [Level  (, )] =
+  9A (154) [Level  (, )] =
+  9B (155) [Level  (, )] =
+  9C (156) [Level  (, )] =
+  9D (157) [Level  (, )] =
+  9E (158) [Level  (, )] =
+  9F (159) [Level 1.2 ( 7,  9)] = Devourer
 
-  BD (189) [Level 1.2] = Gauss Rifle [95] ("There is evidence of small\nweapons fire here.")
-  BE (190) [Level 1.2] = Solar suit ("There are some disgusting stains\non the floor and an odd looking\nsilvery quilted vest.")
 
-  - Messages -
+- Treasure (A0-BF) -
 
-  C0 (192) [Level 1.2] = 'A sign on the door says:\n"Damon & Pythias Shoppe"'
+  A0 (160) [Level 1.2 (16,26)] = The Star (card) ('Sealed in an envelope is a trump card.')
+  A1 (161) [Level 1.2 (15,18)] = Winged Sandals ('A powerful but feminine voice says:\n\n"For thy victory I give thee these\nsandals to make thee quick and agile."')
+  A2 (162) [Level 1.2 (13,25)] = Potion (of Restoration) ('After some prying, a small chest\nopens to reveal a potion vial.')
+  A3 (163) [Level 1.2 (12,18)] = Morgana's Tiara ('You find a dainty little crown.')
+  A4 (164) [Level 1.2 ( 9,18)] = Helm of Light ('A helm glowing with runes floats\nin midair before you.')
+  A5 (165) [Level 1.2 (10,25)] = Truesilver Coat ('A chain-mail coat gleems with an\nalmost magical lustre.')
+  A6 (166) [Level ()] =
+  A7 (167) [Level ()] =
+  A8 (168) [Level 1.2 (30, 7)] = Page of Cups (card) ('Sealed in an envelope is a trump card.')
+  A9 (169) [Level ()] =
+  AA (170) [Level ()] =
+  AB (171) [Level ()] =
+  AC (172) [Level ()] =
+  AD (173) [Level ()] =
+  AE (174) [Level 1.3 ( 3, 8)] = Sword of the Adept ('A sword protrudes from a slab\nof black marble.')
+  AF (175) [Level 1.4 (29, 8)] = Razor Ice ('A katana in a ribbed black laquered\nscabbard rests against a wall.\n\nA pattern of snowflakes has been honed along its single edge.')
+  B0 (176) [Level 1.1 (31, 1)] = Whetstone ('There is a small rectangular sharpening stone here.')
+  B1 (177) [Level 1.3 ( 9,23)] = Saurian Brandy ('Signs of a great battle between a\nsingle warrior and a dozen or more\nadversaries litter this room.\nClutched tightly to the warrior's\nis a bottle filled with\ngreen liquid.')
+  B2 (178) [Level 1.4 (16, 6)] = Blue Pearl Dagger [evil] ('Inscribed on the blade of a dagger\nare the words:\n\n"Fear not The Reaper"')
+  B3 (179) [Level 1.1 (17,15)] = 6 Pack
+  B4 (180) [Level ()] =
+  B5 (181) [Level 1.1 ( 6, 1)] = Crossbow [3] ('')
+  B6 (182) [Level 1.3 ( 3,16)] = Amethyst Rod ('A blue-violet quartz rod lies\non a purple dias.')
+  B7 (183) [Level 1.4 (27, 3)] = Map Stone ('A note reads:\n{left}{name},\n\n{left}   Congratulations my good {man|woman} on\n{left}getting this far.\n\n{right}A friend')
+  B8 (184) [Level ()] =
+  B9 (185) [Level 1.1 (11, 1)] = Thunder Quarrels [10] ('There are 10 quarrels in a magnetic clip here.')
+  BA (186) [Level 1.1 (11,27)] = Staff of Amber ('There is a long electrum rod here.')
+  BB (187) [Level 1.2 ( 6, 6)] = Loadstone ('A curious looking stone fastens itself around your neck.')
+  BC (188) [Level 1.1 (31, 4)] = Golden Apple
+  BD (189) [Level 1.2 ( 1, 1)] = Gauss Rifle [95] ('There is evidence of small\nweapons fire here.')
+  BE (190) [Level 1.2 ( 4, 1)] = Solar suit ('There are some disgusting stains\non the floor and an odd looking\nsilvery quilted vest.')
+  BF (191) [Level ()] =
+
+- Messages (C0-DF) -
+
+  C0 (192) [Level 1.2 (15,  4)] = 'A sign on the door says:\n"Damon & Pythias Shoppe"'
+  C1 (193) [Level 1.2 (22,  3)] = 'A sign above the door reads:\n"THE RETREAT"'
+  C2 (194) [Level 1.2 (28,  3)] = 'A sign reads:\n"Der Rathskeller Bar & Grille"'
+  C3 (195) [Level ()] = ''
+  C4 (196) [Level ()] = ''
+  C5 (197) [Level ()] = ''
+  C6 (198) [Level ()] = ''
+  C7 (199) [Level ()] = ''
+  C8 (200) [Level 1.3 (11, 10)] = 'Writing scrawled on the ground reads:\n"GO BACK!"'
+  C9 (201) [Level 1.3 ( 7,  0)] = 'Scratchings on the wall read:\n"THERE IS NO ESCAPE!"'
+  CA (202) [Level 1.3 (16,  9)] = 'A red arrow on the ground points East.'
+  CB (203) [Level 1.1 ( 6, 14)] = 'A dirty sign reads:\n"Goblins only!"'
+  CC (204) [Level ()] = ''
+  CD (205) [Level 1.2 (13, 22)] = 'A plaque reads:\n"Shrine of Monsters"'
+  CE (206) [Level 1.3  (multi)] = 'You hear the sound of running water.'
+    - Level 1.3 (14, 19)
+    - Level 1.3 (12, 21)
+    - Level 1.3 (16, 21)
+    - Level 1.3 (14, 23)
+  CF (207) [Level 1.3 ( 1, 31)] = 'Glowing letters float in midair:\n"SEEK THE LIGHT"'
+  D0 (208) [Level ()] = ''
+  D1 (209) [Level ()] = ''
+  D2 (210) [Level 1.1 (27,  7)] = 'A sign above the door says:\n"Welcome to the Chapel. Please come in!"'
+  D3 (211) [Level 1.4 ( 1, 31)] = 'Black letters hovering slowly say:\n\n"THE SHADOW WILL HIDE THEE"'
+  D4 (212) [Level ()] = ''
+  D5 (213) [Level ()] = ''
+  D6 (214) [Level ()] = ''
+  D7 (215) [Level 1.3  (multi)] = 'You hear the crackle of electricity.'
+    - Level 1.3 ( 1,18)
+    - Level 1.3 ( 1,19)
+    - Level 1.3 ( 1,20)
+    - Level 1.3 ( 1,21)
+    - Level 1.3 ( 1,22)
+    - Level 1.3 ( 1,23)
+  D8 (216) [Level 1.1 (26, 27)] = 'You stand before an elaborate door.'
+  D9 (217) [Level ()] = ''
+  DA (218) [Level ()] = ''
+  DB (219) [Level ()] = ''
+  DC (220) [Level ()] = ''
+  DD (221) [Level ()] = ''
+  DE (222) [Level ()] = ''
+  DF (223) [Level ()] = ''
 
     Some messages are found on Disk 3 Side 1 Sector 605. These messages are encoded such that:
     - Each line appears to start with 0xa5 (0x80 + 0x25 '%'). Perhaps this is a positioning or color indicator?
@@ -587,32 +881,95 @@ Special:
     - 0xa7 is used in one message (the note from "A friend" for the map stone). This is likely a formatting code.
     - The same message also executes code to dynamically insert text (possibly the player name as well as their gender)
 
+- Teleporters (E0-FF) -
 
-  - Teleporters -
-
-  E8 (232) [Level 1.2] = Teleporter to level 1.2 (11,01)
-
-  EF (239) [Level 1.1] = Teleporter to level 1.3 (0,0)
-  F0 (240) [Level 1.1] = Teleporter to level 1.1 (0,31)
-  F1 (241) [Level 1.1] = Teleporter to level 1.2 (0,0)
-  F2 (242) [Level 1.2] = Teleporter to level 1.1 (31,0)
-  F3 (243) [Level 1.4] = Teleporter to level 1.2 (31,31)
-  F4 (244) [Level 1.2] = Teleporter to level 1.4 (31,0)
-  F5 (245) [Level 1.3] = Teleporter to level 1.4 (0,31)
-  F6 (246) [Level 1.4] = Teleporter to level 1.3 (31,31)
-
-  F9 (249) [Level 1.] = Teleporter to level 1.4 (3,0)
-  FA (250) [Level 1.] = Teleporter to level 1.2 (3,31)
-  FC (252) [Level 1.3] = Teleporter to level 1.2 (16,7)
-  FF (255) [Level 1.2] = Teleporter to level 1.3 (24 27)
-
-
-
-	Perhaps the message to display (eg. A sign on the door says:\n"Damon & Pythias Shoppe")
-	Does this include lighting (e.g. brightly lit area)?  Or is that based on zones? - Lighting is most likely zone-based.
-	Encounter? / Treasure? / Effect?
-
-
+  E0 (224 /  0): 12 1E 00 FF [18 30  0   -1] = Teleport to Level 1.1 (18, 30, Unchanged)
+    - Level 1.1 (14, 22)
+    - Level 1.1 (17, 29)
+  E1 (225 /  1): 12 1B 00 03 [18 27  0    3] = Teleport to Level 1.1 (18, 27, West)
+    - Level 1.1 (17, 26)
+    - Level 1.1 (20, 27)
+    - Level 1.1 (18, 29)
+  E2 (226 /  2): 13 1B 00 01 [19 27  0    1] = Teleport to Level 1.1 (19, 27, East)
+    - Level 1.1 (30, 22)
+    - Level 1.1 (17, 28)
+  E3 (227 /  3): 0F 17 00 00 [15 23  0    0] = Teleport to Level 1.1 (15, 23, North)
+    - Level 1.1 (20, 26)
+  E4 (228 /  4): 1D 17 00 00 [29 23  0    0] = Teleport to Level 1.1 (29, 23, North)
+    - Level 1.1 (15, 22)
+  E5 (229 /  5): 05 1A 00 FF [ 5 26  0   -1] = Teleport to Level 1.1 ( 5, 26, Unchanged)
+    - Level 1.1 (16, 22)
+    - Level 1.1 (28, 22)
+    - Level 1.1 (17, 27)
+    - Level 1.1 (20, 28)
+    - Level 1.1 (19, 29)
+  E6 (230 /  6): 14 1F 00 00 [20 31  0    0] = Teleport to Level 1.1 (20, 31, North)
+    - Level 1.1 (29, 22)
+  E7 (231 /  7): 10 01 00 FF [16  1  0   -1] = Teleport to Level 1.1 (16,  1, Unchanged)
+    - Level 1.1 (18, 23)
+  E8 (232 /  8): 0B 01 01 FF [11  1  1   -1] = Teleport to Level 1.2 (11,  1, Unchanged)
+    - Level 1.2 (9, 1)
+  E9 (233 /  9): 11 07 01 FF [17  7  1   -1] = Teleport to Level 1.2 (17,  7, Unchanged)
+    - Level 1.2 (12, 28)
+  EA (234 / 10): 11 0A 01 FF [17 10  1   -1] = Teleport to Level 1.2 (11, 10, Unchanged)
+    - Level 1.2 (12, 31)
+  EB (235 / 11): 0B 1C 01 FF [11 27  1   -1] = Teleport to Level 1.2 (11, 27, Unchanged)
+    - Level 1.2 (16, 7)
+  EC (236 / 12): 0B 1F 01 FF [11 31  1   -1] = Teleport to Level 1.2 (11, 31, Unchanged)
+    - Level 1.2 (16, 10)
+  ED (237 / 13): 08 0F 01 80 [ 8 15  1 -255] = Teleport to Level 1.2 ( 8, 15, Random)
+    - Level 1.2 (8, 15)
+  EE (238 / 14): 12 09 02 80 [18  9  2 -255] = Teleport to Level 1.3 (18,  9, Random)
+    - Level 1.2 (4, 17)
+    - Level 1.3 (2, 18)
+    - Level 1.3 (6, 18)
+    - Level 1.3 (4, 19)
+    - Level 1.3 (2, 20)
+    - Level 1.3 (3, 20)
+    - Level 1.3 (6, 20)
+    - Level 1.3 (7, 20)
+    - Level 1.3 (4, 21)
+    - Level 1.3 (5, 21)
+    - Level 1.3 (6, 21)
+    - Level 1.3 (2, 22)
+    - Level 1.3 (5, 22)
+    - Level 1.3 (3, 23)
+    - Level 1.3 (7, 23)
+  EF (239 / 15): 00 01 02 FF [ 0  1  2   -1] = Teleport to Level 1.3 ( 0,  1, Unchanged)
+    - Level 1.1 (0, 31)
+  F0 (240 / 16): 00 1E 00 FF [ 9 30  0   -1] = Teleport to Level 1.1 ( 9, 30, Unchanged)
+    - Level 1.3 (0, 0)
+  F1 (241 / 17): 01 00 01 FF [ 1  0  1   -1] = Teleport to Level 1.2 ( 1,  0, Unchanged)
+    - Level 1.1 (31, 0)
+  F2 (242 / 18): 1E 00 00 FF [30  0  0   -1] = Teleport to Level 1.1 (30,  0, Unchanged)
+    - Level 1.2 (0, 0)
+  F3 (243 / 19): 1F 1E 01 FF [31 30  1   -1] = Teleport to Level 1.2 (31, 30, Unchanged)
+    - Level 1.4 (31, 0)
+  F4 (244 / 20): 1F 01 03 FF [31  1  3   -1] = Teleport to Level 1.4 (31,  1, Unchanged)
+    - Level 1.2 (31, 31)
+  F5 (245 / 21): 01 1F 03 FF [ 1 31  3   -1] = Teleport to Level 1.4 ( 1, 31, Unchanged)
+    - Level 1.3 (31, 31)
+  F6 (246 / 22): 1E 1F 02 FF [30 31  2   -1] = Teleport to Level 1.3 (30, 31, Unchanged)
+    - Level 1.4 (0, 31)
+  F7 (247 / 23): 00 12 05 FF [ 0 18  5   -1] = Teleport to Level 3   ( 0, 18, Unchanged)
+    - Level 3 (3, 4)
+  F8 (248 / 24): 0D 0F 05 FF [13 15  5   -1] = Teleport to Level 3   (13, 15, Unchanged)
+    - Level 3 (3, 19)
+  F9 (249 / 25): 03 01 03 FF [ 3  1  3   -1] = Teleport to Level 1.4 ( 3,  1, Unchanged)
+    - Level 1.2 (3, 31)
+  FA (250 / 26): 03 1E 01 FF [ 3 30  1   -1] = Teleport to Level 1.2 ( 3, 30, Unchanged)
+    - Level 1.4 (3, 0)
+  FB (251 / 27): 0B 00 04 FF [11  0  4   -1] = Teleport to Level 2   (11,  0, Unchanged)
+    - Level 2 (19, 24)
+  FC (252 / 28): 16 07 01 02 [24  7  1    2] = Teleport to Level 1.2 (24,  7, South)
+    - Level 1.3 (17, 22)
+  FD (253 / 29): 1A 05 01 00 [26  5  1    0] = Teleport to Level 1.2 (26,  5, North)
+    - Level 1.4 (15, 26)
+  FE (254 / 30): 1C 07 01 02 [28  7  1    2] = Teleport to Level 1.2 (28,  7, South)
+    - Level 2 (21, 16)
+  FF (255 / 31): 18 1B 02 03 [24 27  2    3] = Teleport to Level 1.3 (24, 27, West)
+    - Level 1.2 (10, 7)
+    - Level 4 (13, 12) - off the normal map, not reachable
 
 Teleporters:
   Table starts at $3BA7 in RAM (128 bytes @ 4 bytes/teleporter = 32 entries)
@@ -637,38 +994,12 @@ Teleporters:
 3C07: 0D 0F 05 FF 03 01 03 FF 03 1E 01 FF 0B 00 04 FF |................|
 3C17: 16 07 01 02 1A 05 01 00 1C 07 01 02 18 1B 02 03 |................|
 
-E0-FF
 
- 0: 12 1E 00 FF
- 1: 12 1B 00 03
- 2: 13 1B 00 01
- 3: 0F 17 00 00
- 4: 1D 17 00 00
- 5: 05 1A 00 FF
- 6: 14 1F 00 00
- 7: 10 01 00 FF
- 8: 0B 01 01 FF
- 9: 11 07 01 FF
-10: 11 0A 01 FF
-11: 0B 1C 01 FF
-12: 0B 1F 01 FF
-13: 08 0F 01 80
-14: 12 09 02 80
-15: 00 01 02 FF
-16: 00 1E 00 FF
-17: 01 00 01 FF
-18: 1E 00 00 FF
-19: 1F 1E 01 FF
-20: 1F 01 03 FF
-21: 01 1F 03 FF
-22: 1E 1F 02 FF
-23: 00 12 05 FF
-24: 0D 0F 05 FF
-25: 03 01 03 FF
-26: 03 1E 01 FF
-27: 0B 00 04 FF
-28: 16 07 01 02
-29: 1A 05 01 00
-30: 1C 07 01 02
-31: 18 1B 02 03
+--------------
 
+Bitmap format:
+
+160 ($a0) x 192 ($c0)
+4 color = 2 bpp
+
+160 * 2 = 320 ($140) bits/scanline = 64 ($40) bytes/scanline

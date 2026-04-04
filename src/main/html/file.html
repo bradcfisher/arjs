@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>AR Dungeon File Extractor</title>
+	<link rel="icon" href="../ar-icon-48x48.png" type="image/png" sizes="48x48">
+	<link rel="icon" href="../ar-icon-192x192.png" type="image/png" sizes="192x192">
+	<link rel="icon" href="../ar-icon-512x512.png" type="image/png" sizes="512x512">
+</head>
+<body>
+    <style type="text/css">
+        @font-face {
+            font-family: "AlternateRealityTheDungeon";
+            src: url("../font/AlternateRealityTheDungeon.woff");
+        }
+
+        * {
+            font-family: "AlternateRealityTheDungeon", serif
+        }
+    </style>
+
+    <div>
+        <select id="file"></select>
+        <input type="button" id="loadButton" value="Load"/>
+    </div>
+
+    <div>
+        <input type="button" id="saveButton" value="Save"/>
+        <textarea id="output" cols="80" rows="10"></textarea>
+    </div>
+
+    <script type="module" src="file.js"></script>
+</body>
+</html>
