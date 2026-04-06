@@ -141,34 +141,34 @@ Zone refs from Level 1.4 (Dungeon SE corner) - 14 zone refs defined (max ref 11)
   - Size byte: 0d (13)
   - Entry  1: 00 20 20 1f 01 [ 0 32 32 31  1] -> (31,  0)-(32, 32) ref  1 (The City's sewers)
   - Entry  2: 1f 20 20 00 01 [31 32 32  0  1] -> ( 0, 31)-(32, 32) ref  1 (The City's sewers)
-  - Entry  3: 18 1a 1f 16 02 [24 26 31 22  2] -> (22, 24)-(26, 31) ref  2 ()
-  - Entry  4: 18 16 1b 15 02 [24 22 27 21  2] -> (21, 24)-(22, 27) ref  2 ()
-  - Entry  5: 06 11 07 10 03 [ 6 17  7 16  3] -> (16,  6)-(27,  7) ref  3 ()
+  - Entry  3: 18 1a 1f 16 02 [24 26 31 22  2] -> (22, 24)-(26, 31) ref  2 (Troll King's demesne)
+  - Entry  4: 18 16 1b 15 02 [24 22 27 21  2] -> (21, 24)-(22, 27) ref  2 (Troll King's demesne)
+  - Entry  5: 06 11 07 10 03 [ 6 17  7 16  3] -> (16,  6)-(27,  7) ref  3 (Cult room)
   - Entry  6: 09 03 0c 00 04 [ 9  3 12  0  4] -> ( 0,  9)-( 3, 12) ref  4 (Dark Wizards Guild)
-  - Entry  7: 00 1f 0d 1a 05 [ 0 31 13 26  5] -> (26,  0)-(31, 13) ref  5 ()
-  - Entry  8: 1d 1c 1f 1b 06 [29 28 31 27  6] -> (27, 29)-(38, 31) ref  6 ()
-  - Entry  9: 10 1d 1e 1c 06 [16 29 30 28  6] -> (28, 16)-(39, 30) ref  6 ()
+  - Entry  7: 00 1f 0d 1a 05 [ 0 31 13 26  5] -> (26,  0)-(31, 13) ref  5 (Dangerous Area)
+  - Entry  8: 1d 1c 1f 1b 06 [29 28 31 27  6] -> (27, 29)-(38, 31) ref  6 (Long Passage)
+  - Entry  9: 10 1d 1e 1c 06 [16 29 30 28  6] -> (28, 16)-(39, 30) ref  6 (Long Passage)
   - Entry 10: 00 08 09 00 07 [ 0  8  9  0  7] -> ( 0,  0)-( 8,  9) ref  7 (The Pythoness' maze)
-  - Entry 11: 10 1f 13 1d 08 [16 31 19 29  8] -> (29, 16)-(31, 19) ref  8 ()
-  - Entry 12: 13 1f 16 1d 09 [19 31 22 29  9] -> (29, 19)-(31, 22) ref  9 ()
-  - Entry 13: 16 1f 19 1d 0a [22 31 25 29 10] -> (29, 22)-(31, 25) ref 10 ()
-  - Entry 14: 19 1f 1c 1d 0b [25 31 28 29 11] -> (29, 25)-(31, 28) ref 11 ()
+  - Entry 11: 10 1f 13 1d 08 [16 31 19 29  8] -> (29, 16)-(31, 19) ref  8 (Creepy Room)
+  - Entry 12: 13 1f 16 1d 09 [19 31 22 29  9] -> (29, 19)-(31, 22) ref  9 (Debris-littered Room)
+  - Entry 13: 16 1f 19 1d 0a [22 31 25 29 10] -> (29, 22)-(31, 25) ref 10 (Large Room)
+  - Entry 14: 19 1f 1c 1d 0b [25 31 28 29 11] -> (29, 25)-(31, 28) ref 11 (Creepy Room)
 
 Zone refs from Level 2 - 13 zone refs defined (max ref 9)
 
   - Size byte: 0c (12)
-  - Entry  1: 04 0d 0c 06 01 [ 4 13 12  6  1] -> ( 6,  4)-(13, 12) ref 1 (The City's sewers)
-  - Entry  2: 0c 09 0f 06 01 [12  9 15  6  1] -> ( 6, 12)-( 9, 15) ref 1 (The City's sewers)
+  - Entry  1: 04 0d 0c 06 01 [ 4 13 12  6  1] -> ( 6,  4)-(13, 12) ref 1 (Crystal Caverns)
+  - Entry  2: 0c 09 0f 06 01 [12  9 15  6  1] -> ( 6, 12)-( 9, 15) ref 1 (Crystal Caverns)
   - Entry  3: 14 20 20 11 02 [20 32 32 17  2] -> (17, 20)-(32, 32) ref 2 ()
   - Entry  4: 19 11 20 0d 02 [25 17 32 13  2] -> (13, 25)-(17, 32) ref 2 ()
   - Entry  5: 15 0a 1d 02 03 [21 10 29  2  3] -> ( 2, 21)-(10, 29) ref 3 ()
   - Entry  6: 15 0c 17 0a 03 [21 12 23 10  3] -> (10, 21)-(12, 23) ref 3 ()
   - Entry  7: 1d 09 1f 03 03 [29  9 31  3  3] -> ( 3, 29)-( 9, 31) ref 3 ()
-  - Entry  8: 05 1e 0d 18 04 [ 5 30 13 24  4] -> (24,  5)-(30, 13) ref 4 ()
-  - Entry  9: 00 09 01 04 05 [ 0  9  1  4  5] -> ( 4,  0)-( 9,  1) ref 5 ()
-  - Entry 10: 0a 05 0c 03 06 [10  5 12  3  6] -> ( 3, 10)-( 5, 12) ref 6 ()
-  - Entry 11: 0f 1f 11 1b 07 [15 31 17 27  7] -> (27, 15)-(31, 17) ref 7 ()
-  - Entry 12: 0e 1d 0f 1c 08 [14 29 15 28  8] -> (28, 14)-(29, 15) ref 8 ()
+  - Entry  8: 05 1e 0d 18 04 [ 5 30 13 24  4] -> (24,  5)-(30, 13) ref 4 (Hall of Mirrors)
+  - Entry  9: 00 09 01 04 05 [ 0  9  1  4  5] -> ( 4,  0)-( 9,  1) ref 5 (Arena pit)
+  - Entry 10: 0a 05 0c 03 06 [10  5 12  3  6] -> ( 3, 10)-( 5, 12) ref 6 (Musty Room)
+  - Entry 11: 0f 1f 11 1b 07 [15 31 17 27  7] -> (27, 15)-(31, 17) ref 7 (Hall of the Adept - Blue)
+  - Entry 12: 0e 1d 0f 1c 08 [14 29 15 28  8] -> (28, 14)-(29, 15) ref 8 (Hall of the Adept - Black)
   - Entry 13: 11 0e 15 05 09 [17 14 21  5  9] -> ( 5, 17)-(14, 21) ref 9 ()
 
 Zone refs from Level 3 -
@@ -208,7 +208,7 @@ Level 1.1 (Dungeon NW corner) has the following 7 entries:
     - Brown walls
     - Ceiling: Dark grey
     - Floor: Grey
-  - Entry 6: 01 8f 00 0a 00 24 04 30  Gram's Gold Exchange Vault
+  - Entry 6: 01 8f 00 0a 00 24 04 30  (Gram's Gold Exchange Vault)
     - Brown walls
     - Ceiling: Grey
     - Floor: Dark reddish-brown
@@ -225,7 +225,7 @@ than expected based on the zone ref table):
     - Floor: Grey (06?)
     - Pauper
   - Entry 1: 01 6a 00 24 00 08 22 c0  (The City's sewers)
-    - Walls w/ Brown edges
+    - Walls w/ Brown edges, slightly darker grey than usual
     - Ceiling: Dark reddish brown (22?)
     - Floor: Light black/Very dark grey (c0? very dk grn?)
   - Entry 2: 01 89 05 24 00 0a 28 06  (The Well Lit Area)
@@ -242,7 +242,9 @@ than expected based on the zone ref table):
     - Ceiling: Grey  (0A?) (06?)
     - Floor: Light black (02?)
   - Entry 5: 01 8a 00 0a 00 24 04 06  ()
-    -
+    - Brown walls
+    - Ceiling:
+    - Floor:
   - Entry 6: 01 8f 00 0a 00 24 04 30
     - This entry appears unused as it is not referenced in the previous table
 
@@ -267,7 +269,7 @@ For Level 1.3 (Dungeon SW corner) we have the following 8 entries (this aligns w
     - Ceiling: Dark gray
     - Floor: Gray
   - Entry 4: 04 98 00 54 0e 7a 54 24  (Dangerous area)
-    - Texture: Goblin
+    - Texture: Same texture and colors as Level 1.1 Zone 2 - Goblins' demesne
     - Floor: Purple
     - Ceiling: Dark Brownish
   - Entry 5: 01 80 00 24 00 0a 00 06  (Taurean Maze)
@@ -292,23 +294,23 @@ For level 1.4 (Dungeon SE corner) we have the following 12 entries (this aligns 
     - Texture: Normal walls
     - Ceiling: Dark Brown
     - Floor: Pale Black
-  - Entry  2: 04 83 00 54 0e 7a 90 60 ()
-    - Texture: Goblin
-    - Ceiling:
-    - Floor:
-  - Entry  3: 01 f5 00 28 00 0a 34 1a ()
-    - Texture:
-    - Ceiling:
-    - Floor:
+  - Entry  2: 04 83 00 54 0e 7a 90 60 (Troll King's demesne)
+    - Texture: Same texture and colors as Level 1.1 Zone 2 - Goblins' demesne
+    - Ceiling: Dark blue
+    - Floor: Darker blue
+  - Entry  3: 01 f5 00 28 00 0a 34 1a (Cult room)
+    - Texture: Normal walls with yellowish edges
+    - Ceiling: Brown
+    - Floor: Yellow
   - Entry  4: 01 31 00 00 00 00 04 04 (Dark Wizards Guild)
     - Texture: Black walls
     - Ceiling: Dark gray
     - Floor: Dark Gray
-  - Entry  5: 01 8b 00 24 00 0a 04 06 ()
+  - Entry  5: 01 8b 00 24 00 0a 04 06 (Dangerous Area)
     - Texture: Normal walls
     - Ceiling: Dark gray
     - Floor: Gray
-  - Entry  6: 01 80 05 24 00 0a 04 06 ()
+  - Entry  6: 01 80 05 24 00 0a 04 06 (Long Passage)
     - Texture: Normal walls
     - Ceiling: Dark gray
     - Floor: Gray
@@ -316,71 +318,77 @@ For level 1.4 (Dungeon SE corner) we have the following 12 entries (this aligns 
     - Texture: Normal walls
     - Ceiling: Dark gray
     - Floor: Gray
-  - Entry  8: 01 67 00 04 00 0a 7a c4
-  - Entry  9: 01 86 00 0a 00 06 24 24
-  - Entry 10: 04 74 00 86 c4 ca 98 86
- goblin?
-  - Entry 11: 03 a5 00 34 00 1a 1a 34
- ?dragon
+  - Entry  8: 01 67 00 04 00 0a 7a c4 (Creepy Room)
+    - Texture: Grey walls (0a)
+    - Ceiling: Violet
+    - Floor: Dark Green
+  - Entry  9: 01 86 00 0a 00 06 24 24 (Debris-littered Room)
+    - Texture: Grey walls (06)
+    - Ceiling: Brown
+    - Floor: Brown
+  - Entry 10: 04 74 00 86 c4 ca 98 86 (Large Room)
+    - Texture: Goblin
+    - Ceiling: Bluish
+    - Floor: Darker Bluish
+  - Entry 11: 03 a5 00 34 00 1a 1a 34 (Creepy Room)
+    - Texture: Dragon
+    - Ceiling: Yellow
+    - Floor: Brown
   Fill bytes [00]
 
 For Level 2 we have the following 12 entries: (10 expected)
 
-- Entry  0: 01 80 00 04 00 0a 24 00
-  - Gray walls
-  - Ceiling: Brown
-  - Floor: Black
-- Entry  1: 02 4c 00 0e 7a 86 0e 8e
-  - Crystal caverns
-  - Chilly
-  - Textures could be specified in zone, but different wall codes are also used here
-  - Crystal walls
-  - Ceiling: white
-  - Floor: bluish-white
-- Entry  2: 05 71 00 44 24 1a 04 00
-  - Mausoleum walls
-  - Ceiling: Grey
-  - Floor: Black
-- Entry  3: 01 6d 00 90 72 00 00 00
-  - Dark blue walls
-  - Ceiling: Black
-  - Floor: Black
-- Entry  4: 02 70 00 7a 1a 0e 28 0a
-  - Mirror walls
-  - Ceiling: orangish brown
-  - Floor: light grey
-  - Enemy: Doppleganger
-- Entry  5: 01 9a 00 24 00 0a 04 34
-  - Brown walls
-  - Ceiling: Grey
-  - Floor: Orangish floor
-- Entry  6: 01 78 00 1e c4 f8 92 32
-  - Yellow-ish walls (normal appearance, yellowish coloring)
-  - Ceiling: Dark blue
-  - Floor: Magenta
-- Entry  7: 05 80 00 44 86 1a 34 54
-mausoleum walls?
-  - Adept walls (same as mausoleum, diff colors)
-  - Ceiling: Brown
-  - Floor: Mauve
-- Entry  8: 05 45 00 44 00 28 34 54
-mausoleum walls?
-  - Black adept walls (same as mausoleum, diff colors)
-  -
-  - Salamander, Phoenix
-- Entry  9: 01 89 00 22 00 0a 04 06
-reg walls?
-  - Brown walls
-  - Ceiling: Dk grey
-  - Floor: Lt grey
-- Entry 10: 04 74 00 86 c4 ca 98 86
-level 3? goblin?
-unused??
-- Entry 11: 03 a5 00 34 00 1a 1a 34
-dragon walls?
-unused??
+  - Entry  0: 01 80 00 04 00 0a 24 00
+    - Gray walls
+    - Ceiling: Brown
+    - Floor: Black
+    - Encounters: Salamander, Thief, Zombie
+  - Entry  1: 02 4c 00 0e 7a 86 0e 8e (Crystal Caverns)
+    - Chilly
+    - Uses non-standard wall codes here
+    - Texture: Crystal/Mirror
+    - Ceiling: white
+    - Floor: bluish-white
+  - Entry  2: 05 71 00 44 24 1a 04 00
+    - Mausoleum walls
+    - Ceiling: Grey
+    - Floor: Black
+  - Entry  3: 01 6d 00 90 72 00 00 00
+    - Dark blue walls
+    - Ceiling: Black
+    - Floor: Black
+  - Entry  4: 02 70 00 7a 1a 0e 28 0a (Hall of Mirrors)
+    - Mirror walls
+    - Ceiling: orangish brown
+    - Floor: light grey
+    - Enemy: Doppleganger
+  - Entry  5: 01 9a 00 24 00 0a 04 34 (Arena pit)
+    - Brown walls
+    - Ceiling: Grey
+    - Floor: Orangish floor
+  - Entry  6: 01 78 00 1e c4 f8 92 32 (Musty Room)
+    - Yellow-ish walls (normal appearance, yellowish coloring)
+    - Ceiling: Dark blue
+    - Floor: Magenta
+  - Entry  7: 05 80 00 44 86 1a 34 54 (Hall of the Adept - Blue)
+    - Texture: Adept walls (same as mausoleum, diff colors)
+    - Ceiling: Brown
+    - Floor: Mauve
+  - Entry  8: 05 45 00 44 00 28 34 54 (Hall of the Adept - Black)
+    - Black adept walls (same as mausoleum, diff colors)
+    - Ceiling: Brown
+    - Floor: Mauve
+    - Salamander, Phoenix
+  - Entry  9: 01 89 00 22 00 0a 04 06
+    - Brown walls
+    - Ceiling: Dk grey
+    - Floor: Lt grey
+  - Entry 10: 04 74 00 86 c4 ca 98 86
+  unused??
+  - Entry 11: 03 a5 00 34 00 1a 1a 34
+  unused??
 
-Fill bytes [AA]
+  Fill bytes [AA]
 
 Level 3
 
@@ -656,15 +664,37 @@ Varies depending on the map or the disk?  There appears to be something else use
 Special:
 ===========
 
+0BB 00000
+ +--------- Danger level / Encounter frequency? (if Special & 10011111 ($9F) == 0)
+            ... below are guesses. each bit could also be interpreted separately ...
+            000 00000 = (00) Low?
+            001 00000 = (20) Medium low?
+            010 00000 = (40) Medium high?
+            011 00000 = (60) High?
+
+0?? CCCCC
+      +---- Scenario index (0-31) (if CCCCC != 0)
+
+1AA CCCCC
+ |    +---- Encounter / Treasure / Message / Teleport index (0-31)
+ +--------- 100 = Encounter
+            101 = Treasure
+            110 = Message
+            111 = Teleport
+
+
 - Scenarios/Modules (00-1F) -
   03 (  3) = Fountain (Hit points)
     - Level 1.3 (14, 20)
     - Level 1.3 (13, 21)
     - Level 1.3 (15, 21)
     - Level 1.3 (14, 22)
+  23 (  3) = Fountain (Cures Disease)
+    - Level 2 (25, 15)
+    - Level 2 (24, 16)
+    - The high nibble being non-zero is most-likely a mistake.
   04 (  4) = Entrance to Palace / Entrance to Wilderness
     - Level 1.2 (20, 22) - Entrance to the Palace
-
   05 (  5) = Stairwell leading up / down
     // These are based on a table lookup of the player's current position
     // There are 2 tables of 4-byte entries.
@@ -708,12 +738,14 @@ Special:
     77A1: 0E 16 04 00   - Level 2    [14, 22, N]
     77A5: 10 0C 04 03   - Level 2    [16, 12, W]
   06 (  6) = Bank Vault
-    - Level 1.1 ( 2, 2) - Gram's Gold Exchange
-    - Level 1.3 (30,25) - First City Bank
-  07 (  7) = Goblin King's Palace
-    - Level 1.1 ( 2,14)
+    - Level 1.1 ( 2,  2) - Gram's Gold Exchange
+    - Level 1.3 (30, 25) - First City Bank
+  07 (  7) = Goblin/Troll King's Palace
+    - Level 1.1 ( 2, 14) - Goblin King's Palace
+    - Level 1.4 (24, 25) - Troll King's Palace
   08 (  8) = Acrinimaril's Tomb
     - Level 1.1 (31,27)
+
   0A ( 10) = Chapel
     - Level 1.1 (27,  8)
     - Level 1.1 (28,  8)
@@ -729,22 +761,43 @@ Special:
     - Level 1.2 (12, 30) - Thieves' Guild
     - Level 1.3 ( 2, 27) - Light Wizards Guild
     - Level 1.4 ( 1, 10) - Dark Wizards Guild
+  2C ( 44/12) = Guild
+    - Level 2 (8, 19) -
+    - The high nibble being non-zero is most-likely a mistake.
   0D ( 13) = Damon & Pythias Shoppe
     - Level 1.2 (14,  4)
+
   0F ( 15) = The Retreat
     - Level 1.2 (23,  3)
   10 ( 16) = Oracle
     - Level 1.4 ( 3,  4)
   11 ( 17) = Enchantress
-    -
+    - Level 1.4 (13, 29)
   12 ( 18) = (Level 1) Dungeon Entrance - to City
     - Level 1.2 (18,  3)
-    - Level 1.4 ()
-  12 ( 18) = (Level 3) Dragon's Lair
+    - Level 1.4 (27, 30)
+
+  14 ( 20) = (Level 2) Clothes Horse's Room
+    - Level 2 (26,  8)
+  15 ( 21) = (Level 2) Dwarven Smmithy
+    - Level 2 (16, 7)
+    - Level 2 (18, 7)
+
+  18 ( ) = (Level 3) Dragon's Lair
+    - Level 3 ( 0, 13)-( 3, 15)
 
   1D ( 29) = Der Rathskeller's Bar and Grille
     - Level 1.2 (28,  2)
+
 - Effects (20-7F) -
+
+  20 ( 32) =
+    - Encounters: Phoenix
+
+  40 ( 64) =
+    - Encounters: Pauper
+  4C () =
+    - Level 2 (2, 5)
 
   60 ( 96) = ? Increased encounter frequency ?
 
@@ -765,8 +818,8 @@ Special:
   8C (140) [Level 1.2 (12,19)] = 3 Wraiths
   8D (141) [Level 1.2 ( 9,18)] = 4 Flame Demons
   8E (142) [Level 1.2 ( 9,25)] = 7 Dwarves
-  8F (143) [Level  (, )] =
-  90 (144) [Level  (, )] =
+  8F (143) [Level 2   (17, 1)] = Vampire
+  90 (144) [Level 2   (27, 2)] = Whirlwind
   91 (145) [Level 1.3  (mult)] = Small Dragon (Taurian maze)
     - Level 1.3 (25, 0)
     - Level 1.3 (18, 7)
@@ -776,11 +829,13 @@ Special:
     - Level 1.3 (21, 9)
     - Level 1.3 (18,11)
     - Level 1.3 (19,13)
-  93 (147) [Level  (, )] =
+  93 (147) [Level 2    (mult)] = Doppleganger
+    - Level 2 (28, 5) - Hall of Mirrors
+    - Level 2 (28,12) - Hall of Mirrors
   94 (148) [Level  (, )] =
   95 (149) [Level 1.2 (22, 5)] = 7 Homunculii of The Blue Wizards
   96 (150) [Level 1.2 (26, 7)] = 8 Skeletons
-  97 (151) [Level 1.4 ( 4,25)] =
+  97 (151) [Level 1.4 ( 4,25)] = Phoenix
   98 (152) [Level 1.2 (28, 5)] = Ghost
   99 (153) [Level  (, )] =
   9A (154) [Level  (, )] =
@@ -788,7 +843,7 @@ Special:
   9C (156) [Level  (, )] =
   9D (157) [Level  (, )] =
   9E (158) [Level  (, )] =
-  9F (159) [Level 1.2 ( 7,  9)] = Devourer
+  9F (159) [Level 1.2 ( 7, 9)] = Devourer
 
 
 - Treasure (A0-BF) -
@@ -799,7 +854,7 @@ Special:
   A3 (163) [Level 1.2 (12,18)] = Morgana's Tiara ('You find a dainty little crown.')
   A4 (164) [Level 1.2 ( 9,18)] = Helm of Light ('A helm glowing with runes floats\nin midair before you.')
   A5 (165) [Level 1.2 (10,25)] = Truesilver Coat ('A chain-mail coat gleems with an\nalmost magical lustre.')
-  A6 (166) [Level ()] =
+  A6 (166) [Level 2   (19, 2)] = Cloak of Levitation ('A cloak dances to and fro before you.')
   A7 (167) [Level ()] =
   A8 (168) [Level 1.2 (30, 7)] = Page of Cups (card) ('Sealed in an envelope is a trump card.')
   A9 (169) [Level ()] =
@@ -812,16 +867,16 @@ Special:
   B0 (176) [Level 1.1 (31, 1)] = Whetstone ('There is a small rectangular sharpening stone here.')
   B1 (177) [Level 1.3 ( 9,23)] = Saurian Brandy ('Signs of a great battle between a\nsingle warrior and a dozen or more\nadversaries litter this room.\nClutched tightly to the warrior's\nis a bottle filled with\ngreen liquid.')
   B2 (178) [Level 1.4 (16, 6)] = Blue Pearl Dagger [evil] ('Inscribed on the blade of a dagger\nare the words:\n\n"Fear not The Reaper"')
-  B3 (179) [Level 1.1 (17,15)] = 6 Pack
+  B3 (179) [Level 1.1 (17,15)] = Six Pack ('The decaying remains of an adventurer\nsporting a bush hat and a very nasty\nknife are here. Inscribed on the broken\nblade is the word "G'day".  Lying next\nto him are six tall metal cylinders.')
   B4 (180) [Level ()] =
-  B5 (181) [Level 1.1 ( 6, 1)] = Crossbow [3] ('')
+  B5 (181) [Level 1.1 ( 6, 1)] = Crossbow [3] ('A crossbow of incredibly fine\nmechanical workmanship lies here.')
   B6 (182) [Level 1.3 ( 3,16)] = Amethyst Rod ('A blue-violet quartz rod lies\non a purple dias.')
   B7 (183) [Level 1.4 (27, 3)] = Map Stone ('A note reads:\n{left}{name},\n\n{left}   Congratulations my good {man|woman} on\n{left}getting this far.\n\n{right}A friend')
   B8 (184) [Level ()] =
   B9 (185) [Level 1.1 (11, 1)] = Thunder Quarrels [10] ('There are 10 quarrels in a magnetic clip here.')
   BA (186) [Level 1.1 (11,27)] = Staff of Amber ('There is a long electrum rod here.')
   BB (187) [Level 1.2 ( 6, 6)] = Loadstone ('A curious looking stone fastens itself around your neck.')
-  BC (188) [Level 1.1 (31, 4)] = Golden Apple
+  BC (188) [Level 1.1 (31, 4)] = Golden Apple ('A golden apple rests on a golden\npillow.  Inscribed on the apple\nare the words:\n\n"For the pretty one."')
   BD (189) [Level 1.2 ( 1, 1)] = Gauss Rifle [95] ('There is evidence of small\nweapons fire here.')
   BE (190) [Level 1.2 ( 4, 1)] = Solar suit ('There are some disgusting stains\non the floor and an odd looking\nsilvery quilted vest.')
   BF (191) [Level ()] =
@@ -831,16 +886,18 @@ Special:
   C0 (192) [Level 1.2 (15,  4)] = 'A sign on the door says:\n"Damon & Pythias Shoppe"'
   C1 (193) [Level 1.2 (22,  3)] = 'A sign above the door reads:\n"THE RETREAT"'
   C2 (194) [Level 1.2 (28,  3)] = 'A sign reads:\n"Der Rathskeller Bar & Grille"'
-  C3 (195) [Level ()] = ''
+  C3 (195) [Level 2    (multi)] = 'Carved above the doorway are the words:\n\n"Fine Weapons & Armor"'
+    - Level 2 (15, 7)
+    - Level 2 (19, 7)
   C4 (196) [Level ()] = ''
   C5 (197) [Level ()] = ''
   C6 (198) [Level ()] = ''
-  C7 (199) [Level ()] = ''
+  C7 (199) [Level 1.4 (13, 28)] = 'Glowing letters on the door proclaim:\n\n"Enchantress"'
   C8 (200) [Level 1.3 (11, 10)] = 'Writing scrawled on the ground reads:\n"GO BACK!"'
   C9 (201) [Level 1.3 ( 7,  0)] = 'Scratchings on the wall read:\n"THERE IS NO ESCAPE!"'
   CA (202) [Level 1.3 (16,  9)] = 'A red arrow on the ground points East.'
   CB (203) [Level 1.1 ( 6, 14)] = 'A dirty sign reads:\n"Goblins only!"'
-  CC (204) [Level ()] = ''
+  CC (204) [Level 1.4 (20, 25)] = 'A crooked sign says:\n\n"TROLLS ONLY"'
   CD (205) [Level 1.2 (13, 22)] = 'A plaque reads:\n"Shrine of Monsters"'
   CE (206) [Level 1.3  (multi)] = 'You hear the sound of running water.'
     - Level 1.3 (14, 19)
@@ -848,12 +905,12 @@ Special:
     - Level 1.3 (16, 21)
     - Level 1.3 (14, 23)
   CF (207) [Level 1.3 ( 1, 31)] = 'Glowing letters float in midair:\n"SEEK THE LIGHT"'
-  D0 (208) [Level ()] = ''
+  D0 (208) [Level 2   ( 5,  4)] = 'A note posted on the door reads:\n\n"BEWARE!  THE CAVERNS!"'
   D1 (209) [Level ()] = ''
   D2 (210) [Level 1.1 (27,  7)] = 'A sign above the door says:\n"Welcome to the Chapel. Please come in!"'
   D3 (211) [Level 1.4 ( 1, 31)] = 'Black letters hovering slowly say:\n\n"THE SHADOW WILL HIDE THEE"'
   D4 (212) [Level ()] = ''
-  D5 (213) [Level ()] = ''
+  D5 (213) [Level 2   (28, 14)] = 'On the wall is a painting of\n\na purple pyramid.'
   D6 (214) [Level ()] = ''
   D7 (215) [Level 1.3  (multi)] = 'You hear the crackle of electricity.'
     - Level 1.3 ( 1,18)
@@ -999,7 +1056,28 @@ Teleporters:
 
 Bitmap format:
 
+320x192 max resolution
+
 160 ($a0) x 192 ($c0)
 4 color = 2 bpp
 
 160 * 2 = 320 ($140) bits/scanline = 64 ($40) bytes/scanline
+
+
+- Color 0 - Used for transparency (e.g. arch)
+- Color 1 - Often a lighter color (e.g. grey for stone walls)
+- Color 2 - Often $00 (black)
+- Color 3 - Often a darker color (e.g. brown for edges of walls)
+
+Texture set format:
+  - Each texture set includes:
+    - Three texture sections (Typically wall, door and arch)
+    - Each texture has
+      - A header of 105 bytes
+      - 1296 bytes of image data (5184 pixels)
+        - 2 bits per pixel
+        - This includes 2 side-by-side textures
+          - Entire width is 144px [$90] (36 bytes [$24])
+          - Width of each image is 72px
+          - Height is 36px
+

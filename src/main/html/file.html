@@ -25,8 +25,53 @@
     </div>
 
     <div>
+        <span id="fileName"></span>
+        <span id="fileInfo"></span>
+    </div>
+
+    <div>
         <input type="button" id="saveButton" value="Save"/>
         <textarea id="output" cols="80" rows="10"></textarea>
+    </div>
+
+    <div>
+        <label>Header<input type="text" id="headerBytes" value="33"/></label>
+        <label>Width<input type="text" id="width" value="144"/></label>
+    </div>
+    <div>
+        <select id="paletteSelect">
+            <option value="5e,00,0a,24">L1.1 T1: Default / Well-lighted area</option>
+            <option value="5e,00,08,24">L1.1 T1 Z1: The City's Sewers</option>
+            <option value="5e,0e,7a,54">L1.1 T4 Z2: Goblins' demesne</option>
+            <option value="5e,22,1a,f8">L1.1 T5 Z3: Mausoleum - Acrinimiril's tomb</option>
+            <option value="5e,00,24,0a">L1.1 T1 Z5/Z6: Chapel / Gram's Gold Exchange</option>
+
+            <option value="5e,00,0a,06">L1.3 T1 Z2: Light wizards</option>
+
+            <option value="5e,00,0a,28">L1.4 T1 Z3: Cult Room</option>
+            <option value="5e,00,00,00">L1.4 T1 Z4: Dark Wizards</option>
+            <option value="5e,00,0a,04">L1.4 T1 Z8: Creepy Room</option>
+            <option value="5e,00,06,0a">L1.4 T1 Z9: Debris-littered Room</option>
+            <option value="5e,c4,ca,86">L1.4 T4 Z10: Large Room</option>
+            <option value="5e,00,1a,34">L1.4 T3 Z11: Creepy Room</option>
+
+            <option value="5e,7a,86,0e">L2 T5 Z1: Crystal Caverns</option>
+
+            <option value="5e,1a,0e,7a">L2 T5 Z4: Hall of Mirrors</option>
+            <option value="5e,c4,f8,1e">L2 T5 Z6: Musty Room</option>
+            <option value="5e,86,1a,44">L2 T5 Z7: Hall of the Adept - Blue</option>
+            <option value="5e,00,28,44">L2 T5 Z8: Hall of the Adept - Black</option>
+
+
+        </select>
+
+        <label>Color0<input type="text" id="color0Input" value="5e" width="5"/></label>
+        <label>Color1<input type="text" id="color1Input" value="00" width="5"/></label>
+        <label>Color2<input type="text" id="color2Input" value="0a" width="5"/></label>
+        <label>Color3<input type="text" id="color3Input" value="34" width="5"/></label>
+    </div>
+    <div>
+        <canvas id="imageCanvas" width="320" height="160" style="width:90%; height:30%; padding:10px; border:1px solid red;"></canvas>
     </div>
 
     <script type="module" src="file.js"></script>

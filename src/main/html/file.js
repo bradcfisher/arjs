@@ -8,6 +8,7 @@ const dungeonFileIdVerifyMask = 0xE000;
 const dungeonFileIdVerifyCode = 0x4000;
 const dungeonFileIdSectorMask = 0x03ff;
 
+/** @type {RgbPalette} */
 let palette;
 
 const files = {
@@ -22,12 +23,12 @@ const files = {
         { id: 0x48AE, description: "D2 S1 - Map 4 (Level 2)", type: "map" },
         { id: 0x48D7, description: "D2 S1 - Map 5 (Level 3)", type: "map" },
         { id: 0x4900, description: "D2 S1 - Map 6 (Level 4)", type: "map" },
-        { id: 0x4929, description: "D2 S1 - Picture 1", type: "image" },
-        { id: 0x4955, description: "D2 S1 - Picture 2", type: "image" },
-        { id: 0x4981, description: "D2 S1 - Picture 3", type: "image" },
-        { id: 0x49AD, description: "D2 S1 - Picture 4", type: "image" },
-        { id: 0x49D9, description: "D2 S1 - Picture 5", type: "image" },
-        { id: 0x4A05, description: "D2 S1 - Picture 6", type: "image" },
+        { id: 0x4929, description: "D2 S1 - Texture Set 1 (Normal)", type: "image", width: 144 },
+        { id: 0x4955, description: "D2 S1 - Texture Set 2 (Mirror & Crystal)", type: "image", width: 144 },
+        { id: 0x4981, description: "D2 S1 - Texture Set 3 (Dragon)", type: "image", width: 144 },
+        { id: 0x49AD, description: "D2 S1 - Texture Set 4 (Goblin)", type: "image", width: 144 },
+        { id: 0x49D9, description: "D2 S1 - Texture Set 5 (Mausoleum)", type: "image", width: 144 },
+        { id: 0x4A05, description: "D2 S1 - Texture Set 6 (Alien)", type: "image", width: 144 },
         { id: 0x4A31, description: "D2 S1 - Unknown 1" }
     ],
     "../AR/dungeon/disks/Dungeon22.xfd": [
@@ -77,8 +78,26 @@ const files = {
     ]
 };
 
+/** @type {HTMLSelectElement} */
 const fileSelect = document.getElementById("file");
+/** @type {HTMLInputElement} */
 const loadButton = document.getElementById("loadButton");
+/** @type {HTMLInputElement} */
+const saveButton = document.getElementById("saveButton");
+/** @type {HTMLInputElement} */
+const widthInput = document.getElementById("width");
+/** @type {HTMLInputElement} */
+const headerBytesInput = document.getElementById("headerBytes");
+/** @type {HTMLSelectElement} */
+const paletteSelect = document.getElementById("paletteSelect");
+/** @type {HTMLInputElement} */
+const color0Input = document.getElementById("color0Input");
+/** @type {HTMLInputElement} */
+const color1Input = document.getElementById("color1Input");
+/** @type {HTMLInputElement} */
+const color2Input = document.getElementById("color2Input");
+/** @type {HTMLInputElement} */
+const color3Input = document.getElementById("color3Input");
 
 document.addEventListener("DOMContentLoaded", () => {
     loadPalette("../AR/shared/Atari800Palette-Altirra310NTSC.pal").then((p) => {
@@ -107,8 +126,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
         handleExtractFile(diskName, fileDetails);
     });
+
+    saveButton.addEventListener("click", async (evt) => {
+        const fileName = document.getElementById("fileName").innerText + ".bin";
+
+        // create a new handle
+        const newHandle = await window.showSaveFilePicker({ id: "arjs-extract-file", suggestedName: fileName });
+
+        // create a FileSystemWritableFileStream to write to
+        const writableStream = await newHandle.createWritable();
+
+        // write our file
+        await writableStream.write(getFileData());
+
+        // close the file and write the contents to disk.
+        await writableStream.close();
+    });
+
+    const updateImageOnChange = (evt) => {
+        decodeImage(getFileData());
+    };
+    headerBytesInput.addEventListener("change", updateImageOnChange);
+    widthInput.addEventListener("change", updateImageOnChange);
+
+    const updateNumberInputOnKeydown = (evt) => {
+        const targetInput = evt.target;
+        let changed = false;
+
+        switch (evt.key) {
+        case "ArrowUp":
+            targetInput.value = Number(targetInput.value) + 1;
+            changed = true;
+            break;
+        case "ArrowDown":
+            targetInput.value = Number(targetInput.value) - 1;
+            changed = true;
+            break;
+        }
+
+        if (changed) {
+            targetInput.dispatchEvent(new Event("change"));
+        }
+    };
+
+    headerBytesInput.addEventListener("keydown", updateNumberInputOnKeydown);
+    widthInput.addEventListener("keydown", updateNumberInputOnKeydown);
+
+    paletteSelect.addEventListener("change", (evt) => {
+        const selectedOption = paletteSelect.selectedOptions[0];
+        /** @type {number[]} */
+        const colors = selectedOption.value.split(",");
+        console.log("Applying image palette '" + selectedOption.text + "': ", colors);
+
+        color0Input.value = colors[0];
+        color1Input.value = colors[1];
+        color2Input.value = colors[2];
+        color3Input.value = colors[3];
+
+        updateImageOnChange(evt);
+    });
 });
 
+function formatNumberAsHex(value, digits) {
+    let result = Number(value).toString(16);
+    return '0'.repeat(Math.max(0, digits - result.length)) + result;
+}
 
 /**
  * Decodes a file
@@ -218,7 +300,7 @@ function handleExtractFile(diskName, fileDetails) {
     const diskUrl = Parse.url(diskName);
     console.log("Selected file is on Disk " + diskNumber + " Side " + diskSide + ". Loading disk from " + diskUrl);
 
-    resourceManager.load(diskUrl).then((loaded) => {
+    return resourceManager.load(diskUrl).then((loaded) => {
         let diskData = new Uint8Array(loaded[diskUrl].data);
 
         // check file length for .xfd or .atr file
@@ -235,11 +317,21 @@ function handleExtractFile(diskName, fileDetails) {
 
         const fileData = decodeDungeonFileUsingKey(diskData, fileDetails.id, fileDetails.startSector, fileDetails.length);
 
+        const fileName = document.getElementById("fileName");
+        fileName.innerText = fileDetails.description;
+
+        const fileInfo = document.getElementById("fileInfo");
+        fileInfo.innerText = ` [${fileDetails.type || "binary"}] (${fileData.length} bytes)`;
+
         switch (fileDetails.type) {
         case "image":
+            if (fileDetails.width != null) {
+                widthInput.value = fileDetails.width;
+            }
+
             // TODO: Decode and display image
-            console.log("TODO: Decode and display image");
             outputBase64(fileData);
+            decodeImage(fileData);
             break;
         case "map":
             // TODO: Decode and display map?
@@ -255,6 +347,68 @@ function handleExtractFile(diskName, fileDetails) {
             outputBase64(fileData);
         }
     });
+}
+
+/**
+ *
+ * @returns {Uint8Array}
+ */
+function getFileData() {
+    const outputInput = document.getElementById("output");
+    return Uint8Array.fromBase64(outputInput.value);
+}
+
+/**
+ *
+ * @param {Uint8Array} fileData
+ * @param {byte[]} colors
+ */
+function decodeImage(fileData, colors) {
+    if (colors == null) {
+        colors = [
+            Number.parseInt(color0Input.value, 16),
+            Number.parseInt(color1Input.value, 16),
+            Number.parseInt(color2Input.value, 16),
+            Number.parseInt(color3Input.value, 16)
+        ];
+    }
+
+    /** @type {HTMLCanvasElement} */
+    const imageCanvas = document.getElementById("imageCanvas");
+    const context = imageCanvas.getContext("2d");
+    const imageData = context.createImageData(imageCanvas.width, imageCanvas.height);
+    imageData.data.fill(0);
+    const outWidth = imageData.width;
+
+    const headerBytes = Number(headerBytesInput.value);
+    const width = Number(widthInput.value);
+
+    let x = 0;
+    let y = 0;
+    for (let ofs = headerBytes; ofs < fileData.length; ++ofs) {
+        let byte = fileData[ofs];
+
+        for (let i = 0; i < 4; ++i) {
+            const pxl = (byte & 0xC0) >>> 6;
+            byte = byte << 2;
+
+            const rgb = palette.getRgbForColor(colors[pxl]);
+
+            const imgOfs = (x + y * outWidth) * 4;
+            imageData.data[imgOfs]     = rgb[0];
+            imageData.data[imgOfs + 1] = rgb[1];
+            imageData.data[imgOfs + 2] = rgb[2];
+            imageData.data[imgOfs + 3] = 0xff;
+
+            ++x;
+            if (x == width) {
+                x = 0;
+                ++y;
+            }
+        }
+    }
+
+    context.putImageData(imageData, 0, 0);
 }
 
 class RgbPalette {
