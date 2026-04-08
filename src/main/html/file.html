@@ -20,7 +20,7 @@
     </style>
 
     <div>
-        <select id="file"></select>
+        <select id="fileSelect"></select>
         <input type="button" id="loadButton" value="Load"/>
     </div>
 
@@ -35,10 +35,12 @@
     </div>
 
     <div>
-        <label>Header<input type="text" id="headerBytes" value="33"/></label>
-        <label>Width<input type="text" id="width" value="144"/></label>
+        <label><input type="checkbox" id="decodeImageAsTextureCheckbox"/> Decode as Texture</label> |
+        <label>Offset<input type="text" id="startOffsetInput" value="105" size="5"/></label>
+        <label>Width<input type="text" id="widthInput" value="72" size="5"/></label>
     </div>
     <div>
+        Palette:
         <select id="paletteSelect">
             <option value="5e,00,0a,24">L1.1 T1: Default / Well-lighted area</option>
             <option value="5e,00,08,24">L1.1 T1 Z1: The City's Sewers</option>
@@ -62,16 +64,16 @@
             <option value="5e,86,1a,44">L2 T5 Z7: Hall of the Adept - Blue</option>
             <option value="5e,00,28,44">L2 T5 Z8: Hall of the Adept - Black</option>
 
-
         </select>
-
-        <label>Color0<input type="text" id="color0Input" value="5e" width="5"/></label>
-        <label>Color1<input type="text" id="color1Input" value="00" width="5"/></label>
-        <label>Color2<input type="text" id="color2Input" value="0a" width="5"/></label>
-        <label>Color3<input type="text" id="color3Input" value="34" width="5"/></label>
     </div>
     <div>
-        <canvas id="imageCanvas" width="320" height="160" style="width:90%; height:30%; padding:10px; border:1px solid red;"></canvas>
+        <label>Color0 <input type="text" id="color0Input" value="5e" size="5"/></label>
+        <label>Color1 <input type="text" id="color1Input" value="00" size="5"/></label>
+        <label>Color2 <input type="text" id="color2Input" value="0a" size="5"/></label>
+        <label>Color3 <input type="text" id="color3Input" value="34" size="5"/></label>
+    </div>
+    <div>
+        <canvas id="imageCanvas" width="320" height="225" style="width:90%; height:30%; padding:10px; border:1px solid red;"></canvas>
     </div>
 
     <script type="module" src="file.js"></script>

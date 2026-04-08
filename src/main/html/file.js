@@ -13,81 +13,85 @@ let palette;
 
 const files = {
     "../AR/dungeon/disks/Dungeon11.xfd": [
-        { id: 0x4205, description: "D1 S1 - Portal 2" }
+        { id: 0x4205, description: "D1S1 S - Portal 2" }
     ],
     "../AR/dungeon/disks/Dungeon21.xfd": [
-        { id: 0x480A, description: "D2 S1 - Map 0 (Level 1.1 NW)", type: "map" },
-        { id: 0x4833, description: "D2 S1 - Map 1 (Level 1.2 NW)", type: "map" },
-        { id: 0x485C, description: "D2 S1 - Map 2 (Level 1.3 NW)", type: "map" },
-        { id: 0x4885, description: "D2 S1 - Map 3 (Level 1.4 NW)", type: "map" },
-        { id: 0x48AE, description: "D2 S1 - Map 4 (Level 2)", type: "map" },
-        { id: 0x48D7, description: "D2 S1 - Map 5 (Level 3)", type: "map" },
-        { id: 0x4900, description: "D2 S1 - Map 6 (Level 4)", type: "map" },
-        { id: 0x4929, description: "D2 S1 - Texture Set 1 (Normal)", type: "image", width: 144 },
-        { id: 0x4955, description: "D2 S1 - Texture Set 2 (Mirror & Crystal)", type: "image", width: 144 },
-        { id: 0x4981, description: "D2 S1 - Texture Set 3 (Dragon)", type: "image", width: 144 },
-        { id: 0x49AD, description: "D2 S1 - Texture Set 4 (Goblin)", type: "image", width: 144 },
-        { id: 0x49D9, description: "D2 S1 - Texture Set 5 (Mausoleum)", type: "image", width: 144 },
-        { id: 0x4A05, description: "D2 S1 - Texture Set 6 (Alien)", type: "image", width: 144 },
-        { id: 0x4A31, description: "D2 S1 - Unknown 1" }
+        { id: 0x480A, description: "D2S1 S010 - Map 0 (Level 1.1 NW)", type: "map" },
+        { id: 0x4833, description: "D2S1 S052 - Map 1 (Level 1.2 NW)", type: "map" },
+        { id: 0x485C, description: "D2S1 S093 - Map 2 (Level 1.3 NW)", type: "map" },
+        { id: 0x4885, description: "D2S1 S134 - Map 3 (Level 1.4 NW)", type: "map" },
+        { id: 0x48AE, description: "D2S1 S175 - Map 4 (Level 2)", type: "map" },
+        { id: 0x48D7, description: "D2S1 S216 - Map 5 (Level 3)", type: "map" },
+        { id: 0x4900, description: "D2S1 S257 - Map 6 (Level 4)", type: "map" },
+        { id: 0x4929, description: "D2S1 S298 - Texture Set 1 (Normal)", type: "image", width: 72, hscale: 2 },
+        { id: 0x4955, description: "D2S1 S342 - Texture Set 2 (Mirror & Crystal)", type: "image", width: 72, hscale: 2 },
+        { id: 0x4981, description: "D2S1 S386 - Texture Set 3 (Dragon)", type: "image", width: 72, hscale: 2 },
+        { id: 0x49AD, description: "D2S1 S430 - Texture Set 4 (Goblin)", type: "image", width: 72, hscale: 2 },
+        { id: 0x49D9, description: "D2S1 S474 - Texture Set 5 (Mausoleum)", type: "image", width: 72, hscale: 2 },
+        { id: 0x4A05, description: "D2S1 S518 - Texture Set 6 (Alien)", type: "image", width: 72, hscale: 2 },
+        { id: 0x4A31, description: "D2S1 S562 - Unknown 1 (Executable loaded at $96F0)" },
+        { id: 0x4A7F, description: "D2S1 S640 - Unknown 2 (Executable loaded at $7600)"},
+        { id: 0x4ABC, description: "D2S1 S653 - Unknown 3 (Executable loaded at $7600)"}
     ],
     "../AR/dungeon/disks/Dungeon22.xfd": [
-        { id: 0x4C01, description: "D2 S2 - Fountain" },
-        { id: 0x4C24, description: "D2 S2 - Chapel" },
-        { id: 0x4C5D, description: "D2 S2 - Sphinx" },
-        { id: 0x4C86, description: "D2 S2 - Ferryman" },
-        { id: 0x4CA7, description: "D2 S2 - Clothes Horse" },
-        { id: 0x4CC6, description: "D2 S2 - Dwarven Smithy" },
-        { id: 0x4D07, description: "D2 S2 - Brewery" },
-        { id: 0x4D4C, description: "D2 S2 - Crypt" },
-        { id: 0x4D6D, description: "D2 S2 - Dragon" },
-        { id: 0x4D99, description: "D2 S2 - Death's Door" },
-        { id: 0x4DAF, description: "D2 S2 - Machine Room" },
-        { id: 0x4DEE, description: "D2 S2 - Elevator" },
-        { id: 0x4DFD, description: "D2 S2 - Unknown 2" },
-        { id: 0x4E06, description: "D2 S2 - Unknown 3" }
+        { id: 0x4C01, description: "D2S2 S - Fountain" },
+        { id: 0x4C24, description: "D2S2 S - Chapel" },
+        { id: 0x4C5D, description: "D2S2 S - Sphinx" },
+        { id: 0x4C86, description: "D2S2 S - Ferryman" },
+        { id: 0x4CA7, description: "D2S2 S - Clothes Horse" },
+        { id: 0x4CC6, description: "D2S2 S - Dwarven Smithy" },
+        { id: 0x4D07, description: "D2S2 S - Brewery" },
+        { id: 0x4D4C, description: "D2S2 S - Crypt" },
+        { id: 0x4D6D, description: "D2S2 S - Dragon" },
+        { id: 0x4D99, description: "D2S2 S - Death's Door" },
+        { id: 0x4DAF, description: "D2S2 S - Machine Room" },
+        { id: 0x4DEE, description: "D2S2 S - Elevator" },
+        { id: 0x4DFD, description: "D2S2 S - Unknown 2" },
+        { id: 0x4E06, description: "D2S2 S - Unknown 3" }
     ],
     "../AR/dungeon/disks/Dungeon31.xfd": [
-        { id: 0x5001, description: "D3 S1 - Combat Data" },
-        { id: 0x5072, description: "D3 S1 - Item Data" },
-        { id: 0x50C7, description: "D3 S1 - Inn" },
-        { id: 0x524C, description: "D3 S1 - Encounters Data", startSector: 0xEC, length: 0xB000 },
-        { id: 0x524D, description: "D3 S1 - Dead Song", type: "song" },
-        { id: 0x525C, description: "D3 S1 - Location Names" },
-        { id: 0x529F, description: "D3 S1 - Unknown 4" }
+        { id: 0x5001, description: "D3S1 S - Combat Data" },
+        { id: 0x5072, description: "D3S1 S - Item Data" },
+        { id: 0x50C7, description: "D3S1 S - Inn" },
+        { id: 0x524C, description: "D3S1 S - Encounters Data", startSector: 0xEC, length: 0xB000 },
+        { id: 0x524D, description: "D3S1 S - Dead Song", type: "song" },
+        { id: 0x525C, description: "D3S1 S - Location Names" },
+        { id: 0x529F, description: "D3S1 S - Unknown 4" }
     ],
     "../AR/dungeon/disks/Dungeon32.xfd": [
-        { id: 0x5401, description: "D3 S2 - Grahm's Gold Exchange Vault" },
-        { id: 0x5422, description: "D3 S2 - Goblin Troll" },
-        { id: 0x545B, description: "D3 S2 - Acrinimiril's Tomb" },
-        { id: 0x547E, description: "D3 S2 - Ozob" },
-        { id: 0x54B7, description: "D3 S2 - Guild" },
-        { id: 0x5506, description: "D3 S2 - Shop" },
-        { id: 0x5547, description: "D3 S2 - Oracle" },
-        { id: 0x557E, description: "D3 S2 - Enchantress" },
-        { id: 0x55AF, description: "D3 S2 - Tavern" },
-        { id: 0x55EE, description: "D3 S2 - Picture 7", type: "image" },
-        { id: 0x55FE, description: "D3 S2 - Picture 8", type: "image" },
-        { id: 0x560E, description: "D3 S2 - Tavern Monster Song", type: "song" },
-        { id: 0x5629, description: "D3 S2 - Devourer Song", type: "song" },
-        { id: 0x5636, description: "D3 S2 - Unknown Song", type: "song" },
-        { id: 0x563F, description: "D3 S2 - Tavern Talk" },
-        { id: 0x566E, description: "D3 S2 - Lost Song", type: "song" },
-        { id: 0x568F, description: "D3 S2 - Blackheart Song", type: "song" },
-        { id: 0x56AC, description: "D3 S2 - Unknown 5" }
+        { id: 0x5401, description: "D3S2 S - Grahm's Gold Exchange Vault" },
+        { id: 0x5422, description: "D3S2 S - Goblin Troll" },
+        { id: 0x545B, description: "D3S2 S - Acrinimiril's Tomb" },
+        { id: 0x547E, description: "D3S2 S - Ozob" },
+        { id: 0x54B7, description: "D3S2 S - Guild" },
+        { id: 0x5506, description: "D3S2 S - Shop" },
+        { id: 0x5547, description: "D3S2 S - Oracle" },
+        { id: 0x557E, description: "D3S2 S - Enchantress" },
+        { id: 0x55AF, description: "D3S2 S - Tavern" },
+        { id: 0x55EE, description: "D3S2 S - Picture 7", type: "image" },
+        { id: 0x55FE, description: "D3S2 S - Picture 8", type: "image" },
+        { id: 0x560E, description: "D3S2 S - Tavern Monster Song", type: "song" },
+        { id: 0x5629, description: "D3S2 S - Devourer Song", type: "song" },
+        { id: 0x5636, description: "D3S2 S - Unknown Song", type: "song" },
+        { id: 0x563F, description: "D3S2 S - Tavern Talk" },
+        { id: 0x566E, description: "D3S2 S - Lost Song", type: "song" },
+        { id: 0x568F, description: "D3S2 S - Blackheart Song", type: "song" },
+        { id: 0x56AC, description: "D3S2 S - Unknown 5" }
     ]
 };
 
 /** @type {HTMLSelectElement} */
-const fileSelect = document.getElementById("file");
+const fileSelect = document.getElementById("fileSelect");
 /** @type {HTMLInputElement} */
 const loadButton = document.getElementById("loadButton");
 /** @type {HTMLInputElement} */
 const saveButton = document.getElementById("saveButton");
 /** @type {HTMLInputElement} */
-const widthInput = document.getElementById("width");
+const decodeImageAsTextureCheckbox = document.getElementById("decodeImageAsTextureCheckbox");
 /** @type {HTMLInputElement} */
-const headerBytesInput = document.getElementById("headerBytes");
+const widthInput = document.getElementById("widthInput");
+/** @type {HTMLInputElement} */
+const startOffsetInput = document.getElementById("startOffsetInput");
 /** @type {HTMLSelectElement} */
 const paletteSelect = document.getElementById("paletteSelect");
 /** @type {HTMLInputElement} */
@@ -146,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const updateImageOnChange = (evt) => {
         decodeImage(getFileData());
     };
-    headerBytesInput.addEventListener("change", updateImageOnChange);
+    startOffsetInput.addEventListener("change", updateImageOnChange);
     widthInput.addEventListener("change", updateImageOnChange);
 
     const updateNumberInputOnKeydown = (evt) => {
@@ -169,7 +173,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    headerBytesInput.addEventListener("keydown", updateNumberInputOnKeydown);
+    decodeImageAsTextureCheckbox.addEventListener("change", (evt) => {
+        let labelColor = "black";
+        if (decodeImageAsTextureCheckbox.checked) {
+            startOffsetInput.disabled = true;
+            widthInput.disabled = true;
+            labelColor = "gray";
+        } else {
+            startOffsetInput.disabled = false;
+            widthInput.disabled = false;
+        }
+        startOffsetInput.labels.forEach((label) => {
+            label.style.color = labelColor;
+        });
+        widthInput.labels.forEach((label) => {
+            label.style.color = labelColor;
+        });
+
+        updateImageOnChange(evt);
+    });
+
+    startOffsetInput.addEventListener("keydown", updateNumberInputOnKeydown);
     widthInput.addEventListener("keydown", updateNumberInputOnKeydown);
 
     paletteSelect.addEventListener("change", (evt) => {
@@ -185,6 +209,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         updateImageOnChange(evt);
     });
+
+    color0Input.addEventListener("change", updateImageOnChange);
+    color1Input.addEventListener("change", updateImageOnChange);
+    color2Input.addEventListener("change", updateImageOnChange);
+    color3Input.addEventListener("change", updateImageOnChange);
 });
 
 function formatNumberAsHex(value, digits) {
@@ -205,7 +234,7 @@ function formatNumberAsHex(value, digits) {
 function decodeDungeonFile(diskBuffer, startSector, keySector, length) {
     console.log("Decoding file: startSector=" + startSector + " keySector=" + keySector + " length=" + length);
     const ofs = ((startSector - 1) * 128);
-    const okey = ((keySector - 1) * 128);
+    const keyOfs = ((keySector - 1) * 128);
 
     const decodedBytes = new Uint8Array(length);
 
@@ -214,13 +243,14 @@ function decodeDungeonFile(diskBuffer, startSector, keySector, length) {
 
         let d = diskBuffer[ofs + i];
 
+        // Rotate right 1 bit
         if ((d & 1) == 1) {
             d = (d >>> 1) | 0x80;
         } else {
             d = d >>> 1;
         }
 
-        d = d ^ (0xff & diskBuffer[okey + j]);
+        d = d ^ diskBuffer[keyOfs + j];
 
         decodedBytes[i] = (d & 0xff);
     }
@@ -358,58 +388,114 @@ function getFileData() {
     return Uint8Array.fromBase64(outputInput.value);
 }
 
-/**
- *
- * @param {Uint8Array} fileData
- * @param {byte[]} colors
- */
-function decodeImage(fileData, colors) {
-    if (colors == null) {
-        colors = [
-            Number.parseInt(color0Input.value, 16),
-            Number.parseInt(color1Input.value, 16),
-            Number.parseInt(color2Input.value, 16),
-            Number.parseInt(color3Input.value, 16)
-        ];
-    }
-
+function decodeImage(fileData) {
     /** @type {HTMLCanvasElement} */
     const imageCanvas = document.getElementById("imageCanvas");
     const context = imageCanvas.getContext("2d");
     const imageData = context.createImageData(imageCanvas.width, imageCanvas.height);
     imageData.data.fill(0);
-    const outWidth = imageData.width;
 
-    const headerBytes = Number(headerBytesInput.value);
-    const width = Number(widthInput.value);
+    const colors = getColors();
 
-    let x = 0;
-    let y = 0;
-    for (let ofs = headerBytes; ofs < fileData.length; ++ofs) {
-        let byte = fileData[ofs];
-
-        for (let i = 0; i < 4; ++i) {
-            const pxl = (byte & 0xC0) >>> 6;
-            byte = byte << 2;
-
-            const rgb = palette.getRgbForColor(colors[pxl]);
-
-            const imgOfs = (x + y * outWidth) * 4;
-            imageData.data[imgOfs]     = rgb[0];
-            imageData.data[imgOfs + 1] = rgb[1];
-            imageData.data[imgOfs + 2] = rgb[2];
-            imageData.data[imgOfs + 3] = 0xff;
-
-            ++x;
-            if (x == width) {
-                x = 0;
-                ++y;
-            }
-        }
+    if (decodeImageAsTextureCheckbox.checked) {
+        decodeTextureSet(imageData, colors, fileData);
+    } else {
+        decodeImageData(imageData, 0, 0, colors, fileData, Number(startOffsetInput.value), Number(widthInput.value));
     }
 
     context.putImageData(imageData, 0, 0);
 }
+
+/**
+ *
+ * @param {ImageData} imageData destination ImageData to write the decoded image into
+ * @param {[color0: number, color1: number, color2: number, color3: number]} colors
+ * @param {Uint8Array} fileData data containing the texture image to decode
+ */
+function decodeTextureSet(imageData, colors, fileData) {
+    decodeTextureMipMaps(imageData, 0,   0, colors, fileData,  105);
+    decodeTextureMipMaps(imageData, 0,  75, colors, fileData, 1887);
+    decodeTextureMipMaps(imageData, 0, 150, colors, fileData, 3669);
+}
+
+function getColors() {
+    return [
+        Number.parseInt(color0Input.value, 16),
+        Number.parseInt(color1Input.value, 16),
+        Number.parseInt(color2Input.value, 16),
+        Number.parseInt(color3Input.value, 16)
+    ];
+}
+
+/**
+ * @param {ImageData} imageData destination ImageData to write the decoded image into
+ * @param {number} xOffset destination X position for top-left corner of decoded image
+ * @param {number} yOffset destination Y position for top-left corner of decoded image
+ * @param {[color0: number, color1: number, color2: number, color3: number]} colors
+ * @param {Uint8Array} fileData data containing the texture image to decode
+ * @param {number} startOffset the starting byte offset of the image data
+ */
+function decodeTextureMipMaps(imageData, xOffset, yOffset, colors, fileData, startOffset) {
+    decodeImageData(imageData, xOffset,       yOffset,      colors, fileData, startOffset,        72, 72, 2);
+    decodeImageData(imageData, xOffset + 150, yOffset,      colors, fileData, startOffset + 1296, 36, 36, 2);
+    decodeImageData(imageData, xOffset + 150, yOffset + 40, colors, fileData, startOffset + 1620, 18, 18, 2);
+}
+
+/**
+ *
+ * @param {ImageData} imageData destination ImageData to write the decoded image into
+ * @param {number} xOffset destination X position for top-left corner of decoded image
+ * @param {number} yOffset destination Y position for top-left corner of decoded image
+ * @param {[color0: number, color1: number, color2: number, color3: number]} colors
+ * @param {Uint8Array} fileData data containing the texture image to decode
+ * @param {number} startOffset the starting byte offset of the image data
+ * @param {number} width width of the image in pixels.
+ * @param {number=} height height of the image in pixel rows. Default is unlimited if not provided (e.g. decode to end of buffer)
+ * @param {number=} hscale integer horizontal scaling factor. Default is 1 if not provided
+ */
+function decodeImageData(
+    imageData, xOffset, yOffset, colors,
+    fileData, startOffset, width, height = Number.MAX_SAFE_INTEGER,
+    hscale = 1
+) {
+    const byteWidth = Math.ceil(width / 4);
+    width *= hscale;
+
+    colors = colors.map((color) => palette.getRgbForColor(color));
+
+    const outWidth = imageData.width;
+
+    let x = 0;
+    let y = 0;
+    for (let ofs = startOffset; y < height && ofs < fileData.length; ++ofs) {
+        let byte = fileData[ofs];
+
+        // Render each pixel encoded in this byte
+        for (let i = 0; i < 4; ++i) {
+            const pxl = (byte & 0xC0) >>> 6;
+            byte = byte << 2;
+
+            const rgb = colors[pxl];
+
+            for (let s = 0; s < hscale; ++s) {
+                const imgOfs = (xOffset + x + (yOffset + y) * outWidth) * 4;
+                imageData.data[imgOfs]     = rgb[0];
+                imageData.data[imgOfs + 1] = rgb[1];
+                imageData.data[imgOfs + 2] = rgb[2];
+                imageData.data[imgOfs + 3] = 0xff;
+                ++x;
+            }
+
+            if (x == width) {
+                x = 0;
+                ++y;
+                // Reached edge of image, break containing loop to skip remaining pixels in current byte
+                break;
+            }
+        }
+    }
+}
+
 
 class RgbPalette {
     #buffer;
@@ -417,7 +503,7 @@ class RgbPalette {
     constructor(buffer) {
         this.#buffer = new Uint8Array(buffer);
         if (this.#buffer.length != 256 * 3) {
-            throw new Error("Pallette data must be exactly " + (256 * 3) +" bytes, got " + this.#buffer.length);
+            throw new Error("Palette data must be exactly " + (256 * 3) +" bytes, got " + this.#buffer.length);
         }
     }
 

@@ -26,11 +26,13 @@
 049A DISP_HP_VAL            ; Position in display buffer to write current HP (text - 5 chars, left justified)
 04A1 DISP_LOC_DESC          ; Position in display buffer to write location description (text - 40 chars, left justified)
 04C9 DISP_SOMETHING_HERE    ; Position in display buffer to write "There is something here." (text - 40 chars, left justified)
+
 0685 DISP_FOOD_PKT_VAL      ; Position in display buffer to write number of food packets (text - 3 chars, left justified)
 0692 DISP_TORCH_VAL         ; Position in display buffer to write number of toches (text - 3 chars, left justified)
 06A1 DISP_WATER_VAL         ; Position in display buffer to write number of water flasks (text - 3 chars, left justified)
 06EC DISP_MAP_LEVEL         ; Position in display buffer to write current map level (text - 1 char)
 068C DISP_DISEASED          ; Position in display buffer to write "Diseased!" (text - 12 chars, right justified)
+06F8 DISP_WEARY             ; Position in display buffer to write "Weary" (text - 12 chars, left justified)
 073C DISP_TEMP              ; Position in display buffer to write "Chilly" (text - 12 chars, right justified)
 0756 DISP_CURSED            ; Position in display buffer to write "Cursed!" (text - 12 chars, center justified)
 
@@ -107,6 +109,8 @@
 18BE WSYNC_COLBK_SET_18BE   ; Value assigned to WSYNC and COLBK during display rendering
 18BF COLPF3_SET_18BF        ; Value assigned to COLPF3 during display rendering
 
+18C1 UNK_TBL_18C1           ; Indexed lookup table
+
 1909 UNK_BYTE_1909
 190B UNK_BYTE_190B
 190C UNK_BYTE_190C
@@ -130,11 +134,18 @@
 
 1956 UNK_BYTE_COUNTER       ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
                             ; Decremented
+1958 UNK_BYTE_1958          ; Assigned to $ff if $1959 == 2
+1959 UNK_BYTE_1959          ; Compared to #$02, if it is 2, then $ff is loaded into $1958
 195A TELEPORT_INDEX         ; Holds teleport number parameter value used by DO_TELEPORT_PLAYER
 
-195F UNK_BYTE_195F
-1960 UNK_BYTE_1960
-196A UNK_BYTE_196A
+195D UNK_BYTE_195D          ;
+
+195F UNK_BYTE_195F          ;
+1960 UNK_BYTE_1960          ;
+
+1968 UNK_BYTE_1968          ; Value compared to 1
+
+196A UNK_BYTE_196A          ;
 
 1974 UNK_BYTE_1974
 1975 UNK_BYTE_1975          ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
@@ -275,12 +286,14 @@
 637E CHR_SPD_PENALTY3       ; Third penalty to SPD value
 637F CHR_SPD_PENALTY4       ; Fourth penalty to SPD value
 6380 CHR_SPD_UNKNOWN
+
 6383 CHR_MOVE_SPEED         ; Player movement speed (read from $445F + CHR_SPD_EFFECTIVE/16)
                             ; Also affected by CHR_STOMACH?? and CHR_BURDEN??
 
 6385 CHR_ALIGN
 6386 CHR_MOOD
 638E CHR_BYTE_638E
+6390 CHR_LIT_TORCH_FLAG     ; Used when rendering to determine light level
 6391 CHR_DISEASE
 6392 CHR_POISON
 6393 CHR_CURSE
@@ -361,7 +374,24 @@ AA19 BEGIN_ENCOUNTER        ; Sub called at the beginning of an encounter
 9280 WAIT_FOR_VBLK_C        ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/B)
 9283 VBLK_WAIT_LOOP_C
 
-; Start of map data
+; Location where textures are loaded into memory (5392 bytes [$1510])
+96F0 TEX_HEADERS            ; [$0000] Texture set headers (33 bytes)
+9711 TEX_UNKNOWN_0          ; [$0021] Unknown 72 bytes
+9759 TEX_FULL_1             ; [$0069] First full-size texture image (72x72, 2bpp, 1296 bytes)
+9C69 TEX_HALF_1             ; [$0579] First half-size texture image (36x36, 2bpp, 324 bytes)
+9DAD TEX_QUARTER_1          ; [$06BD] First quarter-size texture image (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+9E07 TEX_UNKNOWN_1          ; [$0717] Unknown 72 bytes
+9E4F TEX_FULL_2             ; [$075F] Second full-size texture image (72x72, 2bpp, 1296 bytes)
+A35F TEX_HALF_2             ; [$0C6F] Second half-size texture image (36x36, 2bpp, 324 bytes)
+A4A3 TEX_QUARTER_2          ; [$0DB3] Second quarter-size texture image (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+A4FD TEX_UNKNOWN_2          ; [$0E0D] Unknown 72 bytes
+A545 TEX_FULL_3             ; [$0E55] Third full-size texture image (72x72, 2bpp, 1296 bytes)
+AA55 TEX_HALF_3             ; [$1365] Third half-size texture image (36x36, 2bpp, 324 bytes)
+AB99 TEX_QUARTER_3          ; [$14A9] Third quarter-size texture image
+                            ; (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+ABF3 TEX_FILLER             ; [$1503] Possible filler (13 bytes)
+
+; Start of map data (5120 bytes [$1400])
 ac00 MAP_NUMBER             ; Number/ID of the loaded map
 ac01 MAP_HEADER_RTCLOK0     ; Value assigned to RTCLOK0 when loading the map
 ac02 MAP_HEADER_RTCLOK1     ; Value assigned to RTCLOK1 when loading the map
@@ -374,15 +404,16 @@ AF03 MAP_ZONERGN_Y2         ; Y2 coordinate of zone region
 AF04 MAP_ZONERGN_X1         ; X1 coordinate of zone region
 AF04 MAP_ZONERGN_REF        ; Zone definition ID the region applies to
 ; Table of zone definitions (8 bytes per entry; entry 0 is default and not ref from zone regions)
-af7e MAP_ZONEDEF_A          ; Zone definition byte A
+af7e MAP_ZONEDEF_TEXTURE    ; Texture set ID
 af7f MAP_ZONEDEF_B          ; Zone definition byte B
-af80 MAP_ZONEDEF_C          ; Zone definition byte C
-af81 MAP_ZONEDEF_D          ; Zone definition byte D
-af82 MAP_ZONEDEF_E          ; Zone definition byte E
-af83 MAP_ZONEDEF_F          ; Zone definition byte F
-af84 MAP_ZONEDEF_G          ; Zone definition byte G
-af85 MAP_ZONEDEF_H          ; Zone definition byte H
-b000 MAP_WALL_E_N
-b001 MAP_WALL_W_S
-b002 MAP_LOC_DESCR
-b003 MAP_SPECIAL
+af80 MAP_ZONEDEF_FLAGS      ; Bitfield incl. light level bit
+; For color details see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
+af81 MAP_ZONEDEF_WALL_CLR1  ; Wall color #1
+af82 MAP_ZONEDEF_WALL_CLR2  ; Wall color #2
+af83 MAP_ZONEDEF_WALL_CLR3  ; Wall color #3
+af84 MAP_ZONEDEF_CLNG_CLR   ; Ceiling color
+af85 MAP_ZONEDEF_FLR_CLR    ; Floor color
+b000 MAP_WALL_E_N           ; First map cell E/N wall byte (high nibble = East; low nibble = North)
+b001 MAP_WALL_W_S           ; First map cell W/S wall byte (High nibble = West; low nibble = South)
+b002 MAP_LOC_DESCR          ; First map cell description index byte
+b003 MAP_SPECIAL            ; First map cell special code byte

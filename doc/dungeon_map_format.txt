@@ -159,19 +159,21 @@ Zone refs from Level 2 - 13 zone refs defined (max ref 9)
   - Size byte: 0c (12)
   - Entry  1: 04 0d 0c 06 01 [ 4 13 12  6  1] -> ( 6,  4)-(13, 12) ref 1 (Crystal Caverns)
   - Entry  2: 0c 09 0f 06 01 [12  9 15  6  1] -> ( 6, 12)-( 9, 15) ref 1 (Crystal Caverns)
-  - Entry  3: 14 20 20 11 02 [20 32 32 17  2] -> (17, 20)-(32, 32) ref 2 ()
-  - Entry  4: 19 11 20 0d 02 [25 17 32 13  2] -> (13, 25)-(17, 32) ref 2 ()
-  - Entry  5: 15 0a 1d 02 03 [21 10 29  2  3] -> ( 2, 21)-(10, 29) ref 3 ()
-  - Entry  6: 15 0c 17 0a 03 [21 12 23 10  3] -> (10, 21)-(12, 23) ref 3 ()
-  - Entry  7: 1d 09 1f 03 03 [29  9 31  3  3] -> ( 3, 29)-( 9, 31) ref 3 ()
+  - Entry  3: 14 20 20 11 02 [20 32 32 17  2] -> (17, 20)-(32, 32) ref 2 (Undead Regions)
+  - Entry  4: 19 11 20 0d 02 [25 17 32 13  2] -> (13, 25)-(17, 32) ref 2 (Undead Regions)
+  - Entry  5: 15 0a 1d 02 03 [21 10 29  2  3] -> ( 2, 21)-(10, 29) ref 3 (Mordred's Maze)
+  - Entry  6: 15 0c 17 0a 03 [21 12 23 10  3] -> (10, 21)-(12, 23) ref 3 (Mordred's Maze)
+  - Entry  7: 1d 09 1f 03 03 [29  9 31  3  3] -> ( 3, 29)-( 9, 31) ref 3 (Mordred's Maze)
   - Entry  8: 05 1e 0d 18 04 [ 5 30 13 24  4] -> (24,  5)-(30, 13) ref 4 (Hall of Mirrors)
   - Entry  9: 00 09 01 04 05 [ 0  9  1  4  5] -> ( 4,  0)-( 9,  1) ref 5 (Arena pit)
   - Entry 10: 0a 05 0c 03 06 [10  5 12  3  6] -> ( 3, 10)-( 5, 12) ref 6 (Musty Room)
   - Entry 11: 0f 1f 11 1b 07 [15 31 17 27  7] -> (27, 15)-(31, 17) ref 7 (Hall of the Adept - Blue)
   - Entry 12: 0e 1d 0f 1c 08 [14 29 15 28  8] -> (28, 14)-(29, 15) ref 8 (Hall of the Adept - Black)
-  - Entry 13: 11 0e 15 05 09 [17 14 21  5  9] -> ( 5, 17)-(14, 21) ref 9 ()
+  - Entry 13: 11 0e 15 05 09 [17 14 21  5  9] -> ( 5, 17)-(14, 21) ref 9 (Mercenaries' Guild)
 
 Zone refs from Level 3 -
+
+
 
 ---
 
@@ -342,18 +344,18 @@ For Level 2 we have the following 12 entries: (10 expected)
     - Gray walls
     - Ceiling: Brown
     - Floor: Black
-    - Encounters: Salamander, Thief, Zombie
+    - Encounters: Salamander, Thief, Zombie, Vampire, Whirlwind, Great Naga, Nobleman
   - Entry  1: 02 4c 00 0e 7a 86 0e 8e (Crystal Caverns)
     - Chilly
     - Uses non-standard wall codes here
     - Texture: Crystal/Mirror
     - Ceiling: white
     - Floor: bluish-white
-  - Entry  2: 05 71 00 44 24 1a 04 00
+  - Entry  2: 05 71 00 44 24 1a 04 00 (Undead Regions)
     - Mausoleum walls
     - Ceiling: Grey
     - Floor: Black
-  - Entry  3: 01 6d 00 90 72 00 00 00
+  - Entry  3: 01 6d 00 90 72 00 00 00 (Mordred's Maze)
     - Dark blue walls
     - Ceiling: Black
     - Floor: Black
@@ -379,7 +381,7 @@ For Level 2 we have the following 12 entries: (10 expected)
     - Ceiling: Brown
     - Floor: Mauve
     - Salamander, Phoenix
-  - Entry  9: 01 89 00 22 00 0a 04 06
+  - Entry  9: 01 89 00 22 00 0a 04 06 (Mercenaries' Guild)
     - Brown walls
     - Ceiling: Dk grey
     - Floor: Lt grey
@@ -392,32 +394,32 @@ For Level 2 we have the following 12 entries: (10 expected)
 
 Level 3
 
-- Entry  0: 04 80 00 54 86 06 04 00
+- Entry  0: 04 80 00 54 86 06 04 00 ("default")
   - Texture: Level 3 walls
   - Ceiling: Grey
   - Floor: Black
-- Entry  1: 01 F5 00 24 00 0A 34 28
+- Entry  1: 01 F5 00 24 00 0A 34 28 ()
   - Texture: Normal walls
   - Ceiling: Yellow-ish/Green-ish
   - Floor: Redd-ish/Brown-ish
-- Entry  2: 01 80 02 24 00 0A 06 02
-  - Texture: Normal walls (byte 3? (24)) or combine with byte 0 (01) texture 01, color 24?
+- Entry  2: 01 80 02 24 00 0A 06 02 (The Gauntlet)
+  - Texture: Normal walls
   - Ceiling: Dark Grey
   - Floor: Light Grey
-- Entry  3: 03 F5 00 34 00 1A 34 02
-  - Texture: Dragon walls (byte 3? 34?)
+- Entry  3: 03 F5 00 34 00 1A 34 02 ()
+  - Texture: Dragon walls
   - Ceiling: Dark orange
   - Floor: Dark grey
-- Entry  4: 01 64 00 0A 00 04 0E 24
-  - Texture: Grey walls (byte 3? 0A?)
+- Entry  4: 01 64 00 0A 00 04 0E 24 ()
+  - Texture: Grey walls
   - Ceiling: Off-white
   - Floor: Brown
-- Entry  5: 01 86 00 24 00 0A 24 C4
-  - Texture: Normal walls (byte 3? 24?)
+- Entry  5: 01 86 00 24 00 0A 24 C4 ()
+  - Texture: Normal walls
   - Ceiling: Brown
   - Floor: Dark green
-- Entry  6: 01 87 00 24 00 0A 7A 7A
-  - Texture: Normal walls (byte 3? 24?)
+- Entry  6: 01 87 00 24 00 0A 7A 7A ()
+  - Texture: Normal walls
   - Ceiling: Violet
   - Floor: Violet
 - Entry  7: 05 80 00 44 86 1A 34 54
@@ -548,26 +550,17 @@ sub_$7eb1:
 
 ----
 
-// Give yourself 16 torches...
-eb $63BD $0f
-// Give yourself a compass
-eb $63C0 $01
-// Give yourself some gold
-eb $63B1 $00 $ff
-// Set max hp / hp to 255
-eb $6345 $00 $ff
-eb $6347 $00 $ff
 
-// set breakpoint for reads of any of the bytes in the zone data
+// Altirra: set breakpoint for reads of any of the bytes in the zone data
   ba r $194b L9
 
 0: $194b - Texture-set to load
       01 = Typical wall
-      02 = Mirror (pri) / Crystal Cavern (alt)
-      03 = Dragon?
-      04 = Goblin?
+      02 = Mirror (13) / Crystal Cavern (alt)
+      03 = Dragon
+      04 = Goblin
       05 = Mausoleum/adept
-      ??
+      06 = Alien
 1: $194c - byte?
   - ??
 
@@ -598,15 +591,11 @@ eb $6347 $00 $ff
 For color codes see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
 
 
-Per Copilot (arguably unreliable):
-  Zones in The Dungeon were not just spatial partitions — they were behavioral regions that controlled:
-  - Encounter tables
-  - Ambient messages
-  - Lighting rules
-  - Environmental hazards
-  - Music cues
-  - Special scripts (e.g., teleporters, alignment checks, faction reactions)
-
+Some additional items which may be encoded in a zone definition:
+  - Environmental conditions - Cold/hot
+  - Music cues?
+  - Special scripts?
+  - Encounter tables?
 
 
 ---
@@ -633,8 +622,8 @@ Walls are encoded in the first 2 bytes (A & B)
    3 (0011 / 0x3) = Regular Door
    4 (0100 / 0x4) = Regular Door (alt)
    5 (0101 / 0x5) = Secret Door (~)
-   5 (0110 / 0x6) = Secret Door (~) (alt)
-   5 (0111 / 0x7) = Secret Door (~) (alt)
+   6 (0110 / 0x6) = Secret Door (~) (alt)
+   7 (0111 / 0x7) = Secret Door (~) (alt)
    8 (1000 / 0x8) = Locked Door (L)
    9 (1001 / 0x9) = Bolted Door (X)
   10 (1010 / 0xa) = Enchanted Door (O)
@@ -755,14 +744,17 @@ Special:
     - Level 1.2 (27, 27)
     - Level 1.2 (28, 27)
   0C ( 12) = Guild ( Wizards of Chaos Guild, Wizards of Law Guild, Wizards of Order Guild, Wizards of Light Guild, Wizards of Darkness Guild )
-    - Level 1.2 (18,  4) - Guild of Chaos
+    - Level 1.2 (18,  4) - Guild of Chaos [evil]
     - Level 1.2 (26, 14) - Guild of Order
     - Level 1.2 (30, 14) - Wizards of Law Guild
-    - Level 1.2 (12, 30) - Thieves' Guild
+    - Level 1.2 (12, 30) - Thieves' Guild [evil]
     - Level 1.3 ( 2, 27) - Light Wizards Guild
-    - Level 1.4 ( 1, 10) - Dark Wizards Guild
+    - Level 1.4 ( 1, 10) - Dark Wizards Guild [evil]
   2C ( 44/12) = Guild
-    - Level 2 (8, 19) -
+    - Level 2   ( 8, 19) - Mercenaries' Guild [evil]
+    - The high nibble being non-zero is most-likely a mistake.
+  4C ( 76/12) = Guild
+    - Level 2   ( 2 , 5) -
     - The high nibble being non-zero is most-likely a mistake.
   0D ( 13) = Damon & Pythias Shoppe
     - Level 1.2 (14,  4)
@@ -776,13 +768,20 @@ Special:
   12 ( 18) = (Level 1) Dungeon Entrance - to City
     - Level 1.2 (18,  3)
     - Level 1.4 (27, 30)
-
+  13 ( 19) = (Level 2) The Ferryman
+    - Level 2 (28, 19)
   14 ( 20) = (Level 2) Clothes Horse's Room
     - Level 2 (26,  8)
   15 ( 21) = (Level 2) Dwarven Smmithy
-    - Level 2 (16, 7)
-    - Level 2 (18, 7)
-
+    - Level 2 (16,  7)
+    - Level 2 (18,  7)
+  16 ( 22) = (Level 2) Lucky's Potion Brewery
+    - Level 2 ( 7, 25)
+  57 ( 87/17) = (Level 2) Undead King's Palace
+    - Level 2 (13, 26)
+    - Level 2 (14, 26)
+    - Level 2 (14, 27)
+    - The high nibble being non-zero is most-likely a mistake.
   18 ( ) = (Level 3) Dragon's Lair
     - Level 3 ( 0, 13)-( 3, 15)
 
@@ -796,20 +795,18 @@ Special:
 
   40 ( 64) =
     - Encounters: Pauper
-  4C () =
-    - Level 2 (2, 5)
 
   60 ( 96) = ? Increased encounter frequency ?
 
 - Encounters (80-9F) -
 
-  80 (128) [Level  (, )] =
-  81 (129) [Level  (, )] =
-  82 (130) [Level  (, )] =
-  83 (131) [Level  (, )] =
-  84 (132) [Level  (, )] =
-  85 (133) [Level  (, )] =
-  86 (134) [Level  (, )] =
+  80 (128) [Level 3   (21,21)] = Undead Knight
+  81 (129) [Level 3   (19,21)] = Undead Knight
+  82 (130) [Level 3   (17,21)] = Undead Knight
+  83 (131) [Level 3   (17,23)] = Undead Knight
+  84 (132) [Level 3   (17,25)] = Undead Knight
+  85 (133) [Level 3   (15,25)] = Undead Knight
+  86 (134) [Level 3   (13,25)] = Undead Knight
   87 (135) [Level  (, )] =
   88 (136) [Level 1.2 (19, 4)] = Doppleganger
   89 (137) [Level 1.2 (15,25)] = Lich
@@ -858,7 +855,7 @@ Special:
   A7 (167) [Level ()] =
   A8 (168) [Level 1.2 (30, 7)] = Page of Cups (card) ('Sealed in an envelope is a trump card.')
   A9 (169) [Level ()] =
-  AA (170) [Level ()] =
+  AA (170) [Level 2   ( 0,17)] = Robin's Hood, Cheap Robe ('There is a dark cowl here.')
   AB (171) [Level ()] =
   AC (172) [Level ()] =
   AD (173) [Level ()] =
@@ -889,7 +886,7 @@ Special:
   C3 (195) [Level 2    (multi)] = 'Carved above the doorway are the words:\n\n"Fine Weapons & Armor"'
     - Level 2 (15, 7)
     - Level 2 (19, 7)
-  C4 (196) [Level ()] = ''
+  C4 (196) [Level 2   ( 7, 24)] = 'An arrow painted on the floor\n\npoints South.'
   C5 (197) [Level ()] = ''
   C6 (198) [Level ()] = ''
   C7 (199) [Level 1.4 (13, 28)] = 'Glowing letters on the door proclaim:\n\n"Enchantress"'
@@ -911,7 +908,7 @@ Special:
   D3 (211) [Level 1.4 ( 1, 31)] = 'Black letters hovering slowly say:\n\n"THE SHADOW WILL HIDE THEE"'
   D4 (212) [Level ()] = ''
   D5 (213) [Level 2   (28, 14)] = 'On the wall is a painting of\n\na purple pyramid.'
-  D6 (214) [Level ()] = ''
+  D6 (214) [Level 2   (28, 18)] = 'A skull hangs from the ceiling\n\nabove the door.'
   D7 (215) [Level 1.3  (multi)] = 'You hear the crackle of electricity.'
     - Level 1.3 ( 1,18)
     - Level 1.3 ( 1,19)
@@ -1063,6 +1060,9 @@ Bitmap format:
 
 160 * 2 = 320 ($140) bits/scanline = 64 ($40) bytes/scanline
 
+"Full size" texture at closest in-game is approx 143 x 70
+
+--
 
 - Color 0 - Used for transparency (e.g. arch)
 - Color 1 - Often a lighter color (e.g. grey for stone walls)
@@ -1070,14 +1070,60 @@ Bitmap format:
 - Color 3 - Often a darker color (e.g. brown for edges of walls)
 
 Texture set format:
-  - Each texture set includes:
-    - Three texture sections (Typically wall, door and arch)
-    - Each texture has
-      - A header of 105 bytes
-      - 1296 bytes of image data (5184 pixels)
-        - 2 bits per pixel
-        - This includes 2 side-by-side textures
-          - Entire width is 144px [$90] (36 bytes [$24])
-          - Width of each image is 72px
-          - Height is 36px
+  - Each texture set consists of 5392 bytes [$1510] containing:
+    - A header
+    - Three texture sections (Typically wall, door and arch, though order can vary - wall, arch, door is also common)
+      - Each texture has
+        - A 72 byte lead-in - use currently unknown, but possibly related to the rows/columns of the images
+        - A full-size image (72x72)
+        - A half-size image (36x36)
+        - A quarter-size image (18x18)
+
+  Offset 0 [1 byte] - Texture Set ID (1, 2, 3, 4, 5, 6)
+  Offset 1 [32 bytes] - Headwr data
+    - Format currently unknown.
+    - Suspect there is information here used to indicate how each texture may be used (e.g. wall, door, arch)
+
+  Offset 33 [72 bytes]
+    - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
+  Offset 105 ($69) [1296 bytes] - First full-size texture (72x72)
+    - 1296 bytes of full-size image data (5184 pixels)
+    - 2 bits per pixel
+    - Width is 72px [$48] (18 bytes [$12])
+    - Height is 72px
+  Offset 1401 ($579) [324 bytes] - First half-size texture (36x36)
+    - 324 bytes of half-size image data (1296 pixels)
+    - 2 bits per pixel
+    - Width is 36px [$24] (9 bytes [$9])
+    - Height is 36px
+  Offset 1725 ($68D) [90 bytes] - First quarter size texture (20x18 / byte-aligned 18x18)
+    - 90 bytes of quarter-size image data (360 pixels, of which 324 are used)
+    - 2 bits per pixel
+    - Width is 20px (5 bytes) per row of which 18px are used and last 2 pixels in each row are unused/0
+    - Height is 18 pixels
+
+  Offset 1815 ($717) [72 bytes]:
+    - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
+  Offset 1887 ($75f) [1296 bytes] - Second full-size texture (72x72)
+    - Same format as first full-size texture
+  Offset 3183 ($C6F) [324 bytes] - Second half-size texture (36x36)
+    - Same format as first half-size texture
+  Offset 3507 ($DB3) [90 bytes] - Second quarter-size texture (20x18 / byte-aligned 18x18)
+    - Same format as first quarter-size texture
+
+  Offset 3597 ($E0D) [72 bytes]:
+    - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
+
+  Offset 3669 ($E55) [1296 bytes] - Third full-size texture (72x72)
+    - Same format as first full-size texture
+  Offset 4965 ($1365) [324 bytes] - Third half-size texture (36x36)
+    - Same format as first half-size texture
+  Offset 5289 ($14A9) [90 bytes] - Third quarter-size texture (20x18 / byte-aligned 18x18)
+    - Same format as first quarter-size texture
+  Offset 5379 ($1503) [13 bytes]
+    - Potentially filler bytes to fill out the disk sector
+
+NOTE: Walls in the game are rendered twice as wide as they are tall, which implies the actual image should be 144x72.
+  However, the textures themselves are square. The game appears to horizontally scale the textures by 2. I suspect this
+  was a tradeoff made to reduce image size at the expense of decreased rendering quality.
 
