@@ -644,7 +644,8 @@ B - Types for West and South walls
 C - Location description index
 
 D - Special Square Codes:
-  00-1F=Module (shoppe etc.)  20-7F=Effect/Dangerous
+  00=Normal cell
+  01-1F=Module (shoppe etc.)  20,40,60=Effect/Dangerous
   80-9F=Encounter 0-31        A0-BF=Treasure 0-31
   C0-DF=Message 0-31          E0-FF=Teleport 0-31
 
@@ -656,10 +657,10 @@ Special:
 0BB 00000
  +--------- Danger level / Encounter frequency? (if Special & 10011111 ($9F) == 0)
             ... below are guesses. each bit could also be interpreted separately ...
-            000 00000 = (00) Low?
-            001 00000 = (20) Medium low?
-            010 00000 = (40) Medium high?
-            011 00000 = (60) High?
+            000 00000 = (00) Normal?
+            001 00000 = (20) Slightly increased?
+            010 00000 = (40) Moderately increased?
+            011 00000 = (60) Greatly increased?
 
 0?? CCCCC
       +---- Scenario index (0-31) (if CCCCC != 0)
@@ -672,7 +673,7 @@ Special:
             111 = Teleport
 
 
-- Scenarios/Modules (00-1F) -
+- Scenarios/Modules (01-1F) -
   03 (  3) = Fountain (Hit points)
     - Level 1.3 (14, 20)
     - Level 1.3 (13, 21)
@@ -739,6 +740,22 @@ Special:
     - Level 1.1 (27,  8)
     - Level 1.1 (28,  8)
     - Level 1.1 (31,  8)
+
+    "Speak to a priest"
+    $8681 - Start of alignment check table. 6 entries, 3 bytes each
+      0 - Alignment base - If character alignment is <= to this value, the entry matches
+      1 - Message offset [Low]
+      2 - Message offset [High]
+
+      Entry 0: 4A 60 86   (CHR_ALIGN <=  74, 'Thy soul is black as pitch!')
+      Entry 1: 64 3C 86   (CHR_ALIGN <= 100, 'Thy soul is dark and fearsome.')
+      Entry 2: 77 02 86   (CHR_ALIGN <= 119, 'Thou art heading down\n\nthe wrong track, Adventurer.')
+      Entry 3: 87 D0 85   (CHR_ALIGN <= 135, 'Thy personality is\n\nhard to read, stranger.')
+      Entry 4: 96 A4 85   (CHR_ALIGN <= 150, 'Thou art on the\n\nright path, pilgrim.')
+      Entry 5: E1 7C 85   (CHR_ALIGN <= 225, 'Thou soul is\n\nbecoming purer daily.') (should be "Thy"...)
+      Entry 6: FF 47 85   (CHR_ALIGN <= 255, 'Thou hast achieved\n\na level of great goodness.')
+
+
   0B ( 11) = Palace Prison
     - Level 1.2 (26, 27)
     - Level 1.2 (27, 27)
@@ -754,7 +771,7 @@ Special:
     - Level 2   ( 8, 19) - Mercenaries' Guild [evil]
     - The high nibble being non-zero is most-likely a mistake.
   4C ( 76/12) = Guild
-    - Level 2   ( 2 , 5) -
+    - Level 2   ( 2 , 5) - Paladin's Guild
     - The high nibble being non-zero is most-likely a mistake.
   0D ( 13) = Damon & Pythias Shoppe
     - Level 1.2 (14,  4)
@@ -777,12 +794,12 @@ Special:
     - Level 2 (18,  7)
   16 ( 22) = (Level 2) Lucky's Potion Brewery
     - Level 2 ( 7, 25)
-  57 ( 87/17) = (Level 2) Undead King's Palace
+  57 ( 87/23) = (Level 2) Undead King's Palace
     - Level 2 (13, 26)
     - Level 2 (14, 26)
     - Level 2 (14, 27)
     - The high nibble being non-zero is most-likely a mistake.
-  18 ( ) = (Level 3) Dragon's Lair
+  18 ( 24) = (Level 3) Dragon's Lair
     - Level 3 ( 0, 13)-( 3, 15)
 
   1D ( 29) = Der Rathskeller's Bar and Grille
@@ -1051,6 +1068,63 @@ Teleporters:
 
 --------------
 
+Disk Segment Directory
+
+Disk 1 Side 1 sector 2 contains a segment directory identifying the various files on each game disk
+and is loaded into memory at $0280.
+
+Each entry in the directory is 4 bytes long and is interpreted as follows:
+
+68 entries
+The first 4 bytes appear to be a header of some sort
+
+
+Word 0: (AKA FileID)
+  AA BBB C DDDDDDDDDD
+  |   |  |     +------ [10 bits] 0-based disk sector number (mask 0x03FF)
+  |   |  +------------ [1 bit]   Disk side (0 = side 1, 1 = side 2) (mask 0x0400 >> 10)
+  |   +--------------- [3 bits]  Disk number (0 = disk 1, 1 = disk 2, etc) (3 bits, mask 0x3800 >> 11)
+  +------------------- [2 bits]  Flags (00 = plain?, 01 = encrypted?) (mask 0xC000 >> 12)
+
+Word 1:
+  Little-endian 16-bit integer
+  File length in bytes
+
+--------------
+
+Disk File Encryption
+
+Files on disk are often encrypted using a 16 byte cyclic "password". This is often the first 16 bytes in the
+sector referenced by the file's entry in the Disk Segment Directory. Additional data in the key sector may simply
+be random, unused data.
+
+The file data is typically stored in the sectors following the key sector.
+
+The structure of the 16 byte key is:
+
+Bytes 0-1: File ID - This value should match the file ID from the segment directory entry.
+Bytes 1-2: File length (little-endian uint16) - This value indicates the length of the file on disk.
+Bytes 3-4: File checksum (little-endian uint16) - 16-bit checksum of the bytes in the file. The checksum is
+   compuated as simply the sum of the bytes in the file. Overflow is ignored/discarded.
+Bytes 5-15: 10 additional key bytes, presumably random data
+
+To decrypt a file:
+
+- For each byte in the file:
+  - Rotate the bits of the byte to the right one position (e.g. bit 0 moves to bit 7, bit 7 to bit 6, etc)
+  - XOR with the key byte corresponding to the byte's offset from the beginning of the file
+    (e.g. file byte 0 = key byte 0; file byte 15 = key byte 15; file byte 16 = key byte 0)
+
+Reverse the process to encrypt a file.
+
+Special cases:
+
+- File 50ec on disk 3 side 1 (encounter data) is an exception to the rule. The file is encrypted with a key
+  containing only null (0) bytes [00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00].
+
+
+--------------
+
 Bitmap format:
 
 320x192 max resolution
@@ -1126,4 +1200,36 @@ Texture set format:
 NOTE: Walls in the game are rendered twice as wide as they are tall, which implies the actual image should be 144x72.
   However, the textures themselves are square. The game appears to horizontally scale the textures by 2. I suspect this
   was a tradeoff made to reduce image size at the expense of decreased rendering quality.
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+Intro scene
+
+The city scene in the intro is generated using several 2-bpp "fonts".
+
+These fonts used are stored at $A000, $A400, $A800, $AC00, $B000, $B400, $B800
+Each character set is 128 entries of 8 bytes each (1024 bytes total)
+Each entry defines an 4 px x 8 scanline character.
+2bpp = 4px per byte, 1 byte per scanline
+
+Each line of the image is:
+  40 characters wide (160 px)
+  Character set number / high byte
+  COLBK, COLPF0, COLPF1, COLPF2
+
+display list?
+
+CHBASE ($2F4) holds the character set address / 256 (e.g. the high byte of the character set address)?
+
 

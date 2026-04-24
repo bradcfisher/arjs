@@ -1,0 +1,13 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 1 Side 1 Sector 016
+; Game intro sequence
+[symbols]
+
+; Placeholders for now
+rwx B000,80   SEG_B000
+rwx 0600,2000 SEG_0600
+rwx 6300,2000 SEG_6300
+rwx 2000,4C00 SEG_2000
+
+rwx 280,200   MSK_SEG_DIR

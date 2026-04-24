@@ -1,0 +1,17 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 1 Side 1 Sector 001 (Boot Sector)
+; Ref Inside Atari DOS Ch 20: https://www.atariarchives.org/iad/chapter20.php
+[symbols]
+rw  0600,1  BFLAG           ; Boot flag (1)
+rw  0601,1  BRCNT           ; Number of sectors to read (1)
+rw  0602,2  BLDADR          ; Address to load boot sectors to (0600)
+rw  0604,2  BIWTARR         ; Boot start address (0606)
+rwx 0606,1  BOOT_DUNGEON    ; Start of boot code
+rw  065F,20 UNUSED_BYTES
+
+; The following are masked by Dungeon file segment labels, so redefine them here for clarity
+rw  02C6,1  COLOR2
+rw  0304,1  DBUFLO          ; Data buffer address for disk I/O
+rw  0305,1  DBUFHI          ; Data buffer address for disk I/O
+rw  030A,1  DAUX1           ; Disk sector number for disk I/O

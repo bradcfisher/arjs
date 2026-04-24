@@ -56,21 +56,24 @@ export class ResourceMeta {
 	 * Constructs a new ResourceMeta instance.
 	 *
 	 * @param {string} url The URL to retrieve the resource from.
-	 * @param {string|undefined} type Content type (defaults to '* /*')
-	 * @param {string} description User-friendly description of the content (defaults to empty string)
-	 * @param {string[]} depends Array of dependency resource names (defaults to an empty array)
+	 * @param {string=} type Content type (defaults to '* /*')
+	 * @param {string=} description User-friendly description of the content (defaults to empty string)
+	 * @param {string[]=} depends Array of dependency resource names (defaults to an empty array)
 	 */
 	constructor(url, type = '*/*', description = '', depends = []) {
 		this.url = url;
 
-		if (type != null)
+		if (type != null) {
 			this.type = type;
+		}
 
-		if (description != null)
+		if (description != null) {
 			this.description = description;
+		}
 
-		if (depends != null)
+		if (depends != null) {
 			this.depends = depends;
+		}
 	}
 
 	/**
@@ -494,13 +497,19 @@ console.log("loading single resource: ", source);
 		// Remove parameters
 		contentType = contentType.replace('\s*;.*$', '');
 
-		if (meta.type == '*/*') {
-			meta.type = contentType;
+		let contentTypePieces = meta.type.split('/');
+		let responseTypePieces = contentType.split('/');
+		for (let i = 0; i < contentTypePieces.length; ++i) {
+			if (contentTypePieces[i] == '*') {
+				contentTypePieces[i] = responseTypePieces[i]
+			}
 		}
 
+		meta.type = contentTypePieces[0] + '/' + contentTypePieces[1];
+
 		// Split into separate components and retrieve appropriate decoder
-		const decoder = this.#getResourceDecoder(contentType.split('/'));
-		console.log("Decoding resource ", request.responseURL, " of type ", contentType, " with decoder ", decoder);
+		const decoder = this.#getResourceDecoder(contentTypePieces);
+		console.log("Decoding resource ", request.responseURL, " of type ", meta.type, " with decoder ", decoder);
 		decoder.call(this, request, meta, accept, reject);
 	}
 

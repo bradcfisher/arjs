@@ -1,0 +1,31 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 1 Side 1 sectors 014-015
+; Secondary boot sequence / Kernel loader
+[symbols]
+
+rw  0080,1   NUM_SECTORS
+
+rw  0082,2   DCRYPT_ADDR    ; Address of buffer to decrypt
+rw  0085,1   NUM_DCRYPT
+
+rw  0100,80  KEY_SECTOR     ; Decryption key sector load address
+
+rw  0280,200 MSK_SEG_DIR    ; Mask file segment directory labels
+
+; Standard system DIO locations
+rw  0302,1   DCOMND
+rw  0304,1   DBUFLO
+rw  0305,1   DBUFHI
+rw  030A,1   DAUX1
+rw  030B,1   DAUX2
+
+rwx 0600,B2  LOAD_KERNEL    ; Load the game kernel into memory
+rwx 064E,1   READ_SECTORS   ; Read disk sectors into memory
+rwx 066F,1   PREPARE_KEY    ; Prepare decryption key
+rwx 0683,1   DCRYPT_KERNEL  ; Decrypt the game engine kernel
+rwx 0695,1   DCRYPT_PAGE    ; Decrypt a memory page (256 bytes)
+
+rw  06b2,4E  UNUSED_BYTES
+
+rwx 807E,1   KERNEL_ENTRY   ; Game kernel entry vector

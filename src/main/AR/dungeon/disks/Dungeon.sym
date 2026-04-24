@@ -1,0 +1,586 @@
+Altirra symbol file
+
+[symbols]
+; Useful link https://www.atariarchives.org/mapping/memorymap.php#54272
+
+;rw  0100,1  T_CHR_SPD_UNKNOWN       ; Copied from $6380 CHR_SPD_UNKNOWN
+;rw  0101,1  T_CHR_101               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0102,1  T_CHR_102               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0103,1  T_CHR_MOVE_SPEED        ; Copied from $6383 CHR_MOVE_SPEED
+;rw  0104,1  T_CHR_104               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0105,1  T_CHR_ALIGN             ; Copied from $6385 CHR_ALIGN
+;rw  0106,1  T_CHR_106               ; Copied from $6386 ?CHR_MOOD?
+;rw  0107,1  T_CHR_107               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0108,1  T_CHR_108               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0109,1  T_CHR_109               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  010A,1  T_CHR_10A               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  010B,1  T_CHR_10B               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  010C,1  T_CHR_10C               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  010D,1  T_CHR_10D               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  010E,1  T_CHR_10E               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  010F,1  T_CHR_10F               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0110,1  T_CHR_LIT_TORCH_FLAG    ; Copied from $6390 CHR_LIT_TORCH_FLAG
+;rw  0111,1  T_CHR_DISEASE           ; Copied from $6391 CHR_DISEASE
+;rw  0112,1  T_CHR_POISON            ; Copied from $6392 CHR_POISON
+;rw  0113,1  T_CHR_CURSE             ; Copied from $6393 CHR_CURSE
+;rw  0114,1  T_CHR_BURDEN            ; Copied from $6394 CHR_BURDEN
+;rw  0115,1  T_CHR_115               ; Copied from $6395 ?CHR_TEMPER?
+;rw  0116,1  T_CHR_116               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0117,1  T_CHR_DRUNK             ; Copied from $6397 CHR_DRUNK
+;rw  0118,1  T_CHR_STOMACH           ; Copied from $6398 CHR_STOMACH
+;rw  0119,1  T_CHR_HUNGER            ; Copied from $6399 CHR_HUNGER
+;rw  011A,1  T_CHR_THIRST            ; Copied from $639A CHR_THIRST
+;rw  011B,1  T_CHR_11B               ; Copied from $639B ?CHR_ENERGY?
+;rw  011C,1  T_CHR_11C               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  011D,1  T_CHR_11D               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  011E,1  T_CHR_11E               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  011F,1  T_CHR_11F               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0120,1  T_CHR_120               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0121,1  T_CHR_121               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0122,1  T_CHR_122               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0123,1  T_CHR_123               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0124,1  T_CHR_124               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0125,1  T_CHR_125               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0126,1  T_CHR_126               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0127,1  T_CHR_127               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0128,1  T_CHR_128               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0129,1  T_CHR_129               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  012A,1  T_CHR_12A               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  012B,1  T_CHR_12B               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  012C,1  T_CHR_12C               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  012D,1  T_CHR_12D               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  012E,1  T_CHR_12E               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  012F,1  T_CHR_12F               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0130,1  T_CHR_130               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0131,1  T_INV_GOLD_U16_HI       ; Copied from $63B1 INV_GOLD_U16_HI
+;rw  0132,1  T_INV_GOLD              ; Copied from $63B2 INV_GOLD
+;rw  0133,1  T_INV_SILVER_U16_HI     ; Copied from $63B3 INV_SILVER_U16_HI
+;rw  0134,1  T_INV_SILVER            ; Copied from $63B4 INV_SILVER
+;rw  0135,1  T_INV_COPPER_U16_HI     ; Copied from $63B5 INV_COPPER_U16_HI
+;rw  0136,1  T_INV_COPPER            ; Copied from $63B6 INV_COPPER
+;rw  0137,1  T_INV_GEMS_U16_HI       ; Copied from $63B7 INV_GEMS_U16_HI
+;rw  0138,1  T_INV_GEMS              ; Copied from $63B8 INV_GEMS
+;rw  0139,1  T_INV_JEWELS_U16_HI     ; Copied from $63B9 INV_JEWELS_U16_HI
+;rw  013A,1  T_INV_JEWELS            ; Copied from $63BA INV_JEWELS
+;rw  013B,1  T_INV_FOOD              ; Copied from $63BB INV_FOOD
+;rw  013C,1  T_INV_WATER             ; Copied from $63BC INV_WATER
+;rw  013D,1  T_INV_TORCHES           ; Copied from $63BD INV_TORCHES
+;rw  013E,1  T_INV_CRYSTALS          ; Copied from $63BE INV_CRYSTALS
+;rw  013F,1  T_INV_KEYS              ; Copied from $63BF INV_KEYS
+;rw  0140,1  T_INV_COMPASSES         ; Copied from $63C0 INV_COMPASSES
+;rw  0141,1  T_INV_TIMEPIECES        ; Copied from $63C1 INV_TIMEPIECES
+;rw  0142,1  T_CHR_142               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0143,1  T_CHR_143               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0144,1  T_CHR_144               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0145,1  T_CHR_145               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0146,1  T_CHR_146               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0147,1  T_CHR_147               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0148,1  T_CHR_148               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  0149,1  T_CHR_149               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  014A,1  T_CHR_14A               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  014B,1  T_CHR_14B               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  014C,1  T_CHR_14C               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  014D,1  T_CHR_14D               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  014E,1  T_CHR_14E               ; Copied from character data ($6380,Y -> $100,Y)
+;rw  014F,1  T_CHR_14F               ; Copied from character data ($6380,Y -> $100,Y)
+;...
+;rw  017F,1  T_CHR_17F               ; Copied from character data ($6380,Y -> $100,Y)
+
+rw  024A,1  VDSLST_A_LO             ; Holds low byte of VDSLST interrupt handler A (read in VDSLST handler @ 1B2F)
+rw  024B,1  VDSLST_A_HI             ; Holds low byte of VDSLST interrupt handler A (read in VDSLST handler @ 1B2F)
+
+rw  024C,1  UNK_BYTE_024C
+rw  024D,1  UNK_BYTE_024D
+
+rw  0252,1  VBLK_COUNTER            ; Counter incremented on each VBLKI interrupt call
+rw  0253,1  UNK_BYTE_0253           ; Assigned to 3 (may be index value relative to HPOSP0 player 0 horiz position, ofs 3 would be HPOSP3)
+rw  0254,1  UNK_BYTE_0254
+rw  0255,1  UNK_BYTE_0255
+rw  0256,1  UNK_BYTE_0256
+
+; Disk segment directory
+; This table of 4-byte entries describes the various files stored on the game disks.
+; Data includes disk and side, length.
+; Entries have the following 4 bytes
+;   0 - Bit 6 has an unknown meaning. Bits 3-5=disk #, Bit 2=disk side, Bits 0-1=bits 9-10 of sector
+;   1 - Bits 0-8 of 10 bit sector number (1-based). For most entries, this value refers to the key sector, data in next sector.
+;   2 - High byte of uint16 file size
+;   3 - Low byte of uint16 file size
+rw  0280,4  SDIR_HEADERS
+rw  0284,4  D21_010_MAP0            ; Map 0 (Level 1.1 NW)
+rw  0288,4  D21_051_MAP1            ; Map 1 (Level 1.2 NW)
+rw  028C,4  D21_092_MAP2            ; Map 2 (Level 1.3 NW)
+rw  0290,4  D21_133_MAP3            ; Map 3 (Level 1.4 NW)
+rw  0294,4  D21_174_MAP4            ; Map 4 (Level 2)
+rw  0298,4  D21_215_MAP5            ; Map 5 (Level 3)
+rw  029C,4  D21_256_MAP6            ; Map 6 (Level 4)
+rw  02A0,4  D21_297_TEX1            ; Texture Set 1 (Normal)
+rw  02A4,4  D21_341_TEX2            ; Texture Set 2 (Mirror & Crystal)
+rw  02A8,4  D21_385_TEX3            ; Texture Set 3 (Dragon)
+rw  02AC,4  D21_429_TEX4            ; Texture Set 4 (Goblin)
+rw  02B0,4  D21_473_TEX5            ; Texture Set 5 (Mausoleum)
+rw  02B4,4  D21_517_TEX6            ; Texture Set 6 (Alien)
+rw  02B8,4  D11_033_UNK             ; Part of intro sequence
+rw  02BC,4  D21_561_UNK             ; Unknown
+rw  02C0,4  D21_572_UNK             ; Unknown / Compass and arrow character sets
+rw  02C4,4  D31_001_CMBT            ; Combat Data
+rw  02C8,4  D31_114_ITMS            ; Item Data
+rw  02CC,4  D22_001_FNTN            ; Fountain
+rw  02D0,4  D21_639_EXIT            ; Dungeon Exit
+rw  02D4,4  D21_652_STR             ; Stairway
+rw  02D8,4  D32_001_BANK            ; Grahm's Gold Exchange Vault
+rw  02DC,4  D32_034_GKTK            ; Goblin King / Troll King
+rw  02E0,4  D32_091_ACRN            ; Acrinimiril's Tomb
+rw  02E4,4  D11_258_LCHR            ; Load Character
+rw  02E8,4  D22_036_CHPL            ; Chapel
+rw  02EC,4  D32_126_OZOB            ; Ozob
+rw  02F0,4  D32_183_GILD            ; Guild
+rw  02F4,4  D32_262_SHOP            ; D & P Shop
+rw  02F8,4  D22_093_SPNX            ; Sphinx
+rw  02FC,4  D31_199_INN             ; Retreat Inn
+rw  0300,4  D32_327_ORCL            ; Oracle
+rw  0304,4  D32_382_ENCH            ; Enchantress
+rw  0308,4  D11_311_XCHR            ; Transfer City Character
+rw  030C,4  D22_134_FRRY            ; Ferryman
+rw  0310,4  D22_167_CLTH            ; Clothes Horse
+rw  0314,4  D22_198_SMTH            ; Dwarven Smithy
+rw  0318,4  D22_263_BRWY            ; Lucky's Potion Brewery
+rw  031C,4  D22_332_CRPT            ; Crypt
+rw  0320,4  D22_365_DRGN            ; Dragon
+rw  0324,4  D22_408_DTHD            ; Death's Door
+rw  0328,4  D11_376_CIMG            ; Character Creation Image
+rw  032C,4  D22_431_MCHN            ; Machine Room
+rw  0330,4  D22_494_ELEV            ; Elevator
+rw  0334,4  D32_431_TVRN            ; Tavern
+rw  0338,4  D31_236_ENTR            ; Encounters Data (Non-standard encryption)
+rw  033C,4  D11_451_CDTH            ; Character Death
+rw  0340,4  D22_509_UNK             ; Unknown
+rw  0344,4  D11_466_CSAV            ; Save Character
+rw  0348,4  D22_518_UNK             ; Unknown / Character set image?
+rw  034C,4  D32_494_IMG             ; Character set image
+rw  0350,4  D32_510_IMG             ; Character set image
+rw  0354,4  D31_589_DSNG            ; Dead Song
+rw  0358,4  D11_479_UNK             ; Unknown (unused?)
+rw  035C,4  D32_526_SMON            ; Tavern Monster Song
+rw  0360,4  D32_553_SDVR            ; Devourer Song
+rw  0364,4  D32_566_SUNK            ; Unknown Song
+rw  0368,4  D32_575_TTLK            ; Tavern Talk
+rw  036C,4  D11_480_NCHR            ; Blank Character Data
+rw  0370,4  D11_517_KRNL            ; Game Kernel
+rw  0374,4  D11_676_CPY1            ; Copy Protection Check
+rw  0378,4  D11_679_CPY2            ; Copy Protection Check (on save character)
+rw  037C,4  D31_604_LOCS            ; Location Names
+rw  0380,4  D32_622_LSNG            ; Lost Song
+rw  0384,4  D32_655_BSNG            ; Blackheart Song
+rw  0388,4  D22_536_UNK             ; Unknown
+rw  038C,4  D31_671_UNK             ; Unknown
+rw  0390,4  D32_684_UNK             ; Unknown
+rw  0394,EC UNUSED_BYTES
+
+rw  0401,1  DISP_NAME               ; Position in display buffer to write player name (text)
+rw  0425,1  DISP_LEVEL              ; Position in display buffer to write player level (text - 2 chars, left justified)
+rw  0453,1  DISP_TIME_SPINNER       ; Position in display buffer to write time spinner char (text - 1 char)
+rw  0459,1  DISP_STA_VAL            ; Position in display buffer to write STA stat (text - 3 chars, left justified)
+rw  045E,1  DISP_CHA_VAL            ; Position in display buffer to write CHA stat (text - 3 chars, left justified)
+rw  0463,1  DISP_STR_VAL            ; Position in display buffer to write STR stat (text - 3 chars, left justified)
+rw  0468,1  DISP_INT_VAL            ; Position in display buffer to write INT stat (text - 3 chars, left justified)
+rw  046D,1  DISP_WIS_VAL            ; Position in display buffer to write WIS stat (text - 3 chars, left justified)
+rw  0472,1  DISP_SKL_VAL            ; Position in display buffer to write SKL stat (text - 3 chars, left justified)
+rw  0484,1  DISP_EXP_VAL            ; Position in display buffer to write player experience points (text- 10 chars, left justified)
+rw  0499,1  DISP_HP_SEP_CHAR        ; Position in display buffer to write ':' (HP < Max) or '=' (HP = Max) (text - 1 char)
+rw  049A,1  DISP_HP_VAL             ; Position in display buffer to write current HP (text - 5 chars, left justified)
+rw  04A1,1  DISP_LOC_DESC           ; Position in display buffer to write location description (text - 40 chars, left justified)
+rw  04C9,1  DISP_SOMETHING_HERE     ; Position in display buffer to write "There is something here." (text - 40 chars, left justified)
+
+rw  0685,1  DISP_FOOD_PKT_VAL       ; Position in display buffer to write number of food packets (text - 3 chars, left justified)
+rw  0692,1  DISP_TORCH_VAL          ; Position in display buffer to write number of toches (text - 3 chars, left justified)
+rw  06A1,1  DISP_WATER_VAL          ; Position in display buffer to write number of water flasks (text - 3 chars, left justified)
+rw  06EC,1  DISP_MAP_LEVEL          ; Position in display buffer to write current map level (text - 1 char)
+rw  068C,1  DISP_DISEASED           ; Position in display buffer to write "Diseased!" (text - 12 chars, right justified)
+rw  06F8,1  DISP_WEARY              ; Position in display buffer to write "Weary" (text - 12 chars, left justified)
+rw  073C,1  DISP_TEMP               ; Position in display buffer to write "Chilly" (text - 12 chars, right justified)
+rw  0756,1  DISP_CURSED             ; Position in display buffer to write "Cursed!" (text - 12 chars, center justified)
+
+; Table of JMP instructions to subroutines (3 bytes each / 61 entries)
+rwx 1800,1  JMP_SUB_1800            ; Jumps to SUB code to execute ($2979 is one example)
+rwx 1803,1  JMP_SUB_1803            ; Jumps to SUB code to execute ($2f80 is one example)
+rwx 1806,1  JMP_SUB_1806            ; Jumps to SUB code to execute ($2FF3 is one example)
+rwx 1809,1  JMP_SUB_1809            ; Jumps to SUB code to execute ($30E3 is one example)
+rwx 180C,1  JMP_SUB_180C            ; Jumps to SUB code to execute ($3183 is one example)
+rwx 180F,1  JMP_SUB_180F            ; Jumps to SUB code to execute ($1A0D is one example)
+rwx 1812,1  JMP_SUB_1812            ; Jumps to SUB code to execute ($1C84 is one example)
+rwx 1815,1  JMP_SUB_1815            ; Jumps to SUB code to execute ($1C88 is one example)
+rwx 1818,1  JMP_SUB_1818            ; Jumps to SUB code to execute ($1C8C is one example)
+rwx 181B,1  JMP_SUB_181B            ; Jumps to SUB code to execute ($1C2C is one example)
+rwx 181E,1  JMP_SUB_181E            ; Jumps to SUB code to execute ($2643 is one example)
+rwx 1821,1  JMP_SUB_1821            ; Jumps to SUB code to execute ($262F is one example)
+rwx 1824,1  JMP_SUB_1824            ; Jumps to SUB code to execute ($275B is one example)
+rwx 1827,1  JMP_SUB_1827            ; Jumps to SUB code to execute ($245D is one example)
+rwx 182A,1  JMP_SUB_182A            ; Jumps to SUB code to execute ($28A1 is one example)
+rwx 182D,1  JMP_SUB_182D            ; Jumps to SUB code to execute ($248E is one example)
+rwx 1830,1  JMP_SUB_1830            ; Jumps to SUB code to execute ($24C6 is one example)
+rwx 1833,1  JMP_SUB_1833            ; Jumps to SUB code to execute ($2494 is one example)
+rwx 1836,1  JMP_SUB_1836            ; Jumps to SUB code to execute ($3C61 is one example)
+rwx 1839,1  JMP_SUB_1839            ; Jumps to SUB code to execute ($2A41 is one example)
+rwx 183C,1  JMP_SUB_183C            ; Jumps to SUB code to execute ($2BB0 is one example)
+rwx 183F,1  JMP_SUB_183F            ; Jumps to SUB code to execute ($2BA5 is one example)
+rwx 1842,1  JMP_SUB_1842            ; Jumps to SUB code to execute ($2CAD is one example)
+rwx 1845,1  JMP_SUB_1845            ; Jumps to SUB code to execute ($3C27 is one example)
+rwx 1848,1  JMP_SUB_1848            ; Jumps to SUB code to execute ($3C2D is one example)
+rwx 184B,1  JMP_SUB_184B            ; Jumps to SUB code to execute ($3CA5 is one example)
+rwx 184E,1  JMP_SUB_184E            ; Jumps to SUB code to execute ($3CC2 is one example)
+rwx 1851,1  JMP_SUB_1851            ; Jumps to SUB code to execute ($3C5C is one example)
+rwx 1854,1  JMP_SUB_1854            ; Jumps to SUB code to execute ($2D8F is one example)
+rwx 1857,1  JMP_SUB_1857            ; Jumps to SUB code to execute ($2C6F is one example)
+rwx 185A,1  JMP_SUB_185A            ; Jumps to SUB code to execute ($2BFC is one example)
+rwx 185D,1  JMP_SUB_185D            ; Jumps to SUB code to execute ($2C9B is one example)
+rwx 1860,1  JMP_SUB_1860            ; Jumps to SUB code to execute ($2DAB is one example)
+rwx 1863,1  JMP_SUB_1863            ; Jumps to SUB code to execute ($2DE3 is one example)
+rwx 1866,1  JMP_SUB_1866            ; Jumps to SUB code to execute ($2E0D is one example)
+rwx 1869,1  JMP_SUB_1869            ; Jumps to SUB code to execute ($2E31 is one example)
+rwx 186C,1  JMP_SUB_186C            ; Jumps to SUB code to execute ($2E6B is one example)
+rwx 186F,1  JMP_SUB_186F            ; Jumps to SUB code to execute ($2E69 is one example)
+rwx 1872,1  JMP_SUB_1872            ; Jumps to SUB code to execute ($2E66 is one example)
+rwx 1875,1  JMP_SUB_1875            ; Jumps to SUB code to execute ($2E45 is one example)
+rwx 1878,1  JMP_SUB_1878            ; Jumps to SUB code to execute ($2E43 is one example)
+rwx 187B,1  JMP_SUB_187B            ; Jumps to SUB code to execute ($2E40 is one example)
+rwx 187E,1  JMP_SUB_187E            ; Jumps to SUB code to execute ($2E9E is one example)
+rwx 1881,1  JMP_SUB_1881            ; Jumps to SUB code to execute ($2CC2 is one example)
+rwx 1884,1  JMP_SUB_1884            ; Jumps to SUB code to execute ($4B4D is one example)
+rwx 1887,1  JMP_SUB_1887            ; Jumps to SUB code to execute ($4B74 is one example)
+rwx 188A,1  JMP_SUB_188A            ; Jumps to SUB code to execute ($4AC9 is one example)
+rwx 188D,1  JMP_SUB_188D            ; Jumps to SUB code to execute ($4E06 is one example)
+rwx 1890,1  JMP_SUB_1890            ; Jumps to SUB code to execute ($49B0 is one example)
+rwx 1893,1  JMP_SUB_1893            ; Jumps to SUB code to execute ($55B7 is one example)
+rwx 1896,1  JMP_SUB_1896            ; Jumps to SUB code to execute ($4EC4 is one example)
+rwx 1899,1  JMP_SUB_1899            ; Jumps to SUB code to execute ($2B6B is one example)
+rwx 189C,1  JMP_SUB_189C            ; Jumps to SUB code to execute ($5471 is one example)
+rwx 189F,1  JMP_SUB_189F            ; Jumps to SUB code to execute ($375F is one example)
+rwx 18A2,1  JMP_SUB_18A2            ; Jumps to SUB code to execute ($2B47 is one example)
+rwx 18A5,1  JMP_SUB_18A5            ; Jumps to SUB code to execute ($408B is one example)
+rwx 18A8,1  JMP_SUB_18A8            ; Jumps to SUB code to execute ($3771 is one example)
+rwx 18AB,1  JMP_SUB_18AB            ; Jumps to SUB code to execute ($5BB8 is one example)
+rwx 18AE,1  JMP_SUB_18AE            ; Jumps to SUB code to execute ($2AA0 is one example)
+rwx 18B1,1  JMP_SUB_18B1            ; Jumps to SUB code to execute ($5492 is one example)
+rwx 18B4,1  JMP_SUB_18B4            ; Jumps to SUB code to execute ($2EC6 is one example)
+
+rw  18B8,1  UNK_1C19OFS_18B8        ; Offset to values at 1C19 (WSYNC / COLPF2 value table?)
+rw  18B9,1  UNK_2307OFS_18B9        ; Offset to values at 2307
+
+rw  18BA,1  COLPF0_SET_18BA         ; Value assigned to COLPF0 (playfield 0 color) during display rendering
+rw  18BB,1  COLPF1_SET_18BB         ; Value assigned to COLPF1 during display rendering
+rw  18BC,1  COLPF2_SET_18BC         ; Value assigned to COLPF2 during display rendering
+rw  18BD,1  WSYNC_COLBK_SET_18BD    ; Value assigned to WSYNC and COLBK during display rendering
+rw  18BE,1  WSYNC_COLBK_SET_18BE    ; Value assigned to WSYNC and COLBK during display rendering
+rw  18BF,1  COLPF3_SET_18BF         ; Value assigned to COLPF3 during display rendering
+
+rw  18C1,1  UNK_TBL_18C1            ; Indexed lookup table
+
+rw  1909,1  UNK_BYTE_1909
+rw  190B,1  UNK_BYTE_190B
+rw  190C,1  UNK_BYTE_190C
+rw  190E,1  UNK_BYTE_190E
+
+rw  1912,1  ZONE_ID                 ; Zone ID value to apply in PROCESS_HOURLY_UPDATES
+rw  192A,1  UNK_BYTE_192A           ; Assigned to 0
+rw  1933,1  UNK_BYTE_1933           ; Assigned to 0
+rw  1938,1  UNK_BYTE_1938
+rw  1939,1  UNK_BYTE_1939
+
+rw  194b,1  ZONE_TEXTURE_SET        ; The texture set to use. 01 = Typical; 02 = Mirror/Crystal; 03 = Dragon; 04 = Goblin; 05 = Mausoleum
+rw  194c,1  ZONE_B_BYTE             ; Byte value (not bitfield)
+rw  194d,1  ZONE_C_BF_LITE          ; Bit field containing light/dark area bit
+rw  194e,1  ZONE_WALL_CLR0          ; Wall color #1 (e.g. normal walls = 26 Brownish)
+rw  194f,1  ZONE_WALL_CLR1          ; Wall color #2 (e.g. normal walls = 00 Black)
+rw  1950,1  ZONE_WALL_CLR2          ; Wall color #3 (e.g. normal walls = 0A Grey)
+rw  1951,1  ZONE_CEILING_CLR        ; Ceiling color
+rw  1952,1  ZONE_FLOOR_CLR          ; Floor color
+rw  1953,1  ZONE_I_BYTE
+
+rw  1956,1  UNK_BYTE_COUNTER        ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
+                                    ; Decremented
+rw  1958,1  UNK_BYTE_1958           ; Assigned to $ff if $1959 == 2
+rw  1959,1  UNK_BYTE_1959           ; Compared to #$02, if it is 2, then $ff is loaded into $1958
+rw  195A,1  TELEPORT_INDEX          ; Holds teleport number parameter value used by DO_TELEPORT_PLAYER
+
+rw  195D,1  UNK_BYTE_195D           ;
+
+rw  195F,1  UNK_BYTE_195F           ;
+rw  1960,1  UNK_BYTE_1960           ;
+
+rw  1968,1  UNK_BYTE_1968           ; Value compared to 1
+
+rw  196A,1  UNK_BYTE_196A           ;
+
+rw  1974,1  UNK_BYTE_1974
+rw  1975,1  UNK_BYTE_1975           ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
+rw  1977,1  UNK_MEMREF_LO_1977      ; Low byte of a memory reference   (is assigned to $7641, $7648)
+rw  1978,1  UNK_MEMREF_HI_1978      ; High byte of a memory reference
+
+rw  19EF,1  UNK_BYTE_TBL_19EF       ; Table of 3? bytes read and stored at 0255
+rw  19F2,1  UNK_BYTE_TBL_19F2       ; Table of 3? bytes read and stored at 0254
+
+rw  1A0D,1  DISPLAY_SUB_1A0D        ; Sets HPOSP0-HOPSP3 to 0; Waits for vblank;
+
+rw  1A41,1  UNK_BYTE_1A41           ;
+rw  1A44,1  UNK_BYTE_1A44           ;
+
+rw  1B2F,1  HANDLE_VDSLST_1B2F      ; Interrupt handler for VDSLST
+rw  1B56,1  HANDLE_VDSLST_1B56      ; Interrupt handler for VDSLST
+rw  1BA2,1  HANDLE_VDSLST_1BA2      ; Interrupt handler for VDSLST
+rw  1BD6,1  HANDLE_VDSLST_1BD6      ; Interrupt handler for VDSLST
+
+rw  1C21,1  UNK_BYTE_TBL_1C21       ; Table of 3? bytes indicating how may 0's to fill starting at 04C8 and filling downward (4C7, 4C6, etc)
+
+rwx 2347,1  HANDLE_VBLKI            ; Interrupt handler for VBLKI
+
+rwx 2454,1  WAIT_FOR_VBLK_A         ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_B/C)
+rwx 2457,1  VBLK_WAIT_LOOP_A
+
+
+rwx 2C66,1  WAIT_FOR_VBLK_B         ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/C)
+rwx 2C69,1  VBLK_WAIT_LOOP_B
+
+rwx 314A,1  DO_MOVE_FORWARD         ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
+
+rwx 3296,1  END_SUB_RTS_3296
+
+rwx 35C1,1  DO_TELEPORT_PLAYER      ; Teleports the player to the teleport at TELEPORT_INDEX*4 of TELEPORT_TBL
+rwx 35E7,1  TLPSKIP1
+rwx 35EA,1  TLPSKIP2
+rwx 35EC,1  TLPCPYL1
+rwx 35F7,1  TLPFLSLP
+rwx 35FB,1  TLPCPYL2
+rwx 3608,1  TLPCPYL3
+rwx 3616,1  TLPCPYL4
+rwx 3630,1  TLPTMPBUF
+
+rw  3BA7,1  TELEPORT_TBL_X          ; X location to teleport player to
+rw  3BA8,1  TELEPORT_TBL_Y          ; Y location to teleport player to
+rw  3BA9,1  TELEPORT_TBL_MAP        ; Map to teleport player to (corresponds to MAP_NUMBER value)
+rw  3BAA,1  TELEPORT_TBL_ORIENT     ; Orientation to assign to player (FF = no chg; <0 = random; 0 = N; 1 = E; 2 = S; 3 = W)
+
+rwx 43CF,1  PROCESS_HOURLY_UPDATES  ; Sub called at the start of each in-game hour
+rwx 43E2,1  HP_NOT_MAX_43E2
+rwx 43D6,1  HP_LOOP
+rwx 43F1,1  STAT_LOOP
+
+rw  445F,10 MOVEMENT_SPEED_TBL      ; Table of 16 x 1 byte values indexed by CHR_SPD_EFFECTIVE/16
+
+rw  6309,1  TME_MINUTES             ; Current in-game time in minutes
+rw  630A,1  TME_HOURS               ; Current in-game time in hours
+
+rw  6312,1  CHR_LOC_ORIENT          ; Player orientation
+rw  6313,1  CHR_LOC_X               ; Player position X
+rw  6314,1  CHR_LOC_Y               ; Player position Y
+rw  6315,1  CHR_LOC_MAP             ; Player map number
+
+rw  631E,1  CHR_UNK_BYTE_631E       ; Sub @ 2F70 Jumps to 2FBA if this value is equal to 1
+rw  631F,1  CHR_UNK_BYTE_631F       ; Sub @ 2F70 Jumps to 2FBA if this value is equal to 1 or 2
+rw  6320,1  CHR_UNK_BYTE_6320       ;
+rw  6321,1  CHR_NAME                ; Player name
+
+rw  633C,1  CHR_EXPLVL              ; Player level
+rw  633D,1  CHR_EXP_U32_B3          ; Character experience points (fourth byte of 32 bit unsigned int)
+rw  633E,1  CHR_EXP_U32_B2          ; Character experience points (third byte of 32 bit unsigned int)
+rw  633F,1  CHR_EXP_U32_B1          ; Character experience points (second byte of 32 bit unsigned int)
+rw  6340,1  CHR_EXP_U32_B0          ; Character experience points (first byte of 32 bit unsigned int)
+rw  6341,1  CHR_LUP_EXP_U32_B3      ; Character experience points needed to level up (fourth byte of 32 bit unsigned int)
+rw  6342,1  CHR_LUP_EXP_U32_B2      ; Character experience points needed to level up (third byte of 32 bit unsigned int)
+rw  6343,1  CHR_LUP_EXP_U32_B1      ; Character experience points needed to level up (second byte of 32 bit unsigned int)
+rw  6344,1  CHR_LUP_EXP_U32_B0      ; Character experience points needed to level up (first byte of 32 bit unsigned int)
+rw  6345,1  CHR_HP_CURRENT_HI
+rw  6346,1  CHR_HP_CURRENT_LO
+rw  6347,1  CHR_HP_MAX_HI           ; Not fully convinced these two are accurate...
+rw  6348,1  CHR_HP_MAX_LO
+rw  6349,1  CHR_STA_EFFECTIVE       ; Effective STA value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  634A,1  CHR_STA_BASE            ; Base STA value
+rw  634B,1  CHR_STA_BONUS           ; Bonus to STA value
+rw  634C,1  CHR_STA_PENALTY1        ; First penalty to STA value
+rw  634D,1  CHR_STA_PENALTY2        ; Second penalty to STA value
+rw  634E,1  CHR_STA_PENALTY3        ; Third penalty to STA value
+rw  634F,1  CHR_STA_PENALTY4        ; Fourth penalty to STA value
+rw  6350,1  CHR_STA_UNKNOWN
+rw  6351,1  CHR_CHR_EFFECTIVE       ; Effective CHR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6352,1  CHR_CHR_BASE            ; Base CHR value
+rw  6353,1  CHR_CHR_BONUS           ; Bonus to CHR value
+rw  6354,1  CHR_CHR_PENALTY1        ; First penalty to CHR value
+rw  6355,1  CHR_CHR_PENALTY2        ; Second penalty to CHR value
+rw  6356,1  CHR_CHR_PENALTY3        ; Third penalty to CHR value
+rw  6357,1  CHR_CHR_PENALTY4        ; Fourth penalty to CHR value
+rw  6358,1  CHR_CHR_UNKNOWN
+rw  6359,1  CHR_STR_EFFECTIVE       ; Effective STR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  635A,1  CHR_STR_BASE            ; Base STR value
+rw  635B,1  CHR_STR_BONUS           ; Bonus to STR value
+rw  635C,1  CHR_STR_PENALTY1        ; First penalty to STR value
+rw  635D,1  CHR_STR_PENALTY2        ; Second penalty to STR value
+rw  635E,1  CHR_STR_PENALTY3        ; Third penalty to STR value
+rw  635F,1  CHR_STR_PENALTY4        ; Fourth penalty to STR value
+rw  6360,1  CHR_STR_UNKNOWN
+rw  6361,1  CHR_INT_EFFECTIVE       ; Effective INT value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6362,1  CHR_INT_BASE            ; Base INT value
+rw  6363,1  CHR_INT_BONUS           ; Bonus to INT value
+rw  6364,1  CHR_INT_PENALTY1        ; First penalty to INT value
+rw  6365,1  CHR_INT_PENALTY2        ; Second penalty to INT value
+rw  6366,1  CHR_INT_PENALTY3        ; Third penalty to INT value
+rw  6367,1  CHR_INT_PENALTY4        ; Fourth penalty to INT value
+rw  6368,1  CHR_INT_UNKNOWN
+rw  6369,1  CHR_WIS_EFFECTIVE       ; Effective WIS value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  636A,1  CHR_WIS_BASE            ; Base WIS value
+rw  636B,1  CHR_WIS_BONUS           ; Bonus to WIS value
+rw  636C,1  CHR_WIS_PENALTY1        ; First penalty to WIS value
+rw  636D,1  CHR_WIS_PENALTY2        ; Second penalty to WIS value
+rw  636E,1  CHR_WIS_PENALTY3        ; Third penalty to WIS value
+rw  636F,1  CHR_WIS_PENALTY4        ; Fourth penalty to WIS value
+rw  6370,1  CHR_WIS_UNKNOWN
+rw  6371,1  CHR_SKL_EFFECTIVE       ; Effective SKL value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6372,1  CHR_SKL_BASE            ; Base SKL value
+rw  6373,1  CHR_SKL_BONUS           ; Bonus to SKL value
+rw  6374,1  CHR_SKL_PENALTY1        ; First penalty to SKL value
+rw  6375,1  CHR_SKL_PENALTY2        ; Second penalty to SKL value
+rw  6376,1  CHR_SKL_PENALTY3        ; Third penalty to SKL value
+rw  6377,1  CHR_SKL_PENALTY4        ; Fourth penalty to SKL value
+rw  6378,1  CHR_SKL_UNKNOWN
+rw  6379,1  CHR_SPD_EFFECTIVE       ; Effective SPD value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  637A,1  CHR_SPD_BASE            ; Base SPD value
+rw  637B,1  CHR_SPD_BONUS           ; Bonus to SPD value
+rw  637C,1  CHR_SPD_PENALTY1        ; First penalty to SPD value
+rw  637D,1  CHR_SPD_PENALTY2        ; Second penalty to SPD value
+rw  637E,1  CHR_SPD_PENALTY3        ; Third penalty to SPD value
+rw  637F,1  CHR_SPD_PENALTY4        ; Fourth penalty to SPD value
+; The following 128 bytes ($6380-$63FF) are copied to $100-$17F on return from a scenario module
+rw  6380,1  CHR_SPD_UNKNOWN
+
+rw  6383,1  CHR_MOVE_SPEED          ; Player movement speed (read from $445F + CHR_SPD_EFFECTIVE/16)
+                                    ; Also affected by CHR_STOMACH?? and CHR_BURDEN??
+
+rw  6385,1  CHR_ALIGN
+rw  6386,1  CHR_MOOD
+rw  638E,1  CHR_BYTE_638E
+rw  6390,1  CHR_LIT_TORCH_FLAG      ; Used when rendering to determine light level
+rw  6391,1  CHR_DISEASE
+rw  6392,1  CHR_POISON
+rw  6393,1  CHR_CURSE
+rw  6394,1  CHR_BURDEN
+rw  6395,1  CHR_TEMPER
+rw  6397,1  CHR_DRUNK
+rw  6398,1  CHR_STOMACH
+rw  6399,1  CHR_HUNGER
+rw  639A,1  CHR_THIRST
+rw  639B,1  CHR_ENERGY
+
+rw  63B1,1  INV_GOLD_U16_HI         ; High byte of Gold inventory (uint16)
+rw  63B2,1  INV_GOLD                ; Low byte of Gold inventory (uint16)
+rw  63B3,1  INV_SILVER_U16_HI       ; High byte of Silver inventory (uint16)
+rw  63B4,1  INV_SILVER              ; Low byte of Silver inventory (uint16)
+rw  63B5,1  INV_COPPER_U16_HI       ; High byte of Copper inventory (uint16)
+rw  63B6,1  INV_COPPER              ; Low byte of Copper inventory (uint16)
+rw  63B7,1  INV_GEMS_U16_HI         ; High byte of Gems inventory (uint16)
+rw  63B8,1  INV_GEMS                ; Low byte of Gems inventory (uint16)
+rw  63B9,1  INV_JEWELS_U16_HI       ; High byte of Jewels inventory (uint16)
+rw  63BA,1  INV_JEWELS              ; Low byte of Jewels inventory (uint16)
+rw  63BB,1  INV_FOOD                ; Number of food packets in inventory (uint8)
+rw  63BC,1  INV_WATER               ; Number of water flasks in inventory (uint8)
+rw  63BD,1  INV_TORCHES             ; Number of unlit torches in inventory (uint8)
+rw  63BE,1  INV_CRYSTALS            ; Number of crystals in inventory (uint8)
+rw  63BF,1  INV_KEYS                ; Number of keys in inventory (uint8)
+rw  63C0,1  INV_COMPASSES           ; Number of compasses in inventory (uint16)
+rw  63C1,1  INV_TIMEPIECES          ; Number of timepieces in inventory (uint16)
+
+rw  640B,1  INV_ARR_START           ; Start of general item inventory list
+rw  644B,1  INV_ARR_END             ; End of general item inventory
+
+rwx 7601,3  JMP_SUB_7601            ; Indirect jump to sub ($7612 is one example)
+rwx 7604,3  JMP_SUB_7604            ; Indirect jump to sub ($760C is one example)
+rwx 7607,3  JMP_SUB_7607            ; Indirect jump to sub ($760C is one example)
+
+rwx 7649,1  CHK_IF_MAP4_ZONE1       ; Appears to check if the player is in ZONE 1 of MAP 4 (Dungeon Level 2)
+rwx 766E,1  CHK_IF_MAP4_ZONE8       ; Appears to check if the player is in ZONE 8 of MAP 4 (Dungeon Level 2)
+
+; Table of stairwell locations used by the stairwell module (5)
+rw  7751,1  MOD_STAIR_FROM_TBL1_X   ; New x position for the player on the new map
+rw  7752,1  MOD_STAIR_FROM_TBL1_Y   ; New y position for the player on the new map
+rw  7753,1  MOD_STAIR_FROM_TBL1_MAP ; Number/ID of the new map to load
+rw  7754,1  MOD_STAIR_FROM_TBL1_ORIENT ; Orientation to leave player in after loading the new map
+
+; Table of ?? (at least 6...) 4 byte teleport records. Offset into table read from LOGCOL ($0063)
+rw  777D,1  MOD_STAIR_TO_TBL_X      ; New x position for the player on the new map
+rw  777E,1  MOD_STAIR_TO_TBL_Y      ; New y position for the player on the new map
+rw  777F,1  MOD_STAIR_TO_TBL_MAP    ; Number/ID of the new map to load
+rw  7780,1  MOD_STAIR_TO_TBL_ORIENT ; Orientation to leave player in after loading the new map
+
+rw  77FB,1  UNK_LIGHT_LEVEL_77FB    ; Updated to light level from zone/torch if different (used in display rendering?)
+rw  77FC,1  UNK_NUM_COMPASSES_77FC  ; Updated to value in INV_COMPASSES if different (used in display rendering?)
+
+rw  7855,1  UNK_BYTE_7855           ;
+
+rw  7A9A,1  ORIENT_VAL1             ; Value read from $7ABC+CHAR_LOC_ORIENT
+rw  7AA0,1  ORIENT_VAL2             ; Value read from $7AC0+CHAR_LOC_ORIENT
+rw  7AAB,1  ORIENT_VAL3             ; Value read from $7AC4+CHAR_LOC_ORIENT
+rw  7AB1,1  ORIENT_VAL4             ; Value read from $7AC8+CHAR_LOC_ORIENT
+
+rw  7ABC,1  ORIENT_VAL1_TBL         ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7A9A) [$04 $80 $fc $80]
+rw  7AC0,1  ORIENT_VAL2_TBL         ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7AA0) [$00 $00 $ff $ff]
+rw  7AC4,1  ORIENT_VAL3_TBL         ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7AAB) [$54 $7c $ac $84]
+rw  7AC8,1  ORIENT_VAL4_TBL         ; Table of bytes indexed by CHR_LOC_ORIENT (result stored in $7AB1) [$00 $fa $ff $05]
+
+rwx 7E4D,1  DETERMINE_ZONE          ;
+rwx 7E57,1  IS_PLYR_IN_ZONE         ;
+rwx 7E74,1  APPLY_NEW_ZONE
+rwx 7E82,1  COPY_ZONE_BYTES_LOOP    ; Copies zone definition bytes from matched zone into current zone data at $194b
+rwx 7eb1,1  SELECT_NEXT_ZONE        ; Moves to the next zone region to check if the player is inside it
+rwx 7EB0,1  NO_ZONE_CHANGE
+
+rwx AA19,1  BEGIN_ENCOUNTER         ; Sub called at the beginning of an encounter
+
+rwx 9124,1  ENCOUNTER_GRANT_EXP     ; Sub called after defeating a foe in an encounter
+
+rwx 9280,1  WAIT_FOR_VBLK_C         ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/B)
+rwx 9283,1  VBLK_WAIT_LOOP_C
+
+; Location where textures are loaded into memory (5392 bytes [$1510])
+rw  96F0,1  TEX_HEADERS             ; [$0000] Texture set headers (33 bytes)
+rw  9711,1  TEX_UNKNOWN_0           ; [$0021] Unknown 72 bytes
+rw  9759,1  TEX_FULL_1              ; [$0069] First full-size texture image (72x72, 2bpp, 1296 bytes)
+rw  9C69,1  TEX_HALF_1              ; [$0579] First half-size texture image (36x36, 2bpp, 324 bytes)
+rw  9DAD,1  TEX_QUARTER_1           ; [$06BD] First quarter-size texture image (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+rw  9E07,1  TEX_UNKNOWN_1           ; [$0717] Unknown 72 bytes
+rw  9E4F,1  TEX_FULL_2              ; [$075F] Second full-size texture image (72x72, 2bpp, 1296 bytes)
+rw  A35F,1  TEX_HALF_2              ; [$0C6F] Second half-size texture image (36x36, 2bpp, 324 bytes)
+rw  A4A3,1  TEX_QUARTER_2           ; [$0DB3] Second quarter-size texture image (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+rw  A4FD,1  TEX_UNKNOWN_2           ; [$0E0D] Unknown 72 bytes
+rw  A545,1  TEX_FULL_3              ; [$0E55] Third full-size texture image (72x72, 2bpp, 1296 bytes)
+rw  AA55,1  TEX_HALF_3              ; [$1365] Third half-size texture image (36x36, 2bpp, 324 bytes)
+rw  AB99,1  TEX_QUARTER_3           ; [$14A9] Third quarter-size texture image
+                                    ; (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+rw  ABF3,1  TEX_FILLER              ; [$1503] Possible filler (13 bytes)
+
+; Start of map data (5120 bytes [$1400])
+rw  ac00,1  MAP_NUMBER              ; Number/ID of the loaded map
+rw  ac01,1  MAP_HEADER_RTCLOK0      ; Value assigned to RTCLOK0 when loading the map
+rw  ac02,1  MAP_HEADER_RTCLOK1      ; Value assigned to RTCLOK1 when loading the map
+rw  ac03,1  MAP_MESSAGE_TBL         ; Start of message table
+rw  af00,1  MAP_ZONERGN_TBL_SIZE    ; Number of zone regions
+; Table of zone region definitions (5 bytes per entry)
+rw  af01,1  MAP_ZONERGN_Y1          ; Y1 coordinate of zone region
+rw  AF02,1  MAP_ZONERGN_X2          ; X2 coordinate of zone region
+rw  AF03,1  MAP_ZONERGN_Y2          ; Y2 coordinate of zone region
+rw  AF04,1  MAP_ZONERGN_X1          ; X1 coordinate of zone region
+rw  AF04,1  MAP_ZONERGN_REF         ; Zone definition ID the region applies to
+; Table of zone definitions (8 bytes per entry; entry 0 is default and not ref from zone regions)
+rw  af7e,1  MAP_ZONEDEF_TEXTURE     ; Texture set ID
+rw  af7f,1  MAP_ZONEDEF_B           ; Zone definition byte B
+rw  af80,1  MAP_ZONEDEF_FLAGS       ; Bitfield incl. light level bit
+; For color details see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
+rw  af81,1  MAP_ZONEDEF_WALL_CLR1   ; Wall color #1
+rw  af82,1  MAP_ZONEDEF_WALL_CLR2   ; Wall color #2
+rw  af83,1  MAP_ZONEDEF_WALL_CLR3   ; Wall color #3
+rw  af84,1  MAP_ZONEDEF_CLNG_CLR    ; Ceiling color
+rw  af85,1  MAP_ZONEDEF_FLR_CLR     ; Floor color
+rw  b000,1  MAP_WALL_E_N            ; First map cell E/N wall byte (high nibble = East; low nibble = North)
+rw  b001,1  MAP_WALL_W_S            ; First map cell W/S wall byte (High nibble = West; low nibble = South)
+rw  b002,1  MAP_LOC_DESCR           ; First map cell description index byte
+rw  b003,1  MAP_SPECIAL             ; First map cell special code byte
+
+; C000 - start of second copy of map
+; DC00 - start of second copy of texture

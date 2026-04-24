@@ -1,0 +1,83 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 1 Side 1 Sector 002
+; Disk segment directory
+; This table of 4-byte entries describes the various files stored on the game disks.
+; Data includes disk and side, length.
+; Entries have the following 4 bytes
+;   0 - Bit 6 has an unknown meaning. Bits 3-5=disk #, Bit 2=disk side, Bits 0-1=bits 9-10 of sector
+;   1 - Bits 0-8 of 10 bit sector number (1-based). For most entries, this value refers to the key sector, data in next sector.
+;   2 - High byte of uint16 file size
+;   3 - Low byte of uint16 file size
+
+[symbols]
+rw  0280,4   SDIR_HEADERS
+rw  0284,4   D21_010_MAP0       ; Map 0 (Level 1.1 NW)
+rw  0288,4   D21_051_MAP1       ; Map 1 (Level 1.2 NW)
+rw  028C,4   D21_092_MAP2       ; Map 2 (Level 1.3 NW)
+rw  0290,4   D21_133_MAP3       ; Map 3 (Level 1.4 NW)
+rw  0294,4   D21_174_MAP4       ; Map 4 (Level 2)
+rw  0298,4   D21_215_MAP5       ; Map 5 (Level 3)
+rw  029C,4   D21_256_MAP6       ; Map 6 (Level 4)
+rw  02A0,4   D21_297_TEX1       ; Texture Set 1 (Normal)
+rw  02A4,4   D21_341_TEX2       ; Texture Set 2 (Mirror & Crystal)
+rw  02A8,4   D21_385_TEX3       ; Texture Set 3 (Dragon)
+rw  02AC,4   D21_429_TEX4       ; Texture Set 4 (Goblin)
+rw  02B0,4   D21_473_TEX5       ; Texture Set 5 (Mausoleum)
+rw  02B4,4   D21_517_TEX6       ; Texture Set 6 (Alien)
+rw  02B8,4   D11_033_UNK        ; Part of intro sequence
+rw  02BC,4   D21_561_UNK        ; Unknown
+rw  02C0,4   D21_572_UNK        ; Unknown / Compass and arrow character sets
+rw  02C4,4   D31_001_CMBT       ; Combat Data
+rw  02C8,4   D31_114_ITMS       ; Item Data
+rw  02CC,4   D22_001_FNTN       ; Fountain
+rw  02D0,4   D21_639_EXIT       ; Dungeon Exit
+rw  02D4,4   D21_652_STR        ; Stairway
+rw  02D8,4   D32_001_BANK       ; Grahm's Gold Exchange Vault
+rw  02DC,4   D32_034_GKTK       ; Goblin King / Troll King
+rw  02E0,4   D32_091_ACRN       ; Acrinimiril's Tomb
+rw  02E4,4   D11_258_LCHR       ; Load Character
+rw  02E8,4   D22_036_CHPL       ; Chapel
+rw  02EC,4   D32_126_OZOB       ; Ozob
+rw  02F0,4   D32_183_GILD       ; Guild
+rw  02F4,4   D32_262_SHOP       ; D & P Shop
+rw  02F8,4   D22_093_SPNX       ; Sphinx
+rw  02FC,4   D31_199_INN        ; Retreat Inn
+rw  0300,4   D32_327_ORCL       ; Oracle
+rw  0304,4   D32_382_ENCH       ; Enchantress
+rw  0308,4   D11_311_XCHR       ; Transfer City Character
+rw  030C,4   D22_134_FRRY       ; Ferryman
+rw  0310,4   D22_167_CLTH       ; Clothes Horse
+rw  0314,4   D22_198_SMTH       ; Dwarven Smithy
+rw  0318,4   D22_263_BRWY       ; Lucky's Potion Brewery
+rw  031C,4   D22_332_CRPT       ; Crypt
+rw  0320,4   D22_365_DRGN       ; Dragon
+rw  0324,4   D22_408_DTHD       ; Death's Door
+rw  0328,4   D11_376_CIMG       ; Character Creation Image
+rw  032C,4   D22_431_MCHN       ; Machine Room
+rw  0330,4   D22_494_ELEV       ; Elevator
+rw  0334,4   D32_431_TVRN       ; Tavern
+rw  0338,4   D31_236_ENTR       ; Encounters Data (Non-standard encryption)
+rw  033C,4   D11_451_CDTH       ; Character Death
+rw  0340,4   D22_509_UNK        ; Unknown
+rw  0344,4   D11_466_CSAV       ; Save Character
+rw  0348,4   D22_518_UNK        ; Unknown / Character set image?
+rw  034C,4   D32_494_IMG        ; Character set image
+rw  0350,4   D32_510_IMG        ; Character set image
+rw  0354,4   D31_589_DSNG       ; Dead Song
+rw  0358,4   D11_479_UNK        ; Unknown (unused?)
+rw  035C,4   D32_526_SMON       ; Tavern Monster Song
+rw  0360,4   D32_553_SDVR       ; Devourer Song
+rw  0364,4   D32_566_SUNK       ; Unknown Song
+rw  0368,4   D32_575_TTLK       ; Tavern Talk
+rw  036C,4   D11_480_NCHR       ; Blank Character Data
+rw  0370,4   D11_517_KRNL       ; Game Kernel
+rw  0374,4   D11_676_CPY1       ; Copy Protection Check
+rw  0378,4   D11_679_CPY2       ; Copy Protection Check (on save character)
+rw  037C,4   D31_604_LOCS       ; Location Names
+rw  0380,4   D32_622_LSNG       ; Lost Song
+rw  0384,4   D32_655_BSNG       ; Blackheart Song
+rw  0388,4   D22_536_UNK        ; Unknown
+rw  038C,4   D31_671_UNK        ; Unknown
+rw  0390,4   D32_684_UNK        ; Unknown
+rw  0394,EC  UNUSED_BYTES
