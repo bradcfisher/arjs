@@ -14,9 +14,9 @@
 060b: a5 14                     LDA RTCLOK+2      ; Wait for
 060d: c5 14     loc_060d        CMP RTCLOK+2      ;     next
 060f: f0 fc                     BEQ loc_060d      ;     vblank
-0611: ad 01 d3                  LDA PORTB         ;
-0614: 09 02                     ORA #$02          ;
-0616: 8d 01 d3                  STA PORTB         ;
+0611: ad 01 d3                  LDA PORTB         ; ???
+0614: 09 02                     ORA #$02          ; ???
+0616: 8d 01 d3                  STA PORTB         ; ???
 0619: a9 10                     LDA #$10          ; Set read sector
 061b: 8d 0a 03                  STA DAUX1         ;     to $10 (16) - Game intro sequence
 061e: a9 00                     LDA #$00          ;

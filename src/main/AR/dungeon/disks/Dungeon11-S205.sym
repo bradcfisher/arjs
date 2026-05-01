@@ -1,0 +1,23 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 1 Side 1 sector 205
+; Kernel loader
+[symbols]
+
+rw  0007,2   SRC_ADDR
+rw  0008,2   DST_ADDR
+
+rwx 0740,1   BRKKY_IRQ      ; Break key interrupt handler? Or something else?
+
+rwx 1400,400 DUNGEON_CHRSET ; Dungeon character set font
+
+rwx 224f,1   VSEROR_IRQ     ; POKEY serial I/O transmit ready interrupt handler
+rwx 2297,1   VSEROC_IRQ     ; POKEY serial bus transmit complete interrupt handler
+rwx 21e7,1   VSERIN_IRQ     ; POKEY serial I/O bus receive data ready interrupt handler
+rwx 22AC,1   VIMIRQ_IRQ     ; The IRQ immediate handler
+rwx 2347,1   VVBLKI_IRQ     ; The VBLANK immediate interrupt handler
+
+rwx 199D,1   SUB_0254_VEC
+
+rwx 8000,1   INIT_IRQS      ; Initializes IRQ handler vectors
+rwx 807E,1   KERNEL_ENTRY   ; Game kernel entry vector

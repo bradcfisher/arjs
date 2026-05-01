@@ -858,7 +858,7 @@ export class DisasmOptions {
      * Default is 18.
      * @type {number}
      */
-    mnemonicWidth = 18;
+    mnemonicWidth = 21;
 
     /**
      * Whether to display mnemonics in lowercase or uppercase.
@@ -1450,7 +1450,10 @@ export function disassemble(bytes, options) {
                             console.log("Segment found, checking for label: addr=" + addr + " (" + fmtHex(addr) + ") mode=" + labelMode);
                             const found = options.labels.entryForAddress(addr, labelMode);
                             if ((found == null || (requireExactMatch && found.offset != addr)) && !d.has(addr)) {
-                                const label = new LabelEntry(addr, "loc_" + fmtHex(addr, 4), 1, labelMode);
+                                // If this op is a JSR, use the 'sub_' prefix instead of 'loc_'
+                                const prefix = (op.bytes[0] == 0x20 ? 'sub_' : 'loc_');
+
+                                const label = new LabelEntry(addr, prefix + fmtHex(addr, 4), 1, labelMode);
                                 console.log("Defining implied label: " + label);
                                 options.labels.push(label);
                                 d.add(addr);

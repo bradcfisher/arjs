@@ -81,7 +81,9 @@ const files = {
         { id: 0x41D2, description: "D1S1 S467 - Save Character", segments: 0x7600 }, // length = 0x600 (1536)
         { id: 0x01DF, description: "D1S1 S479 - Unknown 3", startSector: 479, length: 128, key: "41d50b120b41336d3a1f4ed4d453a87a" },
         { id: 0x41E0, description: "D1S1 S481 - Blank Character Data", segments: 0x6300 }, // length = 0x1200 (4608)
-        { id: 0x4205, description: "D1S1 S518 - Game Kernel", segments: 0x1400 }, // length = 0x4F00 (20224)
+        { id: 0x4205, description: "D1S1 S518 - Game Kernel",
+            labels: "Dungeon11-S518.sym",
+            segments: 0x1400 }, // length = 0x4F00 (20224)
         { id: 0x42A4, description: "D1S1 S677 - Copy Protection Check", segments: 0x9000 }, // length = 0x100 (256)
         { id: 0x42A7, description: "D1S1 S680 - Copy Protection Check (char save)", segments: 0x9000 }, // length = 0x100 (256)
         { id: 0x02AA, description: "D1S1 S682 - Unused space", length: 0x1380 } // length = 0x1380 (4992)
