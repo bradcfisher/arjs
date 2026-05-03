@@ -325,33 +325,25 @@ rw  1A0D,1  DISPLAY_SUB_1A0D        ; Sets HPOSP0-HOPSP3 to 0; Waits for vblank;
 rw  1A41,1  UNK_BYTE_1A41           ;
 rw  1A44,1  UNK_BYTE_1A44           ;
 
-rw  1B2F,1  HANDLE_VDSLST_1B2F      ; Interrupt handler for VDSLST
-rw  1B56,1  HANDLE_VDSLST_1B56      ; Interrupt handler for VDSLST
-rw  1BA2,1  HANDLE_VDSLST_1BA2      ; Interrupt handler for VDSLST
-rw  1BD6,1  HANDLE_VDSLST_1BD6      ; Interrupt handler for VDSLST
+rwx 1b2f,1  IRQ_VDSLST_1b2f         ; Interrupt handler for VDSLST
+rwx 1b56,1  IRQ_VDSLST_1b56         ; Interrupt handler for VDSLST
+rwx 1ba2,1  IRQ_VDSLST_1ba2         ; Interrupt handler for VDSLST
+rwx 1bd6,1  IRQ_VDSLST_1bd6         ; Interrupt handler for VDSLST
 
 rw  1C21,1  UNK_BYTE_TBL_1C21       ; Table of 3? bytes indicating how may 0's to fill starting at 04C8 and filling downward (4C7, 4C6, etc)
 
 rwx 2347,1  HANDLE_VBLKI            ; Interrupt handler for VBLKI
 
 rwx 2454,1  WAIT_FOR_VBLK_A         ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_B/C)
-rwx 2457,1  VBLK_WAIT_LOOP_A
 
 
 rwx 2C66,1  WAIT_FOR_VBLK_B         ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/C)
-rwx 2C69,1  VBLK_WAIT_LOOP_B
 
 rwx 314A,1  DO_MOVE_FORWARD         ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
 
 rwx 3296,1  END_SUB_RTS_3296
 
 rwx 35C1,1  DO_TELEPORT_PLAYER      ; Teleports the player to the teleport at TELEPORT_INDEX*4 of TELEPORT_TBL
-rwx 35E7,1  TLPSKIP1
-rwx 35EA,1  TLPSKIP2
-rwx 35EC,1  TLPCPYL1
-rwx 35F7,1  TLPFLSLP
-rwx 35FB,1  TLPCPYL2
-rwx 3608,1  TLPCPYL3
 rwx 3616,1  TLPCPYL4
 rwx 3630,1  TLPTMPBUF
 
@@ -360,7 +352,7 @@ rw  3BA8,1  TELEPORT_TBL_Y          ; Y location to teleport player to
 rw  3BA9,1  TELEPORT_TBL_MAP        ; Map to teleport player to (corresponds to MAP_NUMBER value)
 rw  3BAA,1  TELEPORT_TBL_ORIENT     ; Orientation to assign to player (FF = no chg; <0 = random; 0 = N; 1 = E; 2 = S; 3 = W)
 
-rwx 43CF,1  PROCESS_HOURLY_UPDATES  ; Sub called at the start of each in-game hour
+rwx 43CF,1  DO_HOURLY_UPDATES       ; Sub called at the start of each in-game hour
 rwx 43E2,1  HP_NOT_MAX_43E2
 rwx 43D6,1  HP_LOOP
 rwx 43F1,1  STAT_LOOP
@@ -536,7 +528,6 @@ rwx AA19,1  BEGIN_ENCOUNTER         ; Sub called at the beginning of an encounte
 rwx 9124,1  ENCOUNTER_GRANT_EXP     ; Sub called after defeating a foe in an encounter
 
 rwx 9280,1  WAIT_FOR_VBLK_C         ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/B)
-rwx 9283,1  VBLK_WAIT_LOOP_C
 
 ; Location where textures are loaded into memory (5392 bytes [$1510])
 rw  96F0,1  TEX_HEADERS             ; [$0000] Texture set headers (33 bytes)
