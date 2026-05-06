@@ -201,37 +201,58 @@
 18bc: 00        CUR_COLPF2      .BYTE $00            ; Value assigned to COLPF2 during display rendering
 18bd: 00        CUR_COLBK       .BYTE $00            ; Value assigned to COLBK during display rendering
 18be: 00        COLBK_SET_18BE  .BYTE $00            ; Value assigned to COLBK during display rendering
-18bf: 00 00     CUR_COLPF3  .BYTE $00,$00       ; Value assigned to COLPF3 during display rendering
-18c1: 00 00 00 00 00 00 00 00  tbl_18c1  .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
+18bf: 00 00     CUR_COLPF3      .BYTE $00,$00        ; Value assigned to COLPF3 during display rendering
+18c1: 00 00 00  tbl_18c1        .BYTE $00,$00,$00    ; ......
+18c4: 00 00 00  dat_18c4        .BYTE $00,$00,$00    ; ...
+18c7: 00 00     dat_18c7        .BYTE $00,$00        ; ..
+
+
 18c9: 00                        .BYTE $00
 18ca: 00        dat_18ca        .BYTE $00
 18cb: 00 00 00 00 00 00         .BYTE $00,$00,$00,$00,$00,$00  ; ........
-18d1: 00 00 00 00 80 80 80 80   .BYTE $00,$00,$00,$00,$80,$80,$80,$80  ; ........
+18d1: 00 00 00                  .BYTE $00,$00,$00              ; ...
+18d4: 00        dat_18d4        .BYTE $00            ; .
+18d5: 80 80 80 80  dat_18d5     .BYTE $80,$80,$80,$80  ; ....
 18d9: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
 18e1: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
 18e9: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
 18f1: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
-18f9: 80 80 80 80 00 00 00 00   .BYTE $80,$80,$80,$80,$00,$00,$00,$00  ; ........
+18f9: 80 80 80 80 00 00         .BYTE $80,$80,$80,$80,$00,$00          ; ......
+18ff: 00        dat_18ff        .BYTE $00            ;
+1900: 00        dat_1900        .BYTE $00            ;
 1901: 00        dat_1901_L      .BYTE $00            ;
-1902: 00 00 00 00 00  dat_1902_H  .BYTE $00,$00,$00,$00,$00 ;
-1907: 00 00     dat_1907        .BYTE $00,$00        ;
+1902: 00        dat_1902_H      .BYTE $00            ;
+1903: 00        dat_1903_L      .BYTE $00            ;
+1904: 00        dat_1904_H      .BYTE $00            ;
+1905: 00        dat_1905        .BYTE $00            ;
+1906: 00        dat_1906        .BYTE $00            ;
+1907: 00        dat_1907        .BYTE $00            ;
+1908: 00        dat_1908        .BYTE $00            ;
 1909: 00 00     dat_1909        .BYTE $00,$00        ;
 190b: 00        dat_190b_L      .BYTE $00            ;
 190c: 00        dat_190c_H      .BYTE $00            ;
-190d: 00                        .BYTE $00            ;
+190d: 00        dat_190d        .BYTE $00            ;
 190e: 00        dat_190e        .BYTE $00            ;
 190f: 00 00 00  dat_190f        .BYTE $00,$00,$00    ;
-1912: 00 80 80 80 80 80 80 80  ZONE_ID  .BYTE $00,$80,$80,$80,$80,$80,$80,$80  ; ........
+1912: 00        ZONE_ID         .BYTE $00            ; ........
+1913: 80 80 80 80 80 80 80  tbl_1913_L  .BYTE $80,$80,$80,$80,$80,$80,$80
 191a: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
-1922: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
+1922: 80                        .BYTE $80            ; .
+1923: 80 80 80 80 80 80 80  tbl_1923_H  .BYTE $80,$80,$80,$80,$80,$80,$80  ; .......
 192a: 80 80 80 80 80 80 80 80  UNK_BYTE_192A  .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
 1932: 80                        .BYTE $80            ; .
 1933: 00 00     dat_1933        .BYTE $00,$00        ; ..
-1935: 00 00 00  dat_1935        .BYTE $00,$00,$00    ; ...
+1935: 00 00     dat_1935        .BYTE $00,$00        ; ...
+1937: 00        dat_1937        .BYTE $00            ; .
 1938: 00        UNK_BYTE_1938   .BYTE $00            ; .
 1939: 00 ff ff ff ff ff ff ff  UNK_BYTE_1939  .BYTE $00,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ; ........
-1941: ff ff ff ff ff 00 00 00   .BYTE $ff,$ff,$ff,$ff,$ff,$00,$00,$00  ; ........
-1949: 00 00                     .BYTE $00,$00        ; ..
+1941: ff                        .BYTE $ff            ; .
+1942: ff ff                     .BYTE $ff,$ff        ; ..
+1944: ff        addr_1944_L     .BYTE $ff            ; .
+1945: ff        addr_1944_H     .BYTE $ff            ; .
+1946: 00 00 00  dat_1946        .BYTE $00,$00,$00    ; ...
+1949: 00                        .BYTE $00            ; .
+194a: 00        dat_194a        .BYTE $00            ; .
 194b: 00        ZONE_TEXTURE_SET  .BYTE $00          ; .
 194c: 00        ZONE_B_BYTE     .BYTE $00            ; .
 194d: 00        ZONE_C_BF_LITE  .BYTE $00            ; .
@@ -251,7 +272,8 @@
 195f: 00        UNK_BYTE_195F   .BYTE $00            ; .
 1960: 00 00 00 00 00 00 00 00  UNK_BYTE_1960  .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
 1968: 00 00     UNK_BYTE_1968   .BYTE $00,$00        ; ..
-196a: 00 00 00 00 00 00 00 00  UNK_BYTE_196A  .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
+196a: 00 00 00 00 00 00 00  UNK_BYTE_196A  .BYTE $00,$00,$00,$00,$00,$00,$00  ; ........
+1971: 00        dat_1971        .BYTE $00            ; .
 1972: 00 00                     .BYTE $00,$00        ; ..
 1974: 00        UNK_BYTE_1974   .BYTE $00            ; .
 1975: 00        UNK_BYTE_1975   .BYTE $00            ;
@@ -1086,17 +1108,19 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 1fa4: f0 c6                     BEQ loc_1f6c         ;
 1fa6: d0 c8                     BNE loc_1f70         ;
 
-1fa8: 00 0f 00  dat_1fa8        .BYTE $00,$0f,$00    ;
-1fab: 05 07 18  dat_1fab        .BYTE $05,$07,$18    ;
-1fae: 01 01 02 03 05 06 07 09 0a  dat_1fae  .BYTE $01,$01,$02,$03,$05,$06,$07,$09,$0a
-1fb7: 02        dat_1fb7        .BYTE $02            ;
-1fb8: 01 03 02 01 09 09 09  dat_1fb8  .BYTE $01,$03,$02,$01,$09,$09,$09
-1fbf: e6 ec 20 fd f2 09 29 3a  tbl_1fd4_L  .BYTE $e6,$ec,$20,$fd,$f2,$09,$29,$3a  ; .. ...):
+1fa8: 00 0f 00  dat_1fa8        .BYTE $00,$0f,$00    ; ...
+1fab: 05 07 18  dat_1fab        .BYTE $05,$07,$18    ; ...
+1fae: 01 01 02 03 05 06 07 09  dat_1fae  .BYTE $01,$01,$02,$03,$05,$06,$07,$09  ; ........
+1fb6: 0a                        .BYTE $0a            ; .
+1fb7: 02        dat_1fb7        .BYTE $02            ; .
+1fb8: 01 03 02 01 09 09 09  dat_1fb8  .BYTE $01,$03,$02,$01,$09,$09,$09  ; .......
+1fbf: e6 ec 20 fd f2 09 29 3a  tbl_1fbf_H  .BYTE $e6,$ec,$20,$fd,$f2,$09,$29,$3a  ; .. ...):
 1fc7: 4f 73 bf 99 e2 fa 15 ce   .BYTE $4f,$73,$bf,$99,$e2,$fa,$15,$ce  ; Os......
 1fcf: c8 d8 eb b3 be            .BYTE $c8,$d8,$eb,$b3,$be  ; .....
-1fd4: 1c 1c 1d 1c 1c 1d 1d 1d  dat_1fbf_H  .BYTE $1c,$1c,$1d,$1c,$1c,$1d,$1d,$1d    ; ...
-1fdc: 1d 1e 1e 1f 1c 1d 1d 1d   .BYTE $1d,$1d,$1d,$1d,$1e,$1e,$1f,$1c  ; ........
-1fe4: 1d 1d 1d 1e 1e            .BYTE $1d,$1d,$1d,$1e,$1e  ; ........
+1fd4: 1c 1c 1d  tbl_1fd4_L      .BYTE $1c,$1c,$1d    ; ...
+1fd7: 1c 1c 1d 1d 1d 1d 1d 1d   .BYTE $1c,$1c,$1d,$1d,$1d,$1d,$1d,$1d  ; ........
+1fdf: 1d 1e 1e 1f 1c 1d 1d 1d   .BYTE $1d,$1e,$1e,$1f,$1c,$1d,$1d,$1d  ; ........
+1fe7: 1e 1e                     .BYTE $1e,$1e        ; ..
 
 ; Parameters
 ;   A =
@@ -1119,8 +1143,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2004: 85 02                     STA dat_0002         ;
 2006: 60                        RTS                  ; Return to caller
 
-2007: a8        str_BLANK       .BYTE $a8            ; "" (empty string)
-2008: ff                        .BYTE $ff            ;
+2007: a8 ff     str_BLANK       .BYTE $a8,$ff        ; "" (empty string)
 
 2009: a9 07     sub_2009        LDA #$07             ; Set
 200b: 2d 37 02                  AND dat_0237         ;     dat_0237
@@ -1444,7 +1467,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 22c2: 8a        loc_22c2        TXA                  ; Preserve value of X
 22c3: 48                        PHA                  ;     to restore later
 22c4: a2 02                     LDX #$02             ; Set
-22c6: bd 01 23  loc_22c6        LDA dat_2301,X       ;     A = dat_2301+2 : $10 (16)
+22c6: bd 01 23  loc_22c6        LDA tbl_2301,X       ;     A = tbl_2301+2 : $10 (16)
 22c9: e0 01                     CPX #$01             ; If A <> 1,
 22cb: d0 05                     BNE loc_22d2         ;     continue @ $22d2 [loc_22d2]
 22cd: 2d 36 02                  AND dat_0236         ;
@@ -1458,13 +1481,17 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 22de: 8d 0e d2                  STA IRQEN            ;
 22e1: ad 36 02                  LDA dat_0236         ;
 22e4: 8d 0e d2                  STA IRQEN            ;
-22e7: bd 04 23                  LDA dat_2304,X       ; Set LSB of
-22ea: 8d f5 22                  STA smc_22f4+1       ;     destination address
-22ed: a9 02                     LDA #$02             ; Set MSB of
-22ef: 8d f6 22                  STA smc_22f4+2       ;     destination address to $02
+22e7: bd 04 23                  LDA tbl_2304_L,X     ; Self-modifying code:
+22ea: 8d f5 22                  STA smc_22f4+1       ;     Set the indirect JMP source
+22ed: a9 02                     LDA #$02             ;     address @ $22f4 below
+22ef: 8d f6 22                  STA smc_22f4+2       ;     to $0200 + tbl_2304_L,X
 22f2: 68                        PLA                  ; Restore X to
 22f3: aa                        TAX                  ;     previous value
-22f4: 6c ff ff  smc_22f4        JMP ($ffff)          ; Jumps to $0200 + dat_2304,X
+22f4: 6c ff ff  smc_22f4        JMP ($ffff)          ; Jumps to the address @ $0200 + tbl_2304_L,X
+                                                     ; Source address is one of the following addresses:
+                                                     ;     - $0208 [VKEYBD] Keyboard interrupt vector
+                                                     ;     - $020e [VSEROC] POKEY Serial bus transmit complete interrupt vector
+                                                     ;     - $020c [VSEROR] POKEY serial I/O transmit ready interrupt vector
 22f7: 68        loc_22f7        PLA                  ; Restore X to
 22f8: aa                        TAX                  ;     previous value
 22f9: ad 00 d3                  LDA PORTA            ;
@@ -1472,9 +1499,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 22ff: 68                        PLA                  ; Restore A to previous value
 2300: 40                        RTI                  ; Return from interrupt handler
 
-2301: 40 08 10  dat_2301        .BYTE $40,$08,$10    ;
-2304: 08 0e 0c  dat_2304        .BYTE $08,$0e,$0c    ;
-2307: 22 22 2e  dat_2307        .BYTE $22,$22,$2e    ;
+2301: 40 08 10  tbl_2301        .BYTE $40,$08,$10    ; 3 byte table. Only the last entry seems to be used.
+2304: 08 0e 0c  tbl_2304_L      .BYTE $08,$0e,$0c    ; 3 byte table. LSB of address relative to $0200
+2307: 22 22 2e  tbl_2307        .BYTE $22,$22,$2e    ;
 
 230a: a9 f5     loc_230a        LDA $f9              ; Set the
 230c: 8d 02 d4                  STA DLIST            ;     Display List
@@ -1504,7 +1531,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2347: d8        HANDLE_VBLKI    CLD                  ;
 2348: ee 52 02                  INC VBLK_COUNTER     ;
 234b: ae b9 18                  LDX CUR_DLIST_NUM    ;
-234e: bd 07 23                  LDA dat_2307,X       ;
+234e: bd 07 23                  LDA tbl_2307,X       ;
 2351: 8d 00 d4                  STA DMACTL           ;
 2354: a9 14                     LDA #$14             ; Set the character
 2356: 8d 09 d4                  STA CHBASE           ;     set address to $1400 (DUNGEON_CHRSET)
@@ -1700,7 +1727,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 24f7: 8d 53 04                  STA DISP_TIME_SPINNER ;
 24fa: 60        loc_24fa        RTS                  ; Return to caller
 
-24fb: 7b 7c 7d 7e 02 00 00 00  dat_24fb  .BYTE $7b,$7c  ; {|}~....
+24fb: 7b 7c 7d 7e 02 00 00 00  dat_24fb  .BYTE $7b,$7c,$7d,$7e,$02,$00,$00,$00  ; {|}~....
 
 2503: ad 9c 19  sub_2503        LDA dat_199c         ;
 2506: 30 03                     BMI loc_250b         ;
@@ -1768,7 +1795,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2592: 69 01                     ADC #$01             ;
 2594: 99 02 d2                  STA AUDF2,Y          ;
 2597: ae c3 25                  LDX dat_25c3         ;
-259a: bd eb 25                  LDA loc_25eb,X       ;
+259a: bd eb 25                  LDA dat_25eb,X       ;
 259d: c0 00                     CPY #$00             ;
 259f: d0 03                     BNE loc_25a4         ;
 25a1: 18                        CLC                  ;
@@ -1798,13 +1825,14 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 25d4: a2 99 f3 66 4c 4c 5b 5b   .BYTE $a2,$99,$f3,$66,$4c,$4c,$5b,$5b  ; ...fLL[[
 25dc: 5b 5b 79 90 80 79 60 55   .BYTE $5b,$5b,$79,$90,$80,$79,$60,$55  ; [[y..y`U
 25e4: 60                        .BYTE $60            ; `
-25e5: 00 40 04 07 07 06 a1 01  dat_25e5  .BYTE $00,$40,$04,$07,$07,$06,$a1,$01  ; .@......
-25ed: a1 a1 a1 a1 40 08 08 04   .BYTE $a1,$a1,$a1,$a1,$40,$08,$08,$04  ; ....@...
-25f5: 01 03 03 10 08 08 06 05   .BYTE $01,$03,$03,$10,$08,$08,$06,$05  ; ........
-25fd: 05 50 2f 08 26 2f 61 0c   .BYTE $05,$50,$2f,$08,$26,$2f,$61,$0c  ; .P/.&/a.
-2605: 0c 17 0c 17 0c 20 40 08   .BYTE $0c,$17,$0c,$17,$0c,$20,$40,$08  ; ..... @.
-260d: 08 08 08 08               .BYTE $08,$08,$08,$08  ; ....
-2611: 04 05 07 06 08 08  dat_2611  .BYTE $04,$05,$07,$06,$08,$08  ; ......
+25e5: 00 40 04 07 07 06  dat_25e5  .BYTE $00,$40,$04,$07,$07,$06  ; .@....
+25eb: a1 01 a1 a1 a1 a1 40 08  dat_25eb  .BYTE $a1,$01,$a1,$a1,$a1,$a1,$40,$08  ; ......@.
+25f3: 08 04 01 03 03 10 08 08   .BYTE $08,$04,$01,$03,$03,$10,$08,$08  ; ........
+25fb: 06 05 05 50 2f 08 26 2f   .BYTE $06,$05,$05,$50,$2f,$08,$26,$2f  ; ...P/.&/
+2603: 61 0c 0c 17 0c 17 0c 20   .BYTE $61,$0c,$0c,$17,$0c,$17,$0c,$20  ; a......
+260b: 40 08 08 08 08 08         .BYTE $40,$08,$08,$08,$08,$08  ; @.....
+2611: 04 05     dat_2611        .BYTE $04,$05        ; ..
+2613: 07 06 08 08               .BYTE $07,$06,$08,$08  ; ....
 2617: f1 f4 f8 fe 03 0a  dat_2617  .BYTE $f1,$f4,$f8,$fe,$03,$0a  ; ......
 261d: 25 25 25 25 26 26  dat_261d  .BYTE $25,$25,$25,$25,$26,$26  ; %%%%&&
 2623: c5 c8 cc d2 d7 de  dat_2623  .BYTE $c5,$c8,$cc,$d2,$d7,$de  ; ......
@@ -1840,13 +1868,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2654: 48                        PHA                  ;     value of X
 2655: a5 30                     LDA STATUS           ;
 2657: 10 1d                     BPL loc_2676         ;
-2659: ad ff 18                  LDA loc_18ff         ;
+2659: ad ff 18                  LDA dat_18ff         ;
 265c: d0 18                     BNE loc_2676         ;
 265e: ad 0f d2                  LDA SKSTAT           ;
 2661: 29 20                     AND #$20             ;
 2663: f0 11                     BEQ loc_2676         ;
 2665: a9 04                     LDA #$04             ;
-2667: 8d ff 18                  STA loc_18ff         ;
+2667: 8d ff 18                  STA dat_18ff         ;
 266a: ae 09 d2                  LDX KBCODE           ;
 266d: 30 07                     BMI loc_2676         ;
 266f: bd d1 26                  LDA dat_26d1,X       ;
@@ -1864,7 +1892,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2683: ad 1f d0                  LDA CONSOL           ;
 2686: c9 07                     CMP #$07             ;
 2688: d0 15                     BNE loc_269f         ;
-268a: ad 00 19                  LDA loc_1900         ;
+268a: ad 00 19                  LDA dat_1900         ;
 268d: c9 07                     CMP #$07             ;
 268f: f0 0e                     BEQ loc_269f         ;
 2691: a2 10                     LDX #$10             ;
@@ -1876,7 +1904,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 269a: e8                        INX                  ;
 269b: 86 30     loc_269b        STX STATUS           ;
 269d: a9 07                     LDA #$07             ;
-269f: 8d 00 19  loc_269f        STA loc_1900         ;
+269f: 8d 00 19  loc_269f        STA dat_1900         ;
 26a2: a0 00     loc_26a2        LDY #$00             ;
 26a4: ad 0f d2                  LDA SKSTAT           ;
 26a7: 29 04                     AND #$04             ;
@@ -1890,13 +1918,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 26b8: 30 03                     BMI loc_26bd         ;
 26ba: bc 56 27  loc_26ba        LDY loc_2756,X       ;
 26bd: 84 2f     loc_26bd        STY CIOCHR           ;
-26bf: ad ff 18                  LDA loc_18ff         ;
+26bf: ad ff 18                  LDA dat_18ff         ;
 26c2: f0 0c                     BEQ loc_26d0         ;
 26c4: a0 01                     LDY #$01             ;
 26c6: 8c 1f d0                  STY CONSOL           ;
 26c9: 88                        DEY                  ;
 26ca: 8c 1f d0                  STY CONSOL           ;
-26cd: 8c ff 18                  STY loc_18ff         ;
+26cd: 8c ff 18                  STY dat_18ff         ;
 26d0: 60        loc_26d0        RTS                  ; Return to caller
 
 26d1: 6c 6a 3b ff ff 6b 2b 2a  dat_26d1  .BYTE $6c,$6a,$3b,$ff,$ff,$6b,$2b,$2a  ; lj;..k+*
@@ -1960,8 +1988,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 27b1: e9 01                     SBC #$01             ;
 27b3: 85 0b                     STA dat_0009_H+1     ;
 27b5: b0 02                     BCS loc_27b9         ;
-27b7: c6 0c                     DEC DOSINI           ;
-27b9: 05 0c     loc_27b9        ORA DOSINI           ;
+27b7: c6 0c                     DEC dat_000c         ;
+27b9: 05 0c     loc_27b9        ORA dat_000c         ;
 27bb: f0 10                     BEQ loc_27cd         ;
 27bd: c8                        INY                  ;
 27be: 10 e9                     BPL loc_27a9         ;
@@ -1973,7 +2001,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 27c8: e6 0a                     INC dat_0009_H       ;
 27ca: 4c 9e 27  loc_27ca        JMP loc_279e         ;
 27cd: a9 00     loc_27cd        LDA #$00             ;
-27cf: 8d 0d 19                  STA loc_190d         ;
+27cf: 8d 0d 19                  STA dat_190d         ;
 27d2: 20 de 27                  JSR sub_27de         ;
 27d5: 60                        RTS                  ; Return to caller
 27d6: 38        loc_27d6        SEC                  ;
@@ -1999,9 +2027,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 27fd: 85 09                     STA dat_0009_L       ;
 27ff: ad 0c 19                  LDA dat_190c_H       ;
 2802: 85 0a                     STA dat_0009_H       ;
-2804: ae 08 19                  LDX loc_1908         ;
+2804: ae 08 19                  LDX dat_1908         ;
 2807: f0 1e                     BEQ loc_2827         ;
-2809: 86 0c                     STX DOSINI           ;
+2809: 86 0c                     STX dat_000c         ;
 280b: a2 00                     LDX #$00             ;
 280d: b1 09     loc_280d        LDA (dat_0009_L),Y   ;
 280f: 4a                        LSR                  ;
@@ -2015,7 +2043,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 281e: c8        loc_281e        INY                  ;
 281f: d0 ec                     BNE loc_280d         ;
 2821: e6 0a                     INC dat_0009_H       ;
-2823: c6 0c                     DEC DOSINI           ;
+2823: c6 0c                     DEC dat_000c         ;
 2825: d0 e6                     BNE loc_280d         ;
 2827: a2 00     loc_2827        LDX #$00             ;
 2829: ad 07 19                  LDA dat_1907         ;
@@ -2037,7 +2065,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 284a: ad 0c 19                  LDA dat_190c_H       ;
 284d: 85 0a                     STA dat_0009_H       ;
 284f: a0 00                     LDY #$00             ;
-2851: ae 08 19                  LDX loc_1908         ;
+2851: ae 08 19                  LDX dat_1908         ;
 2854: f0 16                     BEQ loc_286c         ;
 2856: b1 09     loc_2856        LDA (dat_0009_L),Y   ;
 2858: 18                        CLC                  ;
@@ -2090,7 +2118,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 28b8: 85 08                     STA dat_0007_H       ;
 28ba: a0 03                     LDY #$03             ;
 28bc: b1 07     loc_28bc        LDA (dat_0007_L),Y   ;
-28be: 99 05 19                  STA loc_1905,Y       ;
+28be: 99 05 19                  STA dat_1905,Y       ;
 28c1: 88                        DEY                  ;
 28c2: 10 f8                     BPL loc_28bc         ;
 28c4: 48                        PHA                  ; Save value of A to restore later
@@ -2098,12 +2126,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 28c7: 8d 5c 02                  STA dat_025c         ;
 28ca: 68                        PLA                  ; Restore previous value of A
 28cb: 29 03                     AND #$03             ;
-28cd: 8d 04 19                  STA loc_1904         ;
-28d0: ad 06 19                  LDA loc_1906         ;
-28d3: 8d 03 19                  STA loc_1903         ;
+28cd: 8d 04 19                  STA dat_1904_H       ;
+28d0: ad 06 19                  LDA dat_1906         ;
+28d3: 8d 03 19                  STA dat_1903_L       ;
 28d6: 60                        RTS                  ; Return to caller
 
-28d7: ad 05 19  sub_28d7        LDA loc_1905         ;
+28d7: ad 05 19  sub_28d7        LDA dat_1905         ;
 28da: a2 01                     LDX #$01             ;
 28dc: 4a                        LSR                  ;
 28dd: 4a                        LSR                  ;
@@ -2156,14 +2184,14 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 293a: 85 09                     STA dat_0009_L       ;
 293c: ad 0c 19                  LDA dat_190c_H       ;
 293f: 85 0a                     STA dat_0009_H       ;
-2941: ad 03 19                  LDA loc_1903         ;
-2944: 8d 32 02                  STA SSKCTL           ;
-2947: ad 04 19                  LDA loc_1904         ;
-294a: 8d 33 02                  STA $0233            ;
+2941: ad 03 19                  LDA dat_1903_L       ;
+2944: 8d 32 02                  STA dat_0232_L       ;
+2947: ad 04 19                  LDA dat_1904_H       ;
+294a: 8d 33 02                  STA dat_0232_H       ;
 294d: ad 07 19                  LDA dat_1907         ;
 2950: 85 0b                     STA dat_0009_H+1     ;
-2952: ad 08 19                  LDA loc_1908         ;
-2955: 85 0c                     STA DOSINI           ;
+2952: ad 08 19                  LDA dat_1908         ;
+2955: 85 0c                     STA dat_000c         ;
 2957: 20 79 29                  JSR sub_2979         ;
 295a: 30 1a                     BMI loc_2976         ;
 295c: a2 0f                     LDX #$0f             ;
@@ -2172,7 +2200,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2964: ca                        DEX                  ;
 2965: 10 f7                     BPL loc_295e         ;
 2967: a2 03                     LDX #$03             ;
-2969: bd 05 19  loc_2969        LDA loc_1905,X       ;
+2969: bd 05 19  loc_2969        LDA dat_1905,X       ;
 296c: dd 80 01                  CMP dat_0180,X       ;
 296f: d0 05                     BNE loc_2976         ;
 2971: ca                        DEX                  ;
@@ -2188,235 +2216,192 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2981: 10 03                     BPL loc_2986         ;
 2983: 4c f4 f9                  JMP $f9f4            ;
 2986: a9 02     loc_2986        LDA #$02             ;
-2988: 85 06                     STA TRAMSZ           ;
+2988: 85 06                     STA dat_0006         ;
 298a: 20 8e 24  loc_298a        JSR sub_248e         ;
 298d: 10 06                     BPL loc_2995         ;
-298f: c6 06                     DEC TRAMSZ           ;
+298f: c6 06                     DEC dat_0006         ;
 2991: d0 f7                     BNE loc_298a         ;
 2993: f0 08                     BEQ loc_299d         ;
-2995: ee 32 02  loc_2995        INC SSKCTL           ;
+2995: ee 32 02  loc_2995        INC dat_0232_L       ;
 2998: d0 03                     BNE loc_299d         ;
-299a: ee 33 02                  INC $0233            ;
+299a: ee 33 02                  INC dat_0232_H       ;
 299d: 98        loc_299d        TYA                  ;
 299e: 60                        RTS                  ; Return to caller
 
-299f: a8 a6 00 01 a5 50 6c  str_PLS_INSRT  .BYTE $a8,$a6,$00,$01,$a5,$50,$6c  ; .....Pl
-29a6: 65 61                     ADC NEWCOL        ; ea
-29a8: 73                        .BYTE $73         ; s
-29a9: 65 20                     ADC dat_0020      ; e
-29ab: 69 6e                     ADC #$6e          ; in
-29ad: 73                        .BYTE $73         ; s
-29ae: 65 72                     ADC COLAC         ; er
-29b0: 74                        .BYTE $74         ; t
-29b1: 20 54 68                  JSR $6854         ;  Th
-29b4: 65 20                     ADC dat_0020      ; e
-29b6: 44                        .BYTE $44         ; D
-29b7: 75 6e                     ADC BITMSK,X      ; un
-29b9: 67                        .BYTE $67         ; g
-29ba: 65 6f                     ADC SHFAMT        ; eo
-29bc: 6e 20 44                  ROR loc_4420      ; n D
-29bf: 69 73                     ADC #$73          ; is
-29c1: 6b                        .BYTE $6b         ; k
-29c2: 20 b2 11                  JSR $11b2         ;  ..
-29c5: 19 01 0d                  ORA $0d01,Y       ; ...
-29c8: 0d a5 53                  ORA loc_53a5      ; ..S
-29cb: 69 64                     ADC #$64          ; id
-29cd: 65 20                     ADC dat_0020      ; e
-29cf: b2                        .BYTE $b2         ; .
-29d0: 10 19                     BPL loc_29eb      ; ..
-29d2: 01 20                     ORA (dat_0020,X)  ; .
-29d4: 69 6e                     ADC #$6e          ; in
-29d6: 74 6f                     .BYTE $74,$6f     ; to
-29d8: 20 61 6e                  JSR $6e61         ;  an
-29db: 79 20 64                  ADC $6420,Y       ; y d
-29de: 72                        .BYTE $72         ; r
-29df: 69 76                     ADC #$76          ; iv
-29e1: 65 2e                     ADC ICAX5Z        ; e.
-29e3: 0d a6 00                  ORA $a6           ; ...
-29e6: 05 a5                     ORA $a5           ; ..
-29e8: 50 72                     BVC loc_2a5c      ; Pr
-29ea: 65 73                     ADC COLAC+1       ; es
-29ec: 73                        .BYTE $73         ; s
-29ed: 20 a1 53                  JSR loc_53a1      ;  .S
-29f0: 50 41                     BVC loc_2a33      ; PA
-29f2: 43                        .BYTE $43         ; C
-29f3: 45 20                     EOR dat_0020      ; E
-29f5: 42                        .BYTE $42         ; B
-29f6: 41 52                     EOR (LMARGN,X)    ; AR
-29f8: a0 20                     LDY #$20          ; .
-29fa: 74 6f                     .BYTE $74,$6f     ; to
-29fc: 20 63 6f                  JSR $6f63         ;  co
-29ff: 6e 74 69                  ROR $6974         ; nti
-2a02: 6e 75 65                  ROR $6575         ; nue
-2a05: 0d ff                     .BYTE $0d $ff     ; ..
-2a07: a6 00 07 a5 6f 72  str_PRESS_ESC  .BYTE $a6,$00,$07,$a5,$6f,$72   ; ....or
-2a0d: 20 70 72                  JSR $7270         ;  pr
-2a10: 65 73                     ADC COLAC+1       ; es
-2a12: 73                        .BYTE $73         ; s
-2a13: 20 a1 45                  JSR loc_45a1      ;  .E
-2a16: 53 43                     .BYTE $53,$43     ; SC
-2a18: a0 20                     LDY #$20          ; .
-2a1a: 74 6f                     .BYTE $74,$6f     ; to
-2a1c: 20 61 62                  JSR loc_6261      ;  ab
-2a1f: 6f 72                     .BYTE $6f,$72     ; or
-2a21: 74                        .BYTE $74         ; t
-2a22: 0d ff                     .BYTE $0d,$ff     ; ..
+299f: a8 a6 00 01 a5 50 6c 65  str_PLS_INSRT  .BYTE $a8,$a6,$00,$01,$a5,$50,$6c,$65  ; .....Ple
+29a7: 61 73 65 20 69 6e 73 65   .BYTE $61,$73,$65,$20,$69,$6e,$73,$65  ; ase inse
+29af: 72 74 20 54 68 65 20 44   .BYTE $72,$74,$20,$54,$68,$65,$20,$44  ; rt The D
+29b7: 75 6e 67 65 6f 6e 20 44   .BYTE $75,$6e,$67,$65,$6f,$6e,$20,$44  ; ungeon D
+29bf: 69 73 6b 20 b2 11 19 01   .BYTE $69,$73,$6b,$20,$b2,$11,$19,$01  ; isk ....
+29c7: 0d 0d a5 53 69 64 65 20   .BYTE $0d,$0d,$a5,$53,$69,$64,$65,$20  ; ...Side
+29cf: b2 10 19 01 20 69 6e 74   .BYTE $b2,$10,$19,$01,$20,$69,$6e,$74  ; .... int
+29d7: 6f 20 61 6e 79 20 64 72   .BYTE $6f,$20,$61,$6e,$79,$20,$64,$72  ; o any dr
+29df: 69 76 65 2e 0d a6 00 05   .BYTE $69,$76,$65,$2e,$0d,$a6,$00,$05  ; ive.....
+29e7: a5 50 72 65 73 73 20 a1   .BYTE $a5,$50,$72,$65,$73,$73,$20,$a1  ; .Press .
+29ef: 53 50 41 43 45 20 42 41   .BYTE $53,$50,$41,$43,$45,$20,$42,$41  ; SPACE BA
+29f7: 52 a0 20 74 6f 20 63 6f   .BYTE $52,$a0,$20,$74,$6f,$20,$63,$6f  ; R. to co
+29ff: 6e 74 69 6e 75 65 0d ff   .BYTE $6e,$74,$69,$6e,$75,$65,$0d,$ff  ; ntinue..
+2a07: a6 00 07 a5 6f 72 20 70  str_PRESS_ESC  .BYTE $a6,$00,$07,$a5,$6f,$72,$20,$70  ; ....or p
+2a0f: 72 65 73 73 20 a1 45 53   .BYTE $72,$65,$73,$73,$20,$a1,$45,$53  ; ress .ES
+2a17: 43 a0 20 74 6f 20 61 62   .BYTE $43,$a0,$20,$74,$6f,$20,$61,$62  ; C. to ab
+2a1f: 6f 72 74 0d ff            .BYTE $6f,$72,$74,$0d,$ff  ; ort..
 2a24: 4c 6f 61 64 69 6e 67 2e  str_LOADING  .BYTE $4c,$6f,$61,$64,$69,$6e,$67,$2e  ; Loading.
 2a2c: 2e 2e                     .BYTE $2e,$2e        ; ..
 2a2e: 45 6e 63 6f 75 6e 74 65  str_ENCOUNTR  .BYTE $45,$6e,$63,$6f,$75,$6e,$74,$65  ; Encounte
 2a36: 72 21                     .BYTE $72,$21        ; r!
+2a38: 00 01 ef ff de b4 b9 f0  dat_2a38_unk  .BYTE $00,$01,$ef,$ff,$de,$b4,$b9,$f0  ; ........
+2a40: e0                        .BYTE $e0            ; .
 
-2a38: 00        dat_2a38_unk    BRK                  ; .
-2a39: 01 ef ff                  .BYTE $01,$ef,$ff
-2a3c: de b4 b9 f0 e0            .BYTE $de,$b4,$b9,$f0,$e0   ; .....
+2a41: c9 28     sub_2a41        CMP #$28             ;
+2a43: 90 02                     BCC loc_2a47         ;
+2a45: a9 27                     LDA #$27             ;
+2a47: 8d d4 18  loc_2a47        STA dat_18d4         ;
+2a4a: a2 00                     LDX #$00             ;
+2a4c: a9 5f     loc_2a4c        LDA #$5f             ;
+2a4e: 20 2c 1c                  JSR sub_1c2c         ;
+2a51: a9 08                     LDA #$08             ;
+2a53: 20 2c 1c                  JSR sub_1c2c         ;
+2a56: 20 43 26  loc_2a56        JSR sub_2643         ;
+2a59: 30 fb                     BMI loc_2a56         ;
+2a5b: c9 0d                     CMP #$0d             ;
+2a5d: d0 0a                     BNE loc_2a69         ;
+2a5f: 9d d5 18                  STA dat_18d5,X       ;
+2a62: a9 20                     LDA #$20             ;
+2a64: 20 2c 1c                  JSR sub_1c2c         ;
+2a67: 18                        CLC                  ;
+2a68: 60                        RTS                  ; Return to caller
+2a69: c9 1b     loc_2a69        CMP #$1b             ;
+2a6b: d0 07                     BNE loc_2a74         ;
+2a6d: a9 20                     LDA #$20             ;
+2a6f: 20 2c 1c                  JSR sub_1c2c         ;
+2a72: 38                        SEC                  ;
+2a73: 60                        RTS                  ; Return to caller
+2a74: c9 08     loc_2a74        CMP #$08             ;
+2a76: d0 15                     BNE loc_2a8d         ;
+2a78: e0 00                     CPX #$00             ;
+2a7a: f0 da                     BEQ loc_2a56         ;
+2a7c: a9 20                     LDA #$20             ;
+2a7e: 20 2c 1c                  JSR sub_1c2c         ;
+2a81: a9 08                     LDA #$08             ;
+2a83: 20 2c 1c                  JSR sub_1c2c         ;
+2a86: 20 2c 1c                  JSR sub_1c2c         ;
+2a89: ca                        DEX                  ;
+2a8a: 4c 4c 2a                  JMP loc_2a4c         ;
+2a8d: c9 20     loc_2a8d        CMP #$20             ;
+2a8f: 90 c5                     BCC loc_2a56         ;
+2a91: ec d4 18                  CPX dat_18d4         ;
+2a94: b0 c0                     BCS loc_2a56         ;
+2a96: 9d d5 18                  STA dat_18d5,X       ;
+2a99: 20 2c 1c                  JSR sub_1c2c         ;
+2a9c: e8                        INX                  ;
+2a9d: 4c 4c 2a                  JMP loc_2a4c         ;
+2aa0: a9 00     loc_2aa0        LDA #$00             ;
+2aa2: 85 02                     STA dat_0002         ;
+2aa4: 85 03                     STA dat_0003         ;
+2aa6: a9 05                     LDA #$05             ;
+2aa8: 20 41 2a                  JSR sub_2a41         ;
+2aab: b0 54                     BCS loc_2b01         ;
+2aad: e0 00                     CPX #$00             ;
+2aaf: d0 03                     BNE loc_2ab4         ;
+2ab1: 4c f8 2a                  JMP loc_2af8         ;
+2ab4: 20 0f 2b  loc_2ab4        JSR sub_2b0f         ;
+2ab7: f0 3f                     BEQ loc_2af8         ;
+2ab9: ca                        DEX                  ;
+2aba: bd d5 18  loc_2aba        LDA dat_18d5,X       ;
+2abd: c9 30                     CMP #$30             ;
+2abf: 90 41                     BCC loc_2b02         ;
+2ac1: c9 3a                     CMP #$3a             ;
+2ac3: b0 3d                     BCS loc_2b02         ;
+2ac5: ca                        DEX                  ;
+2ac6: 10 f2                     BPL loc_2aba         ;
+2ac8: e8                        INX                  ;
+2ac9: 86 06                     STX dat_0006         ;
+2acb: a9 0a     loc_2acb        LDA #$0a             ;
+2acd: 85 07                     STA dat_0007_L       ;
+2acf: a9 00                     LDA #$00             ;
+2ad1: 85 08                     STA dat_0007_H       ;
+2ad3: 20 47 2b                  JSR sub_2b47         ;
+2ad6: a5 04                     LDA dat_0004         ;
+2ad8: 05 05                     ORA dat_0005         ;
+2ada: d0 2a                     BNE loc_2b06         ;
+2adc: a6 06                     LDX dat_0006         ;
+2ade: 18                        CLC                  ;
+2adf: bd d5 18                  LDA dat_18d5,X       ;
+2ae2: 29 0f                     AND #$0f             ;
+2ae4: 65 02                     ADC dat_0002         ;
+2ae6: 85 02                     STA dat_0002         ;
+2ae8: a9 00                     LDA #$00             ;
+2aea: 65 03                     ADC dat_0003         ;
+2aec: 85 03                     STA dat_0003         ;
+2aee: b0 16                     BCS loc_2b06         ;
+2af0: e8                        INX                  ;
+2af1: 86 06                     STX dat_0006         ;
+2af3: ec 46 2b                  CPX dat_2b46         ;
+2af6: 90 d3                     BCC loc_2acb         ;
+2af8: 18        loc_2af8        CLC                  ;
+2af9: a5 02                     LDA dat_0002         ;
+2afb: 05 03                     ORA dat_0003         ;
+2afd: 10 02                     BPL loc_2b01         ;
+2aff: a9 01                     LDA #$01             ;
+2b01: 60        loc_2b01        RTS                  ; Return to caller
+2b02: 18        loc_2b02        CLC                  ;
+2b03: a9 ff                     LDA #$ff             ;
+2b05: 60                        RTS                  ; Return to caller
+2b06: a9 ff     loc_2b06        LDA #$ff             ;
+2b08: 85 02                     STA dat_0002         ;
+2b0a: 85 03                     STA dat_0003         ;
+2b0c: d0 ea                     BNE loc_2af8         ;
+2b0e: 60                        RTS                  ; Return to caller
 
-2a41: c9 28     sub_2a41        CMP #$28          ; .(
-2a43: 90 02                     BCC loc_2a47      ; ..
-2a45: a9 27                     LDA #$27          ; .'
-2a47: 8d d4 18  loc_2a47        STA loc_18d4      ; ...
-2a4a: a2 00                     LDX #$00          ; ..
-2a4c: a9 5f     loc_2a4c        LDA #$5f          ; ._
-2a4e: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a51: a9 08                     LDA #$08          ; ..
-2a53: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a56: 20 43 26  loc_2a56        JSR sub_2643      ;  C&
-2a59: 30 fb                     BMI loc_2a56      ; 0.
-2a5b: c9 0d                     CMP #$0d          ; ..
-2a5d: d0 0a                     BNE loc_2a69      ; ..
-2a5f: 9d d5 18                  STA loc_18d5,X    ; ...
-2a62: a9 20                     LDA #$20          ; .
-2a64: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a67: 18                        CLC               ; .
-2a68: 60                        RTS               ; `
-2a69: c9 1b     loc_2a69        CMP #$1b          ; ..
-2a6b: d0 07                     BNE loc_2a74      ; ..
-2a6d: a9 20                     LDA #$20          ; .
-2a6f: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a72: 38                        SEC               ; 8
-2a73: 60                        RTS               ; `
-2a74: c9 08     loc_2a74        CMP #$08          ; ..
-2a76: d0 15                     BNE loc_2a8d      ; ..
-2a78: e0 00                     CPX #$00          ; ..
-2a7a: f0 da                     BEQ loc_2a56      ; ..
-2a7c: a9 20                     LDA #$20          ; .
-2a7e: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a81: a9 08                     LDA #$08          ; ..
-2a83: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a86: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a89: ca                        DEX               ; .
-2a8a: 4c 4c 2a                  JMP loc_2a4c      ; LL*
-2a8d: c9 20     loc_2a8d        CMP #$20          ; .
-2a8f: 90 c5                     BCC loc_2a56      ; ..
-2a91: ec d4 18                  CPX loc_18d4      ; ...
-2a94: b0 c0                     BCS loc_2a56      ; ..
-2a96: 9d d5 18                  STA loc_18d5,X    ; ...
-2a99: 20 2c 1c                  JSR sub_1c2c      ;  ,.
-2a9c: e8                        INX               ; .
-2a9d: 4c 4c 2a                  JMP loc_2a4c      ; LL*
-2aa0: a9 00     loc_2aa0        LDA #$00          ; ..
-2aa2: 85 02                     STA dat_0002      ; ..
-2aa4: 85 03                     STA dat_0003      ; ..
-2aa6: a9 05                     LDA #$05          ; ..
-2aa8: 20 41 2a                  JSR sub_2a41      ;  A*
-2aab: b0 54                     BCS loc_2b01      ; .T
-2aad: e0 00                     CPX #$00          ; ..
-2aaf: d0 03                     BNE loc_2ab4      ; ..
-2ab1: 4c f8 2a                  JMP loc_2af8      ; L.*
-2ab4: 20 0f 2b  loc_2ab4        JSR sub_2b0f      ;  .+
-2ab7: f0 3f                     BEQ loc_2af8      ; .?
-2ab9: ca                        DEX               ; .
-2aba: bd d5 18  loc_2aba        LDA loc_18d5,X    ; ...
-2abd: c9 30                     CMP #$30          ; .0
-2abf: 90 41                     BCC loc_2b02      ; .A
-2ac1: c9 3a                     CMP #$3a          ; .:
-2ac3: b0 3d                     BCS loc_2b02      ; .=
-2ac5: ca                        DEX               ; .
-2ac6: 10 f2                     BPL loc_2aba      ; ..
-2ac8: e8                        INX               ; .
-2ac9: 86 06                     STX TRAMSZ        ; ..
-2acb: a9 0a     loc_2acb        LDA #$0a          ; ..
-2acd: 85 07                     STA dat_0007_L    ; ..
-2acf: a9 00                     LDA #$00          ; ..
-2ad1: 85 08                     STA dat_0007_H    ; ..
-2ad3: 20 47 2b                  JSR sub_2b47      ;  G+
-2ad6: a5 04                     LDA dat_0004      ; ..
-2ad8: 05 05                     ORA dat_0005      ; ..
-2ada: d0 2a                     BNE loc_2b06      ; .*
-2adc: a6 06                     LDX TRAMSZ        ; ..
-2ade: 18                        CLC               ; .
-2adf: bd d5 18                  LDA loc_18d5,X    ; ...
-2ae2: 29 0f                     AND #$0f          ; ).
-2ae4: 65 02                     ADC dat_0002      ; e.
-2ae6: 85 02                     STA dat_0002      ; ..
-2ae8: a9 00                     LDA #$00          ; ..
-2aea: 65 03                     ADC dat_0003      ; e.
-2aec: 85 03                     STA dat_0003      ; ..
-2aee: b0 16                     BCS loc_2b06      ; ..
-2af0: e8                        INX               ; .
-2af1: 86 06                     STX TRAMSZ        ; ..
-2af3: ec 46 2b                  CPX loc_2b46      ; .F+
-2af6: 90 d3                     BCC loc_2acb      ; ..
-2af8: 18        loc_2af8        CLC               ; .
-2af9: a5 02                     LDA dat_0002      ; ..
-2afb: 05 03                     ORA dat_0003      ; ..
-2afd: 10 02                     BPL loc_2b01      ; ..
-2aff: a9 01                     LDA #$01          ; ..
-2b01: 60        loc_2b01        RTS               ; `
-2b02: 18        loc_2b02        CLC               ; .
-2b03: a9 ff                     LDA #$ff          ; ..
-2b05: 60                        RTS               ; `
-2b06: a9 ff     loc_2b06        LDA #$ff          ; ..
-2b08: 85 02                     STA dat_0002      ; ..
-2b0a: 85 03                     STA dat_0003      ; ..
-2b0c: d0 ea                     BNE loc_2af8      ; ..
-2b0e: 60                        RTS               ; `
-2b0f: 8e 46 2b  sub_2b0f        STX loc_2b46      ; .F+
-2b12: ca                        DEX               ; .
-2b13: bd d5 18  loc_2b13        LDA loc_18d5,X    ; ...
-2b16: c9 20                     CMP #$20          ; .
-2b18: d0 03                     BNE loc_2b1d      ; ..
-2b1a: ca                        DEX               ; .
-2b1b: 10 f6                     BPL loc_2b13      ; ..
-2b1d: e8        loc_2b1d        INX               ; .
-2b1e: 8e 46 2b                  STX loc_2b46      ; .F+
-2b21: a2 00                     LDX #$00          ; ..
-2b23: bd d5 18  loc_2b23        LDA loc_18d5,X    ; ...
-2b26: c9 20                     CMP #$20          ; .
-2b28: d0 06                     BNE loc_2b30      ; ..
-2b2a: e8                        INX               ; .
-2b2b: ec 46 2b                  CPX loc_2b46      ; .F+
-2b2e: 90 f3                     BCC loc_2b23      ; ..
-2b30: a0 00     loc_2b30        LDY #$00          ; ..
-2b32: bd d5 18  loc_2b32        LDA loc_18d5,X    ; ...
-2b35: 99 d5 18                  STA loc_18d5,Y    ; ...
-2b38: c8                        INY               ; .
-2b39: e8                        INX               ; .
-2b3a: ec 46 2b                  CPX loc_2b46      ; .F+
-2b3d: 90 f3                     BCC loc_2b32      ; ..
-2b3f: 8c 46 2b                  STY loc_2b46      ; .F+
-2b42: ae 46 2b                  LDX loc_2b46      ; .F+
-2b45: 60                        RTS               ; `
-2b46: 00        loc_2b46        BRK               ; .
-2b47: a9 00     sub_2b47        LDA #$00          ; ..
-2b49: 85 04                     STA dat_0004      ; ..
-2b4b: 85 05                     STA dat_0005      ; ..
-2b4d: a2 11                     LDX #$11          ; ..
-2b4f: 18                        CLC               ; .
-2b50: 66 05     loc_2b50        ROR dat_0005      ; f.
-2b52: 66 04                     ROR dat_0004      ; f.
-2b54: 66 03                     ROR dat_0003      ; f.
-2b56: 66 02                     ROR dat_0002      ; f.
-2b58: 90 0d                     BCC loc_2b67      ; ..
-2b5a: 18                        CLC               ; .
-2b5b: a5 07                     LDA dat_0007_L    ; ..
-2b5d: 65 04                     ADC dat_0004      ; e.
-2b5f: 85 04                     STA dat_0004      ; ..
-2b61: a5 08                     LDA dat_0007_H    ; ..
-2b63: 65 05                     ADC dat_0005      ; e.
-2b65: 85 05                     STA dat_0005      ; ..
-2b67: ca        loc_2b67        DEX               ; .
-2b68: d0 e6                     BNE loc_2b50      ; ..
-2b6a: 60                        RTS               ;
+2b0f: 8e 46 2b  sub_2b0f        STX dat_2b46         ;
+2b12: ca                        DEX                  ;
+2b13: bd d5 18  loc_2b13        LDA dat_18d5,X       ;
+2b16: c9 20                     CMP #$20             ;
+2b18: d0 03                     BNE loc_2b1d         ;
+2b1a: ca                        DEX                  ;
+2b1b: 10 f6                     BPL loc_2b13         ;
+2b1d: e8        loc_2b1d        INX                  ;
+2b1e: 8e 46 2b                  STX dat_2b46         ;
+2b21: a2 00                     LDX #$00             ;
+2b23: bd d5 18  loc_2b23        LDA dat_18d5,X       ;
+2b26: c9 20                     CMP #$20             ;
+2b28: d0 06                     BNE loc_2b30         ;
+2b2a: e8                        INX                  ;
+2b2b: ec 46 2b                  CPX dat_2b46         ;
+2b2e: 90 f3                     BCC loc_2b23         ;
+2b30: a0 00     loc_2b30        LDY #$00             ;
+2b32: bd d5 18  loc_2b32        LDA dat_18d5,X       ;
+2b35: 99 d5 18                  STA dat_18d5,Y       ;
+2b38: c8                        INY                  ;
+2b39: e8                        INX                  ;
+2b3a: ec 46 2b                  CPX dat_2b46         ;
+2b3d: 90 f3                     BCC loc_2b32         ;
+2b3f: 8c 46 2b                  STY dat_2b46         ;
+2b42: ae 46 2b                  LDX dat_2b46         ;
+2b45: 60                        RTS                  ; Return to caller
+
+2b46: 00        dat_2b46        .BYTE $00            ;
+
+2b47: a9 00     sub_2b47        LDA #$00             ;
+2b49: 85 04                     STA dat_0004         ;
+2b4b: 85 05                     STA dat_0005         ;
+2b4d: a2 11                     LDX #$11             ;
+2b4f: 18                        CLC                  ;
+2b50: 66 05     loc_2b50        ROR dat_0005         ;
+2b52: 66 04                     ROR dat_0004         ;
+2b54: 66 03                     ROR dat_0003         ;
+2b56: 66 02                     ROR dat_0002         ;
+2b58: 90 0d                     BCC loc_2b67         ;
+2b5a: 18                        CLC                  ;
+2b5b: a5 07                     LDA dat_0007_L       ;
+2b5d: 65 04                     ADC dat_0004         ;
+2b5f: 85 04                     STA dat_0004         ;
+2b61: a5 08                     LDA dat_0007_H       ;
+2b63: 65 05                     ADC dat_0005         ;
+2b65: 85 05                     STA dat_0005         ;
+2b67: ca        loc_2b67        DEX                  ;
+2b68: d0 e6                     BNE loc_2b50         ;
+2b6a: 60                        RTS                  ; Return to caller
 
 ; Computes a random byte-size value
 ; Parameters
@@ -2493,34 +2478,22 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2bcd: e6 32                     INC dat_0032_L       ;
 2bcf: 60                        RTS                  ; Return to caller
 
-2bd0: a6 00     str_PRS_ANY_KY  LDX dat_0000      ; ..
-2bd2: 07                        .BYTE $07         ; .
-2bd3: a9 a5                     LDA #$a5          ; ..
-2bd5: 3c 3c 3c                  .BYTE $3c,$3c,$3c  ; <<<
-2bd8: 20 a1 50                  JSR loc_50a1      ;  .P
-2bdb: 72                        .BYTE $72         ; r
-2bdc: 65 73                     ADC COLAC+1       ; es
-2bde: 73                        .BYTE $73         ; s
-2bdf: 20 61 6e                  JSR $6e61         ;  an
-2be2: 79 20 6b                  ADC $6b20,Y       ; y k
-2be5: 65 79                     ADC ROWINC        ; ey
-2be7: 20 74 6f                  JSR $6f74         ;  to
-2bea: 20 63 6f                  JSR $6f63         ;  co
-2bed: 6e 74 69                  ROR $6974         ; nti
-2bf0: 6e 75 65                  ROR $6575         ; nue
-2bf3: a0 20                     LDY #$20          ; .
-2bf5: 3e 3e 3e                  ROL bad_3e3e,X    ; >>>
-2bf8: 0d ff                     .BYTE $0d,$ff
+2bd0: a6 00 07 a9 a5 3c 3c 3c  str_PRS_ANY_KY  .BYTE $a6,$00,$07,$a9,$a5,$3c,$3c,$3c  ; .....<<<
+2bd8: 20 a1 50 72 65 73 73 20   .BYTE $20,$a1,$50,$72,$65,$73,$73,$20  ;  .Press
+2be0: 61 6e 79 20 6b 65 79 20   .BYTE $61,$6e,$79,$20,$6b,$65,$79,$20  ; any key
+2be8: 74 6f 20 63 6f 6e 74 69   .BYTE $74,$6f,$20,$63,$6f,$6e,$74,$69  ; to conti
+2bf0: 6e 75 65 a0 20 3e 3e 3e   .BYTE $6e,$75,$65,$a0,$20,$3e,$3e,$3e  ; nue. >>>
+2bf8: 0d ff                     .BYTE $0d,$ff        ; ..
 
 2bfa: a9 06     sub_2bfa        LDA #$06             ; Set A = 6
                                                      ; Continue to next sub
 
 ; Parameters
-;    A = ? : one of [$1, $2, $4, $10]
+;    A = ? : one of [$1, $2, $4, $6, $10]
 2bfc: 8d 64 2c  sub_2bfc        STA exe_cnt_2c64     ; Set exe_cnt_2c64 = A
 2bfe: c6 32                     DEC dat_0032_L       ;
-2c01: c6 0f                     DEC APPMHI+1         ;
-2c03: ce 37 19                  DEC loc_1937         ;
+2c01: c6 0f                     DEC dat_000f         ;
+2c03: ce 37 19                  DEC dat_1937         ;
 2c06: a9 01                     LDA #$01             ;
 2c08: 8d 65 2c                  STA cnt_2c65         ;
 2c0b: 20 43 26                  JSR sub_2643         ;
@@ -2556,8 +2529,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2c59: d0 b3                     BNE loc_2c0e         ;    not evenly divisible by 256, jump to $2c0e [loc_2c0e]
                                                      ; Otherwise,
 2c5b: e6 32     loc_2c5b        INC dat_0032_L       ;    - add 1 to $0032 [dat_0032_L]
-2c5d: e6 0f                     INC APPMHI+1         ;    - add 1 to $000f [dat_000f]
-2c5f: ee 37 19                  INC loc_1937         ;    - add 1 to $1937 [dat_1937]
+2c5d: e6 0f                     INC dat_000f         ;    - add 1 to $000f [dat_000f]
+2c5f: ee 37 19                  INC dat_1937         ;    - add 1 to $1937 [dat_1937]
 2c62: 60                        RTS                  ; Return to caller
 
 2c63: 00        cnt_2c63        .BYTE $00            ; Loop counter (6 iterations : counts from 6 down to 0)
@@ -2590,6 +2563,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2c99: ff        tmp_2c99_L      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_L
 2c9a: ff        tmp_2c99_H      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_H
 
+; Parameters
+;   A = ?
+;   X = ?
+;   Y = ?
 2c9b: 86 0e     loc_2c9b        STX APPMHI           ;
 2c9d: 84 0d                     STY DOSINI+1         ;
 2c9f: 0a                        ASL                  ;
@@ -2639,7 +2616,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2cf4: e6 32     loc_2cf4        INC dat_0032_L       ;
 2cf6: 60                        RTS                  ; Return to caller
 
-2cf7: 10 11 12 3f  dat_2cf7     .BYTE $10,$11,$12,$3f ;
+2cf7: 10 11 12 3f  dat_2cf7     .BYTE $10,$11,$12,$3f  ; ...?
 
 ; Related to encounters or loading new scenarios
 ;
@@ -2704,22 +2681,20 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2d6c: 2c 58 02                  BIT dat_0258         ;
 2d6f: 50 01                     BVC loc_2d72         ;
 2d71: ca                        DEX                  ; Subtract 1 from X
-2d72: dd 85 2d  loc_2d72        CMP loc_2d85,X       ;
+2d72: dd 85 2d  loc_2d72        CMP tbl_2d85,X       ;
 2d75: f0 05                     BEQ loc_2d7c         ;
 2d77: ca                        DEX                  ; Subtract 1 from X
 2d78: 10 f8                     BPL loc_2d72         ; Repeat while X >= 0
-2d7a: 30 e5                     BMI loc_2d61         ;
-2d7c: bd 8a 2d  loc_2d7c        LDA loc_2d8a,X       ;
-2d7f: 8d 09 19                  STA dat_1909         ;
+2d7a: 30 e5                     BMI loc_2d61         ; If the loop above completed, return to caller with carry flag set
+2d7c: bd 8a 2d  loc_2d7c        LDA tbl_2d8a,X       ; Otherwise,
+2d7f: 8d 09 19                  STA dat_1909         ;     Set dat_1909 = tbl_2d8a + X (where X is in 0..4)
 2d82: 4c ff 2c                  JMP loc_2cff         ; Jump back up to the start of the sub
 
-2d85: 35 0f     loc_2d85        AND APPMHI+1,X    ; 5.
-2d87: 44 43                     .BYTE $44,$43     ; DC
-2d89: 10 2f                     BPL bad_2dba      ; ./
-2d8b: 44 43 42 3f               .BYTE $44,$43,$42,$3f  ; DCB?
+2d85: 35 0f 44 43 10  tbl_2d85  .BYTE $35,$0f,$44,$43,$10  ; 5.DC.
+2d8a: 2f 44 43 42 3f  tbl_2d8a  .BYTE $2f,$44,$43,$42,$3f  ; /DCB?
 
 2d8f: a0 00     loc_2d8f        LDY #$00             ;
-2d91: a6 0c                     LDX DOSINI           ;
+2d91: a6 0c                     LDX dat_000c         ;
 2d93: f0 0a                     BEQ loc_2d9f         ;
 2d95: 91 09     loc_2d95        STA (dat_0009_L),Y   ;
 2d97: c8                        INY                  ;
@@ -2769,9 +2744,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2dd6: 4a                        LSR                  ;     A
 2dd7: 4a                        LSR                  ;     by 8
 2dd8: a8                        TAY                  ; Set Y = A
-2dd9: b9 ff ff  smc_2dd9        LDA $ffff,Y          ;
+2dd9: b9 ff ff  smc_2dd9        LDA $ffff,Y          ; Read the value at the address provided in the input params Y/X
 2ddc: 1d 05 2e  smc_2ddc        ORA tbl_2e05,X       ;
-2ddf: 99 ff ff  smc_2ddf        STA $ffff,Y          ;
+2ddf: 99 ff ff  smc_2ddf        STA $ffff,Y          ; Update the value at the address provided in the input params Y/X
 2de2: 60                        RTS                  ; Return to caller
 
 ; Performs the following:
@@ -2790,56 +2765,54 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 ;   Carry flag is updated on return
 ;      0 if
 ;      1 if
-2de3: 8e f5 2d  sub_2de3        STX smc_2df3+2    ; Self-modifying code: Set MSB of base address to read from
-2de6: 8c f4 2d                  STY smc_2df3+1    ; Self-modifying code: Set LSB of base address to read from
-2de9: 48                        PHA               ; Preserve current value of A
-2dea: 29 07                     AND #$07          ; Set
-2dec: aa                        TAX               ;     X = A & 7
-2ded: 68                        PLA               ; Restore previous value of A
-2dee: 4a                        LSR               ; Divide
-2def: 4a                        LSR               ;     A
-2df0: 4a                        LSR               ;     by 8
-2df1: a8                        TAY               ; Set Y = A
-2df2: 18                        CLC               ; Clear the carry flag (Set C = 0)
-2df3: b9 ff ff  smc_2df3        LDA $ffff,Y       ; Read the source byte (address dynamically updated above)
-2df6: 3d 05 2e                  AND tbl_2e05,X    ;     and AND it with the mask value.
-2df9: f0 01                     BEQ loc_2dfc      ; If the result is not zero,
-2dfb: 38                        SEC               ;     then set the carry flag (Set C = 1)
-2dfc: 60        loc_2dfc        RTS               ; Return to caller
+2de3: 8e f5 2d  sub_2de3        STX smc_2df3+2       ; Self-modifying code: Set the source address
+2de6: 8c f4 2d                  STY smc_2df3+1       ;     of the LDA abs,Y below to Y/X
+2de9: 48                        PHA                  ; Preserve current value of A
+2dea: 29 07                     AND #$07             ; Set
+2dec: aa                        TAX                  ;     X = A & 7
+2ded: 68                        PLA                  ; Restore previous value of A
+2dee: 4a                        LSR                  ; Divide
+2def: 4a                        LSR                  ;     A
+2df0: 4a                        LSR                  ;     by 8
+2df1: a8                        TAY                  ; Set Y = A
+2df2: 18                        CLC                  ; Clear the carry flag (Set C = 0)
+2df3: b9 ff ff  smc_2df3        LDA $ffff,Y          ; Read the source byte (address dynamically updated above)
+2df6: 3d 05 2e                  AND tbl_2e05,X       ;     and AND it with the mask value.
+2df9: f0 01                     BEQ loc_2dfc         ; If the result is not zero,
+2dfb: 38                        SEC                  ;     then set the carry flag (Set C = 1)
+2dfc: 60        loc_2dfc        RTS                  ; Return to caller
 
+2dfd: 7f bf df ef f7 fb fd fe  tbl_2dfd  .BYTE $7f,$bf,$df,$ef,$f7,$fb,$fd,$fe  ; .......
+2e05: 80 40 20 10 08 04 02 01  tbl_2e05  .BYTE $80,$40,$20,$10,$08,$04,$02,$01  ; .@ .....
 
-2dfd: 7f bf df ef f7 fb fd fe  tbl_2dfd  .BYTE $7f,$bf,$df,$ef,$f7,$fb,$fd,$fe
-2e05: 80 40 20 10 08 04 02 01  tbl_2e05  .BYTE $80,$40,$20,$10,$08,$04,$02,$01
-
-2e0d: 84
-2e0e: 0b                        .BYTE $0b         ;
-2e0f: a0 00                     LDY #$00          ;
-2e11: e0 00                     CPX #$00          ;
-2e13: f0 0e                     BEQ loc_2e23      ;
-2e15: b1 07     loc_2e15        LDA (dat_0007_L),Y;
-2e17: 91 09                     STA (dat_0009_L),Y;
-2e19: c8                        INY               ;
-2e1a: d0 f9                     BNE loc_2e15      ;
-2e1c: e6 0a                     INC dat_0009_H    ;
-2e1e: e6 08     loc_2e1e        INC dat_0007_H    ;
-2e20: ca                        DEX               ;
-2e21: d0 f2                     BNE loc_2e15      ;
-2e23: a5 0b     loc_2e23        LDA dat_0009_H+1  ;
-2e25: f0 09                     BEQ loc_2e30      ;
-2e27: b1 07     loc_2e27        LDA (dat_0007_L),Y;
-2e29: 91 09                     STA (dat_0009_L),Y;
-2e2b: c8                        INY               ;
-2e2c: c4 0b                     CPY dat_0009_H+1  ;
-2e2e: d0 f7     loc_2e2e        BNE loc_2e27      ;
-2e30: 60        loc_2e30        RTS               ;
-2e31: c6 32     loc_2e31        DEC dat_0032_L    ;
-2e33: a2 07                     LDX #$07          ;
-2e35: b5 35     loc_2e35        LDA BFENHI,X      ;
-2e37: 9d 09 63                  STA TME_MINUTES,X ;
-2e3a: ca                        DEX               ;
-2e3b: 10 f8                     BPL loc_2e35      ;
-2e3d: e6 32                     INC dat_0032_L    ;
-2e3f: 60                        RTS               ; Return to caller
+2e0d: 84 0b     sub_2e0d        STY DOSVEC+1         ;
+2e0f: a0 00                     LDY #$00             ;
+2e11: e0 00                     CPX #$00             ;
+2e13: f0 0e                     BEQ loc_2e23         ;
+2e15: b1 07     loc_2e15        LDA (dat_0007_L),Y   ;
+2e17: 91 09                     STA (dat_0009_L),Y   ;
+2e19: c8                        INY                  ;
+2e1a: d0 f9                     BNE loc_2e15         ;
+2e1c: e6 0a                     INC dat_0009_H       ;
+2e1e: e6 08     loc_2e1e        INC dat_0007_H       ;
+2e20: ca                        DEX                  ;
+2e21: d0 f2                     BNE loc_2e15         ;
+2e23: a5 0b     loc_2e23        LDA dat_0009_H+1     ;
+2e25: f0 09                     BEQ loc_2e30         ;
+2e27: b1 07     loc_2e27        LDA (dat_0007_L),Y   ;
+2e29: 91 09                     STA (dat_0009_L),Y   ;
+2e2b: c8                        INY                  ;
+2e2c: c4 0b                     CPY dat_0009_H+1     ;
+2e2e: d0 f7     loc_2e2e        BNE loc_2e27         ;
+2e30: 60        loc_2e30        RTS                  ;
+2e31: c6 32     loc_2e31        DEC dat_0032_L       ;
+2e33: a2 07                     LDX #$07             ;
+2e35: b5 35     loc_2e35        LDA BFENHI,X         ;
+2e37: 9d 09 63                  STA TME_MINUTES,X    ;
+2e3a: ca                        DEX                  ;
+2e3b: 10 f8                     BPL loc_2e35         ;
+2e3d: e6 32                     INC dat_0032_L       ;
+2e3f: 60                        RTS                  ; Return to caller
 
 2e40: a0 01     loc_2e40        LDY #$01             ;
 2e42: 2c a0 00                  BIT $a0              ;
@@ -2899,12 +2872,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2e9e: a5 0b     loc_2e9e        LDA dat_0009_H+1     ;
 2ea0: 49 ff                     EOR #$ff             ;
 2ea2: 85 0b                     STA dat_0009_H+1     ;
-2ea4: a5 0c                     LDA DOSINI           ;
+2ea4: a5 0c                     LDA dat_000c         ;
 2ea6: 49 ff                     EOR #$ff             ;
-2ea8: 85 0c                     STA DOSINI           ;
+2ea8: 85 0c                     STA dat_000c         ;
 2eaa: e6 0b                     INC dat_0009_H+1     ;
 2eac: d0 02                     BNE loc_2eb0         ;
-2eae: e6 0c                     INC DOSINI           ;
+2eae: e6 0c                     INC dat_000c         ;
 2eb0: a0 00     loc_2eb0        LDY #$00             ;
 2eb2: b1 07     loc_2eb2        LDA (dat_0007_L),Y   ;
 2eb4: 91 09                     STA (dat_0009_L),Y   ;
@@ -2914,7 +2887,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2ebb: e6 0a                     INC dat_0009_H       ;
 2ebd: e6 0b     loc_2ebd        INC dat_0009_H+1     ;
 2ebf: d0 f1                     BNE loc_2eb2         ;
-2ec1: e6 0c                     INC DOSINI           ;
+2ec1: e6 0c                     INC dat_000c         ;
 2ec3: d0 ed                     BNE loc_2eb2         ;
 2ec5: 60                        RTS                  ; Return to caller
 
@@ -2935,16 +2908,16 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2ede: 85 17                     STA addr_0016_H      ;     $2007 [str_BLANK] "" (empty string)
 2ee0: 20 8c 1c                  JSR sub_1c8c         ;
 2ee3: 8e 33 19                  STX dat_1933         ;
-2ee6: a9 07                     LDA #$07             ;
-2ee8: 8d 13 19                  STA dat_1913         ;
-2eeb: a9 20                     LDA #$20             ;
-2eed: 8d 23 19                  STA dat_1923         ;
+2ee6: a9 07                     LDA #$07             ; Set ???
+2ee8: 8d 13 19                  STA tbl_1913_L       ;     address
+2eeb: a9 20                     LDA #$20             ;     to
+2eed: 8d 23 19                  STA tbl_1923_H       ;     $2007 [str_BLANK] "" (empty string)
 2ef0: a9 19                     LDA #$19             ;
 2ef2: 8d 09 19                  STA dat_1909         ;
 2ef5: a9 00                     LDA #$00             ; Set
 2ef7: 8d 0b 19                  STA dat_190b_L       ;    address @ $190b/$190c
 2efa: a9 76                     LDA #$76             ;    to
-2efc: 8d 0c 19                  STA dat_190c_H       ;    $7600
+2efc: 8d 0c 19                  STA dat_190c_H       ;    $7600 []
 2eff: 20 ad 2c                  JSR sub_2cad         ;
 2f02: 20 00 76                  JSR $7600            ;
 2f05: a9 02                     LDA #$02             ;
@@ -2963,13 +2936,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2f25: 10 f8                     BPL loc_2f1f         ;
 2f27: e8                        INX                  ;
 2f28: 86 32                     STX dat_0032_L       ;
-2f2a: 86 0f                     STX APPMHI+1         ;
+2f2a: 86 0f                     STX dat_000f         ;
 2f2c: a2 13                     LDX #$13             ;
 2f2e: a9 47     loc_2f2e        LDA #$47             ;
-2f30: 9d a3 45                  STA loc_45a3,X       ;
+2f30: 9d a3 45                  STA tbl_45a3,X       ;
 2f33: ca                        DEX                  ;
 2f34: a9 e5                     LDA #$e5             ;
-2f36: 9d a3 45                  STA loc_45a3,X       ;
+2f36: 9d a3 45                  STA tbl_45a3,X       ;
 2f39: ca                        DEX                  ;
 2f3a: 10 f2                     BPL loc_2f2e         ;
 2f3c: a9 17                     LDA #$17             ; Set ???
@@ -2982,27 +2955,24 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2f4b: a9 39                     LDA #$39             ;     to
 2f4d: 85 17                     STA addr_0016_H      ;     $3969 [str_3969] Status value template. Contains embedded addr refs to char stats.
 2f4f: 20 84 1c                  JSR sub_1c84         ;
-2f52: a2 08                     LDX #$08             ;
-2f54: 8e 34 19                  STX loc_1934         ;
-2f57: ca                        DEX                  ;
-2f58: bd 70 2f  loc_2f58        LDA loc_2f70,X       ;
-2f5b: 9d 13 19                  STA dat_1913,X       ;
-2f5e: bd 78 2f                  LDA loc_2f78,X       ;
-2f61: 9d 23 19                  STA dat_1923,X       ;
-2f64: 8e 33 19                  STX dat_1933         ;
-2f67: ca                        DEX                  ;
-2f68: 10 ee                     BPL loc_2f58         ;
+2f52: a2 08                     LDX #$08             ; Set X = 8
+2f54: 8e 34 19                  STX loc_1934         ; Set loc_1934 = 8
+2f57: ca                        DEX                  ; Subtract 1 from X (X = 7, 8 iterations)
+2f58: bd 70 2f  loc_2f58        LDA dat_2f70_L,X     ; Set
+2f5b: 9d 13 19                  STA tbl_1913_L,X     ;     tbl_1913_L + X = dat_2f70_L + X
+2f5e: bd 78 2f                  LDA dat_2f78_H,X     ; Set
+2f61: 9d 23 19                  STA tbl_1923_H,X     ;     tbl_1923_H + X = dat_2f78_H + X
+      ; TODO: Why perform the next update?
+      ;       It will always be 0 after the loop completes.
+      ;       Is this value accessed in an interrupt handler?
+2f64: 8e 33 19                  STX dat_1933         ; Set dat_1933 = X
+2f67: ca                        DEX                  ; Subtract 1 from X
+2f68: 10 ee                     BPL loc_2f58         ; Repeat while X >= 0
 2f6a: 20 2d 3c                  JSR sub_3c2d         ;
 2f6d: 4c 8c 31                  JMP loc_318c         ; Continue execution @ $318c [loc_318c]
 
-2f70: de 84 31  loc_2f70        DEC loc_3184,X    ;
-2f73: a2 d1                     LDX #$d1          ;
-2f75: e9 03                     SBC #$03          ;
-2f77: 00                        BRK               ; .
-2f78: 3c        loc_2f78        .BYTE $3c         ; <
-2f79: 3d 3e 3e                  AND bad_3e3e,X    ; =>>
-2f7c: 3e 3e 3f                  ROL bad_3f3e,X    ; >>?
-2f7f: 00                        BRK               ; .
+2f70: de 84 31 a2 d1 e9 03 00  dat_2f70_L  .BYTE $de,$84,$31,$a2,$d1,$e9,$03,$00  ; ..1.....
+2f78: 3c 3d 3e 3e 3e 3e 3f 00  dat_2f78_H  .BYTE $3c,$3d,$3e,$3e,$3e,$3e,$3f,$00  ; <=>>>>?.
 
 2f80: 20 2c 32  loc_2f80        JSR sub_322c         ;
 2f83: ad 00 76                  LDA $7600            ;
@@ -3062,7 +3032,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3005: a9 ff                     LDA #$ff             ;
 3007: 8d 58 19                  STA UNK_BYTE_1958    ;
 300a: 20 96 35                  JSR sub_3596         ;
-300d: ad 71 19  loc_300d        LDA loc_1971         ;
+300d: ad 71 19  loc_300d        LDA dat_1971         ;
 3010: 30 6d                     BMI loc_307f         ;
 3012: ad 00 76                  LDA $7600            ;
 3015: d0 68                     BNE loc_307f         ;
@@ -3132,23 +3102,37 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 30b4: ca                        DEX                  ;
 30b5: 10 f8                     BPL loc_30af         ;
 30b7: 4c de 30                  JMP loc_30de         ; Continue execution @ $30de [loc_30de]
-30ba: 2c 37 19  loc_30ba        BIT loc_1937         ;
+30ba: 2c 37 19  loc_30ba        BIT dat_1937         ;
 30bd: 10 06                     BPL loc_30c5         ;
 30bf: e0 05                     CPX #$05             ; If X >= 5
 30c1: b0 02                     BCS loc_30c5         ;     Then invoke the subroutine
 30c3: 90 19                     BCC loc_30de         ;     Otherwise, skip the sub invocation below
-30c5: bd 85 3b  loc_30c5        LDA tbl_3b85_L,X     ;
-30c8: 8d d2 30                  STA smc_30d1+1       ; Self-modifying: Set the LSB of the subroutine address below
-30cb: bd 92 3b                  LDA tbl_3b92_H,X     ;
-30ce: 8d d3 30                  STA smc_30d1+2       ; Self-modifying: Set the MSB of the subroutine address below
+30c5: bd 85 3b  loc_30c5        LDA tbl_3b85_L,X     ; Self-modifying code:
+30c8: 8d d2 30                  STA smc_30d1+1       ;     Set the JSR address
+30cb: bd 92 3b                  LDA tbl_3b92_H,X     ;     @ $30d1 below
+30ce: 8d d3 30                  STA smc_30d1+2       ;     to tbl_3b85_L,X/tbl_3b92_H,X
 30d1: 20 ff ff  smc_30d1        JSR $ffff            ; The address for this JSR abs is dynamically modified
+                                                     ; to one of the following addresses
+                                                     ;     0: $3756 [sub_3756]
+                                                     ;     1: $3768 [sub_3768]
+                                                     ;     2: $3771 [sub_3771]
+                                                     ;     3: $377a [sub_377a]
+                                                     ;     4: $3783 [sub_3783]
+                                                     ;     5: $3683 [sub_3683]
+                                                     ;     6: $37d6 [sub_37d6]
+                                                     ;     7: $384a [sub_384a]
+                                                     ;     8: $3c8c [sub_3c8c]
+                                                     ;     9: $3c71 [sub_3c71]
+                                                     ;    10: $3c71 [sub_3c71]
+                                                     ;    11: $3c8c [sub_3c8c]
+                                                     ;    12: $2cab [sub_2cab] - does nothing/debug BRK
 30d4: a9 ff                     LDA #$ff             ;
 30d6: 85 31                     STA CHKSUM           ;
 30d8: 20 6f 38                  JSR sub_386f         ;
 30db: ad 0a d2  loc_30db        LDA RANDOM           ;
 30de: 6c 77 19  loc_30de        JMP (cont_addr_1977_L) ; Continue execution at requested address
 
-30e1: 2c 2e     dat_30e1        .BYTE $2c,$2e
+30e1: 2c 2e     dat_30e1        .BYTE $2c,$2e        ; ,.
 
 30e3: a9 00     loc_30e3        LDA #$00             ;
 30e5: 8d 75 19                  STA UNK_BYTE_1975    ;
@@ -3176,7 +3160,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3120: aa                        TAX                  ;
 3121: 4c 27 31                  JMP loc_3127         ;
 3124: ae 12 63  loc_3124        LDX CHR_LOC_ORIENT   ;
-3127: 8e 7f 31  loc_3127        STX loc_317f         ;
+3127: 8e 7f 31  loc_3127        STX dat_317f         ;
 312a: 20 ca 32                  JSR sub_32ca         ;
 312d: bd 44 3b                  LDA dat_3b44,X       ;
 3130: 49 01                     EOR #$01             ;
@@ -3200,21 +3184,31 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3159: 7d 4c 3b                  ADC dat_3b4c,X       ;
 315c: 99 16 63                  STA $6316,Y          ;
 315f: bc 64 3b                  LDY dat_3b64,X       ;
-3162: b1 10                     LDA (POKMSK),Y       ;
+3162: b1 10                     LDA (addr_MapCell_L),Y ;
 3164: bc 6c 3b                  LDY dat_3b6c,X       ;
 3167: 10 04                     BPL loc_316d         ;
-3169: 4a                        LSR                  ;
-316a: 4a                        LSR                  ;
-316b: 4a                        LSR                  ;
-316c: 4a                        LSR                  ;
-316d: 29 0f     loc_316d        AND #$0f             ;
-316f: a8                        TAY                  ;
-3170: b9 24 3b                  LDA dat_3b24,Y       ;
-3173: 8d 7d 31                  STA loc_317d         ;
-3176: b9 34 3b                  LDA loc_3b34,Y       ;
-3179: 8d 7e 31                  STA loc_317e         ;
-317c: 4c ff ff                  JMP $ffff            ;
-317f: 00        loc_317f        BRK                  ;
+3169: 4a                        LSR                  ; Divide
+316a: 4a                        LSR                  ;     A
+316b: 4a                        LSR                  ;     by
+316c: 4a                        LSR                  ;     16
+316d: 29 0f     loc_316d        AND #$0f             ; Mask A by 0xf (0..15)
+316f: a8                        TAY                  ; Set Y = A
+3170: b9 24 3b                  LDA tbl_3b24_L,Y     ; Self-modifying code:
+3173: 8d 7d 31                  STA smc_317c+1       ;     Set the JMP address
+3176: b9 34 3b                  LDA tbl_3b34_H,Y     ;     @ $317c below
+3179: 8d 7e 31                  STA smc_317c+2       ;     to tbl_3b24_L + Y/tbl_3b34_H + Y
+317c: 4c ff ff  smc_317c        JMP $ffff            ; Continue @ the address assigned from tbl_3b24_L/tbl_3b34_H
+                                                     ; One of the following addresses:
+                                                     ;     - $3321 [cont_3321]
+                                                     ;     - $330f [cont_330f]
+                                                     ;     - $3307 [cont_3307]
+                                                     ;     - $3344 [cont_3344]
+                                                     ;     - $3348 [cont_3348]
+                                                     ;     - $334c [cont_334c]
+                                                     ;     - $32da [cont_32da]
+
+317f: 00        dat_317f        .BYTE $00            ;
+
 3180: 4c 8c 31  loc_3180        JMP loc_318c         ;
 3183: 20 ca 32  loc_3183        JSR sub_32ca         ;
 3186: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
@@ -3222,8 +3216,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 318c: ad 15 63  loc_318c        LDA CHR_LOC_MAP      ;
 318f: cd 00 ac                  CMP MAP_NUMBER       ;
 3192: f0 25                     BEQ loc_31b9         ;
+      ; Player's current map location does not match the currently loaded map
 3194: aa                        TAX                  ;
-3195: bd 25 32                  LDA loc_3225,X       ;
+3195: bd 25 32                  LDA tbl_MAP_NUM2LVL,X ;
 3198: 8d 1d 63                  STA $631d            ;
 319b: 8a                        TXA                  ;
 319c: 18                        CLC                  ;
@@ -3240,10 +3235,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 31b6: 8d 12 19                  STA ZONE_ID          ;
 31b9: 20 31 35  loc_31b9        JSR sub_3531         ;
 31bc: a0 02                     LDY #$02             ;
-31be: b1 10                     LDA (POKMSK),Y       ;
+31be: b1 10                     LDA (addr_MapCell_L),Y ;
 31c0: 8d 74 19                  STA UNK_BYTE_1974    ;
 31c3: a0 03                     LDY #$03             ;
-31c5: b1 10                     LDA (POKMSK),Y       ;
+31c5: b1 10                     LDA (addr_MapCell_L),Y ;
 31c7: 10 2f                     BPL loc_31f8         ;
 31c9: 29 1f                     AND #$1f             ;
 31cb: 8d 5a 19                  STA TELEPORT_INDEX   ;
@@ -3251,7 +3246,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 31d0: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
 31d3: 2c 58 19                  BIT UNK_BYTE_1958    ;
 31d6: 30 35                     BMI loc_320d         ;
-31d8: b1 10                     LDA (POKMSK),Y       ;
+31d8: b1 10                     LDA (addr_MapCell_L),Y ;
 31da: 2a                        ROL                  ;
 31db: 2a                        ROL                  ;
 31dc: 2a                        ROL                  ;
@@ -3259,24 +3254,29 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 31de: 29 03                     AND #$03             ;
 31e0: 8d 59 19                  STA UNK_BYTE_1959    ;
 31e3: aa                        TAX                  ;
-31e4: bd 9f 3b                  LDA loc_3b9f,X       ;
-31e7: 8d f6 31                  STA loc_31f6         ;
-31ea: bd a3 3b                  LDA loc_3ba3,X       ;
-31ed: 8d f7 31                  STA loc_31f7         ;
+31e4: bd 9f 3b                  LDA addr_3b9f_L,X    ; Self-modifying code:
+31e7: 8d f6 31                  STA smc_31f5+1       ;     Set the JMP address
+31ea: bd a3 3b                  LDA addr_3ba3_H,X    ;     @ $31f5 below
+31ed: 8d f7 31                  STA smc_31f5+2       ;     to addr_3b9f_L + X/addr_3ba3_H + X
 31f0: a9 ff                     LDA #$ff             ;
 31f2: 8d 58 19                  STA UNK_BYTE_1958    ;
-31f5: 4c ff ff                  JMP $ffff            ;
+31f5: 4c ff ff  smc_31f5        JMP $ffff            ; Continue @ the address assigned from addr_3b9f_L/addr_3ba3_H
+                                                     ; One of the following addresses:
+                                                     ;    0: $3548 [cont_3548]
+                                                     ;    1: $3564 [cont_3564]
+                                                     ;    2: $3583 [cont_3583]
+                                                     ;    3: $35c1 [DO_TELEPORT_PLAYER]
 31f8: 29 1f     loc_31f8        AND #$1f             ;
 31fa: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
 31fd: a9 ff                     LDA #$ff             ;
 31ff: 8d 59 19                  STA UNK_BYTE_1959    ;
-3202: b1 10                     LDA (POKMSK),Y       ;
+3202: b1 10                     LDA (addr_MapCell_L),Y ;
 3204: 2a                        ROL                  ;
 3205: 2a                        ROL                  ;
 3206: 2a                        ROL                  ;
 3207: 2a                        ROL                  ;
 3208: 29 03                     AND #$03             ;
-320a: 8d 73 19                  STA loc_1973         ;
+320a: 8d 73 19                  STA dat_1973         ;
 320d: ad 1f 63  loc_320d        LDA CHR_UNK_BYTE_631F ;
 3210: c9 ff                     CMP #$ff             ;
 3212: f0 0e                     BEQ loc_3222         ;
@@ -3286,9 +3286,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 321c: 4c 80 2f                  JMP loc_2f80         ;
 321f: 20 04 76  loc_321f        JSR JMP_SUB_7604     ;
 3222: 4c 80 2f  loc_3222        JMP loc_2f80         ;
-3225: 01 01     loc_3225        ORA (dat_0001,X)     ;
-3227: 01 01                     ORA (dat_0001,X)     ;
-3229: 02 03 04                  .BYTE $02,$03,$04    ;
+
+3225: 01 01 01 01 02 03 04  tbl_MAP_NUM2LVL  .BYTE $01,$01,$01,$01,$02,$03,$04
+
 322c: ad 00 ac  sub_322c        LDA MAP_NUMBER       ;
 322f: cd 15 63                  CMP CHR_LOC_MAP      ;
 3232: d0 62                     BNE END_SUB_RTS_3296 ;
@@ -3338,7 +3338,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 328f: 09 00     loc_328f        ORA #$00             ;
 3291: 30 f1                     BMI loc_3284         ;
 3293: 4c 87 32                  JMP loc_3287         ;
-3296: 60        END_SUB_RTS_3296  RTS                ;
+3296: 60        END_SUB_RTS_3296  RTS                ; Return to caller
 3297: b1 14     loc_3297        LDA (RTCLOK+2),Y     ;
 3299: 08                        PHP                  ;
 329a: e6 14                     INC RTCLOK+2         ;
@@ -3373,8 +3373,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 32d8: aa                        TAX                  ;
 32d9: 60                        RTS                  ; Return to caller
 
-; TODO: How does this code get executed?
-32da: bc 44 3b                  LDY dat_3b44,X       ;
+; Dynamically invoked
+32da: bc 44 3b  cont_32da       LDY dat_3b44,X       ;
 32dd: bd 5c 3b                  LDA loc_3b5c,X       ;
 32e0: d9 1b 63                  CMP $631b,Y          ;
 32e3: d0 08                     BNE loc_32ed         ;
@@ -3391,17 +3391,17 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3301: 99 16 63  loc_3301        STA $6316,Y          ;
 3304: 4c 80 31                  JMP loc_3180         ;
 
-3307: a9 80                     LDA #$80             ;
+3307: a9 80     cont_3307       LDA #$80             ;
 3309: 8d 9c 19                  STA dat_199c         ;
 330c: 4c 14 33                  JMP loc_3314         ;
-330f: a9 81     loc_330f        LDA #$81             ;
+330f: a9 81     cont_330f       LDA #$81             ;
 3311: 8d 9c 19                  STA dat_199c         ;
 3314: ad 0a d2  loc_3314        LDA RANDOM           ;
 3317: 29 51                     AND #$51             ;
 3319: d0 03                     BNE loc_331e         ;
 331b: ce 5d 19                  DEC UNK_BYTE_195D    ;
-331e: ae 7f 31  loc_331e        LDX loc_317f         ;
-3321: bc 44 3b                  LDY dat_3b44,X       ;
+331e: ae 7f 31  loc_331e        LDX dat_317f         ;
+3321: bc 44 3b  cont_3321       LDY dat_3b44,X       ;
 3324: 18                        CLC                  ;
 3325: b9 13 63                  LDA CHR_LOC_X,Y      ;
 3328: 7d 54 3b                  ADC dat_3b54,X       ;
@@ -3414,27 +3414,28 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 333b: 8d 2a 19                  STA UNK_BYTE_192A    ;
 333e: 20 2d 3c                  JSR sub_3c2d         ;
 3341: 4c 80 31                  JMP loc_3180         ;
-3344: a9 00                     LDA #$00             ;
+
+3344: a9 00     cont_3344       LDA #$00             ;
 3346: f0 06                     BEQ loc_334e         ;
-3348: a9 01                     LDA #$01             ;
+3348: a9 01     cont_3348       LDA #$01             ;
 334a: d0 02                     BNE loc_334e         ;
-334c: a9 02                     LDA #$02             ;
+334c: a9 02     cont_334c       LDA #$02             ;
 334e: 8d 70 19  loc_334e        STA loc_1970         ;
 3351: ad 88 63                  LDA $6388            ;
 3354: 29 02                     AND #$02             ;
 3356: f0 09                     BEQ loc_3361         ;
 3358: 4d 88 63                  EOR $6388            ;
 335b: 8d 88 63                  STA $6388            ;
-335e: 4c 0f 33                  JMP loc_330f         ;
-3361: ce 37 19  loc_3361        DEC loc_1937         ;
-3364: ce 71 19                  DEC loc_1971         ;
+335e: 4c 0f 33                  JMP cont_330f        ;
+3361: ce 37 19  loc_3361        DEC dat_1937         ;
+3364: ce 71 19                  DEC dat_1971         ;
 3367: a9 07                     LDA #$07             ; Set ???
 3369: 85 16                     STA addr_0016_L      ;     address
 336b: a9 20                     LDA #$20             ;     to
 336d: 85 17                     STA addr_0016_H      ;     $2007 [str_BLANK] "" (empty string)
 336f: 20 a5 3c                  JSR sub_3ca5         ;
 3372: ad 33 19                  LDA dat_1933         ;
-3375: 8d 2e 35                  STA loc_352e         ;
+3375: 8d 2e 35                  STA dat_352e         ;
 3378: a2 03                     LDX #$03             ;
 337a: bd 6b 19  loc_337a        LDA loc_196b,X       ;
 337d: dd 12 63                  CMP CHR_LOC_ORIENT,X ;
@@ -3456,26 +3457,26 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 33a1: 85 16                     STA addr_0016_L      ;     address
 33a3: a9 39                     LDA #$39             ;     to
 33a5: 85 17                     STA addr_0016_H      ;     $39b0 [str_DOOR_MENU]
-33a7: ae 2e 35                  LDX loc_352e         ;
+33a7: ae 2e 35                  LDX dat_352e         ;
 33aa: 20 5c 3c                  JSR sub_3c5c         ;
       ; It seems like a simple JSR $2ff3 would have been simpler here...
 33ad: ad 77 19  loc_33ad        LDA cont_addr_1977_L ; Preserve the current
-33b0: 8d 2f 35                  STA loc_352f         ;     value of cont_addr_1977_L
+33b0: 8d 2f 35                  STA dat_352f         ;     value of cont_addr_1977_L
 33b3: ad 78 19                  LDA cont_addr_1977_H ; Preserve the current
-33b6: 8d 30 35                  STA loc_3530         ;     value of cont_addr_1977_H
+33b6: 8d 30 35                  STA dat_3530         ;     value of cont_addr_1977_H
 33b9: a9 c6                     LDA #$c6             ; Set ???
 33bb: 8d 77 19                  STA cont_addr_1977_L ;    address
 33be: a9 33                     LDA #$33             ;     to
 33c0: 8d 78 19                  STA cont_addr_1977_H ;     $33c6 [rtn_33c6]
 33c3: 4c f3 2f                  JMP loc_2ff3         ;
-33c6: ad 2f 35  rtn_33c6        LDA loc_352f         ; Restore the previous
+33c6: ad 2f 35  rtn_33c6        LDA dat_352f         ; Restore the previous
 33c9: 8d 77 19                  STA cont_addr_1977_L ;     value of cont_addr_1977_L
-33cc: ad 30 35                  LDA loc_3530         ; Restore the previous
+33cc: ad 30 35                  LDA dat_3530         ; Restore the previous
 33cf: 8d 78 19                  STA cont_addr_1977_H ;     value of cont_addr_1977_H
 33d2: ad 5d 19                  LDA UNK_BYTE_195D    ;
 33d5: 10 0f                     BPL loc_33e6         ;
-33d7: ee 37 19                  INC loc_1937         ;
-33da: ee 71 19                  INC loc_1971         ;
+33d7: ee 37 19                  INC dat_1937         ;
+33da: ee 71 19                  INC dat_1971         ;
 33dd: 20 c2 3c                  JSR sub_3cc2         ;
 33e0: ae 12 63                  LDX CHR_LOC_ORIENT   ;
 33e3: 4c f3 32                  JMP loc_32f3         ;
@@ -3491,7 +3492,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 33f7: 85 16                     STA addr_0016_L      ;     address
 33f9: a9 3a                     LDA #$3a             ;     to
 33fb: 85 17                     STA addr_0016_H      ;     $3acd [str_DOOR_EXMN]
-33fd: ae 2e 35                  LDX loc_352e         ;
+33fd: ae 2e 35                  LDX dat_352e         ;
 3400: 20 5c 3c                  JSR sub_3c5c         ;
 3403: a2 f0                     LDX #$f0             ;
 3405: 20 66 2c  loc_3405        JSR WAIT_FOR_VBLK_B  ;
@@ -3500,24 +3501,25 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 340b: ad 6f 19                  LDA loc_196f         ;
 340e: 29 01                     AND #$01             ;
 3410: d0 0a                     BNE loc_341c         ;
-3412: ad 0a d2                  LDA RANDOM           ;
-3415: 4a                        LSR                  ;
-3416: 4a                        LSR                  ;
-3417: cd 69 63                  CMP CHR_WIS_EFFECTIVE ;
-341a: b0 2d                     BCS loc_3449         ;
-341c: ae 70 19  loc_341c        LDX loc_1970         ;
-341f: bd f9 3a                  LDA dat_3af9,X       ;
-3422: 8d 61 3a                  STA loc_3a61         ;
-3425: bd fc 3a                  LDA loc_3afc,X       ;
-3428: 8d 62 3a                  STA dat_3a62         ;
-342b: ad 6f 19                  LDA loc_196f         ;
-342e: 09 01                     ORA #$01             ;
-3430: 8d 6f 19                  STA loc_196f         ;
+3412: ad 0a d2                  LDA RANDOM           ; Read a random byte
+3415: 4a                        LSR                  ;     and divide
+3416: 4a                        LSR                  ;     by 4 (result ranges from 0..63)
+3417: cd 69 63                  CMP CHR_WIS_EFFECTIVE ; If CHR_WIS_EFFECTIVE < the random value
+341a: b0 2d                     BCS loc_3449         ;     then jump below to display "You can't discern what bars the door."
+                                                     ;     otherwise, continue and display what blocks the door
+341c: ae 70 19  loc_341c        LDX loc_1970         ; Set X = loc_1970 - type of locked door? 0, 1, 2
+341f: bd f9 3a                  LDA tbl_3af9_L,X     ; Set ???
+3422: 8d 61 3a                  STA addr_3a61_L      ;      address
+3425: bd fc 3a                  LDA tbl_3afc_H,X     ;      to tbl_3af9_L+X/tbl_3afc_H+X
+3428: 8d 62 3a                  STA addr_3a61_H      ;      (one of $3aff [str_NEED_A_KEY], $3b0b [str_BE_BOLTED], $3b16 [str_BE_ENCHNTD])
+342b: ad 6f 19                  LDA loc_196f         ; Set
+342e: 09 01                     ORA #$01             ;     bit 0 of
+3430: 8d 6f 19                  STA loc_196f         ;     loc_196f to 1
 3433: a9 48                     LDA #$48             ; Set ???
 3435: 85 16                     STA addr_0016_L      ;     address
 3437: a9 3a                     LDA #$3a             ;     to
 3439: 85 17                     STA addr_0016_H      ;     $3a48 [str_DOOR_APRS]
-343b: ae 2e 35  loc_343b        LDX loc_352e         ;
+343b: ae 2e 35  loc_343b        LDX dat_352e         ;
 343e: 20 5c 3c                  JSR sub_3c5c         ;
 3441: a9 04                     LDA #$04             ;
 3443: 20 fc 2b                  JSR sub_2bfc         ;
@@ -3533,7 +3535,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 345a: 85 16                     STA addr_0016_L      ;     address
 345c: a9 3a                     LDA #$3a             ;     to
 345e: 85 17                     STA addr_0016_H      ;     $3a91 [str_DOOR_WHAM]
-3460: ae 2e 35                  LDX loc_352e         ;
+3460: ae 2e 35                  LDX dat_352e         ;
 3463: 20 5c 3c                  JSR sub_3c5c         ;
 3466: a9 01                     LDA #$01             ;
 3468: 20 fc 2b                  JSR sub_2bfc         ;
@@ -3549,16 +3551,16 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3480: 85 16                     STA addr_0016_L      ;     address
 3482: a9 3a                     LDA #$3a             ;     to
 3484: 85 17                     STA addr_0016_H      ;     $3a9c [str_DOOR_OPNS]
-3486: ae 2e 35                  LDX loc_352e         ;
+3486: ae 2e 35                  LDX dat_352e         ;
 3489: 20 5c 3c                  JSR sub_3c5c         ;
 348c: 20 b0 2b                  JSR sub_2bb0         ;
 348f: ad 6f 19                  LDA loc_196f         ;
 3492: 09 80                     ORA #$80             ;
 3494: 8d 6f 19                  STA loc_196f         ;
-3497: ee 37 19                  INC loc_1937         ;
-349a: ee 71 19                  INC loc_1971         ;
+3497: ee 37 19                  INC dat_1937         ;
+349a: ee 71 19                  INC dat_1971         ;
 349d: 20 c2 3c                  JSR sub_3cc2         ;
-34a0: 4c 0f 33                  JMP loc_330f         ;
+34a0: 4c 0f 33                  JMP cont_330f        ;
 34a3: ad 0a d2  loc_34a3        LDA RANDOM           ;
 34a6: 29 01                     AND #$01             ;
 34a8: 18                        CLC                  ;
@@ -3589,7 +3591,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 34df: 85 16                     STA addr_0016_L      ;     addr
 34e1: a9 3a                     LDA #$3a             ;     to
 34e3: 85 17                     STA addr_0016_H      ;     $3ae1 [str_DOOR_CONC]
-34e5: ae 2e 35                  LDX loc_352e         ;
+34e5: ae 2e 35                  LDX dat_352e         ;
 34e8: 20 5c 3c                  JSR sub_3c5c         ;
 34eb: a2 78                     LDX #$78             ;
 34ed: 20 66 2c  loc_34ed        JSR WAIT_FOR_VBLK_B  ;
@@ -3616,30 +3618,34 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 351c: 4c 9f 33                  JMP loc_339f         ;
 351f: 20 c2 3c  loc_351f        JSR sub_3cc2         ;
 3522: ae 12 63                  LDX CHR_LOC_ORIENT   ;
-3525: ee 37 19                  INC loc_1937         ;
-3528: ee 71 19                  INC loc_1971         ;
+3525: ee 37 19                  INC dat_1937         ;
+3528: ee 71 19                  INC dat_1971         ;
 352b: 4c f3 32                  JMP loc_32f3         ;
 
-352e: 00        loc_352e        BRK                  ; .
-352f: ff        loc_352f        .BYTE $ff            ; Used to temporarily store the value of cont_addr_1977_L
-3530: ff        loc_3530        .BYTE $ff            ; Used to temporarily store the value of cont_addr_1977_H
+352e: 00        dat_352e        .BYTE $00            ; .
+352f: ff        dat_352f        .BYTE $ff            ; Used to temporarily store the value of cont_addr_1977_L
+3530: ff        dat_3530        .BYTE $ff            ; Used to temporarily store the value of cont_addr_1977_H
 
-3531: ad 14 63  sub_3531        LDA CHR_LOC_Y        ;
-3534: 4a                        LSR                  ;
-3535: 09 b0                     ORA #$b0             ;
-3537: 85 11                     STA BRKKEY           ;
-3539: a9 00                     LDA #$00             ;
-353b: 6a                        ROR                  ;
-353c: 85 10                     STA POKMSK           ;
-353e: ad 13 63                  LDA CHR_LOC_X        ;
-3541: 0a                        ASL                  ;
-3542: 0a                        ASL                  ;
-3543: 05 10                     ORA POKMSK           ;
-3545: 85 10                     STA POKMSK           ;
+; This sub computes the address of the character's
+; current cell within the map data
+;
+; addr_MapCell_L/addr_MapCell_H = 0xb000 | (CHR_LOC_Y << 7) | (CHR_LOC_X << 2)
+;
+3531: ad 14 63  sub_3531        LDA CHR_LOC_Y        ; Set
+3534: 4a                        LSR                  ;     addr_MapCell_H =
+3535: 09 b0                     ORA #$b0             ;          (CHR_LOC_Y >> 1) | 0xb0
+3537: 85 11                     STA addr_MapCell_H   ;
+3539: a9 00                     LDA #$00             ; Set
+353b: 6a                        ROR                  ;     addr_MapCell_L = (C == 1 ? 0x80 : 0)
+353c: 85 10                     STA addr_MapCell_L   ;     (carry is from LSR above)
+353e: ad 13 63                  LDA CHR_LOC_X        ; Add
+3541: 0a                        ASL                  ;     CHR_LOC_X * 4
+3542: 0a                        ASL                  ;     to
+3543: 05 10                     ORA addr_MapCell_L   ;     addr_MapCell_L
+3545: 85 10                     STA addr_MapCell_L   ;
 3547: 60                        RTS                  ; Return to caller
 
-; TODO: How does this code get invoked?
-3548: ad 5a 19                  LDA TELEPORT_INDEX   ;
+3548: ad 5a 19  cont_3548       LDA TELEPORT_INDEX   ;
 354b: a2 75                     LDX #$75             ;
 354d: a0 00                     LDY #$00             ;
 354f: 20 e3 2d                  JSR sub_2de3         ;
@@ -3650,7 +3656,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 355c: a9 ff     loc_355c        LDA #$ff             ;
 355e: 8d 59 19                  STA UNK_BYTE_1959    ;
 3561: 4c 0d 32                  JMP loc_320d         ;
-3564: ad 5a 19                  LDA TELEPORT_INDEX   ;
+
+3564: ad 5a 19  cont_3564       LDA TELEPORT_INDEX   ;
 3567: a2 75                     LDX #$75             ;
 3569: a0 04                     LDY #$04             ;
 356b: 20 e3 2d                  JSR sub_2de3         ;
@@ -3664,8 +3671,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 357d: 8d 79 19                  STA loc_1979         ;
 3580: 4c 0d 32                  JMP loc_320d         ;
 
-; TODO: How does this code get invoked?
-3583: 20 96 35                  JSR sub_3596         ;
+3583: 20 96 35  cont_3583       JSR sub_3596         ;
 3586: b0 03                     BCS loc_358b         ;
 3588: 4c 0d 32                  JMP loc_320d         ;
 358b: a9 00     loc_358b        LDA #$00             ;
@@ -3759,10 +3765,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 3635: a9 ff     sub_3635        LDA #$ff             ;
 3637: 8d 7a 19                  STA loc_197a         ;
-363a: c6 0f                     DEC APPMHI+1         ;
+363a: c6 0f                     DEC dat_000f         ;
 363c: c6 32                     DEC dat_0032_L       ;
-363e: ce 37 19                  DEC loc_1937         ;
-3641: ce 71 19                  DEC loc_1971         ;
+363e: ce 37 19                  DEC dat_1937         ;
+3641: ce 71 19                  DEC dat_1971         ;
 3644: ad 77 19                  LDA cont_addr_1977_L ; Preserve the current
 3647: 8d 81 36                  STA dat_3681_L       ;     value of cont_addr_1977_L
 364a: ad 78 19                  LDA cont_addr_1977_H ; Preserve the current
@@ -3782,9 +3788,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 366b: ad 82 36                  LDA dat_3681_H       ; Restore the previous value of cont_addr_1977_H
 366e: 8d 78 19                  STA cont_addr_1977_H ;     that was saved in sub_3635
 3671: e6 32                     INC dat_0032_L       ;
-3673: ee 37 19                  INC loc_1937         ;
-3676: e6 0f                     INC APPMHI+1         ;
-3678: ee 71 19                  INC loc_1971         ;
+3673: ee 37 19                  INC dat_1937         ;
+3676: e6 0f                     INC dat_000f         ;
+3678: ee 71 19                  INC dat_1971         ;
 367b: a9 00                     LDA #$00             ;
 367d: 8d 7a 19                  STA loc_197a         ;
 3680: 60                        RTS                  ; Return to caller
@@ -3842,17 +3848,17 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 36f7: 49 6e 76 65 6e 74 6f 72   .BYTE $49,$6e,$76,$65,$6e,$74,$6f,$72  ; Inventor
 36ff: 79 00 45 78 61 6d 69 6e   .BYTE $79,$00,$45,$78,$61,$6d,$69,$6e  ; y.Examin
 3707: 65 20 53 70 65 6c 6c 73   .BYTE $65,$20,$53,$70,$65,$6c,$6c,$73  ; e Spells
-370f: 00                        .BYTE $00                              ; .
-3710: a6 00 02 a5 45 78 61  str_EXM_ITM_SPL  .BYTE $a6,$00,$02,$a5,$45,$78,$61      ; ....Exa
-3717: 6d 69 6e 65 20 a1 49 a0   .BYTE $6d,$69,$6e,$65,$20,$a1,$49,$a0  ; mine .I.
-371f: 74 65 6d 73 20 6f 72 20   .BYTE $74,$65,$6d,$73,$20,$6f,$72,$20  ; tems or
-3727: a1 53 a0 70 65 6c 6c 73   .BYTE $a1,$53,$a0,$70,$65,$6c,$6c,$73  ; .S.pells
-372f: 3f 0d ff                  .BYTE $3f,$0d,$ff                      ; ?..
-3732: a1 46 a0 6f 72  str_FWD_BCK_ESC  .BYTE $a1,$46,$a0,$6f,$72       ; .F.or
-3737: 77 61 72 64 2c 20 a1 42   .BYTE $77,$61,$72,$64,$2c,$20,$a1,$42  ; ward, .B
-373f: a0 61 63 6b 2c 20 6f 72   .BYTE $a0,$61,$63,$6b,$2c,$20,$6f,$72  ; .ack, or
-3747: 20 a1 45 53 43 a0 20 74   .BYTE $20,$a1,$45,$53,$43,$a0,$20,$74  ;  .ESC. t
-374f: 6f 20 65 78 69 74 ae      .BYTE $6f,$20,$65,$78,$69,$74,$ae      ; o exit.
+370f: 00                        .BYTE $00            ; .
+3710: a6 00 02 a5 45 78 61 6d  str_EXM_ITM_SPL  .BYTE $a6,$00,$02,$a5,$45,$78,$61,$6d  ; ....Exam
+3718: 69 6e 65 20 a1 49 a0 74   .BYTE $69,$6e,$65,$20,$a1,$49,$a0,$74  ; ine .I.t
+3720: 65 6d 73 20 6f 72 20 a1   .BYTE $65,$6d,$73,$20,$6f,$72,$20,$a1  ; ems or .
+3728: 53 a0 70 65 6c 6c 73 3f   .BYTE $53,$a0,$70,$65,$6c,$6c,$73,$3f  ; S.pells?
+3730: 0d ff                     .BYTE $0d,$ff        ; ..
+3732: a1 46 a0 6f 72 77 61 72  str_FWD_BCK_ESC  .BYTE $a1,$46,$a0,$6f,$72,$77,$61,$72  ; .F.orwar
+373a: 64 2c 20 a1 42 a0 61 63   .BYTE $64,$2c,$20,$a1,$42,$a0,$61,$63  ; d, .B.ac
+3742: 6b 2c 20 6f 72 20 a1 45   .BYTE $6b,$2c,$20,$6f,$72,$20,$a1,$45  ; k, or .E
+374a: 53 43 a0 20 74 6f 20 65   .BYTE $53,$43,$a0,$20,$74,$6f,$20,$65  ; SC. to e
+3752: 78 69 74 ae               .BYTE $78,$69,$74,$ae  ; xit.
 
 3756: 20 35 36  sub_3756        JSR sub_3635         ;
 3759: 20 57 58                  JSR sub_5857         ;
@@ -3900,23 +3906,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 37b8: 4c 00 76                  JMP $7600            ;
 37bb: 4c 62 36  loc_37bb        JMP loc_3662         ; Continue @ $3662 [loc_3662]
 
-37be: a6 00  str_SAV_CHRCTR     LDX dat_0000      ; ..
-37c0: 02                        .BYTE $02         ; .
-37c1: a5 53                     LDA RMARGN        ; .S
-37c3: 61 76                     ADC (DELTAR,X)    ; av
-37c5: 65 20                     ADC dat_0020      ; e
-37c7: 63                        .BYTE $63         ; c
-37c8: 68                        PLA               ; h
-37c9: 61 72                     ADC (COLAC,X)     ; ar
-37cb: 61 63                     ADC (LOGCOL,X)    ; ac
-37cd: 74                        .BYTE $74         ; t
-37ce: 65 72                     ADC COLAC         ; er
-37d0: 3f                        .BYTE $3f         ; ?
-37d1: 0d 0d ac                  ORA $ac0d         ; ...
-37d4: 2e 38
+37be: a6 00 02 a5 53 61 76 65  str_SAV_CHRCTR  .BYTE $a6,$00,$02,$a5,$53,$61,$76,$65  ; ....Save
+37c6: 20 63 68 61 72 61 63 74   .BYTE $20,$63,$68,$61,$72,$61,$63,$74  ;  charact
+37ce: 65 72 3f 0d 0d ac 2e 38   .BYTE $65,$72,$3f,$0d,$0d,$ac,$2e,$38  ; er?....8
 
 ; TODO: How does this code get executed?
-37d6: c6 32     sub_37d6        DEC $32
+37d6: c6 32     sub_37d6        DEC dat_0032_L
 37d8: a9 04                     LDA #$04             ; Set ???
 37da: 85 16                     STA addr_0016_L      ;     address
 37dc: a9 38                     LDA #$38             ;     to
@@ -3936,45 +3931,18 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 37fe: ce 35 19                  DEC dat_1935         ;
 3801: 4c 2d 3c                  JMP sub_3c2d         ;
 
-3804: a8        str_QT_WO_SAVE  TAY               ; .
-3805: a6 00                     LDX dat_0000      ; ..
-3807: 02                        .BYTE $02         ; .
-3808: a5 51                     LDA HOLD1         ; .Q
-380a: 75 69                     ADC SAVADR+1,X    ; ui
-380c: 74                        .BYTE $74         ; t
-380d: 20 67 61                  JSR loc_6167_bad  ;  ga
-3810: 6d 65 20                  ADC loc_2065_bad  ; me
-3813: 77                        .BYTE $77         ; w
-3814: 69 74                     ADC #$74          ; it
-3816: 68                        PLA               ; h
-3817: 6f                        .BYTE $6f         ; o
-3818: 75 74                     ADC ENDPT,X       ; ut
-381a: 20 73 61                  JSR sub_6173_bad      ;  sa
-381d: 76 69                     ROR SAVADR+1,X    ; vi
-381f: 6e 67 20                  ROR loc_2067_bad      ; ng
-3822: 63                        .BYTE $63         ; c
-3823: 68                        PLA               ; h
-3824: 61 72                     ADC (COLAC,X)     ; ar
-3826: 61 63                     ADC (LOGCOL,X)    ; ac
-3828: 74                        .BYTE $74         ; t
-3829: 65 72                     ADC COLAC         ; er
-382b: 3f                        .BYTE $3f         ; ?
-382c: 0d 0d a5                  ORA $a50d         ; ...
-382f: 41 72                     EOR (COLAC,X)     ; Ar
-3831: 65 20                     ADC dat_0020      ; e
-3833: 79 6f 75                  ADC $756f,Y       ; you
-3836: 20 73 75                  JSR $7573         ;  su
-3839: 72                        .BYTE $72         ; r
-383a: 65 20                     ADC dat_0020      ; e
-383c: 28                        PLP               ; (
-383d: a1 59                     LDA (SAVMSC+1,X)  ; .Y
-383f: a0 20                     LDY #$20          ; .
-3841: 6f 72                     .BYTE $6f,$72     ; or
-3843: 20 a1 4e                  JSR bad_4ea1      ;  .N
-3846: a0 29                     LDY #$29          ; .)
-3848: 0d ff
+3804: a8 a6 00 02 a5 51 75 69  str_QT_WO_SAVE  .BYTE $a8,$a6,$00,$02,$a5,$51,$75,$69  ; .....Qui
+380c: 74 20 67 61 6d 65 20 77   .BYTE $74,$20,$67,$61,$6d,$65,$20,$77  ; t game w
+3814: 69 74 68 6f 75 74 20 73   .BYTE $69,$74,$68,$6f,$75,$74,$20,$73  ; ithout s
+381c: 61 76 69 6e 67 20 63 68   .BYTE $61,$76,$69,$6e,$67,$20,$63,$68  ; aving ch
+3824: 61 72 61 63 74 65 72 3f   .BYTE $61,$72,$61,$63,$74,$65,$72,$3f  ; aracter?
+382c: 0d 0d a5 41 72 65 20 79   .BYTE $0d,$0d,$a5,$41,$72,$65,$20,$79  ; ...Are y
+3834: 6f 75 20 73 75 72 65 20   .BYTE $6f,$75,$20,$73,$75,$72,$65,$20  ; ou sure
+383c: 28 a1 59 a0 20 6f 72 20   .BYTE $28,$a1,$59,$a0,$20,$6f,$72,$20  ; (.Y. or
+3844: a1 4e a0 29 0d ff         .BYTE $a1,$4e,$a0,$29,$0d,$ff  ; .N.)..
 
-384a: c6 32     sub_384a        DEC $32
+; TODO: How is this code invoked?
+384a: c6 32                     DEC dat_0032_L
 384c: a9 60                     LDA #$60             ; Set ???
 384e: 85 16                     STA addr_0016_L      ;     address
 3850: a9 38                     LDA #$38             ;     to
@@ -3985,15 +3953,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 385d: e6 32                     INC dat_0032_L       ;
 385f: 60                        RTS                  ; Return to caller
 
-3860: a8        str_PAUSED      TAY               ; .
-3861: a6 00                     LDX dat_0000      ; ..
-3863: 02                        .BYTE $02         ; .
-3864: a5 28                     LDA sub_add_0028_H ; .(
-3866: 50 61                     BVC $38c9         ; Pa
-3868: 75 73                     ADC COLAC+1,X     ; us
-386a: 65 64                     ADC ADRESS        ; ed
-386c: 29 0d                     AND #$0d          ; ).
-386e: ff                        .BYTE $ff         ; .
+3860: a8 a6 00 02 a5 28 50 61  str_PAUSED  .BYTE $a8,$a6,$00,$02,$a5,$28,$50,$61  ; .....(Pa
+3868: 75 73 65 64 29 0d ff      .BYTE $75,$73,$65,$64,$29,$0d,$ff  ; used)..
 
 386f: a9 00     sub_386f        LDA #$00             ;
 3871: 8d cf 38                  STA dat_38cf         ;
@@ -4029,28 +3990,27 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 38b7: a9 f9                     LDA #$f9             ; Set ???
 38b9: 85 16                     STA addr_0016_L      ;     address
 38bb: a9 38                     LDA #$38             ;     to $38f9 [str_SOMTH_HRE]
-38bd: 85 17                     STA addr_0016_H      ;     ("There is something here")
+38bd: 85 17                     STA addr_0016_H      ;     "There is something here"
 38bf: e0 02                     CPX #$02             ;
 38c1: 90 08                     BCC loc_38cb         ;
 38c3: a9 d5                     LDA #$d5             ; Set ???
 38c5: 85 16                     STA addr_0016_L      ;     address
-38c7: a9 38                     LDA #$38             ;     to
-38c9: 85 17                     STA addr_0016_H      ;     $38d5 [str_THNGS_HERE] "There are several things here."
+38c7: a9 38                     LDA #$38             ;     to $38d5 [str_THNGS_HERE]
+38c9: 85 17                     STA addr_0016_H      ;     "There are several things here."
 38cb: 20 84 1c  loc_38cb        JSR sub_1c84         ;
 38ce: 60        loc_38ce        RTS                  ; Return to caller
 
-38cf: 00        dat_38cf        .BYTE $00
-38d0: a6 00 05 ab ff  str_BLANK_38d0  .BYTE $a6,$00,$05,$ab,$ff        ; .....
-38d5: a6 00  str_THNGS_HERE     .BYTE $a6,$00                          ; ..
-38d7: 05 20 54 68 65 72 65 20   .BYTE $05,$20,$54,$68,$65,$72,$65,$20  ; . There
-38df: 61 72 65 20 73 65 76 65   .BYTE $61,$72,$65,$20,$73,$65,$76,$65  ; are seve
-38e7: 72 61 6c 20 74 68 69 6e   .BYTE $72,$61,$6c,$20,$74,$68,$69,$6e  ; ral thin
-38ef: 67 73 20 68 65 72 65 2e   .BYTE $67,$73,$20,$68,$65,$72,$65,$2e  ; gs here.
-38f7: ab ff                     .BYTE $ab,$ff                          ; ..
-38f9: a6 00 05 20 54 68  str_SOMTH_HRE  .BYTE $a6,$00,$05,$20,$54,$68  ; ... Th
-38ff: 65 72 65 20 69 73 20 73   .BYTE $65,$72,$65,$20,$69,$73,$20,$73  ; ere is s
-3907: 6f 6d 65 74 68 69 6e 67   .BYTE $6f,$6d,$65,$74,$68,$69,$6e,$67  ; omething
-390f: 20 68 65 72 65 2e ab ff   .BYTE $20,$68,$65,$72,$65,$2e,$ab,$ff  ;  here...
+38cf: 00        dat_38cf        .BYTE $00            ; .
+38d0: a6 00 05 ab ff  str_BLANK_38d0  .BYTE $a6,$00,$05,$ab,$ff  ; .....
+38d5: a6 00 05 20 54 68 65 72  str_THNGS_HERE  .BYTE $a6,$00,$05,$20,$54,$68,$65,$72  ; ... Ther
+38dd: 65 20 61 72 65 20 73 65   .BYTE $65,$20,$61,$72,$65,$20,$73,$65  ; e are se
+38e5: 76 65 72 61 6c 20 74 68   .BYTE $76,$65,$72,$61,$6c,$20,$74,$68  ; veral th
+38ed: 69 6e 67 73 20 68 65 72   .BYTE $69,$6e,$67,$73,$20,$68,$65,$72  ; ings her
+38f5: 65 2e ab ff               .BYTE $65,$2e,$ab,$ff  ; e...
+38f9: a6 00 05 20 54 68 65 72  str_SOMTH_HRE  .BYTE $a6,$00,$05,$20,$54,$68,$65,$72  ; ... Ther
+3901: 65 20 69 73 20 73 6f 6d   .BYTE $65,$20,$69,$73,$20,$73,$6f,$6d  ; e is som
+3909: 65 74 68 69 6e 67 20 68   .BYTE $65,$74,$68,$69,$6e,$67,$20,$68  ; ething h
+3911: 65 72 65 2e ab ff         .BYTE $65,$72,$65,$2e,$ab,$ff  ; ere...
 3917: a8 a6 1f 00 4c 65 76 65  str_3917  .BYTE $a8,$a6,$1f,$00,$4c,$65,$76,$65  ; ....Leve
 391f: 6c 3a a6 01 01 53 74 61   .BYTE $6c,$3a,$a6,$01,$01,$53,$74,$61  ; l:...Sta
 3927: 74 73 3a 20 20 53 54 41   .BYTE $74,$73,$3a,$20,$20,$53,$54,$41  ; ts:  STA
@@ -4061,181 +4021,116 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 394f: 45 78 70 65 72 69 65 6e   .BYTE $45,$78,$70,$65,$72,$69,$65,$6e  ; Experien
 3957: 63 65 3a a6 17 03 48 69   .BYTE $63,$65,$3a,$a6,$17,$03,$48,$69  ; ce:...Hi
 395f: 74 20 50 6f 69 6e 74 73   .BYTE $74,$20,$50,$6f,$69,$6e,$74,$73  ; t Points
-3967: 3a ff                     .BYTE $3a,$ff                          ; :.
-3969: a6 01 00 b3 21 63  str_3969  .BYTE $a6,$01,$00,$b3,$21,$63       ; ....!c
-396f: 1c a6 25 00 b2 3c 63 02   .BYTE $1c,$a6,$25,$00,$b2,$3c,$63,$02  ; ..%..<c.
-3977: a6 09 02 b2 49 63 03 20   .BYTE $a6,$09,$02,$b2,$49,$63,$03,$20  ; ....Ic.
-397f: 20 b2 51 63 03 20 20 b2   .BYTE $20,$b2,$51,$63,$03,$20,$20,$b2  ;  .Qc.  .
-3987: 59 63 03 20 20 b2 61 63   .BYTE $59,$63,$03,$20,$20,$b2,$61,$63  ; Yc.  .ac
-398f: 03 20 20 b2 69 63 03 20   .BYTE $03,$20,$20,$b2,$69,$63,$03,$20  ; .  .ic.
-3997: 20 b2 71 63 03 a6 0c 03   .BYTE $20,$b2,$71,$63,$03,$a6,$0c,$03  ;  .qc....
-399f: b0 3d 63 0a a6 22 03 b1   .BYTE $b0,$3d,$63,$0a,$a6,$22,$03,$b1  ; .=c.."..
-39a7: 45 63 05 ff               .BYTE $45,$63,$05,$ff                  ; Ec..
-39ab: a6 00 04 ab  str_39ab     .BYTE $a6,$00,$04,$ab                  ; ....
-39af: ff                        .BYTE $ff                              ; .
-39b0: a6 00 00 a5 54 68 65  str_DOOR_MENU  .BYTE $a6,$00,$00,$a5,$54,$68,$65 ; ....The
-39b7: 20 64 6f 6f 72 20 77 6f   .BYTE $20,$64,$6f,$6f,$72,$20,$77,$6f  ;  door wo
-39bf: 6e 27 74 20 6f 70 65 6e   .BYTE $6e,$27,$74,$20,$6f,$70,$65,$6e  ; n't open
-39c7: 2e 20 59 6f 75 20 6d 61   .BYTE $2e,$20,$59,$6f,$75,$20,$6d,$61  ; . You ma
-39cf: 79 3a 0d a6 08 02 28 a1   .BYTE $79,$3a,$0d,$a6,$08,$02,$28,$a1  ; y:....(.
-39d7: 31 a0 29 20 45 78 61 6d   .BYTE $31,$a0,$29,$20,$45,$78,$61,$6d  ; 1.) Exam
-39df: 69 6e 65 20 74 68 65 20   .BYTE $69,$6e,$65,$20,$74,$68,$65,$20  ; ine the
-39e7: 64 6f 6f 72 2e a6 08 03   .BYTE $64,$6f,$6f,$72,$2e,$a6,$08,$03  ; door....
-39ef: 28 a1 32 a0 29 20 46 6f   .BYTE $28,$a1,$32,$a0,$29,$20,$46,$6f  ; (.2.) Fo
-39f7: 72 63 65 20 74 68 65 20   .BYTE $72,$63,$65,$20,$74,$68,$65,$20  ; rce the
-39ff: 64 6f 6f 72 2e a6 08 04   .BYTE $64,$6f,$6f,$72,$2e,$a6,$08,$04  ; door....
-3a07: 28 a1 33 a0 29 20 55 73   .BYTE $28,$a1,$33,$a0,$29,$20,$55,$73  ; (.3.) Us
-3a0f: 65 20 61 20 6b 65 79 2e   .BYTE $65,$20,$61,$20,$6b,$65,$79,$2e  ; e a key.
-3a17: a6 08 05 28 a1 34 a0 29   .BYTE $a6,$08,$05,$28,$a1,$34,$a0,$29  ; ...(.4.)
-3a1f: 20 42 72 65 61 6b 20 61   .BYTE $20,$42,$72,$65,$61,$6b,$20,$61  ;  Break a
-3a27: 6e 20 65 6e 63 68 61 6e   .BYTE $6e,$20,$65,$6e,$63,$68,$61,$6e  ; n enchan
-3a2f: 74 6d 65 6e 74 2e a6 08   .BYTE $74,$6d,$65,$6e,$74,$2e,$a6,$08  ; tment...
-3a37: 07 28 a1 30 a0 29 20 4c   .BYTE $07,$28,$a1,$30,$a0,$29,$20,$4c  ; .(.0.) L
-3a3f: 65 61 76 65 20 69 74 2e   .BYTE $65,$61,$76,$65,$20,$69,$74,$2e  ; eave it.
-3a47: ff                        .BYTE $ff                              ; .
-3a48: a6 00 02 a5 54 68 65 20 str_DOOR_APRS  .BYTE $a6,$00,$02,$a5,$54,$68,$65,$20 ; ....The
+3967: 3a ff                     .BYTE $3a,$ff        ; :.
+3969: a6 01 00 b3 21 63 1c a6  str_3969  .BYTE $a6,$01,$00,$b3,$21,$63,$1c,$a6  ; ....!c..
+3971: 25 00 b2 3c 63 02 a6 09   .BYTE $25,$00,$b2,$3c,$63,$02,$a6,$09  ; %..<c...
+3979: 02 b2 49 63 03 20 20 b2   .BYTE $02,$b2,$49,$63,$03,$20,$20,$b2  ; ..Ic.  .
+3981: 51 63 03 20 20 b2 59 63   .BYTE $51,$63,$03,$20,$20,$b2,$59,$63  ; Qc.  .Yc
+3989: 03 20 20 b2 61 63 03 20   .BYTE $03,$20,$20,$b2,$61,$63,$03,$20  ; .  .ac.
+3991: 20 b2 69 63 03 20 20 b2   .BYTE $20,$b2,$69,$63,$03,$20,$20,$b2  ;  .ic.  .
+3999: 71 63 03 a6 0c 03 b0 3d   .BYTE $71,$63,$03,$a6,$0c,$03,$b0,$3d  ; qc.....=
+39a1: 63 0a a6 22 03 b1 45 63   .BYTE $63,$0a,$a6,$22,$03,$b1,$45,$63  ; c.."..Ec
+39a9: 05 ff                     .BYTE $05,$ff        ; ..
+39ab: a6 00 04 ab ff  str_39ab  .BYTE $a6,$00,$04,$ab,$ff  ; .....
+39b0: a6 00 00 a5 54 68 65 20  str_DOOR_MENU  .BYTE $a6,$00,$00,$a5,$54,$68,$65,$20  ; ....The
+39b8: 64 6f 6f 72 20 77 6f 6e   .BYTE $64,$6f,$6f,$72,$20,$77,$6f,$6e  ; door won
+39c0: 27 74 20 6f 70 65 6e 2e   .BYTE $27,$74,$20,$6f,$70,$65,$6e,$2e  ; 't open.
+39c8: 20 59 6f 75 20 6d 61 79   .BYTE $20,$59,$6f,$75,$20,$6d,$61,$79  ;  You may
+39d0: 3a 0d a6 08 02 28 a1 31   .BYTE $3a,$0d,$a6,$08,$02,$28,$a1,$31  ; :....(.1
+39d8: a0 29 20 45 78 61 6d 69   .BYTE $a0,$29,$20,$45,$78,$61,$6d,$69  ; .) Exami
+39e0: 6e 65 20 74 68 65 20 64   .BYTE $6e,$65,$20,$74,$68,$65,$20,$64  ; ne the d
+39e8: 6f 6f 72 2e a6 08 03 28   .BYTE $6f,$6f,$72,$2e,$a6,$08,$03,$28  ; oor....(
+39f0: a1 32 a0 29 20 46 6f 72   .BYTE $a1,$32,$a0,$29,$20,$46,$6f,$72  ; .2.) For
+39f8: 63 65 20 74 68 65 20 64   .BYTE $63,$65,$20,$74,$68,$65,$20,$64  ; ce the d
+3a00: 6f 6f 72 2e a6 08 04 28   .BYTE $6f,$6f,$72,$2e,$a6,$08,$04,$28  ; oor....(
+3a08: a1 33 a0 29 20 55 73 65   .BYTE $a1,$33,$a0,$29,$20,$55,$73,$65  ; .3.) Use
+3a10: 20 61 20 6b 65 79 2e a6   .BYTE $20,$61,$20,$6b,$65,$79,$2e,$a6  ;  a key..
+3a18: 08 05 28 a1 34 a0 29 20   .BYTE $08,$05,$28,$a1,$34,$a0,$29,$20  ; ..(.4.)
+3a20: 42 72 65 61 6b 20 61 6e   .BYTE $42,$72,$65,$61,$6b,$20,$61,$6e  ; Break an
+3a28: 20 65 6e 63 68 61 6e 74   .BYTE $20,$65,$6e,$63,$68,$61,$6e,$74  ;  enchant
+3a30: 6d 65 6e 74 2e a6 08 07   .BYTE $6d,$65,$6e,$74,$2e,$a6,$08,$07  ; ment....
+3a38: 28 a1 30 a0 29 20 4c 65   .BYTE $28,$a1,$30,$a0,$29,$20,$4c,$65  ; (.0.) Le
+3a40: 61 76 65 20 69 74 2e ff   .BYTE $61,$76,$65,$20,$69,$74,$2e,$ff  ; ave it..
+3a48: a6 00 02 a5 54 68 65 20  str_DOOR_APRS  .BYTE $a6,$00,$02,$a5,$54,$68,$65,$20  ; ....The
 3a50: 64 6f 6f 72 20 61 70 70   .BYTE $64,$6f,$6f,$72,$20,$61,$70,$70  ; door app
 3a58: 65 61 72 73 20 74 6f 20   .BYTE $65,$61,$72,$73,$20,$74,$6f,$20  ; ears to
-3a60: b3 ff                     .BYTE $b3,$ff                          ; ..
-3a62: ff        dat_3a62        .BYTE $ff                              ; .
-3a63: 11 0d ff  str_3a63        .BYTE $11,$0d,$ff                      ; ...
-3a66: a6 00 02 a5 59 6f 75 20  str_DOOR_UNKN   .BYTE $a6,$00,$02,$a5,$59,$6f,$75,$20 ; ....You
+3a60: b3                        .BYTE $b3            ; .
+3a61: ff        addr_3a61_L     .BYTE $ff            ; .
+3a62: ff        addr_3a61_H     .BYTE $ff            ; .
+3a63: 11 0d ff  str_3a63        .BYTE $11,$0d,$ff    ; ...
+3a66: a6 00 02 a5 59 6f 75 20  str_DOOR_UNKN  .BYTE $a6,$00,$02,$a5,$59,$6f,$75,$20  ; ....You
 3a6e: 63 61 6e 27 74 20 64 69   .BYTE $63,$61,$6e,$27,$74,$20,$64,$69  ; can't di
 3a76: 73 63 65 72 6e 20 77 68   .BYTE $73,$63,$65,$72,$6e,$20,$77,$68  ; scern wh
 3a7e: 61 74 20 62 61 72 73 20   .BYTE $61,$74,$20,$62,$61,$72,$73,$20  ; at bars
 3a86: 74 68 65 20 64 6f 6f 72   .BYTE $74,$68,$65,$20,$64,$6f,$6f,$72  ; the door
-3a8e: 2e 0d ff                  .BYTE $2e,$0d,$ff                      ; ...
-3a91: a6 00 02 a5 57 68 61 6d  str_DOOR_WHAM  .BYTE $a6,$00,$02,$a5,$57,$68,$61,$6d ; ....Wham
-3a99: 21 0d ff                  .BYTE $21,$0d,$ff                      ; !..
-3a9c: a6 00 02 a5 54 68 65 20  str_DOOR_OPNS  .BYTE $a6,$00,$02,$a5,$54,$68,$65,$20 ; ....The
-3aa4: 64 6f 6f 72 20 6f 70 65   .BYTE $64,$6f,$6f,$72,$20,$6f,$70,$65 ; door ope
-3aac: 6e 73 21 0d ff            .BYTE $6e,$73,$21,$0d,$ff             ; ns!..
-3ab1: a6 00 02 a5 54 68 65 20  str_DOOR_FAIL  .BYTE $a6,$00,$02,$a5,$54,$68,$65,$20 ; ....The
+3a8e: 2e 0d ff                  .BYTE $2e,$0d,$ff    ; ...
+3a91: a6 00 02 a5 57 68 61 6d  str_DOOR_WHAM  .BYTE $a6,$00,$02,$a5,$57,$68,$61,$6d  ; ....Wham
+3a99: 21 0d ff                  .BYTE $21,$0d,$ff    ; !..
+3a9c: a6 00 02 a5 54 68 65 20  str_DOOR_OPNS  .BYTE $a6,$00,$02,$a5,$54,$68,$65,$20  ; ....The
+3aa4: 64 6f 6f 72 20 6f 70 65   .BYTE $64,$6f,$6f,$72,$20,$6f,$70,$65  ; door ope
+3aac: 6e 73 21 0d ff            .BYTE $6e,$73,$21,$0d,$ff  ; ns!..
+3ab1: a6 00 02 a5 54 68 65 20  str_DOOR_FAIL  .BYTE $a6,$00,$02,$a5,$54,$68,$65,$20  ; ....The
 3ab9: 64 6f 6f 72 20 72 65 6d   .BYTE $64,$6f,$6f,$72,$20,$72,$65,$6d  ; door rem
 3ac1: 61 69 6e 73 20 73 68 75   .BYTE $61,$69,$6e,$73,$20,$73,$68,$75  ; ains shu
-3ac9: 74 2e 0d ff               .BYTE $74,$2e,$0d,$ff                  ; t...
-3acd: a6 00 02 a1 a5 45 78 61  str_DOOR_EXMN  .BYTE $a6,$00,$02,$a1,$a5,$45,$78,$61 ; .....Exa
+3ac9: 74 2e 0d ff               .BYTE $74,$2e,$0d,$ff  ; t...
+3acd: a6 00 02 a1 a5 45 78 61  str_DOOR_EXMN  .BYTE $a6,$00,$02,$a1,$a5,$45,$78,$61  ; .....Exa
 3ad5: 6d 69 6e 69 6e 67 2e 2e   .BYTE $6d,$69,$6e,$69,$6e,$67,$2e,$2e  ; mining..
-3add: 2e 0d a0 ff               .BYTE $2e,$0d,$a0,$ff                  ; ....
-3ae1: a6 00 02 a1 a5 43 6f 6e  str_DOOR_CONC  .BYTE $a6,$00,$02,$a1,$a5,$43,$6f,$6e ; .....Con
-3ae9: 63 65 6e 74 72 61 74 69  .BYTE $63,$65,$6e,$74,$72,$61,$74,$69  ; centrati
-3af1: 6e 67 2e 2e 2e 0d a0 ff  .BYTE $6e,$67,$2e,$2e,$2e,$0d,$a0,$ff  ; ng......
-
-3af9: ff 0b 16 3a 3b 3b 6e 65  dat_3af9  .BYTE $ff,$0b,$16,$3a,$3b,$3b,$6e,$65  ; ...:;;ne
-3b01: 65 64 20 61 20 6b 65 79   .BYTE $65,$64,$20,$61,$20,$6b,$65,$79  ; ed a key
-3b09: 2e 00 62 65 20 62 6f 6c   .BYTE $2e,$00,$62,$65,$20,$62,$6f,$6c  ; ..be bol
-3b11: 74 65 64 2e 00 62 65 20   .BYTE $74,$65,$64,$2e,$00,$62,$65,$20  ; ted..be
-3b19: 65 6e 63 68 61 6e 74 65   .BYTE $65,$6e,$63,$68,$61,$6e,$74,$65  ; enchante
-3b21: 64 21 00                  .BYTE $64,$21,$00    ; d!.
-
-3b24: 21 21 21 0f 0f 07 07 21  dat_3b24  .BYTE $21,$21,$21,$0f,$0f,$07,$07,$21  ; !!!....!
+3add: 2e 0d a0 ff               .BYTE $2e,$0d,$a0,$ff  ; ....
+3ae1: a6 00 02 a1 a5 43 6f 6e  str_DOOR_CONC  .BYTE $a6,$00,$02,$a1,$a5,$43,$6f,$6e  ; .....Con
+3ae9: 63 65 6e 74 72 61 74 69   .BYTE $63,$65,$6e,$74,$72,$61,$74,$69  ; centrati
+3af1: 6e 67 2e 2e 2e 0d a0 ff   .BYTE $6e,$67,$2e,$2e,$2e,$0d,$a0,$ff  ; ng......
+3af9: ff 0b 16  tbl_3af9_L      .BYTE $ff,$0b,$16    ; ...
+3afc: 3a 3b 3b  tbl_3afc_H      .BYTE $3a,$3b,$3b    ; :;;
+3aff: 6e 65 65 64 20 61 20 6b  str_NEED_A_KEY  .BYTE $6e,$65,$65,$64,$20,$61,$20,$6b  ; need a k
+3b07: 65 79 2e 00               .BYTE $65,$79,$2e,$00  ; ey..
+3b0b: 62 65 20 62  str_BE_BOLTED  .BYTE $62,$65,$20,$62  ; be b
+3b0f: 6f 6c 74 65 64 2e 00      .BYTE $6f,$6c,$74,$65,$64,$2e,$00  ; olted..
+3b16: 62        str_BE_ENCHNTD  .BYTE $62            ; b
+3b17: 65 20 65 6e 63 68 61 6e   .BYTE $65,$20,$65,$6e,$63,$68,$61,$6e  ; e enchan
+3b1f: 74 65 64 21 00            .BYTE $74,$65,$64,$21,$00  ; ted!.
+3b24: 21 21 21 0f 0f 07 07 21  tbl_3b24_L  .BYTE $21,$21,$21,$0f,$0f,$07,$07,$21  ; !!!....!
 3b2c: 44 48 4c da da da da da   .BYTE $44,$48,$4c,$da,$da,$da,$da,$da  ; DHL.....
-3b34: 33 33 33 33 33 33 33 33   .BYTE $33,$33,$33,$33,$33,$33,$33,$33  ; 33333333
+3b34: 33 33 33 33 33 33 33 33  tbl_3b34_H  .BYTE $33,$33,$33,$33,$33,$33,$33,$33  ; 33333333
 3b3c: 33 33 33 32 32 32 32 32   .BYTE $33,$33,$33,$32,$32,$32,$32,$32  ; 33322222
-
 3b44: 01 00 01 00 01 00 01 00  dat_3b44  .BYTE $01,$00,$01,$00,$01,$00,$01,$00  ; ........
-
 3b4c: 24 dc dc 24 dc 24 24 dc  dat_3b4c  .BYTE $24,$dc,$dc,$24,$dc,$24,$24,$dc  ; $..$.$$.
-
 3b54: ff 01 01 ff 01 ff ff 01  dat_3b54  .BYTE $ff,$01,$01,$ff,$01,$ff,$ff,$01  ; ........
 3b5c: 00 23 23 00 23 00 00 23   .BYTE $00,$23,$23,$00,$23,$00,$00,$23  ; .##.#..#
-
 3b64: 00 00 01 01 01 01 00 00  dat_3b64  .BYTE $00,$00,$01,$01,$01,$01,$00,$00  ; ........
-
 3b6c: 00 80 00 80 00 80 00 80  dat_3b6c  .BYTE $00,$80,$00,$80,$00,$80,$00,$80  ; ........
 3b74: 01        BMASK_01        .BYTE $01            ; .
 3b75: 02        BMASK_02        .BYTE $02            ; .
 3b76: 04        BMASK_04        .BYTE $04            ; .
-3b77: 08        BMASK_08        .BYTE $08
-3b78: 47 44     dat_3b78        .BYTE $47,$44     ; GD
-3b7a: 55 43                     EOR ZBUFP,X       ; UC
-3b7c: 53                        .BYTE $53         ; S
-3b7d: 45 51                     EOR HOLD1         ; EQ
-3b7f: 50 2c                     BVC loc_3bad      ; P,
-3b81: 2e 10 11                  ROL $1110         ; ...
-3b84: 13                        .BYTE $13         ; .
-3b85: 56 68 71 7a 83  tbl_3b85_L  .BYTE $56,$68,$71,$7a,$83
-3b8a: 83 d6 4a 8c 71 71 8c ab   .BYTE $83,$d6,$4a,$8c,$71,$71,$8c,$ab
-3b92: 37 37 37 37 37  tbl_3b92_H  .BYTE $37,$37,$37,$37,$37
-3b97: 36 37 38 3c 3c 3c 3c 2c   .BYTE $36,$37,$38,$3c,$3c,$3c,$3c,$2c
-3b9f: 48 64                     .BYTE $48,$64     ; Hd
-3ba1: 83                        .BYTE $83         ; .
-3ba2: c1 35                     CMP (BFENHI,X)    ; .5
-3ba4: 35 35                     AND BFENHI,X      ; 55
-3ba6: 35 12                     AND RTCLOK,X      ; 5.
-3ba8: 1e        TELEPORT_TBL_Y  .BYTE $1e         ; .
-3ba9: 00        TELEPORT_TBL_MAP  .BYTE $00       ; .
-3baa: ff 12 1b  TELEPORT_TBL_ORIENT  .BYTE $ff,$12,$1b  ; ...
-3bad: 00        loc_3bad        BRK               ; .
-3bae: 03 13 1b                  .BYTE $03,$13,$1b  ; ...
-3bb1: 00                        BRK               ; .
-3bb2: 01 0f                     ORA (APPMHI+1,X)  ; ..
-3bb4: 17                        .BYTE $17         ; .
-3bb5: 00                        BRK               ; .
-3bb6: 00                        BRK               ; .
-3bb7: 1d 17 00                  ORA addr_0016_H,X ; ...
-3bba: 00                        BRK               ; .
-3bbb: 05 1a                     ORA dat_001a      ; ..
-3bbd: 00                        BRK               ; .
-3bbe: ff 14 1f                  .BYTE $ff,$14,$1f  ; ...
-3bc1: 00                        BRK               ; .
-3bc2: 00                        BRK               ; .
-3bc3: 10 01                     BPL bad_3bc6      ; ..
-3bc5: 00                        BRK               ; .
-3bc6: ff 0b                     .BYTE $ff,$0b     ; ..
-3bc8: 01 01                     ORA (dat_0001,X)  ; ..
-3bca: ff                        .BYTE $ff         ; .
-3bcb: 11 07                     ORA (dat_0007_L),Y; ..
-3bcd: 01 ff                     ORA (FPTR2+1,X)   ; ..
-3bcf: 11 0a                     ORA (dat_0009_H),Y    ; ..
-3bd1: 01 ff                     ORA (FPTR2+1,X)   ; ..
-3bd3: 0b 1c                     .BYTE $0b,$1c     ; ..
-3bd5: 01 ff                     ORA (FPTR2+1,X)   ; ..
-3bd7: 0b 1f                     .BYTE $0b,$1f     ; ..
-3bd9: 01 ff                     ORA (FPTR2+1,X)   ; ..
-3bdb: 08                        PHP               ; .
-3bdc: 0f                        .BYTE $0f         ; .
-3bdd: 01 80                     ORA (LOMEM,X)     ; ..
-3bdf: 12                        .BYTE $12         ; .
-3be0: 09 02                     ORA #$02          ; ..
-3be2: 80                        .BYTE $80         ; .
-3be3: 00                        BRK               ; .
-3be4: 01 02                     ORA (dat_0002,X)  ; ..
-3be6: ff                        .BYTE $ff         ; .
-3be7: 00                        BRK               ; .
-3be8: 1e 00 ff                  ASL $ff00,X       ; ...
-3beb: 01 00                     ORA (dat_0000,X)  ; ..
-3bed: 01 ff                     ORA (FPTR2+1,X)   ; ..
-3bef: 1e 00 00                  ASL dat_0000,X    ; ...
-3bf2: ff 1f                     .BYTE $ff,$1f     ; ..
-3bf4: 1e 01 ff                  ASL $ff01,X       ; ...
-3bf7: 1f                        .BYTE $1f         ; .
-3bf8: 01 03                     ORA (dat_0003,X)  ; ..
-3bfa: ff                        .BYTE $ff         ; .
-3bfb: 01 1f                     ORA (dat_001f,X)  ; ..
-3bfd: 03 ff                     .BYTE $03,$ff     ; ..
-3bff: 1e 1f 02                  ASL CDTMV4+1,X    ; ...
-3c02: ff                        .BYTE $ff         ; .
-3c03: 00                        BRK               ; .
-3c04: 12                        .BYTE $12         ; .
-3c05: 05 ff                     ORA FPTR2+1       ; ..
-3c07: 0d 0f 05                  ORA $050f         ; ...
-3c0a: ff 03                     .BYTE $ff,$03     ; ..
-3c0c: 01 03                     ORA (dat_0003,X)  ; ..
-3c0e: ff 03                     .BYTE $ff,$03     ; ..
-3c10: 1e 01 ff                  ASL $ff01,X       ; ...
-3c13: 0b                        .BYTE $0b         ; .
-3c14: 00                        BRK               ; .
-3c15: 04 ff                     .BYTE $04,$ff     ; ..
-3c17: 16 07                     ASL dat_0007_L,X  ; ..
-3c19: 01 02                     ORA (dat_0002,X)  ; ..
-3c1b: 1a                        .BYTE $1a         ; .
-3c1c: 05 01                     ORA dat_0001      ; ..
-3c1e: 00                        BRK               ; .
-3c1f: 1c 07                     .BYTE $1c,$07     ; ..
-3c21: 01 02                     ORA (dat_0002,X)  ; ..
-3c23: 18                        CLC               ; .
-3c24: 1b 02 03                  .BYTE $1b,$02,$03 ;
+3b77: 08 47 44 55 43 53 45 51  BMASK_08  .BYTE $08,$47,$44,$55,$43,$53,$45,$51  ; .GDUCSEQ
+3b7f: 50 2c 2e 10 11 13         .BYTE $50,$2c,$2e,$10,$11,$13  ; P,....
+3b85: 56 68 71 7a 83 83 d6 4a  tbl_3b85_L  .BYTE $56,$68,$71,$7a,$83,$83,$d6,$4a  ; Vhqz...J
+3b8d: 8c 71 71 8c ab            .BYTE $8c,$71,$71,$8c,$ab  ; .qq..
+3b92: 37 37 37  tbl_3b92_H      .BYTE $37,$37,$37    ; 777
+3b95: 37 37 36 37 38 3c 3c 3c   .BYTE $37,$37,$36,$37,$38,$3c,$3c,$3c  ; 77678<<<
+3b9d: 3c 2c                     .BYTE $3c,$2c        ; <,
+3b9f: 48 64 83 c1  addr_3b9f_L  .BYTE $48,$64,$83,$c1  ; Hd..
+3ba3: 35 35 35 35  addr_3ba3_H  .BYTE $35,$35,$35,$35  ; 5555
+      ; Teleport location table follows
+      ; Each entry consists of 4 bytes
+3ba7: 12        TELEPORT_TBL_X  .BYTE $12            ; .
+3ba8: 1e        TELEPORT_TBL_Y  .BYTE $1e            ; .
+3ba9: 00        TELEPORT_TBL_MAP  .BYTE $00          ; .
+3baa: ff 12 1b 00 03 13 1b  TELEPORT_TBL_ORIENT  .BYTE $ff,$12,$1b,$00,$03,$13,$1b  ; .......
+3bb1: 00 01 0f 17 00 00 1d 17   .BYTE $00,$01,$0f,$17,$00,$00,$1d,$17  ; ........
+3bb9: 00 00 05 1a 00 ff 14 1f   .BYTE $00,$00,$05,$1a,$00,$ff,$14,$1f  ; ........
+3bc1: 00 00 10 01 00 ff 0b 01   .BYTE $00,$00,$10,$01,$00,$ff,$0b,$01  ; ........
+3bc9: 01 ff 11 07 01 ff 11 0a   .BYTE $01,$ff,$11,$07,$01,$ff,$11,$0a  ; ........
+3bd1: 01 ff 0b 1c 01 ff 0b 1f   .BYTE $01,$ff,$0b,$1c,$01,$ff,$0b,$1f  ; ........
+3bd9: 01 ff 08 0f 01 80 12 09   .BYTE $01,$ff,$08,$0f,$01,$80,$12,$09  ; ........
+3be1: 02 80 00 01 02 ff 00 1e   .BYTE $02,$80,$00,$01,$02,$ff,$00,$1e  ; ........
+3be9: 00 ff 01 00 01 ff 1e 00   .BYTE $00,$ff,$01,$00,$01,$ff,$1e,$00  ; ........
+3bf1: 00 ff 1f 1e 01 ff 1f 01   .BYTE $00,$ff,$1f,$1e,$01,$ff,$1f,$01  ; ........
+3bf9: 03 ff 01 1f 03 ff 1e 1f   .BYTE $03,$ff,$01,$1f,$03,$ff,$1e,$1f  ; ........
+3c01: 02 ff 00 12 05 ff 0d 0f   .BYTE $02,$ff,$00,$12,$05,$ff,$0d,$0f  ; ........
+3c09: 05 ff 03 01 03 ff 03 1e   .BYTE $05,$ff,$03,$01,$03,$ff,$03,$1e  ; ........
+3c11: 01 ff 0b 00 04 ff 16 07   .BYTE $01,$ff,$0b,$00,$04,$ff,$16,$07  ; ........
+3c19: 01 02 1a 05 01 00 1c 07   .BYTE $01,$02,$1a,$05,$01,$00,$1c,$07  ; ........
+3c21: 01 02 18 1b 02 03         .BYTE $01,$02,$18,$1b,$02,$03  ; ......
 
 3c27: cd 33 19  sub_3c27        CMP dat_1933         ; If
 3c2a: f0 01                     BEQ sub_3c2d         ;   A <> dat_1933
@@ -4250,9 +4145,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3c3d: 20 88 1c                  JSR sub_1c88         ;
 3c40: ae 33 19  loc_3c40        LDX dat_1933         ;
 3c43: 8e 35 19                  STX dat_1935         ;
-3c46: bd 13 19                  LDA dat_1913,X       ;
+3c46: bd 13 19                  LDA tbl_1913_L,X     ;
 3c49: 85 16                     STA addr_0016_L      ;
-3c4b: bd 23 19                  LDA dat_1923,X       ;
+3c4b: bd 23 19                  LDA tbl_1923_H,X     ;
 3c4e: d0 07                     BNE loc_3c57         ;
 3c50: a2 00                     LDX #$00             ;
 3c52: 8e 33 19                  STX dat_1933         ;
@@ -4264,15 +4159,15 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 ;    and then invokes sub_3c2d.
 ;
 ; Parameters:
-;   X = Index into dat_1913/dat_1923.
+;   X = Index into tbl_1913_L/tbl_1923_H.
 ;       Specifies offset to store current addr_0016_L/addr_0016_H to.
 3c5c: a9 ff     sub_3c5c        LDA #$ff             ; Set
 3c5e: 8d 35 19                  STA dat_1935         ;     dat_1935 = $ff (255 / -1)
 3c61: 8e 33 19  loc_3c61        STX dat_1933         ; Set dat_1933 = X
 3c64: a5 16                     LDA addr_0016_L      ; Set
-3c66: 9d 13 19                  STA dat_1913,X       ;     dat_1913 + X = addr_0016_L
+3c66: 9d 13 19                  STA tbl_1913_L,X     ;     tbl_1913_L + X = addr_0016_L
 3c69: a5 17                     LDA addr_0016_H      ; Set
-3c6b: 9d 23 19                  STA dat_1923,X       ;     dat_1923 + X = addr_0016_H
+3c6b: 9d 23 19                  STA tbl_1923_H,X     ;     tbl_1923_H + X = addr_0016_H
 3c6e: 4c 2d 3c                  JMP sub_3c2d         ; Continue @ $3c2d [sub_3c2d]
 
 3c71: ee 33 19  sub_3c71        INC dat_1933         ; Add 1 to dat_1933
@@ -4282,7 +4177,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3c7c: a9 00                     LDA #$00             ; Otherwise,
 3c7e: 8d 33 19                  STA dat_1933         ;     Set dat_1933 = 0
 3c81: ae 33 19  loc_3c81        LDX dat_1933         ; Set X = dat_1933
-3c84: bd 23 19                  LDA dat_1923,X       ; If dat_1923 + X = 0
+3c84: bd 23 19                  LDA tbl_1923_H,X     ; If tbl_1923_H + X = 0
 3c87: f0 e8                     BEQ sub_3c71         ;     Then Continue @ $3c71 [sub_3c71]
 3c89: 4c 2d 3c                  JMP sub_3c2d         ;     Otherwise Continue @ $3c2d [sub_3c2d]
 
@@ -4293,7 +4188,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3c95: e9 01                     SBC #$01             ;
 3c97: 8d 33 19                  STA dat_1933         ;
 3c9a: ae 33 19  loc_3c9a        LDX dat_1933         ;
-3c9d: bd 23 19                  LDA dat_1923,X       ;
+3c9d: bd 23 19                  LDA tbl_1923_H,X     ;
 3ca0: f0 ea                     BEQ sub_3c8c         ;
 3ca2: 4c 2d 3c                  JMP sub_3c2d         ; Continue @ $3c2d [sub_3c2d]
 
@@ -4302,9 +4197,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3cab: ae 34 19                  LDX loc_1934         ;
 3cae: 8e 33 19                  STX dat_1933         ;
 3cb1: a5 16                     LDA addr_0016_L      ;
-3cb3: 9d 13 19                  STA dat_1913,X       ;
+3cb3: 9d 13 19                  STA tbl_1913_L,X     ;
 3cb6: a5 17                     LDA addr_0016_H      ;
-3cb8: 9d 23 19                  STA dat_1923,X       ;
+3cb8: 9d 23 19                  STA tbl_1923_H,X     ;
 3cbb: e8                        INX                  ;
 3cbc: 8e 34 19                  STX loc_1934         ;
 3cbf: 4c 2d 3c                  JMP sub_3c2d         ;
@@ -4320,648 +4215,400 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3cda: 4c 2d 3c                  JMP sub_3c2d         ;
 3cdd: 60        loc_3cdd        RTS                  ; Return to caller
 
-3cde: a6 00                     LDX dat_0000      ; ..
-3ce0: 00                        BRK               ; .
-3ce1: 46 6f                     LSR SHFAMT        ; Fo
-3ce3: 6f 64                     .BYTE $6f,$64     ; od
-3ce5: 20 50 61                  JSR loc_6150      ;  Pa
-3ce8: 63 6b                     .BYTE $63,$6b     ; ck
-3cea: 65 74                     ADC ENDPT         ; et
-3cec: 73                        .BYTE $73         ; s
-3ced: a6 10                     LDX POKMSK        ; ..
-3cef: 00                        BRK               ; .
-3cf0: 54 6f 72 63               .BYTE $54,$6f,$72,$63  ; Torc
-3cf4: 68                        PLA               ; h
-3cf5: 65 73                     ADC COLAC+1       ; es
-3cf7: a7 57                     .BYTE $a7,$57     ; .W
-3cf9: 61 74                     ADC (ENDPT,X)     ; at
-3cfb: 65 72                     ADC COLAC         ; er
-3cfd: 20 46 6c                  JSR $6c46         ;  Fl
-3d00: 61 73                     ADC (COLAC+1,X)   ; as
-3d02: 6b 73                     .BYTE $6b,$73     ; ks
-3d04: 0d a6 05                  ORA LBUFF+38      ; ...
-3d07: 01 b2                     ORA ($b2,X)       ; ..
-3d09: bb 63 03                  .BYTE $bb,$63,$03 ; .c.
-3d0c: a6 12                     LDX RTCLOK        ; ..
-3d0e: 01 b2                     ORA ($b2,X)       ; ..
-3d10: bd 63 03                  LDA D32_553_SDVR+3,X  ; .c.
-3d13: a6 21                     LDX dat_0021      ; .!
-3d15: 01 b2                     ORA ($b2,X)       ; ..
-3d17: bc 63 03                  LDY D32_553_SDVR+3,X  ; .c.
-3d1a: 0d 0d a5                  ORA $a50d         ; ...
-3d1d: 59 6f 75                  EOR $756f,Y       ; You
-3d20: 20 61 72                  JSR $7261         ;  ar
-3d23: 65 20                     ADC dat_0020      ; e
-3d25: 6f                        .BYTE $6f         ; o
-3d26: 6e 20 6c                  ROR $6c20         ; n l
-3d29: 65 76                     ADC DELTAR        ; ev
-3d2b: 65 6c                     ADC BUFSTR        ; el
-3d2d: 20 b2 1d                  JSR ccc_1db2      ;  ..
-3d30: 63                        .BYTE $63         ; c
-3d31: 01 0d                     ORA (DOSINI+1,X)  ; ..
-3d33: a5 6f                     LDA SHFAMT        ; .o
-3d35: 66 20                     ROR dat_0020      ; f
-3d37: 74                        .BYTE $74         ; t
-3d38: 68                        PLA               ; h
-3d39: 65 20                     ADC dat_0020      ; e
-3d3b: 44                        .BYTE $44         ; D
-3d3c: 75 6e                     ADC BITMSK,X      ; un
-3d3e: 67                        .BYTE $67         ; g
-3d3f: 65 6f                     ADC SHFAMT        ; eo
-3d41: 6e 0d a6                  ROR $a60d         ; n..
-3d44: 00                        BRK               ; .
-3d45: 04                        .BYTE $04         ; .
-3d46: b4 a9                     LDY $a9,X         ; ..
-3d48: 45 0c                     EOR DOSINI        ; E.
-3d4a: 0d b4 a7                  ORA $a7b4         ; ...
-3d4d: 45 0c                     EOR DOSINI        ; E.
-3d4f: 0d b4 a5                  ORA $a5b4         ; ...
-3d52: 45 0c                     EOR DOSINI        ; E.
-3d54: 0d b4 ad                  ORA $adb4         ; ...
-3d57: 45 0c                     EOR DOSINI        ; E.
-3d59: a6 1c                     LDX dat_001c      ; ..
-3d5b: 04                        .BYTE $04         ; .
-3d5c: b4 ab                     LDY $ab,X         ; ..
-3d5e: 45 0c                     EOR DOSINI        ; E.
-3d60: a6 1c                     LDX dat_001c      ; ..
-3d62: 05 b4                     ORA $b4           ; ..
-3d64: a3                        .BYTE $a3         ; .
-3d65: 45 0c                     EOR DOSINI        ; E.
-3d67: a6 1c                     LDX dat_001c      ; ..
-3d69: 06 b4                     ASL $b4           ; ..
-3d6b: b3                        .BYTE $b3         ; .
-3d6c: 45 0c                     EOR DOSINI        ; E.
-3d6e: a6 1c                     LDX dat_001c      ; ..
-3d70: 07                        .BYTE $07         ; .
-3d71: b4 b1                     LDY $b1,X         ; ..
-3d73: 45 0c                     EOR DOSINI        ; E.
-3d75: a6 0e                     LDX APPMHI        ; ..
-3d77: 06 b4                     ASL $b4           ; ..
-3d79: b5 45                     LDA dat_0045_L,X  ; .E
-3d7b: 0c                        .BYTE $0c         ; .
-3d7c: a6 0e                     LDX APPMHI        ; ..
-3d7e: 07                        .BYTE $07         ; .
-3d7f: b4 af                     LDY $af,X         ; ..
-3d81: 45 0c                     EOR DOSINI        ; E.
-3d83: ff                        .BYTE $ff         ; .
-3d84: a6 00                     LDX dat_0000      ; ..
-3d86: 00                        BRK               ; .
-3d87: 47 6f                     .BYTE $47,$6f     ; Go
-3d89: 6c 64 20                  JMP (loc_2064)    ; ld
-3d8c: 43 6f                     .BYTE $43,$6f     ; Co
-3d8e: 69 6e                     ADC #$6e          ; in
-3d90: 73                        .BYTE $73         ; s
-3d91: 20 20 20                  JSR loc_2020      ;
-3d94: 53                        .BYTE $53         ; S
-3d95: 69 6c                     ADC #$6c          ; il
-3d97: 76 65                     ROR ADRESS+1,X    ; ve
-3d99: 72                        .BYTE $72         ; r
-3d9a: 20 43 6f                  JSR $6f43         ;  Co
-3d9d: 69 6e                     ADC #$6e          ; in
-3d9f: 73                        .BYTE $73         ; s
-3da0: 20 20 20                  JSR loc_2020      ;
-3da3: 43 6f                     .BYTE $43,$6f     ; Co
-3da5: 70 70                     BVS loc_3e17      ; pp
-3da7: 65 72                     ADC COLAC         ; er
-3da9: 20 43 6f                  JSR $6f43         ;  Co
-3dac: 69 6e                     ADC #$6e          ; in
-3dae: 73                        .BYTE $73         ; s
-3daf: 20 20 b1                  JSR $b120         ;   .
-3db2: b1 63                     LDA (LOGCOL),Y    ; .c
-3db4: 06 a6                     ASL $a6           ; ..
-3db6: 10 01                     BPL loc_3db9      ; ..
-3db8: b1 b3                     LDA ($b3),Y       ; ..
-3dba: 63                        .BYTE $63         ; c
-3dbb: 06 a6                     ASL $a6           ; ..
-3dbd: 1f                        .BYTE $1f         ; .
-3dbe: 01 b1                     ORA ($b1,X)       ; ..
-3dc0: b5 63                     LDA LOGCOL,X      ; .c
-3dc2: 06 a6                     ASL $a6           ; ..
-3dc4: 0c 03 4f 74               .BYTE $0c,$03,$4f,$74  ; ..Ot
-3dc8: 68                        PLA               ; h
-3dc9: 65 72                     ADC COLAC         ; er
-3dcb: 20 50 6f                  JSR $6f50         ;  Po
-3dce: 73 73                     .BYTE $73,$73     ; ss
-3dd0: 65 73                     ADC COLAC+1       ; es
-3dd2: 73                        .BYTE $73         ; s
-3dd3: 69 6f                     ADC #$6f          ; io
-3dd5: 6e 73 a6                  ROR $a673         ; ns.
-3dd8: 07                        .BYTE $07         ; .
-3dd9: 05 47                     ORA ZSBA          ; .G
-3ddb: 65 6d                     ADC BUFSTR+1      ; em
-3ddd: 73 3a                     .BYTE $73,$3a     ; s:
-3ddf: b1 b7                     LDA ($b7),Y       ; ..
-3de1: 63                        .BYTE $63         ; c
-3de2: 06 a6                     ASL $a6           ; ..
-3de4: 1c                        .BYTE $1c         ; .
-3de5: 05 4b                     ORA CASSBT        ; .K
-3de7: 65 79                     ADC ROWINC        ; ey
-3de9: 73 3a b2 bf 63 03         .BYTE $73,$3a,$b2,$bf,$63,$03  ; s:..c.
-3def: a6 05                     LDX dat_0005      ; ..
-3df1: 06 4a                     ASL CKEY          ; .J
-3df3: 65 77                     ADC DELTAC        ; ew
-3df5: 65 6c                     ADC BUFSTR        ; el
-3df7: 73 3a                     .BYTE $73,$3a     ; s:
-3df9: b1 b9                     LDA ($b9),Y       ; ..
-3dfb: 63                        .BYTE $63         ; c
-3dfc: 06 a6                     ASL $a6           ; ..
-3dfe: 17                        .BYTE $17         ; .
-3dff: 06 43                     ASL ZBUFP         ; .C
-3e01: 6f                        .BYTE $6f         ; o
-3e02: 6d 70 61                  ADC loc_6170      ; mpa
-3e05: 73 73                     .BYTE $73,$73     ; ss
-3e07: 65 73                     ADC COLAC+1       ; es
-3e09: 3a b2                     .BYTE $3a,$b2     ; :.
-3e0b: c0 63                     CPY #$63          ; .c
-3e0d: 03                        .BYTE $03         ; .
-3e0e: a6 03                     LDX dat_0003      ; ..
-3e10: 07 43 72                  .BYTE $07,$43,$72  ; .Cr
-3e13: 79 73 74                  ADC $7473,Y       ; yst
-3e16: 61 6c                     ADC (BUFSTR,X)    ; al
-3e18: 73 3a b2                  .BYTE $73,$3a,$b2  ; s:.
-3e1b: be 63 03                  LDX D32_553_SDVR+3,Y  ; .c.
-3e1e: a6 16                     LDX addr_0016_L ; ..
-3e20: 07 54                     .BYTE $07,$54     ; .T
-3e22: 69 6d                     ADC #$6d          ; im
-3e24: 65 70                     ADC ROWAC         ; ep
-3e26: 69 65                     ADC #$65          ; ie
-3e28: 63                        .BYTE $63         ; c
-3e29: 65 73                     ADC COLAC+1       ; es
-3e2b: 3a b2                     .BYTE $3a,$b2     ; :.
-3e2d: c1 63                     CMP (LOGCOL,X)    ; .c
-3e2f: 03 ff                     .BYTE $03,$ff     ; ..
-3e31: a6 00                     LDX dat_0000      ; ..
-3e33: 00                        BRK               ; .
-3e34: a5 57                     LDA DINDEX        ; .W
-3e36: 65 61                     ADC NEWCOL        ; ea
-3e38: 70 6f                     BVS bad_3ea9      ; po
-3e3a: 6e 73 0d                  ROR $0d73         ; ns.
-3e3d: a3                        .BYTE $a3         ; .
-3e3e: 41 3f                     EOR (FEOF,X)      ; A?
-3e40: a6 00                     LDX dat_0000      ; ..
-3e42: 01 50                     ORA (dat_023e,X)  ; .P
-3e44: 72                        .BYTE $72         ; r
-3e45: 69 6d                     ADC #$6d          ; im
-3e47: 61 72                     ADC (COLAC,X)     ; ar
-3e49: 79 3a 20                  ADC loc_203a,Y    ; y:
-3e4c: b4 7f                     LDY COUNTR+1,X    ; .
-3e4e: 40                        RTI               ;
-3e4f: 1f ab                     .BYTE $1f,$ab     ; ..
-3e51: a6 00                     LDX dat_0000      ; ..
-3e53: 02 53                     .BYTE $02,$53     ; .S
-3e55: 65 63                     ADC LOGCOL        ; ec
-3e57: 6f                        .BYTE $6f         ; o
-3e58: 6e 64 61                  ROR loc_6164      ; nda
-3e5b: 72                        .BYTE $72         ; r
-3e5c: 79 3a 20                  ADC loc_203a,Y    ; y:
-3e5f: b4 81                     LDY LOMEM+1,X     ; ..
-3e61: 40                        RTI               ;
-3e62: 1d ab 0d                  ORA $0dab,X       ; ...
-3e65: a5 41                     LDA SOUNDR        ; .A
-3e67: 72                        .BYTE $72         ; r
-3e68: 6d 6f 72                  ADC $726f         ; mor
-3e6b: 0d 48 65                  ORA $6548         ; .He
-3e6e: 61 64                     ADC (ADRESS,X)    ; ad
-3e70: 3a                        .BYTE $3a         ; :
-3e71: 20 b4 83                  JSR $83b4         ;  ..
-3e74: 40                        RTI               ;
-3e75: 22 ab                     .BYTE $22,$ab     ; ".
-3e77: a6 00                     LDX dat_0000      ; ..
-3e79: 05 42                     ORA CRITIC        ; .B
-3e7b: 6f 64                     .BYTE $6f,$64     ; od
-3e7d: 79 3a 20                  ADC loc_203a,Y    ; y:
-3e80: b4 85                     LDY VNTD+1,X      ; ..
-3e82: 40                        RTI               ;
-3e83: 22 ab                     .BYTE $22,$ab     ; ".
-3e85: a6 00                     LDX dat_0000      ; ..
-3e87: 06 41                     ASL SOUNDR        ; .A
-3e89: 72                        .BYTE $72         ; r
-3e8a: 6d 73 3a                  ADC bad_3a73      ; ms:
-3e8d: 20 b4 87                  JSR $87b4         ;  ..
-3e90: 40                        RTI               ;
-3e91: 22 ab                     .BYTE $22,$ab     ; ".
-3e93: a6 00                     LDX dat_0000      ; ..
-3e95: 07                        .BYTE $07         ; .
-3e96: 4c 65 67                  JMP $6765         ; Leg
-3e99: 73 3a                     .BYTE $73,$3a     ; s:
-3e9b: 20 b4 89                  JSR $89b4         ;  ..
-3e9e: 40                        RTI               ;
-3e9f: 22 ab ff                  .BYTE $22,$ab,$ff ; "..
-3ea2: a6 00                     LDX dat_0000      ; ..
-3ea4: 00                        BRK               ; .
-3ea5: a5 41                     LDA SOUNDR        ; .A
-3ea7: 70 70                     BVS bad_3f19      ; pp
-3ea9: 61 72                     ADC (COLAC,X)     ; ar
-3eab: 65 6c                     ADC BUFSTR        ; el
-3ead: 0d a3 8d                  ORA $8da3         ; ...
-3eb0: 3f                        .BYTE $3f         ; ?
-3eb1: a6 0a                     LDX dat_0009_H        ; ..
-3eb3: 02                        .BYTE $02         ; .
-3eb4: a2 b4                     LDX #$b4          ; ..
-3eb6: 7f                        .BYTE $7f         ; 
-3eb7: 40                        RTI               ;
-3eb8: 1e ab 0d                  ASL $0dab,X       ; ...
-3ebb: a2 b4                     LDX #$b4          ; ..
-3ebd: 81 40                     STA (FREQ,X)      ; .@
-3ebf: 1e ab 0d                  ASL $0dab,X       ; ...
-3ec2: a2 b4                     LDX #$b4          ; ..
-3ec4: 83                        .BYTE $83         ; .
-3ec5: 40                        RTI               ;
-3ec6: 1e ab 0d                  ASL $0dab,X       ; ...
-3ec9: a2 b4                     LDX #$b4          ; ..
-3ecb: 85 40                     STA FREQ          ; .@
-3ecd: 1e ab 0d                  ASL $0dab,X       ; ...
-3ed0: ff                        .BYTE $ff         ; .
-3ed1: a6 00                     LDX dat_0000      ; ..
-3ed3: 00                        BRK               ; .
-3ed4: a5 41                     LDA SOUNDR        ; .A
-3ed6: 63 74                     .BYTE $63,$74     ; ct
-3ed8: 69 76                     ADC #$76          ; iv
-3eda: 65 20                     ADC dat_0020      ; e
-3edc: 4d 61 67                  EOR $6761         ; Mag
-3edf: 69 63                     ADC #$63          ; ic
-3ee1: 0d a3 fc                  ORA $fca3         ; ...
-3ee4: 3f                        .BYTE $3f         ; ?
-3ee5: ac 15 3f                  LDY bad_3f15      ; ..?
-3ee8: ff                        .BYTE $ff         ; .
-3ee9: a6 00                     LDX dat_0000      ; ..
-3eeb: 00                        BRK               ; .
-3eec: a5 4b                     LDA CASSBT        ; .K
-3eee: 6e 6f 77                  ROR $776f         ; now
-3ef1: 6e 20 44                  ROR loc_4420      ; n D
-3ef4: 69 73                     ADC #$73          ; is
-3ef6: 65 61                     ADC NEWCOL        ; ea
-3ef8: 73                        .BYTE $73         ; s
-3ef9: 65 73                     ADC COLAC+1       ; es
-3efb: 0d a3 f6                  ORA $f6a3         ; ...
-3efe: 3f                        .BYTE $3f         ; ?
-3eff: ac 15 3f                  LDY bad_3f15      ; ..?
-3f02: ff                        .BYTE $ff         ; .
-3f03: a6 00                     LDX dat_0000      ; ..
-3f05: 00                        BRK               ; .
-3f06: a5 43                     LDA ZBUFP         ; .C
-3f08: 75 72                     ADC COLAC,X       ; ur
-3f0a: 73                        .BYTE $73         ; s
-3f0b: 65 73                     ADC COLAC+1       ; es
-3f0d: 0d a3 f9                  ORA $f9a3         ; ...
-3f10: 3f                        .BYTE $3f         ; ?
-3f11: ac 15 3f                  LDY bad_3f15      ; ..?
-3f14: ff                        .BYTE $ff         ; .
-3f15: 0d a2 b4                  ORA $b4a2         ; ...
-3f18: 7f                        .BYTE $7f         ; 
-3f19: 40                        RTI               ;
-3f1a: 26 ab                     ROL $ab           ; &.
-3f1c: 0d a2 b4                  ORA $b4a2         ; ...
-3f1f: 81 40                     STA (FREQ,X)      ; .@
-3f21: 26 ab                     ROL $ab           ; &.
-3f23: 0d a2 b4                  ORA $b4a2         ; ...
-3f26: 83                        .BYTE $83         ; .
-3f27: 40                        RTI               ;
-3f28: 26 ab                     ROL $ab           ; &.
-3f2a: 0d a2 b4                  ORA $b4a2         ; ...
-3f2d: 85 40                     STA FREQ          ; .@
-3f2f: 26 ab                     ROL $ab           ; &.
-3f31: 0d a2 b4                  ORA $b4a2         ; ...
-3f34: 87                        .BYTE $87         ; .
-3f35: 40                        RTI               ;
-3f36: 26 ab                     ROL $ab           ; &.
-3f38: 0d a2 b4                  ORA $b4a2         ; ...
-3f3b: 89                        .BYTE $89         ; .
-3f3c: 40                        RTI               ; Return from interrupt handler
+3cde: a6 00 00 46 6f 6f 64 20  str_FD_TRCH_FLSK  .BYTE $a6,$00,$00,$46,$6f,$6f,$64,$20  ; ...Food
+3ce6: 50 61 63 6b 65 74 73 a6   .BYTE $50,$61,$63,$6b,$65,$74,$73,$a6  ; Packets.
+3cee: 10 00 54 6f 72 63 68 65   .BYTE $10,$00,$54,$6f,$72,$63,$68,$65  ; ..Torche
+3cf6: 73 a7 57 61 74 65 72 20   .BYTE $73,$a7,$57,$61,$74,$65,$72,$20  ; s.Water
+3cfe: 46 6c 61 73 6b 73 0d a6   .BYTE $46,$6c,$61,$73,$6b,$73,$0d,$a6  ; Flasks..
+3d06: 05 01 b2 bb 63 03 a6 12   .BYTE $05,$01,$b2,$bb,$63,$03,$a6,$12  ; ....c...
+3d0e: 01 b2 bd 63 03 a6 21 01   .BYTE $01,$b2,$bd,$63,$03,$a6,$21,$01  ; ...c..!.
+3d16: b2 bc 63 03 0d 0d a5 59   .BYTE $b2,$bc,$63,$03,$0d,$0d,$a5,$59  ; ..c....Y
+3d1e: 6f 75 20 61 72 65 20 6f   .BYTE $6f,$75,$20,$61,$72,$65,$20,$6f  ; ou are o
+3d26: 6e 20 6c 65 76 65 6c 20   .BYTE $6e,$20,$6c,$65,$76,$65,$6c,$20  ; n level
+3d2e: b2 1d 63 01 0d a5 6f 66   .BYTE $b2,$1d,$63,$01,$0d,$a5,$6f,$66  ; ..c...of
+3d36: 20 74 68 65 20 44 75 6e   .BYTE $20,$74,$68,$65,$20,$44,$75,$6e  ;  the Dun
+3d3e: 67 65 6f 6e 0d a6 00 04   .BYTE $67,$65,$6f,$6e,$0d,$a6,$00,$04  ; geon....
+3d46: b4 a9 45 0c 0d b4 a7 45   .BYTE $b4,$a9,$45,$0c,$0d,$b4,$a7,$45  ; ..E....E
+3d4e: 0c 0d b4 a5 45 0c 0d b4   .BYTE $0c,$0d,$b4,$a5,$45,$0c,$0d,$b4  ; ....E...
+3d56: ad 45 0c a6 1c 04 b4 ab   .BYTE $ad,$45,$0c,$a6,$1c,$04,$b4,$ab  ; .E......
+3d5e: 45 0c a6 1c 05 b4 a3 45   .BYTE $45,$0c,$a6,$1c,$05,$b4,$a3,$45  ; E......E
+3d66: 0c a6 1c 06 b4 b3 45 0c   .BYTE $0c,$a6,$1c,$06,$b4,$b3,$45,$0c  ; ......E.
+3d6e: a6 1c 07 b4 b1 45 0c a6   .BYTE $a6,$1c,$07,$b4,$b1,$45,$0c,$a6  ; .....E..
+3d76: 0e 06 b4 b5 45 0c a6 0e   .BYTE $0e,$06,$b4,$b5,$45,$0c,$a6,$0e  ; ....E...
+3d7e: 07 b4 af 45 0c ff         .BYTE $07,$b4,$af,$45,$0c,$ff  ; ...E..
+3d84: a6 00 00 47 6f 6c 64 20  str_GLD_SLV_CPR  .BYTE $a6,$00,$00,$47,$6f,$6c,$64,$20  ; ...Gold
+3d8c: 43 6f 69 6e 73 20 20 20   .BYTE $43,$6f,$69,$6e,$73,$20,$20,$20  ; Coins
+3d94: 53 69 6c 76 65 72 20 43   .BYTE $53,$69,$6c,$76,$65,$72,$20,$43  ; Silver C
+3d9c: 6f 69 6e 73 20 20 20 43   .BYTE $6f,$69,$6e,$73,$20,$20,$20,$43  ; oins   C
+3da4: 6f 70 70 65 72 20 43 6f   .BYTE $6f,$70,$70,$65,$72,$20,$43,$6f  ; opper Co
+3dac: 69 6e 73 20 20 b1 b1 63   .BYTE $69,$6e,$73,$20,$20,$b1,$b1,$63  ; ins  ..c
+3db4: 06 a6 10 01 b1 b3 63 06   .BYTE $06,$a6,$10,$01,$b1,$b3,$63,$06  ; ......c.
+3dbc: a6 1f 01 b1 b5 63 06 a6   .BYTE $a6,$1f,$01,$b1,$b5,$63,$06,$a6  ; .....c..
+3dc4: 0c 03 4f 74 68 65 72 20   .BYTE $0c,$03,$4f,$74,$68,$65,$72,$20  ; ..Other
+3dcc: 50 6f 73 73 65 73 73 69   .BYTE $50,$6f,$73,$73,$65,$73,$73,$69  ; Possessi
+3dd4: 6f 6e 73 a6 07 05 47 65   .BYTE $6f,$6e,$73,$a6,$07,$05,$47,$65  ; ons...Ge
+3ddc: 6d 73 3a b1 b7 63 06 a6   .BYTE $6d,$73,$3a,$b1,$b7,$63,$06,$a6  ; ms:..c..
+3de4: 1c 05 4b 65 79 73 3a b2   .BYTE $1c,$05,$4b,$65,$79,$73,$3a,$b2  ; ..Keys:.
+3dec: bf 63 03 a6 05 06 4a 65   .BYTE $bf,$63,$03,$a6,$05,$06,$4a,$65  ; .c....Je
+3df4: 77 65 6c 73 3a b1 b9 63   .BYTE $77,$65,$6c,$73,$3a,$b1,$b9,$63  ; wels:..c
+3dfc: 06 a6 17 06 43 6f 6d 70   .BYTE $06,$a6,$17,$06,$43,$6f,$6d,$70  ; ....Comp
+3e04: 61 73 73 65 73 3a b2 c0   .BYTE $61,$73,$73,$65,$73,$3a,$b2,$c0  ; asses:..
+3e0c: 63 03 a6 03 07 43 72 79   .BYTE $63,$03,$a6,$03,$07,$43,$72,$79  ; c....Cry
+3e14: 73 74 61 6c 73 3a b2 be   .BYTE $73,$74,$61,$6c,$73,$3a,$b2,$be  ; stals:..
+3e1c: 63 03 a6 16 07 54 69 6d   .BYTE $63,$03,$a6,$16,$07,$54,$69,$6d  ; c....Tim
+3e24: 65 70 69 65 63 65 73 3a   .BYTE $65,$70,$69,$65,$63,$65,$73,$3a  ; epieces:
+3e2c: b2 c1 63 03 ff            .BYTE $b2,$c1,$63,$03,$ff  ; ..c..
+3e31: a6 00 00 a5 57 65 61 70  str_WPNS_ARMR  .BYTE $a6,$00,$00,$a5,$57,$65,$61,$70  ; ....Weap
+3e39: 6f 6e 73 0d a3 41 3f a6   .BYTE $6f,$6e,$73,$0d,$a3,$41,$3f,$a6  ; ons..A?.
+3e41: 00 01 50 72 69 6d 61 72   .BYTE $00,$01,$50,$72,$69,$6d,$61,$72  ; ..Primar
+3e49: 79 3a 20 b4 7f 40 1f ab   .BYTE $79,$3a,$20,$b4,$7f,$40,$1f,$ab  ; y: .@..
+3e51: a6 00 02 53 65 63 6f 6e   .BYTE $a6,$00,$02,$53,$65,$63,$6f,$6e  ; ...Secon
+3e59: 64 61 72 79 3a 20 b4 81   .BYTE $64,$61,$72,$79,$3a,$20,$b4,$81  ; dary: ..
+3e61: 40 1d ab 0d a5 41 72 6d   .BYTE $40,$1d,$ab,$0d,$a5,$41,$72,$6d  ; @....Arm
+3e69: 6f 72 0d 48 65 61 64 3a   .BYTE $6f,$72,$0d,$48,$65,$61,$64,$3a  ; or.Head:
+3e71: 20 b4 83 40 22 ab a6 00   .BYTE $20,$b4,$83,$40,$22,$ab,$a6,$00  ;  ..@"...
+3e79: 05 42 6f 64 79 3a 20 b4   .BYTE $05,$42,$6f,$64,$79,$3a,$20,$b4  ; .Body: .
+3e81: 85 40 22 ab a6 00 06 41   .BYTE $85,$40,$22,$ab,$a6,$00,$06,$41  ; .@"....A
+3e89: 72 6d 73 3a 20 b4 87 40   .BYTE $72,$6d,$73,$3a,$20,$b4,$87,$40  ; rms: ..@
+3e91: 22 ab a6 00 07 4c 65 67   .BYTE $22,$ab,$a6,$00,$07,$4c,$65,$67  ; "....Leg
+3e99: 73 3a 20 b4 89 40 22 ab   .BYTE $73,$3a,$20,$b4,$89,$40,$22,$ab  ; s: ..@".
+3ea1: ff                        .BYTE $ff            ; .
+3ea2: a6 00 00 a5 41 70 70 61  str_APPAREL  .BYTE $a6,$00,$00,$a5,$41,$70,$70,$61  ; ....Appa
+3eaa: 72 65 6c 0d a3 8d 3f a6   .BYTE $72,$65,$6c,$0d,$a3,$8d,$3f,$a6  ; rel...?.
+3eb2: 0a 02                     .BYTE $0a,$02        ; ..
+3eb4: a2 b4 7f 40 1e ab  sub_3eb4  .BYTE $a2,$b4,$7f,$40,$1e,$ab  ; ..@..
+3eba: 0d a2 b4 81 40 1e ab 0d   .BYTE $0d,$a2,$b4,$81,$40,$1e,$ab,$0d  ; ....@...
+3ec2: a2 b4 83 40 1e ab 0d a2   .BYTE $a2,$b4,$83,$40,$1e,$ab,$0d,$a2  ; ...@....
+3eca: b4 85 40 1e ab 0d ff      .BYTE $b4,$85,$40,$1e,$ab,$0d,$ff  ; ..@....
+3ed1: a6 00 00 a5 41 63 74 69  str_ACTV_MAGIC  .BYTE $a6,$00,$00,$a5,$41,$63,$74,$69  ; ....Acti
+3ed9: 76 65 20 4d 61 67 69 63   .BYTE $76,$65,$20,$4d,$61,$67,$69,$63  ; ve Magic
+3ee1: 0d a3 fc 3f ac 15 3f ff   .BYTE $0d,$a3,$fc,$3f,$ac,$15,$3f,$ff  ; ...?..?.
+3ee9: a6 00 00 a5 4b 6e 6f 77  str_DISEASES  .BYTE $a6,$00,$00,$a5,$4b,$6e,$6f,$77  ; ....Know
+3ef1: 6e 20 44 69 73 65 61 73   .BYTE $6e,$20,$44,$69,$73,$65,$61,$73  ; n Diseas
+3ef9: 65 73 0d a3 f6 3f ac 15   .BYTE $65,$73,$0d,$a3,$f6,$3f,$ac,$15  ; es...?..
+3f01: 3f ff                     .BYTE $3f,$ff        ; ?.
+3f03: a6 00 00 a5 43 75 72 73  str_CURSES  .BYTE $a6,$00,$00,$a5,$43,$75,$72,$73  ; ....Curs
+3f0b: 65 73 0d a3 f9 3f ac 15   .BYTE $65,$73,$0d,$a3,$f9,$3f,$ac,$15  ; es...?..
+3f13: 3f ff                     .BYTE $3f,$ff        ; ?.
+3f15: 0d a2 b4 7f 40 26 ab 0d  dat_3f15  .BYTE $0d,$a2,$b4,$7f,$40,$26,$ab,$0d  ; ...@&..
+3f1d: a2 b4 81 40 26 ab 0d a2   .BYTE $a2,$b4,$81,$40,$26,$ab,$0d,$a2  ; ...@&...
+3f25: b4 83 40 26 ab 0d a2 b4   .BYTE $b4,$83,$40,$26,$ab,$0d,$a2,$b4  ; ..@&....
+3f2d: 85 40 26 ab 0d a2 b4 87   .BYTE $85,$40,$26,$ab,$0d,$a2,$b4,$87  ; .@&.....
+3f35: 40 26 ab 0d a2 b4 89 40   .BYTE $40,$26,$ab,$0d,$a2,$b4,$89,$40  ; @&.....@
+3f3d: 26 ab 0d ae               .BYTE $26,$ab,$0d,$ae  ; &...
 
-3f3d: 26 ab                     ROL $ab           ; &.
-3f3f: 0d ae a9  loc_3f3f        ORA $a9ae         ; ...
-3f42: 6e 8d 7f                  ROR $7f8d         ; n.
-3f45: 40                        RTI               ; Return from interrupt handler
+; TODO: How is this code invoked?
+3f41: a9 6e                     LDA #$6e             ;
+3f43: 8d 7f 40                  STA dat_407f         ;
+3f46: 8d 81 40                  STA dat_4081         ;
+3f49: a9 40                     LDA #$40             ;
+3f4b: 8d 80 40                  STA dat_4080         ;
+3f4e: 8d 82 40                  STA dat_4082         ;
+3f51: a2 07                     LDX #$07             ;
+3f53: a9 40     loc_3f53        LDA #$40             ;
+3f55: 9d 83 40                  STA dat_4083,X       ;
+3f58: ca                        DEX                  ;
+3f59: a9 78                     LDA #$78             ;
+3f5b: 9d 83 40                  STA dat_4083,X       ;
+3f5e: ca                        DEX                  ;
+3f5f: 10 f2                     BPL loc_3f53         ;
+3f61: a9 05                     LDA #$05             ;
+3f63: 8d 7d 40                  STA dat_407d         ;
+3f66: ae 7d 40  loc_3f66        LDX dat_407d         ;
+3f69: bd 9c 63                  LDA $639c,X          ;
+3f6c: 30 19                     BMI loc_3f87         ;
+3f6e: 20 74 4b                  JSR sub_4b74         ;
+3f71: f0 14                     BEQ loc_3f87         ;
+3f73: 18        loc_3f73        CLC                  ;
+3f74: ad 7d 40                  LDA dat_407d         ;
+3f77: 0a                        ASL                  ;
+3f78: a8                        TAY                  ;
+3f79: a5 41     loc_3f79        LDA SOUNDR           ;
+3f7b: 69 06                     ADC #$06             ;
+3f7d: 99 7f 40                  STA dat_407f,Y       ;
+3f80: a9 00                     LDA #$00             ;
+3f82: 65 42                     ADC CRITIC           ;
+3f84: 99 80 40                  STA dat_4080,Y       ;
+3f87: ce 7d 40  loc_3f87        DEC dat_407d         ;
+3f8a: 10 da                     BPL loc_3f66         ;
+3f8c: 60                        RTS                  ; Return to caller
 
-3f46: 8d 81 40  xxxx                STA loc_4081      ; ..@
-3f49: a9 40                     LDA #$40          ; .@
-3f4b: 8d 80 40                  STA loc_4080      ; ..@
-3f4e: 8d 82 40                  STA loc_4082      ; ..@
-3f51: a2 07                     LDX #$07          ; ..
-3f53: a9 40     loc_3f53        LDA #$40          ; .@
-3f55: 9d 83 40                  STA loc_4083,X    ; ..@
-3f58: ca                        DEX               ; .
-3f59: a9 78                     LDA #$78          ; .x
-3f5b: 9d 83 40                  STA loc_4083,X    ; ..@
-3f5e: ca                        DEX               ; .
-3f5f: 10 f2                     BPL loc_3f53      ; ..
-3f61: a9 05                     LDA #$05          ; ..
-3f63: 8d 7d 40                  STA loc_407d      ; .}@
-3f66: ae 7d 40  loc_3f66        LDX loc_407d      ; .}@
-3f69: bd 9c 63                  LDA $639c,X       ; ..c
-3f6c: 30 19                     BMI loc_3f87      ; 0.
-3f6e: 20 74 4b                  JSR sub_4b74      ;  tK
-3f71: f0 14                     BEQ loc_3f87      ; ..
-3f73: 18        loc_3f73        CLC               ; .
-3f74: ad 7d 40                  LDA loc_407d      ; .}@
-3f77: 0a                        ASL               ; .
-3f78: a8                        TAY               ; .
-3f79: a5 41     loc_3f79        LDA SOUNDR        ; .A
-3f7b: 69 06                     ADC #$06          ; i.
-3f7d: 99 7f 40                  STA loc_407f,Y    ; .@
-3f80: a9 00                     LDA #$00          ; ..
-3f82: 65 42                     ADC CRITIC        ; eB
-3f84: 99 80 40                  STA loc_4080,Y    ; ..@
-3f87: ce 7d 40  loc_3f87        DEC loc_407d      ; .}@
-3f8a: 10 da                     BPL loc_3f66      ; ..
-3f8c: 60                        RTS               ; `
-3f8d: a9 60                     LDA #$60          ; .`
-3f8f: 8d 7f 40                  STA loc_407f      ; .@
-3f92: a9 40                     LDA #$40          ; .@
-3f94: 8d 80 40                  STA loc_4080      ; ..@
-3f97: a2 05                     LDX #$05          ; ..
-3f99: a9 5e     loc_3f99        LDA #$5e          ; .^
-3f9b: 9d 81 40                  STA loc_4081,X    ; ..@
-3f9e: ca                        DEX               ; .
-3f9f: a9 53                     LDA #$53          ; .S
-3fa1: 9d 81 40                  STA loc_4081,X    ; ..@
-3fa4: ca                        DEX               ; .
-3fa5: 10 f2                     BPL loc_3f99      ; ..
-3fa7: a0 04                     LDY #$04          ; ..
-3fa9: a2 00     loc_3fa9        LDX #$00          ; ..
-3fab: bd a2 63  loc_3fab        LDA $63a2,X       ; ..c
-3fae: 10 12                     BPL loc_3fc2      ; ..
-3fb0: bd a3 63  loc_3fb0        LDA $63a3,X       ; ..c
-3fb3: 9d a2 63                  STA $63a2,X       ; ..c
-3fb6: e8                        INX               ; .
-3fb7: e0 04                     CPX #$04          ; ..
-3fb9: 90 f5                     BCC loc_3fb0      ; ..
-3fbb: a9 ff                     LDA #$ff          ; ..
-3fbd: 8d a5 63                  STA $63a5         ; ..c
-3fc0: 30 05                     BMI loc_3fc7      ; 0.
-3fc2: e8        loc_3fc2        INX               ; .
-3fc3: e0 04                     CPX #$04          ; ..
-3fc5: 90 e4                     BCC loc_3fab      ; ..
-3fc7: 88        loc_3fc7        DEY               ; .
-3fc8: d0 df                     BNE loc_3fa9      ; ..
-3fca: a9 03                     LDA #$03          ; ..
-3fcc: 8d 7d 40                  STA loc_407d      ; .}@
-3fcf: ae 7d 40  loc_3fcf        LDX loc_407d      ; .}@
-3fd2: bd a2 63                  LDA $63a2,X       ; ..c
-3fd5: 30 19                     BMI loc_3ff0      ; 0.
-3fd7: 20 74 4b                  JSR sub_4b74      ;  tK
-3fda: f0 14                     BEQ loc_3ff0      ; ..
-3fdc: ad 7d 40                  LDA loc_407d      ; .}@
-3fdf: 0a                        ASL               ; .
-3fe0: aa                        TAX               ; .
-3fe1: 18                        CLC               ; .
-3fe2: a5 41                     LDA SOUNDR        ; .A
-3fe4: 69 06                     ADC #$06          ; i.
-3fe6: 9d 7f 40                  STA loc_407f,X    ; .@
-3fe9: a5 42                     LDA CRITIC        ; .B
-3feb: 69 00                     ADC #$00          ; i.
-3fed: 9d 80 40                  STA loc_4080,X    ; ..@
-3ff0: ce 7d 40  loc_3ff0        DEC loc_407d      ; .}@
-3ff3: 10 da                     BPL loc_3fcf      ; ..
-3ff5: 60                        RTS               ; `
-3ff6: a9 09                     LDA #$09          ; ..
-3ff8: 2c a9 0b                  BIT $0ba9         ; ,..
-3ffb: 2c a9 0c                  BIT $0ca9         ; ,..
-3ffe: 8d 7e 40                  STA loc_407e      ; .~@
-4001: a2 0b                     LDX #$0b          ; ..
-4003: a9 5e     loc_4003        LDA #$5e          ; .^
-4005: 9d 7f 40                  STA loc_407f,X    ; .@
-4008: ca                        DEX               ; .
-4009: a9 53                     LDA #$53          ; .S
-400b: 9d 7f 40                  STA loc_407f,X    ; .@
-400e: ca                        DEX               ; .
-400f: 10 f2                     BPL loc_4003      ; ..
-4011: a9 00                     LDA #$00          ; ..
-4013: 85 3d                     STA dat_003d_L          ; .=
-4015: a9 65                     LDA #$65          ; .e
-4017: 85 3e                     STA FTYPE         ; .>
-4019: a9 00                     LDA #$00          ; ..
-401b: 85 49                     STA ERRNO         ; .I
-401d: 8d 7d 40                  STA loc_407d      ; .}@
-4020: a0 00     loc_4020        LDY #$00          ; ..
-4022: b1 3d                     LDA (dat_003d_L),Y      ; .=
-4024: c9 e0                     CMP #$e0          ; ..
-4026: 90 24                     BCC loc_404c      ; .$
-4028: 29 0f                     AND #$0f          ; ).
-402a: cd 7e 40                  CMP loc_407e      ; .~@
-402d: d0 1d                     BNE loc_404c      ; ..
-402f: ad 7d 40                  LDA loc_407d      ; .}@
-4032: 0a                        ASL               ; .
-4033: aa                        TAX               ; .
-4034: a5 3d                     LDA dat_003d_L          ; .=
-4036: 69 03                     ADC #$03          ; i.
-4038: 9d 7f 40                  STA loc_407f,X    ; .@
-403b: a5 3e                     LDA FTYPE         ; .>
-403d: 69 00                     ADC #$00          ; i.
-403f: 9d 80 40                  STA loc_4080,X    ; ..@
-4042: ee 7d 40                  INC loc_407d      ; .}@
-4045: ad 7d 40                  LDA loc_407d      ; .}@
-4048: c9 06                     CMP #$06          ; ..
-404a: f0 13                     BEQ loc_405f      ; ..
-404c: a5 3d     loc_404c        LDA dat_003d_L          ; .=
-404e: 18                        CLC               ; .
-404f: 69 10                     ADC #$10          ; i.
-4051: 85 3d                     STA dat_003d_L          ; .=
-4053: 90 02                     BCC loc_4057      ; ..
-4055: e6 3e                     INC FTYPE         ; .>
-4057: e6 49     loc_4057        INC ERRNO         ; .I
-4059: a5 49                     LDA ERRNO         ; .I
-405b: c9 40                     CMP #$40          ; .@
-405d: 90 c1                     BCC loc_4020      ; ..
-405f: 60        loc_405f        RTS               ; `
-4060: 42                        .BYTE $42         ; B
-4061: 69 72                     ADC #$72          ; ir
-4063: 74                        .BYTE $74         ; t
-4064: 68                        PLA               ; h
-4065: 64                        .BYTE $64         ; d
-4066: 61 79                     ADC (ROWINC,X)    ; ay
-4068: 20 73 75                  JSR $7573         ;  su
-406b: 69 74                     ADC #$74          ; it
-406d: 00                        BRK               ; .
-406e: 42                        .BYTE $42         ; B
-406f: 61 72                     ADC (COLAC,X)     ; ar
-4071: 65 20                     ADC dat_0020      ; e
-4073: 68                        PLA               ; h
-4074: 61 6e                     ADC (BITMSK,X)    ; an
-4076: 64                        .BYTE $64         ; d
-4077: 00                        BRK               ; .
-4078: 4e 6f 6e                  LSR $6e6f         ; Non
-407b: 65 00                     ADC dat_0000      ; e.
-407d: 00        loc_407d        BRK               ; .
-407e: 00        loc_407e        BRK               ; .
-407f: 00        loc_407f        BRK               ; .
-4080: 00        loc_4080        BRK               ; .
-4081: 00        loc_4081        BRK               ; .
-4082: 00        loc_4082        BRK               ; .
-4083: 00        loc_4083        BRK               ; .
-4084: 00                        BRK               ; .
-4085: 00                        BRK               ; .
-4086: 00                        BRK               ; .
-4087: 00                        BRK               ; .
-4088: 00                        BRK               ; .
-4089: 00                        BRK               ; .
-408a: 00                        BRK               ; .
+; TODO: How is this code invoked?
+3f8d: a9 60                     LDA #$60             ;
+3f8f: 8d 7f 40                  STA dat_407f         ;
+3f92: a9 40                     LDA #$40             ;
+3f94: 8d 80 40                  STA dat_4080         ;
+3f97: a2 05                     LDX #$05             ;
+3f99: a9 5e     loc_3f99        LDA #$5e             ;
+3f9b: 9d 81 40                  STA dat_4081,X       ;
+3f9e: ca                        DEX                  ;
+3f9f: a9 53                     LDA #$53             ;
+3fa1: 9d 81 40                  STA dat_4081,X       ;
+3fa4: ca                        DEX                  ;
+3fa5: 10 f2                     BPL loc_3f99         ;
+3fa7: a0 04                     LDY #$04             ;
+3fa9: a2 00     loc_3fa9        LDX #$00             ;
+3fab: bd a2 63  loc_3fab        LDA $63a2,X          ;
+3fae: 10 12                     BPL loc_3fc2         ;
+3fb0: bd a3 63  loc_3fb0        LDA $63a3,X          ;
+3fb3: 9d a2 63                  STA $63a2,X          ;
+3fb6: e8                        INX                  ;
+3fb7: e0 04                     CPX #$04             ;
+3fb9: 90 f5                     BCC loc_3fb0         ;
+3fbb: a9 ff                     LDA #$ff             ;
+3fbd: 8d a5 63                  STA $63a5            ;
+3fc0: 30 05                     BMI loc_3fc7         ;
+3fc2: e8        loc_3fc2        INX                  ;
+3fc3: e0 04                     CPX #$04             ;
+3fc5: 90 e4                     BCC loc_3fab         ;
+3fc7: 88        loc_3fc7        DEY                  ;
+3fc8: d0 df                     BNE loc_3fa9         ;
+3fca: a9 03                     LDA #$03             ;
+3fcc: 8d 7d 40                  STA dat_407d         ;
+3fcf: ae 7d 40  loc_3fcf        LDX dat_407d         ;
+3fd2: bd a2 63                  LDA $63a2,X          ;
+3fd5: 30 19                     BMI loc_3ff0         ;
+3fd7: 20 74 4b                  JSR sub_4b74         ;
+3fda: f0 14                     BEQ loc_3ff0         ;
+3fdc: ad 7d 40                  LDA dat_407d         ;
+3fdf: 0a                        ASL                  ;
+3fe0: aa                        TAX                  ;
+3fe1: 18                        CLC                  ;
+3fe2: a5 41                     LDA SOUNDR           ;
+3fe4: 69 06                     ADC #$06             ;
+3fe6: 9d 7f 40                  STA dat_407f,X       ;
+3fe9: a5 42                     LDA CRITIC           ;
+3feb: 69 00                     ADC #$00             ;
+3fed: 9d 80 40                  STA dat_4080,X       ;
+3ff0: ce 7d 40  loc_3ff0        DEC dat_407d         ;
+3ff3: 10 da                     BPL loc_3fcf         ;
+3ff5: 60                        RTS                  ; Return to caller
 
-408b: 20 5f 4a  sub_408b        JSR loc_4a5f      ;
-408e: a6 50                     LDX dat_023e      ;
-4090: f0 03                     BEQ loc_4095      ;
-4092: 4c cd 40                  JMP loc_40cd      ;
+; TODO: How is this code invoked?
+3ff6: a9 09                     LDA #$09             ;
+3ff8: 2c a9 0b                  BIT $0ba9            ;
+3ffb: 2c a9 0c                  BIT $0ca9            ;
+3ffe: 8d 7e 40                  STA dat_407e         ;
+4001: a2 0b                     LDX #$0b             ;
+4003: a9 5e     loc_4003        LDA #$5e             ;
+4005: 9d 7f 40                  STA dat_407f,X       ;
+4008: ca                        DEX                  ;
+4009: a9 53                     LDA #$53             ;
+400b: 9d 7f 40                  STA dat_407f,X       ;
+400e: ca                        DEX                  ;
+400f: 10 f2                     BPL loc_4003         ;
+4011: a9 00                     LDA #$00             ;
+4013: 85 3d                     STA dat_003d_L       ;
+4015: a9 65                     LDA #$65             ;
+4017: 85 3e                     STA FTYPE            ;
+4019: a9 00                     LDA #$00             ;
+401b: 85 49                     STA ERRNO            ;
+401d: 8d 7d 40                  STA dat_407d         ;
+4020: a0 00     loc_4020        LDY #$00             ;
+4022: b1 3d                     LDA (dat_003d_L),Y   ;
+4024: c9 e0                     CMP #$e0             ;
+4026: 90 24                     BCC loc_404c         ;
+4028: 29 0f                     AND #$0f             ;
+402a: cd 7e 40                  CMP dat_407e         ;
+402d: d0 1d                     BNE loc_404c         ;
+402f: ad 7d 40                  LDA dat_407d         ;
+4032: 0a                        ASL                  ;
+4033: aa                        TAX                  ;
+4034: a5 3d                     LDA dat_003d_L       ;
+4036: 69 03                     ADC #$03             ;
+4038: 9d 7f 40                  STA dat_407f,X       ;
+403b: a5 3e                     LDA FTYPE            ;
+403d: 69 00                     ADC #$00             ;
+403f: 9d 80 40                  STA dat_4080,X       ;
+4042: ee 7d 40                  INC dat_407d         ;
+4045: ad 7d 40                  LDA dat_407d         ;
+4048: c9 06                     CMP #$06             ;
+404a: f0 13                     BEQ loc_405f         ;
+404c: a5 3d     loc_404c        LDA dat_003d_L       ;
+404e: 18                        CLC                  ;
+404f: 69 10                     ADC #$10             ;
+4051: 85 3d                     STA dat_003d_L       ;
+4053: 90 02                     BCC loc_4057         ;
+4055: e6 3e                     INC FTYPE            ;
+4057: e6 49     loc_4057        INC ERRNO            ;
+4059: a5 49                     LDA ERRNO            ;
+405b: c9 40                     CMP #$40             ;
+405d: 90 c1                     BCC loc_4020         ;
+405f: 60        loc_405f        RTS                  ; Return to caller
 
-4095: ca        loc_4095        DEX               ;
-4096: a0 00                     LDY #$00          ;
-4098: ad 62 19                  LDA loc_1962      ;
-409b: 86 50                     STX dat_023e      ;
-409d: 8c 62 19                  STY loc_1962      ;
-40a0: 8d 3c 41                  STA loc_413c      ;
-40a3: 20 fc 41                  JSR loc_41fc      ;
-40a6: 20 f2 47  loc_40a6        JSR loc_47f2      ;
-40a9: 20 76 41                  JSR loc_4176      ;
-40ac: 20 e7 42                  JSR loc_42e7      ;
-40af: 20 77 43                  JSR loc_4377      ;
-40b2: 20 c6 43                  JSR loc_43c6      ;
-40b5: ad 8b 63                  LDA $638b         ;
-40b8: f0 05                     BEQ loc_40bf      ;
-40ba: ce 56 19                  DEC UNK_BYTE_COUNTER  ;
-40bd: a9 ff                     LDA #$ff          ;
-40bf: 8d 57 19  loc_40bf        STA loc_1957      ;
-40c2: 20 3d 41                  JSR loc_413d      ;
-40c5: ce 3c 41                  DEC loc_413c      ;
-40c8: 30 03                     BMI loc_40cd      ;
-40ca: 4c a6 40                  JMP loc_40a6      ;
-40cd: ad 5f 19  loc_40cd        LDA UNK_BYTE_195F ;
-40d0: f0 19                     BEQ loc_40eb      ;
-40d2: 20 e7 42                  JSR loc_42e7      ;
-40d5: 20 c6 43                  JSR loc_43c6      ;
-40d8: a9 69                     LDA #$69          ; Set ???
-40da: 85 16                     STA addr_0016_L   ;     address
-40dc: a9 39                     LDA #$39          ;     to
-40de: 85 17                     STA addr_0016_H   ;     $3969 []
-40e0: 20 84 1c                  JSR sub_1c84      ;
-40e3: 20 2d 3c                  JSR sub_3c2d      ;
-40e6: a9 00                     LDA #$00          ;
-40e8: 8d 5f 19                  STA UNK_BYTE_195F ;
+4060: 42 69 72 74 68 64 61 79  str_BDAY_SUIT  .BYTE $42,$69,$72,$74,$68,$64,$61,$79  ; Birthday
+4068: 20 73 75 69 74 00         .BYTE $20,$73,$75,$69,$74,$00  ;  suit.
+406e: 42 61     str_BARE_HAND   .BYTE $42,$61        ; Ba
+4070: 72 65 20 68 61 6e 64 00   .BYTE $72,$65,$20,$68,$61,$6e,$64,$00  ; re hand.
+4078: 4e 6f 6e 65 00  str_NONE  .BYTE $4e,$6f,$6e,$65,$00  ; None.
+407d: 00        dat_407d        .BYTE $00            ; .
+407e: 00        dat_407e        .BYTE $00            ; .
+407f: 00        dat_407f        .BYTE $00            ; .
+4080: 00        dat_4080        .BYTE $00            ; .
+4081: 00        dat_4081        .BYTE $00            ; .
+4082: 00        dat_4082        .BYTE $00            ; .
+4083: 00        dat_4083        .BYTE $00            ; .
+4084: 00 00 00 00 00 00 00  unk_4084  .BYTE $00,$00,$00,$00,$00,$00,$00  ; .......
+
+408b: 20 5f 4a  sub_408b        JSR loc_4a5f         ;
+408e: a6 50                     LDX dat_023e         ;
+4090: f0 03                     BEQ loc_4095         ;
+4092: 4c cd 40                  JMP loc_40cd         ;
+4095: ca        loc_4095        DEX                  ;
+4096: a0 00                     LDY #$00             ;
+4098: ad 62 19                  LDA loc_1962         ;
+409b: 86 50                     STX dat_023e         ;
+409d: 8c 62 19                  STY loc_1962         ;
+40a0: 8d 3c 41                  STA dat_413c         ;
+40a3: 20 fc 41                  JSR sub_41fc         ;
+40a6: 20 f2 47  loc_40a6        JSR sub_47f2         ;
+40a9: 20 76 41                  JSR sub_4176         ;
+40ac: 20 e7 42                  JSR sub_42e7         ;
+40af: 20 77 43                  JSR sub_4377         ;
+40b2: 20 c6 43                  JSR sub_43c6         ;
+40b5: ad 8b 63                  LDA $638b            ;
+40b8: f0 05                     BEQ loc_40bf         ;
+40ba: ce 56 19                  DEC UNK_BYTE_COUNTER ;
+40bd: a9 ff                     LDA #$ff             ;
+40bf: 8d 57 19  loc_40bf        STA loc_1957         ;
+40c2: 20 3d 41                  JSR loc_413d         ;
+40c5: ce 3c 41                  DEC dat_413c         ;
+40c8: 30 03                     BMI loc_40cd         ;
+40ca: 4c a6 40                  JMP loc_40a6         ;
+40cd: ad 5f 19  loc_40cd        LDA UNK_BYTE_195F    ;
+40d0: f0 19                     BEQ loc_40eb         ;
+40d2: 20 e7 42                  JSR sub_42e7         ;
+40d5: 20 c6 43                  JSR sub_43c6         ;
+40d8: a9 69                     LDA #$69             ; Set ???
+40da: 85 16                     STA addr_0016_L      ;     address
+40dc: a9 39                     LDA #$39             ;     to
+40de: 85 17                     STA addr_0016_H      ;     $3969 [str_3969]
+40e0: 20 84 1c                  JSR sub_1c84         ;
+40e3: 20 2d 3c                  JSR sub_3c2d         ;
+40e6: a9 00                     LDA #$00             ;
+40e8: 8d 5f 19                  STA UNK_BYTE_195F    ;
 40eb: ad 45 63  loc_40eb        LDA CHR_HP_CURRENT_HI  ;
 40ee: 0d 46 63                  ORA CHR_HP_CURRENT_LO  ;
-40f1: d0 48                     BNE loc_413b      ;
-40f3: a9 ff                     LDA #$ff          ;
-40f5: a2 03                     LDX #$03          ;
+40f1: d0 48                     BNE loc_413b         ;
+40f3: a9 ff                     LDA #$ff             ;
+40f5: a2 03                     LDX #$03             ;
 40f7: 9d 45 63  loc_40f7        STA CHR_HP_CURRENT_HI,X  ;
-40fa: ca                        DEX               ;
-40fb: 10 fa                     BPL loc_40f7      ;
-40fd: a9 00                     LDA #$00          ;
-40ff: 8d 2f 02                  STA SDMCTL        ;
-4102: a2 03                     LDX #$03          ;
-4104: 9d 00 d0  loc_4104        STA HPOSP0,X      ;
-4107: ca                        DEX               ;
-4108: 10 fa                     BPL loc_4104      ;
-410a: a9 01                     LDA #$01          ;
+40fa: ca                        DEX                  ;
+40fb: 10 fa                     BPL loc_40f7         ;
+40fd: a9 00                     LDA #$00             ;
+40ff: 8d 2f 02                  STA SDMCTL           ;
+4102: a2 03                     LDX #$03             ;
+4104: 9d 00 d0  loc_4104        STA HPOSP0,X         ;
+4107: ca                        DEX                  ;
+4108: 10 fa                     BPL loc_4104         ;
+410a: a9 01                     LDA #$01             ;
 410c: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
-410f: a9 69                     LDA #$69          ; Set ???
-4111: 85 16                     STA addr_0016_L   ;     address
-4113: a9 39                     LDA #$39          ;     to
-4115: 85 17                     STA addr_0016_H   ;     $3969 []
-4117: 20 84 1c                  JSR sub_1c84      ;
-411a: c6 32                     DEC dat_0032_L    ;
-411c: c6 0f                     DEC APPMHI+1      ;
-411e: a9 f0                     LDA #$f0          ;
+410f: a9 69                     LDA #$69             ; Set ???
+4111: 85 16                     STA addr_0016_L      ;     address
+4113: a9 39                     LDA #$39             ;     to
+4115: 85 17                     STA addr_0016_H      ;     $3969 [str_3969]
+4117: 20 84 1c                  JSR sub_1c84         ;
+411a: c6 32                     DEC dat_0032_L       ;
+411c: c6 0f                     DEC dat_000f         ;
+411e: a9 f0                     LDA #$f0             ;
 4120: 20 66 2c  loc_4120        JSR WAIT_FOR_VBLK_B  ;
-4123: ca                        DEX               ;
-4124: d0 fa                     BNE loc_4120      ;
-4126: a9 35                     LDA #$35          ;
-4128: 8d 09 19                  STA dat_1909      ;
-412b: a9 00                     LDA #$00          ; Set
-412d: 8d 0b 19                  STA dat_190b_L    ;     ??
-4130: a9 76                     LDA #$76          ;     address
-4132: 8d 0c 19                  STA dat_190c_H    ;     to $7600
-4135: 20 ad 2c                  JSR sub_2cad      ;
-4138: 4c 00 76                  JMP $7600         ;
+4123: ca                        DEX                  ;
+4124: d0 fa                     BNE loc_4120         ;
+4126: a9 35                     LDA #$35             ;
+4128: 8d 09 19                  STA dat_1909         ;
+412b: a9 00                     LDA #$00             ; Set
+412d: 8d 0b 19                  STA dat_190b_L       ;     ??
+4130: a9 76                     LDA #$76             ;     address
+4132: 8d 0c 19                  STA dat_190c_H       ;     to $7600
+4135: 20 ad 2c                  JSR sub_2cad         ;
+4138: 4c 00 76                  JMP $7600            ;
 
-413b: 60        loc_413b        RTS               ;
+413b: 60        loc_413b        RTS                  ;
 
-413c: 00        loc_413c        BRK               ;
+413c: 00        dat_413c        .BYTE $00            ;
 
-413d: ad 00 76  loc_413d        LDA $7600         ;
-4140: d0 2f                     BNE loc_4171      ;
-4142: 24 32                     BIT dat_0032_L    ;
-4144: 30 2b                     BMI loc_4171      ;
-4146: ad 82 63                  LDA $6382         ;
-4149: ae 73 19                  LDX loc_1973      ;
-414c: 38                        SEC               ;
-414d: e9 80                     SBC #$80          ;
-414f: 18                        CLC               ;
-4150: 30 09                     BMI loc_415b      ;
-4152: 7d 72 41                  ADC loc_4172,X    ;
-4155: 90 0b                     BCC loc_4162      ;
-4157: a9 ff                     LDA #$ff          ;
-4159: 30 07                     BMI loc_4162      ;
-415b: 7d 72 41  loc_415b        ADC loc_4172,X    ;
-415e: b0 02                     BCS loc_4162      ;
-4160: a9 00                     LDA #$00          ;
-4162: 8d 69 41  loc_4162        STA loc_4169      ;
-4165: ad 0a d2                  LDA RANDOM        ;
-4168: c9 ff                     CMP #$ff          ;
-416a: f0 02                     BEQ loc_416e      ;
-416c: b0 03                     BCS loc_4171      ;
-416e: ce 5d 19  loc_416e        DEC UNK_BYTE_195D ;
-4171: 60        loc_4171        RTS               ; Return to caller
+413d: ad 00 76  loc_413d        LDA $7600            ;
+4140: d0 2f                     BNE loc_4171         ;
+4142: 24 32                     BIT dat_0032_L       ;
+4144: 30 2b                     BMI loc_4171         ;
+4146: ad 82 63                  LDA $6382            ;
+4149: ae 73 19                  LDX dat_1973         ;
+414c: 38                        SEC                  ;
+414d: e9 80                     SBC #$80             ;
+414f: 18                        CLC                  ;
+4150: 30 09                     BMI loc_415b         ;
+4152: 7d 72 41                  ADC tbl_4172,X       ;
+4155: 90 0b                     BCC loc_4162         ;
+4157: a9 ff                     LDA #$ff             ;
+4159: 30 07                     BMI loc_4162         ;
+415b: 7d 72 41  loc_415b        ADC tbl_4172,X       ;
+415e: b0 02                     BCS loc_4162         ;
+4160: a9 00                     LDA #$00             ; Self-modifying:
+4162: 8d 69 41  loc_4162        STA smc_4168+1       ;     Set the CMP value below to $00
+4165: ad 0a d2                  LDA RANDOM           ;
+4168: c9 ff     smc_4168        CMP #$ff             ; Note: The comparison value here is changed to $00 above
+416a: f0 02                     BEQ loc_416e         ;
+416c: b0 03                     BCS loc_4171         ;
+416e: ce 5d 19  loc_416e        DEC UNK_BYTE_195D    ;
+4171: 60        loc_4171        RTS                  ; Return to caller
 
-4172: 0c        loc_4172        .BYTE $0c         ; .
-4173: 10 18                     BPL loc_418d      ; ..
-4175: 20 ce 90                  JSR $90ce         ;  ..
-4178: 45 d0                     EOR $d0           ; E.
-417a: 0c                        .BYTE $0c         ; .
+4172: 0c 10 18 20  tbl_4172     .BYTE $0c,$10,$18,$20  ; ...
 
-417b: a9 21                     LDA #$21          ;
-417d: 8d 90 45                  STA loc_4590      ;
-4180: a2 99                     LDX #$99          ;
-4182: a9 01                     LDA #$01          ;
-4184: 20 69 2e                  JSR sub_2e69      ;
-4187: ce 91 45                  DEC loc_4591      ;
-418a: d0 0c                     BNE loc_4198      ;
-418c: a9 16                     LDA #$16          ;
-418e: 8d 91 45                  STA loc_4591      ;
-4191: a2 9a                     LDX #$9a          ;
-4193: a9 01                     LDA #$01          ;
-4195: 20 69 2e                  JSR sub_2e69      ;
-4198: ce 92 45  loc_4198        DEC loc_4592      ;
-419b: d0 11                     BNE loc_41ae      ;
-419d: a9 0e                     LDA #$0e          ;
-419f: 8d 92 45                  STA loc_4592      ;
-41a2: 2c 72 19                  BIT loc_1972      ;
-41a5: 30 07                     BMI loc_41ae      ;
-41a7: a2 9b                     LDX #$9b          ;
-41a9: a9 01                     LDA #$01          ;
-41ab: 20 69 2e                  JSR sub_2e69      ;
-41ae: ce 93 45  loc_41ae        DEC loc_4593      ;
-41b1: d0 2b                     BNE loc_41de      ;
-41b3: a9 01                     LDA #$01          ;
-41b5: 8d 93 45                  STA loc_4593      ;
-41b8: ad 96 63                  LDA $6396         ;
-41bb: f0 0d                     BEQ loc_41ca      ;
-41bd: ce 96 63                  DEC $6396         ;
-41c0: a2 97                     LDX #$97          ;
-41c2: a9 01                     LDA #$01          ;
-41c4: 20 43 2e                  JSR loc_2e43      ;
-41c7: 4c de 41                  JMP loc_41de      ;
-41ca: ad d3 41  loc_41ca        LDA loc_41d3      ;
-41cd: 49 ff                     EOR #$ff          ;
-41cf: 8d d3 41                  STA loc_41d3      ;
-41d2: a9 ff                     LDA #$ff          ;
-41d4: 30 08                     BMI loc_41de      ;
-41d6: ad 97 63                  LDA CHR_DRUNK     ;
-41d9: f0 03                     BEQ loc_41de      ;
-41db: ce 97 63                  DEC CHR_DRUNK     ;
-41de: ce 94 45  loc_41de        DEC loc_4594      ;
-41e1: d0 0c                     BNE loc_41ef      ;
-41e3: a9 02                     LDA #$02          ;
-41e5: 8d 94 45                  STA loc_4594      ;
-41e8: a2 98                     LDX #$98          ;
-41ea: a9 01                     LDA #$01          ;
-41ec: 20 69 2e                  JSR sub_2e69      ;
-41ef: 60        loc_41ef        RTS               ; Return to caller
+4176: ce 90 45  sub_4176        DEC dat_4590         ;
+4179: d0 0c                     BNE loc_4198         ;
+417b: a9 21                     LDA #$21             ;
+417d: 8d 90 45                  STA dat_4590         ;
+4180: a2 99                     LDX #$99             ;
+4182: a9 01                     LDA #$01             ;
+4184: 20 69 2e                  JSR sub_2e69         ;
+4187: ce 91 45                  DEC dat_4591         ;
+418a: d0 0c                     BNE loc_4198         ;
+418c: a9 16                     LDA #$16             ;
+418e: 8d 91 45                  STA dat_4591         ;
+4191: a2 9a                     LDX #$9a             ;
+4193: a9 01                     LDA #$01             ;
+4195: 20 69 2e                  JSR sub_2e69         ;
+4198: ce 92 45  loc_4198        DEC dat_4592         ;
+419b: d0 11                     BNE loc_41ae         ;
+419d: a9 0e                     LDA #$0e             ;
+419f: 8d 92 45                  STA dat_4592         ;
+41a2: 2c 72 19                  BIT dat_1972         ;
+41a5: 30 07                     BMI loc_41ae         ;
+41a7: a2 9b                     LDX #$9b             ;
+41a9: a9 01                     LDA #$01             ;
+41ab: 20 69 2e                  JSR sub_2e69         ;
+41ae: ce 93 45  loc_41ae        DEC dat_4593         ;
+41b1: d0 2b                     BNE loc_41de         ;
+41b3: a9 01                     LDA #$01             ;
+41b5: 8d 93 45                  STA dat_4593         ;
+41b8: ad 96 63                  LDA $6396            ;
+41bb: f0 0d                     BEQ loc_41ca         ;
+41bd: ce 96 63                  DEC $6396            ;
+41c0: a2 97                     LDX #$97             ;
+41c2: a9 01                     LDA #$01             ;
+41c4: 20 43 2e                  JSR loc_2e43         ;
+41c7: 4c de 41                  JMP loc_41de         ;
+41ca: ad d3 41  loc_41ca        LDA dat_41d3         ;
+41cd: 49 ff                     EOR #$ff             ;
+41cf: 8d d3 41                  STA dat_41d3         ;
+41d2: a9 ff                     LDA #$ff             ;
+41d4: 30 08                     BMI loc_41de         ;
+41d6: ad 97 63                  LDA CHR_DRUNK        ;
+41d9: f0 03                     BEQ loc_41de         ;
+41db: ce 97 63                  DEC CHR_DRUNK        ;
+41de: ce 94 45  loc_41de        DEC dat_4594         ;
+41e1: d0 0c                     BNE loc_41ef         ;
+41e3: a9 02                     LDA #$02             ;
+41e5: 8d 94 45                  STA dat_4594         ;
+41e8: a2 98                     LDX #$98             ;
+41ea: a9 01                     LDA #$01             ;
+41ec: 20 69 2e                  JSR sub_2e69         ;
+41ef: 60        loc_41ef        RTS                  ; Return to caller
 
-41f0: 04 04 04 03 03  loc_41f0  .BYTE $04,$04,$04,$03,$03  ; .....
-41f5: 01 00     loc_41f5        ORA (dat_0000,X)  ; ..
-41f7: 00                        BRK               ; .
-41f8: 03 03 02 02               .BYTE $03,$03,$02,$02  ; ....
+41f0: 04 04 04 03 03  tbl_41f0  .BYTE $04,$04,$04,$03,$03  ; .....
+41f5: 01 00 00 03 03 02 02  tbl_41f5  .BYTE $01,$00,$00,$03,$03,$02,$02  ; .......
 
-41fc: ad 60 19  loc_41fc        LDA UNK_BYTE_1960    ;
+41fc: ad 60 19  sub_41fc        LDA UNK_BYTE_1960    ;
 41ff: d0 01                     BNE loc_4202         ;
 4201: 60                        RTS                  ;
 
@@ -4973,8 +4620,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4210: 8d e5 42                  STA dat_42e5         ;
 4213: 8d e6 42                  STA dat_42e6         ;
 4216: a9 03                     LDA #$03             ;
-4218: 85 5c                     STA OLDCOL+1         ;
-421a: a6 5c     loc_421a        LDX OLDCOL+1         ;
+4218: 85 5c                     STA dat_005c         ;
+421a: a6 5c     loc_421a        LDX dat_005c         ;
 421c: bd a2 63                  LDA $63a2,X          ;
 421f: 30 1c                     BMI loc_423d         ;
 4221: 85 4b                     STA CASSBT           ;
@@ -4989,7 +4636,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4237: 18                        CLC                  ;
 4238: 71 43                     ADC (ZBUFP),Y        ;
 423a: 8d 5e 19                  STA dat_195e         ;
-423d: c6 5c     loc_423d        DEC OLDCOL+1         ;
+423d: c6 5c     loc_423d        DEC dat_005c         ;
 423f: 10 d9                     BPL loc_421a         ;
 4241: ad 5e 19                  LDA dat_195e         ;
 4244: 18                        CLC                  ;
@@ -5020,7 +4667,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4278: b9 b1 63                  LDA INV_GOLD_U16_HI,Y  ;
 427b: 85 58                     STA SAVMSC           ;
 427d: b9 b2 63                  LDA INV_GOLD,Y       ;
-4280: bc f0 41                  LDY loc_41f0,X       ;
+4280: bc f0 41                  LDY tbl_41f0,X       ;
 4283: f0 06     loc_4283        BEQ loc_428b         ;
 4285: 46 58                     LSR SAVMSC           ;
 4287: 6a                        ROR                  ;
@@ -5036,7 +4683,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 429b: 10 d8                     BPL loc_4275         ;
 429d: a2 06                     LDX #$06             ;
 429f: bd bb 63  loc_429f        LDA INV_FOOD,X       ;
-42a2: bc f5 41                  LDY loc_41f5,X       ;
+42a2: bc f5 41                  LDY tbl_41f5,X       ;
 42a5: f0 04     loc_42a5        BEQ loc_42ab         ;
 42a7: 4a                        LSR                  ;
 42a8: 88                        DEY                  ;
@@ -5067,747 +4714,573 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 42e1: 8d 94 63                  STA CHR_BURDEN       ;
 42e4: 60        loc_42e4        RTS                  ; Return to caller
 
-42e5: ff        dat_42e5        .BYTE $ff         ; .
-42e6: ff        dat_42e6        .BYTE $ff         ; .
+42e5: ff        dat_42e5        .BYTE $ff            ; .
+42e6: ff        dat_42e6        .BYTE $ff            ; .
 
-42e7: a9 e5     loc_42e7        LDA #$e5          ; ..
-42e9: 8d b1 45                  STA loc_45b1      ; ..E
-42ec: 8d b3 45                  STA loc_45b3      ; ..E
-42ef: 8d b5 45                  STA loc_45b5      ; ..E
-42f2: a9 47                     LDA #$47          ; .G
-42f4: 8d b2 45                  STA loc_45b2      ; ..E
-42f7: 8d b4 45                  STA loc_45b4      ; ..E
-42fa: 8d b6 45                  STA loc_45b6      ; ..E
-42fd: 2c 91 63                  BIT CHR_DISEASE   ; ,.c
-4300: 10 0a                     BPL loc_430c      ; ..
-4302: a9 cb                     LDA #$cb          ; ..
-4304: 8d b1 45                  STA loc_45b1      ; ..E
-4307: a9 47                     LDA #$47          ; .G
-4309: 8d b2 45                  STA loc_45b2      ; ..E
-430c: 2c 92 63  loc_430c        BIT CHR_POISON    ; ,.c
-430f: 10 0a                     BPL loc_431b      ; ..
-4311: a9 be                     LDA #$be          ; ..
-4313: 8d b3 45                  STA loc_45b3      ; ..E
-4316: a9 47                     LDA #$47          ; .G
-4318: 8d b4 45                  STA loc_45b4      ; ..E
-431b: 2c 93 63  loc_431b        BIT CHR_CURSE     ; ,.c
-431e: 10 0a                     BPL loc_432a      ; ..
-4320: a9 d8     loc_4320        LDA #$d8          ; ..
-4322: 8d b5 45                  STA loc_45b5      ; ..E
-4325: a9 47                     LDA #$47          ; .G
-4327: 8d b6 45                  STA loc_45b6      ; ..E
-432a: a2 06     loc_432a        LDX #$06          ; ..
-432c: 86 5c                     STX OLDCOL+1      ; .\
-432e: bd e0 45  loc_432e        LDA loc_45e0,X    ; ..E
-4331: 85 58                     STA SAVMSC        ; .X
-4333: bd e7 45                  LDA loc_45e7,X    ; ..E
-4336: 85 59                     STA SAVMSC+1      ; .Y
-4338: bd ee 45                  LDA loc_45ee,X    ; ..E
-433b: 85 5a                     STA OLDROW        ; .Z
-433d: bd f5 45                  LDA loc_45f5,X    ; ..E
-4340: 85 5b                     STA OLDCOL        ; .[
-4342: bd d9 45                  LDA loc_45d9,X    ; ..E
-4345: a8                        TAY               ; .
-4346: b9 00 63                  LDA $6300,Y       ; ..c
-4349: a0 00                     LDY #$00          ; ..
-434b: d1 58     loc_434b        CMP (SAVMSC),Y    ; .X
-434d: 90 05                     BCC loc_4354      ; ..
-434f: f0 03                     BEQ loc_4354      ; ..
-4351: c8                        INY               ; .
-4352: d0 f7                     BNE loc_434b      ; ..
-4354: 98        loc_4354        TYA               ; .
-4355: dd 63 19                  CMP loc_1963,X    ; .c.
-4358: f0 06                     BEQ loc_4360      ; ..
-435a: ce 5f 19                  DEC UNK_BYTE_195F  ; ._.
-435d: 9d 63 19                  STA loc_1963,X    ; .c.
-4360: 0a        loc_4360        ASL               ; .
-4361: a8                        TAY               ; .
-4362: 8a                        TXA               ; .
-4363: 0a                        ASL               ; .
-4364: aa                        TAX               ; .
-4365: b1 5a                     LDA (OLDROW),Y    ; .Z
-4367: 9d a3 45                  STA loc_45a3,X    ; ..E
-436a: c8                        INY               ; .
-436b: b1 5a                     LDA (OLDROW),Y    ; .Z
-436d: 9d a4 45                  STA loc_45a4,X    ; ..E
-4370: c6 5c                     DEC OLDCOL+1      ; .\
-4372: a6 5c                     LDX OLDCOL+1      ; .\
-4374: 10 b8                     BPL loc_432e      ; ..
-4376: 60                        RTS               ; `
-4377: ad 9b 63  loc_4377        LDA CHR_ENERGY    ; ..c
-437a: 8d c5 43                  STA loc_43c5      ; ..C
-437d: a2 06                     LDX #$06          ; ..
-437f: 86 5c                     STX OLDCOL+1      ; .\
-4381: de 95 45  loc_4381        DEC loc_4595,X    ; ..E
-4384: d0 2d                     BNE loc_43b3      ; .-
-4386: bd 9c 45                  LDA loc_459c,X    ; ..E
-4389: 9d 95 45                  STA loc_4595,X    ; ..E
-438c: bd fc 45                  LDA loc_45fc,X    ; ..E
-438f: 85 58                     STA SAVMSC        ; .X
-4391: bd 03 46                  LDA loc_4603,X    ; ..F
-4394: 85 59                     STA SAVMSC+1      ; .Y
-4396: bc 63 19                  LDY loc_1963,X    ; .c.
-4399: b1 58                     LDA (SAVMSC),Y    ; .X
-439b: f0 16                     BEQ loc_43b3      ; ..
-439d: 0a                        ASL               ; .
-439e: a8                        TAY               ; .
-439f: b9 b5 45                  LDA loc_45b5,Y    ; ..E
-43a2: 8d b1 43                  STA loc_43b1      ; ..C
-43a5: b9 b6 45                  LDA loc_45b6,Y    ; ..E
-43a8: 8d b2 43                  STA loc_43b2      ; ..C
-43ab: a9 ff                     LDA #$ff          ; ..
-43ad: 8d 5f 19                  STA UNK_BYTE_195F  ; ._.
-43b0: 20 ff ff                  JSR $ffff         ;  ..
-43b3: c6 5c     loc_43b3        DEC OLDCOL+1      ; .\
-43b5: a6 5c                     LDX OLDCOL+1      ; .\
-43b7: 10 c8                     BPL loc_4381      ; ..
-43b9: 2c 72 19                  BIT loc_1972      ; ,r.
-43bc: 10 06                     BPL loc_43c4      ; ..
-43be: ad c5 43                  LDA loc_43c5      ; ..C
-43c1: 8d 9b 63                  STA CHR_ENERGY    ; ..c
-43c4: 60        loc_43c4        RTS               ; `
-43c5: 00        loc_43c5        BRK               ; .
-43c6: ad 46 63  loc_43c6        LDA CHR_HP_CURRENT_LO  ; .Fc
-43c9: cd 48 63                  CMP CHR_HP_MAX_LO  ; .Hc
-43cc: ad 45 63                  LDA CHR_HP_CURRENT_HI  ; .Ec
-43cf: ed 47 63  PROCESS_HOURLY_UPDATES  SBC CHR_HP_MAX_HI  ; .Gc
-43d2: 90 0e                     BCC HP_NOT_MAX_43E2  ; ..
-43d4: a2 01                     LDX #$01          ; ..
-43d6: bd 47 63  HP_LOOP         LDA CHR_HP_MAX_HI,X  ; .Gc
-43d9: 9d 45 63                  STA CHR_HP_CURRENT_HI,X  ; .Ec
-43dc: ca                        DEX               ;
-43dd: 10 f7                     BPL HP_LOOP       ;
-43df: a9 3d                     LDA #$3d          ;
-43e1: 2c a9 3a                  BIT loc_3aa9      ;
+; Updates the status strings on the display
+42e7: a9 e5     sub_42e7        LDA #$e5             ; Set ???
+42e9: 8d b1 45                  STA addr_45b1_L      ;
+42ec: 8d b3 45                  STA addr_45b3_L      ;
+42ef: 8d b5 45                  STA tbl_45b5_L       ;
+42f2: a9 47                     LDA #$47             ;
+42f4: 8d b2 45                  STA addr_45b1_H      ;     addresses
+42f7: 8d b4 45                  STA addr_45b3_H      ;     to
+42fa: 8d b6 45                  STA tbl_45b5_H       ;     $47e5 [str_BLANK]
+42fd: 2c 91 63                  BIT CHR_DISEASE      ;
+4300: 10 0a                     BPL loc_430c         ;
+4302: a9 cb                     LDA #$cb             ; Set ???
+4304: 8d b1 45                  STA addr_45b1_L      ;     address
+4307: a9 47                     LDA #$47             ;     to
+4309: 8d b2 45                  STA addr_45b1_H      ;     $47cb [str_DISEASED]
+430c: 2c 92 63  loc_430c        BIT CHR_POISON       ;
+430f: 10 0a                     BPL loc_431b         ;
+4311: a9 be                     LDA #$be             ; Set ???
+4313: 8d b3 45                  STA addr_45b3_L      ;     address
+4316: a9 47                     LDA #$47             ;     to
+4318: 8d b4 45                  STA addr_45b3_H      ;     $47be [str_POISONED]
+431b: 2c 93 63  loc_431b        BIT CHR_CURSE        ;
+431e: 10 0a                     BPL loc_432a         ;
+4320: a9 d8     loc_4320        LDA #$d8             ; Set ???
+4322: 8d b5 45                  STA tbl_45b5_L       ;     address
+4325: a9 47                     LDA #$47             ;     to
+4327: 8d b6 45                  STA tbl_45b5_H       ;     $47d8 [str_CURSED]
+432a: a2 06     loc_432a        LDX #$06             ;
+432c: 86 5c                     STX dat_005c         ;
+432e: bd e0 45  loc_432e        LDA tbl_45e0_L,X     ;
+4331: 85 58                     STA SAVMSC           ;
+4333: bd e7 45                  LDA tbl_45e7_H,X     ;
+4336: 85 59                     STA SAVMSC+1         ;
+4338: bd ee 45                  LDA tbl_45ee_L,X     ;
+433b: 85 5a                     STA dat_005a_L       ;
+433d: bd f5 45                  LDA tbl_45f5_H,X     ;
+4340: 85 5b                     STA dat_005a_H       ;
+4342: bd d9 45                  LDA tbl_45d9,X       ;
+4345: a8                        TAY                  ;
+4346: b9 00 63                  LDA $6300,Y          ;
+4349: a0 00                     LDY #$00             ;
+434b: d1 58     loc_434b        CMP (SAVMSC),Y       ;
+434d: 90 05                     BCC loc_4354         ;
+434f: f0 03                     BEQ loc_4354         ;
+4351: c8                        INY                  ;
+4352: d0 f7                     BNE loc_434b         ;
+4354: 98        loc_4354        TYA                  ;
+4355: dd 63 19                  CMP loc_1963,X       ;
+4358: f0 06                     BEQ loc_4360         ;
+435a: ce 5f 19                  DEC UNK_BYTE_195F    ;
+435d: 9d 63 19                  STA loc_1963,X       ;
+4360: 0a        loc_4360        ASL                  ;
+4361: a8                        TAY                  ;
+4362: 8a                        TXA                  ;
+4363: 0a                        ASL                  ;
+4364: aa                        TAX                  ;
+4365: b1 5a                     LDA (dat_005a_L),Y   ;
+4367: 9d a3 45                  STA tbl_45a3,X       ;
+436a: c8                        INY                  ;
+436b: b1 5a                     LDA (dat_005a_L),Y   ;
+436d: 9d a4 45                  STA loc_45a4,X       ;
+4370: c6 5c                     DEC dat_005c         ;
+4372: a6 5c                     LDX dat_005c         ;
+4374: 10 b8                     BPL loc_432e         ;
+4376: 60                        RTS                  ; Return to caller
+
+4377: ad 9b 63  sub_4377        LDA CHR_ENERGY       ;
+437a: 8d c5 43                  STA dat_43c5         ;
+437d: a2 06                     LDX #$06             ;
+437f: 86 5c                     STX dat_005c         ;
+4381: de 95 45  loc_4381        DEC tbl_4595,X       ;
+4384: d0 2d                     BNE loc_43b3         ;
+4386: bd 9c 45                  LDA tbl_459c,X       ;
+4389: 9d 95 45                  STA tbl_4595,X       ;
+438c: bd fc 45                  LDA tbl_45fc_L,X     ;
+438f: 85 58                     STA SAVMSC           ;
+4391: bd 03 46                  LDA tbl_4603_H,X     ;
+4394: 85 59                     STA SAVMSC+1         ;
+4396: bc 63 19                  LDY loc_1963,X       ;
+4399: b1 58                     LDA (SAVMSC),Y       ;
+439b: f0 16                     BEQ loc_43b3         ;
+439d: 0a                        ASL                  ;
+439e: a8                        TAY                  ;
+439f: b9 b5 45                  LDA tbl_45b5_L,Y     ; Self-modifying code:
+43a2: 8d b1 43                  STA smc_43b0+1       ;     Set the JSR address
+43a5: b9 b6 45                  LDA tbl_45b5_H,Y     ;     @ $43b0 below
+43a8: 8d b2 43                  STA smc_43b0+2       ;     to tbl_45b5_L + Y/tbl_45b5_H + Y
+43ab: a9 ff                     LDA #$ff             ;
+43ad: 8d 5f 19                  STA UNK_BYTE_195F    ;
+43b0: 20 ff ff  smc_43b0        JSR $ffff            ; Invoke the subroutine @ the address assigned from tbl_45b5_L/tbl_45b5_H
+                                                     ; One of the following addresses:
+
+43b3: c6 5c     loc_43b3        DEC dat_005c         ;
+43b5: a6 5c                     LDX dat_005c         ;
+43b7: 10 c8                     BPL loc_4381         ;
+43b9: 2c 72 19                  BIT dat_1972         ;
+43bc: 10 06                     BPL loc_43c4         ;
+43be: ad c5 43                  LDA dat_43c5         ;
+43c1: 8d 9b 63                  STA CHR_ENERGY       ;
+43c4: 60        loc_43c4        RTS                  ; Return to caller
+
+43c5: 00        dat_43c5        .BYTE $00            ; .
+
+43c6: ad 46 63  sub_43c6        LDA CHR_HP_CURRENT_LO ;
+43c9: cd 48 63                  CMP CHR_HP_MAX_LO     ;
+43cc: ad 45 63                  LDA CHR_HP_CURRENT_HI ;
+
+43cf: ed 47 63  PROCESS_HOURLY_UPDATES  SBC CHR_HP_MAX_HI  ;
+43d2: 90 0e                     BCC HP_NOT_MAX_43E2  ;
+43d4: a2 01                     LDX #$01             ;
+43d6: bd 47 63  HP_LOOP         LDA CHR_HP_MAX_HI,X  ;
+43d9: 9d 45 63                  STA CHR_HP_CURRENT_HI,X  ;
+43dc: ca                        DEX                  ;
+43dd: 10 f7                     BPL HP_LOOP          ;
+43df: a9 3d                     LDA #$3d             ;
+43e1: 2c a9 3a                  BIT loc_3aa9         ;
 43e4: 8d 99 04                  STA DISP_HP_SEP_CHAR ;
-43e7: a9 49                     LDA #$49          ; Set ???
-43e9: 85 58                     STA SAVMSC        ;     address
-43eb: a9 63                     LDA #$63          ;     to
-43ed: 85 59                     STA SAVMSC+1      ;     $6349 []
-43ef: a2 06                     LDX #$06          ;
-43f1: a0 01     STAT_LOOP       LDY #$01          ;
-43f3: b1 58                     LDA (SAVMSC),Y    ;
-43f5: 18                        CLC               ;
-43f6: a0 02                     LDY #$02          ; ..
-43f8: 71 58                     ADC (SAVMSC),Y    ; qX
-43fa: 90 02                     BCC loc_43fe      ; ..
-43fc: a9 ff                     LDA #$ff          ; ..
-43fe: 38        loc_43fe        SEC               ; 8
-43ff: c8                        INY               ; .
-4400: f1 58                     SBC (SAVMSC),Y    ; .X
-4402: b0 02                     BCS loc_4406      ; ..
-4404: a9 00                     LDA #$00          ; ..
-4406: c8        loc_4406        INY               ; .
-4407: 38                        SEC               ; 8
-4408: f1 58                     SBC (SAVMSC),Y    ; .X
-440a: b0 02                     BCS loc_440e      ; ..
-440c: a9 00                     LDA #$00          ; ..
-440e: c8        loc_440e        INY               ; .
-440f: 38                        SEC               ; 8
-4410: f1 58                     SBC (SAVMSC),Y    ; .X
-4412: b0 02                     BCS loc_4416      ; ..
-4414: a9 00                     LDA #$00          ; ..
-4416: c8        loc_4416        INY               ; .
-4417: 38                        SEC               ; 8
-4418: f1 58                     SBC (SAVMSC),Y    ; .X
-441a: b0 02                     BCS loc_441e      ; ..
-441c: a9 00                     LDA #$00          ; ..
-441e: a0 00     loc_441e        LDY #$00          ; ..
-4420: 91 58     loc_4420        STA (SAVMSC),Y    ; .X
-4422: a9 08                     LDA #$08          ; ..
-4424: 18                        CLC               ; .
-4425: 65 58                     ADC SAVMSC        ; eX
-4427: 85 58                     STA SAVMSC        ; .X
-4429: 90 02                     BCC loc_442d      ; ..
-442b: e6 59                     INC SAVMSC+1      ; .Y
-442d: ca        loc_442d        DEX               ; .
-442e: 10 c1                     BPL STAT_LOOP     ; ..
-4430: ad 79 63                  LDA CHR_SPD_EFFECTIVE  ; .yc
-4433: 4a                        LSR               ; J
-4434: 4a                        LSR               ; J
-4435: 4a                        LSR               ; J
-4436: 4a                        LSR               ; J
-4437: aa                        TAX               ; .
-4438: bd 5f 44                  LDA MOVEMENT_SPEED_TBL,X  ; ._D
-443b: 8d 83 63                  STA CHR_MOVE_SPEED  ; ..c
-443e: 2c 98 63                  BIT CHR_STOMACH   ; ,.c
-4441: 10 03                     BPL loc_4446      ; ..
-4443: 4e 83 63                  LSR CHR_MOVE_SPEED  ; N.c
-4446: ad 83 63  loc_4446        LDA CHR_MOVE_SPEED  ; ..c
-4449: c9 04                     CMP #$04          ; ..
-444b: b0 05                     BCS loc_4452      ; ..
-444d: a9 04                     LDA #$04          ; ..
-444f: 8d 83 63                  STA CHR_MOVE_SPEED  ; ..c
-4452: ad 94 63  loc_4452        LDA CHR_BURDEN    ; ..c
-4455: c9 e0                     CMP #$e0          ; ..
-4457: 90 05                     BCC loc_445e      ; ..
-4459: a9 02                     LDA #$02          ; ..
-445b: 8d 83 63                  STA CHR_MOVE_SPEED  ; ..c
-445e: 60        loc_445e        RTS               ; `
+43e7: a9 49                     LDA #$49             ; Set ???
+43e9: 85 58                     STA SAVMSC           ;     address
+43eb: a9 63                     LDA #$63             ;     to
+43ed: 85 59                     STA SAVMSC+1         ;     $6349 []
+43ef: a2 06                     LDX #$06             ;
+43f1: a0 01     STAT_LOOP       LDY #$01             ;
+43f3: b1 58                     LDA (SAVMSC),Y       ;
+43f5: 18                        CLC                  ;
+43f6: a0 02                     LDY #$02             ;
+43f8: 71 58                     ADC (SAVMSC),Y       ;
+43fa: 90 02                     BCC loc_43fe         ;
+43fc: a9 ff                     LDA #$ff             ;
+43fe: 38        loc_43fe        SEC                  ;
+43ff: c8                        INY                  ;
+4400: f1 58                     SBC (SAVMSC),Y       ;
+4402: b0 02                     BCS loc_4406         ;
+4404: a9 00                     LDA #$00             ;
+4406: c8        loc_4406        INY                  ;
+4407: 38                        SEC                  ;
+4408: f1 58                     SBC (SAVMSC),Y       ;
+440a: b0 02                     BCS loc_440e         ;
+440c: a9 00                     LDA #$00             ;
+440e: c8        loc_440e        INY                  ;
+440f: 38                        SEC                  ;
+4410: f1 58                     SBC (SAVMSC),Y       ;
+4412: b0 02                     BCS loc_4416         ;
+4414: a9 00                     LDA #$00             ;
+4416: c8        loc_4416        INY                  ;
+4417: 38                        SEC                  ;
+4418: f1 58                     SBC (SAVMSC),Y       ;
+441a: b0 02                     BCS loc_441e         ;
+441c: a9 00                     LDA #$00             ;
+441e: a0 00     loc_441e        LDY #$00             ;
+4420: 91 58     loc_4420        STA (SAVMSC),Y       ;
+4422: a9 08                     LDA #$08             ;
+4424: 18                        CLC                  ;
+4425: 65 58                     ADC SAVMSC           ;
+4427: 85 58                     STA SAVMSC           ;
+4429: 90 02                     BCC loc_442d         ;
+442b: e6 59                     INC SAVMSC+1         ;
+442d: ca        loc_442d        DEX                  ;
+442e: 10 c1                     BPL STAT_LOOP        ;
+4430: ad 79 63                  LDA CHR_SPD_EFFECTIVE ;
+4433: 4a                        LSR                  ;
+4434: 4a                        LSR                  ;
+4435: 4a                        LSR                  ;
+4436: 4a                        LSR                  ;
+4437: aa                        TAX                  ;
+4438: bd 5f 44                  LDA MOVEMENT_SPEED_TBL,X ;
+443b: 8d 83 63                  STA CHR_MOVE_SPEED   ;
+443e: 2c 98 63                  BIT CHR_STOMACH      ;
+4441: 10 03                     BPL loc_4446         ;
+4443: 4e 83 63                  LSR CHR_MOVE_SPEED   ;
+4446: ad 83 63  loc_4446        LDA CHR_MOVE_SPEED   ;
+4449: c9 04                     CMP #$04             ;
+444b: b0 05                     BCS loc_4452         ;
+444d: a9 04                     LDA #$04             ;
+444f: 8d 83 63                  STA CHR_MOVE_SPEED   ;
+4452: ad 94 63  loc_4452        LDA CHR_BURDEN       ;
+4455: c9 e0                     CMP #$e0             ;
+4457: 90 05                     BCC loc_445e         ;
+4459: a9 02                     LDA #$02             ;
+445b: 8d 83 63                  STA CHR_MOVE_SPEED   ;
+445e: 60        loc_445e        RTS                  ; Return to caller
+
 445f: 06 07 08 09 0a 0b 0c 0d  MOVEMENT_SPEED_TBL  .BYTE $06,$07,$08,$09,$0a,$0b,$0c,$0d  ; ........
 4467: 0e 0f 10 11 11 11 12 12   .BYTE $0e,$0f,$10,$11,$11,$11,$12,$12  ; ........
-446f: ad 0a d2  loc_446f        LDA RANDOM        ; ...
-4472: 8d 7a 44                  STA loc_447a      ; .zD
-4475: ad 49 63                  LDA CHR_STA_EFFECTIVE  ; .Ic
-4478: 4a                        LSR               ; J
-4479: c9 ff                     CMP #$ff          ; ..
-447b: b0 01                     BCS loc_447e      ; ..
-447d: 60                        RTS               ; `
-447e: 68        loc_447e        PLA               ; h
-447f: 68                        PLA               ; h
-4480: 60                        RTS               ; `
-4481: a2 9b                     LDX #$9b          ; ..
-4483: a9 01                     LDA #$01          ; ..
-4485: 20 69 2e                  JSR sub_2e69      ;  i.
-4488: a2 99                     LDX #$99          ; ..
-448a: a9 01                     LDA #$01          ; ..
-448c: 4c 69 2e                  JMP sub_2e69      ; Li.
-448f: a2 9b                     LDX #$9b          ; ..
-4491: a9 01                     LDA #$01          ; ..
-4493: 20 69 2e                  JSR sub_2e69      ;  i.
-4496: a2 9a                     LDX #$9a          ; ..
-4498: a9 01                     LDA #$01          ; ..
-449a: 4c 69 2e                  JMP sub_2e69      ; Li.
-449d: 20 6f 44                  JSR loc_446f      ;  oD
-44a0: a2 5d                     LDX #$5d          ; .]
-44a2: a9 01                     LDA #$01          ; ..
-44a4: 20 43 2e                  JSR loc_2e43      ;  C.
-44a7: a2 7d                     LDX #$7d          ; .}
-44a9: a9 01                     LDA #$01          ; ..
-44ab: 4c 43 2e                  JMP loc_2e43      ; LC.
-44ae: 20 6f 44                  JSR loc_446f      ;  oD
-44b1: a2 45                     LDX #$45          ; .E
-44b3: a9 01                     LDA #$01          ; ..
-44b5: 20 66 2e                  JSR sub_2e66      ;  f.
-44b8: a2 5d                     LDX #$5d          ; .]
-44ba: a9 01                     LDA #$01          ; ..
-44bc: 20 43 2e                  JSR loc_2e43      ;  C.
-44bf: a2 75                     LDX #$75          ; .u
-44c1: a9 01                     LDA #$01          ; ..
-44c3: 20 43 2e                  JSR loc_2e43      ;  C.
-44c6: a2 7d                     LDX #$7d          ; .}
-44c8: a9 01                     LDA #$01          ; ..
-44ca: 20 43 2e                  JSR loc_2e43      ;  C.
-44cd: a2 9b                     LDX #$9b          ; ..
-44cf: a9 01                     LDA #$01          ; ..
-44d1: 4c 69 2e                  JMP sub_2e69      ; Li.
-44d4: a2 5d                     LDX #$5d          ; .]
-44d6: a9 01                     LDA #$01          ; ..
-44d8: 20 69 2e                  JSR sub_2e69      ;  i.
-44db: a2 75                     LDX #$75          ; .u
-44dd: a9 01                     LDA #$01          ; ..
-44df: 20 69 2e                  JSR sub_2e69      ;  i.
-44e2: a2 7d                     LDX #$7d          ; .}
-44e4: a9 01                     LDA #$01          ; ..
-44e6: 4c 69 2e                  JMP sub_2e69      ; Li.
-44e9: 20 6f 44                  JSR loc_446f      ;  oD
-44ec: a2 5e                     LDX #$5e          ; .^
-44ee: a9 01                     LDA #$01          ; ..
-44f0: 20 43 2e                  JSR loc_2e43      ;  C.
-44f3: a2 7e                     LDX #$7e          ; .~
-44f5: a9 01                     LDA #$01          ; ..
-44f7: 4c 43 2e                  JMP loc_2e43      ; LC.
-44fa: 20 6f 44                  JSR loc_446f      ;  oD
-44fd: a2 45                     LDX #$45          ; .E
-44ff: a9 01                     LDA #$01          ; ..
-4501: 20 66 2e                  JSR sub_2e66      ;  f.
-4504: a2 5e                     LDX #$5e          ; .^
-4506: a9 01                     LDA #$01          ; ..
-4508: 20 43 2e                  JSR loc_2e43      ;  C.
-450b: a2 7e                     LDX #$7e          ; .~
-450d: a9 01                     LDA #$01          ; ..
-450f: 20 43 2e                  JSR loc_2e43      ;  C.
-4512: a2 9b                     LDX #$9b          ; ..
-4514: a9 01                     LDA #$01          ; ..
-4516: 4c 69 2e                  JMP sub_2e69      ; Li.
-4519: a2 5e                     LDX #$5e          ; .^
-451b: a9 01                     LDA #$01          ; ..
-451d: 20 69 2e                  JSR sub_2e69      ;  i.
-4520: a2 7e     loc_4520        LDX #$7e          ; .~
-4522: a9 01                     LDA #$01          ; ..
-4524: 4c 69 2e                  JMP sub_2e69      ; Li.
-4527: 20 6f 44                  JSR loc_446f      ;  oD
-452a: ad 72 19                  LDA loc_1972      ; .r.
-452d: 10 01                     BPL loc_4530      ; ..
-452f: 60                        RTS               ; `
-4530: a2 7f     loc_4530        LDX #$7f          ; .
-4532: a9 01                     LDA #$01          ; ..
-4534: 20 43 2e                  JSR loc_2e43      ;  C.
-4537: a2 5f                     LDX #$5f          ; ._
-4539: a9 01                     LDA #$01          ; ..
-453b: 4c 43 2e                  JMP loc_2e43      ; LC.
-453e: 20 6f 44                  JSR loc_446f      ;  oD
-4541: 2c 72 19                  BIT loc_1972      ; ,r.
-4544: 10 01                     BPL loc_4547      ; ..
-4546: 60                        RTS               ; `
-4547: a2 45     loc_4547        LDX #$45          ; .E
-4549: a9 01                     LDA #$01          ; ..
-454b: 20 66 2e                  JSR sub_2e66      ;  f.
-454e: a2 7f                     LDX #$7f          ; .
-4550: a9 01                     LDA #$01          ; ..
-4552: 20 43 2e                  JSR loc_2e43      ;  C.
-4555: a2 5f                     LDX #$5f          ; ._
-4557: a9 01                     LDA #$01          ; ..
-4559: 20 43 2e                  JSR loc_2e43      ;  C.
-455c: a2 77                     LDX #$77          ; .w
-455e: a9 01                     LDA #$01          ; ..
-4560: 4c 43 2e                  JMP loc_2e43      ; LC.
-4563: a2 7f                     LDX #$7f          ; .
-4565: a9 01                     LDA #$01          ; ..
-4567: 20 69 2e                  JSR sub_2e69      ;  i.
-456a: a2 5f                     LDX #$5f          ; ._
-456c: a9 01                     LDA #$01          ; ..
-456e: 20 69 2e                  JSR sub_2e69      ;  i.
-4571: a2 77                     LDX #$77          ; .w
-4573: a9 01                     LDA #$01          ; ..
-4575: 4c 69 2e                  JMP sub_2e69      ; Li.
-4578: 20 6f 44                  JSR loc_446f      ;  oD
-457b: a2 9b                     LDX #$9b          ; ..
-457d: a9 01                     LDA #$01          ; ..
-457f: 4c 69 2e                  JMP sub_2e69      ; Li.
-4582: 20 6f 44                  JSR loc_446f      ;  oD
-4585: a2 9b                     LDX #$9b          ; ..
-4587: a9 01                     LDA #$01          ; ..
-4589: 4c 69 2e                  JMP sub_2e69      ; Li.
-458c: 60                        RTS               ; `
-458d: 60                        RTS               ; `
-458e: 60                        RTS               ; `
-458f: 60                        RTS               ; `
-4590: 21 16     loc_4590        AND (addr_0016_L,X)  ; !.
-4592: 0e 04 03  loc_4592        ASL D32_382_ENCH  ; ...
-4595: 04        loc_4595        .BYTE $04         ; .
-4596: 21 16                     AND (addr_0016_L,X)  ; !.
-4598: 0e 03 02                  ASL VPRCED+1      ; ...
-459b: 02                        .BYTE $02         ; .
-459c: 04        loc_459c        .BYTE $04         ; .
-459d: 21 16                     AND (addr_0016_L,X)  ; !.
-459f: 0e 03 02                  ASL VPRCED+1      ; ...
-45a2: 02                        .BYTE $02         ; .
-45a3: e5 47     loc_45a3        SBC ZSBA          ; .G
-45a5: e5 47                     SBC ZSBA          ; .G
-45a7: e5 47                     SBC ZSBA          ; .G
-45a9: e5 47                     SBC ZSBA          ; .G
-45ab: e5 47                     SBC ZSBA          ; .G
-45ad: e5 47                     SBC ZSBA          ; .G
-45af: e5 47                     SBC ZSBA          ; .G
-45b1: e5 47     loc_45b1        SBC ZSBA          ; .G
-45b3: e5 47     loc_45b3        SBC ZSBA          ; .G
-45b5: e5 47     loc_45b5        SBC ZSBA          ; .G
-45b7: 81 44                     STA (ZBUFP+1,X)   ; .D
-45b9: 8f 44                     .BYTE $8f,$44     ; .D
-45bb: 9d 44 ae                  STA $ae44,X       ; .D.
-45be: 44                        .BYTE $44         ; D
-45bf: e9 44                     SBC #$44          ; .D
-45c1: fa 44 27                  .BYTE $fa,$44,$27 ; .D'
-45c4: 45 3e                     EOR FTYPE         ; E>
-45c6: 45 78                     EOR DELTAC+1      ; Ex
-45c8: 45 82                     EOR VNTP          ; E.
-45ca: 45 8c                     EOR STARP         ; E.
-45cc: 45 8d                     EOR STARP+1       ; E.
-45ce: 45 8e                     EOR RUNSTK        ; E.
-45d0: 45 8f                     EOR RUNSTK+1      ; E.
-45d2: 45 d4                     EOR FR0           ; E.
-45d4: 44                        .BYTE $44         ; D
-45d5: 19 45 63                  ORA CHR_HP_CURRENT_HI,Y  ; .Ec
-45d8: 45 95                     EOR $95           ; E.
-45da: 99 9a 9b                  STA $9b9a,Y       ; ...
-45dd: 94 97                     STY $97,X         ; ..
-45df: 98                        TYA               ; .
-45e0: 0a        loc_45e0        ASL               ; .
-45e1: 26 36                     ROL CRETRY        ; &6
-45e3: 46 56                     LSR COLCRS+1      ; FV
-45e5: 66 76                     ROR DELTAR        ; fv
-45e7: 46 46     loc_45e7        LSR dat_0045_H    ; FF
-45e9: 46 46                     LSR dat_0045_H    ; FF
-45eb: 46 46                     LSR dat_0045_H    ; FF
-45ed: 46 18                     LSR sub_add_0018_L; F.
-45ef: 2e 3e 4e                  ROL loc_4e3e      ; .>N
-45f2: 5e 6e 7e                  LSR $7e6e,X       ; ^n~
-45f5: 46 46     loc_45f5        LSR dat_0045_H    ; FF
-45f7: 46 46                     LSR dat_0045_H    ; FF
-45f9: 46 46                     LSR dat_0045_H    ; FF
-45fb: 46 11                     LSR BRKKEY        ; F.
-45fd: 2a                        ROL               ; *
-45fe: 3a                        .BYTE $3a         ; :
-45ff: 4a                        LSR               ; J
-4600: 5a        loc_4600        .BYTE $5a         ; Z
-4601: 6a                        ROR               ; j
-4602: 7a                        .BYTE $7a         ; z
-4603: 46 46     loc_4603        LSR dat_0045_H    ; FF
-4605: 46 46                     LSR dat_0045_H    ; FF
-4607: 46 46                     LSR dat_0045_H    ; FF
-4609: 46 20                     LSR dat_0020      ; F
-460b: 40                        RTI               ; Return from interrupt handler
 
-460c: 60                        RTS               ; `
-460d: a0 c0                     LDY #$c0          ; ..
-460f: e0 ff                     CPX #$ff          ; ..
-4611: 01 00                     ORA (dat_0000,X)  ; ..
-4613: 00                        BRK               ; .
-4614: 00                        BRK               ; .
-4615: 00                        BRK               ; .
-4616: 00                        BRK               ; .
-4617: 02                        .BYTE $02         ; .
-4618: 86 46                     STX $46           ; .F
-461a: 93                        .BYTE $93         ; .
-461b: 46 a0                     LSR $a0           ; F.
-461d: 46 e5                     LSR FR1+5         ; F.
-461f: 47                        .BYTE $47         ; G
-4620: ad 46 ba                  LDA $ba46         ; .F.
-4623: 46 c7                     LSR $c7           ; F.
-4625: 46 30                     LSR STATUS        ; F0
-4627: 80                        .BYTE $80         ; .
-4628: ec ff 04                  CPX $04ff         ; ...
-462b: 03                        .BYTE $03         ; .
-462c: 00                        BRK               ; .
-462d: 0f                        .BYTE $0f         ; .
-462e: ee 46 e1                  INC $e146         ; .F.
-4631: 46 d4                     LSR FR0           ; F.
-4633: 46 e5                     LSR FR1+5         ; F.
-4635: 47                        .BYTE $47         ; G
-4636: 40                        RTI               ; Return from interrupt handler
+446f: ad 0a d2  loc_446f        LDA RANDOM           ;
+4472: 8d 7a 44                  STA loc_447a         ;
+4475: ad 49 63                  LDA CHR_STA_EFFECTIVE  ;
+4478: 4a                        LSR                  ;
+4479: c9 ff                     CMP #$ff             ;
+447b: b0 01                     BCS loc_447e         ;
+447d: 60                        RTS                  ;
+447e: 68        loc_447e        PLA                  ;
+447f: 68                        PLA                  ;
+4480: 60                        RTS                  ; Return to caller
 
-4637: 80                        .BYTE $80         ; .
-4638: d0 ff                     BNE loc_4639      ; ..
-463a: 06 05                     ASL dat_0005      ; ..
-463c: 00                        BRK               ; .
-463d: 10 15                     BPL loc_4654      ; ..
-463f: 47                        .BYTE $47         ; G
-4640: 08                        PHP               ; .
-4641: 47                        .BYTE $47         ; G
-4642: fb        loc_4642        .BYTE $fb         ; .
-4643: 46 e5                     LSR FR1+5         ; F.
-4645: 47                        .BYTE $47         ; G
-4646: 40                        RTI               ; Return from interrupt handler
+4481: a2 9b     sub_4481        LDX #$9b             ;
+4483: a9 01                     LDA #$01             ;
+4485: 20 69 2e                  JSR sub_2e69         ;
+4488: a2 99                     LDX #$99             ;
+448a: a9 01                     LDA #$01             ;
+448c: 4c 69 2e                  JMP sub_2e69         ;
 
-4647: a0 c0                     LDY #$c0          ; ..
-4649: ff                        .BYTE $ff         ; .
-464a: 08                        PHP               ; .
-464b: 07                        .BYTE $07         ; .
-464c: 00                        BRK               ; .
-464d: 11 3c                     ORA (NOCKSM),Y    ; .<
-464f: 47 2f 47 22 47            .BYTE $47,$2f,$47,$22,$47  ; G/G"G
-4654: e5 47     loc_4654        SBC ZSBA          ; .G
-4656: 80                        .BYTE $80         ; .
-4657: c0 f0                     CPY #$f0          ; ..
-4659: ff                        .BYTE $ff         ; .
-465a: 00                        BRK               ; .
-465b: 00                        BRK               ; .
-465c: 09 0a                     ORA #$0a          ; ..
-465e: e5 47                     SBC ZSBA          ; .G
-4660: 49 47                     EOR #$47          ; IG
-4662: 56 47                     LSR ZSBA,X        ; VG
-4664: 63 47                     .BYTE $63,$47     ; cG
-4666: 08                        PHP               ; .
-4667: 10 20                     BPL loc_4689      ; .
-4669: ff                        .BYTE $ff         ; .
-466a: 00                        BRK               ; .
-466b: 00                        BRK               ; .
-466c: 0b 0c                     .BYTE $0b,$0c     ; ..
-466e: e5 47                     SBC ZSBA          ; .G
-4670: 70 47                     BVS loc_46b9      ; pG
-4672: 7d 47 8a                  ADC $8a47,X       ; }G.
-4675: 47                        .BYTE $47         ; G
-4676: 40                        RTI               ; Return from interrupt handler
+448f: a2 9b     sub_448f        LDX #$9b             ;
+4491: a9 01                     LDA #$01             ;
+4493: 20 69 2e                  JSR sub_2e69         ;
+4496: a2 9a                     LDX #$9a             ;
+4498: a9 01                     LDA #$01             ;
+449a: 4c 69 2e                  JMP sub_2e69         ;
 
-4677: 60        xxx             RTS               ; `
-4678: 80 ff                     .BYTE $80,$ff     ; ..
-467a: 00                        BRK               ; .
-467b: 00                        BRK               ; .
-467c: 0d 0e e5                  ORA $e50e         ; ...
-467f: 47 97 47                  .BYTE $47,$97,$47  ; G.G
-4682: a4 47                     LDY ZSBA          ; .G
-4684: b1 47                     LDA (ZSBA),Y      ; .G
-4686: 20 20 20                  JSR loc_2020      ;
-4689: 46 72     loc_4689        LSR COLAC         ; Fr
-468b: 65 65                     ADC ADRESS+1      ; ee
-468d: 7a                        .BYTE $7a         ; z
-468e: 69 6e                     ADC #$6e          ; in
-4690: 67                        .BYTE $67         ; g
-4691: 21 00                     AND (dat_0000,X)  ; !.
-4693: 20 20 20                  JSR loc_2020      ;
-4696: 20 20 20                  JSR loc_2020      ;
-4699: 20 20 43                  JSR loc_4320      ;   C
-469c: 6f                        .BYTE $6f         ; o
-469d: 6c 64 00                  JMP (ADRESS)      ; ld.
-46a0: 20 20 20                  JSR loc_2020      ;
-46a3: 20 20 20                  JSR loc_2020      ;
-46a6: 43                        .BYTE $43         ; C
-46a7: 68                        PLA               ; h
-46a8: 69 6c                     ADC #$6c          ; il
-46aa: 6c 79 00                  JMP (ROWINC)      ; ly.
-46ad: 20 20 20                  JSR loc_2020      ;
-46b0: 20 20 20                  JSR loc_2020      ;
-46b3: 20 20 57                  JSR loc_5720      ;   W
-46b6: 61 72                     ADC (COLAC,X)     ; ar
-46b8: 6d 00 20                  ADC loc_2000      ; m.
-46bb: 20 20 20                  JSR loc_2020      ;
-46be: 20 20 20                  JSR loc_2020      ;
-46c1: 20 20 48                  JSR loc_4820      ;   H
-46c4: 6f 74                     .BYTE $6f,$74     ; ot
-46c6: 00                        BRK               ; .
-46c7: 20 20 20                  JSR loc_2020      ;
-46ca: 52 6f                     .BYTE $52,$6f     ; Ro
-46cc: 61 73                     ADC (COLAC+1,X)   ; as
-46ce: 74                        .BYTE $74         ; t
-46cf: 69 6e                     ADC #$6e          ; in
-46d1: 67                        .BYTE $67         ; g
-46d2: 21 00                     AND (dat_0000,X)  ; !.
-46d4: 48                        PHA               ; H
-46d5: 75 6e                     ADC BITMSK,X      ; un
-46d7: 67 72                     .BYTE $67,$72     ; gr
-46d9: 79 20 20                  ADC loc_2020,Y    ; y
-46dc: 20 20 20                  JSR loc_2020      ;
-46df: 20 00 46                  JSR loc_4600      ;  .F
-46e2: 61 6d                     ADC (BUFSTR+1,X)  ; am
-46e4: 69 73                     ADC #$73          ; is
-46e6: 68                        PLA               ; h
-46e7: 65 64                     ADC ADRESS        ; ed
-46e9: 20 20 20                  JSR loc_2020      ;
-46ec: 20 00 53                  JSR loc_5300      ;  .S
-46ef: 74                        .BYTE $74         ; t
-46f0: 61 72                     ADC (COLAC,X)     ; ar
-46f2: 76 69                     ROR SAVADR+1,X    ; vi
-46f4: 6e 67 21                  ROR loc_2167      ; ng!
-46f7: 20 20 20                  JSR loc_2020      ;
-46fa: 00                        BRK               ; .
-46fb: 54                        .BYTE $54         ; T
-46fc: 68                        PLA               ; h
-46fd: 69 72                     ADC #$72          ; ir
-46ff: 73 74                     .BYTE $73,$74     ; st
-4701: 79 20 20                  ADC loc_2020,Y    ; y
-4704: 20 20 20                  JSR loc_2020      ;
-4707: 00                        BRK               ; .
-4708: 50 61                     BVC loc_476b      ; Pa
-470a: 72 63                     .BYTE $72,$63     ; rc
-470c: 68                        PLA               ; h
-470d: 65 64                     ADC ADRESS        ; ed
-470f: 20 20 20                  JSR loc_2020      ;
-4712: 20 20 00                  JSR $20           ;   .
-4715: 44                        .BYTE $44         ; D
-4716: 65 68                     ADC SAVADR        ; eh
-4718: 79 64 72                  ADC $7264,Y       ; ydr
-471b: 61 74                     ADC (ENDPT,X)     ; at
-471d: 65 64                     ADC ADRESS        ; ed
-471f: 21 20                     AND (ICHIDZ,X)    ; !
-4721: 00                        BRK               ; .
-4722: 57                        .BYTE $57         ; W
-4723: 65 61                     ADC NEWCOL        ; ea
-4725: 72                        .BYTE $72         ; r
-4726: 79 20 20                  ADC loc_2020,Y    ; y
-4729: 20 20 20                  JSR loc_2020      ;
-472c: 20 20 00                  JSR $20           ;   .
-472f: 54                        .BYTE $54         ; T
-4730: 69 72                     ADC #$72          ; ir
-4732: 65 64                     ADC ADRESS        ; ed
-4734: 20 20 20                  JSR loc_2020      ;
-4737: 20 20 20                  JSR loc_2020      ;
-473a: 20 00 45                  JSR $4500         ;  .E
-473d: 78                        SEI               ; x
-473e: 68                        PLA               ; h
-473f: 61 75                     ADC (ENDPT+1,X)   ; au
-4741: 73 74                     .BYTE $73,$74     ; st
-4743: 65 64                     ADC ADRESS        ; ed
-4745: 21 20                     AND (ICHIDZ,X)    ; !
-4747: 20 00 20                  JSR $2000         ;  .
-474a: 20 20 20                  JSR loc_2020      ;
-474d: 42                        .BYTE $42         ; B
-474e: 75 72                     ADC COLAC,X       ; ur
-4750: 64                        .BYTE $64         ; d
-4751: 65 6e                     ADC BITMSK        ; en
-4753: 65 64     loc_4753        ADC ADRESS        ; ed
-4755: 00                        BRK               ; .
-4756: 20 20 45                  JSR loc_4520      ;   E
-4759: 6e 63 75                  ROR $7563         ; ncu
-475c: 6d 62 65                  ADC $6562         ; mbe
-475f: 72                        .BYTE $72         ; r
-4760: 65 64                     ADC ADRESS        ; ed
-4762: 00                        BRK               ; .
-4763: 49 6d                     EOR #$6d          ; Im
-4765: 6d 6f 62                  ADC loc_626f      ; mob
-4768: 69 6c                     ADC #$6c          ; il
-476a: 69 7a                     ADC #$7a          ; iz
-476c: 65 64                     ADC ADRESS        ; ed
-476e: 21 00                     AND (dat_0000,X)  ; !.
-4770: 54                        .BYTE $54         ; T
-4771: 69 70                     ADC #$70          ; ip
-4773: 73                        .BYTE $73         ; s
-4774: 79 20 20                  ADC loc_2020,Y    ; y
-4777: 20 20 20                  JSR loc_2020      ;
-477a: 20 20 00                  JSR $20           ;   .
-477d: 44 72                     .BYTE $44,$72     ; Dr
-477f: 75 6e                     ADC BITMSK,X      ; un
-4781: 6b                        .BYTE $6b         ; k
-4782: 20 20 20                  JSR loc_2020      ;
-4785: 20 20 20                  JSR loc_2020      ;
-4788: 20 00 56                  JSR loc_5600      ;  .V
-478b: 65 72                     ADC COLAC         ; er
-478d: 79 20 44                  ADC loc_4420,Y    ; y D
-4790: 72                        .BYTE $72         ; r
-4791: 75 6e                     ADC BITMSK,X      ; un
-4793: 6b                        .BYTE $6b         ; k
-4794: 21 20                     AND (ICHIDZ,X)    ; !
-4796: 00                        BRK               ; .
-4797: 20 20 20                  JSR loc_2020      ;
-479a: 20 46 75                  JSR $7546         ;  Fu
-479d: 6c 6c 20                  JMP (loc_206c)    ; ll
-47a0: 20 20 20                  JSR loc_2020      ;
-47a3: 00                        BRK               ; .
-47a4: 20 20 53                  JSR sub_5320_bad      ;   S
-47a7: 74                        .BYTE $74         ; t
-47a8: 75 66                     ADC MLTTMP,X      ; uf
-47aa: 66 65                     ROR ADRESS+1      ; fe
-47ac: 64                        .BYTE $64         ; d
-47ad: 20 20 20                  JSR loc_2020      ;
-47b0: 00                        BRK               ; .
-47b1: 20 20 42                  JSR loc_4220      ;   B
-47b4: 6c 6f 61                  JMP (loc_616f)    ; loa
-47b7: 74                        .BYTE $74         ; t
-47b8: 65 64                     ADC ADRESS        ; ed
-47ba: 21 20                     AND (dat_0020,X)    ; !
-47bc: 20 00 20                  JSR $2000         ;  .
-47bf: 20 20 50                  JSR bad_5020      ;   P
-47c2: 6f                        .BYTE $6f         ; o
-47c3: 69 73                     ADC #$73          ; is
-47c5: 6f                        .BYTE $6f         ; o
-47c6: 6e 65 64                  ROR $6465         ; ned
-47c9: 21 00                     AND (dat_0000,X)  ; !.
-47cb: 20 20 20                  JSR loc_2020      ;
-47ce: 44                        .BYTE $44         ; D
-47cf: 69 73                     ADC #$73          ; is
-47d1: 65 61                     ADC NEWCOL        ; ea
-47d3: 73                        .BYTE $73         ; s
-47d4: 65 64                     ADC ADRESS        ; ed
-47d6: 21 00                     AND (dat_0000,X)  ; !.
-47d8: 20 20 20                  JSR loc_2020      ;
-47db: 43                        .BYTE $43         ; C
-47dc: 75 72                     ADC COLAC,X       ; ur
-47de: 73                        .BYTE $73         ; s
-47df: 65 64                     ADC ADRESS        ; ed
-47e1: 21 20                     AND (dat_0020,X)  ; !
-47e3: 20 00 20                  JSR $2000         ;  .
-47e6: 20 20 20                  JSR loc_2020      ;
-47e9: 20 20 20                  JSR loc_2020      ;
-47ec: 20 20 20                  JSR loc_2020      ;
-47ef: 20 20 00                  JSR $20           ;   .
+449d: 20 6f 44  sub_449d        JSR loc_446f         ;
+44a0: a2 5d                     LDX #$5d             ;
+44a2: a9 01                     LDA #$01             ;
+44a4: 20 43 2e                  JSR loc_2e43         ;
+44a7: a2 7d                     LDX #$7d             ;
+44a9: a9 01                     LDA #$01             ;
+44ab: 4c 43 2e                  JMP loc_2e43         ;
 
-47f2: a5 0f     loc_47f2        LDA APPMHI+1         ; ..
-47f4: f0 03                     BEQ loc_47f9         ; ..
-47f6: 4c af 49                  JMP loc_49af         ; L.I
-47f9: 85 49     loc_47f9        STA ERRNO            ; .I
-47fb: 8d 91 63                  STA CHR_DISEASE      ; ..c
-47fe: 8d 92 63                  STA CHR_POISON       ; ..c
-4801: 8d 93 63                  STA CHR_CURSE        ; ..c
-4804: a9 f0                     LDA #$f0             ; ..
-4806: 85 50                     STA dat_023e         ; .P
-4808: a9 00                     LDA #$00             ; ..
-480a: 85 3d                     STA dat_003d_L       ; .=
-480c: a9 65                     LDA #$65             ; .e
-480e: 85 3e                     STA FTYPE            ; .>
-4810: a0 00     loc_4810        LDY #$00             ; ..
-4812: b1 3d                     LDA (dat_003d_L),Y   ; .=
-4814: c9 81                     CMP #$81             ; ..
-4816: b0 03                     BCS loc_481b         ; ..
-4818: 4c 99 49                  JMP loc_4999         ; L.I
-481b: c9 e0     loc_481b        CMP #$e0             ; ..
-481d: 90 03                     BCC loc_4822         ; ..
-481f: 4c 99 49                  JMP loc_4999         ; L.I
-4822: 29 07     loc_4822        AND #$07             ; ).
-4824: f0 08                     BEQ loc_482e         ; ..
-4826: c9 04                     CMP #$04             ; ..
-4828: b0 04                     BCS loc_482e         ; ..
-482a: aa                        TAX                  ; .
-482b: de 90 63                  DEC CHR_LIT_TORCH_FLAG,X  ; ..c
-482e: a0 04     loc_482e        LDY #$04             ; ..
-4830: b1 3d                     LDA (dat_003d_L),Y   ; .=
-4832: c8                        INY                  ; .
-4833: 11 3d                     ORA (dat_003d_L),Y   ; .=
-4835: d0 03                     BNE loc_483a         ; ..
-4837: 4c 99 49                  JMP loc_4999         ; L.I
-483a: 88        loc_483a        DEY                  ; .
-483b: 38                        SEC                  ; 8
-483c: b1 3d                     LDA (dat_003d_L),Y   ; .=
-483e: e9 01                     SBC #$01             ; ..
-4840: 91 3d                     STA (dat_003d_L),Y   ; .=
-4842: c8                        INY                  ; .
-4843: b1 3d                     LDA (dat_003d_L),Y   ; .=
-4845: e9 00                     SBC #$00             ; ..
-4847: 91 3d                     STA (dat_003d_L),Y   ; .=
-4849: 88                        DEY                  ; .
-484a: 11 3d                     ORA (dat_003d_L),Y   ; .=
-484c: f0 03                     BEQ loc_4851         ; ..
-484e: 4c 99 49                  JMP loc_4999         ; L.I
-4851: a0 00     loc_4851        LDY #$00             ; ..
-4853: b1 3d                     LDA (dat_003d_L),Y   ; .=
-4855: 29 bf                     AND #$bf             ; ).
-4857: d1 3d                     CMP (dat_003d_L),Y   ; .=
-4859: f0 38                     BEQ loc_4893         ; .8
-485b: 91 3d                     STA (dat_003d_L),Y   ; .=
-485d: a6 49                     LDX ERRNO            ; .I
-485f: a0 01                     LDY #$01             ; ..
-4861: b1 3d                     LDA (dat_003d_L),Y   ; .=
-4863: 85 4a                     STA CKEY             ; .J
-4865: a5 3d                     LDA dat_003d_L       ; .=
-4867: 85 3f                     STA FEOF             ; .?
-4869: a5 3e                     LDA FTYPE            ; .>
-486b: 85 40                     STA FREQ             ; .@
-486d: e8        loc_486d        INX                  ; .
-486e: e0 40                     CPX #$40             ; .@
-4870: b0 21                     BCS loc_4893         ; .!
-4872: a5 3f                     LDA FEOF             ; .?
-4874: 18                        CLC                  ; .
-4875: 69 10                     ADC #$10             ; i.
-4877: 85 3f                     STA FEOF             ; .?
-4879: 90 02                     BCC loc_487d         ; ..
-487b: e6 40                     INC FREQ             ; .@
-487d: a0 00     loc_487d        LDY #$00             ; ..
-487f: b1 3f                     LDA (FEOF),Y         ; .?
-4881: c9 e0                     CMP #$e0             ; ..
-4883: 90 e8                     BCC loc_486d         ; ..
-4885: c8                        INY                  ; .
-4886: b1 3f                     LDA (FEOF),Y         ; .?
-4888: c5 4a                     CMP CKEY             ; .J
-488a: d0 e1                     BNE loc_486d         ; ..
-488c: 88                        DEY                  ; .
-488d: b1 3f                     LDA (FEOF),Y         ; .?
-488f: 09 08                     ORA #$08             ; ..
-4891: 91 3f                     STA (FEOF),Y         ; .?
-4893: a0 06     loc_4893        LDY #$06             ; ..
-4895: b1 3d                     LDA (dat_003d_L),Y   ; .=
-4897: aa                        TAX                  ; .
-4898: c8                        INY                  ; .
-4899: b1 3d                     LDA (dat_003d_L),Y   ; .=
-489b: a0 05                     LDY #$05             ; ..
-489d: 91 3d                     STA (dat_003d_L),Y   ; .=
-489f: 88                        DEY                  ; .
-48a0: 8a                        TXA                  ; .
-48a1: 91 3d                     STA (dat_003d_L),Y   ; .=
-48a3: ad 0a d2                  LDA RANDOM           ; ...
-48a6: c9 20                     CMP #$20             ; .
-48a8: b0 0f                     BCS loc_48b9         ; ..
-48aa: ad 0a d2                  LDA RANDOM           ; ...
-48ad: a0 08                     LDY #$08             ; ..
-48af: d1 3d                     CMP (dat_003d_L),Y   ; .=
-48b1: b0 06                     BCS loc_48b9         ; ..
-48b3: 20 01 4a                  JSR loc_4a01         ;  .J
-48b6: 4c 99 49                  JMP loc_4999         ; L.I
-48b9: a0 0a     loc_48b9        LDY #$0a             ; ..
-48bb: b1 3d                     LDA (dat_003d_L),Y   ; .=
-48bd: 85 45                     STA dat_0045_L       ; .E
-48bf: c8                        INY                  ; .
-48c0: 18                        CLC                  ; .
-48c1: b1 3d                     LDA (dat_003d_L),Y   ; .=
-48c3: 85 46                     STA dat_0045_H       ; .F
-48c5: 10 17                     BPL loc_48de         ; ..
-48c7: a0 0f                     LDY #$0f             ; ..
-48c9: b1 3d                     LDA (dat_003d_L),Y   ; .=
-48cb: aa                        TAX                  ; .
-48cc: a5 45                     LDA dat_0045_L       ; .E
-48ce: 7d 0b 64                  ADC INV_ARR_START,X  ; }.d
-48d1: 85 45                     STA dat_0045_L       ; .E
-48d3: a5 46                     LDA dat_0045_H       ; .F
-48d5: 29 7f                     AND #$7f             ; )
-48d7: 7d 4b 64                  ADC INV_ARR_END,X    ; }Kd
+44ae: 20 6f 44  sub_44ae        JSR loc_446f         ;
+44b1: a2 45                     LDX #$45             ;
+44b3: a9 01                     LDA #$01             ;
+44b5: 20 66 2e                  JSR sub_2e66         ;
+44b8: a2 5d                     LDX #$5d             ;
+44ba: a9 01                     LDA #$01             ;
+44bc: 20 43 2e                  JSR loc_2e43         ;
+44bf: a2 75                     LDX #$75             ;
+44c1: a9 01                     LDA #$01             ;
+44c3: 20 43 2e                  JSR loc_2e43         ;
+44c6: a2 7d                     LDX #$7d             ;
+44c8: a9 01                     LDA #$01             ;
+44ca: 20 43 2e                  JSR loc_2e43         ;
+44cd: a2 9b                     LDX #$9b             ;
+44cf: a9 01                     LDA #$01             ;
+44d1: 4c 69 2e                  JMP sub_2e69         ;
+
+44d4: a2 5d     sub_44d4        LDX #$5d             ;
+44d6: a9 01                     LDA #$01             ;
+44d8: 20 69 2e                  JSR sub_2e69         ;
+44db: a2 75                     LDX #$75             ;
+44dd: a9 01                     LDA #$01             ;
+44df: 20 69 2e                  JSR sub_2e69         ;
+44e2: a2 7d                     LDX #$7d             ;
+44e4: a9 01                     LDA #$01             ;
+44e6: 4c 69 2e                  JMP sub_2e69         ;
+
+44e9: 20 6f 44  sub_44e9        JSR loc_446f         ;
+44ec: a2 5e                     LDX #$5e             ;
+44ee: a9 01                     LDA #$01             ;
+44f0: 20 43 2e                  JSR loc_2e43         ;
+44f3: a2 7e                     LDX #$7e             ;
+44f5: a9 01                     LDA #$01             ;
+44f7: 4c 43 2e                  JMP loc_2e43         ;
+
+44fa: 20 6f 44  sub_44fa        JSR loc_446f         ;
+44fd: a2 45                     LDX #$45             ;
+44ff: a9 01                     LDA #$01             ;
+4501: 20 66 2e                  JSR sub_2e66         ;
+4504: a2 5e                     LDX #$5e             ;
+4506: a9 01                     LDA #$01             ;
+4508: 20 43 2e                  JSR loc_2e43         ;
+450b: a2 7e                     LDX #$7e             ;
+450d: a9 01                     LDA #$01             ;
+450f: 20 43 2e                  JSR loc_2e43         ;
+4512: a2 9b                     LDX #$9b             ;
+4514: a9 01                     LDA #$01             ;
+4516: 4c 69 2e                  JMP sub_2e69         ;
+
+4519: a2 5e     sub_4519        LDX #$5e             ;
+451b: a9 01                     LDA #$01             ;
+451d: 20 69 2e                  JSR sub_2e69         ;
+4520: a2 7e                     LDX #$7e             ;
+4522: a9 01                     LDA #$01             ;
+4524: 4c 69 2e                  JMP sub_2e69         ;
+
+4527: 20 6f 44  sub_4527        JSR loc_446f         ;
+452a: ad 72 19                  LDA dat_1972         ;
+452d: 10 01                     BPL loc_4530         ;
+452f: 60                        RTS                  ; Return to caller
+4530: a2 7f     loc_4530        LDX #$7f             ;
+4532: a9 01                     LDA #$01             ;
+4534: 20 43 2e                  JSR loc_2e43         ;
+4537: a2 5f                     LDX #$5f             ;
+4539: a9 01                     LDA #$01             ;
+453b: 4c 43 2e                  JMP loc_2e43         ;
+
+453e: 20 6f 44  sub_453e        JSR loc_446f         ;
+4541: 2c 72 19                  BIT dat_1972         ;
+4544: 10 01                     BPL loc_4547         ;
+4546: 60                        RTS                  ; Return to caller
+4547: a2 45     loc_4547        LDX #$45             ;
+4549: a9 01                     LDA #$01             ;
+454b: 20 66 2e                  JSR sub_2e66         ;
+454e: a2 7f                     LDX #$7f             ;
+4550: a9 01                     LDA #$01             ;
+4552: 20 43 2e                  JSR loc_2e43         ;
+4555: a2 5f                     LDX #$5f             ;
+4557: a9 01                     LDA #$01             ;
+4559: 20 43 2e                  JSR loc_2e43         ;
+455c: a2 77                     LDX #$77             ;
+455e: a9 01                     LDA #$01             ;
+4560: 4c 43 2e                  JMP loc_2e43         ; LC.
+
+4563: a2 7f     sub_4563        LDX #$7f             ;
+4565: a9 01                     LDA #$01             ;
+4567: 20 69 2e                  JSR sub_2e69         ;
+456a: a2 5f                     LDX #$5f             ;
+456c: a9 01                     LDA #$01             ;
+456e: 20 69 2e                  JSR sub_2e69         ;
+4571: a2 77                     LDX #$77             ;
+4573: a9 01                     LDA #$01             ;
+4575: 4c 69 2e                  JMP sub_2e69         ; Li.
+
+4578: 20 6f 44  sub_4578        JSR loc_446f         ;
+457b: a2 9b                     LDX #$9b             ;
+457d: a9 01                     LDA #$01             ;
+457f: 4c 69 2e                  JMP sub_2e69         ;
+
+4582: 20 6f 44  sub_4582        JSR loc_446f         ;
+4585: a2 9b                     LDX #$9b             ;
+4587: a9 01                     LDA #$01             ;
+4589: 4c 69 2e                  JMP sub_2e69         ; Li.
+
+458c: 60        sub_458c        RTS                  ; Return to caller
+
+458d: 60        sub_458d        RTS                  ; Return to caller
+
+458e: 60        sub_458e        RTS                  ; Return to caller
+
+458f: 60        sub_458f        RTS                  ; Return to caller
+
+4590: 21        dat_4590        .BYTE $21            ; !
+4591: 16        dat_4591        .BYTE $16            ; .
+4592: 0e        dat_4592        .BYTE $0e            ; .
+4593: 04        dat_4593        .BYTE $04            ; .
+4594: 03        dat_4594        .BYTE $03            ; .
+4595: 04 21 16 0e 03  tbl_4595  .BYTE $04,$21,$16,$0e,$03  ; .!...
+459a: 02 02                     .BYTE $02,$02        ; ..
+459c: 04 21 16 0e 03 02  tbl_459c  .BYTE $04,$21,$16,$0e,$03,$02  ; .!....
+45a2: 02                        .BYTE $02            ; .
+45a3: e5 47 e5 47 e5 47 e5 47  tbl_45a3  .BYTE $e5,$47,$e5,$47,$e5,$47,$e5,$47  ; .G.G.G.G
+45ab: e5 47 e5 47 e5 47         .BYTE $e5,$47,$e5,$47,$e5,$47  ; .G.G.G
+45b1: e5        addr_45b1_L     .BYTE $e5            ; .
+45b2: 47        addr_45b1_H     .BYTE $47            ; G
+45b3: e5        addr_45b3_L     .BYTE $e5            ; .
+45b4: 47        addr_45b3_H     .BYTE $47            ; G
+45b5: e5        tbl_45b5_L      .BYTE $e5            ; .
+45b6: 47 81 44 8f 44 9d 44  tbl_45b5_H  .BYTE $47,$81,$44,$8f,$44,$9d,$44  ; G.D.D.D
+45bd: ae 44 e9 44 fa 44 27 45   .BYTE $ae,$44,$e9,$44,$fa,$44,$27,$45  ; .D.D.D'E
+45c5: 3e 45 78 45 82 45 8c 45   .BYTE $3e,$45,$78,$45,$82,$45,$8c,$45  ; >ExE.E.E
+45cd: 8d 45 8e 45 8f 45 d4 44   .BYTE $8d,$45,$8e,$45,$8f,$45,$d4,$44  ; .E.E.E.D
+45d5: 19 45 63 45               .BYTE $19,$45,$63,$45  ; .EcE
+45d9: 95 99 9a 9b 94 97 98  tbl_45d9  .BYTE $95,$99,$9a,$9b,$94,$97,$98  ; .......
+45e0: 0a 26 36 46 56 66 76  tbl_45e0_L  .BYTE $0a,$26,$36,$46,$56,$66,$76  ; .&6FVfv
+45e7: 46 46 46 46 46 46 46  tbl_45e7_H  .BYTE $46,$46,$46,$46,$46,$46,$46  ; FFFFFFF
+45ee: 18 2e 3e 4e 5e 6e 7e  tbl_45ee_L  .BYTE $18,$2e,$3e,$4e,$5e,$6e,$7e  ; ..>N^n~
+45f5: 46 46 46 46 46 46 46  tbl_45f5_H  .BYTE $46,$46,$46,$46,$46,$46,$46  ; FFFFFFF
+45fc: 11 2a 3a 4a 5a 6a 7a  tbl_45fc_L  .BYTE $11,$2a,$3a,$4a,$5a,$6a,$7a  ; .*:JZjz
+4603: 46 46 46 46 46 46 46  tbl_4603_H  .BYTE $46,$46,$46,$46,$46,$46,$46  ; FFFFFFF
+460a: 20 40 60 a0 c0 e0 ff  dat_460a  .BYTE $20,$40,$60,$a0,$c0,$e0,$ff  ;  @`....
+4611: 01 00 00 00 00 00 02  dat_4611  .BYTE $01,$00,$00,$00,$00,$00,$02  ; .......
+4618: 86 46 93 46 a0 46 e5 47  dat_4618  .BYTE $86,$46,$93,$46,$a0,$46,$e5,$47  ; .F.F.F.G
+4620: ad 46 ba 46 c7 46         .BYTE $ad,$46,$ba,$46,$c7,$46  ; .F.F.F
+4626: 30 80 ec ff  dat_4626     .BYTE $30,$80,$ec,$ff  ; 0...
+462a: 04 03 00 0f  dat_462a     .BYTE $04,$03,$00,$0f  ; ....
+462e: ee 46 e1 46 d4 46 e5 47  tbl_462e  .BYTE $ee,$46,$e1,$46,$d4,$46,$e5,$47  ; .F.F.F.G
+4636: 40 80 d0 ff  dat_4636     .BYTE $40,$80,$d0,$ff  ; @...
+463a: 06 05 00 10  dat_463a     .BYTE $06,$05,$00,$10  ; ....
+463e: 15 47 08 47 fb 46 e5 47  tbl_463e  .BYTE $15,$47,$08,$47,$fb,$46,$e5,$47  ; .G.G.F.G
+4646: 40 a0 c0 ff  dat_4646     .BYTE $40,$a0,$c0,$ff  ; @...
+464a: 08 07 00 11  dat_464a     .BYTE $08,$07,$00,$11  ; ....
+464e: 3c 47 2f 47  tbl_464e     .BYTE $3c,$47,$2f,$47  ; <G/G
+4652: 22 47 e5 47               .BYTE $22,$47,$e5,$47  ; "G.G
+4656: 80 c0 f0 ff  dat_4656     .BYTE $80,$c0,$f0,$ff  ; ....
+465a: 00 00 09 0a  dat_465a     .BYTE $00,$00,$09,$0a  ; ....
+465e: e5 47 49 47 56 47 63 47  tbl_465e  .BYTE $e5,$47,$49,$47,$56,$47,$63,$47  ; .GIGVGcG
+4666: 08 10 20 ff  dat_4666     .BYTE $08,$10,$20,$ff  ; .. .
+466a: 00 00 0b 0c  dat_466a     .BYTE $00,$00,$0b,$0c  ; ....
+466e: e5 47 70 47 7d 47 8a 47  tbl_466e  .BYTE $e5,$47,$70,$47,$7d,$47,$8a,$47  ; .GpG}G.G
+4676: 40 60 80 ff  dat_4676     .BYTE $40,$60,$80,$ff  ; @`..
+467a: 00 00 0d 0e  dat_467a     .BYTE $00,$00,$0d,$0e  ; ....
+467e: e5 47 97 47 a4 47 b1 47  tbl_467e  .BYTE $e5,$47,$97,$47,$a4,$47,$b1,$47  ; .G.G.G.G
+4686: 20 20 20 46 72 65 65 7a  str_FREEZING  .BYTE $20,$20,$20,$46,$72,$65,$65,$7a  ;    Freez
+468e: 69 6e 67 21 00            .BYTE $69,$6e,$67,$21,$00  ; ing!.
+4693: 20 20 20 20 20 20 20 20  str_COLD  .BYTE $20,$20,$20,$20,$20,$20,$20,$20  ;
+469b: 43 6f 6c 64 00            .BYTE $43,$6f,$6c,$64,$00  ; Cold.
+46a0: 20 20 20 20 20 20 43 68  str_CHILLY  .BYTE $20,$20,$20,$20,$20,$20,$43,$68  ;       Ch
+46a8: 69 6c 6c 79 00            .BYTE $69,$6c,$6c,$79,$00  ; illy.
+46ad: 20 20 20 20 20 20 20 20  str_WARM  .BYTE $20,$20,$20,$20,$20,$20,$20,$20  ;
+46b5: 57 61 72 6d 00            .BYTE $57,$61,$72,$6d,$00  ; Warm.
+46ba: 20 20 20 20 20 20 20 20  str_HOT  .BYTE $20,$20,$20,$20,$20,$20,$20,$20  ;
+46c2: 20 48 6f 74 00            .BYTE $20,$48,$6f,$74,$00  ;  Hot.
+46c7: 20 20 20 52 6f 61 73 74  str_ROASTING  .BYTE $20,$20,$20,$52,$6f,$61,$73,$74  ;    Roast
+46cf: 69 6e 67 21 00            .BYTE $69,$6e,$67,$21,$00  ; ing!.
+46d4: 48 75 6e 67 72 79 20 20  str_HUNGRY  .BYTE $48,$75,$6e,$67,$72,$79,$20,$20  ; Hungry
+46dc: 20 20 20 20 00            .BYTE $20,$20,$20,$20,$00  ;     .
+46e1: 46 61 6d 69 73 68 65 64  str_FAMISHED  .BYTE $46,$61,$6d,$69,$73,$68,$65,$64  ; Famished
+46e9: 20 20 20 20 00            .BYTE $20,$20,$20,$20,$00  ;     .
+46ee: 53 74 61  str_STARVING    .BYTE $53,$74,$61    ; Sta
+46f1: 72 76 69 6e 67 21 20 20   .BYTE $72,$76,$69,$6e,$67,$21,$20,$20  ; rving!
+46f9: 20 00                     .BYTE $20,$00        ;  .
+46fb: 54 68 69 72 73 74  str_THIRSTY  .BYTE $54,$68,$69,$72,$73,$74  ; Thirst
+4701: 79 20 20 20 20 20 00      .BYTE $79,$20,$20,$20,$20,$20,$00  ; y     .
+4708: 50 61 72 63 68 65 64 20  str_PARCHED  .BYTE $50,$61,$72,$63,$68,$65,$64,$20  ; Parched
+4710: 20 20 20 20 00            .BYTE $20,$20,$20,$20,$00  ;     .
+4715: 44 65 68  str_DEHYDRATED  .BYTE $44,$65,$68    ; Deh
+4718: 79 64 72 61 74 65 64 21   .BYTE $79,$64,$72,$61,$74,$65,$64,$21  ; ydrated!
+4720: 20 00                     .BYTE $20,$00        ;  .
+4722: 57 65 61 72 79 20  str_WEARY  .BYTE $57,$65,$61,$72,$79,$20  ; Weary
+4728: 20 20 20 20 20 20 00      .BYTE $20,$20,$20,$20,$20,$20,$00  ;       .
+472f: 54        str_TIRED       .BYTE $54            ; T
+4730: 69 72 65 64 20 20 20 20   .BYTE $69,$72,$65,$64,$20,$20,$20,$20  ; ired
+4738: 20 20 20 00               .BYTE $20,$20,$20,$00  ;    .
+473c: 45 78 68 61 75 73 74 65  str_EXHAUSTED  .BYTE $45,$78,$68,$61,$75,$73,$74,$65  ; Exhauste
+4744: 64 21 20 20 00            .BYTE $64,$21,$20,$20,$00  ; d!  .
+4749: 20 20 20 20 42 75 72 64  str_BURDENED  .BYTE $20,$20,$20,$20,$42,$75,$72,$64  ;     Burd
+4751: 65 6e 65 64 00            .BYTE $65,$6e,$65,$64,$00  ; ened.
+4756: 20 20 45 6e 63 75 6d 62  str_ENCUMBERED  .BYTE $20,$20,$45,$6e,$63,$75,$6d,$62  ;   Encumb
+475e: 65 72 65 64 00            .BYTE $65,$72,$65,$64,$00  ; ered.
+4763: 49 6d 6d 6f 62 69 6c 69  str_IMMOBILIZED  .BYTE $49,$6d,$6d,$6f,$62,$69,$6c,$69  ; Immobili
+476b: 7a 65 64 21 00            .BYTE $7a,$65,$64,$21,$00  ; zed!.
+4770: 54 69 70  str_TIPSY       .BYTE $54,$69,$70    ; Tip
+4773: 73 79 20 20 20 20 20 20   .BYTE $73,$79,$20,$20,$20,$20,$20,$20  ; sy
+477b: 20 00                     .BYTE $20,$00        ;  .
+477d: 44 72 75 6e 6b 20  str_DRUNK  .BYTE $44,$72,$75,$6e,$6b,$20  ; Drunk
+4783: 20 20 20 20 20 20 00      .BYTE $20,$20,$20,$20,$20,$20,$00  ;       .
+478a: 56 65 72 79 20 44 72 75  str_VERY_DRUNK  .BYTE $56,$65,$72,$79,$20,$44,$72,$75  ; Very Dru
+4792: 6e 6b 21 20 00            .BYTE $6e,$6b,$21,$20,$00  ; nk! .
+4797: 20 20 20 20 46 75 6c 6c  str_FULL  .BYTE $20,$20,$20,$20,$46,$75,$6c,$6c  ;     Full
+479f: 20 20 20 20 00            .BYTE $20,$20,$20,$20,$00  ;     .
+47a4: 20 20 53 74 75 66 66 65  str_STUFFED  .BYTE $20,$20,$53,$74,$75,$66,$66,$65  ;   Stuffe
+47ac: 64 20 20 20 00            .BYTE $64,$20,$20,$20,$00  ; d   .
+47b1: 20 20 42 6c 6f 61 74 65  str_BLOATED  .BYTE $20,$20,$42,$6c,$6f,$61,$74,$65  ;   Bloate
+47b9: 64 21 20 20 00            .BYTE $64,$21,$20,$20,$00  ; d!  .
+47be: 20 20 20 50 6f 69 73 6f  str_POISONED  .BYTE $20,$20,$20,$50,$6f,$69,$73,$6f  ;    Poiso
+47c6: 6e 65 64 21 00            .BYTE $6e,$65,$64,$21,$00  ; ned!.
+47cb: 20 20 20 44 69 73 65 61  str_DISEASED  .BYTE $20,$20,$20,$44,$69,$73,$65,$61  ;    Disea
+47d3: 73 65 64 21 00            .BYTE $73,$65,$64,$21,$00  ; sed!.
+47d8: 20 20 20 43 75 72 73 65  str_CURSED  .BYTE $20,$20,$20,$43,$75,$72,$73,$65  ;    Curse
+47e0: 64 21 20 20 00            .BYTE $64,$21,$20,$20,$00  ; d!  .
+
+xxx - TODO: this can't be a sub and a string, can it?
+47e5: 20 20 20  sub_47e5  str_BLANK        JSR loc_2020         ;
+47e8: 20 20 20                  JSR loc_2020         ;
+47eb: 20 20 20                  JSR loc_2020         ;
+47ee: 20 20 20                  JSR loc_2020         ;
+47f1: 00                        BRK                  ;
+
+47f2: a5 0f     sub_47f2        LDA dat_000f         ;
+47f4: f0 03                     BEQ loc_47f9         ;
+47f6: 4c af 49                  JMP loc_49af         ;
+47f9: 85 49     loc_47f9        STA ERRNO            ;
+47fb: 8d 91 63                  STA CHR_DISEASE      ;
+47fe: 8d 92 63                  STA CHR_POISON       ;
+4801: 8d 93 63                  STA CHR_CURSE        ;
+4804: a9 f0                     LDA #$f0             ;
+4806: 85 50                     STA dat_023e         ;
+4808: a9 00                     LDA #$00             ;
+480a: 85 3d                     STA dat_003d_L       ;
+480c: a9 65                     LDA #$65             ;
+480e: 85 3e                     STA FTYPE            ;
+4810: a0 00     loc_4810        LDY #$00             ;
+4812: b1 3d                     LDA (dat_003d_L),Y   ;
+4814: c9 81                     CMP #$81             ;
+4816: b0 03                     BCS loc_481b         ;
+4818: 4c 99 49                  JMP loc_4999         ;
+481b: c9 e0     loc_481b        CMP #$e0             ;
+481d: 90 03                     BCC loc_4822         ;
+481f: 4c 99 49                  JMP loc_4999         ;
+4822: 29 07     loc_4822        AND #$07             ;
+4824: f0 08                     BEQ loc_482e         ;
+4826: c9 04                     CMP #$04             ;
+4828: b0 04                     BCS loc_482e         ;
+482a: aa                        TAX                  ;
+482b: de 90 63                  DEC CHR_LIT_TORCH_FLAG,X  ;
+482e: a0 04     loc_482e        LDY #$04             ;
+4830: b1 3d                     LDA (dat_003d_L),Y   ;
+4832: c8                        INY                  ;
+4833: 11 3d                     ORA (dat_003d_L),Y   ;
+4835: d0 03                     BNE loc_483a         ;
+4837: 4c 99 49                  JMP loc_4999         ;
+483a: 88        loc_483a        DEY                  ;
+483b: 38                        SEC                  ;
+483c: b1 3d                     LDA (dat_003d_L),Y   ;
+483e: e9 01                     SBC #$01             ;
+4840: 91 3d                     STA (dat_003d_L),Y   ;
+4842: c8                        INY                  ;
+4843: b1 3d                     LDA (dat_003d_L),Y   ;
+4845: e9 00                     SBC #$00             ;
+4847: 91 3d                     STA (dat_003d_L),Y   ;
+4849: 88                        DEY                  ;
+484a: 11 3d                     ORA (dat_003d_L),Y   ;
+484c: f0 03                     BEQ loc_4851         ;
+484e: 4c 99 49                  JMP loc_4999         ;
+4851: a0 00     loc_4851        LDY #$00             ;
+4853: b1 3d                     LDA (dat_003d_L),Y   ;
+4855: 29 bf                     AND #$bf             ;
+4857: d1 3d                     CMP (dat_003d_L),Y   ;
+4859: f0 38                     BEQ loc_4893         ;
+485b: 91 3d                     STA (dat_003d_L),Y   ;
+485d: a6 49                     LDX ERRNO            ;
+485f: a0 01                     LDY #$01             ;
+4861: b1 3d                     LDA (dat_003d_L),Y   ;
+4863: 85 4a                     STA CKEY             ;
+4865: a5 3d                     LDA dat_003d_L       ;
+4867: 85 3f                     STA FEOF             ;
+4869: a5 3e                     LDA FTYPE            ;
+486b: 85 40                     STA FREQ             ;
+486d: e8        loc_486d        INX                  ;
+486e: e0 40                     CPX #$40             ;
+4870: b0 21                     BCS loc_4893         ;
+4872: a5 3f                     LDA FEOF             ;
+4874: 18                        CLC                  ;
+4875: 69 10                     ADC #$10             ;
+4877: 85 3f                     STA FEOF             ;
+4879: 90 02                     BCC loc_487d         ;
+487b: e6 40                     INC FREQ             ;
+487d: a0 00     loc_487d        LDY #$00             ;
+487f: b1 3f                     LDA (FEOF),Y         ;
+4881: c9 e0                     CMP #$e0             ;
+4883: 90 e8                     BCC loc_486d         ;
+4885: c8                        INY                  ;
+4886: b1 3f                     LDA (FEOF),Y         ;
+4888: c5 4a                     CMP CKEY             ;
+488a: d0 e1                     BNE loc_486d         ;
+488c: 88                        DEY                  ;
+488d: b1 3f                     LDA (FEOF),Y         ;
+488f: 09 08                     ORA #$08             ;
+4891: 91 3f                     STA (FEOF),Y         ;
+4893: a0 06     loc_4893        LDY #$06             ;
+4895: b1 3d                     LDA (dat_003d_L),Y   ;
+4897: aa                        TAX                  ;
+4898: c8                        INY                  ;
+4899: b1 3d                     LDA (dat_003d_L),Y   ;
+489b: a0 05                     LDY #$05             ;
+489d: 91 3d                     STA (dat_003d_L),Y   ;
+489f: 88                        DEY                  ;
+48a0: 8a                        TXA                  ;
+48a1: 91 3d                     STA (dat_003d_L),Y   ;
+48a3: ad 0a d2                  LDA RANDOM           ;
+48a6: c9 20                     CMP #$20             ;
+48a8: b0 0f                     BCS loc_48b9         ;
+48aa: ad 0a d2                  LDA RANDOM           ;
+48ad: a0 08                     LDY #$08             ;
+48af: d1 3d                     CMP (dat_003d_L),Y   ;
+48b1: b0 06                     BCS loc_48b9         ;
+48b3: 20 01 4a                  JSR loc_4a01         ;
+48b6: 4c 99 49                  JMP loc_4999         ;
+48b9: a0 0a     loc_48b9        LDY #$0a             ;
+48bb: b1 3d                     LDA (dat_003d_L),Y   ;
+48bd: 85 45                     STA dat_0045_L       ;
+48bf: c8                        INY                  ;
+48c0: 18                        CLC                  ;
+48c1: b1 3d                     LDA (dat_003d_L),Y   ;
+48c3: 85 46                     STA dat_0045_H       ;
+48c5: 10 17                     BPL loc_48de         ;
+48c7: a0 0f                     LDY #$0f             ;
+48c9: b1 3d                     LDA (dat_003d_L),Y   ;
+48cb: aa                        TAX                  ;
+48cc: a5 45                     LDA dat_0045_L       ;
+48ce: 7d 0b 64                  ADC INV_ARR_START,X  ;
+48d1: 85 45                     STA dat_0045_L       ;
+48d3: a5 46                     LDA dat_0045_H       ;
+48d5: 29 7f                     AND #$7f             ;
+48d7: 7d 4b 64                  ADC INV_ARR_END,X    ;
 48da: 85 46                     STA dat_0045_H       ;
 48dc: d0 0c                     BNE loc_48ea         ;
 48de: a5 45     loc_48de        LDA dat_0045_L       ;
@@ -5834,7 +5307,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4906: a9 78                     LDA #$78             ; Self-modifying:
 4908: 8d 37 49                  STA smc_4936+1       ;     Set the JMP destination
 490b: a9 49                     LDA #$49             ;     address below to
-490d: 8d 38 49                  STA smc_4936+2       ;     $4978 [loc_4978]
+490d: 8d 38 49                  STA smc_4936+2       ;     $4978 [cont_4978]
 4910: 4c 36 49                  JMP smc_4936         ;
 4913: 48        loc_4913        PHA                  ;
 4914: 29 0f                     AND #$0f             ;
@@ -5858,7 +5331,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4933: 8d 5b 49                  STA loc_495b         ;
 4936: 4c ff ff  smc_4936        JMP $ffff            ; Self-modifying: Continue @ the address assigned above
                                                      ; One of the following:
-                                                     ;    - $4978 [loc_4978]
+                                                     ;    - $4978 [cont_4978]
                                                      ;    - $494d [cont_494d]
                                                      ;    - $4953 [cont_4953]
                                                      ;    - $4939 [cont_4939] - this is simply the next statement
@@ -5888,26 +5361,20 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4960: 10 f7                     BPL cont_4959        ;
 4962: 4c 39 49                  JMP cont_4939        ;
 
-4965: 45 25     dat_4965        EOR dat_0025         ; TODO: Where/how is are these 3 bytes used?
-4967: 05
-4968: 4d        tbl_4968_L      .BYTE $4d
-4969: 49 53     tbl_4968_H      EOR #$53             ;
-496b: 49 39                     EOR #$39             ;
-496d: 49 39                     EOR #$39             ;
-496f: 49 59                     EOR #$59             ;
-4971: 49 59                     EOR #$59             ;
-4973: 49 59                     EOR #$59             ;
-4975: 49 82                     EOR #$82             ;
-4977: 49
+4965: 45 25 05  dat_4965        .BYTE $45,$25,$05    ; E%.
+4968: 4d        tbl_4968_L      .BYTE $4d            ; M
+4969: 49 53 49 39 49 39 49 59  tbl_4968_H  .BYTE $49,$53,$49,$39,$49,$39,$49,$59  ; ISI9I9IY
+4971: 49 59 49 59 49 82 49      .BYTE $49,$59,$49,$59,$49,$82,$49  ; IYIYI.I
 
 ; Parameters
 ;   Y = number of bytes to assign
-4978: a5 51     loc_4978        LDA dat_0051         ; Set
-497a: 91 45                     STA (dat_0045_L),Y   ;     (value referenced by dat_0045_L) + Y = dat_0051
+4978: a5 51     cont_4978       LDA dat_0051         ; Set
+497a: 91 45     loc_497a        STA (dat_0045_L),Y   ;      (value referenced by dat_0045_L) + Y = dat_0051
 497c: 88                        DEY                  ; Subtract 1 from Y
-497d: 10 fb 4c                  BPL loc_4cfb         ; If Y >= 0, then Continue @ $4cfb [loc_4cfb]
-      ; cont_4982 jumps to the third byte of the AND below, resulting in BRK, RTS
-4980: 39 49 00                  AND dat_0049,Y       ; Set dat_0049 = dat_0049 & A
+497d: 10 fb                     BPL loc_497a         ; Repeat while Y >= 0
+497f: 4c 39 49                  JMP cont_4939        ; Continue @ $4939 [cont_4939]
+
+4982: 00        cont_4982       BRK                  ;
 4983: 60                        RTS                  ; Return to caller
 
 4984: a0 03     loc_4984        LDY #$03             ;
@@ -6028,9 +5495,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4a5a: a9 80     loc_4a5a        LDA #$80             ; ..
 4a5c: 91 3f                     STA (FEOF),Y         ; .?
 4a5e: 60                        RTS                  ; `
-4a5f: a5 0f     loc_4a5f        LDA APPMHI+1         ; ..
+4a5f: a5 0f     loc_4a5f        LDA dat_000f         ; ..
 4a61: d0 1f                     BNE loc_4a82         ; ..
-4a63: c6 0f                     DEC APPMHI+1         ; ..
+4a63: c6 0f                     DEC dat_000f         ; ..
 4a65: a2 00                     LDX #$00             ; ..
 4a67: 86 4b                     STX CASSBT           ; .K
 4a69: bd 4b 64  loc_4a69        LDA INV_ARR_END,X    ; .Kd
@@ -6043,7 +5510,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4a7a: a6 4b                     LDX CASSBT           ; .K
 4a7c: e0 40                     CPX #$40             ; .@
 4a7e: 90 e9                     BCC loc_4a69         ; ..
-4a80: e6 0f                     INC APPMHI+1         ; ..
+4a80: e6 0f                     INC dat_000f         ; ..
 4a82: 60        loc_4a82        RTS                  ; `
 4a83: 85 4f     loc_4a83        STA COLRSH           ; .O
 4a85: a2 3f                     LDX #$3f             ; .?
@@ -6084,89 +5551,89 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4acc: bd 0b 64                  LDA INV_ARR_START,X  ; ..d
 4acf: 85 41                     STA dat_0041         ; .A
 4ad1: bd 4b 64                  LDA INV_ARR_END,X    ; .Kd
-4ad4: 85 42                     STA CRITIC        ; .B
-4ad6: a5 4c                     LDA dat_004c      ; .L
-4ad8: 48                        PHA               ; H
-4ad9: a9 ff                     LDA #$ff          ; ..
-4adb: 85 4c                     STA dat_004c      ; .L
-4add: 20 93 4d                  JSR sub_4d93      ;  .M
-4ae0: 68                        PLA               ; h
-4ae1: 85 4c                     STA dat_004c      ; .L
-4ae3: 20 a2 4e                  JSR sub_4ea2      ;  .N
-4ae6: 20 90 4e                  JSR sub_4e90      ;  .N
-4ae9: a6 4b                     LDX CASSBT        ; .K
-4aeb: a9 00                     LDA #$00          ; ..
-4aed: 9d 4b 64                  STA INV_ARR_END,X  ; .Kd
-4af0: a0 01                     LDY #$01          ; ..
-4af2: b1 41                     LDA (dat_0041),Y    ; .A
-4af4: 85 4f                     STA COLRSH        ; .O
-4af6: a5 41                     LDA dat_0041        ; .A
-4af8: 85 09                     STA dat_0009_L      ; ..
-4afa: 18                        CLC               ; .
-4afb: 65 4f                     ADC COLRSH        ; eO
-4afd: 85 07                     STA dat_0007_L    ; ..
-4aff: a5 42                     LDA CRITIC        ; .B
-4b01: 85 0a                     STA dat_0009_H    ; ..
-4b03: 69 00                     ADC #$00          ; i.
-4b05: 85 08                     STA dat_0007_H    ; ..
-4b07: 38                        SEC               ; 8
-4b08: a9 00                     LDA #$00          ; ..
-4b0a: e5 07                     SBC dat_0007_L    ; ..
-4b0c: a8                        TAY               ; .
-4b0d: a9 75                     LDA #$75          ; .u
-4b0f: e5 08                     SBC dat_0007_H    ; ..
-4b11: aa                        TAX               ; .
-4b12: 20 0d 2e                  JSR sub_2e0d      ;  ..
-4b15: 38                        SEC               ; 8
-4b16: ad e4 64                  LDA $64e4         ; ..d
-4b19: e5 4f                     SBC COLRSH        ; .O
-4b1b: 8d e4 64                  STA $64e4         ; ..d
-4b1e: ad e5 64                  LDA $64e5         ; ..d
-4b21: e9 00                     SBC #$00          ; ..
-4b23: 8d e5 64                  STA $64e5         ; ..d
-4b26: a2 3f                     LDX #$3f          ; .?
-4b28: 38        loc_4b28        SEC               ; 8
+4ad4: 85 42                     STA CRITIC           ; .B
+4ad6: a5 4c                     LDA dat_004c         ; .L
+4ad8: 48                        PHA                  ; H
+4ad9: a9 ff                     LDA #$ff             ; ..
+4adb: 85 4c                     STA dat_004c         ; .L
+4add: 20 93 4d                  JSR sub_4d93         ;  .M
+4ae0: 68                        PLA                  ; h
+4ae1: 85 4c                     STA dat_004c         ; .L
+4ae3: 20 a2 4e                  JSR sub_4ea2         ;  .N
+4ae6: 20 90 4e                  JSR sub_4e90         ;  .N
+4ae9: a6 4b                     LDX CASSBT           ; .K
+4aeb: a9 00                     LDA #$00             ; ..
+4aed: 9d 4b 64                  STA INV_ARR_END,X    ; .Kd
+4af0: a0 01                     LDY #$01             ; ..
+4af2: b1 41                     LDA (dat_0041),Y     ; .A
+4af4: 85 4f                     STA COLRSH           ; .O
+4af6: a5 41                     LDA dat_0041         ; .A
+4af8: 85 09                     STA dat_0009_L       ; ..
+4afa: 18                        CLC                  ; .
+4afb: 65 4f                     ADC COLRSH           ; eO
+4afd: 85 07                     STA dat_0007_L       ; ..
+4aff: a5 42                     LDA CRITIC           ; .B
+4b01: 85 0a                     STA dat_0009_H       ; ..
+4b03: 69 00                     ADC #$00             ; i.
+4b05: 85 08                     STA dat_0007_H       ; ..
+4b07: 38                        SEC                  ; 8
+4b08: a9 00                     LDA #$00             ; ..
+4b0a: e5 07                     SBC dat_0007_L       ; ..
+4b0c: a8                        TAY                  ; .
+4b0d: a9 75                     LDA #$75             ; .u
+4b0f: e5 08                     SBC dat_0007_H       ; ..
+4b11: aa                        TAX                  ; .
+4b12: 20 0d 2e                  JSR sub_2e0d         ;  ..
+4b15: 38                        SEC                  ; 8
+4b16: ad e4 64                  LDA $64e4            ; ..d
+4b19: e5 4f                     SBC COLRSH           ; .O
+4b1b: 8d e4 64                  STA $64e4            ; ..d
+4b1e: ad e5 64                  LDA $64e5            ; ..d
+4b21: e9 00                     SBC #$00             ; ..
+4b23: 8d e5 64                  STA $64e5            ; ..d
+4b26: a2 3f                     LDX #$3f             ; .?
+4b28: 38        loc_4b28        SEC                  ; 8
 4b29: bd 0b 64                  LDA INV_ARR_START,X  ; ..d
-4b2c: e5 4f                     SBC COLRSH        ; .O
-4b2e: a8                        TAY               ; .
-4b2f: bd 4b 64                  LDA INV_ARR_END,X ; .Kd
-4b32: f0 15                     BEQ loc_4b49      ; ..
-4b34: e9 00                     SBC #$00          ; ..
-4b36: c5 42                     CMP CRITIC        ; .B
-4b38: 90 0f                     BCC loc_4b49      ; ..
-4b3a: f0 02                     BEQ loc_4b3e      ; ..
-4b3c: b0 04                     BCS loc_4b42      ; ..
-4b3e: c4 41     loc_4b3e        CPY dat_0041        ; .A
-4b40: 90 07                     BCC loc_4b49      ; ..
-4b42: 9d 4b 64  loc_4b42        STA INV_ARR_END,X ; .Kd
-4b45: 98                        TYA               ; .
-4b46: 9d 0b 64                  STA INV_ARR_START,X  ; ..d
-4b49: ca        loc_4b49        DEX               ; .
-4b4a: 10 dc                     BPL loc_4b28      ; ..
-4b4c: 60                        RTS               ; `
-4b4d: 84 07     loc_4b4d        STY dat_0007_L    ; ..
-4b4f: 86 08                     STX dat_0007_H    ; ..
-4b51: a0 01                     LDY #$01          ; ..
-4b53: b1 07                     LDA (dat_0007_L),Y; ..
-4b55: 20 83 4a                  JSR loc_4a83      ;  .J
-4b58: 30 19                     BMI loc_4b73      ; 0.
-4b5a: a2 64                     LDX #$64          ; .d
-4b5c: a0 8b                     LDY #$8b          ; ..
-4b5e: 18                        CLC               ; .
-4b5f: 20 ab 2d                  JSR sub_2dab      ;  .-
-4b62: a4 4f                     LDY COLRSH        ; .O
-4b64: a2 00                     LDX #$00          ; ..
-4b66: a5 41                     LDA dat_0041        ; .A
-4b68: 85 09                     STA dat_0009_L      ; ..
-4b6a: a5 42                     LDA CRITIC        ; .B
-4b6c: 85 0a                     STA dat_0009_H        ; ..
-4b6e: 20 0d 2e                  JSR sub_2e0d      ;  ..
-4b71: a5 4b                     LDA CASSBT        ; .K
-4b73: 60        loc_4b73        RTS               ; Return to caller
+4b2c: e5 4f                     SBC COLRSH           ; .O
+4b2e: a8                        TAY                  ; .
+4b2f: bd 4b 64                  LDA INV_ARR_END,X    ; .Kd
+4b32: f0 15                     BEQ loc_4b49         ; ..
+4b34: e9 00                     SBC #$00             ; ..
+4b36: c5 42                     CMP CRITIC           ; .B
+4b38: 90 0f                     BCC loc_4b49         ; ..
+4b3a: f0 02                     BEQ loc_4b3e         ; ..
+4b3c: b0 04                     BCS loc_4b42         ; ..
+4b3e: c4 41     loc_4b3e        CPY dat_0041         ; .A
+4b40: 90 07                     BCC loc_4b49         ; ..
+4b42: 9d 4b 64  loc_4b42        STA INV_ARR_END,X    ; .Kd
+4b45: 98                        TYA                  ; .
+4b46: 9d 0b 64                  STA INV_ARR_START,   X  ; ..d
+4b49: ca        loc_4b49        DEX                  ; .
+4b4a: 10 dc                     BPL loc_4b28         ; ..
+4b4c: 60                        RTS                  ; `
+4b4d: 84 07     loc_4b4d        STY dat_0007_L       ; ..
+4b4f: 86 08                     STX dat_0007_H       ; ..
+4b51: a0 01                     LDY #$01             ; ..
+4b53: b1 07                     LDA (dat_0007_L),Y   ; ..
+4b55: 20 83 4a                  JSR loc_4a83         ;  .J
+4b58: 30 19                     BMI loc_4b73         ; 0.
+4b5a: a2 64                     LDX #$64             ; .d
+4b5c: a0 8b                     LDY #$8b             ; ..
+4b5e: 18                        CLC                  ; .
+4b5f: 20 ab 2d                  JSR sub_2dab         ;  .-
+4b62: a4 4f                     LDY COLRSH           ; .O
+4b64: a2 00                     LDX #$00             ; ..
+4b66: a5 41                     LDA dat_0041         ; .A
+4b68: 85 09                     STA dat_0009_L       ; ..
+4b6a: a5 42                     LDA CRITIC           ; .B
+4b6c: 85 0a                     STA dat_0009_H       ; ..
+4b6e: 20 0d 2e                  JSR sub_2e0d         ;  ..
+4b71: a5 4b                     LDA CASSBT           ; .K
+4b73: 60        loc_4b73        RTS                  ; Return to caller
 
 4b74: aa        sub_4b74        TAX                  ; Set X = A
 4b75: bd 0b 64                  LDA INV_ARR_START,X  ;
-4b78: 85 41                     STA dat_0041           ;
+4b78: 85 41                     STA dat_0041         ;
 4b7a: bd 4b 64                  LDA INV_ARR_END,X    ;
 4b7d: 85 42                     STA CRITIC           ;
 4b7f: 60                        RTS                  ; Return to caller
@@ -6185,7 +5652,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4b9c: a0 02                     LDY #$02             ;
 4b9e: a5 4d                     LDA ATRACT           ;
 4ba0: 85 4c                     STA dat_004c         ;
-4ba2: 91 41                     STA (dat_0041),Y       ;
+4ba2: 91 41                     STA (dat_0041),Y     ;
 4ba4: 20 b3 4b                  JSR sub_4bb3         ;
 4ba7: a9 ff                     LDA #$ff             ;
 4ba9: 60        loc_4ba9        RTS                  ; Return to caller
@@ -6195,14 +5662,14 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4bb2: 60        loc_4bb2        RTS                  ; Return to caller
 
 4bb3: a0 02     sub_4bb3        LDY #$02             ;
-4bb5: b1 41                     LDA (dat_0041),Y       ;
+4bb5: b1 41                     LDA (dat_0041),Y     ;
 4bb7: d0 01                     BNE loc_4bba         ;
 4bb9: 60                        RTS                  ; Return to caller
 4bba: 85 4c     loc_4bba        STA dat_004c         ;
 4bbc: ce 60 19                  DEC UNK_BYTE_1960    ;
 4bbf: ce 5f 19                  DEC UNK_BYTE_195F    ;
 4bc2: a9 00                     LDA #$00             ;
-4bc4: 91 41                     STA (dat_0041),Y       ;
+4bc4: 91 41                     STA (dat_0041),Y     ;
 4bc6: 20 0f 4e                  JSR sub_4e0f         ;
       ; Count the number of LSB 0 bits in dat_004c
 4bc9: a5 4c                     LDA dat_004c         ; Set A = dat_004c
@@ -6223,21 +5690,23 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4be0: 48                        PHA                  ;    onto the stack
 4be1: 60                        RTS                  ; Indirectly jump to the address on the stack + 1
 
-4be2: a9 80                     LDA #$80             ;
+;
+4be2: a9 80     sub_4be2        LDA #$80             ;
 4be4: a0 00                     LDY #$00             ;
-4be6: 11 41                     ORA (dat_0041),Y       ;
-4be8: 91 41                     STA (dat_0041),Y       ;
+4be6: 11 41                     ORA (dat_0041),Y     ;
+4be8: 91 41                     STA (dat_0041),Y     ;
 4bea: 20 90 4e                  JSR sub_4e90         ;
 4bed: a9 01                     LDA #$01             ;
 4bef: 48                        PHA                  ;
 4bf0: a9 02                     LDA #$02             ;
 4bf2: 4c 95 4c                  JMP loc_4c95         ;
-4bf5: a0 00                     LDY #$00             ;
-4bf7: b1 41                     LDA (dat_0041),Y       ;
+
+4bf5: a0 00     sub_4bf5        LDY #$00             ;
+4bf7: b1 41                     LDA (dat_0041),Y     ;
 4bf9: 30 03                     BMI loc_4bfe         ;
-4bfb: 4c 9c 4c                  JMP loc_4c9c         ;
+4bfb: 4c 9c 4c                  JMP sub_4c9c         ;
 4bfe: 29 7f     loc_4bfe        AND #$7f             ;
-4c00: 91 41                     STA (dat_0041),Y       ;
+4c00: 91 41                     STA (dat_0041),Y     ;
 4c02: c9 0b                     CMP #$0b             ;
 4c04: d0 03                     BNE loc_4c09         ;
 4c06: 20 fd 4e                  JSR sub_4efd         ;
@@ -6271,12 +5740,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4c4a: 8d 93 64                  STA $6493            ;
 4c4d: a0 02                     LDY #$02             ;
 4c4f: a9 08                     LDA #$08             ;
-4c51: 91 41                     STA (dat_0041),Y       ;
+4c51: 91 41                     STA (dat_0041),Y     ;
 4c53: a9 02                     LDA #$02             ;
 4c55: 48                        PHA                  ;
 4c56: a9 01                     LDA #$01             ;
 4c58: d0 3b                     BNE loc_4c95         ;
-4c5a: a2 64                     LDX #$64             ;
+4c5a: a2 64     sub_4c5a        LDX #$64             ;
 4c5c: a0 8b                     LDY #$8b             ;
 4c5e: a5 4b                     LDA CASSBT           ;
 4c60: 38                        SEC                  ;
@@ -6285,8 +5754,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4c66: 48                        PHA                  ;
 4c67: a9 08                     LDA #$08             ;
 4c69: d0 2a                     BNE loc_4c95         ;
-4c6b: a0 00                     LDY #$00             ;
-4c6d: b1 41                     LDA (dat_0041),Y       ;
+4c6b: a0 00     sub_4c6b        LDY #$00             ;
+4c6d: b1 41                     LDA (dat_0041),Y     ;
 4c6f: 29 7f                     AND #$7f             ;
 4c71: c9 0b                     CMP #$0b             ;
 4c73: d0 03                     BNE loc_4c78         ;
@@ -6295,9 +5764,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4c7a: a0 8b                     LDY #$8b             ;
 4c7c: a5 4b                     LDA CASSBT           ;
 4c7e: 20 e3 2d                  JSR sub_2de3         ;
-4c81: b0 03                     BCS loc_4c86         ;
-4c83: 4c 9c 4c                  JMP loc_4c9c         ;
-4c86: a2 64     loc_4c86        LDX #$64             ;
+4c81: b0 03                     BCS sub_4c86         ;
+4c83: 4c 9c 4c                  JMP sub_4c9c         ;
+4c86: a2 64     sub_4c86        LDX #$64             ;
 4c88: a0 8b                     LDY #$8b             ;
 4c8a: a5 4b                     LDA CASSBT           ;
 4c8c: 18                        CLC                  ;
@@ -6308,10 +5777,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4c95: 20 93 4d  loc_4c95        JSR sub_4d93         ;
 4c98: 68                        PLA                  ;
 4c99: 20 cf 4c                  JSR loc_4ccf         ;
-4c9c: 60        loc_4c9c        RTS                  ; Return to caller
+4c9c: 60        sub_4c9c        RTS                  ; Return to caller
 
-4c9d: a0 00                     LDY #$00             ;
-4c9f: b1 41                     LDA (dat_0041),Y       ;
+4c9d: a0 00     sub_4c9d        LDY #$00             ;
+4c9f: b1 41                     LDA (dat_0041),Y     ;
 4ca1: c9 8b                     CMP #$8b             ;
 4ca3: d0 08                     BNE loc_4cad         ;
 4ca5: ad 90 63                  LDA CHR_LIT_TORCH_FLAG ;
@@ -6325,18 +5794,15 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4cba: a5 4b                     LDA CASSBT           ;
 4cbc: 4c c9 4a                  JMP loc_4ac9         ; Continue execution @ $4ac9 [loc_4ac9]
 
-4cbf: e1        dat_4cbf        .BYTE $e1
-4cc0: 4b        dat_4cc0        .BYTE $4b
-4cc1: f4 4b                     .BYTE $f4,$4b     ; .K
-4cc3: 59 4c 6a                  EOR $6a4c,Y       ; YLj
-4cc6: 4c 9c 4c                  JMP loc_4c9c      ; L.L
-4cc9: 9b                        .BYTE $9b         ; .
-4cca: 4c 9b 4c                  JMP bad_4c9b      ; L.L
-4ccd: 9b                        .BYTE $9b         ; .
-4cce: 4c 85 4c                  JMP bad_4c85      ; L.L
-4cd1: 20 e8 4e                  JSR bad_4ee8      ;  .N
-4cd4: a9 ff                     LDA #$ff          ; ..
-4cd6: 85 4a                     STA CKEY          ; .J
+4cbf: e1        tbl_4cbf_L      .BYTE $e1            ; .
+4cc0: 4b f4 4b 59 4c 6a 4c  tbl_4cbf_H  .BYTE $4b,$f4,$4b,$59,$4c,$6a,$4c  ; K.KYLjL
+4cc7: 9c 4c 9b 4c 9b 4c 9b 4c   .BYTE $9c,$4c,$9b,$4c,$9b,$4c,$9b,$4c  ; .L.L.L.L
+4ccf: 85 4c     sub_4ccf        .BYTE $85,$4c        ; .L
+
+; TODO: How does this code get called?
+4cd1: 20 e8 4e                  JSR sub_4ee8         ;
+4cd4: a9 ff                     LDA #$ff             ;
+4cd6: 85 4a                     STA CKEY             ;
 
 4cd8: a0 00     loc_4cd8        LDY #$00             ;
 4cda: b1 43                     LDA (ZBUFP),Y        ;
@@ -6502,7 +5968,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4e11: 29 05                     AND #$05             ;
 4e13: f0 0d                     BEQ loc_4e22         ;
 4e15: a0 03                     LDY #$03             ;
-4e17: b1 41                     LDA (dat_0041),Y       ;
+4e17: b1 41                     LDA (dat_0041),Y     ;
 4e19: f0 07                     BEQ loc_4e22         ;
 4e1b: 10 06                     BPL loc_4e23         ;
 4e1d: cd 85 63                  CMP CHR_ALIGN        ;
@@ -6510,7 +5976,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4e22: 60        loc_4e22        RTS                  ; Return to caller
 4e23: cd 85 63  loc_4e23        CMP CHR_ALIGN        ;
 4e26: b0 fa                     BCS loc_4e22         ;
-4e28: b1 41     loc_4e28        LDA (dat_0041),Y       ;
+4e28: b1 41     loc_4e28        LDA (dat_0041),Y     ;
 4e2a: 10 1d                     BPL loc_4e49         ;
 4e2c: ad 85 63                  LDA CHR_ALIGN        ;
 4e2f: 10 0c                     BPL loc_4e3d         ;
@@ -6537,7 +6003,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4e61: 8d 2d 50                  STA dat_502d         ;
 4e64: 18        loc_4e64        CLC                  ;
 4e65: a9 06                     LDA #$06             ;
-4e67: 65 41                     ADC dat_0041           ;
+4e67: 65 41                     ADC dat_0041         ;
 4e69: 8d 2a 50                  STA dat_502a         ;
 4e6c: a5 42                     LDA CRITIC           ;
 4e6e: 69 00                     ADC #$00             ;
@@ -6611,8 +6077,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4eea: 20 74 4b                  JSR sub_4b74         ;
 4eed: a0 05                     LDY #$05             ;
 4eef: 18                        CLC                  ;
-4ef0: b1 41                     LDA (dat_0041),Y       ;
-4ef2: 65 41                     ADC dat_0041           ;
+4ef0: b1 41                     LDA (dat_0041),Y     ;
+4ef2: 65 41                     ADC dat_0041         ;
 4ef4: 85 43                     STA ZBUFP            ;
 4ef6: a5 42                     LDA CRITIC           ;
 4ef8: 69 00                     ADC #$00             ;
@@ -6623,7 +6089,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4f00: f0 03                     BEQ loc_4f05         ;
 4f02: ce 90 63                  DEC CHR_LIT_TORCH_FLAG ;
 4f05: a0 00     loc_4f05        LDY #$00             ;
-4f07: b1 41                     LDA (dat_0041),Y       ;
+4f07: b1 41                     LDA (dat_0041),Y     ;
 4f09: 29 80                     AND #$80             ;
 4f0b: 48                        PHA                  ;
 4f0c: a5 4b                     LDA CASSBT           ;
@@ -6664,125 +6130,38 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4f52: 9d 9c 63                  STA $639c,X          ;
 4f55: 68        loc_4f55        PLA                  ;
 4f56: a0 00                     LDY #$00             ;
-4f58: 11 41                     ORA (dat_0041),Y       ;
-4f5a: 91 41                     STA (dat_0041),Y       ;
+4f58: 11 41                     ORA (dat_0041),Y     ;
+4f5a: 91 41                     STA (dat_0041),Y     ;
 4f5c: 60                        RTS                  ; Return to caller
 
-4f5d: 03                        .BYTE $03         ; .
-4f5e: 20 00 00                  JSR $00           ;  ..
-4f61: 02 0c 73 74               .BYTE $02,$0c,$73,$74  ; ..st
-4f65: 69 63                     ADC #$63          ; ic
-4f67: 6b                        .BYTE $6b         ; k
-4f68: 00                        BRK               ; .
-4f69: 00                        BRK               ; .
-4f6a: ff                        .BYTE $ff         ; .
-4f6b: 00                        BRK               ; .
-4f6c: 14                        .BYTE $14         ; .
-4f6d: 00                        BRK               ; .
-4f6e: 00                        BRK               ; .
-4f6f: 00                        BRK               ; .
-4f70: 00                        BRK               ; .
-4f71: 00                        BRK               ; .
-4f72: 00                        BRK               ; .
-4f73: 00                        BRK               ; .
-4f74: 00                        BRK               ; .
-4f75: 00                        BRK               ; .
-4f76: 00                        BRK               ; .
-4f77: 04                        .BYTE $04         ; .
-4f78: 01 09                     ORA (dat_0009_L,X); ..
-4f7a: 09 82                     ORA #$82          ; ..
-4f7c: 01
-4f7d: a6       str_ITM_SCREAMS  ORA ($a6,X)       ; ..
-4f7e: 00                        BRK               ; .
-4f7f: 00                        BRK               ; .
-4f80: a5 54                     LDA ROWCRS        ; .T
-4f82: 68                        PLA               ; h
-4f83: 65 0d                     ADC DOSINI+1      ; e.
-4f85: a5 b4                     LDA $b4           ; ..
-4f87: 2a                        ROL               ; *
-4f88: 50 27                     BVC bad_4fb1      ; P'
-4f8a: 0d a5 73                  ORA $73a5         ; ..s
-4f8d: 63 72                     .BYTE $63,$72     ; cr
-4f8f: 65 61                     ADC NEWCOL        ; ea
-4f91: 6d 73 3a                  ADC bad_3a73      ; ms:
-4f94: 0d 0d a5                  ORA $a50d         ; ...
-4f97: b4 2c                     LDY dat_002c,X    ; .,
-4f99: 50 28                     BVC bad_4fc3      ; P(
-4f9b: 0d ff                                       ; ..
-
-4f9d: 22        str_BTR_THAN_U  ORA bad_22ff      ; "
-4f9e: 49 20                     EOR #$20          ; I
-4fa0: 77                        .BYTE $77         ; w
-4fa1: 61 73                     ADC (COLAC+1,X)   ; as
-4fa3: 20 6d 65                  JSR $656d         ;  me
-4fa6: 61 6e                     ADC (BITMSK,X)    ; an
-4fa8: 74                        .BYTE $74         ; t
-4fa9: 20 66 6f                  JSR $6f66         ;  fo
-4fac: 72                        .BYTE $72         ; r
-4fad: 20 62 65                  JSR $6562         ;  be
-4fb0: 74                        .BYTE $74         ; t
-4fb1: 74                        .BYTE $74         ; t
-4fb2: 65 72                     ADC COLAC         ; er
-4fb4: 20 74 68                  JSR $6874         ;  th
-4fb7: 61 6e                     ADC (BITMSK,X)    ; an
-4fb9: 20 79 6f                  JSR $6f79         ;  yo
-4fbc: 75 21                     ADC dat_0021,X    ; u!
-4fbe: 22                        .BYTE $22         ; "
-4fbf: 00                        BRK               ; .
-
-4fc0: 22        str_EVL_THAN_U  .BYTE $22         ; "
-4fc1: 59 6f 75                  EOR $756f,Y       ; You
-4fc4: 72                        .BYTE $72         ; r
-4fc5: 20 65 76                  JSR $7665         ;  ev
-4fc8: 69 6c                     ADC #$6c          ; il
-4fca: 20 63 61                  JSR loc_6163      ;  ca
-4fcd: 6e 6e 6f                  ROR $6f6e         ; nno
-4fd0: 74                        .BYTE $74         ; t
-4fd1: 20 63 6f                  JSR $6f63         ;  co
-4fd4: 6d 70 61                  ADC loc_6170      ; mpa
-4fd7: 72                        .BYTE $72         ; r
-4fd8: 65 20                     ADC dat_0020      ; e
-4fda: 74 6f                     .BYTE $74,$6f     ; to
-4fdc: 20 6d 69                  JSR $696d         ;  mi
-4fdf: 6e 65 21                  ROR loc_2165      ; ne!
-4fe2: 22                        .BYTE $22         ; "
-4fe3: 00                        BRK               ; .
-
-4fe4: 22 52     str_RELEASE_ME  .BYTE $22,$52     ; "R
-4fe6: 65 6c                     ADC BUFSTR        ; el
-4fe8: 65 61                     ADC NEWCOL        ; ea
-4fea: 73                        .BYTE $73         ; s
-4feb: 65 20                     ADC dat_0020      ; e
-4fed: 6d 65 20                  ADC loc_2065_bad  ; me
-4ff0: 66 6f                     ROR SHFAMT        ; fo
-4ff2: 75 6c                     ADC BUFSTR,X      ; ul
-4ff4: 20 6d 6f                  JSR $6f6d         ;  mo
-4ff7: 72 74                     .BYTE $72,$74     ; rt
-4ff9: 61 6c                     ADC (BUFSTR,X)    ; al
-4ffb: 20 6f 72                  JSR $726f         ;  or
-4ffe: 20 70 61                  JSR $6170         ;  pa
-5001: 79 21 22                  ADC bad_2221,Y    ; y!"
-5004: 00                        BRK               ; .
-
-5005: 22        str_DO_GOODER   .BYTE $22         ; "
-5006: 4d 69 73                  EOR $7369         ; Mis
-5009: 65 72                     ADC COLAC         ; er
-500b: 61 62                     ADC (NEWCOL+1,X)  ; ab
-500d: 6c 65 20                  JMP (loc_2065_bad); le
-5010: 64 6f                     .BYTE $64,$6f     ; do
-5012: 2d 67 6f                  AND $6f67         ; -go
-5015: 6f 64                     .BYTE $6f,$64     ; od
-5017: 65 72                     ADC COLAC         ; er
-5019: 20 79 6f                  JSR $6f79         ;  yo
-501c: 75 20                     ADC dat_0020,X    ; u
-501e: 73                        .BYTE $73         ; s
-501f: 68                        PLA               ; h
-5020: 61 6c                     ADC (BUFSTR,X)    ; al
-5022: 6c 20 70                  JMP ($7020)       ; l p
-5025: 61 79                     ADC (ROWINC,X)    ; ay
-5027: 21 22                     AND (ICCOMZ,X)    ; !"
-5029: 00                        BRK               ; .
-
+4f5d: 03 20 00 00 02 0c 73 74  dat_4f5d  .BYTE $03,$20,$00,$00,$02,$0c,$73,$74  ; . ....st
+4f65: 69 63 6b 00 00 ff 00 14   .BYTE $69,$63,$6b,$00,$00,$ff,$00,$14  ; ick.....
+4f6d: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
+4f75: 00 00 04 01 09 09 82 01   .BYTE $00,$00,$04,$01,$09,$09,$82,$01  ; ........
+4f7d: a6 00 00 a5 54 68 65 0d  str_ITM_SCREAMS  .BYTE $a6,$00,$00,$a5,$54,$68,$65,$0d  ; ....The.
+4f85: a5 b4 2a 50 27 0d a5 73   .BYTE $a5,$b4,$2a,$50,$27,$0d,$a5,$73  ; ..*P'..s
+4f8d: 63 72 65 61 6d 73 3a 0d   .BYTE $63,$72,$65,$61,$6d,$73,$3a,$0d  ; creams:.
+4f95: 0d a5 b4 2c 50 28 0d ff   .BYTE $0d,$a5,$b4,$2c,$50,$28,$0d,$ff  ; ...,P(..
+4f9d: 22 49 20 77 61 73 20 6d  str_BTR_THAN_U  .BYTE $22,$49,$20,$77,$61,$73,$20,$6d  ; "I was m
+4fa5: 65 61 6e 74 20 66 6f 72   .BYTE $65,$61,$6e,$74,$20,$66,$6f,$72  ; eant for
+4fad: 20 62 65 74 74 65 72 20   .BYTE $20,$62,$65,$74,$74,$65,$72,$20  ;  better
+4fb5: 74 68 61 6e 20 79 6f 75   .BYTE $74,$68,$61,$6e,$20,$79,$6f,$75  ; than you
+4fbd: 21 22 00                  .BYTE $21,$22,$00    ; !".
+4fc0: 22 59 6f 75 72  str_EVL_THAN_U  .BYTE $22,$59,$6f,$75,$72  ; "Your
+4fc5: 20 65 76 69 6c 20 63 61   .BYTE $20,$65,$76,$69,$6c,$20,$63,$61  ;  evil ca
+4fcd: 6e 6e 6f 74 20 63 6f 6d   .BYTE $6e,$6e,$6f,$74,$20,$63,$6f,$6d  ; nnot com
+4fd5: 70 61 72 65 20 74 6f 20   .BYTE $70,$61,$72,$65,$20,$74,$6f,$20  ; pare to
+4fdd: 6d 69 6e 65 21 22 00      .BYTE $6d,$69,$6e,$65,$21,$22,$00  ; mine!".
+4fe4: 22        str_RELEASE_ME  .BYTE $22            ; "
+4fe5: 52 65 6c 65 61 73 65 20   .BYTE $52,$65,$6c,$65,$61,$73,$65,$20  ; Release
+4fed: 6d 65 20 66 6f 75 6c 20   .BYTE $6d,$65,$20,$66,$6f,$75,$6c,$20  ; me foul
+4ff5: 6d 6f 72 74 61 6c 20 6f   .BYTE $6d,$6f,$72,$74,$61,$6c,$20,$6f  ; mortal o
+4ffd: 72 20 70 61 79 21 22 00   .BYTE $72,$20,$70,$61,$79,$21,$22,$00  ; r pay!".
+5005: 22 4d 69 73 65 72 61 62  str_DO_GOODER  .BYTE $22,$4d,$69,$73,$65,$72,$61,$62  ; "Miserab
+500d: 6c 65 20 64 6f 2d 67 6f   .BYTE $6c,$65,$20,$64,$6f,$2d,$67,$6f  ; le do-go
+5015: 6f 64 65 72 20 79 6f 75   .BYTE $6f,$64,$65,$72,$20,$79,$6f,$75  ; oder you
+501d: 20 73 68 61 6c 6c 20 70   .BYTE $20,$73,$68,$61,$6c,$6c,$20,$70  ;  shall p
+5025: 61 79 21 22 00            .BYTE $61,$79,$21,$22,$00  ; ay!".
 502a: 00        dat_502a        .BYTE $00            ; .
 502b: 00        dat_502b        .BYTE $00            ; .
 502c: 00        dat_502c        .BYTE $00            ; .
@@ -6809,7 +6188,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5051: a9 09                     LDA #$09             ; Set ???
 5053: 85 16                     STA addr_0016_L      ;     address
 5055: a9 5e                     LDA #$5e             ;     to
-5057: 85 17                     STA addr_0016_H      ;     $5e09 [str_5e09] (4 selection menu)
+5057: 85 17                     STA addr_0016_H      ;     $5e09 [str_4SEL_MENU] (4 selection menu)
 5059: 4c 64 50                  JMP loc_5064         ;
 505c: a9 41     loc_505c        LDA #$41             ; Set ???
 505e: 85 16                     STA addr_0016_L      ;     address
@@ -6835,22 +6214,22 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 508a: 38                        SEC                  ; 8
 508b: 60                        RTS                  ; `
 508c: a9 03     loc_508c        LDA #$03             ; ..
-508e: 85 06                     STA TRAMSZ           ; ..
-5090: a6 06     loc_5090        LDX TRAMSZ           ; ..
+508e: 85 06                     STA dat_0006         ; ..
+5090: a6 06     loc_5090        LDX dat_0006         ; ..
 5092: bd 46 19                  LDA dat_1946,X       ; .F.
 5095: 30 16                     BMI loc_50ad         ; 0.
 5097: 20 74 4b                  JSR sub_4b74         ;  tK
-509a: a5 06                     LDA TRAMSZ           ; ..
+509a: a5 06                     LDA dat_0006         ; ..
 509c: 0a                        ASL                  ; .
 509d: a8                        TAY                  ; .
 509e: 18                        CLC                  ; .
 509f: a9 06                     LDA #$06             ; ..
-50a1: 65 41     loc_50a1        ADC dat_0041           ; eA
+50a1: 65 41     loc_50a1        ADC dat_0041         ; eA
 50a3: 99 3c 19                  STA loc_193c,Y       ; .<.
 50a6: a5 42                     LDA CRITIC           ; .B
 50a8: 69 00                     ADC #$00             ; i.
 50aa: 99 3d 19                  STA loc_193d,Y       ; .=.
-50ad: c6 06     loc_50ad        DEC TRAMSZ           ; ..
+50ad: c6 06     loc_50ad        DEC dat_0006         ; ..
 50af: 10 df                     BPL loc_5090         ; ..
 50b1: 60                        RTS                  ; `
 50b2: a9 00     sub_50b2        LDA #$00             ; ..
@@ -6953,7 +6332,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 51a1: 20 74 4b  loc_51a1        JSR sub_4b74         ;
 51a4: f0 0e                     BEQ loc_51b4         ;
 51a6: a0 00                     LDY #$00             ;
-51a8: b1 41                     LDA (dat_0041),Y       ;
+51a8: b1 41                     LDA (dat_0041),Y     ;
 51aa: 10 08                     BPL loc_51b4         ;
 51ac: 29 07                     AND #$07             ;
 51ae: c9 01                     CMP #$01             ;
@@ -6989,7 +6368,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 51f0: 20 74 4b                  JSR sub_4b74         ;
 51f3: 20 c4 4e                  JSR sub_4ec4         ;
 51f6: a0 00                     LDY #$00             ;
-51f8: b1 41                     LDA (dat_0041),Y       ;
+51f8: b1 41                     LDA (dat_0041),Y     ;
 51fa: 29 07                     AND #$07             ;
 51fc: 8d 7e 62                  STA loc_627e         ;
 51ff: aa                        TAX                  ;
@@ -7019,7 +6398,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 5239: a0 00     cont_5239       LDY #$00             ;
-523b: b1 41                     LDA (dat_0041),Y       ;
+523b: b1 41                     LDA (dat_0041),Y     ;
 523d: 29 78                     AND #$78             ;
 523f: d0 03                     BNE loc_5244         ;
 5241: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
@@ -7113,7 +6492,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 52e8: 20 74 4b                  JSR sub_4b74         ;
 52eb: f0 13                     BEQ loc_5300         ;
 52ed: a0 00                     LDY #$00             ;
-52ef: b1 41                     LDA (dat_0041),Y       ;
+52ef: b1 41                     LDA (dat_0041),Y     ;
 52f1: c9 82                     CMP #$82             ;
 52f3: d0 0b                     BNE loc_5300         ;
 52f5: 20 c4 4e                  JSR sub_4ec4         ;
@@ -7190,7 +6569,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5393: 85 4b                     STA CASSBT           ;
 5395: 20 74 4b                  JSR sub_4b74         ;
 5398: 18                        CLC                  ;
-5399: a5 41                     LDA dat_0041           ;
+5399: a5 41                     LDA dat_0041         ;
 539b: 69 06                     ADC #$06             ;
 539d: 8d 3c 19                  STA loc_193c         ;
 53a0: a5 42                     LDA CRITIC           ;
@@ -7207,7 +6586,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 53ba: a9 01                     LDA #$01             ;
 53bc: 20 fc 2b                  JSR sub_2bfc         ;
 53bf: a0 00                     LDY #$00             ;
-53c1: b1 41                     LDA (dat_0041),Y       ;
+53c1: b1 41                     LDA (dat_0041),Y     ;
 53c3: 29 78                     AND #$78             ;
 53c5: d0 2c                     BNE loc_53f3         ;
 53c7: 4c 09 52                  JMP loc_5209         ; Continue @ $5209 [loc_5209]
@@ -7298,17 +6677,17 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5473: b1 43                     LDA (ZBUFP),Y        ;
 5475: 20 8e 54                  JSR loc_548e         ;
 5478: a0 05                     LDY #$05             ;
-547a: b1 41                     LDA (dat_0041),Y       ;
+547a: b1 41                     LDA (dat_0041),Y     ;
 547c: 38                        SEC                  ;
 547d: e9 04                     SBC #$04             ;
 547f: a8                        TAY                  ;
 5480: a5 02                     LDA dat_0002         ;
 5482: 09 30                     ORA #$30             ;
-5484: 91 41                     STA (dat_0041),Y       ;
+5484: 91 41                     STA (dat_0041),Y     ;
 5486: c8                        INY                  ;
 5487: a5 03                     LDA dat_0003         ;
 5489: 09 30                     ORA #$30             ;
-548b: 91 41                     STA (dat_0041),Y       ;
+548b: 91 41                     STA (dat_0041),Y     ;
 548d: 60                        RTS                  ; Return to caller
 548e: a0 00     loc_548e        LDY #$00             ;
 5490: a2 0a                     LDX #$0a             ;
@@ -7384,8 +6763,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5513: b0 04                     BCS loc_5519         ;
 5515: 8a        loc_5515        TXA                  ;
 5516: 4c 5a 55                  JMP loc_555a         ;
-5519: a2 31     loc_5519        LDX #$31             ;
-551b: 8e 51 5d                  STX dat_5d51         ;
+5519: a2 31     loc_5519        LDX #$31             ; Set
+551b: 8e 51 5d                  STX dat_5d51         ;     dat_5d51 = $31 (49) '1'
 551e: e8                        INX                  ;
 551f: 8e 67 5d                  STX loc_5d67         ;
 5522: e8                        INX                  ;
@@ -7429,7 +6808,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5578: a0 02                     LDY #$02             ;
 557a: 20 d7 56                  JSR loc_56d7         ;
 557d: a0 00                     LDY #$00             ;
-557f: b1 41                     LDA (dat_0041),Y       ;
+557f: b1 41                     LDA (dat_0041),Y     ;
 5581: 29 78                     AND #$78             ;
 5583: f0 0a                     BEQ loc_558f         ;
 5585: a2 00                     LDX #$00             ; Set X = 0 (1 iteration)
@@ -7503,7 +6882,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 5602: 18        sub_5602        CLC                  ;
 5603: a9 06                     LDA #$06             ;
-5605: 65 41                     ADC dat_0041           ;
+5605: 65 41                     ADC dat_0041         ;
 5607: 8d 3c 19                  STA loc_193c         ;
 560a: 85 07                     STA dat_0007_L       ;
 560c: a9 00                     LDA #$00             ;
@@ -7526,7 +6905,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 5632: a0 00     cont_5632       LDY #$00             ;
-5634: b1 41                     LDA (dat_0041),Y       ;
+5634: b1 41                     LDA (dat_0041),Y     ;
 5636: 29 78                     AND #$78             ;
 5638: f0 0a                     BEQ loc_5644         ;
 563a: a2 00                     LDX #$00             ; TODO: This is looking at code below
@@ -7820,7 +7199,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 588b: a9 53                     LDA #$53             ; ???Set ???
 588d: 8d c1 59                  STA loc_59c1         ; ???    address
 5890: a9 5e                     LDA #$5e             ; ???    to
-5892: 8d c2 59                  STA loc_59c2         ; ???    $5e53 [str_5e53]
+5892: 8d c2 59                  STA loc_59c2         ; ???    $5e53 [dat_5e53]
 5895: ae 84 62  loc_5895        LDX loc_6284         ; Set X = loc_6284
 5898: bd d4 64                  LDA $64d4,X          ;
 589b: 85 4b                     STA CASSBT           ;
@@ -7845,7 +7224,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 58c4: 20 74 4b                  JSR sub_4b74         ;
 58c7: a9 06                     LDA #$06             ;
 58c9: 18                        CLC                  ;
-58ca: 65 41                     ADC dat_0041           ;
+58ca: 65 41                     ADC dat_0041         ;
 58cc: 8d c1 59                  STA loc_59c1         ;
 58cf: a5 42                     LDA CRITIC           ;
 58d1: 69 00                     ADC #$00             ;
@@ -7855,17 +7234,17 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 58db: a9 59                     LDA #$59             ;     to
 58dd: 8d 56 59                  STA addr_5955_H      ;     $599b [dat_599b]
 58e0: a0 00                     LDY #$00             ;
-58e2: b1 41                     LDA (dat_0041),Y       ;
+58e2: b1 41                     LDA (dat_0041),Y     ;
 58e4: 29 7f                     AND #$7f             ;
 58e6: d0 1c                     BNE loc_5904         ;
 58e8: a5 4b                     LDA CASSBT           ;
 58ea: 20 c4 4e                  JSR sub_4ec4         ;
 58ed: a0 01                     LDY #$01             ;
 58ef: b1 43                     LDA (ZBUFP),Y        ;
-58f1: 8d e3 59                  STA loc_59e3         ;
+58f1: 8d e3 59                  STA dat_59e3         ;
 58f4: c8                        INY                  ;
 58f5: b1 43                     LDA (ZBUFP),Y        ;
-58f7: 8d e4 59                  STA loc_59e4         ;
+58f7: 8d e4 59                  STA dat_59e4         ;
 58fa: a9 ab                     LDA #$ab             ; Set ???
 58fc: 8d 55 59                  STA addr_5955_L      ;     address
 58ff: a9 59                     LDA #$59             ;     to
@@ -7893,13 +7272,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5934: a9 08                     LDA #$08             ;
 5936: 8d 61 19                  STA loc_1961         ;
 5939: a0 00                     LDY #$00             ;
-593b: b1 41                     LDA (dat_0041),Y       ;
+593b: b1 41                     LDA (dat_0041),Y     ;
 593d: d0 06                     BNE loc_5945         ;
 593f: 20 57 59                  JSR loc_5957         ;
 5942: 4c 4b 59                  JMP loc_594b         ;
 5945: a0 02     loc_5945        LDY #$02             ;
 5947: a9 01                     LDA #$01             ;
-5949: 91 41                     STA (dat_0041),Y       ;
+5949: 91 41                     STA (dat_0041),Y     ;
 594b: 18        loc_594b        CLC                  ;
 594c: 24 38                     BIT BUFRFL           ;
 594e: ce 5f 19                  DEC UNK_BYTE_195F    ;
@@ -7909,38 +7288,38 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5955: 9b        addr_5955_L     .BYTE $9b            ;
 5956: 59        addr_5955_H     .BYTE $59            ;
 
-5957: a0 16                     LDY #$16          ;
-5959: b1 41                     LDA (dat_0041),Y    ;
-595b: aa                        TAX               ;
-595c: bd a8 5a                  LDA loc_5aa8,X    ;
-595f: a0 18                     LDY #$18          ;
-5961: e0 07                     CPX #$07          ;
-5963: 90 1f                     BCC loc_5984      ;
-5965: aa                        TAX               ;
-5966: 18                        CLC               ;
-5967: b1 41                     LDA (dat_0041),Y    ;
-5969: 7d 01 63                  ADC $6301,X       ;
-596c: 9d 01 63                  STA $6301,X       ;
-596f: 88                        DEY               ;
-5970: b1 41                     LDA (dat_0041),Y    ;
-5972: 7d 00 63                  ADC $6300,X       ;
-5975: 9d 00 63                  STA $6300,X       ;
-5978: 90 1b                     BCC loc_5995      ;
-597a: a9 ff                     LDA #$ff          ;
-597c: 9d 00 63                  STA $6300,X       ;
-597f: 9d 01 63                  STA $6301,X       ;
-5982: d0 11                     BNE loc_5995      ;
-5984: aa        loc_5984        TAX               ;
-5985: 18                        CLC               ;
-5986: b1 41                     LDA (dat_0041),Y    ;
-5988: 7d 00 63                  ADC $6300,X       ;
-598b: 9d 00 63                  STA $6300,X       ;
-598e: 90 05                     BCC loc_5995      ;
-5990: a9 ff                     LDA #$ff          ;
-5992: 9d 00 63                  STA $6300,X       ;
-5995: a5 4b     loc_5995        LDA CASSBT        ;
-5997: 20 c9 4a                  JSR loc_4ac9      ;
-599a: 60                        RTS               ; Return to caller
+5957: a0 16                     LDY #$16             ;
+5959: b1 41                     LDA (dat_0041),Y     ;
+595b: aa                        TAX                  ;
+595c: bd a8 5a                  LDA loc_5aa8,X       ;
+595f: a0 18                     LDY #$18             ;
+5961: e0 07                     CPX #$07             ;
+5963: 90 1f                     BCC loc_5984         ;
+5965: aa                        TAX                  ;
+5966: 18                        CLC                  ;
+5967: b1 41                     LDA (dat_0041),Y     ;
+5969: 7d 01 63                  ADC $6301,X          ;
+596c: 9d 01 63                  STA $6301,X          ;
+596f: 88                        DEY                  ;
+5970: b1 41                     LDA (dat_0041),Y     ;
+5972: 7d 00 63                  ADC $6300,X          ;
+5975: 9d 00 63                  STA $6300,X          ;
+5978: 90 1b                     BCC loc_5995         ;
+597a: a9 ff                     LDA #$ff             ;
+597c: 9d 00 63                  STA $6300,X          ;
+597f: 9d 01 63                  STA $6301,X          ;
+5982: d0 11                     BNE loc_5995         ;
+5984: aa        loc_5984        TAX                  ;
+5985: 18                        CLC                  ;
+5986: b1 41                     LDA (dat_0041),Y     ;
+5988: 7d 00 63                  ADC $6300,X          ;
+598b: 9d 00 63                  STA $6300,X          ;
+598e: 90 05                     BCC loc_5995         ;
+5990: a9 ff                     LDA #$ff             ;
+5992: 9d 00 63                  STA $6300,X          ;
+5995: a5 4b     loc_5995        LDA CASSBT           ;
+5997: 20 c9 4a                  JSR loc_4ac9         ;
+599a: 60                        RTS                  ; Return to caller
 
 599b: a6 00 00 a5 47 45 54 3f  dat_599b  .BYTE $a6,$00,$00,$a5,$47,$45,$54,$3f  ; ....GET?
 59a3: 0d 0d 0d a9 a5 ac c0 59   .BYTE $0d,$0d,$0d,$a9,$a5,$ac,$c0,$59  ; .......Y
@@ -7951,35 +7330,36 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 59cb: a5 a1 59 a0 65 73 2c 20   .BYTE $a5,$a1,$59,$a0,$65,$73,$2c,$20  ; ..Y.es,
 59d3: a1 4e a0 6f 20 6f 72 20   .BYTE $a1,$4e,$a0,$6f,$20,$6f,$72,$20  ; .N.o or
 59db: a1 45 53 43 a0 2e 0d ff   .BYTE $a1,$45,$53,$43,$a0,$2e,$0d,$ff  ; .ESC....
-59e3: 00 00 a9 00 2c a9 ff 8d   .BYTE $00,$00,$a9,$00,$2c,$a9,$ff,$8d  ; ....,...
-59eb: fe 18 60                  .BYTE $fe,$18,$60                      ; ..`
-59ee: a6 00 03 a5 4e  str_NTHNG_HRE  .BYTE $a6,$00,$03,$a5,$4e         ; ....N
-59f3: 6f 74 68 69 6e 67 20 68   .BYTE $6f,$74,$68,$69,$6e,$67,$20,$68  ; othing h
-59fb: 65 72 65 2e 0d ff 80 19   .BYTE $65,$72,$65,$2e,$0d,$ff          ; ere...
-5a01: 80 19                     .BYTE $80,$19                          ; ..
-5a03: 02 00 00 15 46 6f 6f 64   .BYTE $02,$00,$00,$15,$46,$6f,$6f,$64  ; ....Food
-5a0b: 20 50 61 63 6b 65 74 28   .BYTE $20,$50,$61,$63,$6b,$65,$74,$28  ;  Packet(
-5a13: 73 29 00 00 00 00 00 46   .BYTE $73,$29,$00,$00,$00,$00,$00,$46  ; s).....F
-5a1b: 6f 6f 64 20 50 61 63 6b   .BYTE $6f,$6f,$64,$20,$50,$61,$63,$6b  ; ood Pack
-5a23: 65 74 28 73 29 00 57 61   .BYTE $65,$74,$28,$73,$29,$00,$57,$61  ; et(s).Wa
-5a2b: 74 65 72 20 46 6c 61 73   .BYTE $74,$65,$72,$20,$46,$6c,$61,$73  ; ter Flas
-5a33: 6b 28 73 29 00 54 6f 72   .BYTE $6b,$28,$73,$29,$00,$54,$6f,$72  ; k(s).Tor
-5a3b: 63 68 28 65 73 29 00 54   .BYTE $63,$68,$28,$65,$73,$29,$00,$54  ; ch(es).T
-5a43: 69 6d 65 70 69 65 63 65   .BYTE $69,$6d,$65,$70,$69,$65,$63,$65  ; imepiece
-5a4b: 28 73 29 00 43 6f 6d 70   .BYTE $28,$73,$29,$00,$43,$6f,$6d,$70  ; (s).Comp
-5a53: 61 73 73 28 65 73 29 00   .BYTE $61,$73,$73,$28,$65,$73,$29,$00  ; ass(es).
-5a5b: 4b 65 79 28 73 29 00 43   .BYTE $4b,$65,$79,$28,$73,$29,$00,$43  ; Key(s).C
-5a63: 72 79 73 74 61 6c 28 73   .BYTE $72,$79,$73,$74,$61,$6c,$28,$73  ; rystal(s
-5a6b: 29 00 47 65 6d 28 73 29   .BYTE $29,$00,$47,$65,$6d,$28,$73,$29  ; ).Gem(s)
-5a73: 00 4a 65 77 65 6c 28 73   .BYTE $00,$4a,$65,$77,$65,$6c,$28,$73  ; .Jewel(s
-5a7b: 29 00 47 6f 6c 64 00 53   .BYTE $29,$00,$47,$6f,$6c,$64,$00,$53  ; ).Gold.S
-5a83: 69 6c 76 65 72 00 43 6f   .BYTE $69,$6c,$76,$65,$72,$00,$43,$6f  ; ilver.Co
-5a8b: 70 70 65 72 00 1a 29 38   .BYTE $70,$70,$65,$72,$00,$1a,$29,$38  ; pper..)8
-5a93: 42 4f 5b 62 6d 74 7d 82   .BYTE $42,$4f,$5b,$62,$6d,$74,$7d,$82  ; BO[bmt}.
-5a9b: 89 5a 5a 5a 5a 5a 5a 5a   .BYTE $89,$5a,$5a,$5a,$5a,$5a,$5a,$5a  ; .ZZZZZZZ
-5aa3: 5a 5a 5a 5a 5a bb bc bd   .BYTE $5a,$5a,$5a,$5a,$5a,$bb,$bc,$bd  ; ZZZZZ...
-5aab: c1 c0 bf be b7 b9 b1 b3   .BYTE $c1,$c0,$bf,$be,$b7,$b9,$b1,$b3  ; ........
-5ab3: b5                        .BYTE $b5            ; .
+59e3: 00        dat_59e3        .BYTE $00            ; .
+59e4: 00        dat_59e4        .BYTE $00            ; .
+59e5: a9 00 2c a9 ff 8d fe 18  unk_59e5  .BYTE $a9,$00,$2c,$a9,$ff,$8d,$fe,$18  ; ..,.....
+59ed: 60                        .BYTE $60            ; `
+59ee: a6 00 03 a5 4e 6f 74 68  str_NTHNG_HRE  .BYTE $a6,$00,$03,$a5,$4e,$6f,$74,$68  ; ....Noth
+59f6: 69 6e 67 20 68 65 72 65   .BYTE $69,$6e,$67,$20,$68,$65,$72,$65  ; ing here
+59fe: 2e 0d ff                  .BYTE $2e,$0d,$ff    ; ...
+5a01: 80 19 02 00 00  unk_5a01  .BYTE $80,$19,$02,$00,$00  ; .....
+5a06: 15 46 6f 6f 64 20 50 61   .BYTE $15,$46,$6f,$6f,$64,$20,$50,$61  ; .Food Pa
+5a0e: 63 6b 65 74 28 73 29 00   .BYTE $63,$6b,$65,$74,$28,$73,$29,$00  ; cket(s).
+5a16: 00 00 00 00 46 6f 6f 64   .BYTE $00,$00,$00,$00,$46,$6f,$6f,$64  ; ....Food
+5a1e: 20 50 61 63 6b 65 74 28   .BYTE $20,$50,$61,$63,$6b,$65,$74,$28  ;  Packet(
+5a26: 73 29 00 57 61 74 65 72   .BYTE $73,$29,$00,$57,$61,$74,$65,$72  ; s).Water
+5a2e: 20 46 6c 61 73 6b 28 73   .BYTE $20,$46,$6c,$61,$73,$6b,$28,$73  ;  Flask(s
+5a36: 29 00 54 6f 72 63 68 28   .BYTE $29,$00,$54,$6f,$72,$63,$68,$28  ; ).Torch(
+5a3e: 65 73 29 00 54 69 6d 65   .BYTE $65,$73,$29,$00,$54,$69,$6d,$65  ; es).Time
+5a46: 70 69 65 63 65 28 73 29   .BYTE $70,$69,$65,$63,$65,$28,$73,$29  ; piece(s)
+5a4e: 00 43 6f 6d 70 61 73 73   .BYTE $00,$43,$6f,$6d,$70,$61,$73,$73  ; .Compass
+5a56: 28 65 73 29 00 4b 65 79   .BYTE $28,$65,$73,$29,$00,$4b,$65,$79  ; (es).Key
+5a5e: 28 73 29 00 43 72 79 73   .BYTE $28,$73,$29,$00,$43,$72,$79,$73  ; (s).Crys
+5a66: 74 61 6c 28 73 29 00 47   .BYTE $74,$61,$6c,$28,$73,$29,$00,$47  ; tal(s).G
+5a6e: 65 6d 28 73 29 00 4a 65   .BYTE $65,$6d,$28,$73,$29,$00,$4a,$65  ; em(s).Je
+5a76: 77 65 6c 28 73 29 00 47   .BYTE $77,$65,$6c,$28,$73,$29,$00,$47  ; wel(s).G
+5a7e: 6f 6c 64 00 53 69 6c 76   .BYTE $6f,$6c,$64,$00,$53,$69,$6c,$76  ; old.Silv
+5a86: 65 72 00 43 6f 70 70 65   .BYTE $65,$72,$00,$43,$6f,$70,$70,$65  ; er.Coppe
+5a8e: 72 00 1a 29 38 42 4f 5b   .BYTE $72,$00,$1a,$29,$38,$42,$4f,$5b  ; r..)8BO[
+5a96: 62 6d 74 7d 82 89 5a 5a   .BYTE $62,$6d,$74,$7d,$82,$89,$5a,$5a  ; bmt}..ZZ
+5a9e: 5a 5a 5a 5a 5a 5a 5a 5a   .BYTE $5a,$5a,$5a,$5a,$5a,$5a,$5a,$5a  ; ZZZZZZZZ
+5aa6: 5a 5a bb bc bd c1 c0 bf   .BYTE $5a,$5a,$bb,$bc,$bd,$c1,$c0,$bf  ; ZZ......
+5aae: be b7 b9 b1 b3 b5         .BYTE $be,$b7,$b9,$b1,$b3,$b5  ; ......
 
 5ab4: a9 37     sub_5ab4        LDA #37              ;
 5ab6: 8d 3a 19                  STA loc_193a         ;
@@ -8017,7 +7397,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5b05: 8d 61 19                  STA loc_1961         ;
 5b08: a9 02                     LDA #$02             ;
 5b0a: a0 02                     LDY #$02             ;
-5b0c: 91 41                     STA (dat_0041),Y       ;
+5b0c: 91 41                     STA (dat_0041),Y     ;
 5b0e: ce 5f 19  loc_5b0e        DEC UNK_BYTE_195F    ;
 5b11: ce 60 19                  DEC UNK_BYTE_1960    ;
 5b14: 60                        RTS                  ; Return to caller
@@ -8128,26 +7508,26 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5c11: 20 74 4b                  JSR sub_4b74         ;
 5c14: f0 2e                     BEQ loc_5c44         ;
 5c16: a0 00                     LDY #$00             ;
-5c18: b1 41                     LDA (dat_0041),Y       ;
+5c18: b1 41                     LDA (dat_0041),Y     ;
 5c1a: d0 28                     BNE loc_5c44         ;
 5c1c: a0 16                     LDY #$16             ;
-5c1e: b1 41                     LDA (dat_0041),Y       ;
+5c1e: b1 41                     LDA (dat_0041),Y     ;
 5c20: cd 17 5a                  CMP loc_5a17         ;
 5c23: d0 1f                     BNE loc_5c44         ;
 5c25: a0 18                     LDY #$18             ;
 5c27: 18                        CLC                  ;
 5c28: ad 19 5a                  LDA loc_5a19         ;
-5c2b: 71 41                     ADC (dat_0041),Y       ;
-5c2d: 91 41                     STA (dat_0041),Y       ;
+5c2b: 71 41                     ADC (dat_0041),Y     ;
+5c2d: 91 41                     STA (dat_0041),Y     ;
 5c2f: 88                        DEY                  ;
 5c30: ad 18 5a                  LDA loc_5a18         ;
-5c33: 71 41                     ADC (dat_0041),Y       ;
-5c35: 99 41 00                  STA dat_0041,Y         ;
+5c33: 71 41                     ADC (dat_0041),Y     ;
+5c35: 99 41 00                  STA dat_0041,Y       ;
 5c38: 90 07                     BCC loc_5c41         ;
 5c3a: a9 ff                     LDA #$ff             ;
-5c3c: 91 41                     STA (dat_0041),Y       ;
+5c3c: 91 41                     STA (dat_0041),Y     ;
 5c3e: c8                        INY                  ;
-5c3f: 91 41                     STA (dat_0041),Y       ;
+5c3f: 91 41                     STA (dat_0041),Y     ;
 5c41: 4c 0e 5b  loc_5c41        JMP loc_5b0e         ;
 5c44: ce 84 62  loc_5c44        DEC loc_6284         ;
 5c47: 10 a1                     BPL loc_5bea         ;
@@ -8168,7 +7548,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5c8b: 6e 74 20 6f 72 20 70 72   .BYTE $6e,$74,$20,$6f,$72,$20,$70,$72  ; nt or pr
 5c93: 65 73 73 20 a1 45 53 43   .BYTE $65,$73,$73,$20,$a1,$45,$53,$43  ; ess .ESC
 5c9b: a0 2e 0d a6 0a 03 3e 20   .BYTE $a0,$2e,$0d,$a6,$0a,$03,$3e,$20  ; ......>
-5ca3: ff a6 00 03 a5 49 6e 76   .BYTE $ff,$a6,$00,$03,$a5,$49,$6e,$76  ; .....Inv
+5ca3: ff                        .BYTE $ff                              ; .
+5ca4: a6 00 03 a5 49 6e 76  str_INV_TRY_AGN  .BYTE $a6,$00,$03,$a5,$49,$6e,$76      ; ....Inv
 5cab: 61 6c 69 64 20 65 6e 74   .BYTE $61,$6c,$69,$64,$20,$65,$6e,$74  ; alid ent
 5cb3: 72 79 2c 20 74 72 79 20   .BYTE $72,$79,$2c,$20,$74,$72,$79,$20  ; ry, try
 5cbb: 61 67 61 69 6e 2e 0d ff   .BYTE $61,$67,$61,$69,$6e,$2e,$0d,$ff  ; again...
@@ -8177,7 +7558,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 ; TODO: How does this code get called?
 ;     Are the first 2 bytes below part of the sub or part of the data section above?
-5cc5: a5 4b     loc_5cc5        LDA CASSBT           ;
+5cc5: a5 4b     cont_5cc5       LDA CASSBT           ;
 5cc7: 48                        PHA                  ;
 5cc8: a2 05                     LDX #$05             ;
 5cca: 8e 04 5d  loc_5cca        STX dat_5d04         ;
@@ -8238,15 +7619,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5d3d: 31 32                     AND (bad_0032_L),Y    ; 12
 5d3f: 33 34                     .BYTE $33,$34     ; 34
 
-5d41: a6 00     dat_5d41        LDX dat_0000      ; ..
-5d43: 00                        BRK               ; .
-5d44: a2 b4                     LDX #$b4          ; ..
-5d46: 3a                        .BYTE $3a         ; :
-5d47: 19 28 ab                  ORA $ab28,Y       ; .(.
-5d4a: 0d a3 b6                  ORA $b6a3         ; ...
-5d4d: 5d a6 03                  EOR UNUSED_BYTES+18,X  ; ]..
-5d50: 02                        .BYTE $02         ; .
-5d51: 20 28 a1  dat_5d51        JSR $a128         ;  (.
+5d41: a6 00 00 a2 b4 3a 19 28  dat_5d41  .BYTE $a6,$00,$00,$a2,$b4,$3a,$19,$28  ; .....:.(
+5d49: ab 0d a3 b6 5d a6 03 02   .BYTE $ab,$0d,$a3,$b6,$5d,$a6,$03,$02  ; ....]...
+5d51: 20        dat_5d51        .BYTE $20            ;
+5d52: 28                        PLP                  ; (
 5d54: 31 a0                     AND ($a0),Y       ; 1.
 5d56: 29 20                     AND #$20          ; )
 5d58: b4 3c                     LDY NOCKSM,X      ; .<
@@ -8284,11 +7660,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5da3: 0d 0d a2                  ORA $a20d         ; ...
 5da6: ad 44 19                  LDA bad_1944      ; .D.
 5da9: ab                        .BYTE $ab         ; .
-5daa: 0d ff 00                  ORA FPTR2+1       ; ...
-5dad: 00        dat_5dad        BRK               ; .
-5dae: 00        dat_5dae        BRK               ; .
-5daf: 00        dat_5daf        BRK               ; .
-5db0: b2                        .BYTE $b2         ; .
+5daa: 0d ff                     .BYTE $0d,$ff
+5dac: 00        dat_5dac_L      .BYTE $00
+5dad: 00        dat_5dac_H      .BYTE $00         ; .
+5dae: 00        dat_5dae        .BYTE $00         ; .
+5daf: 00        dat_5daf        .BYTE $00         ; .
+5db0: b2        dat_5db0        .BYTE $b2         ; .
 5db1: ae 5d 02                  LDX LINBUF+22     ; .].
 5db4: 25 ae                     AND $ae           ; %.
 
@@ -8296,19 +7673,19 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5db6: a9 00                     LDA #$00          ;
 5db8: 8d af 5d                  STA dat_5daf      ;
 5dbb: ae af 5d                  LDX dat_5daf      ;
-5dbe: bc 55 5e                  LDY loc_5e55,X    ;
-5dc1: a9 20                     LDA #$20          ;
-5dc3: 99 51 5d                  STA dat_5d51,Y    ;
+5dbe: bc 55 5e                  LDY dat_5e55,X    ;
+5dc1: a9 20                     LDA #$20          ; Set
+5dc3: 99 51 5d                  STA dat_5d51,Y    ;     dat_5d51 + Y = $20 (32) ' '
 5dc6: bd 46 19                  LDA dat_1946,X    ;
 5dc9: 20 b4 4e                  JSR sub_4eb4      ;
 5dcc: 90 08                     BCC loc_5dd6      ;
-5dce: bc 55 5e                  LDY loc_5e55,X    ;
-5dd1: a9 2a                     LDA #$2a          ;
-5dd3: 99 51 5d                  STA dat_5d51,Y    ;
+5dce: bc 55 5e                  LDY dat_5e55,X    ;
+5dd1: a9 2a                     LDA #$2a          ; Set
+5dd3: 99 51 5d                  STA dat_5d51,Y    ;     dat_5d51 + Y = $2a (42) '*'
 5dd6: a9 54     loc_5dd6        LDA #$54          ; ???Set ???
-5dd8: 8d ac 5d                  STA loc_5dac      ; ???    address
-5ddb: a9 5e                     LDA #$5e          ; ???    to $5e54 []
-5ddd: 8d ad 5d                  STA dat_5dad      ;
+5dd8: 8d ac 5d                  STA dat_5dac_L    ; ???    address
+5ddb: a9 5e                     LDA #$5e          ; ???    to
+5ddd: 8d ad 5d                  STA dat_5dac_H    ; ???    $5e54 [dat_5e54]
 5de0: ad b0 51                  LDA loc_51b0      ; This checks a location in the code
 5de3: c9 d0                     CMP #$d0          ;     $d0 = BNE
 5de5: d0 1e                     BNE loc_5e05      ;
@@ -8321,13 +7698,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5df6: b1 43                     LDA (ZBUFP),Y     ;
 5df8: 8d ae 5d                  STA dat_5dae      ;
 5dfb: a9 b0                     LDA #$b0          ; ???Set ???
-5dfd: 8d ac 5d                  STA loc_5dac      ; ???    address
-5e00: a9 5d                     LDA #$5d          ; ???    to $5db0 []
-5e02: 8d ad 5d                  STA dat_5dad      ;
+5dfd: 8d ac 5d                  STA dat_5dac_L    ; ???    address
+5e00: a9 5d                     LDA #$5d          ; ???    to
+5e02: 8d ad 5d                  STA dat_5dac_H    ; ???    $5db0 [dat_5db0]
 5e05: ee af 5d  loc_5e05        INC dat_5daf      ;
 5e08: 60                        RTS               ; Return to caller
 
-5e09: a6 00 00 a5 b4 3a 19 28  str_5e09  .BYTE $a6,$00,$00,$a5,$b4,$3a,$19,$28  ; .....:.(
+5e09: a6 00 00 a5 b4 3a 19 28  str_4SEL_MENU  .BYTE $a6,$00,$00,$a5,$b4,$3a,$19,$28  ; .....:.(
 5e11: 0d a6 03 02 20 28 a1 31   .BYTE $0d,$a6,$03,$02,$20,$28,$a1,$31  ; .... (.1
 5e19: a0 29 20 ad 3c 19 ab a6   .BYTE $a0,$29,$20,$ad,$3c,$19,$ab,$a6  ; .) .<...
 5e21: 03 03 20 28 a1 32 a0 29   .BYTE $03,$03,$20,$28,$a1,$32,$a0,$29  ; .. (.2.)
@@ -8337,34 +7714,47 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5e41: a1 34 a0 29 20 ad 42 19   .BYTE $a1,$34,$a0,$29,$20,$ad,$42,$19  ; .4.) .B.
 5e49: ab 0d 0d a2 ad 44 19 ab   .BYTE $ab,$0d,$0d,$a2,$ad,$44,$19,$ab  ; .....D..
 5e51: 0d ff                     .BYTE $0d,$ff                          ; ..
-5e53: 00 ae        str_5e53     .BYTE $00,$ae                          ; ...
-5e56: 00 16 2c 42  dat_5e55     .BYTE $00,$16,$2c,$42                  ; .,B
-5e59: 46 6f 6f 64 20 50 61 63   .BYTE $46,$6f,$6f,$64,$20,$50,$61,$63  ; Food Pac
+5e53: 00        dat_5e53        .BYTE $00                              ; .
+5e54: ae        dat_5e54        .BYTE $ae                              ; .
+5e56: 00 16 2c 42  dat_5e55     .BYTE $00,$16,$2c,$42                  ; ..,B
+5e59: 46 6f 6f 64 20 50 61 63  str_FOOD_PKTS  .BYTE $46,$6f,$6f,$64,$20,$50,$61,$63  ; Food Pac
 5e61: 6b 65 74 73 3a 20 b2 bb   .BYTE $6b,$65,$74,$73,$3a,$20,$b2,$bb  ; kets: ..
-5e69: 63 03 ae 57 61 74 65 72   .BYTE $63,$03,$ae,$57,$61,$74,$65,$72  ; c..Water
+5e69: 63 03 ae                  .BYTE $63,$03,$ae                      ; c..
+5e6c: 57 61 74 65 72  str_WTR_FLSKS  .BYTE $57,$61,$74,$65,$72         ; Water
 5e71: 20 46 6c 61 73 6b 73 3a   .BYTE $20,$46,$6c,$61,$73,$6b,$73,$3a  ;  Flasks:
-5e79: 20 b2 bc 63 03 ae 55 6e   .BYTE $20,$b2,$bc,$63,$03,$ae,$55,$6e  ;  ..c..Un
+5e79: 20 b2 bc 63 03 ae         .BYTE $20,$b2,$bc,$63,$03,$ae          ;  ..c..
+5e7f: 55 6e     str_UNLT_TRCH   .BYTE $55,$6e                          ;  Un
 5e81: 6c 69 74 20 54 6f 72 63   .BYTE $6c,$69,$74,$20,$54,$6f,$72,$63  ; lit Torc
 5e89: 68 65 73 3a 20 b2 bd 63   .BYTE $68,$65,$73,$3a,$20,$b2,$bd,$63  ; hes: ..c
-5e91: 03 ae 54 69 6d 65 70 69   .BYTE $03,$ae,$54,$69,$6d,$65,$70,$69  ; ..Timepi
+5e91: 03 ae                     .BYTE $03,$ae                          ; ..
+5e93: 54 69 6d 65 70 69  str_TMEPIECES  .BYTE $54,$69,$6d,$65,$70,$69  ; Timepi
 5e99: 65 63 65 73 3a 20 b2 c1   .BYTE $65,$63,$65,$73,$3a,$20,$b2,$c1  ; eces: ..
-5ea1: 63 03 ae 43 6f 6d 70 61   .BYTE $63,$03,$ae,$43,$6f,$6d,$70,$61  ; c..Compa
+5ea1: 63 03 ae                  .BYTE $63,$03,$ae                      ; c..
+5ea4: 43 6f 6d 70 61  str_COMPASSES  .BYTE $43,$6f,$6d,$70,$61         ; Compa
 5ea9: 73 73 65 73 3a 20 b2 c0   .BYTE $73,$73,$65,$73,$3a,$20,$b2,$c0  ; sses: ..
-5eb1: 63 03 ae 4b 65 79 73 3a   .BYTE $63,$03,$ae,$4b,$65,$79,$73,$3a  ; c..Keys:
-5eb9: 20 b2 bf 63 03 ae 43 72   .BYTE $20,$b2,$bf,$63,$03,$ae,$43,$72  ;  ..c..Cr
+5eb1: 63 03 ae                  .BYTE $63,$03,$ae                      ; c..
+5eb4: 4b 65 79 73 3a  str_KEYS  .BYTE $4b,$65,$79,$73,$3a              ; Keys:
+5eb9: 20 b2 bf 63 03 ae         .BYTE $20,$b2,$bf,$63,$03,$ae          ;  ..c..
+5ebf: 43 72     str_CRYSTALS    .BYTE $43,$72                          ; Cr
 5ec1: 79 73 74 61 6c 73 3a 20   .BYTE $79,$73,$74,$61,$6c,$73,$3a,$20  ; ystals:
-5ec9: b2 be 63 03 ae 47 65 6d   .BYTE $b2,$be,$63,$03,$ae,$47,$65,$6d  ; ..c..Gem
+5ec9: b2 be 63 03 ae            .BYTE $b2,$be,$63,$03,$ae              ; ..c..
+5ece: 47 65 6d  str_GEMS        .BYTE $47,$65,$6d                      ; Gem
 5ed1: 73 3a 20 b1 b7 63 06 ae   .BYTE $73,$3a,$20,$b1,$b7,$63,$06,$ae  ; s: ..c..
-5ed9: 4a 65 77 65 6c 73 3a 20   .BYTE $4a,$65,$77,$65,$6c,$73,$3a,$20  ; Jewels:
-5ee1: b1 b9 63 06 ae 47 6f 6c   .BYTE $b1,$b9,$63,$06,$ae,$47,$6f,$6c  ; ..c..Gol
+5ed9: 4a 65 77 65 6c 73 3a 20  str_JEWELS  .BYTE $4a,$65,$77,$65,$6c,$73,$3a,$20  ; Jewels:
+5ee1: b1 b9 63 06 ae            .BYTE $b1,$b9,$63,$06,$ae              ; ..c..
+5ee6: 47 6f 6c  str_GOLD        .BYTE $47,$6f,$6c                      ; Gol
 5ee9: 64 20 20 3a 20 b1 b1 63   .BYTE $64,$20,$20,$3a,$20,$b1,$b1,$63  ; d  : ..c
-5ef1: 06 ae 53 69 6c 76 65 72   .BYTE $06,$ae,$53,$69,$6c,$76,$65,$72  ; ..Silver
-5ef9: 3a 20 b1 b3 63 06 ae 43   .BYTE $3a,$20,$b1,$b3,$63,$06,$ae,$43  ; : ..c..C
+5ef1: 06 ae                     .BYTE $06,$ae                          ; ..
+5ef3: 53 69 6c 76 65 72  str_SILVER  .BYTE $53,$69,$6c,$76,$65,$72     ; Silver
+5ef9: 3a 20 b1 b3 63 06 ae      .BYTE $3a,$20,$b1,$b3,$63,$06,$ae      ; : ..c..
+5f00: 43        str_COPPER      .BYTE $43                              ; C
 5f01: 6f 70 70 65 72 3a 20 b1   .BYTE $6f,$70,$70,$65,$72,$3a,$20,$b1  ; opper: .
-5f09: b5 63 06 ae 59 5e 6c 5e   .BYTE $b5,$63,$06,$ae,$59,$5e,$6c,$5e  ; .c..Y^l^
+5f09: b5 63 06 ae               .BYTE $b5,$63,$06,$ae                  ; .c..
+5f0d: 59 5e 6c 5e  addr_5f0d    .BYTE $59,$5e,$6c,$5e                  ; Y^l^
 5f11: 7f 5e 93 5e a4 5e b4 5e   .BYTE $7f,$5e,$93,$5e,$a4,$5e,$b4,$5e  ; ^.^.^.^
 5f19: bf 5e ce 5e d9 5e e6 5e   .BYTE $bf,$5e,$ce,$5e,$d9,$5e,$e6,$5e  ; .^.^.^.^
-5f21: f3 5e 00 5f 55 53 45 00   .BYTE $f3,$5e,$00,$5f,$55,$53,$45,$00  ; .^._USE.
+5f21: f3 5e 00 5f               .BYTE $f3,$5e,$00,$5f                  ; .^._
+5f25: 55 53 45 00  str_5f25     .BYTE $55,$53,$45,$00                  ; USE.
 5f29: 44 52 4f 50 00 43 41 53   .BYTE $44,$52,$4f,$50,$00,$43,$41,$53  ; DROP.CAS
 5f31: 54 00 47 45 54 00 4f 46   .BYTE $54,$00,$47,$45,$54,$00,$4f,$46  ; T.GET.OF
 5f39: 46 45 52 00               .BYTE $46,$45,$52,$00                  ; FER.
@@ -8372,7 +7762,6 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5f41: 20 a1 23 a0 20 6f 72 20   .BYTE $20,$a1,$23,$a0,$20,$6f,$72,$20  ;  .#. or
 5f49: a1 45 53 43 a0 20 74 6f   .BYTE $a1,$45,$53,$43,$a0,$20,$74,$6f  ; .ESC. to
 5f51: 20 65 78 69 74 ae         .BYTE $20,$65,$78,$69,$74,$ae          ;  exit.
-
 5f57: 49 74 65 6d 20 a1  str_NUM_FWD_BCK  .BYTE $49,$74,$65,$6d,$20,$a1 ; Item .
 5f5d: 23 a0 2c 20               .BYTE $23,$a0,$2c,$20                  ; #.,
 5f61: a1 46 a0 6f 72 77 61 72   .BYTE $a1,$46,$a0,$6f,$72,$77,$61,$72  ; .F.orwar
@@ -8380,10 +7769,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 5f71: 6b 2c 20 6f 72 20 a1 45   .BYTE $6b,$2c,$20,$6f,$72,$20,$a1,$45  ; k, or .E
 5f79: 53 43 a0 20 74 6f 20 65   .BYTE $53,$43,$a0,$20,$74,$6f,$20,$65  ; SC. to e
 5f81: 78 69 74 ae               .BYTE $78,$69,$74,$ae                  ; xit.
-5f85: 57 65 61 72               .BYTE $57,$65,$61,$72                  ; Wear
+5f85: 57 65 61 72  str_WEAR_INSTD  .BYTE $57,$65,$61,$72                  ; Wear
 5f89: 20 69 6e 73 74 65 61 64   .BYTE $20,$69,$6e,$73,$74,$65,$61,$64  ;  instead
 5f91: 20 6f 66 3a 00 a6 00 00   .BYTE $20,$6f,$66,$3a,$00,$a6,$00,$00  ;  of:....
-5f99: a5 55 73 65 20 61 73 3a   .BYTE $a5,$55,$73,$65,$20,$61,$73,$3a  ; .Use as:
+5f99: a5 55 73 65 20 61 73 3a  str_USE_AS  .BYTE $a5,$55,$73,$65,$20,$61,$73,$3a  ; .Use as:
 5fa1: 0d a6 0b 03 a1 31 a0 20   .BYTE $0d,$a6,$0b,$03,$a1,$31,$a0,$20  ; .....1.
 5fa9: 50 72 69 6d 61 72 79 20   .BYTE $50,$72,$69,$6d,$61,$72,$79,$20  ; Primary
 5fb1: 77 65 61 70 6f 6e a6 0b   .BYTE $77,$65,$61,$70,$6f,$6e,$a6,$0b  ; weapon..
@@ -8407,10 +7796,11 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 6039: 74 20 73 70 69 6c 6c 73   .BYTE $74,$20,$73,$70,$69,$6c,$6c,$73  ; t spills
 6041: 20 6f 6e 74 6f 20 74 68   .BYTE $20,$6f,$6e,$74,$6f,$20,$74,$68  ;  onto th
 6049: 65 20 67 72 6f 75 6e 64   .BYTE $65,$20,$67,$72,$6f,$75,$6e,$64  ; e ground
-6051: 2e 0d ff 30 30 30 20 20   .BYTE $2e,$0d,$ff,$30,$30,$30,$20,$20  ; ...000
+6051: 2e 0d ff  dat_6051        .BYTE $2e,$0d,$ff                      ; ...
+6054: 30 30 30 20 20            .BYTE $30,$30,$30,$20,$20              ; 000
 6059: 20 10 10 10 10 10 10 10   .BYTE $20,$10,$10,$10,$10,$10,$10,$10  ;  .......
 6061: 10 10 10                  .BYTE $10,$10,$10                      ; ...
-6064: a6 00 01 a5 59  str_NO_DRNK  .BYTE $a6,$00,$01,$a5,$59              ; ....Y
+6064: a6 00 01 a5 59  str_NO_DRNK  .BYTE $a6,$00,$01,$a5,$59           ; ....Y
 6069: 6f 75 72 20 74 68 72 6f   .BYTE $6f,$75,$72,$20,$74,$68,$72,$6f  ; our thro
 6071: 61 74 20 66 61 69 6c 73   .BYTE $61,$74,$20,$66,$61,$69,$6c,$73  ; at fails
 6079: 20 74 6f 20 61 6c 6c 6f   .BYTE $20,$74,$6f,$20,$61,$6c,$6c,$6f  ;  to allo
@@ -8431,10 +7821,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 60e9: a6 00 02 a5 59 6f 75 20   .BYTE $a6,$00,$02,$a5,$59,$6f,$75,$20  ; ....You
 60f1: 64 72 69 6e 6b 20 61 0d   .BYTE $64,$72,$69,$6e,$6b,$20,$61,$0d  ; drink a.
 60f9: 0d a5 b4 3c 19 26 2e 0d   .BYTE $0d,$a5,$b4,$3c,$19,$26,$2e,$0d  ; ...<.&..
-6101: ff a8 a6 00 03 a5 59 6f   .BYTE $ff,$a8,$a6,$00,$03,$a5,$59,$6f  ; ......Yo
+6101: ff                        .BYTE $ff                              ; .
+6102: a8 a6 00 03 a5 59 6f  str_ND_CRYSTL  .BYTE $a8,$a6,$00,$03,$a5,$59,$6f      ; .....Yo
 6109: 75 20 6e 65 65 64 20 61   .BYTE $75,$20,$6e,$65,$65,$64,$20,$61  ; u need a
 6111: 20 63 72 79 73 74 61 6c   .BYTE $20,$63,$72,$79,$73,$74,$61,$6c  ;  crystal
-6119: 2e 0d ff 04 01 f0 00 00   .BYTE $2e,$0d,$ff,$04,$01,$f0,$00,$00  ; ........
+6119: 2e 0d ff                  .BYTE $2e,$0d,$ff                      ; ...
+611c: 04 01 f0 00 00  dat_611c  .BYTE $04,$01,$f0,$00,$00              ; .....
 6121: 00 00 01 02 80 01 00 08   .BYTE $00,$00,$01,$02,$80,$01,$00,$08  ; ........
 6129: 8b 24 04 00 02 10 4c 69   .BYTE $8b,$24,$04,$00,$02,$10,$4c,$69  ; .$....Li
 6131: 74 20 54 6f 72 63 68 00   .BYTE $74,$20,$54,$6f,$72,$63,$68,$00  ; t Torch.
@@ -8445,38 +7837,34 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 6151: 59 6f 75 20 68 61 76 65   .BYTE $59,$6f,$75,$20,$68,$61,$76,$65  ; You have
 6159: 20 6e 6f 6e 65 2e 0d ff   .BYTE $20,$6e,$6f,$6e,$65,$2e,$0d,$ff  ;  none...
 6161: a6 00     str_TIME        .BYTE $a6,$00        ; ..
-6163: 02 a5 49 74 20 69  sub_6163  .BYTE $02,$a5,$49,$74,$20,$69  ; ..It i
+6163: 02 a5 49 74 20 69         .BYTE $02,$a5,$49,$74,$20,$69  ; ..It i
 6169: 73 20 b2 09               .BYTE $73,$20,$b2,$09  ; s ..
-616d: 63 02 20  sub_616d        .BYTE $63,$02,$20    ; c.
-6170: 6d        sub_6170        .BYTE $6d            ; m
+616d: 63 02 20                  .BYTE $63,$02,$20    ; c.
+6170: 6d                        .BYTE $6d            ; m
 6171: 69 6e 75 74 65 73 20 0d   .BYTE $69,$6e,$75,$74,$65,$73,$20,$0d  ; inutes .
 6179: a5 70 61 73 74 20 74 68   .BYTE $a5,$70,$61,$73,$74,$20,$74,$68  ; .past th
 6181: 65 20 b2 0a 63 02 74 68   .BYTE $65,$20,$b2,$0a,$63,$02,$74,$68  ; e ..c.th
 6189: 20 68 6f 75 72 2e 0d ff   .BYTE $20,$68,$6f,$75,$72,$2e,$0d,$ff  ;  hour...
-
-6191: 74 68 73 74 6e 64 72 64   .BYTE $74,$68,$73,$74,$6e,$64,$72,$64  ; thstndrd
+6191: 74 68 73 74 6e 64 72 64  dat_6191  .BYTE $74,$68,$73,$74,$6e,$64,$72,$64  ; thstndrd
 6199: 74 68 74 68 74 68 74 68   .BYTE $74,$68,$74,$68,$74,$68,$74,$68  ; thththth
 61a1: 74 68 74 68 74 68 74 68   .BYTE $74,$68,$74,$68,$74,$68,$74,$68  ; thththth
 61a9: 74 68 74 68 74 68 74 68   .BYTE $74,$68,$74,$68,$74,$68,$74,$68  ; thththth
 61b1: 74 68 74 68 74 68 74 68   .BYTE $74,$68,$74,$68,$74,$68,$74,$68  ; thththth
 61b9: 74 68 73 74 6e 64 72 64   .BYTE $74,$68,$73,$74,$6e,$64,$72,$64  ; thstndrd
-61c1: a6 00 04 a5 59 6f 75 20   .BYTE $a6,$00,$04,$a5,$59,$6f,$75,$20  ; ....You
+61c1: a6 00 04 a5 59 6f 75 20  str_CARY_2_MCH  .BYTE $a6,$00,$04,$a5,$59,$6f,$75,$20  ; ....You
 61c9: 61 72 65 20 63 61 72 72   .BYTE $61,$72,$65,$20,$63,$61,$72,$72  ; are carr
 61d1: 79 69 6e 67 20 74 6f 6f   .BYTE $79,$69,$6e,$67,$20,$74,$6f,$6f  ; ying too
 61d9: 20 6d 75 63 68 21 0d ff   .BYTE $20,$6d,$75,$63,$68,$21,$0d,$ff  ;  much!..
-
 61e1: a8 a6 00 02 a5 59 6f 75  str_YOU_CAST  .BYTE $a8,$a6,$00,$02,$a5,$59,$6f,$75  ; .....You
 61e9: 20 63 61 73 74 20 74 68   .BYTE $20,$63,$61,$73,$74,$20,$74,$68  ;  cast th
 61f1: 65 20 73 70 65 6c 6c 20   .BYTE $65,$20,$73,$70,$65,$6c,$6c,$20  ; e spell
 61f9: 6f 66 0d 0d a5 a1 7f a0   .BYTE $6f,$66,$0d,$0d,$a5,$a1,$7f,$a0  ; of.....
 6201: 20 b4 3c 19 1e 2e 20 a1   .BYTE $20,$b4,$3c,$19,$1e,$2e,$20,$a1  ;  .<... .
 6209: 7f a0 0d ff               .BYTE $7f,$a0,$0d,$ff                  ; ...
-
 620d: a6 00 03 a5 54 68 65 20  str_SPEL_FAIL  .BYTE $a6,$00,$03,$a5,$54,$68,$65,$20  ; ....The
 6215: 73 70 65 6c 6c 20 66 61   .BYTE $73,$70,$65,$6c,$6c,$20,$66,$61  ; spell fa
 621d: 69 6c 65 64 21 0d ff      .BYTE $69,$6c,$65,$64,$21,$0d,$ff      ; iled!..
-
-6224: a6 00 02 a3 e8           str_SPEL_BKFR  .BYTE $a6,$00,$02,$a3,$e8  ; .....
+6224: a6 00 02 a3 e8  str_SPEL_BKFR  .BYTE $a6,$00,$02,$a3,$e8  ; .....
 6229: 59 a5 54 68 65 20 73 70   .BYTE $59,$a5,$54,$68,$65,$20,$73,$70  ; Y.The sp
 6231: 65 6c 6c 20 66 61 69 6c   .BYTE $65,$6c,$6c,$20,$66,$61,$69,$6c  ; ell fail
 6239: 65 64 0d 0d a5 61 6e 64   .BYTE $65,$64,$0d,$0d,$a5,$61,$6e,$64  ; ed...and
@@ -8484,13 +7872,11 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 6249: 65 64 20 66 6f 72 20 b2   .BYTE $65,$64,$20,$66,$6f,$72,$20,$b2  ; ed for .
 6251: 82 62 02 21 0d a3 e5 59   .BYTE $82,$62,$02,$21,$0d,$a3,$e5,$59  ; .b.!...Y
 6259: ff                        .BYTE $ff                              ; .
-
-625a: a6 00 03 a5 53 6f 6d 65   .BYTE $a6,$00,$03,$a5,$53,$6f,$6d,$65  ; ....Some
+625a: a6 00 03 a5 53 6f 6d 65  str_SOMTH_ODD  .BYTE $a6,$00,$03,$a5,$53,$6f,$6d,$65  ; ....Some
 6262: 74 68 69 6e 67 20 69 73   .BYTE $74,$68,$69,$6e,$67,$20,$69,$73  ; thing is
 626a: 20 6f 64 64 20 68 65 72   .BYTE $20,$6f,$64,$64,$20,$68,$65,$72  ;  odd her
 6272: 65 2e 0d ff               .BYTE $65,$2e,$0d,$ff                  ; e...
-
-6276: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
+6276: 00 00 00 00 00 00 00 00  dat_6276  .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
 627e: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
 6286: 00 00 00                  .BYTE $00,$00,$00  ; ...
 6289: 00 00 00 20 00 20 00 00   .BYTE $00,$00,$00,$20,$00,$20,$00,$00  ; ... . ..
@@ -8507,4 +7893,5 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 62e1: 0d a5 63 6f 72 6e 65 72   .BYTE $0d,$a5,$63,$6f,$72,$6e,$65,$72  ; ..corner
 62e9: 20 6f 66 20 6c 65 76 65   .BYTE $20,$6f,$66,$20,$6c,$65,$76,$65  ;  of leve
 62f1: 6c 20 b2 1d 63 01 2e 0d   .BYTE $6c,$20,$b2,$1d,$63,$01,$2e,$0d  ; l ..c...
-62f9: ff 4d 53 47 7c 19 87      .BYTE $ff,$4d,$53,$47,$7c,$19,$87  ; .MSG|..
+62f9: ff                        .BYTE $ff                              ; .
+62fa: 4d 53 47 7c 19 87         .BYTE $4d,$53,$47,$7c,$19,$87          ; .MSG|..
