@@ -2,327 +2,308 @@
 ; 0000 L0a00 @8000 [exe]
 * = $8000
 
-8000: a9 40     INIT_IRQS       LDA #$40          ; Set low byte of Break key interrupt vector to $40
-8002: 8d 36 02                  STA BRKKY         ;     (default is $E754, so updates to $E740) - see $801b below
-8005: a9 00                     LDA #$00          ; Set A = 0
-8007: 8d 0e d2                  STA IRQEN         ; Disable IRQs
-800a: 8d 0e d4                  STA NMIEN         ; Disable Non-Maskable IRQs (VBI, DLI)
-800d: 8d 2f 02                  STA SDMCTL        ; Disable DMA / Antic processing
-8010: 8d 56 02                  STA UNK_BYTE_0256  ;   $256 is also LINBUF+15
-8013: aa                        TAX               ; Set X = 0
-8014: 95 00     loc_8014        STA LINZBS,X      ; Zero out all
-8016: e8                        INX               ;     page 0
-8017: d0 fb                     BNE loc_8014      ;     bytes
-8019: a9 07                     LDA #$07          ; Set high byte of Break key interrupt
-801b: 8d 37 02                  STA BRKKY+1       ;     vector to $07 (e.g. $0740)
-801e: a9 97                     LDA #$97          ; Set POKEY serial bus
-8020: 8d 0e 02                  STA VSEROC        ;     transmit complete
-8023: a9 22                     LDA #$22          ;     interrupt vector
-8025: 8d 0f 02                  STA VSEROC+1      ;     to $2297
-8028: a9 4f                     LDA #$4f          ; Set POKEY serial I/O
-802a: 8d 0c 02                  STA VSEROR        ;     transmit ready
-802d: a9 22                     LDA #$22          ;     interrupt vetor
-802f: 8d 0d 02                  STA VSEROR+1      ;     to $224f
-8032: a9 e7                     LDA #$e7          ; Set POKEY serial I/O
-8034: 8d 0a 02                  STA VSERIN        ;     bus receive data ready
-8037: a9 21                     LDA #$21          ;     interrupt vector
-8039: 8d 0b 02                  STA VSERIN+1      ;     to $21e7
-803c: a9 ac                     LDA #$ac          ; Set the IRQ immediate
-803e: 8d 16 02                  STA VIMIRQ        ;     vector
-8041: a9 22                     LDA #$22          ;     to
-8043: 8d 17 02                  STA VIMIRQ+1      ;     $22AC
-8046: a9 53                     LDA #$53          ; Set the
-8048: 8d 08 02                  STA VKEYBD        ;    POKEY keyboard
-804b: a9 26                     LDA #$26          ;    interrupt vector
-804d: 8d 09 02                  STA VKEYBD+1      ;    to $2653
-8050: a9 9d                     LDA #$9d          ; Set the
-8052: 8d 54 02                  STA SUB_0254_VEC  ;     ???
-8055: a9 19                     LDA #$19          ;     vector
-8057: 8d 55 02                  STA SUB_0254_VEC+1 ;    to $199D
-805a: a9 47                     LDA #$47          ; Set the
-805c: 8d 22 02                  STA VVBLKI        ;     VBLANK immediate
-805f: a9 23                     LDA #$23          ;     interrupt vector
-8061: 8d 23 02                  STA VVBLKI+1      ;     to $2347
-8064: 20 9e 81                  JSR sub_819e      ;
-8067: ad 58 02                  LDA LINBUF+17     ;
-806a: 0a                        ASL               ;
-806b: 2a                        ROL               ;
-806c: 2a                        ROL               ;
-806d: 29 03                     AND #$03          ;
-806f: 20 58 81                  JSR sub_8158      ;
-8072: a9 40                     LDA #$40          ; Enable Non-Maskable
-8074: 8d 0e d4                  STA NMIEN         ;     VBI Interrupts
-8077: ad 36 02                  LDA BRKKY         ; ?? Still $40 at this point ??
-807a: 8d 0e d2                  STA IRQEN         ; ?? If so, it would enable VKEYBD interrupts ??
-807d: 60                        RTS               ; Return to caller
+; Initializes IRQ handler vectors
+;
+; - Zeros all page 0 bytes
+; - Sets VSEROC = $2297 [irq_VSEROC_2297]
+; - Sets VSEROR = $224f [irq_VSEROR_224f]
+; - Sets VSERIN = $21e7 [irq_VSERIN_21e7]
+; - Sets VKEYBD = $2653 [irq_VKEYBD_2653]
+; - Sets VIMIRQ = $22ac [irq_VIMIRQ_22ac]
+; - Sets dat_022f = 0
+; - Sets dat_0256 = 0
+; - Sets CUR_SKCTL = 7
+; - Sets CUR_IRQEN = $40 (64) [VKEYBD enabled]
+; - Sets CUR_DLISTL/H = $199D [DLIST_199d] (40x25? 1bpp character display)
+; - Enables VVBLKI (vertical blank) interrupts
+; - Enables VKEYBD (keyboard) interrupts
+;
+8000: a9 40     INIT_IRQS       LDA #$40             ; Set
+8002: 8d 36 02                  STA CUR_IRQEN        ;     CUR_IRQEN = $40 (64) [VKEYBD enabled]
+8005: a9 00                     LDA #$00             ; Set
+8007: 8d 0e d2                  STA IRQEN            ;     IRQEN = 0 (Disable IRQs)
+800a: 8d 0e d4                  STA NMIEN            ; Set NMIEN = 0 (Disable Non-Maskable IRQs (VBI, DLI))
+800d: 8d 2f 02                  STA dat_022f         ; Set dat_022f = 0
+8010: 8d 56 02                  STA dat_0256         ; Set dat_0256 = 0
+8013: aa                        TAX                  ; Set X = 0
+8014: 95 00     loc_8014        STA dat_0000,X       ; Zero out all
+8016: e8                        INX                  ;     page 0
+8017: d0 fb                     BNE loc_8014         ;     bytes
+8019: a9 07                     LDA #$07             ; Set
+801b: 8d 37 02                  STA CUR_SKCTL        ;     CUR_SKCTL = 7
+801e: a9 97                     LDA #$97             ; Set [VSEROC] POKEY serial bus
+8020: 8d 0e 02                  STA VSEROC           ;     transmit complete
+8023: a9 22                     LDA #$22             ;     interrupt vector
+8025: 8d 0f 02                  STA VSEROC+1         ;     to $2297 [irq_VSEROC_2297]
+8028: a9 4f                     LDA #$4f             ; Set [VSEROR] POKEY serial I/O
+802a: 8d 0c 02                  STA VSEROR           ;     transmit ready
+802d: a9 22                     LDA #$22             ;     interrupt vetor
+802f: 8d 0d 02                  STA VSEROR+1         ;     to $224f [irq_VSEROR_224f]
+8032: a9 e7                     LDA #$e7             ; Set [VSERIN] POKEY serial I/O
+8034: 8d 0a 02                  STA VSERIN           ;     bus receive data ready
+8037: a9 21                     LDA #$21             ;     interrupt vector
+8039: 8d 0b 02                  STA VSERIN+1         ;     to $21e7 [irq_VSERIN_21e7]
+803c: a9 ac                     LDA #$ac             ; Set the [VIMIRQ]
+803e: 8d 16 02                  STA VIMIRQ           ;     IRQ immediate
+8041: a9 22                     LDA #$22             ;     interrupt vector
+8043: 8d 17 02                  STA VIMIRQ+1         ;     to $22ac [irq_VIMIRQ_22ac]
+8046: a9 53                     LDA #$53             ; Set the [VKEYBD]
+8048: 8d 08 02                  STA VKEYBD           ;     POKEY keyboard
+804b: a9 26                     LDA #$26             ;     interrupt vector
+804d: 8d 09 02                  STA VKEYBD+1         ;     to $2653 [irq_VKEYBD_2653]
+8050: a9 9d                     LDA #$9d             ; Set the
+8052: 8d 54 02                  STA CUR_DLISTL       ;     CUR_DLISTL/CUR_DLISTH
+8055: a9 19                     LDA #$19             ;     vector
+8057: 8d 55 02                  STA CUR_DLISTH       ;     to $199D [DLIST_199d] (40x25? 1bpp character display)
+805a: a9 47                     LDA #$47             ; Set the
+805c: 8d 22 02                  STA VVBLKI           ;     VBLANK immediate
+805f: a9 23                     LDA #$23             ;     interrupt vector
+8061: 8d 23 02                  STA VVBLKI+1         ;     to $2347 [irq_VVBLKI_2347]
+8064: 20 9e 81                  JSR sub_819e         ; Call $819e [sub_819e]
+8067: ad 58 02                  LDA dat_0258         ; Set
+806a: 0a                        ASL                  ;    A = (dat_0258 >> 6) & 3
+806b: 2a                        ROL                  ;    (e.g. Bits 6 & 7 -> bits 0 & 1)
+806c: 2a                        ROL                  ;    ...
+806d: 29 03                     AND #$03             ;    ...
+806f: 20 58 81                  JSR sub_8158         ; Call $8158 [sub_8158]
+8072: a9 40                     LDA #$40             ; Enable Non-Maskable
+8074: 8d 0e d4                  STA NMIEN            ;     VBI Interrupts
+8077: ad 36 02                  LDA CUR_IRQEN        ; ?? Still $40 at this point or is it modified by the sub call ??
+807a: 8d 0e d2                  STA IRQEN            ; ?? If so, it would enable VKEYBD interrupts ??
+807d: 60                        RTS                  ; Return to caller
 
 ; Entry point for system initialization
-807e: 20 00 80  KERNEL_ENTRY    JSR INIT_IRQS     ; Invoke IRQ initialization
-8081: a9 14                     LDA #$14          ; Set CHBASE (character set font)
-8083: 8d 09 d4                  STA CHBASE        ;     to $14 (20) (e.g. font is at $1400)
-8086: 20 bc 80                  JSR sub_80bc      ;
-8089: 20 9f 80                  JSR sub_809f      ;
-808c: a9 00                     LDA #$00          ;
-808e: 20 0d 1a                  JSR $1a0d         ;
-8091: a9 40                     LDA #$40          ;
-8093: 8d 36 02                  STA BRKKY         ;
-8096: 8d 0e d2                  STA IRQEN         ;
-8099: 20 d2 80                  JSR sub_80d2      ;
-809c: 4c c6 2e                  JMP $2ec6         ;
+;
+; - Sets character set to DUNGEON_CHRSET
+; - Sets display mode to 0 (plain 40x25 character display)
+; - Enables VKEYBD interrupts
+; - Calls sub_80d2
+; - Transfers execution to loc_2ec6
+;
+807e: 20 00 80  KERNEL_ENTRY    JSR INIT_IRQS        ; Call $8000 [INIT_IRQS] - Invoke IRQ initialization
+8081: a9 14                     LDA #$14             ; Set CHBASE (character set font)
+8083: 8d 09 d4                  STA CHBASE           ;     to $14 (20) (e.g. font is at $1400 [DUNGEON_CHRSET])
+8086: 20 bc 80                  JSR sub_80bc         ; Call $80bc [sub_80bc]
+8089: 20 9f 80                  JSR sub_809f         ; Call $809f [sub_809f]
+808c: a9 00                     LDA #$00             ; Set display mode to 0
+808e: 20 0d 1a                  JSR SET_DISP_MODE    ;     (plain 40x25 character display)
+8091: a9 40                     LDA #$40             ; Set
+8093: 8d 36 02                  STA CUR_IRQEN        ;     CUR_IRQEN = $40 (64) [VKEYBD enabled]
+8096: 8d 0e d2                  STA IRQEN            ; Set IRQEN = $40 (64) [VKEYBD enabled]
+8099: 20 d2 80                  JSR sub_80d2         ; Call $80d2 [sub_80d2]
+809c: 4c c6 2e                  JMP $2ec6            ; Continue @ $2ec6 [KERNEL_INIT]
 
-809f: a2 02     sub_809f        LDX #$02          ;
-80a1: a9 00                     LDA #$00          ;
-80a3: 9d c1 18  loc_80a3        STA UNK_TBL_18C1,X  ;
-80a6: 9d c4 18                  STA $18c4,X       ;
-80a9: 9d c7 18                  STA $18c7,X       ;
-80ac: ca                        DEX               ;
-80ad: 10 f4                     BPL loc_80a3      ;
-80af: 85 1f                     STA PTEMP         ;
-80b1: 85 20                     STA ICHIDZ        ;
-80b3: 85 21                     STA ICDNOZ        ;
-80b5: 85 25                     STA ICBAHZ        ;
-80b7: 85 24                     STA ICBALZ        ;
-80b9: 85 26                     STA ICPTLZ        ;
-80bb: 60                        RTS               ;
+809f: a2 02     sub_809f        LDX #$02             ; Set X = 2
+80a1: a9 00                     LDA #$00             ; Set A = 0
+80a3: 9d c1 18  loc_80a3        STA tbl_18c1,X       ; Loop
+80a6: 9d c4 18                  STA dat_18c4,X       ;     Set tbl_18c1,X = 0
+80a9: 9d c7 18                  STA dat_18c7,X       ;     Set dat_18c4,X = 0
+80ac: ca                        DEX                  ;     Set dat_18c7,X = 0
+80ad: 10 f4                     BPL loc_80a3         ;     Subtract 1 from X
+                                                     ; Repeat while (X >= 0)
+80af: 85 1f                     STA dat_001f         ; Set dat_001f = 0
+80b1: 85 20                     STA dat_0020         ; Set dat_0020 = 0
+80b3: 85 21                     STA dat_0021         ; Set dat_0021 = 0
+80b5: 85 25                     STA dat_0025         ; Set dat_0025 = 0
+80b7: 85 24                     STA dat_0024         ; Set dat_0024 = 0
+80b9: 85 26                     STA dat_0026         ; Set dat_0026 = 0
+80bb: 60                        RTS                  ; Return to caller
 
-80bc: a9 07     sub_80bc        LDA #$07          ;
-80be: 8d 00 19                  STA $1900         ;
-80c1: a9 00                     LDA #$00          ;
-80c3: 8d 65 02                  STA LINBUF+30     ;
-80c6: 85 2e                     STA ICAX5Z        ;
-80c8: 8d ff 18                  STA $18ff         ;
-80cb: 85 2f                     STA CIOCHR        ;
-80cd: a9 ff                     LDA #$ff          ;
-80cf: 85 30                     STA STATUS        ;
-80d1: 60                        RTS               ;
+80bc: a9 07     sub_80bc        LDA #$07             ;
+80be: 8d 00 19                  STA $1900            ;
+80c1: a9 00                     LDA #$00             ;
+80c3: 8d 65 02                  STA LINBUF+30        ;
+80c6: 85 2e                     STA ICAX5Z           ;
+80c8: 8d ff 18                  STA $18ff            ;
+80cb: 85 2f                     STA CIOCHR           ;
+80cd: a9 ff                     LDA #$ff             ;
+80cf: 85 30                     STA STATUS           ;
+80d1: 60                        RTS                  ;
 
-80d2: a2 1f     sub_80d2        LDX #$1f          ;
-80d4: bd 6a 81  loc_80d4        LDA dat_816a,X    ;
-80d7: 9d 7c 19                  STA $197c,X       ;
-80da: ca                        DEX               ;
-80db: 10 f7                     BPL loc_80d4      ;
-80dd: 20 5d 24                  JSR $245d         ;
-80e0: a2 03     loc_80e0        LDX #$03          ;
-80e2: 86 06                     STX TRAMSZ        ;
-80e4: a6 06     loc_80e4        LDX TRAMSZ        ;
-80e6: a9 ff                     LDA #$ff          ;
-80e8: 9d 4e 02                  STA LINBUF+7,X    ;
-80eb: e8                        INX               ;
-80ec: 8a                        TXA               ;
-80ed: 29 0f                     AND #$0f          ;
-80ef: 09 30                     ORA #$30          ;
-80f1: 8d 30 02                  STA SDLST         ;
-80f4: 20 a3 24                  JSR $24a3         ;
-80f7: 30 0b                     BMI loc_8104      ;
-80f9: a6 06                     LDX TRAMSZ        ;
-80fb: bd 8a 81                  LDA loc_818a,X    ;
-80fe: 9d 98 19                  STA $1998,X       ;
-8101: fe 4e 02                  INC LINBUF+7,X    ;
-8104: c6 06     loc_8104        DEC TRAMSZ        ;
-8106: 10 dc                     BPL loc_80e4      ;
-8108: bd 4e 02                  LDA LINBUF+7,X    ;
-810b: 30 d3                     BMI loc_80e0      ;
-810d: a9 31                     LDA #$31          ;
-810f: 8d 30 02                  STA SDLST         ;
-8112: a9 04                     LDA #$04          ;
-8114: 85 06                     STA TRAMSZ        ;
-8116: a9 80                     LDA #$80          ;
-8118: 85 09                     STA BOOT          ;
-811a: a9 02                     LDA #$02          ;
-811c: 85 0a                     STA DOSVEC        ;
-811e: a9 02                     LDA #$02          ;
-8120: 8d 01 25                  STA $2501         ;
-8123: a9 00                     LDA #$00          ;
-8125: 8d 02 25                  STA $2502         ;
-8128: ad 01 25  loc_8128        LDA $2501         ;
-812b: 8d 32 02                  STA SSKCTL        ;
-812e: ad 02 25                  LDA $2502         ;
-8131: 8d 33 02                  STA $0233         ;
-8134: 20 8e 24  loc_8134        JSR $248e         ;
-8137: 30 fb                     BMI loc_8134      ;
-8139: a0 00                     LDY #$00          ;
-813b: b9 00 01  loc_813b        LDA $0100,Y       ;
-813e: 91 09                     STA (BOOT),Y      ;
-8140: c8                        INY               ;
-8141: 10 f8                     BPL loc_813b      ;
-8143: a5 09                     LDA BOOT          ;
-8145: 18                        CLC               ;
-8146: 69 80                     ADC #$80          ;
-8148: 85 09                     STA BOOT          ;
-814a: 90 02                     BCC loc_814e      ;
-814c: e6 0a                     INC DOSVEC        ;
-814e: ee 01 25  loc_814e        INC $2501         ;
-8151: c6 06                     DEC TRAMSZ        ;
-8153: d0 d3                     BNE loc_8128      ;
-8155: 4c d8 27                  JMP $27d8         ;
+80d2: a2 1f     sub_80d2        LDX #$1f             ;
+80d4: bd 6a 81  loc_80d4        LDA dat_816a,X       ;
+80d7: 9d 7c 19                  STA $197c,X          ;
+80da: ca                        DEX                  ;
+80db: 10 f7                     BPL loc_80d4         ;
+80dd: 20 5d 24                  JSR $245d            ;
+80e0: a2 03     loc_80e0        LDX #$03             ;
+80e2: 86 06                     STX TRAMSZ           ;
+80e4: a6 06     loc_80e4        LDX TRAMSZ           ;
+80e6: a9 ff                     LDA #$ff             ;
+80e8: 9d 4e 02                  STA LINBUF+7,X       ;
+80eb: e8                        INX                  ;
+80ec: 8a                        TXA                  ;
+80ed: 29 0f                     AND #$0f             ;
+80ef: 09 30                     ORA #$30             ;
+80f1: 8d 30 02                  STA SDLST            ;
+80f4: 20 a3 24                  JSR $24a3            ;
+80f7: 30 0b                     BMI loc_8104         ;
+80f9: a6 06                     LDX TRAMSZ           ;
+80fb: bd 8a 81                  LDA loc_818a,X       ;
+80fe: 9d 98 19                  STA $1998,X          ;
+8101: fe 4e 02                  INC LINBUF+7,X       ;
+8104: c6 06     loc_8104        DEC TRAMSZ           ;
+8106: 10 dc                     BPL loc_80e4         ;
+8108: bd 4e 02                  LDA LINBUF+7,X       ;
+810b: 30 d3                     BMI loc_80e0         ;
+810d: a9 31                     LDA #$31             ;
+810f: 8d 30 02                  STA SDLST            ;
+8112: a9 04                     LDA #$04             ;
+8114: 85 06                     STA TRAMSZ           ;
+8116: a9 80                     LDA #$80             ;
+8118: 85 09                     STA BOOT             ;
+811a: a9 02                     LDA #$02             ;
+811c: 85 0a                     STA DOSVEC           ;
+811e: a9 02                     LDA #$02             ;
+8120: 8d 01 25                  STA $2501            ;
+8123: a9 00                     LDA #$00             ;
+8125: 8d 02 25                  STA $2502            ;
+8128: ad 01 25  loc_8128        LDA $2501            ;
+812b: 8d 32 02                  STA dat_0232_L       ;
+812e: ad 02 25                  LDA $2502            ;
+8131: 8d 33 02                  STA $0233            ;
+8134: 20 8e 24  loc_8134        JSR $248e            ;
+8137: 30 fb                     BMI loc_8134         ;
+8139: a0 00                     LDY #$00             ;
+813b: b9 00 01  loc_813b        LDA $0100,Y          ;
+813e: 91 09                     STA (BOOT),Y         ;
+8140: c8                        INY                  ;
+8141: 10 f8                     BPL loc_813b         ;
+8143: a5 09                     LDA BOOT             ;
+8145: 18                        CLC                  ;
+8146: 69 80                     ADC #$80             ;
+8148: 85 09                     STA BOOT             ;
+814a: 90 02                     BCC loc_814e         ;
+814c: e6 0a                     INC DOSVEC           ;
+814e: ee 01 25  loc_814e        INC $2501            ;
+8151: c6 06                     DEC TRAMSZ           ;
+8153: d0 d3                     BNE loc_8128         ;
+8155: 4c d8 27                  JMP $27d8            ;
 
-8158: 0a        sub_8158        ASL               ;
-8159: 0a                        ASL               ;
-815a: aa                        TAX               ;
-815b: a0 00                     LDY #$00          ;
-815d: bd 8e 81  loc_815d        LDA dat_818e,X    ;
-8160: 99 6a 81                  STA dat_816a,Y    ;
-8163: e8                        INX               ;
-8164: c8                        INY               ;
-8165: c0 04                     CPY #$04          ;
-8167: 90 f4                     BCC loc_815d      ;
-8169: 60                        RTS               ;
+8158: 0a        sub_8158        ASL                  ;
+8159: 0a                        ASL                  ;
+815a: aa                        TAX                  ;
+815b: a0 00                     LDY #$00             ;
+815d: bd 8e 81  loc_815d        LDA dat_818e,X       ;
+8160: 99 6a 81                  STA dat_816a,Y       ;
+8163: e8                        INX                  ;
+8164: c8                        INY                  ;
+8165: c0 04                     CPY #$04             ;
+8167: 90 f4                     BCC loc_815d         ;
+8169: 60                        RTS                  ;
 
-816a: 20 20 20  dat_816a        JSR $2020         ;
-816d: 20 20 53                  JSR $5320         ;   S
-8170: 79 73 74                  ADC $7473,Y       ; yst
-8173: 65 6d                     ADC BUFSTR+1      ; em
-8175: 20 49 6e                  JSR $6e49         ;  In
-8178: 69 74                     ADC #$74          ; it
-817a: 69 61                     ADC #$61          ; ia
-817c: 6c 69 7a                  JMP ($7a69)       ; liz
-817f: 61 74                     ADC (ENDPT,X)     ; at
-8181: 69 6f                     ADC #$6f          ; io
-8183: 6e 20 20                  ROR $2020         ; n
-8186: 20 20 20                  JSR $2020         ;
-8189: 20 31 32                  JSR $3231         ;  12
-818c: 33 34                     .BYTE $33,$34     ; 34
-818e: 20 34 38  dat_818e        JSR $3834         ;  48
-8191: 4b                        .BYTE $4b         ; K
-8192: 20 3f 3f                  JSR $3f3f         ;  ??
-8195: 4b                        .BYTE $4b         ; K
-8196: 20 36 34                  JSR $3436         ;  64
-8199: 4b                        .BYTE $4b         ; K
-819a: 31 32                     AND (BUFRLO),Y    ; 12
-819c: 38                        SEC               ; 8
-819d: 4b                        .BYTE $4b         ; K
+816a: 20 20 20 20 20 53 79 73  dat_816a  .BYTE $20,$20,$20,$20,$20,$53,$79,$73  ;      Sys
+8172: 74 65 6d 20 49 6e 69 74   .BYTE $74,$65,$6d,$20,$49,$6e,$69,$74  ; tem Init
+817a: 69 61 6c 69 7a 61 74 69   .BYTE $69,$61,$6c,$69,$7a,$61,$74,$69  ; ializati
+8182: 6f 6e 20 20 20 20 20 20   .BYTE $6f,$6e,$20,$20,$20,$20,$20,$20  ; on
+818a: 31 32 33 34               .BYTE $31,$32,$33,$34  ; 1234
 
-819e: 78        sub_819e        SEI               ; Set interrupt disable status
-819f: a9 00                     LDA #$00          ; Store 0
-81a1: 8d 58 02                  STA LINBUF+17     ;     into $0258 (LINBUF+17)
-81a4: ad 1f d0                  LDA CONSOL        ; Check if the
-81a7: c9 05                     CMP #$05          ;   SELECT button is pressed
-81a9: f0 76                     BEQ loc_8221      ; If yes, skip the rest and return to caller
-81ab: a9 fe                     LDA #$fe          ; Set PORTB
-81ad: 8d 01 d3                  STA PORTB         ;     to $FE - ??
+818e: 20 34 38 4b 20 3f 3f 4b  dat_818e  .BYTE $20,$34,$38,$4b,$20,$3f,$3f,$4b  ;  48K ??K
+8196: 20 36 34 4b 31 32 38 4b   .BYTE $20,$36,$34,$4b,$31,$32,$38,$4b  ;  64K128K
+
+819e: 78        sub_819e        SEI                  ; Set interrupt disable status
+819f: a9 00                     LDA #$00             ; Store 0
+81a1: 8d 58 02                  STA dat_0258         ;     into $0258 [dat_0258]
+81a4: ad 1f d0                  LDA CONSOL           ; Check if the
+81a7: c9 05                     CMP #$05             ;   SELECT button is pressed
+81a9: f0 76                     BEQ loc_8221         ; If yes, skip the rest and return to caller
+81ab: a9 fe                     LDA #$fe             ; Set PORTB
+81ad: 8d 01 d3                  STA PORTB            ;     to $FE - ??
 
 ; The following doesn't seem to make much sense... unless AFP may or may not be updatable or changes whenever its read?
-81b0: ad 00 d8                  LDA AFP           ; Set A to low byte of ASCII 2 Floating Point Conversion vector addr?
-81b3: aa                        TAX               ; Store value in X
-81b4: e8                        INX               ; Increment and
-81b5: 8e 00 d8                  STX AFP           ;     put the modified value back
-81b8: ec 00 d8                  CPX AFP           ; Check if the two are the same
-81bb: d0 5f                     BNE loc_821c      ; And if not, ...
-81bd: ca                        DEX               ; Subtract one from X
-81be: cd 00 d8                  CMP AFP           ;     and compare again
-81c1: f0 59                     BEQ loc_821c      ; If equal, ...
+81b0: ad 00 d8                  LDA AFP              ; Set A to low byte of ASCII 2 Floating Point Conversion vector addr?
+81b3: aa                        TAX                  ; Store value in X
+81b4: e8                        INX                  ; Increment and
+81b5: 8e 00 d8                  STX AFP              ;     put the modified value back
+81b8: ec 00 d8                  CPX AFP              ; Check if the two are the same
+81bb: d0 5f                     BNE loc_821c         ; And if not, ...
+81bd: ca                        DEX                  ; Subtract one from X
+81be: cd 00 d8                  CMP AFP              ;     and compare again
+81c1: f0 59                     BEQ loc_821c         ; If equal, ...
 
-81c3: a9 23                     LDA #$23          ; Set the
-81c5: 85 07                     STA SRC_ADDR      ;     source
-81c7: a9 82                     LDA #$82          ;     address
-81c9: 85 08                     STA SRC_ADDR+1    ;     to $8223
-81cb: a9 00                     LDA #$00          ; Set the
-81cd: 85 09                     STA BOOT          ;     destination
-81cf: a9 f9                     LDA #$f9          ;     address
-81d1: 85 0a                     STA DOSVEC        ;     to $F900
-81d3: a2 07                     LDX #$07          ; Set X = 7
-81d5: a0 00                     LDY #$00          ; Set Y = 0
-81d7: 20 0d 2e                  JSR $2e0d         ;           ?? Params in $07,$08,$09,$0A,X=7,Y=0 ??
+81c3: a9 23                     LDA #$23             ; Set the
+81c5: 85 07                     STA dat_0007_L       ;     source
+81c7: a9 82                     LDA #$82             ;     address
+81c9: 85 08                     STA dat_0007_H       ;     to $8223 [loc_8223]
+81cb: a9 00                     LDA #$00             ; Set the
+81cd: 85 09                     STA BOOT             ;     destination
+81cf: a9 f9                     LDA #$f9             ;     address
+81d1: 85 0a                     STA DOSVEC           ;     to $f900 [sub_f900]
+81d3: a2 07                     LDX #$07             ; Set X = 7
+81d5: a0 00                     LDY #$00             ; Set Y = 0
+81d7: 20 0d 2e                  JSR $2e0d            ;           ?? Params in $07,$08,$09,$0A,X=7,Y=0 ??
+81da: a9 80                     LDA #$80             ; Set
+81dc: 8d 58 02                  STA dat_0258         ;     dat_0258 = $80
+81df: ad 1f d0                  LDA CONSOL           ;
+81e2: c9 03                     CMP #$03             ;
+81e4: f0 36                     BEQ loc_821c         ;
+81e6: ae 00 40                  LDX $4000            ;
+81e9: 86 04                     STX RAMLO            ;
+81eb: a9 e2                     LDA #$e2             ;
+81ed: 8d 01 d3                  STA PORTB            ;
+81f0: e8                        INX                  ;
+81f1: 8e 00 40                  STX $4000            ;
+81f4: a9 fe                     LDA #$fe             ;
+81f6: 8d 01 d3                  STA PORTB            ;
+81f9: ec 00 40                  CPX $4000            ;
+81fc: d0 07                     BNE loc_8205         ;
+81fe: ca                        DEX                  ;
+81ff: 8e 00 40                  STX $4000            ;
+8202: 4c 1c 82                  JMP loc_821c         ;
+8205: a9 e2     loc_8205        LDA #$e2             ;
+8207: 8d 01 d3                  STA PORTB            ;
+820a: ce 00 40                  DEC $4000            ;
+820d: ae 00 40                  LDX $4000            ;
+8210: e4 04                     CPX RAMLO            ;
+8212: d0 08                     BNE loc_821c         ;
+8214: a9 c0                     LDA #$c0             ; Set
+8216: 8d 58 02                  STA dat_0258         ;     dat_0258 = $c0
+8219: 20 cf f9                  JSR $f9cf            ; ?? This appears to call into an OS sub ??
+821c: a9 fe     loc_821c        LDA #$fe             ;
+821e: 8d 01 d3                  STA PORTB            ;
+8221: 58        loc_8221        CLI                  ; Clear the interrupt disable status
+8222: 60                        RTS                  ; Return to caller
 
-        ; Params in X, Y
-        ; $07 = MSB of
-        ,$08 may be copied/repeated up through the following 254 bytes (if X != 0)
-        2e0d: 84 0b     sub_2e0d        STY DOSVEC+1      ; Store Y (00) into DOSVEC+1 -- temp storage?
-        2e0f: a0 00                     LDY #$00          ; Set Y = 0
-        2e11: e0 00                     CPX #$00          ; If X = 0
-        2e13: f0 0e                     BEQ sub_2e23      ;   then continue at $2e23
-
-        ; This loop will copy 256 bytes from ($7 [$23],$8 [$82]) = $8223 to ($9 [$00], $A [$f9]) = $F900...
-        2e15: b1 07     loc_2e15        LDA (TSTDAT),Y    ;
-        2e17: 91 09                     STA (BOOT),Y      ;
-        2e19: c8                        INY               ; Y = Y + 1
-        2e1a: d0 f9                     BNE loc_2e15      ; Loop if no overflow
-
-        2e1c: e6 0a                     INC DOSVEC        ; Add one to $10 ($f9 -> $fA)
-        2e1e: e6 08     loc_2e1e        INC WARMST        ; ..
-        2e20: ca                        DEX               ; .
-        2e21: d0 f2                     BNE loc_2e15      ; ..
-        2e23: a5 0b     sub_2e23        LDA DOSVEC+1      ; Set A <- DOSVEC + 1. This is the value from Y on sub entry @ sub_2e0d
-        2e25: f0 09                     BEQ loc_2e30      ; If A = 0, exit sub & return to caller
-        2e27: b1 07     loc_2e27        LDA (TSTDAT),Y    ; ..
-        2e29: 91 09                     STA (BOOT),Y      ; ..
-        2e2b: c8                        INY               ; .
-        2e2c: c4 0b                     CPY DOSVEC+1      ; ..
-        2e2e: d0 f7     loc_2e2e        BNE loc_2e27      ; ..
-        2e30: 60        loc_2e30        RTS               ; `
-
-81da: a9 80                     LDA #$80          ;
-81dc: 8d 58 02                  STA LINBUF+17     ;
-81df: ad 1f d0                  LDA CONSOL        ;
-81e2: c9 03                     CMP #$03          ;
-81e4: f0 36                     BEQ loc_821c      ;
-81e6: ae 00 40                  LDX $4000         ;
-81e9: 86 04                     STX RAMLO         ;
-81eb: a9 e2                     LDA #$e2          ;
-81ed: 8d 01 d3                  STA PORTB         ;
-81f0: e8                        INX               ;
-81f1: 8e 00 40                  STX $4000         ;
-81f4: a9 fe                     LDA #$fe          ;
-81f6: 8d 01 d3                  STA PORTB         ;
-81f9: ec 00 40                  CPX $4000         ;
-81fc: d0 07                     BNE loc_8205      ;
-81fe: ca                        DEX               ;
-81ff: 8e 00 40                  STX $4000         ;
-8202: 4c 1c 82                  JMP loc_821c      ;
-8205: a9 e2     loc_8205        LDA #$e2          ;
-8207: 8d 01 d3                  STA PORTB         ;
-820a: ce 00 40                  DEC $4000         ;
-820d: ae 00 40                  LDX $4000         ;
-8210: e4 04                     CPX RAMLO         ;
-8212: d0 08                     BNE loc_821c      ;
-8214: a9 c0                     LDA #$c0          ;
-8216: 8d 58 02                  STA LINBUF+17     ;
-8219: 20 cf f9                  JSR $f9cf         ; ?? This appears to call into an OS sub ??
-821c: a9 fe     loc_821c        LDA #$fe          ;
-821e: 8d 01 d3                  STA PORTB         ;
-8221: 58        loc_8221        CLI               ; Clear the interrupt disable status
-8222: 60                        RTS               ; Return to caller
-
-8223: ad 09 19                  LDA UNK_BYTE_1909  ; ...
-8226: c9 08                     CMP #$08          ; ..
-8228: b0 30                     BCS loc_825a      ; .0
-822a: 8d ce f9                  STA $f9ce         ; ...
-822d: a9 00                     LDA #$00          ; ..
-822f: 85 07                     STA TSTDAT        ; ..
-8231: a9 ac                     LDA #$ac          ; ..
-8233: 85 08                     STA WARMST        ; ..
-8235: a9 00                     LDA #$00          ; ..
-8237: 85 09                     STA BOOT          ; ..
-8239: a9 c0                     LDA #$c0          ; ..
-823b: 85 0a                     STA DOSVEC        ; ..
-823d: a2 10                     LDX #$10          ; ..
-823f: a0 00                     LDY #$00          ; ..
-8241: 20 0d 2e                  JSR $2e0d         ;  ..
-8244: a9 00                     LDA #$00          ; ..
-8246: 85 07                     STA TSTDAT        ; ..
-8248: a9 bc                     LDA #$bc          ; ..
-824a: 85 08                     STA WARMST        ; ..
-824c: a9 00                     LDA #$00          ; ..
-824e: 85 09                     STA BOOT          ; ..
-8250: a9 d8                     LDA #$d8          ; ..
-8252: 85 0a                     STA DOSVEC        ; ..
-8254: a2 04                     LDX #$04          ; ..
-8256: a0 00                     LDY #$00          ; ..
-8258: f0 17                     BEQ loc_8271      ; ..
-825a: 8d cd f9  loc_825a        STA $f9cd         ; ...
-825d: a9 f0                     LDA #$f0          ; ..
-825f: 85 07                     STA TSTDAT        ; ..
-8261: a9 96                     LDA #$96          ; ..
-8263: 85 08                     STA WARMST        ; ..
-8265: a9 00                     LDA #$00          ; ..
-8267: 85 09                     STA BOOT          ; ..
-8269: a9 dc                     LDA #$dc          ; ..
-826b: 85 0a                     STA DOSVEC        ; ..
-826d: a2 15                     LDX #$15          ; ..
-826f: a0 10                     LDY #$10          ; ..
-8271: 20 0d 2e  loc_8271        JSR $2e0d         ;  ..
-8274: 18                        CLC               ; .
-8275: 60                        RTS               ; `
+8223: ad 09 19  loc_8223        LDA UNK_BYTE_1909    ; ...
+8226: c9 08                     CMP #$08             ; ..
+8228: b0 30                     BCS loc_825a         ; .0
+822a: 8d ce f9                  STA $f9ce            ; ...
+822d: a9 00                     LDA #$00             ; ..
+822f: 85 07                     STA TSTDAT           ; ..
+8231: a9 ac                     LDA #$ac             ; ..
+8233: 85 08                     STA WARMST           ; ..
+8235: a9 00                     LDA #$00             ; ..
+8237: 85 09                     STA BOOT             ; ..
+8239: a9 c0                     LDA #$c0             ; ..
+823b: 85 0a                     STA DOSVEC           ; ..
+823d: a2 10                     LDX #$10             ; ..
+823f: a0 00                     LDY #$00             ; ..
+8241: 20 0d 2e                  JSR $2e0d            ;  ..
+8244: a9 00                     LDA #$00             ; ..
+8246: 85 07                     STA TSTDAT           ; ..
+8248: a9 bc                     LDA #$bc             ; ..
+824a: 85 08                     STA WARMST           ; ..
+824c: a9 00                     LDA #$00             ; ..
+824e: 85 09                     STA BOOT             ; ..
+8250: a9 d8                     LDA #$d8             ; ..
+8252: 85 0a                     STA DOSVEC           ; ..
+8254: a2 04                     LDX #$04             ; ..
+8256: a0 00                     LDY #$00             ; ..
+8258: f0 17                     BEQ loc_8271         ; ..
+825a: 8d cd f9  loc_825a        STA $f9cd            ; ...
+825d: a9 f0                     LDA #$f0             ; ..
+825f: 85 07                     STA TSTDAT           ; ..
+8261: a9 96                     LDA #$96             ; ..
+8263: 85 08                     STA WARMST           ; ..
+8265: a9 00                     LDA #$00             ; ..
+8267: 85 09                     STA BOOT             ; ..
+8269: a9 dc                     LDA #$dc             ; ..
+826b: 85 0a                     STA DOSVEC           ; ..
+826d: a2 15                     LDX #$15             ; ..
+826f: a0 10                     LDY #$10             ; ..
+8271: 20 0d 2e  loc_8271        JSR $2e0d            ;  ..
+8274: 18                        CLC                  ; .
+8275: 60                        RTS                  ; `
 
 8276: ad 09 19                  LDA UNK_BYTE_1909  ; ...
 8279: c9 08                     CMP #$08          ; ..
@@ -411,7 +392,7 @@
 8319: 8d 5d 02                  STA LINBUF+22     ; .].
 831c: ac 33 02                  LDY $0233         ; .3.
 831f: 8c 63 02                  STY LINBUF+28     ; .c.
-8322: ad 32 02                  LDA SSKCTL        ; .2.
+8322: ad 32 02                  LDA dat_0232_L    ; .2.
 8325: 8d 62 02                  STA LINBUF+27     ; .b.
 8328: 4a                        LSR               ; J
 8329: b0 16                     BCS loc_8341      ; ..
@@ -464,7 +445,7 @@
 839b: 2c 5b 02  loc_839b        BIT LINBUF+20     ; ,[.
 839e: 30 2c                     BMI loc_83cc      ; 0,
 83a0: ad 03 19                  LDA $1903         ; ...
-83a3: 8d 32 02                  STA SSKCTL        ; .2.
+83a3: 8d 32 02                  STA dat_0232_L    ; .2.
 83a6: ad 04 19                  LDA $1904         ; ...
 83a9: 8d 33 02                  STA $0233         ; .3.
 83ac: a9 02                     LDA #$02          ; ..
@@ -482,7 +463,7 @@
 83c7: 10 f5                     BPL loc_83be      ; ..
 83c9: ce 5b 02                  DEC LINBUF+20     ; .[.
 83cc: ad 60 02  loc_83cc        LDA LINBUF+25     ; .`.
-83cf: 8d 32 02                  STA SSKCTL        ; .2.
+83cf: 8d 32 02                  STA dat_0232_L    ; .2.
 83d2: ad 61 02                  LDA LINBUF+26     ; .a.
 83d5: 8d 33 02                  STA $0233         ; .3.
 83d8: a9 02                     LDA #$02          ; ..
@@ -512,7 +493,7 @@
 8410: 9d a5 fe                  STA $fea5,X       ; ...
 8413: 9d a5 fd                  STA $fda5,X       ; ...
 8416: ad 62 02                  LDA LINBUF+27     ; .b.
-8419: 8d 32 02                  STA SSKCTL        ; .2.
+8419: 8d 32 02                  STA dat_0232_L    ; .2.
 841c: ad 63 02                  LDA LINBUF+28     ; .c.
 841f: 8d 33 02                  STA $0233         ; .3.
 8422: a9 02                     LDA #$02          ; ..
@@ -522,7 +503,7 @@
 842b: c6 06                     DEC TRAMSZ        ; ..
 842d: d0 f7                     BNE loc_8426      ; ..
 842f: ad 62 02  loc_842f        LDA LINBUF+27     ; .b.
-8432: 8d 32 02                  STA SSKCTL        ; .2.
+8432: 8d 32 02                  STA dat_0232_L    ; .2.
 8435: ad 63 02                  LDA LINBUF+28     ; .c.
 8438: 8d 33 02                  STA $0233         ; .3.
 843b: a9 00                     LDA #$00          ; ..
@@ -546,7 +527,7 @@
 8469: 99 ff ff                  STA $ffff,Y       ; ...
 846c: c8                        INY               ; .
 846d: 10 f7                     BPL loc_8466      ; ..
-846f: ee 32 02                  INC SSKCTL        ; .2.
+846f: ee 32 02                  INC dat_0232_L    ; .2.
 8472: d0 03                     BNE loc_8477      ; ..
 8474: ee 33 02                  INC $0233         ; .3.
 8477: a9 fe     loc_8477        LDA #$fe          ; ..
@@ -1058,7 +1039,7 @@
 88c1: b1 43                     LDA (ZBUFP),Y     ; .C
 88c3: 8d e3 59                  STA $59e3         ; ..Y
 88c6: c8                        INY               ; .
-88c7: b1 00                     LDA (LINZBS),Y    ; ..
+88c7: b1 00                     LDA (dat_0000),Y  ; ..
 88c9: 8d e4 59                  STA $59e4         ; ..Y
 88cc: a9 ab                     LDA #$ab          ; ..
 88ce: 8d 55 59                  STA $5955         ; .UY
@@ -1115,7 +1096,7 @@
 893c: ad 0c 19                  LDA UNK_BYTE_190C  ; ...
 893f: 85 0a                     STA DOSVEC        ; ..
 8941: ad 03 19                  LDA $1903         ; ...
-8944: 8d 32 02                  STA SSKCTL        ; .2.
+8944: 8d 32 02                  STA dat_0232_L    ; .2.
 8947: ad 04 19                  LDA $1904         ; ...
 894a: 8d 33 02                  STA $0233         ; .3.
 894d: ad 07 19                  LDA $1907         ; ...
@@ -1140,7 +1121,7 @@
 8976: a9 ff     loc_8976        LDA #$ff          ; ..
 8978: 60                        RTS               ; `
 
-8979: 2c 58 02                  BIT LINBUF+17     ; ,X.
+8979: 2c 58 02                  BIT dat_0258      ; ,X.
 897c: 50 08                     BVC loc_8986      ; P.
 897e: 2c 5a 02                  BIT LINBUF+19     ; ,Z.
 8981: 10 03                     BPL loc_8986      ; ..
@@ -1152,59 +1133,22 @@
 898f: c6 06                     DEC TRAMSZ        ; ..
 8991: d0 f7                     BNE loc_898a      ; ..
 8993: f0 08                     BEQ loc_899d      ; ..
-8995: ee 32 02  loc_8995        INC SSKCTL        ; .2.
+8995: ee 32 02  loc_8995        INC dat_0232_L    ; .2.
 8998: d0 03                     BNE loc_899d      ; ..
 899a: ee 33 02                  INC $0233         ; .3.
 899d: 98        loc_899d        TYA               ; .
 899e: 60                        RTS               ; `
 
-899f: a8                        TAY               ; .
-89a0: a6 00                     LDX LINZBS        ; ..
-89a2: 01 a5                     ORA ($a5,X)       ; ..
-89a4: 50 6c                     BVC $8a12         ; Pl
-89a6: 65 61                     ADC NEWCOL        ; ea
-89a8: 73                        .BYTE $73         ; s
-89a9: 65 20                     ADC ICHIDZ        ; e
-89ab: 69 6e                     ADC #$6e          ; in
-89ad: 73                        .BYTE $73         ; s
-89ae: 65 72                     ADC COLAC         ; er
-89b0: 74                        .BYTE $74         ; t
-89b1: 20 54 68                  JSR $6854         ;  Th
-89b4: 65 20                     ADC ICHIDZ        ; e
-89b6: 44                        .BYTE $44         ; D
-89b7: 75 6e                     ADC BITMSK,X      ; un
-89b9: 67                        .BYTE $67         ; g
-89ba: 65 6f                     ADC SHFAMT        ; eo
-89bc: 6e 20 44                  ROR $4420         ; n D
-89bf: 69 73                     ADC #$73          ; is
-89c1: 6b                        .BYTE $6b         ; k
-89c2: 20 b2 11                  JSR $11b2         ;  ..
-89c5: 19 01 0d                  ORA $0d01,Y       ; ...
-89c8: 0d a5 53                  ORA $53a5         ; ..S
-89cb: 69 64                     ADC #$64          ; id
-89cd: 65 20                     ADC ICHIDZ        ; e
-89cf: b2                        .BYTE $b2         ; .
-89d0: 10 19                     BPL loc_89eb      ; ..
-89d2: 01 20                     ORA (ICHIDZ,X)    ; .
-89d4: 69 6e                     ADC #$6e          ; in
-89d6: 74 6f                     .BYTE $74,$6f     ; to
-89d8: 20 61 6e                  JSR $6e61         ;  an
-89db: 79 20 64                  ADC $6420,Y       ; y d
-89de: 72                        .BYTE $72         ; r
-89df: 69 76                     ADC #$76          ; iv
-89e1: 65 2e                     ADC ICAX5Z        ; e.
-89e3: 0d a6 00                  ORA $a6           ; ...
-89e6: 05 a5                     ORA $a5           ; ..
-89e8: 50 72                     BVC $8a5c         ; Pr
-89ea: 65 73                     ADC COLAC+1       ; es
-89ec: 73                        .BYTE $73         ; s
-89ed: 20 a1 53                  JSR $53a1         ;  .S
-89f0: 50 41                     BVC $8a33         ; PA
-89f2: 43                        .BYTE $43         ; C
-89f3: 45 20                     EOR ICHIDZ        ; E
-89f5: 42                        .BYTE $42         ; B
-89f6: 41 52                     EOR (LMARGN,X)    ; AR
-89f8: a0 20                     LDY #$20          ; .
-89fa: 74 6f                     .BYTE $74,$6f     ; to
-89fc: 20 63 6f                  JSR $6f63         ;  co
-89ff: 6e                        .BYTE $6e         ; n
+899f: a8 a6 00 01 a5 50 6c 65  dat_899f  .BYTE $a8,$a6,$00,$01,$a5,$50,$6c,$65  ; .....Ple
+89a7: 61 73 65 20 69 6e 73 65   .BYTE $61,$73,$65,$20,$69,$6e,$73,$65  ; ase inse
+89af: 72 74 20 54 68 65 20 44   .BYTE $72,$74,$20,$54,$68,$65,$20,$44  ; rt The D
+89b7: 75 6e 67 65 6f 6e 20 44   .BYTE $75,$6e,$67,$65,$6f,$6e,$20,$44  ; ungeon D
+89bf: 69 73 6b 20 b2 11 19 01   .BYTE $69,$73,$6b,$20,$b2,$11,$19,$01  ; isk ....
+89c7: 0d 0d a5 53 69 64 65 20   .BYTE $0d,$0d,$a5,$53,$69,$64,$65,$20  ; ...Side
+89cf: b2 10 19 01 20 69 6e 74   .BYTE $b2,$10,$19,$01,$20,$69,$6e,$74  ; .... int
+89d7: 6f 20 61 6e 79 20 64 72   .BYTE $6f,$20,$61,$6e,$79,$20,$64,$72  ; o any dr
+89df: 69 76 65 2e 0d a6 00 05   .BYTE $69,$76,$65,$2e,$0d,$a6,$00,$05  ; ive.....
+89e7: a5 50 72 65 73 73 20 a1   .BYTE $a5,$50,$72,$65,$73,$73,$20,$a1  ; .Press .
+89ef: 53 50 41 43 45 20 42 41   .BYTE $53,$50,$41,$43,$45,$20,$42,$41  ; SPACE BA
+89f7: 52 a0 20 74 6f 20 63 6f   .BYTE $52,$a0,$20,$74,$6f,$20,$63,$6f  ; R. to co
+89ff: 6e                        .BYTE $6e            ; n

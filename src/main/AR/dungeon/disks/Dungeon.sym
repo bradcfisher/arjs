@@ -177,29 +177,37 @@ rw  038C,4  D31_671_UNK             ; Unknown
 rw  0390,4  D32_684_UNK             ; Unknown
 rw  0394,EC UNUSED_BYTES
 
+rw  0400,8c0 DISP_START              ; First visible character of display buffer
+
 rw  0401,1  DISP_NAME               ; Position in display buffer to write player name (text)
 rw  0425,1  DISP_LEVEL              ; Position in display buffer to write player level (text - 2 chars, left justified)
 rw  0453,1  DISP_TIME_SPINNER       ; Position in display buffer to write time spinner char (text - 1 char)
-rw  0459,1  DISP_STA_VAL            ; Position in display buffer to write STA stat (text - 3 chars, left justified)
-rw  045E,1  DISP_CHA_VAL            ; Position in display buffer to write CHA stat (text - 3 chars, left justified)
-rw  0463,1  DISP_STR_VAL            ; Position in display buffer to write STR stat (text - 3 chars, left justified)
-rw  0468,1  DISP_INT_VAL            ; Position in display buffer to write INT stat (text - 3 chars, left justified)
-rw  046D,1  DISP_WIS_VAL            ; Position in display buffer to write WIS stat (text - 3 chars, left justified)
-rw  0472,1  DISP_SKL_VAL            ; Position in display buffer to write SKL stat (text - 3 chars, left justified)
-rw  0484,1  DISP_EXP_VAL            ; Position in display buffer to write player experience points (text- 10 chars, left justified)
+rw  0459,3  DISP_STA_VAL            ; Position in display buffer to write STA stat (text - 3 chars, left justified)
+rw  045E,3  DISP_CHA_VAL            ; Position in display buffer to write CHA stat (text - 3 chars, left justified)
+rw  0463,3  DISP_STR_VAL            ; Position in display buffer to write STR stat (text - 3 chars, left justified)
+rw  0468,3  DISP_INT_VAL            ; Position in display buffer to write INT stat (text - 3 chars, left justified)
+rw  046D,3  DISP_WIS_VAL            ; Position in display buffer to write WIS stat (text - 3 chars, left justified)
+rw  0472,3  DISP_SKL_VAL            ; Position in display buffer to write SKL stat (text - 3 chars, left justified)
+rw  0484,3  DISP_EXP_VAL            ; Position in display buffer to write player experience points (text- 10 chars, left justified)
 rw  0499,1  DISP_HP_SEP_CHAR        ; Position in display buffer to write ':' (HP < Max) or '=' (HP = Max) (text - 1 char)
-rw  049A,1  DISP_HP_VAL             ; Position in display buffer to write current HP (text - 5 chars, left justified)
-rw  04A1,1  DISP_LOC_DESC           ; Position in display buffer to write location description (text - 40 chars, left justified)
-rw  04C9,1  DISP_SOMETHING_HERE     ; Position in display buffer to write "There is something here." (text - 40 chars, left justified)
+rw  049A,5  DISP_HP_VAL             ; Position in display buffer to write current HP (text - 5 chars, left justified)
+rw  04A1,27 DISP_LOC_DESC           ; Position in display buffer to write location description (text - 39 chars, left justified, starting with "You are ")
+rw  04C9,27 DISP_SOMETHING_HERE     ; Position in display buffer to write "There is something here." (text - 39 chars, left justified)
 
-rw  0685,1  DISP_FOOD_PKT_VAL       ; Position in display buffer to write number of food packets (text - 3 chars, left justified)
-rw  0692,1  DISP_TORCH_VAL          ; Position in display buffer to write number of toches (text - 3 chars, left justified)
-rw  06A1,1  DISP_WATER_VAL          ; Position in display buffer to write number of water flasks (text - 3 chars, left justified)
+rw  04f0,78 DISP_GFX_TOP            ; 120 bytes: Position in display buffer containing top third of "graphical" area
+rw  0568,78 DISP_GFX_MDL            ; 120 bytes: Position in display buffer containing middle third of "graphical" area
+rw  05e0,78 DISP_GFX_BTM            ; 120 bytes: Position in display buffer containing bottom third of "graphical" area
+
+rw  0658,140 DISP_BTM_TEXT_AREA     ; 320 bytes: Position in display buffer containing bottom text area
+
+rw  0685,3  DISP_FOOD_PKT_VAL       ; Position in display buffer to write number of food packets (text - 3 chars, left justified)
+rw  0692,3  DISP_TORCH_VAL          ; Position in display buffer to write number of toches (text - 3 chars, left justified)
+rw  06A1,3  DISP_WATER_VAL          ; Position in display buffer to write number of water flasks (text - 3 chars, left justified)
 rw  06EC,1  DISP_MAP_LEVEL          ; Position in display buffer to write current map level (text - 1 char)
-rw  068C,1  DISP_DISEASED           ; Position in display buffer to write "Diseased!" (text - 12 chars, right justified)
-rw  06F8,1  DISP_WEARY              ; Position in display buffer to write "Weary" (text - 12 chars, left justified)
-rw  073C,1  DISP_TEMP               ; Position in display buffer to write "Chilly" (text - 12 chars, right justified)
-rw  0756,1  DISP_CURSED             ; Position in display buffer to write "Cursed!" (text - 12 chars, center justified)
+rw  068C,c  DISP_DISEASED           ; Position in display buffer to write "Diseased!" (text - 12 chars, right justified)
+rw  06F8,c  DISP_WEARY              ; Position in display buffer to write "Weary" (text - 12 chars, left justified)
+rw  073C,c  DISP_TEMPERATURE        ; Position in display buffer to write "Chilly" (text - 12 chars, right justified)
+rw  0756,c  DISP_CURSED             ; Position in display buffer to write "Cursed!" (text - 12 chars, center justified)
 
 ; Table of JMP instructions to subroutines (3 bytes each / 61 entries)
 rwx 1800,1  JMP_SUB_1800            ; Jumps to SUB code to execute ($2979 is one example)
@@ -330,7 +338,8 @@ rwx 1b56,1  IRQ_VDSLST_1b56         ; Interrupt handler for VDSLST
 rwx 1ba2,1  IRQ_VDSLST_1ba2         ; Interrupt handler for VDSLST
 rwx 1bd6,1  IRQ_VDSLST_1bd6         ; Interrupt handler for VDSLST
 
-rw  1C21,1  UNK_BYTE_TBL_1C21       ; Table of 3? bytes indicating how may 0's to fill starting at 04C8 and filling downward (4C7, 4C6, etc)
+rw  1C21,1  tbl_CLR_NUM             ; 3 bytes: Number of bytes to clear @ DISP_LINE6. Used in DISPLAY_SUB_1a0d
+                                    ; Number of 0's to fill starting at $04C8 [DISP_LINE6]
 
 rwx 2347,1  HANDLE_VBLKI            ; Interrupt handler for VBLKI
 
@@ -362,15 +371,33 @@ rw  445F,10 MOVEMENT_SPEED_TBL      ; Table of 16 x 1 byte values indexed by CHR
 rw  6309,1  TME_MINUTES             ; Current in-game time in minutes
 rw  630A,1  TME_HOURS               ; Current in-game time in hours
 
-rw  6312,1  CHR_LOC_ORIENT          ; Player orientation
+rw  6312,1  CHR_LOC_ORIENT          ; Player orientation (0 = N, 1 = E, 2 = S, 3 = W)
 rw  6313,1  CHR_LOC_X               ; Player position X
 rw  6314,1  CHR_LOC_Y               ; Player position Y
 rw  6315,1  CHR_LOC_MAP             ; Player map number
+                                    ;    00 Level 1 (first quadrant - NW)
+                                    ;    01 Level 1 (second quadrant - NE)
+                                    ;    02 Level 1 (third quadrant - SW)
+                                    ;    03 Level 1 (fourth quadrant - SE)
+                                    ;    04 Level 2
+                                    ;    05 Level 3
+                                    ;    06 Level 4
+
+rw  6316,1  CHR_FRAC_LOC_X          ; Fractional X position?
+rw  6317,1  CHR_FRAC_LOC_Y          ; Fractional Y position?
+
+rw  6318,1  CHR_SAV_LOC_X           ; Saved player position X
+rw  6319,1  CHR_SAV_LOC_Y           ; Saved player position Y
+rw  631a,1  CHR_SAV_LOC_MAP         ; Saved player map number
+rw  631b,1  CHR_SAV_FRAC_LOC_X      ; Saved fractional X position?
+rw  631c,1  CHR_SAV_FRAC_LOC_Y      ; Saved fractional Y position?
+
+rw  631d,1  CHR_DUNGEON_LEVEL       ; The Dungeon level number the player is currently on (1..4)
 
 rw  631E,1  CHR_UNK_BYTE_631E       ; Sub @ 2F70 Jumps to 2FBA if this value is equal to 1
 rw  631F,1  CHR_UNK_BYTE_631F       ; Sub @ 2F70 Jumps to 2FBA if this value is equal to 1 or 2
 rw  6320,1  CHR_UNK_BYTE_6320       ;
-rw  6321,1  CHR_NAME                ; Player name
+rw  6321,19 CHR_NAME                ; Player name (25 characters)
 
 rw  633C,1  CHR_EXPLVL              ; Player level
 rw  633D,1  CHR_EXP_U32_B3          ; Character experience points (fourth byte of 32 bit unsigned int)

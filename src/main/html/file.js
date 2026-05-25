@@ -67,8 +67,10 @@ const files = {
                 { size: 0x2000, start: 0x6300, name: "SEG_6300" },
                 { size: 0x4C00, start: 0x2000, name: "SEG_2000" }
              ]},
-        { id: 0x00CD, description: "D1S1 S205 - Kernel Loader", startSector:205, length: 0xA00, segments: [
-            { size: 0x0A00, start: 0x8000, name: "SEG_8000" }
+        { id: 0x00CD, description: "D1S1 S205 - Kernel Loader", startSector:205, length: 0xA00,
+            labels: "Dungeon11-S205.sym",
+            segments: [
+                { size: 0x0A00, start: 0x8000, name: "SEG_8000" }
                 //{ size: 0x0223, start: 0x8000, name: "SEG_8000" },
                 //{ size: 0x0700, start: 0xF900, name: "SEG_F900" },
                 //{ size: 0x00DD, start: 0x8923, name: "SEG_8923" }
@@ -932,12 +934,16 @@ function outputByteCodes(bytes) {
                 rawBytes: disassembleTypeSelect.value == "raw"
             })) );
 
+        const showDetails = true;
         outputInput.value = disassemble(
             bytes.subarray(offset, offset + length),
             {
                 labels: (disassembleTypeSelect.value == "exe-system") ? atari800Labels : dungeonLabels,
                 baseOffset: offset,
-                segments
+                segments,
+                showOffsets: showDetails,
+                showRawBytes: showDetails,
+                showComments: showDetails
             }
         );
     } else {

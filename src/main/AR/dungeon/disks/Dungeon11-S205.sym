@@ -4,20 +4,38 @@ Altirra symbol file
 ; Kernel loader
 [symbols]
 
-rw  0007,2   SRC_ADDR
-rw  0008,2   DST_ADDR
+rw  0007,2   dat_0007_L             ; LSB of source address
+rw  0009,2   dat_0009_L             ; LSB of destination address
 
-rwx 0740,1   BRKKY_IRQ      ; Break key interrupt handler? Or something else?
+rw  0020,1   dat_0020               ; 1 byte of storage
+rw  0021,1   dat_0021               ; 1 byte of storage
 
-rwx 1400,400 DUNGEON_CHRSET ; Dungeon character set font
+rwx 0740,1   BRKKY_IRQ              ; Break key interrupt handler? Or something else?
 
-rwx 224f,1   VSEROR_IRQ     ; POKEY serial I/O transmit ready interrupt handler
-rwx 2297,1   VSEROC_IRQ     ; POKEY serial bus transmit complete interrupt handler
-rwx 21e7,1   VSERIN_IRQ     ; POKEY serial I/O bus receive data ready interrupt handler
-rwx 22AC,1   VIMIRQ_IRQ     ; The IRQ immediate handler
-rwx 2347,1   VVBLKI_IRQ     ; The VBLANK immediate interrupt handler
+rwx 1400,400 DUNGEON_CHRSET         ; Dungeon character set font
 
-rwx 199D,1   SUB_0254_VEC
+rw  18c1,3   tbl_18c1               ; 3 byte table
+rw  18c4,1   dat_18c4               ; 1 byte of data
+rw  18c7,1   dat_18c7               ; 1 byte of data
 
-rwx 8000,1   INIT_IRQS      ; Initializes IRQ handler vectors
-rwx 807E,1   KERNEL_ENTRY   ; Game kernel entry vector
+rwx 199d,1   SUB_0254_VEC
+
+rwx 1a0d,1   SET_DISP_MODE          ;
+
+rwx 21e7,1   irq_VSERIN_21e7        ; POKEY serial I/O bus receive data ready interrupt handler
+rwx 224f,1   irq_VSEROR_224f        ; POKEY serial I/O transmit ready interrupt handler
+rwx 2297,1   irq_VSEROC_2297        ; POKEY serial bus transmit complete interrupt handler
+rwx 22ac,1   irq_VIMIRQ_22ac        ; The IRQ immediate handler
+rwx 2347,1   VVBLKI_IRQ             ; The VBLANK immediate interrupt handler
+
+rwx 8000,1   INIT_IRQS              ; Initializes IRQ handler vectors
+rwx 807e,1   KERNEL_ENTRY           ; Game kernel entry vector
+
+rw  816a,24  dat_816a               ; 36 bytes: "     System initialization      1234"
+rw  818e,10  dat_818e               ; 16 bytes: Table of memory size strings. 4 entries x 4 bytes
+                                    ;    0: " 48K"
+                                    ;    4: " ??K"
+                                    ;    8: " 64K"
+                                    ;   12: "128K"
+
+rw  899f,61  dat_899f               ; 97 bytes. Likely unused

@@ -136,7 +136,7 @@
 1806: 4c f3 2f  JMP_SUB_1806    JMP loc_2ff3         ;
 1809: 4c e3 30  JMP_SUB_1809    JMP loc_30e3         ;
 180c: 4c 83 31  JMP_SUB_180C    JMP loc_3183         ;
-180f: 4c 0d 1a  JMP_SUB_180F    JMP DISPLAY_SUB_1a0d ;
+180f: 4c 0d 1a  JMP_SUB_180F    JMP SET_DISP_MODE    ;
 1812: 4c 84 1c  JMP_SUB_1812    JMP sub_1c84         ;
 1815: 4c 88 1c  JMP_SUB_1815    JMP sub_1c88         ;
 1818: 4c 8c 1c  JMP_SUB_1818    JMP sub_1c8c         ;
@@ -159,14 +159,14 @@
 184b: 4c a5 3c  JMP_SUB_184B    JMP sub_3ca5         ;
 184e: 4c c2 3c  JMP_SUB_184E    JMP sub_3cc2         ;
 1851: 4c 5c 3c  JMP_SUB_1851    JMP sub_3c5c         ;
-1854: 4c 8f 2d  JMP_SUB_1854    JMP loc_2d8f         ;
+1854: 4c 8f 2d  JMP_SUB_1854    JMP INIT_BYTES       ;
 1857: 4c 6f 2c  JMP_SUB_1857    JMP loc_2c6f         ;
 185a: 4c fc 2b  JMP_SUB_185A    JMP sub_2bfc         ;
-185d: 4c 9b 2c  JMP_SUB_185D    JMP loc_2c9b         ;
+185d: 4c 9b 2c  JMP_SUB_185D    JMP sub_2c9b         ;
 1860: 4c ab 2d  JMP_SUB_1860    JMP sub_2dab         ;
 1863: 4c e3 2d  JMP_SUB_1863    JMP sub_2de3         ;
-1866: 4c 0d 2e  JMP_SUB_1866    JMP sub_2e0d         ;
-1869: 4c 31 2e  JMP_SUB_1869    JMP loc_2e31         ;
+1866: 4c 0d 2e  JMP_SUB_1866    JMP COPY_BYTES       ;
+1869: 4c 31 2e  JMP_SUB_1869    JMP sub_2e31         ;
 186c: 4c 6b 2e  JMP_SUB_186C    JMP loc_2e6b         ;
 186f: 4c 69 2e  JMP_SUB_186F    JMP sub_2e69         ;
 1872: 4c 66 2e  JMP_SUB_1872    JMP sub_2e66         ;
@@ -191,10 +191,10 @@
 18ab: 4c b8 5b  JMP_SUB_18AB    JMP loc_5bb8         ;
 18ae: 4c a0 2a  JMP_SUB_18AE    JMP loc_2aa0         ;
 18b1: 4c 92 54  JMP_SUB_18B1    JMP loc_5492         ;
-18b4: 4c c6 2e  JMP_SUB_18B4    JMP loc_2ec6         ;
+18b4: 4c c6 2e  JMP_SUB_18B4    JMP KERNEL_INIT      ;
 
 18b7: 00        dat_18b7        .BYTE $00            ;
-18b8: 00        UNK_1C19OFS_18B8  .BYTE $00          ; Offset to values at 1C19 (COLPF2 value table?)
+18b8: 00        CUR_COLPF2_NUM  .BYTE $00            ; Offset to values at $1c19 [tbl_COLPF2_1c19] (0: $46, 1: $68, 2: $88)
 18b9: 00        CUR_DLIST_NUM   .BYTE $00            ; Currently active DLIST number/mode (0..2)
 18ba: 00        CUR_COLPF0      .BYTE $00            ; Value assigned to COLPF0 (playfield 0 color) during display rendering
 18bb: 00        CUR_COLPF1      .BYTE $00            ; Value assigned to COLPF1 during display rendering
@@ -203,11 +203,8 @@
 18be: 00        COLBK_SET_18BE  .BYTE $00            ; Value assigned to COLBK during display rendering
 18bf: 00 00     CUR_COLPF3      .BYTE $00,$00        ; Value assigned to COLPF3 during display rendering
 18c1: 00 00 00  tbl_18c1        .BYTE $00,$00,$00    ; ......
-18c4: 00 00 00  dat_18c4        .BYTE $00,$00,$00    ; ...
-18c7: 00 00     dat_18c7        .BYTE $00,$00        ; ..
-
-
-18c9: 00                        .BYTE $00
+18c4: 00 00 00  tbl_18c4        .BYTE $00,$00,$00    ; ...
+18c7: 00 00     tbl_18c7        .BYTE $00,$00,$00    ; ...
 18ca: 00        dat_18ca        .BYTE $00
 18cb: 00 00 00 00 00 00         .BYTE $00,$00,$00,$00,$00,$00  ; ........
 18d1: 00 00 00                  .BYTE $00,$00,$00              ; ...
@@ -279,39 +276,96 @@
 1975: 00        UNK_BYTE_1975   .BYTE $00            ;
 1976: 00        dat_1976        .BYTE $00            ;
 
-1977: 00        cont_addr_1977_L  .BYTE $00        ; .
-1978: 00 00 00 00 80 80 80 80  cont_addr_1977_H  .BYTE $00,$00,$00,$00,$80,$80,$80,$80  ; ........
-1980: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
-1988: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
-1990: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
-1998: 80 80 80 80               .BYTE $80,$80,$80,$80                  ; ....
-199c: 00        dat_199c        .BYTE $00                              ; .
+1977: 00        cont_addr_1977_L  .BYTE $00          ; .
+1978: 00        cont_addr_1977_H  .BYTE $00          ; .
+1979: 00 00 00                  .BYTE $00,$00,$00    ; ...
+197c: 80 80 80 80 80 80 80 80  dat_197c  .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; 32 byte display buffer
+1984: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80           ;     used by DLIST_19f5
+198c: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80           ;     & zeroed in sub_2cfb.
+1994: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80           ;     Related to loading encounters/scenarios
+199c: 00        dat_199c        .BYTE $00            ; .
 
-199d: 70 70 30 42 00 04 02 02  DLIST_199d  .BYTE $70,$70,$30,$42,$00,$04,$02,$02 ; pp0B....
-19a5: 02 02 02 02 02 02 02 02   .BYTE $02,$02,$02,$02,$02,$02,$02,$02  ; ........
-19ad: 02 02 02 02 02 02 02 02   .BYTE $02,$02,$02,$02,$02,$02,$02,$02  ; ........
-19b5: 02 02 02 02 02 02 41 9d   .BYTE $02,$02,$02,$02,$02,$02,$41,$9d  ; ......A.
-19bd: 19                        .BYTE $19                              ; .
-19be: 70 70 30 42 00 04 80 02  DLIST_19be  .BYTE $70,$70,$30,$42,$00,$04,$80,$02 ; pp0B....
-19c6: 80 02 80 02 80 02 02 80   .BYTE $80,$02,$80,$02,$80,$02,$02,$80  ; ........
-19ce: 44 f0 04 04 84 84 04 84   .BYTE $44,$f0,$04,$04,$84,$84,$04,$84  ; D.......
-19d6: 04 04 84 00 00 42 58 06   .BYTE $04,$04,$84,$00,$00,$42,$58,$06  ; .....BX.
-19de: 00 02 00 02 00 02 00 02   .BYTE $00,$02,$00,$02,$00,$02,$00,$02  ; ........
-19e6: 00 02 00 02 00 02 41 be   .BYTE $00,$02,$00,$02,$00,$02,$41,$be  ; ......A.
-19ee: 19                        .BYTE $19                              ; .
+; This display list seems to be a 40x25? 1bpp character display (20 + 25 * 8 = 220 scanlines?)
+199d: 70 70 30  DLIST_199d      .BYTE $70,$70,$30                      ; 8 + 8 + 4 [20] blank scanlines
+19a0: 42 00 04                  .BYTE $42,$00,$04                      ; 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                                                       ;     resets display memory position to $0400 [DISP_START]
+19a3: 02 02 02 02 02 02 02 02   .BYTE $02,$02,$02,$02,$02,$02,$02,$02  ; 24 rows of
+19ab: 02 02 02 02 02 02 02 02   .BYTE $02,$02,$02,$02,$02,$02,$02,$02  ;     Graphic mode 0
+19b3: 02 02 02 02 02 02 02 02   .BYTE $02,$02,$02,$02,$02,$02,$02,$02  ;     40x24 8x8 1bpp characters
+19bb: 41 9d 19                  .BYTE $41,$9d,$19                      ; JVB $199d - Jump on vblank to $199d [DLIST_199d]
+                                                                       ;     e.g. repeat on each vblank
+; This display list is used to render the normal gameplay
+; 23 total lines of text
+;   6 lines of text (Normal 1bpp Dungeon character set)
+;   9 lines of gfx area (2bpp character set used as graphics)
+;   8 lines of text (Normal 1bpp Dungeon character set)
+; (20 + 8 + 5*9 + 9*8 + 2 + 8 + 7*9 = 210 scanlines)
+19be: 70 70 30   DLIST_19be     .BYTE $70,$70,$30                      ; 8 + 8 + 4 [20] blank scanlines
+19c1: 42 00 04                  .BYTE $42,$00,$04                      ; 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                                                       ;     resets display memory position to $0400 [DISP_START]
+19c4: 80 02 80 02 80 02 80 02   .BYTE $80,$02,$80,$02,$80,$02,$80,$02  ; 4 x Skip 1 scanline w/display list interrupt [$00 + $80]
+                                                                       ;     & 1 row of 8x8 1bpp characters [$02]
+19cc: 02                        .BYTE $02                              ; 1 row of 8x8 1bpp characters
+19cd: 80                        .BYTE $80                              ; Skip 1 scanline w/display list interrupt
+19ce: 44 f0 04                  .BYTE $44,$f0,$04                      ; 1 row of 8x8 2bpp characters w/Load memory scan
+                                                                       ;     resets display memory position to $04f0 [DISP_GFX_TOP]
+19d1: 04                        .BYTE $04                              ; 1 row of 8x8 2bpp characters
+19d2: 84 84                     .BYTE $84,$84                          ; 2 rows of 8x8 2bpp characters w/display list interrupt
+19d4: 04                        .BYTE $04                              ; 1 row of 8x8 2bpp characters
+19d5: 84                        .BYTE $84                              ; 1 row of 8x8 2bpp characters w/display list interrupt
+19d6: 04 04                     .BYTE $04,$04                          ; 2 rows of 8x8 2bpp characters
+19d8: 84                        .BYTE $84                              ; 1 row of 8x8 2bpp characters w/display list interrupt
+19d9: 00 00                     .BYTE $00,$00                          ; Skip 2 scanlines
+19db: 42 58 06                  .BYTE $42,$58,$06                      ; 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                                                       ;     resets display memory position to $0658
+19de: 00 02 00 02 00 02 00 02   .BYTE $00,$02,$00,$02,$00,$02,$00,$02  ; 7 x Skip 1 scanline [$00]
+19e6: 00 02 00 02 00 02         .BYTE $00,$02,$00,$02,$00,$02          ;     & 1 row of 8x8 1bpp characters [$02]
+19ec: 41 be 19                  .BYTE $41,$be,$19                      ; JVB $19be - Jump on vblank to $19be [DLIST_19be]
+                                                                       ;     e.g. repeat on each vblank
 19ef: 19 19 19  TBL_DLISTH      .BYTE $19,$19,$19    ; Table of MSB for DLIST address
 19f2: 9d be be  TBL_DLISTL      .BYTE $9d,$be,$be    ; Table of LSB for DLIST address
-19f5: 70 70 70 70 70            .BYTE $70,$70,$70,$70,$70  ; ppppp
-19fa: 70 70 70 70 70 70 70 70   .BYTE $70,$70,$70,$70,$70,$70,$70,$70  ; pppppppp
-1a02: 70 70 42 7c 19 41 f5 19   .BYTE $70,$70,$42,$7c,$19,$41,$f5,$19  ; ppB|.A..
-1a0a: 41 0a 1a                 DLIST_1a0a  .BYTE $41,$0a,$1a    ; A..
 
+; TODO: Where is this display list utilized?
+; This display list renders a single line of text starting 120 scanlines from the top
+19f5: 70 70 70  DLIST_19f5      .BYTE $70,$70,$70                      ; 15 x Skip 8 scanlines [120 scanlines total]
+19f8: 70 70 70 70 70 70 70 70   .BYTE $70,$70,$70,$70,$70,$70,$70,$70  ;
+1a00: 70 70 70 70               .BYTE $70,$70,$70,$70                  ;
+1a04: 42 7c 19                  .BYTE $42,$7c,$19                      ; 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                                                       ;     resets display memory position to $197c [dat_197c]
+1a07: 41 f5 19                  .BYTE $41,$f5,$19                      ; JVB $19f5 - Jump on vblank to $19f5 [DLIST_19f5]
+
+; This display list renders a blank screen
+1a0a: 41 0a 1a  DLIST_1a0a      .BYTE $41,$0a,$1a    ; JVB $1a0a - Jump on vblank to $1a0a [DLIST_1a0a]
+                                                     ;     e.g. repeat on each vblank
+
+; Initializes a display mode based on the input parameter (A)
+;
 ; Parameters:
-;   A = Index (0..2) into several tables
-;        - TBL_DLISTH + A -> CUR_DLISTH ($255)
-;        - TBL_DLISTL + A -> CUR_DLISTL ($254)
-;        - UNK_BYTE_TBL_1C21 + A -> Y, 0 -> UNK_BYTE_04c8 + Y
-1a0d: aa        DISPLAY_SUB_1a0d  TAX                ; Set X = A
+;   A = The display mode to initialize
+;       - 0: Plain text display (40 characters x 25 rows @ $0400 [DISP_START], 1bpp character set)
+;            Sets CUR_DLISTL/H = $199d [DLIST_199d]
+;            Sets 1 byte @ $04c8 [DISP_LINE6] to 0
+;            Jumps to DISPLAY_SUB_1a47
+;
+;       - 1: Normal gameplay display
+;            23 total lines of text
+;                6 lines of text     (40 characters, 1bpp character set)
+;                9 lines of gfx area (40 characters, 2bpp character set used as graphics)
+;                8 lines of text     (40 characters, 1bpp character set)
+;            Sets CUR_DLISTL/H = $19be [DLIST_19be]
+;            Sets 40 bytes @ $04c8 [DISP_LINE6] to 0
+;            Jumps to DISPLAY_SUB_1a65
+;
+;       - 2: Unused mode? Same as normal gameplay except only clears 20 bytes on DISP_LINE6
+;            23 total lines of text
+;                6 lines of text     (40 characters, 1bpp character set)
+;                9 lines of gfx area (40 characters, 2bpp character set used as graphics)
+;                8 lines of text     (40 characters, 1bpp character set)
+;            CUR_DLISTL/H = $19be [DLIST_19be]
+;            Sets 20 bytes @ $04c8 [DISP_LINE6] to 0
+;            Jumps to DISPLAY_SUB_1b19
+;
+1a0d: aa        SET_DISP_MODE   TAX                  ; Set X = A
 1a0e: 8d b9 18                  STA CUR_DLIST_NUM    ; Save off value of A
 1a11: a9 00                     LDA #$00             ; Set A = 0
 1a13: a0 03                     LDY #$03             ; Set Y = 3
@@ -320,166 +374,211 @@
 1a1b: 88                        DEY                  ;     of the HPOSP0/1/2/3
 1a1c: 10 fa                     BPL loc_1a18         ;     registers
 1a1e: 20 54 24                  JSR WAIT_FOR_VBLK_A  ; Wait for next VBLANK
-1a21: bd ef 19                  LDA TBL_DLISTH,X     ; Set CUR_DLISTH = $19,$19,$19
-1a24: 8d 55 02                  STA CUR_DLISTH       ;
-1a27: bd f2 19                  LDA TBL_DLISTL,X     ; Set CUR_DLISTL = $9d,$be,$be
-1a2a: 8d 54 02                  STA CUR_DLISTL       ;
-1a2d: bc 21 1c                  LDY UNK_BYTE_TBL_1C21,X  ; Set Y = 00, $27 (39), $13 (19) : (add 1 for # of iterations)
+1a21: bd ef 19                  LDA TBL_DLISTH,X     ; Set
+1a24: 8d 55 02                  STA CUR_DLISTH       ;     CUR_DLISTH/CUR_DLISTL
+1a27: bd f2 19                  LDA TBL_DLISTL,X     ;     to one of the following
+1a2a: 8d 54 02                  STA CUR_DLISTL       ;     ($199d [DLIST_199d], $19be [DLIST_19be], $19be [DLIST_19be])
+1a2d: bc 21 1c                  LDY tbl_CLEAR_NUM,X  ; Set Y = $00, $27 (39), $13 (19) : (add 1 for # of iterations)
 1a30: a9 00                     LDA #$00             ; Set Y+1 bytes
-1a32: 99 c8 04  loc_1a32        STA UNK_BYTE_04c8,Y  ;  starting @ $4c8 to 0
-1a35: 88                        DEY                  ; Loop until Y underflows
-1a36: 10 fa                     BPL loc_1a32         ;     (sign bit set) - Either 1, 40 or 20 iterations
+1a32: 99 c8 04  loc_1a32        STA DISP_LINE6,Y     ;  starting @ $04c8 [DISP_LINE6] to 0
+1a35: 88                        DEY                  ; Subtract one from Y
+1a36: 10 fa                     BPL loc_1a32         ;     and repeat while Y >= 0 - Either 1, 40 or 20 iterations
 1a38: bd 41 1a                  LDA TBL_NXT_DSUBH,X  ; Load the address
 1a3b: 48                        PHA                  ;     to continue at
 1a3c: bd 44 1a                  LDA TBL_NXT_DSUBL,X  ;     onto the stack
 1a3f: 48                        PHA                  ;     from the TBL_NXT_DSUBH/L tables
 1a40: 60                        RTS                  ; Indirectly jump to continuation address loaded above
-                                                     ;     0 = $1A46 + 1 = $1a47 (DISPLAY_SUB_1a47)
-                                                     ;     1 = $1A64 + 1 = $1a65 (DISPLAY_SUB_1a65)
-                                                     ;     2 = $1B18 + 1 = $1b19 (DO_VDSLST_1b2f)
+                                                     ;     0 = $1a46 + 1 = $1a47 (DISPLAY_SUB_1a47)
+                                                     ;     1 = $1a64 + 1 = $1a65 (DISPLAY_SUB_1a65)
+                                                     ;     2 = $1b18 + 1 = $1b19 (DISPLAY_SUB_1b19)
+
 1a41: 1a 1a 1b  TBL_NXT_DSUBH   .BYTE $1a,$1a,$1b    ; Table of MSB for continuation address - 1
 1a44: 46 64 18  TBL_NXT_DSUBL   .BYTE $46,$64,$18    ; Table of LSB for continuation address - 1
 
-; Indirectly invoked from DISPLAY_SUB_1a0d
-1a47: a9 55     DISPLAY_SUB_1a47  LDA #$55           ; Set LSB of VDSLST
+; Invoked from SET_DISP_MODE for mode 0 (Plain text display)
+;   - Sets VDSLST and CUR_VDSLSTL/H to $551b [irq_VDSLST_1b55]
+;   - Sets all of HPOSP0/1/2/3 and HPOSM0/1/2/3 to 0
+;   - Sets dat_0253 = 0
+;
+1a47: a9 55     DISPLAY_SUB_1a47  LDA #$55           ; Set VDSLST
 1a49: 8d 00 02                  STA VDSLST           ;     (display list interrupt vector)
-1a4c: 8d 48 02                  STA CUR_VDSLSTL      ;     and CUR_VDSLSTL ($0248) to $55
-1a4f: a9 1b                     LDA #$1b             ; Set MSB of VDSLST
-1a51: 8d 01 02                  STA VDSLST+1         ;     and CUR_VDSLSTH ($0249)
-1a54: 8d 49 02                  STA CUR_VDSLSTH      ;     to $1b (final addr = $1b55 [IRQ_VDSLST_1b55])
+1a4c: 8d 48 02                  STA CUR_VDSLSTL      ;     and CUR_VDSLSTL/H
+1a4f: a9 1b                     LDA #$1b             ;     to
+1a51: 8d 01 02                  STA VDSLST+1         ;     $551b
+1a54: 8d 49 02                  STA CUR_VDSLSTH      ;     [irq_VDSLST_1b55]
 1a57: a2 07                     LDX #$07             ; Zero out all of
 1a59: a9 00                     LDA #$00             ;     the HPOSP0/1/2/3
-1a5b: 9d 00 d0  loc_1a5b        STA HPOSP0,X         ;     and HPOSM0/1/2/3
-1a5e: ca                        DEX                  ;     registers
-1a5f: 10 fa                     BPL loc_1a5b         ; Loop until sign bit set
-1a61: 8d 53 02                  STA dat_0253         ; Set $0253 = 0
+1a5b: 9d 00 d0  loc_1a5b        STA HPOSP0,X         ;     and HPOSM0/1/2/3 registers
+1a5e: ca                        DEX                  ; Subtract 1 from X
+1a5f: 10 fa                     BPL loc_1a5b         ;     and repeat while X >= 0
+1a61: 8d 53 02                  STA dat_0253         ; Set $0253 [dat_0253] = 0
 1a64: 60                        RTS                  ; Return to caller
 
-; Indirectly invoked from DISPLAY_SUB_1a0d
-1a65: a9 2f     DISPLAY_SUB_1a65  LDA #$2f           ; Set LSB of VDSLST
+; Invoked from SET_DISP_MODE for mode 1 (Plain text display)
+;
+;   - Sets VDSLST (display list interrupt vector) to $1b2f [irq_VDSLST_1b2f]
+;   - Sets VDSLST_A_LO/HI to $1b56 [irq_VDSLST_1b56]
+;   - Enables Display List Interrupts (DLI) and Vertical Blank Interrupts (VBI)
+;   - Sets P0 and P1 size to quadruple size (32 pixels wide)
+;   - Initializes player 0/1/2/3 bits to 0
+;   - Initializes missile 0/1/2/3 color to 0
+;   - Set all missile 0/1/2/3 bits to 1
+;   - Set missile horizontal positions
+;     - HPOSM0 = $20 (32)
+;     - HPOSM1 = $28 (40)
+;     - HPOSM2 = $d0 (208)
+;     - HPOSM3 = $d8 (216)
+;   - Set player horizontal positions
+;     - HPOSP0 = $38 (56)
+;     - HPOSP1 = $ac (172)
+;     - HPOSP2 = $00 (0)
+;     - HPOSP3 = $00 (0)
+;   - Disables player and missile rendering
+;   - Set all of CUR_COLPF0/1/2/3, CUR_COLBK and COLBK_SET_18Be to 0
+;   - Initializes the graphical display area, calling INIT_GFX_AREA
+;   - Sets the sign bit on the 10 left-most (compass) and right-most (arrows) columns in the Gfx area
+;   - Sets all 3072 bytes in GFX_TOP_CHRSET, GFX_MID_CHRSET and GFX_BTM_CHRSET to $ff
+;
+1a65: a9 2f     DISPLAY_SUB_1a65  LDA #$2f           ; Set VDSLST
 1a67: 8d 00 02                  STA VDSLST           ;     (display list interrupt vector)
-1a6a: 8d 48 02                  STA CUR_VDSLSTL      ;     and CUR_VDSLSTL ($0248) to $2f
-1a6d: a9 1b                     LDA #$1b             ; Set MSB of VDSLST
-1a6f: 8d 01 02                  STA VDSLST+1         ;     and CUR_VDSLSTH ($0249)
-1a72: 8d 49 02                  STA CUR_VDSLSTH      ;     to $1b (final addr = $1b2f [DO_VDSLST_1b2f])
-1a75: a9 56                     LDA #$56             ; Set VDSLST_A_LO
-1a77: 8d 4a 02                  STA VDSLST_A_LO      ;     and
-1a7a: a9 1b                     LDA #$1b             ;     VDSLST_A_HI
-1a7c: 8d 4b 02                  STA VDSLST_A_HI      ;     to addr = $1b56 [IRQ_VDSLST_1b56]
-1a7f: a9 c0                     LDA #$c0             ; Enable the Display List Interrupt (DLI)
-1a81: 8d 0e d4                  STA NMIEN            ;     and Vertical Blank Interrupt (VBI)
+1a6a: 8d 48 02                  STA CUR_VDSLSTL      ;     and CUR_VDSLSTL/H
+1a6d: a9 1b                     LDA #$1b             ;     to
+1a6f: 8d 01 02                  STA VDSLST+1         ;     $1b2f
+1a72: 8d 49 02                  STA CUR_VDSLSTH      ;     [irq_VDSLST_1b2f]
+1a75: a9 56                     LDA #$56             ; Set
+1a77: 8d 4a 02                  STA VDSLST_A_LO      ;     VDSLST_A_LO/HI
+1a7a: a9 1b                     LDA #$1b             ;     to
+1a7c: 8d 4b 02                  STA VDSLST_A_HI      ;     $1b56 [irq_VDSLST_1b56]
+1a7f: a9 c0                     LDA #$c0             ; Enable Display List Interrupts (DLI)
+1a81: 8d 0e d4                  STA NMIEN            ;     and Vertical Blank Interrupts (VBI)
 1a84: a9 00                     LDA #$00             ; Set
-1a86: 8d b8 18                  STA UNK_1C19OFS_18B8 ;     UNK_1C19OFS_18B8 = 0
+1a86: 8d b8 18                  STA CUR_COLPF2_NUM   ;     CUR_COLPF2_NUM = 0
 1a89: a9 34                     LDA #$34             ; Set color priorities
 1a8b: 8d 1b d0                  STA PRIOR            ;    $04: PF0 > PF1 > PF2 > PF3 > P0 > P1 > P2 > P3 > BG
                                                      ;    $10: Enable P5
                                                      ;    $20: Overlap of P0, P1, P2, P3 gives 3rd color (OR colors together)
 1a8e: a2 03                     LDX #$03             ; Set P0 and P1
 1a90: 8e 08 d0                  STX SIZEP0           ;     size to quadruple
-1a93: 8e 09 d0                  STX SIZEP1           ;     width (24px)
-1a96: bd 24 1c  loc_1a96        LDA TBL_HPOSM,X      ; Assign each of the
-1a99: 9d 04 d0                  STA HPOSM0,X         ;     horizontal missile and
-1a9c: bd 28 1c                  LDA TBL_HPOSP,X      ;     player positions to the
-1a9f: 9d 00 d0                  STA HPOSP0,X         ;     values from the TBL_HPOSM
-1aa2: a9 00                     LDA #$00             ;     and TBL_HPOSP tables
-1aa4: 9d 0d d0                  STA GRAFP0,X         ; Set GRAFP0/1/2/3 to 0
+1a93: 8e 09 d0                  STX SIZEP1           ;     width (32px)
+1a96: bd 24 1c  loc_1a96        LDA tbl_HPOSM,X      ; Set HPOSM0/1/2/3 (horizontal missile positions)
+1a99: 9d 04 d0                  STA HPOSM0,X         ;      from tbl_HPOSM,X
+1a9c: bd 28 1c                  LDA tbl_HPOSP,X      ; Set HPOSP0/1/2/3 (player positions)
+1a9f: 9d 00 d0                  STA HPOSP0,X         ;     from tbl_HPOSP,X
+1aa2: a9 00                     LDA #$00             ; Set
+1aa4: 9d 0d d0                  STA GRAFP0,X         ;     GRAFP0/1/2/3 to 0
 1aa7: 9d 12 d0                  STA COLPM0,X         ; Set COLPM0/1/2/3 to 0
 1aaa: ca                        DEX                  ; Subtract one from X
 1aab: 10 e9                     BPL loc_1a96         ;     and repeat while X >= 0
 1aad: 8d 1d d0                  STA GRACTL           ; Set GRCTL = 0 : Turn off players and missiles
 1ab0: 8d 19 d0                  STA COLPF3           ; Set COLPF3 = 0 : black
-1ab3: 8e 11 d0                  STX GRAFM            ; Set GRAFM = 0 : Missiles won't draw anything
-1ab6: 8e 0c d0                  STX SIZEM            ; Set SIZEM = 0 : Set normal missile size
-1ab9: a2 05                     LDX #$05             ; Zero out
-1abb: 9d ba 18  loc_1abb        STA CUR_COLPF0,X     ;     the six color params
-1abe: ca                        DEX                  ;
-1abf: 10 fa                     BPL loc_1abb         ;
-1ac1: 20 09 1c                  JSR sub_1c09         ;
-1ac4: a9 f0                     LDA #$f0             ;
-1ac6: 85 07                     STA dat_0007_L       ;
-1ac8: a9 04                     LDA #$04             ;
-1aca: 85 08                     STA dat_0007_H       ;
-1acc: a9 0d                     LDA #$0d             ;
-1ace: 85 09                     STA dat_0009_L       ;
-1ad0: a9 05                     LDA #$05             ;
-1ad2: 85 0a                     STA dat_0009_H       ;
-1ad4: a2 09                     LDX #$09             ;
-1ad6: a0 0a     loc_1ad6        LDY #$0a             ;
-1ad8: b1 07     loc_1ad8        LDA (dat_0007_L),Y   ;
-1ada: 09 80                     ORA #$80             ;
-1adc: 91 07                     STA (dat_0007_L),Y   ;
-1ade: b1 09                     LDA (dat_0009_L),Y   ;
-1ae0: 09 80                     ORA #$80             ;
-1ae2: 91 09                     STA (dat_0009_L),Y   ;
-1ae4: 88                        DEY                  ;
-1ae5: 10 f1                     BPL loc_1ad8         ;
-1ae7: a5 07                     LDA dat_0007_L       ;
-1ae9: 18                        CLC                  ;
-1aea: 69 28                     ADC #$28             ;
-1aec: 85 07                     STA dat_0007_L       ;
-1aee: 90 02                     BCC loc_1af2         ;
-1af0: e6 08                     INC dat_0007_H       ;
-1af2: a5 09     loc_1af2        LDA dat_0009_L       ;
-1af4: 18                        CLC                  ;
-1af5: 69 28                     ADC #$28             ;
-1af7: 85 09                     STA dat_0009_L       ;
-1af9: 90 02                     BCC loc_1afd         ;
-1afb: e6 0a                     INC dat_0009_H       ;
-1afd: ca        loc_1afd        DEX                  ;
-1afe: d0 d6                     BNE loc_1ad6         ;
-1b00: a9 00                     LDA #$00             ;
-1b02: 85 09                     STA dat_0009_L       ;
-1b04: a9 08                     LDA #$08             ;
-1b06: 85 0a                     STA dat_0009_H       ;
-1b08: a2 0c                     LDX #$0c             ;
-1b0a: a0 00                     LDY #$00             ;
+1ab3: 8e 11 d0                  STX GRAFM            ; Set GRAFM = $ff (X loop term value) : All missile pixels visible
+1ab6: 8e 0c d0                  STX SIZEM            ; Set SIZEM = $ff : All missiles quadruple size (8 pixels)
+1ab9: a2 05                     LDX #$05             ; Zero out the six
+1abb: 9d ba 18  loc_1abb        STA CUR_COLPF0,X     ;     color params
+1abe: ca                        DEX                  ;     CUR_COLPF0/1/2/3,
+1abf: 10 fa                     BPL loc_1abb         ;     CUR_COLBK and COLBK_SET_18Be
+1ac1: 20 09 1c                  JSR INIT_GFX_AREA    ; Init the graphical display area
+; The following section is additional initialization of the graphical display area
+; It sets the sign bit (e.g. render characters inverted) for each byte within the following regions:
+;    - [0,0]-[10,8] (left side - compass)
+;    - [29,0]-[39,8] (right side - arrows)
+1ac4: a9 f0                     LDA #$f0             ; Set dat_0007_L/H
+1ac6: 85 07                     STA dat_0007_L       ;     address
+1ac8: a9 04                     LDA #$04             ;     to
+1aca: 85 08                     STA dat_0007_H       ;     $04f0 [DISP_GFX_TOP]
+1acc: a9 0d                     LDA #$0d             ; Set dat_0009_L/H
+1ace: 85 09                     STA dat_0009_L       ;     address
+1ad0: a9 05                     LDA #$05             ;     to
+1ad2: 85 0a                     STA dat_0009_H       ;     $050d [DISP_GFX_TOP + $1d (29)]
+1ad4: a2 09                     LDX #$09             ; Set X = 9 (9 iterations)
+1ad6: a0 0a     loc_1ad6        LDY #$0a             ; Set Y = $a (10 columns wide)
+1ad8: b1 07     loc_1ad8        LDA (dat_0007_L),Y   ; Set sign bit for each byte in
+1ada: 09 80                     ORA #$80             ;     the Gfx area of the display buffer
+1adc: 91 07                     STA (dat_0007_L),Y   ;     for the region [0,0]-[10,8] (left side - compass)
+1ade: b1 09                     LDA (dat_0009_L),Y   ; Set sign bit for each byte in
+1ae0: 09 80                     ORA #$80             ;     the Gfx area of the display buffer
+1ae2: 91 09                     STA (dat_0009_L),Y   ;     for the region [29,0]-[39,8] (right side - arrows)
+1ae4: 88                        DEY                  ; Subtract one from Y
+1ae5: 10 f1                     BPL loc_1ad8         ;     and loop while Y >= 0
+1ae7: a5 07                     LDA dat_0007_L       ; Move the dat_0007_L/H
+1ae9: 18                        CLC                  ;     address
+1aea: 69 28                     ADC #$28             ;     forward
+1aec: 85 07                     STA dat_0007_L       ;     by
+1aee: 90 02                     BCC loc_1af2         ;     $28 (40)
+1af0: e6 08                     INC dat_0007_H       ;     bytes
+1af2: a5 09     loc_1af2        LDA dat_0009_L       ; Move the dat_0009_L/H
+1af4: 18                        CLC                  ;     address
+1af5: 69 28                     ADC #$28             ;     forward
+1af7: 85 09                     STA dat_0009_L       ;     by
+1af9: 90 02                     BCC loc_1afd         ;     $28 (40)
+1afb: e6 0a                     INC dat_0009_H       ;     bytes
+1afd: ca        loc_1afd        DEX                  ; Subtract one from X
+1afe: d0 d6                     BNE loc_1ad6         ;     and loop while X > 0
+; This section sets all 3072 bytes (12 * 256) in GFX_TOP_CHRSET, GFX_MID_CHRSET and GFX_BTM_CHRSET to $ff
+1b00: a9 00                     LDA #$00             ; Set
+1b02: 85 09                     STA dat_0009_L       ;     dat_0009_L/H
+1b04: a9 08                     LDA #$08             ;     to
+1b06: 85 0a                     STA dat_0009_H       ;     $0800 (GFX_TOP_CHRSET)
+1b08: a2 0c                     LDX #$0c             ; Set X = $c (12 iterations - 4 iterations per character set)
+1b0a: a0 00                     LDY #$00             ; Set Y = 0 (256 iterations)
 1b0c: a9 ff                     LDA #$ff             ;
-1b0e: 91 09     loc_1b0e        STA (dat_0009_L),Y   ;
-1b10: c8                        INY                  ;
-1b11: d0 fb                     BNE loc_1b0e         ;
-1b13: e6 0a                     INC dat_0009_H       ;
-1b15: ca                        DEX                  ;
-1b16: d0 f6                     BNE loc_1b0e         ;
+1b0e: 91 09     loc_1b0e        STA (dat_0009_L),Y   ; Set the byte @ the address in dat_0009_L to $ff (255)
+1b10: c8                        INY                  ; Add one to Y
+1b11: d0 fb                     BNE loc_1b0e         ;     and repeat while Y >= 0 (256 iterations / full page)
+1b13: e6 0a                     INC dat_0009_H       ; Add one to dat_0009_H (move forward one page)
+1b15: ca                        DEX                  ; Subtract one from X
+1b16: d0 f6                     BNE loc_1b0e         ;     and repeat while X > 0 (12 iterations)
 1b18: 60                        RTS                  ; Return to caller
 
-; Sets the VDSLST (NMI Display List Interrupts (DLI)) to $1b2f [IRQ_VDSLST_1b2f]
-; Indirectly invoked from DISPLAY_SUB_1a0d
-1b19: 20 09 1c  DO_VDSLST_1b2f  JSR sub_1c09         ;
-1b1c: a9 2f                     LDA #$2f             ; Set LSB of VDSLST
+; Indirectly invoked from SET_DISP_MODE
+; Sets the VDSLST (NMI Display List Interrupts (DLI)) and CUR_VDSLSTL/H to $1b2f [irq_VDSLST_1b2f]
+;
+1b19: 20 09 1c  DISPLAY_SUB_1b19  JSR INIT_GFX_AREA  ; Init the graphical display area
+1b1c: a9 2f                     LDA #$2f             ; Set VDSLST
 1b1e: 8d 00 02                  STA VDSLST           ;     (display list interrupt vector)
-1b21: 8d 48 02                  STA CUR_VDSLSTL      ;     and CUR_VDSLSTL ($0248) to $2f
-1b24: a9 1b                     LDA #$1b             ; Set MSB of VDSLST
-1b26: 8d 01 02                  STA VDSLST+1         ;     and CUR_VDSLSTH ($0249)
-1b29: 8d 49 02                  STA CUR_VDSLSTH      ;     to $1b (final addr = $1b2f [IRQ_VDSLST_1b2f])
+1b21: 8d 48 02                  STA CUR_VDSLSTL      ;     and CUR_VDSLSTL/H
+1b24: a9 1b                     LDA #$1b             ;     to
+1b26: 8d 01 02                  STA VDSLST+1         ;     $1b2f
+1b29: 8d 49 02                  STA CUR_VDSLSTH      ;     [irq_VDSLST_1b2f]
 1b2c: 4c 0a 76                  JMP $760a            ; Continue @ $760a
 
-; Assigned to VDSLST and CUR_VDSLSTL/H in DO_VDSLST_1b2f
-1b2f: 48        IRQ_VDSLST_1b2f  PHA                 ; Save current value of A to stack
+; Assigned to VDSLST and CUR_VDSLSTL/H in irq_VDSLST_1b2f
+;
+1b2f: 48        irq_VDSLST_1b2f  PHA                 ; Save current value of A to stack
 1b30: 8a                        TXA                  ; Save current value
 1b31: 48                        PHA                  ;     of X to stack
-1b32: ae b8 18                  LDX UNK_1C19OFS_18B8 ; Set X = UNK_1C19OFS_18B8
-1b35: bd 19 1c                  LDA tbl_COLPF2_1c19,X; Set A = value @ tbl_COLPF2_1c19 + X
+; Update COLPF2 (player field color 2) = tbl_COLPF2_1c19 + CUR_COLPF2_NUM
+; One of the following:
+;     0: $46 - Mid-intensity Reddish-Orange
+;     1: $68 - Mid-intensity Purplish
+;     2: $88 - Mid-intensity Bluish
+;     3: $b6 - Mid Olive-Green (This value actually appears to be shared with tbl_COLPM3_1c1c)
+1b32: ae b8 18                  LDX CUR_COLPF2_NUM   ; Set X = CUR_COLPF2_NUM
+1b35: bd 19 1c                  LDA tbl_COLPF2_1c19,X; Set A = tbl_COLPF2_1c19 + X  (0: $46, 1: $68, 2: $88, 3: $b6)
 1b38: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
 1b3b: 8d 18 d0                  STA COLPF2           ; Set player field 2 color = A
+; Advance index for next interrupt
+; If the index = 4, then update VDSLST to the value in VDSLST_A_LO/HI (set in )
 1b3e: e8                        INX                  ; Increment counter
-1b3f: 8e b8 18                  STX UNK_1C19OFS_18B8 ;     and update value in memory
+1b3f: 8e b8 18                  STX CUR_COLPF2_NUM   ;     and update CUR_COLPF2_NUM
 1b42: e0 04                     CPX #$04             ; If X < 4,
 1b44: 90 0c                     BCC loc_1b52         ;    Then skip the following display list addr update
 1b46: ad 4a 02                  LDA VDSLST_A_LO      ; Set the current display
 1b49: 8d 00 02                  STA VDSLST           ;     list interrupt handler
 1b4c: ad 4b 02                  LDA VDSLST_A_HI      ;     address to the
 1b4f: 8d 01 02                  STA VDSLST+1         ;     value in VDSLST_A_LO/HI
+; Restore register values from stack and return from interrupt
 1b52: 68        loc_1b52        PLA                  ; Restore the original
 1b53: aa                        TAX                  ;     value of X
 1b54: 68                        PLA                  ; Restore the original value of A
-1b55: 40        IRQ_VDSLST_1b55  RTI                 ; Return from interrupt handler
+1b55: 40        irq_VDSLST_1b55  RTI                 ; Return from interrupt handler
 
 ; Assigned to VDSLST_A_LO/HI in DISPLAY_SUB_1a65
-1b56: 48        IRQ_VDSLST_1b56  PHA                 ; Save current value of A to stack
+1b56: 48        irq_VDSLST_1b56  PHA                 ; Save current value of A to stack
 1b57: a9 a2                     LDA #$a2             ; Set the
 1b59: 8d 00 02                  STA VDSLST           ;     next VDSLST
 1b5c: a9 1b                     LDA #$1b             ;     (display list interrupt vector)
-1b5e: 8d 01 02                  STA VDSLST+1         ;     address to $1ba2 [IRQ_VDSLST_1ba2]
+1b5e: 8d 01 02                  STA VDSLST+1         ;     address to $1ba2 [irq_VDSLST_1ba2]
 1b61: ad ba 18                  LDA CUR_COLPF0       ; Set
 1b64: 8d 16 d0                  STA COLPF0           ;     COLPF0 = CUR_COLPF0
 1b67: ad bb 18                  LDA CUR_COLPF1       ; Set
@@ -493,7 +592,7 @@
 1b7f: 8d 1a d0                  STA COLBK            ; Set COLBK = CUR_COLBK
 1b82: a9 08                     LDA #$08             ; Set the character
 1b84: 8d 09 d4                  STA CHBASE           ;     set address to $0800 (UNK_CHRSET_1)
-1b87: ad 00 76                  LDA $7600            ;
+1b87: ad 00 76                  LDA loc_7600         ;
 1b8a: c9 01                     CMP #$01             ;
 1b8c: f0 12                     BEQ loc_1ba0         ;
 1b8e: a9 90                     LDA #$90             ; Set
@@ -506,25 +605,25 @@
 1ba0: 68        loc_1ba0        PLA                  ; Restore original value of A
 1ba1: 40                        RTI                  ; Return from interrupt handler
 
-; Assigned to VDSLST_A_LO/HI in IRQ_VDSLST_1b56
-1ba2: 48        IRQ_VDSLST_1ba2  PHA                 ; Save current value of A to stack
+; Assigned to VDSLST_A_LO/HI in irq_VDSLST_1b56
+1ba2: 48        irq_VDSLST_1ba2  PHA                 ; Save current value of A to stack
 1ba3: a9 b7                     LDA #$b7             ; Set the
 1ba5: 8d 00 02                  STA VDSLST           ;     next VDSLST
 1ba8: a9 1b                     LDA #$1b             ;     (display list interrupt vector)
-1baa: 8d 01 02                  STA VDSLST+1         ;     address to $1bb7 [IRQ_VDSLST_1bb7]
+1baa: 8d 01 02                  STA VDSLST+1         ;     address to $1bb7 [irq_VDSLST_1bb7]
 1bad: a9 0c                     LDA #$0c             ;
 1baf: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
 1bb2: 8d 09 d4                  STA CHBASE           ; Set the character set address to $0c00
 1bb5: 68                        PLA                  ; Restore original value of A
 1bb6: 40                        RTI                  ; Return from interrupt handler
 
-; Assigned to VDSLST in IRQ_VDSLST_1ba2
-1bb7: 48        IRQ_VDSLST_1bb7  PHA                 ; Save current value of A to stack
+; Assigned to VDSLST in irq_VDSLST_1ba2
+1bb7: 48        irq_VDSLST_1bb7  PHA                 ; Save current value of A to stack
 1bb8: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
 1bbb: a9 d6                     LDA #$d6             ; Set the
 1bbd: 8d 00 02                  STA VDSLST           ;     next VDSLST
 1bc0: a9 1b                     LDA #$1b             ;     (display list interrupt vector)
-1bc2: 8d 01 02                  STA VDSLST+1         ;     address to $1bd6 [IRQ_VDSLST_1bd6]
+1bc2: 8d 01 02                  STA VDSLST+1         ;     address to $1bd6 [irq_VDSLST_1bd6]
 1bc5: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
 1bc8: ad be 18                  LDA COLBK_SET_18BE   ;
 1bcb: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
@@ -533,12 +632,12 @@
 1bd4: 68                        PLA                  ; Restore original value of A
 1bd5: 40                        RTI                  ; Return from interrupt handler
 
-; Assigned to VDSLST in IRQ_VDSLST_1bb7
-1bd6: 48        IRQ_VDSLST_1bd6  PHA                 ; Save current value of A to stack
+; Assigned to VDSLST in irq_VDSLST_1bb7
+1bd6: 48        irq_VDSLST_1bd6  PHA                 ; Save current value of A to stack
 1bd7: a9 eb                     LDA #$eb             ; Set the
 1bd9: 8d 00 02                  STA VDSLST           ;     next VDSLST
 1bdc: a9 1b                     LDA #$1b             ;     (display list interrupt vector)
-1bde: 8d 01 02                  STA VDSLST+1         ;     address to $1beb [IRQ_VDSLST_1beb]
+1bde: 8d 01 02                  STA VDSLST+1         ;     address to $1beb [irq_VDSLST_1beb]
 1be1: a9 10                     LDA #$10             ; Set A = $10 (16)
 1be3: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
 1be6: 8d 09 d4                  STA CHBASE           ; Set the character set address to $1000
@@ -546,8 +645,8 @@
 1bea: 40                        RTI                  ; Return from interrupt handler
 
 ;
-; Assigned to VDSLST in IRQ_VDSLST_1bd6
-1beb: 48        IRQ_VDSLST_1beb  PHA                 ; Save current value of A to stack
+; Assigned to VDSLST in irq_VDSLST_1bd6
+1beb: 48        irq_VDSLST_1beb  PHA                 ; Save current value of A to stack
 1bec: a9 00                     LDA #$00             ; Set A = 0
 1bee: 8d 0a d4                  STA WSYNC            ; Pause execution until end of scanline (Value written is ignored)
 1bf1: 8d 18 d0                  STA COLPF2           ; Set COLPF2 = 0 (black)
@@ -555,21 +654,26 @@
 1bf7: 8d 12 d0                  STA COLPM0           ; Set COLPM0 = 0 (black)
 1bfa: 8d 13 d0                  STA COLPM2           ; Set COLPM2 = 0 (black)
 1bfd: a9 0e                     LDA #$0e             ; Set A = $0e
-1bff: 8d 17 d0                  STA COLPF1           ; Set COLPF1 = $0e ()
+1bff: 8d 17 d0                  STA COLPF1           ; Set COLPF1 = $0e (14)
 1c02: a9 14                     LDA #$14             ; Set the character
 1c04: 8d 09 d4                  STA CHBASE           ;     set address to $1400 (DUNGEON_CHRSET)
 1c07: 68                        PLA                  ; Restore original value of A
 1c08: 40                        RTI                  ; Return from interrupt handler
 
-; Initializes 120 byte buffers @ $04f0 [dat_04f0], $0568 [dat_0568] & $05e0 [dat_05e0] to $77 (119 'w')
-;   120 bytes @ $04f0 [dat_04f0]
-;   120 bytes @ $0568 [dat_0568]
-;   120 bytes @ $05e0 [dat_05e0]
-1c09: a2 77     sub_1c09        LDX #$77             ; Set X = $77 (119) - 120 iterations
+; Initializes 120 byte buffers @ $04f0 [DISP_GFX_TOP], $0568 [DISP_GFX_MDL] & $05e0 [DISP_GFX_BTM]
+; Each byte in the buffer is assigned a value equal to the offset of that byte from the start of the
+; buffer.
+;
+; Called on return from an encounter or scenario.
+;
+;   120 bytes @ $04f0 [DISP_GFX_TOP]
+;   120 bytes @ $0568 [DISP_GFX_MDL]
+;   120 bytes @ $05e0 [DISP_GFX_BTM]
+1c09: a2 77     INIT_GFX_AREA   LDX #$77             ; Set X = $77 (119 'w') - 120 iterations
 1c0b: 8a        loc_1c0b        TXA                  ; Set A = X
-1c0c: 9d f0 04                  STA dat_04f0,X       ; Set byte at dat_04f0+X to $77 (119 'w')
-1c0f: 9d 68 05                  STA dat_0568,X       ; Set byte at dat_0568+X to $77 (119 'w')
-1c12: 9d e0 05                  STA dat_05e0,X       ; Set byte at dat_05e0+X to $77 (119 'w')
+1c0c: 9d f0 04                  STA DISP_GFX_TOP,X   ; Set byte at DISP_GFX_TOP+X to X
+1c0f: 9d 68 05                  STA DISP_GFX_MDL,X   ; Set byte at DISP_GFX_MDL+X to X
+1c12: 9d e0 05                  STA DISP_GFX_BTM,X   ; Set byte at DISP_GFX_BTM+X to X
 1c15: ca                        DEX                  ; Loop while
 1c16: 10 f3                     BPL loc_1c0b         ;     X >= 0
 1c18: 60                        RTS                  ; Return to caller
@@ -584,9 +688,10 @@
                                                      ;     2: $9e - Bright Dark Blue
                                                      ;     3: $34 - Darker Orange
                                                      ;     4: $00 - Black
-1c21: 00 27 13  UNK_BYTE_TBL_1C21  .BYTE $00,$27,$13   ; 3 byte lookup table
-1c24: 20 28 d0 d8  TBL_HPOSM    .BYTE $20,$28,$d0,$d8  ; 4 byte lookup table
-1c28: 38 ac 00 00  TBL_HPOSP    .BYTE $38,$ac,$00,$00  ; 4 byte lookup table
+1c21: 00 27 13  tbl_CLEAR_NUM   .BYTE $00,$27,$13    ; 3 byte lookup table: Number of bytes to clear @ DISP_LINE6.
+                                                     ;     Used in SET_DISP_MODE
+1c24: 20 28 d0 d8  tbl_HPOSM    .BYTE $20,$28,$d0,$d8  ; 4 byte lookup table
+1c28: 38 ac 00 00  tbl_HPOSP    .BYTE $38,$ac,$00,$00  ; 4 byte lookup table
 
 1c2c: 86 1b     sub_1c2c        STX tmp_001b         ;
 1c2e: 84 1c                     STY dat_001c         ;
@@ -646,26 +751,27 @@
 1c8c: a2 02     sub_1c8c        LDX #$02             ; Set X = 2
 1c8e: 86 23     loc_1c8e        STX dat_0023         ; Set dat_0023 = X (one of 0 [sub_1c84], 1 [sub_1c88], 2 [sub_1c8c])
 1c90: bd c1 18                  LDA tbl_18c1,X       ; Set
-1c93: 85 1f                     STA dat_001f         ;     dat_001f = value @ tbl_18c1 + X
-1c95: bd c4 18                  LDA dat_18c4,X       ;
-1c98: 18                        CLC                  ; Clear the carry bit
-1c99: 7d a8 1f                  ADC dat_1fa8,X       ;
-1c9c: 85 20                     STA dat_0020         ;
-1c9e: bd c7 18                  LDA dat_18c7,X       ;
-1ca1: 85 21                     STA dat_0021         ;
+1c93: 85 1f                     STA dat_001f         ;     dat_001f = tbl_18c1,X
+1c95: bd c4 18                  LDA tbl_18c4,X       ; Set
+1c98: 18                        CLC                  ;     dat_0020
+1c99: 7d a8 1f                  ADC dat_1fa8,X       ;         =
+1c9c: 85 20                     STA dat_0020         ;         tbl_18c4,X + dat_1fa8,X
+1c9e: bd c7 18                  LDA tbl_18c7,X       ; Set
+1ca1: 85 21                     STA dat_0021         ;     dat_0021 = tbl_18c7,X
 1ca3: a9 00                     LDA #$00             ; Set A = 0
 1ca5: 85 24                     STA dat_0024         ; Set dat_0024 = 0
 1ca7: 85 25                     STA dat_0025         ; Set dat_0025 = 0
 1ca9: 85 26                     STA dat_0026         ; Set dat_0026 = 0
-1cab: 20 31 1f  loc_1cab        JSR sub_1f31         ;
-1cae: c9 80                     CMP #$80             ; If A >= $80 (128)
-1cb0: b0 06                     BCS loc_1cb8         ;     then jump to $1cb8 [loc_1cb8]
-1cb2: 20 3c 1f                  JSR sub_1f3c         ;
-1cb5: 4c ab 1c                  JMP loc_1cab         ;
-1cb8: c9 ff     loc_1cb8        CMP #$ff             ;
-1cba: f0 15                     BEQ loc_1cd1         ;
-1cbc: 38                        SEC                  ; Set the carry flag
-1cbd: e9 a0                     SBC #$a0             ;
+1cab: 20 31 1f  loc_1cab        JSR GET_NEXT_BYTE    ; Loop
+                                                     ;     Call $1f31 [GET_NEXT_BYTE]
+1cae: c9 80                     CMP #$80             ;     If (A >= $80 (128))
+1cb0: b0 06                     BCS loc_1cb8         ;         Then exit loop
+1cb2: 20 3c 1f                  JSR sub_1f3c         ;     Call $1f3c [sub_1f3c]
+1cb5: 4c ab 1c                  JMP loc_1cab         ; Repeat
+1cb8: c9 ff     loc_1cb8        CMP #$ff             ; If (A == $ff (255))
+1cba: f0 15                     BEQ loc_1cd1         ;   Then continue @ $1cd1 [loc_1cd1]
+1cbc: 38                        SEC                  ; Set
+1cbd: e9 a0                     SBC #$a0             ;     A -= $a0
 1cbf: c9 15                     CMP #$15             ; If A >= 15,
 1cc1: b0 0c                     BCS cont_1ccf        ;     jump to $1ccf [cont_1ccf]
 1cc3: a6 23                     LDX dat_0023         ; Set X = dat_0023
@@ -701,14 +807,14 @@
 1ccf: 00        cont_1ccf       BRK                  ; Interrupt and invoke VBREAK vector (debugger breakpoint?)
 1cd0: 60                        RTS                  ; Return to caller
 1cd1: a6 23     loc_1cd1        LDX dat_0023         ; Set X = dat_0023
-1cd3: a5 1f                     LDA dat_001f         ; Set A = dat_001f
-1cd5: 9d c1 18                  STA tbl_18c1,X       ;
+1cd3: a5 1f                     LDA dat_001f         ; Set
+1cd5: 9d c1 18                  STA tbl_18c1,X       ;     tbl_18c1,X = dat_001f
 1cd8: a5 20                     LDA dat_0020         ; Set A = dat_0020
-1cda: 38                        SEC                  ; Set carry flag
-1cdb: fd a8 1f                  SBC dat_1fa8,X       ;
-1cde: 9d c4 18                  STA dat_18c4,X       ;
-1ce1: a5 21                     LDA dat_0021         ; Set A = dat_0021
-1ce3: 9d c7 18                  STA dat_18c7,X       ;
+1cda: 38                        SEC                  ; Set
+1cdb: fd a8 1f                  SBC dat_1fa8,X       ;     dat_1fa8,X -= dat_0020
+1cde: 9d c4 18                  STA tbl_18c4,X       ; Set tbl_18c4,X = dat_0020
+1ce1: a5 21                     LDA dat_0021         ; Set
+1ce3: 9d c7 18                  STA tbl_18c7,X       ;     tbl_18c7,X = dat_0021
 1ce6: 60                        RTS                  ; Return to caller
 
 ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
@@ -750,9 +856,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 1d26: a9 00                     LDA #$00             ;
 1d28: f0 e5                     BEQ loc_1d0f         ;
 Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-1d2a: 20 31 1f  cont_1d2a       JSR sub_1f31         ;
+1d2a: 20 31 1f  cont_1d2a       JSR GET_NEXT_BYTE    ;
 1d2d: 85 1f                     STA dat_001f         ;
-1d2f: 20 31 1f                  JSR sub_1f31         ;
+1d2f: 20 31 1f                  JSR GET_NEXT_BYTE    ;
 1d32: 18                        CLC                  ;
 1d33: 7d a8 1f                  ADC dat_1fa8,X       ;
 1d36: 85 20                     STA dat_0020         ;
@@ -866,7 +972,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 1df3: 84 2b                     STY dat_002b         ;
 1df5: b1 18                     LDA (sub_add_0018_L),Y ;
 1df7: 85 2c                     STA dat_002c         ;
-1df9: 20 31 1f  loc_1df9        JSR sub_1f31         ;
+1df9: 20 31 1f  loc_1df9        JSR GET_NEXT_BYTE    ;
 1dfc: 85 2d                     STA dat_002d         ;
 1dfe: f8                        SED                  ;
 1dff: a9 00                     LDA #$00             ;
@@ -972,13 +1078,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 ; This location is indirectly jumped to from sub_1c84
 1eb4: 20 26 1f  cont_1eb4       JSR sub_1f26         ;
-1eb7: 20 31 1f                  JSR sub_1f31         ;
+1eb7: 20 31 1f                  JSR GET_NEXT_BYTE    ;
 1eba: 85 2d                     STA dat_002d         ;
 1ebc: 4c d4 1e                  JMP loc_1ed4         ;
 
 ; This location is indirectly jumped to from sub_1c84
 1ebf: 20 26 1f  cont_1ebf       JSR sub_1f26         ;
-1ec2: 20 31 1f                  JSR sub_1f31         ;
+1ec2: 20 31 1f                  JSR GET_NEXT_BYTE    ;
 1ec5: 85 2d                     STA dat_002d         ;
 1ec7: b1 18                     LDA (sub_add_0018_L),Y ;
 1ec9: 48                        PHA                  ;
@@ -1033,19 +1139,22 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 1f24: 00        dat_1f24        .BYTE $00            ;
 1f25: 00        dat_1f25        .BYTE $00            ;
 
-1f26: 20 31 1f  sub_1f26        JSR sub_1f31         ;
+1f26: 20 31 1f  sub_1f26        JSR GET_NEXT_BYTE    ;
 1f29: 85 18                     STA sub_add_0018_L   ;
-1f2b: 20 31 1f                  JSR sub_1f31         ;
+1f2b: 20 31 1f                  JSR GET_NEXT_BYTE    ;
 1f2e: 85 19                     STA sub_add_0018_H   ;
 1f30: 60                        RTS                  ; Return to caller
 
-; Reads the next character from the string @ the addr stored in addr_0016_L
+; Reads the byte at addr_0016_L/H and increments addr_0016_L/H
+;
 ; Parameters
 ;   addr_0016_L/addr_0016_H the address to read the result from
+;
 ; Return
 ;   A = the value read
-;   addr_0016_L/addr_0016_H is updated to point at the next byte
-1f31: a0 00     sub_1f31        LDY #$00             ; Set Y = 0
+;   addr_0016_L/addr_0016_H is incremented to point at the next byte
+;
+1f31: a0 00     GET_NEXT_BYTE   LDY #$00             ; Set Y = 0
 1f33: b1 16                     LDA (addr_0016_L),Y  ; Set A = dereferenced addr_0016_L
 1f35: e6 16                     INC addr_0016_L      ; Add 1 to addr_0016_L
 1f37: d0 02                     BNE loc_1f3b         ; If an overflow occurred,
@@ -1146,15 +1255,15 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2007: a8 ff     str_BLANK       .BYTE $a8,$ff        ; "" (empty string)
 
 2009: a9 07     sub_2009        LDA #$07             ; Set
-200b: 2d 37 02                  AND dat_0237         ;     dat_0237
+200b: 2d 37 02                  AND CUR_SKCTL        ;     CUR_SKCTL
 200e: 09 20                     ORA #$20             ;     =
-2010: 8d 37 02                  STA dat_0237         ;     (dat_0237 & 7) | $20
+2010: 8d 37 02                  STA CUR_SKCTL        ;     (CUR_SKCTL & 7) | $20
 2013: 8d 0f d2                  STA SKCTL            ;
-2016: a9 c7                     LDA #$c7             ;
-2018: 2d 36 02                  AND dat_0236         ;
-201b: 09 10                     ORA #$10             ;
-201d: 8d 36 02  loc_201d        STA dat_0236         ;
-2020: 8d 0e d2  loc_2020        STA IRQEN            ;
+2016: a9 c7                     LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $c7 | $10
+2018: 2d 36 02                  AND CUR_IRQEN        ;     (Disable VSEROC [$8 - xmit done],
+201b: 09 10                     ORA #$10             ;       Disable VSERIN [$20 - data ready],
+201d: 8d 36 02  loc_201d        STA CUR_IRQEN        ;       Enable VSEROR [$10 - data needed])
+2020: 8d 0e d2  loc_2020        STA IRQEN            ; Set IRQEN = CUR_IRQEN
 2023: a9 28                     LDA #$28             ;
 2025: 8d 08 d2                  STA AUDCTL           ;
 2028: a9 a0                     LDA #$a0             ;
@@ -1164,16 +1273,18 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2033: 8d 01 d2                  STA AUDC1            ;
 2036: 60                        RTS                  ; Return to caller
 
-2037: a9 c7     sub_2037        LDA #$c7             ;
-2039: 2d 36 02                  AND dat_0236         ;
-203c: 8d 36 02                  STA dat_0236         ;
-203f: 8d 0e d2                  STA IRQEN            ;
-2042: a2 06                     LDX #$06             ;
+2037: a9 c7     sub_2037        LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $d7
+201b: 09 10                     ORA #$10             ;     (Disable VSEROC [$8 - xmit done]
+2039: 2d 36 02                  AND CUR_IRQEN        ;      and VSERIN [$20 - data ready],
+203c: 8d 36 02                  STA CUR_IRQEN        ;      No change to VSEROR [$10 - data needed])
+203f: 8d 0e d2                  STA IRQEN            ; Set IRQEN = CUR_IRQEN
+; Silence all four audio channels
+2042: a2 06                     LDX #$06             ; Set X = 6 (4 iterations @ step size -2, repeat while X >= 0)
 2044: a9 00                     LDA #$00             ;
-2046: 9d 01 d2  loc_2046        STA AUDC1,X          ;
-2049: ca                        DEX                  ;
-204a: ca                        DEX                  ;
-204b: 10 f9                     BPL loc_2046         ;
+2046: 9d 01 d2  loc_2046        STA AUDC1,X          ; Set AUDC1/2/3/4 = 0
+2049: ca                        DEX                  ; Set
+204a: ca                        DEX                  ;     X = X - 2
+204b: 10 f9                     BPL loc_2046         ; Repeat while (X >= 0)
 204d: 60                        RTS                  ; Return to caller
       ; Jump to here from 24a0
 204e: a9 01     loc_204e        LDA #$01             ; Set
@@ -1181,7 +1292,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2053: a9 0d     loc_2053        LDA #$0d             ; Set
 2055: 8d 3e 02                  STA dat_023e         ;     dat_023e = $0d (13)
 2058: a2 03     loc_2058        LDX #$03             ; Set X = 3 (4 iterations)
-205a: bd 30 02  loc_205a        LDA SDLST,X          ; Copy SDLST + X
+205a: bd 30 02  loc_205a        LDA dat_0230,X       ; Copy dat_0230 + X
 205d: 9d 66 02                  STA tbl_0266,X       ;     to tbl_0266 + X
 2060: ca                        DEX                  ; Subtract 1 from X
 2061: 10 f7     loc_2061        BPL loc_205a         ;     and repeat while X >= 0
@@ -1331,23 +1442,25 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 21ab: ad 40 02                  LDA dat_0240         ;
 21ae: f0 f6                     BEQ loc_21a6         ;
 21b0: 60                        RTS                  ; Return to caller
-21b1: a9 8a     loc_21b1        LDA #$8a             ;
-21b3: 8d 3d 02                  STA dat_023d         ;
+21b1: a9 8a     loc_21b1        LDA #$8a             ; Set
+21b3: 8d 3d 02                  STA dat_023d         ;     dat_023d = $8a (138)
 21b6: 60                        RTS                  ; Return to caller
 
-21b7: a9 07     sub_21b7        LDA #$07             ;
-21b9: 2d 37 02                  AND dat_0237         ;
+21b7: a9 07     sub_21b7        LDA #$07             ; Set CUR_SKCTL = CUR_SKCTL & $07 | $10
+21b9: 2d 37 02                  AND CUR_SKCTL        ;
 21bc: 09 10                     ORA #$10             ;
-21be: 8d 37 02                  STA dat_0237         ;
+21be: 8d 37 02                  STA CUR_SKCTL        ;
 21c1: 8d 0f d2                  STA SKCTL            ;
-21c4: 8d 0a d2                  STA SKRES            ;
-21c7: a9 c7                     LDA #$c7             ;
-21c9: 2d 36 02                  AND dat_0236         ;
-21cc: 09 20                     ORA #$20             ;
+21c4: 8d 0a d2                  STA SKRES            ; Resets BITs 5 - 7 of SKCTL to 1
+21c7: a9 c7                     LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $c7 | $20
+21c9: 2d 36 02                  AND CUR_IRQEN        ;     (Clear VSEROC [$8 - xmit done],
+                                                     ;      Clear VSEROR [$10 - data needed],
+21cc: 09 20                     ORA #$20             ;      Set VSERIN [$20 - data ready])
 21ce: 4c 1d 20                  JMP loc_201d         ;
-21d1: 18        sub_21d1        CLC                  ;
-21d2: a9 00                     LDA #$00             ;
-21d4: 85 00                     STA dat_0000         ;
+
+21d1: 18        sub_21d1        CLC                  ; Clear the carry flag
+21d2: a9 00                     LDA #$00             ; Set
+21d4: 85 00                     STA dat_0000         ;     dat_0000 = 0
 21d6: 6d 34 02                  ADC LPENH            ;
 21d9: 8d 3a 02                  STA dat_023a         ;
 21dc: a9 01                     LDA #$01             ;
@@ -1356,9 +1469,16 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 21e3: 8d 3b 02                  STA dat_023b         ;
 21e6: 60                        RTS                  ; Return to caller
 
-; TODO: Where is this IRQ handler referenced?
-;    Also note that A is not pushed, but it is popped
-21e7: 98                        TYA                  ; Save value of Y
+; This is assigned in the KERNEL_LOADER to handle
+;     the VSERIN (POKEY serial I/O bus receive data ready) interrupt.
+;
+; The VSERIN vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
+;
+; Note:
+;     A is pushed to the stack before this handler is invoked from irq_VIMIRQ_22ac
+;     A is popped before exiting this handler
+;
+21e7: 98        irq_VSERIN_21e7  TYA                 ; Save value of Y
 21e8: 48                        PHA                  ;     to restore later
 21e9: ad 0f d2                  LDA SKSTAT           ;
 21ec: 8d 0a d2                  STA SKRES            ;
@@ -1380,7 +1500,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2213: 8d 40 02                  STA dat_0240         ;
 2216: 68        loc_2216        PLA                  ; Restore previous
 2217: a8                        TAY                  ;     value of Y
-2218: 68                        PLA                  ; Restore previous value of A
+2218: 68                        PLA                  ; Restore previous value of A (TODO: where is this value pushed?)
 2219: 40                        RTI                  ; Return from interrupt handler
 221a: ad 0d d2  loc_221a        LDA $d20d            ;
 221d: a0 00                     LDY #$00             ;
@@ -1406,17 +1526,22 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 224a: 8d 42 02                  STA dat_0242         ;
 224d: d0 c7                     BNE loc_2216         ; ?? Always true? Seems like it should be
 
-; TODO: Where is this IRQ handler referenced? (it does seem like a separate handler from the previous)
-;    Also note that A is not pushed, but it is popped
-224f: 98                        TYA                  ; Preserve value
+; This is assigned in the KERNEL_LOADER to handle
+;     the VSEROR (POKEY serial I/O transmit ready) interrupt.
+;
+; Note that it appears to have non-standard IRQ handling in that
+;     A is never pushed, but it is popped before exiting.
+;
+224f: 98        irq_VSEROR_224f  TYA                 ; Preserve value
 2250: 48                        PHA                  ;     of Y to restore later
-2251: e6 00                     INC dat_0000         ;
-2253: d0 02                     BNE loc_2257         ;
-2255: e6 01                     INC dat_0001         ;
-2257: a5 00     loc_2257        LDA dat_0000         ;
-2259: cd 3a 02                  CMP dat_023a         ;
-225c: a5 01                     LDA dat_0001         ;
-225e: ed 3b 02                  SBC dat_023b         ;
+; TODO: dat_0000/dat_0001 seem to be a 16-bit counter?
+2251: e6 00                     INC dat_0000         ; Add 1 to dat_0000
+2253: d0 02                     BNE loc_2257         ; If (dat_0000 == 0) Then
+2255: e6 01                     INC dat_0001         ;     Add 1 to dat_0001
+2257: a5 00     loc_2257        LDA dat_0000         ; If
+2259: cd 3a 02                  CMP dat_023a         ;    (dat_0000 >= dat_023a)
+225c: a5 01                     LDA dat_0001         ;    Then dat_023b = dat_023b - dat_0001 - 1
+225e: ed 3b 02                  SBC dat_023b         ;    Else dat_023b = dat_023b - dat_0001
 2261: 90 21                     BCC loc_2284         ;
 2263: ad 43 02                  LDA dat_0243         ;
 2266: d0 0d                     BNE loc_2275         ;
@@ -1425,13 +1550,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 226e: a9 ff                     LDA #$ff             ;
 2270: 8d 43 02                  STA dat_0243         ;
 2273: d0 0b                     BNE loc_2280         ;
-2275: ad 36 02  loc_2275        LDA dat_0236         ;
-2278: 09 08                     ORA #$08             ;
-227a: 8d 36 02                  STA dat_0236         ;
-227d: 8d 0e d2                  STA IRQEN            ;
+2275: ad 36 02  loc_2275        LDA CUR_IRQEN        ; Set
+2278: 09 08                     ORA #$08             ;     CUR_IRQEN = CUR_IRQEN | $08
+227a: 8d 36 02                  STA CUR_IRQEN        ;     (Enable VSEROC [$8 - xmit done])
+227d: 8d 0e d2                  STA IRQEN            ; Set IRQEN = CUR_IRQEN
 2280: 68        loc_2280        PLA                  ; Restore Y to
 2281: a8                        TAY                  ;     previous value
-2282: 68                        PLA                  ; Restore A to previous value
+2282: 68                        PLA                  ; Restore A to previous value (TODO: where is this value pushed?)
 2283: 40                        RTI                  ; Return from interrupt handler
 2284: a0 00     loc_2284        LDY #$00             ;
 2286: b1 00                     LDA (dat_0000),Y     ;
@@ -1442,75 +1567,116 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2291: 8d 3c 02                  STA dat_023c         ;
 2294: 4c 80 22                  JMP loc_2280         ; Jump up to return code (restore A,Y and RTI)
 
-; TODO: Where is this IRQ handler referenced?
-;    Also note that A is not pushed, but it is popped
-2297: ad 43 02                  LDA dat_0243         ;
-229a: f0 0e                     BEQ loc_22aa         ;
-229c: 8d 41 02                  STA dat_0241         ;
-229f: ad 36 02                  LDA dat_0236         ;
-22a2: 29 f7                     AND #$f7             ;
-22a4: 8d 36 02                  STA dat_0236         ;
-22a7: 8d 0e d2                  STA IRQEN            ;
-22aa: 68        loc_22aa        PLA                  ; Restore A to previous value
+; This is assigned in the KERNEL_LOADER to handle
+;     the VSEROC (POKEY serial bus transmit complete) interrupt.
+;
+; It clears the VSEROC "Serial output transmission done" IRQ flag in IRQEN
+; and CUR_IRQEN, which will disable any further calls to this handler until
+; the interrupt is enabled again.
+;
+; The VSEROC vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
+;
+; Note:
+;     A is pushed to the stack before this handler is invoked from irq_VIMIRQ_22ac
+;     A is popped before exiting this handler
+;
+2297: ad 43 02  irq_VSEROC_2297  LDA dat_0243        ; If (dat_0243 != 0)
+229a: f0 0e                     BEQ loc_22aa         ;   Then
+229c: 8d 41 02                  STA dat_0241         ;     Set dat_0241 = dat_0243
+229f: ad 36 02                  LDA CUR_IRQEN        ; Clear bit 3 ($8)
+22a2: 29 f7                     AND #$f7             ;     of CUR_IRQEN
+22a4: 8d 36 02                  STA CUR_IRQEN        ;     (disables the VSEROC "Serial output transmission done" IRQ)
+22a7: 8d 0e d2                  STA IRQEN            ; Set IRQEN = CUR_IRQEN
+22aa: 68        loc_22aa        PLA                  ; Restore A to previous value (TODO: where is this value pushed?)
 22ab: 40                        RTI                  ; Return from interrupt handler
 
-; TODO: How is this code executed?
-22ac: 48                        PHA                  ; Preserve value of A to restore later
-22ad: ad 0e d2                  LDA IRQST            ;
-22b0: 29 20                     AND #$20             ;
-22b2: d0 0e                     BNE loc_22c2         ;
-22b4: a9 df                     LDA #$df             ;
-22b6: 8d 0e d2                  STA IRQEN            ;
-22b9: ad 36 02                  LDA dat_0236         ;
-22bc: 8d 0e d2                  STA IRQEN            ;
-22bf: 6c 0a 02                  JMP (VSERIN)         ;
+; Assigned in the KERNEL_LOADER to handle
+;     the VIMIRQ (IRQ immediate) interrupt.
+;
+; This identifies the cause of the interrupt and routes to the appropriate IRQ vector to
+; process it.
+;
+; Pushes A to the stack prior to routing to a routine for handling the specific cause.
+; The called code is responsible for restoring the A register value from the stack.
+;
+; - If serial data is available, passes control to VSERIN -> [irq_VSERIN_21e7]
+; - If
+; - In all other cases, clears PORTA/B interrupt status & returns from interrupt
+;
+22ac: 48        irq_VIMIRQ_22ac  PHA                 ; Preserve value of A to restore later
+22ad: ad 0e d2                  LDA IRQST            ; If
+22b0: 29 20                     AND #$20             ;    (IRQST & $20 == 0)  // serial input data ready
+22b2: d0 0e                     BNE loc_22c2         ;   Then
+22b4: a9 df                     LDA #$df             ;     Set IRQEN = $df
+22b6: 8d 0e d2                  STA IRQEN            ;         (All except $20 [serial input data ready] enabled. TODO: why, since it's clobbered immediately?)
+22b9: ad 36 02                  LDA CUR_IRQEN        ;     Set
+22bc: 8d 0e d2                  STA IRQEN            ;         IRQEN = CUR_IRQEN
+22bf: 6c 0a 02                  JMP (VSERIN)         ;     Continue @ VSERIN irq handler [irq_VSERIN_21e7] (Note: A is already on stack)
+; The following is only executed if no serial input data ready
 22c2: 8a        loc_22c2        TXA                  ; Preserve value of X
 22c3: 48                        PHA                  ;     to restore later
-22c4: a2 02                     LDX #$02             ; Set
-22c6: bd 01 23  loc_22c6        LDA tbl_2301,X       ;     A = tbl_2301+2 : $10 (16)
-22c9: e0 01                     CPX #$01             ; If A <> 1,
-22cb: d0 05                     BNE loc_22d2         ;     continue @ $22d2 [loc_22d2]
-22cd: 2d 36 02                  AND dat_0236         ;
-22d0: f0 05                     BEQ loc_22d7         ;
-22d2: 2c 0e d2  loc_22d2        BIT IRQST            ;
-22d5: f0 05                     BEQ loc_22dc         ;
-22d7: ca        loc_22d7        DEX                  ;
-22d8: 10 ec                     BPL loc_22c6         ;
-22da: 30 1b                     BMI loc_22f7         ;
-22dc: 49 ff     loc_22dc        EOR #$ff             ;
-22de: 8d 0e d2                  STA IRQEN            ;
-22e1: ad 36 02                  LDA dat_0236         ;
-22e4: 8d 0e d2                  STA IRQEN            ;
-22e7: bd 04 23                  LDA tbl_2304_L,X     ; Self-modifying code:
+; Check type of interrupt.
+;   If VSEROR, VSEROC or VKEYBD then invokes the corresponding IRQ vector.
+;   Control is simply returned to caller for any other interrupts
+22c4: a2 02                     LDX #$02             ; Set X = 2
+22c6: bd 01 23  loc_22c6        LDA tbl_IRQST,X      ; Loop
+                                                     ;     Set A = tbl_IRQST+X
+                                                     ;         (One of: $40 [VKEYBD], $08 [VSEROC], $10 [VSEROR])
+22c9: e0 01                     CPX #$01             ;     If X = 1 (VSEROC) Then  // Only process VSEROC if enabled
+22cb: d0 05                     BNE loc_22d2         ;         Set A =
+22cd: 2d 36 02                  AND CUR_IRQEN        ;             A & CUR_IRQEN
+22d0: f0 05                     BEQ loc_22d7         ;     If (A != 0 and A & IRQST == 0)
+22d2: 2c 0e d2  loc_22d2        BIT IRQST            ;       Then
+22d5: f0 05                     BEQ loc_22dc         ;         Continue @ $22dc [loc_22dc] (process the IRQ)
+22d7: ca        loc_22d7        DEX                  ;     Subtract 1 from X
+22d8: 10 ec                     BPL loc_22c6         ;         and repeat while X >= 0
+22da: 30 1b                     BMI loc_22f7         ; If nothing was matched, there's nothing more to do.
+                                                     ;     Cleanup and exit without transferring
+                                                     ;     control to any other IRQ vectors.
+; At this point, X indicates the type of IRQ which occurred.
+;   X=0 -> VKEYBD
+;   X=1 -> VSEROC
+;   X=2 -> VSEROR
+22dc: 49 ff     loc_22dc        EOR #$ff             ; Set IRQEN = ~A
+22de: 8d 0e d2                  STA IRQEN            ;     TODO: Why, when it's immediately changed? Is there a side-effect?
+22e1: ad 36 02                  LDA CUR_IRQEN        ; Set
+22e4: 8d 0e d2                  STA IRQEN            ;     IRQEN = CUR_IRQEN
+22e7: bd 04 23                  LDA tbl_IRQVEC_L,X   ; Self-modifying code:
 22ea: 8d f5 22                  STA smc_22f4+1       ;     Set the indirect JMP source
 22ed: a9 02                     LDA #$02             ;     address @ $22f4 below
-22ef: 8d f6 22                  STA smc_22f4+2       ;     to $0200 + tbl_2304_L,X
+22ef: 8d f6 22                  STA smc_22f4+2       ;     to $0200 + tbl_IRQVEC_L,X
 22f2: 68                        PLA                  ; Restore X to
 22f3: aa                        TAX                  ;     previous value
-22f4: 6c ff ff  smc_22f4        JMP ($ffff)          ; Jumps to the address @ $0200 + tbl_2304_L,X
+22f4: 6c ff ff  smc_22f4        JMP ($ffff)          ; Jumps to the address @ $0200 + tbl_IRQVEC_L,X
                                                      ; Source address is one of the following addresses:
-                                                     ;     - $0208 [VKEYBD] Keyboard interrupt vector
-                                                     ;     - $020e [VSEROC] POKEY Serial bus transmit complete interrupt vector
-                                                     ;     - $020c [VSEROR] POKEY serial I/O transmit ready interrupt vector
+                                                     ;     0: $0208 [VKEYBD] Keyboard interrupt vector
+                                                     ;     1: $020e [VSEROC] POKEY Serial bus transmit complete interrupt vector
+                                                     ;     2: $020c [VSEROR] POKEY serial I/O transmit ready interrupt vector
+; Cleanup and exit without transferring control to any other IRQ vectors.
+; This also reads & resets port A & B IRQ status so additional interrupts are triggered in the future.
+; (In case a serial interrupt just occurred but we weren't expecting one and thus didn't invoke the vector above)
 22f7: 68        loc_22f7        PLA                  ; Restore X to
 22f8: aa                        TAX                  ;     previous value
-22f9: ad 00 d3                  LDA PORTA            ;
-22fc: ad 01 d3                  LDA PORTB            ;
+22f9: ad 00 d3                  LDA PORTA            ; Reset bit 7 (Peripheral A interrupt status bit) of PACTL.
+22fc: ad 01 d3                  LDA PORTB            ; Reset bit 7 (Peripheral B interrupt status bit) of PBCTL.
 22ff: 68                        PLA                  ; Restore A to previous value
 2300: 40                        RTI                  ; Return from interrupt handler
 
-2301: 40 08 10  tbl_2301        .BYTE $40,$08,$10    ; 3 byte table. Only the last entry seems to be used.
-2304: 08 0e 0c  tbl_2304_L      .BYTE $08,$0e,$0c    ; 3 byte table. LSB of address relative to $0200
-2307: 22 22 2e  tbl_2307        .BYTE $22,$22,$2e    ;
+2301: 40 08 10  tbl_IRQST       .BYTE $40,$08,$10    ; 3 byte table of interrupt status flags
+                                                     ;   ($40 (64) [VKEYBD], $08 (8) [VSEROC], $10 (16) [VSEROR])
+2304: 08 0e 0c  tbl_IRQVEC_L    .BYTE $08,$0e,$0c    ; 3 byte table. LSB of address relative to $0200
+2307: 22 22 2e  tbl_DMACTL      .BYTE $22,$22,$2e    ; DMACTL values to use, indexed by CUR_DLIST_NUM
 
-230a: a9 f5     loc_230a        LDA $f9              ; Set the
+; Called from irq_VVBLKI when dat_0253 < 0
+;
+230a: a9 f5     loc_230a        LDA $f5              ; Set the
 230c: 8d 02 d4                  STA DLIST            ;     Display List
 230f: a9 19                     LDA #$19             ;     Address
-2311: 8d 03 d4                  STA DLIST+1          ;     to $19f9
-2314: a9 40                     LDA #$40             ;
-2316: 8d 0e d4                  STA NMIEN            ;
-2319: a9 21                     LDA #$21             ;
-231b: 8d 00 d4                  STA DMACTL           ;
+2311: 8d 03 d4                  STA DLIST+1          ;     to $19f5 [DLIST_19f5]
+2314: a9 40                     LDA #$40             ; Enable Vertical Blank Interrupts (VBI)
+2316: 8d 0e d4                  STA NMIEN            ;     & disable Display List Interrupts (DLI)
+2319: a9 21                     LDA #$21             ; Set DMACTL = $21
+231b: 8d 00 d4                  STA DMACTL           ;     (Enable DMA Fetch instructions ($20) & Use narrow/32 character playfield ($01))
 231e: ad 39 02                  LDA dat_0239         ;
 2321: f0 21                     BEQ loc_2344         ;
 2323: ad 4c 02                  LDA dat_024c         ;
@@ -1528,53 +1694,56 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2341: 8d 39 02                  STA dat_0239         ;
 2344: 4c 4b 24  loc_2344        JMP loc_244b         ;
 
-2347: d8        HANDLE_VBLKI    CLD                  ;
-2348: ee 52 02                  INC VBLK_COUNTER     ;
-234b: ae b9 18                  LDX CUR_DLIST_NUM    ;
-234e: bd 07 23                  LDA tbl_2307,X       ;
-2351: 8d 00 d4                  STA DMACTL           ;
-2354: a9 14                     LDA #$14             ; Set the character
-2356: 8d 09 d4                  STA CHBASE           ;     set address to $1400 (DUNGEON_CHRSET)
-2359: ad 53 02                  LDA dat_0253         ;
-235c: f0 11                     BEQ loc_236f         ;
-235e: 30 aa                     BMI loc_230a         ;
-2360: ce 53 02                  DEC dat_0253         ;
-2363: a9 0a                     LDA #$0a             ; Set the
-2365: 8d 02 d4                  STA DLIST            ;     display
-2368: a9 1a                     LDA #$1a             ;     list address
-236a: 8d 03 d4                  STA DLIST+1          ;     to $1a0a [DLIST_1a0a]
-236d: d0 d5                     BNE loc_2344         ;
-236f: ad 54 02  loc_236f        LDA CUR_DLISTL       ; Set the
-2372: 8d 02 d4                  STA DLIST            ;     display list addresss
-2375: ad 55 02                  LDA CUR_DLISTH       ;     to the value
-2378: 8d 03 d4                  STA DLIST+1          ;     stored @ CUR_DLISTL/H
-237b: ad 48 02                  LDA CUR_VDSLSTL      ; Set the NMI Display List Interrupts (DLI)
-237e: 8d 00 02                  STA VDSLST           ;     handler address
-2381: ad 49 02                  LDA CUR_VDSLSTH      ;     to the value
-2384: 8d 01 02                  STA VDSLST+1         ;     stored @ CUR_VDSLSTL/H
-2387: a9 c0                     LDA #$c0             ;
-2389: 8d 0e d4                  STA NMIEN            ;
-238c: ad 56 02                  LDA UNK_BYTE_0256    ;
-238f: f0 03                     BEQ loc_2394         ;
-2391: 4c 4b 24                  JMP loc_244b         ;
-2394: ee 56 02  loc_2394        INC UNK_BYTE_0256    ;
-2397: ae b9 18                  LDX CUR_DLIST_NUM    ;
-239a: ca                        DEX                  ;
-239b: d0 04                     BNE loc_23a1         ;
-239d: ca                        DEX                  ;
-239e: 8e 11 d0                  STX GRAFM            ;
+; VBLKI interrupt handler
+; Assigned to VVBLKI in KERNEL_LOADER
+;
+2347: d8        irq_VVBLKI      CLD                  ; Clear the decimal flag
+2348: ee 52 02                  INC VBLK_COUNTER     ; Add one to VBLK_COUNTER
+234b: ae b9 18                  LDX CUR_DLIST_NUM    ; Set
+234e: bd 07 23                  LDA tbl_DMACTL,X     ;    DMACTL = value @ tbl_DMACTL + CUR_DLIST_NUM
+2351: 8d 00 d4                  STA DMACTL           ;     (one of $22, $22, or $2e)
+2354: a9 14                     LDA #$14             ; Set the character set
+2356: 8d 09 d4                  STA CHBASE           ;     address to $1400 (DUNGEON_CHRSET)
+2359: ad 53 02                  LDA dat_0253         ; If (dat_0253 < 0) then
+235c: f0 11                     BEQ loc_236f         ;     Continue @ $230a [loc_230a]
+235e: 30 aa                     BMI loc_230a         ; Else If (dat_0253 > 0) then
+2360: ce 53 02                  DEC dat_0253         ;     Subtract one from dat_0253
+2363: a9 0a                     LDA #$0a             ;     Set the
+2365: 8d 02 d4                  STA DLIST            ;       display
+2368: a9 1a                     LDA #$1a             ;       list address
+236a: 8d 03 d4                  STA DLIST+1          ;       to $1a0a [DLIST_1a0a]
+236d: d0 d5                     BNE loc_2344         ;     Jump to $2344 [loc_2344] (Zero flag is never set here due to LDA @ $2368)
+236f: ad 54 02  loc_236f        LDA CUR_DLISTL       ; Else If (dat_0253 = 0) then
+2372: 8d 02 d4                  STA DLIST            ;     Set the display list address
+2375: ad 55 02                  LDA CUR_DLISTH       ;       to the value
+2378: 8d 03 d4                  STA DLIST+1          ;       stored @ CUR_DLISTL/H
+237b: ad 48 02                  LDA CUR_VDSLSTL      ;     Set the NMI Display List Interrupts (DLI)
+237e: 8d 00 02                  STA VDSLST           ;       handler address
+2381: ad 49 02                  LDA CUR_VDSLSTH      ;       to the value
+2384: 8d 01 02                  STA VDSLST+1         ;       stored @ CUR_VDSLSTL/H
+2387: a9 c0                     LDA #$c0             ;     Enable Display List Interrupts (DLI)
+2389: 8d 0e d4                  STA NMIEN            ;       and Vertical Blank Interrupts (VBI)
+238c: ad 56 02                  LDA dat_0256         ; If ($0256 [dat_0256] != 0)
+238f: f0 03                     BEQ loc_2394         ;   Then
+2391: 4c 4b 24                  JMP loc_244b         ;     Jump down to cleanup and return code
+2394: ee 56 02  loc_2394        INC dat_0256         ; Add 1 to $0256 [dat_0256]
+2397: ae b9 18                  LDX CUR_DLIST_NUM    ; Set X = CUR_DLIST_NUM
+239a: ca                        DEX                  ; Subtract 1 from X
+239b: d0 04                     BNE loc_23a1         ; If (X == 0) Then
+239d: ca                        DEX                  ;     Set
+239e: 8e 11 d0                  STX GRAFM            ;         GRAFM = $ff (255) All missile pixels visible
 23a1: a2 05     loc_23a1        LDX #$05             ; Set X = 5
 23a3: bd 1c 1c  loc_23a3        LDA tbl_COLPM3_1c1c,X ; Set COLPM3 to the
 23a6: 9d 15 d0                  STA COLPM3,X         ;     color value from tbl_COLPM3_1c1c + X
 23a9: ca                        DEX                  ; Subtract 1 from X
 23aa: d0 f7                     BNE loc_23a3         ;     and repeat while X > 0
-23ac: 8e b8 18                  STX UNK_1C19OFS_18B8 ;
-23af: 8e b7 18                  STX dat_18b7         ;
-23b2: ae b9 18                  LDX CUR_DLIST_NUM    ;
-23b5: d0 03                     BNE loc_23ba         ;
-23b7: 8e 18 d0                  STX COLPF2           ;
-23ba: 20 7a 26  loc_23ba        JSR sub_267a         ;
-23bd: a6 32                     LDX dat_0032_L       ;
+23ac: 8e b8 18                  STX CUR_COLPF2_NUM ; Set $18b8 [CUR_COLPF2_NUM] = 0 (X = 0 from loop above)
+23af: 8e b7 18                  STX dat_18b7         ; Set $18b7 [dat_18b7] = 0
+23b2: ae b9 18                  LDX CUR_DLIST_NUM    ; If (CUR_DLIST_NUM == 0)
+23b5: d0 03                     BNE loc_23ba         ;   Then
+23b7: 8e 18 d0                  STX COLPF2           ;     Set COLPF2 = 0
+23ba: 20 7a 26  loc_23ba        JSR sub_267a         ; Call sub_267a
+23bd: a6 32                     LDX flg_PAUSED       ; Set X = flg_PAUSED
 23bf: 30 6d                     BMI loc_242e         ;
 23c1: 2c 55 19                  BIT loc_1955         ;
 23c4: 10 03                     BPL loc_23c9         ;
@@ -1583,7 +1752,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 23cb: a5 33                     LDA BUFRHI           ;
 23cd: c9 04                     CMP #$04             ;
 23cf: 90 5d                     BCC loc_242e         ;
-23d1: 86 33                     STX BUFRHI           ;
+23d1: 86 33                     STX BUFRHI           ; Set BUFRHI = X
 23d3: 2c 55 19                  BIT loc_1955         ;
 23d6: 30 17                     BMI loc_23ef         ;
 23d8: ce ff 24                  DEC loc_24ff         ;
@@ -1627,18 +1796,23 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2428: e6 3a                     INC XMTDON           ;
 242a: d0 02                     BNE loc_242e         ;
 242c: e6 39                     INC RECVDN           ;
-242e: a2 00     loc_242e        LDX #$00             ;
-2430: ad 52 02                  LDA VBLK_COUNTER     ;
-2433: 29 3f                     AND #$3f             ;
-2435: c9 08                     CMP #$08             ;
-2437: b0 01                     BCS loc_243a         ;
-2439: e8                        INX                  ;
-243a: 8e 01 d4  loc_243a        STX CHACTL           ;
-243d: ad 2f 02                  LDA SDMCTL           ;
-2440: 10 03                     BPL loc_2445         ;
-2442: 20 51 24                  JSR sub_2451         ;
-2445: 20 03 25  loc_2445        JSR sub_2503         ;
-2448: ce 56 02                  DEC UNK_BYTE_0256    ;
+; Toggle normal/inverse characters for text blinking effect
+; Displays inverse characters for 8/63 vertical blank periods (approx. 0.133 seconds)
+;     and normal characters for 55/63 vertical blanks (approx. 0.916 seconds)
+242e: a2 00     loc_242e        LDX #$00             ; Set X = 0
+2430: ad 52 02                  LDA VBLK_COUNTER     ; Set
+2433: 29 3f                     AND #$3f             ;     A = VBLK_COUNTER & $3f (63)
+2435: c9 08                     CMP #$08             ; If (A < 8)
+2437: b0 01                     BCS loc_243a         ;   Then
+2439: e8                        INX                  ;     Set X = 1
+243a: 8e 01 d4  loc_243a        STX CHACTL           ; Set CHACTL = X  (0 = normal; 1 = inverse)
+;
+243d: ad 2f 02                  LDA dat_022f         ; If (dat_022f >= 0)
+2440: 10 03                     BPL loc_2445         ;   Then
+2442: 20 51 24                  JSR sub_2451         ;     Call sub_2451
+2445: 20 03 25  loc_2445        JSR sub_2503         ; Call sub_2503
+2448: ce 56 02                  DEC dat_0256         ; Subtract 1 from $0256 [dat_0256]
+; Restore register state and return from interrupt
 244b: 68        loc_244b        PLA                  ; Restore the original
 244c: a8                        TAY                  ;     value of Y
 244d: 68                        PLA                  ; Restore the original
@@ -1655,11 +1829,11 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 245c: 60                        RTS                  ; Return to caller
 
 245d: a9 07     sub_245d        LDA #$07             ; Set
-245f: 8d 37 02                  STA dat_0237         ;     dat_0237 = 7
+245f: 8d 37 02                  STA CUR_SKCTL        ;     CUR_SKCTL = 7
 2462: a9 80                     LDA #$80             ; Set
 2464: 8d 53 02                  STA dat_0253         ;     dat_0253 = $80 (128)
 2467: a2 00                     LDX #$00             ; Set X = 0
-2469: 8e 36 02                  STX dat_0236         ; Set dat_0236 = 0
+2469: 8e 36 02                  STX CUR_IRQEN        ; Set CUR_IRQEN = 0
 246c: 8e 0e d2                  STX IRQEN            ; Disable IRQs
 246f: 20 54 24                  JSR WAIT_FOR_VBLK_A  ; Wait for the next vblank
 2472: 8e 1a d0                  STX COLBK            ; Set COLBK = 0 (black)
@@ -1675,35 +1849,43 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 248a: 8e 17 d0                  STX COLPF1           ; Set COLPF1 = X ($ff - Yellow)
 248d: 60                        RTS                  ; Return to caller
 
+; This sub is an entry point for sub_2494 with the following parameter values:
+;   A = $52 (82)
+;   X = $40 (64)
+;   Y = $03 (3)
 248e: a9 52     sub_248e        LDA #$52             ; Set A = $52 (82)
 2490: a2 40                     LDX #$40             ; Set X = $40 (64)
 2492: a0 03                     LDY #$03             ; Set Y = $03 (3)
-2494: 8d 31 02  sub_2494        STA SDLST+1          ; Set SDLST+1 = $52 (82)
+; Parameters:
+;   A = ?
+;   X = ?
+;   Y = ?
+2494: 8d 31 02  sub_2494        STA dat_0231         ; Set dat_0231 = $52 (82)
 2497: 8c 47 02                  STY dat_0247         ; Set dat_0247 = 3
 249a: 8e 3d 02                  STX dat_023d         ; Set dat_023d = $40 (64)
 249d: 8e 46 02                  STX dat_0246         ; Set dat_0246 = $40 (64)
 24a0: 4c 4e 20                  JMP loc_204e         ; Continue @ $204e [loc_204e]
 
-24a3: a9 00                     LDA #$00             ;
-24a5: 8d 00 01                  STA dat_0100         ;
-24a8: 8d 35 02                  STA LPENV            ;
-24ab: a9 04                     LDA #$04             ;
-24ad: 8d 34 02                  STA LPENH            ;
-24b0: a9 53                     LDA #$53             ;
-24b2: a2 40                     LDX #$40             ;
-24b4: a0 03                     LDY #$03             ;
+24a3: a9 00                     LDA #$00             ; Set the lowest (top) byte
+24a5: 8d 00 01                  STA dat_0100         ;     of the stack to $00   TODO: Why?
+24a8: 8d 35 02                  STA LPENV            ; Set
+24ab: a9 04                     LDA #$04             ;     LPENV/LPENH
+24ad: 8d 34 02                  STA LPENH            ;     to $0400 [DISP_START] ???
+24b0: a9 53                     LDA #$53             ; Set A = $53 (83)
+24b2: a2 40                     LDX #$40             ; Set X = $40 (64)
+24b4: a0 03                     LDY #$03             ; Set Y = $03 (3)
 24b6: 20 94 24                  JSR sub_2494         ;
-24b9: 08                        PHP                  ;
-24ba: a9 80                     LDA #$80             ;
-24bc: 8d 34 02                  STA LPENH            ;
-24bf: a9 00                     LDA #$00             ;
-24c1: 8d 35 02                  STA LPENV            ;
-24c4: 28                        PLP                  ;
+24b9: 08                        PHP                  ; Push processor status register to the stack
+24ba: a9 80                     LDA #$80             ; Set
+24bc: 8d 34 02                  STA LPENH            ;     LPENV/LPENH
+24bf: a9 00                     LDA #$00             ;     to
+24c1: 8d 35 02                  STA LPENV            ;     $8000
+24c4: 28                        PLP                  ; Restore processor status register from the stack
 24c5: 60                        RTS                  ; Return to caller
 
 24c6: 08        loc_24c6        PHP                  ;
 24c7: a9 40                     LDA #$40             ;
-24c9: 8d 36 02                  STA dat_0236         ;
+24c9: 8d 36 02                  STA CUR_IRQEN        ;
 24cc: 8d 0e d2                  STA IRQEN            ;
 24cf: a9 03                     LDA #$03             ;
 24d1: 8d 0f d2                  STA SKCTL            ;
@@ -1859,12 +2041,18 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2650: 85 31     loc_2650        STA CHKSUM           ;
 2652: 60                        RTS                  ; Return to caller
 
-; TODO: How does this IRQ handler get called?
-; TODO: A doesn't seem to be preserved before being updated,
-;   but it is popped from the stack, so it's likely to be called
-;   from a context where A has already been pushed to the stack.
-;   Or that's a bug :)
-2653: 8a                        TXA                  ; Save original
+; This is assigned in the KERNEL_LOADER to handle
+;     the VKEYBD (POKEY keyboard) interrupt.
+;
+;
+;
+; The VKEYBD vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
+;
+; Note:
+;     A is pushed to the stack before this handler is invoked from irq_VIMIRQ_22ac
+;     A is popped before exiting this handler
+;
+2653: 8a        irq_VKEYBD_2653  TXA                 ; Save original
 2654: 48                        PHA                  ;     value of X
 2655: a5 30                     LDA STATUS           ;
 2657: 10 1d                     BPL loc_2676         ;
@@ -1949,44 +2137,44 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 275b: 20 88 27  sub_275b        JSR sub_2788         ;
 275e: 20 5d 24                  JSR sub_245d         ;
 2761: 20 a1 28                  JSR sub_28a1         ;
-2764: a9 04                     LDA #$04             ;
-2766: 8d 0f 19                  STA dat_190f         ;
-2769: ad 30 02  loc_2769        LDA SDLST            ;
-276c: 29 0f                     AND #$0f             ;
-276e: aa                        TAX                  ;
-276f: bd 4d 02                  LDA dat_024d,X       ;
-2772: 30 05     loc_2772        BMI loc_2779         ;
-2774: 20 99 27                  JSR sub_2799         ;
-2777: 90 09                     BCC loc_2782         ;
-2779: 20 85 27  loc_2779        JSR sub_2785         ;
-277c: ce 0f 19                  DEC dat_190f         ;
-277f: d0 e8                     BNE loc_2769         ;
+2764: a9 04                     LDA #$04             ; Set
+2766: 8d 0f 19                  STA dat_190f         ;     dat_190f = 4
+2769: ad 30 02  loc_2769        LDA dat_0230         ; Set
+276c: 29 0f                     AND #$0f             ;     ...
+276e: aa                        TAX                  ;     X = dat_0230 & $0f
+276f: bd 4d 02                  LDA dat_024d,X       ; Set A = dat_024d + X
+2772: 30 05     loc_2772        BMI loc_2779         ; If (A >= 0) Then
+2774: 20 99 27                  JSR sub_2799         ;     Call sub_2799
+2777: 90 09                     BCC loc_2782         ;     If (carry flag = 0) Then exit loop & continue @ $2782 [loc_2782]
+2779: 20 85 27  loc_2779        JSR sub_2785         ; Call sub_2785
+277c: ce 0f 19                  DEC dat_190f         ; Subtract 1 from dat_190f
+277f: d0 e8                     BNE loc_2769         ;     and repeat while (dat_190f != 0)
 2781: 38                        SEC                  ;
 2782: 4c c6 24  loc_2782        JMP loc_24c6         ;
 
-2785: ee 30 02  sub_2785        INC SDLST            ;
-2788: ad 30 02  sub_2788        LDA SDLST            ;
+2785: ee 30 02  sub_2785        INC dat_0230         ;
+2788: ad 30 02  sub_2788        LDA dat_0230         ;
 278b: c9 31                     CMP #$31             ;
 278d: 90 04                     BCC loc_2793         ;
 278f: c9 35                     CMP #$35             ;
 2791: 90 05                     BCC loc_2798         ;
 2793: a9 31     loc_2793        LDA #$31             ;
-2795: 8d 30 02                  STA SDLST            ;
+2795: 8d 30 02                  STA dat_0230         ;
 2798: 60        loc_2798        RTS                  ; Return to caller
 
-2799: 20 37 29  sub_2799        JSR sub_2937         ;
-279c: 30 38                     BMI loc_27d6         ;
-279e: 20 79 29  loc_279e        JSR sub_2979         ;
-27a1: 30 33                     BMI loc_27d6         ;
-27a3: a9 00                     LDA #$00             ;
-27a5: 8d 0e 19                  STA dat_190e         ;
-27a8: a8                        TAY                  ;
-27a9: b9 00 01  loc_27a9        LDA dat_0100,Y       ;
-27ac: 91 09                     STA (dat_0009_L),Y   ;
+2799: 20 37 29  sub_2799        JSR sub_2937         ; Call sub_2937
+279c: 30 38                     BMI loc_27d6         ; If (negative flag is set) Then continue @ $27d6 [loc_27d6]
+279e: 20 79 29  loc_279e        JSR sub_2979         ; Call sub_2979
+27a1: 30 33                     BMI loc_27d6         ; If (negative flag is set) Then continue @ $27d6 [loc_27d6]
+27a3: a9 00                     LDA #$00             ; Set
+27a5: 8d 0e 19                  STA dat_190e         ;     dat_190e = 0
+27a8: a8                        TAY                  ; Set Y = 0
+27a9: b9 00 01  loc_27a9        LDA dat_0100,Y       ; Set
+27ac: 91 09                     STA (dat_0009_L),Y   ;    (dat_0009_L) =
 27ae: 38                        SEC                  ;
-27af: a5 0b                     LDA dat_0009_H+1     ;
+27af: a5 0b                     LDA dat_000b         ;
 27b1: e9 01                     SBC #$01             ;
-27b3: 85 0b                     STA dat_0009_H+1     ;
+27b3: 85 0b                     STA dat_000b         ;
 27b5: b0 02                     BCS loc_27b9         ;
 27b7: c6 0c                     DEC dat_000c         ;
 27b9: 05 0c     loc_27b9        ORA dat_000c         ;
@@ -2143,14 +2331,14 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 28e5: 69 01                     ADC #$01             ;
 28e7: 8d 11 19                  STA loc_1911         ;
 28ea: 8e 10 19                  STX loc_1910         ;
-28ed: a9 9f                     LDA #$9f             ; Set the ???
+28ed: a9 9f                     LDA #$9f             ; Set the addr_0016_L/H
 28ef: 85 16                     STA addr_0016_L      ;     address
 28f1: a9 29                     LDA #$29             ;     to
 28f3: 85 17                     STA addr_0016_H      ;     $299f [str_PLS_INSRT] "Please insert The Dungeon Disk ? Side ? into any drive"
 28f5: 20 88 1c                  JSR sub_1c88         ;
 28f8: ad 0e 19                  LDA dat_190e         ;
 28fb: f0 0b                     BEQ loc_2908         ;
-28fd: a9 07                     LDA #$07             ; Set the ???
+28fd: a9 07                     LDA #$07             ; Set the addr_0016_L/H
 28ff: 85 16                     STA addr_0016_L      ;     address
 2901: a9 2a                     LDA #$2a             ;     to
 2903: 85 17                     STA addr_0016_H      ;     $2a07 [str_PRESS_ESC] "or press ESC to abort"
@@ -2173,7 +2361,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2929: 18                        CLC                  ;
 292a: 60                        RTS                  ; Return to caller
 
-292b: a9 07     sub_292b        LDA #$07             ; Set the ???
+292b: a9 07     sub_292b        LDA #$07             ; Set the addr_0016_L/H
 292d: 85 16                     STA addr_0016_L      ;     address
 292f: a9 20                     LDA #$20             ;     to
 2931: 85 17                     STA addr_0016_H      ;     $2007 [str_BLANK] "" (empty string)
@@ -2189,7 +2377,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2947: ad 04 19                  LDA dat_1904_H       ;
 294a: 8d 33 02                  STA dat_0232_H       ;
 294d: ad 07 19                  LDA dat_1907         ;
-2950: 85 0b                     STA dat_0009_H+1     ;
+2950: 85 0b                     STA dat_000b         ;
 2952: ad 08 19                  LDA dat_1908         ;
 2955: 85 0c                     STA dat_000c         ;
 2957: 20 79 29                  JSR sub_2979         ;
@@ -2316,10 +2504,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2ac6: 10 f2                     BPL loc_2aba         ;
 2ac8: e8                        INX                  ;
 2ac9: 86 06                     STX dat_0006         ;
-2acb: a9 0a     loc_2acb        LDA #$0a             ;
-2acd: 85 07                     STA dat_0007_L       ;
-2acf: a9 00                     LDA #$00             ;
-2ad1: 85 08                     STA dat_0007_H       ;
+2acb: a9 0a     loc_2acb        LDA #$0a             ; Set dat_0007_L/H
+2acd: 85 07                     STA dat_0007_L       ;     address
+2acf: a9 00                     LDA #$00             ;     to
+2ad1: 85 08                     STA dat_0007_H       ;     $000a
 2ad3: 20 47 2b                  JSR sub_2b47         ;
 2ad6: a5 04                     LDA dat_0004         ;
 2ad8: 05 05                     ORA dat_0005         ;
@@ -2462,20 +2650,20 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2bad: e9 1f                     SBC #$1f             ;
 2baf: 60        loc_2baf        RTS                  ; Return to caller
 
-2bb0: c6 32     sub_2bb0        DEC dat_0032_L       ;
+2bb0: c6 32     sub_2bb0        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED ()
 2bb2: a2 1e                     LDX #$1e             ;
 2bb4: 20 66 2c  loc_2bb4        JSR WAIT_FOR_VBLK_B  ;
 2bb7: ca                        DEX                  ;
 2bb8: d0 fa                     BNE loc_2bb4         ;
 2bba: 20 43 26                  JSR sub_2643         ;
 2bbd: a9 d0                     LDA #$d0             ; Set
-2bbf: 85 16                     STA addr_0016_L      ;    ???
+2bbf: 85 16                     STA addr_0016_L      ;    addr_0016_L/H
 2bc1: a9 2b                     LDA #$2b             ;    address
 2bc3: 85 17                     STA addr_0016_H      ;    to $2bd0 [str_PRS_ANY_KY]
 2bc5: 20 88 1c                  JSR sub_1c88         ;
 2bc8: 20 43 26  loc_2bc8        JSR sub_2643         ;
 2bcb: 30 fb                     BMI loc_2bc8         ;
-2bcd: e6 32                     INC dat_0032_L       ;
+2bcd: e6 32                     INC flg_PAUSED       ;
 2bcf: 60                        RTS                  ; Return to caller
 
 2bd0: a6 00 07 a9 a5 3c 3c 3c  str_PRS_ANY_KY  .BYTE $a6,$00,$07,$a9,$a5,$3c,$3c,$3c  ; .....<<<
@@ -2491,7 +2679,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 ; Parameters
 ;    A = ? : one of [$1, $2, $4, $6, $10]
 2bfc: 8d 64 2c  sub_2bfc        STA exe_cnt_2c64     ; Set exe_cnt_2c64 = A
-2bfe: c6 32                     DEC dat_0032_L       ;
+2bfe: c6 32                     DEC flg_PAUSED       ;
 2c01: c6 0f                     DEC dat_000f         ;
 2c03: ce 37 19                  DEC dat_1937         ;
 2c06: a9 01                     LDA #$01             ;
@@ -2528,7 +2716,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2c56: ce 64 2c                  DEC exe_cnt_2c64     ; If # of executions of this section of code is
 2c59: d0 b3                     BNE loc_2c0e         ;    not evenly divisible by 256, jump to $2c0e [loc_2c0e]
                                                      ; Otherwise,
-2c5b: e6 32     loc_2c5b        INC dat_0032_L       ;    - add 1 to $0032 [dat_0032_L]
+2c5b: e6 32     loc_2c5b        INC flg_PAUSED       ;    - add 1 to $0032 [flg_PAUSED]
 2c5d: e6 0f                     INC dat_000f         ;    - add 1 to $000f [dat_000f]
 2c5f: ee 37 19                  INC dat_1937         ;    - add 1 to $1937 [dat_1937]
 2c62: 60                        RTS                  ; Return to caller
@@ -2563,57 +2751,90 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2c99: ff        tmp_2c99_L      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_L
 2c9a: ff        tmp_2c99_H      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_H
 
+; Sets addr_0016_L/H to the A-th address from the table @ Y/X
+;
+;   - Sets dat_000d_L/H = Y/X
+;   - Sets addr_0016_L/H =
+;
 ; Parameters
-;   A = ?
-;   X = ?
-;   Y = ?
-2c9b: 86 0e     loc_2c9b        STX APPMHI           ;
-2c9d: 84 0d                     STY DOSINI+1         ;
-2c9f: 0a                        ASL                  ;
-2ca0: a8                        TAY                  ;
-2ca1: b1 0d                     LDA (DOSINI+1),Y     ;
-2ca3: 85 16                     STA addr_0016_L      ;
-2ca5: c8                        INY                  ;
-2ca6: b1 0d                     LDA (DOSINI+1),Y     ;
-2ca8: 85 17                     STA addr_0016_H      ;
+;   A = Address number to retrieve
+;   X = MSB of table base address
+;   Y = LSB of table base address
+;
+; Return
+;   dat_000d_L = Y
+;   dat_000d_H = X
+;   addr_0016_L = (dat_000d_L),A
+;   addr_0016_H = (dat_000d_H),A
+;
+2c9b: 86 0e     sub_2c9b        STX APPMHI           ; Set APPMHI = X
+2c9d: 84 0d                     STY dat_000d_L       ; Set dat_000d_L = Y
+2c9f: 0a                        ASL                  ; Set A *= 2
+2ca0: a8                        TAY                  ; Set Y = A
+2ca1: b1 0d                     LDA (dat_000d_L),Y   ; Set
+2ca3: 85 16                     STA addr_0016_L      ;     addr_0016_L = (dat_000d_L),Y
+2ca5: c8                        INY                  ; Add 1 to Y
+2ca6: b1 0d                     LDA (dat_000d_L),Y   ; Set
+2ca8: 85 17                     STA addr_0016_H      ;     addr_0016_H = (dat_000d_L),Y
 2caa: 60                        RTS                  ; Return to caller
 
 2cab: 00        sub_2cab        BRK                  ;
 2cac: 60                        RTS                  ; Return to caller
 
-2cad: c6 32     sub_2cad        DEC dat_0032_L       ;
-2caf: a9 00                     LDA #$00             ;
-2cb1: 8d 0e 19                  STA dat_190e         ;
-2cb4: 20 fb 2c  loc_2cb4        JSR sub_2cfb         ;
-2cb7: 90 06                     BCC loc_2cbf         ;
-2cb9: 20 d7 28                  JSR sub_28d7         ;
-2cbc: 4c b4 2c                  JMP loc_2cb4         ;
-2cbf: e6 32     loc_2cbf        INC dat_0032_L       ;
+;
+2cad: c6 32     sub_2cad        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
+2caf: a9 00                     LDA #$00             ; Set
+2cb1: 8d 0e 19                  STA dat_190e         ;     dat_190e = 0
+2cb4: 20 fb 2c  loc_2cb4        JSR sub_2cfb         ; Loop
+                                                     ;     Call $2cfb [sub_2cfb]
+2cb7: 90 06                     BCC loc_2cbf         ;     If (Carry flag is clear) Then
+                                                     ;         Exit loop
+2cb9: 20 d7 28                  JSR sub_28d7         ;     Call $28d7 [sub_28d7]
+2cbc: 4c b4 2c                  JMP loc_2cb4         ; Repeat loop
+2cbf: e6 32     loc_2cbf        INC flg_PAUSED       ; Add 1 to flg_PAUSED
 2cc1: 60                        RTS                  ; Return to caller
 
-2cc2: c6 32     sub_2cc2        DEC dat_0032_L       ;
-2cc4: ad 09 19                  LDA dat_1909         ;
-2cc7: a2 03                     LDX #$03             ;
-2cc9: dd f7 2c  loc_2cc9        CMP dat_2cf7,X       ;
-2ccc: f0 05                     BEQ loc_2cd3         ;
-2cce: ca                        DEX                  ;
-2ccf: 10 f8                     BPL loc_2cc9         ;
-2cd1: 30 05                     BMI loc_2cd8         ;
-2cd3: a9 00     loc_2cd3        LDA #$00             ;
-2cd5: 8d 0e 19                  STA dat_190e         ;
-2cd8: 20 fb 2c  loc_2cd8        JSR sub_2cfb         ;
-2cdb: 90 17                     BCC loc_2cf4         ;
-2cdd: 20 d7 28                  JSR sub_28d7         ;
-2ce0: 90 f6                     BCC loc_2cd8         ;
-2ce2: a2 04                     LDX #$04             ;
-2ce4: bd 18 63  loc_2ce4        LDA $6318,X          ;
-2ce7: 9d 13 63                  STA CHR_LOC_X,X      ;
-2cea: ca                        DEX                  ;
-2ceb: 10 f7                     BPL loc_2ce4         ;
-2ced: ad 1f 63                  LDA CHR_UNK_BYTE_631F ;
-2cf0: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
-2cf3: 38                        SEC                  ;
-2cf4: e6 32     loc_2cf4        INC dat_0032_L       ;
+;
+; Parameters
+;   dat_1909
+;   dat_2cf7
+;
+; Return
+;   dat_190e - set to 0 if dat_1909 is found in dat_2cf7[0..3]
+;   CHR_LOC_X[0..5] -
+;
+2cc2: c6 32     sub_2cc2        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
+2cc4: ad 09 19                  LDA dat_1909         ; Set A = dat_1909
+2cc7: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations)
+2cc9: dd f7 2c  loc_2cc9        CMP dat_2cf7,X       ; Loop
+2ccc: f0 05                     BEQ loc_2cd3         ;     If (dat_2cf7,X == dat_1909) Then
+                                                     ;         Exit loop
+2cce: ca                        DEX                  ;     Subtract 1 from X
+2ccf: 10 f8                     BPL loc_2cc9         ; Repeat while (X >= 0)
+2cd1: 30 05                     BMI loc_2cd8         ; If (X >= 0)  - e.g. exited the loop early
+2cd3: a9 00     loc_2cd3        LDA #$00             ;   Then
+2cd5: 8d 0e 19                  STA dat_190e         ;     Set dat_190e = 0
+2cd8: 20 fb 2c  loc_2cd8        JSR sub_2cfb         ; Loop
+                                                     ;     Call $2cfb [sub_2cfb]
+2cdb: 90 17                     BCC loc_2cf4         ;     If (Carry flag is clear) Then
+                                                     ;         Continue @ $2cf4 [loc_2cf4] (cleanup and return)
+2cdd: 20 d7 28                  JSR sub_28d7         ;     Call $28d7 [sub_28d7]
+2ce0: 90 f6                     BCC loc_2cd8         ; Repeat while (Carry flag is clear)
+; Restore saved character position: Copies 5 bytes from CHR_SAV_LOC_X to CHR_LOC_X
+;     CHR_SAV_LOC_X      -> CHR_LOC_X
+;     CHR_SAV_LOC_Y      -> CHR_LOC_Y
+;     CHR_SAV_LOC_MAP    -> CHR_LOC_MAP
+;     CHR_SAV_FRAC_LOC_X -> CHR_FRAC_LOC_X
+;     CHR_SAV_FRAC_LOC_Y -> CHR_FRAC_LOC_Y
+2ce2: a2 04                     LDX #$04             ; Set X = 4 (5 iterations)
+2ce4: bd 18 63  loc_2ce4        LDA CHR_SAV_LOC_X,X  ; Loop
+2ce7: 9d 13 63                  STA CHR_LOC_X,X      ;     Set CHR_LOC_X,X = CHR_SAV_LOC_X,X
+2cea: ca                        DEX                  ;     Subtract 1 from X
+2ceb: 10 f7                     BPL loc_2ce4         ; Repeat while (X >= 0)
+2ced: ad 1f 63                  LDA CHR_UNK_BYTE_631F ; Set
+2cf0: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;     CHR_UNK_BYTE_631E = CHR_UNK_BYTE_631F
+2cf3: 38                        SEC                  ; Set the Carry Flag
+2cf4: e6 32     loc_2cf4        INC flg_PAUSED       ; Add 1 to flg_PAUSED
 2cf6: 60                        RTS                  ; Return to caller
 
 2cf7: 10 11 12 3f  dat_2cf7     .BYTE $10,$11,$12,$3f  ; ...?
@@ -2626,20 +2847,20 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 ;   C = ?
 2cfb: ad 09 19  sub_2cfb        LDA dat_1909         ; Preserve the current
 2cfe: 48                        PHA                  ;     value of dat_1909
-      ; Set 31 bytes to zero starting @ $197c [loc_197c]
-2cff: a2 1f     loc_2cff        LDX #$1f             ; Set X = $1f (31 iterations)
+      ; Set 32 bytes to zero starting @ $197c [dat_197c]
+2cff: a2 1f     loc_2cff        LDX #$1f             ; Set X = $1f (32 iterations)
 2d01: a9 00                     LDA #$00             ; Set A = 0
-2d03: 9d 7c 19  loc_2d03        STA loc_197c,X       ; Set loc_197c + X = 0
+2d03: 9d 7c 19  loc_2d03        STA dat_197c,X       ; Set dat_197c + X = 0
 2d06: ca                        DEX                  ; Subtract 1 from X
-2d07: 10 fa                     BPL loc_2d03         ; Repeat while X >= 0
+2d07: 10 fa                     BPL loc_2d03         ;     and repeat while X >= 0
       ; ?Display? either "Encounter!" (dat_1909 = $11 (17)) or "Loading..." (dat_1909 <> $11 (17))
 2d09: a2 09                     LDX #$09             ; Set X = 9 (10 iterations)
 2d0b: ac 09 19                  LDY dat_1909         ; Set Y = dat_1909
 2d0e: bd 2e 2a  loc_2d0e        LDA str_ENCOUNTR,X   ; Set A = str_ENCOUNTR + X ("Encounter!")
-2d11: c0 11                     CPY #$11             ; If Y = $11 (17)
-2d13: f0 03                     BEQ loc_2d18         ;     then
-2d15: bd 24 2a                  LDA str_LOADING,X    ; Set A = str_LOADING + X ("Loading...")
-2d18: 9d 87 19  loc_2d18        STA loc_1987,X       ;     to loc_1987 + X
+2d11: c0 11                     CPY #$11             ; If
+2d13: f0 03                     BEQ loc_2d18         ;     Y <> $11 (17)
+2d15: bd 24 2a                  LDA str_LOADING,X    ;     Then set A = str_LOADING + X ("Loading...")
+2d18: 9d 87 19  loc_2d18        STA dat_197c+11,X    ; Set dat_197c+11 + X = A
 2d1b: ca                        DEX                  ; Subtract 1 from X
 2d1c: 10 f0                     BPL loc_2d0e         ; Repeat while X >= 0
       ;
@@ -2693,21 +2914,35 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2d85: 35 0f 44 43 10  tbl_2d85  .BYTE $35,$0f,$44,$43,$10  ; 5.DC.
 2d8a: 2f 44 43 42 3f  tbl_2d8a  .BYTE $2f,$44,$43,$42,$3f  ; /DCB?
 
-2d8f: a0 00     loc_2d8f        LDY #$00             ;
-2d91: a6 0c                     LDX dat_000c         ;
-2d93: f0 0a                     BEQ loc_2d9f         ;
-2d95: 91 09     loc_2d95        STA (dat_0009_L),Y   ;
-2d97: c8                        INY                  ;
-2d98: d0 fb                     BNE loc_2d95         ;
-2d9a: e6 0a                     INC dat_0009_H       ;
-2d9c: ca                        DEX                  ;
-2d9d: d0 f6                     BNE loc_2d95         ;
-2d9f: a6 0b     loc_2d9f        LDX dat_0009_H+1     ;
-2da1: f0 07                     BEQ loc_2daa         ;
-2da3: 91 09     loc_2da3        STA (dat_0009_L),Y   ;
-2da5: c8                        INY                  ;
-2da6: c4 0b                     CPY dat_0009_H+1     ;
-2da8: d0 f9                     BNE loc_2da3         ;
+; Initializes bytes to a specified value
+;
+; Parameters
+;   A = value to initialize bytes to
+;   dat_0009_L/H = Address to write bytes to
+;   dat_000c/dat_000d = Number of bytes to write (uint16)
+;
+; Return
+;   dat_0009_H is incremented
+;
+2d8f: a0 00     INIT_BYTES      LDY #$00             ; Set Y = 0
+; Initialize dat_000c pages
+2d91: a6 0c                     LDX dat_000c         ; Set X = dat_000c
+2d93: f0 0a                     BEQ loc_2d9f         ; If (dat_000c != 0) Then
+2d95: 91 09     loc_2d95        STA (dat_0009_L),Y   ;     Loop
+                                                     ;         Set (dat_0009_L),Y = A
+2d97: c8                        INY                  ;         Add 1 to Y
+2d98: d0 fb                     BNE loc_2d95         ;         If (Y = 0) Then
+2d9a: e6 0a                     INC dat_0009_H       ;             Add 1 to dat_0009_H
+2d9c: ca                        DEX                  ;             Subtract 1 from X
+2d9d: d0 f6                     BNE loc_2d95         ;     Repeat while (X != 0)
+2d9f: a6 0b     loc_2d9f        LDX dat_000b         ; Set X = dat_000b
+; Initialize remaining dat_000d bytes
+2da1: f0 07                     BEQ loc_2daa         ; If (dat_000b != 0) Then
+2da3: 91 09     loc_2da3        STA (dat_0009_L),Y   ;     Loop
+                                                     ;         Set (dat_0009_L),Y = A
+2da5: c8                        INY                  ;         Add 1 to Y
+2da6: c4 0b                     CPY dat_000b         ;     Repeat
+2da8: d0 f9                     BNE loc_2da3         ;       while (Y != dat_000b)
 2daa: 60        loc_2daa        RTS                  ; Return to caller
 
 ; Parameters
@@ -2719,6 +2954,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 ;         - Bits 3-7?  - Offset from X * 256 + Y of byte to read & update
 ;   X = MSB of base address to read & update
 ;   Y = LSB of base address to read & update
+;
 2dab: 8e db 2d  sub_2dab        STX smc_2dd9+2       ; Self-modifying code:
 2dae: 8e e1 2d                  STX smc_2ddf+2       ;     Set MSB of base address to read & update
 2db1: 8c da 2d                  STY smc_2dd9+1       ; Self-modifying code:
@@ -2737,8 +2973,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2dcc: 8e de 2d                  STX smc_2ddc+2       ; Set MSB of base address to read from (C=1 -> $2e05 [tbl_2e05])
 2dcf: 68                        PLA                  ; Restore previous value of A
 2dd0: 48                        PHA                  ; Preserve current value of A
-2dd1: 29 07                     AND #$07             ;
-2dd3: aa                        TAX                  ; Set X = A & 7
+2dd1: 29 07                     AND #$07             ; Set
+2dd3: aa                        TAX                  ;     X = A & 7
 2dd4: 68                        PLA                  ; Restore previous value of A
 2dd5: 4a                        LSR                  ; Divide
 2dd6: 4a                        LSR                  ;     A
@@ -2763,8 +2999,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 ;   Y = LSB of base address to read
 ; Return:
 ;   Carry flag is updated on return
-;      0 if
-;      1 if
+;      0 if value @ ((X * 256 + Y + A/8) AND value @ ($2e05 + (A & 7))) == 0
+;      1 otherwise
+;
 2de3: 8e f5 2d  sub_2de3        STX smc_2df3+2       ; Self-modifying code: Set the source address
 2de6: 8c f4 2d                  STY smc_2df3+1       ;     of the LDA abs,Y below to Y/X
 2de9: 48                        PHA                  ; Preserve current value of A
@@ -2785,33 +3022,45 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2dfd: 7f bf df ef f7 fb fd fe  tbl_2dfd  .BYTE $7f,$bf,$df,$ef,$f7,$fb,$fd,$fe  ; .......
 2e05: 80 40 20 10 08 04 02 01  tbl_2e05  .BYTE $80,$40,$20,$10,$08,$04,$02,$01  ; .@ .....
 
-2e0d: 84 0b     sub_2e0d        STY DOSVEC+1         ;
-2e0f: a0 00                     LDY #$00             ;
-2e11: e0 00                     CPX #$00             ;
-2e13: f0 0e                     BEQ loc_2e23         ;
-2e15: b1 07     loc_2e15        LDA (dat_0007_L),Y   ;
-2e17: 91 09                     STA (dat_0009_L),Y   ;
-2e19: c8                        INY                  ;
-2e1a: d0 f9                     BNE loc_2e15         ;
-2e1c: e6 0a                     INC dat_0009_H       ;
-2e1e: e6 08     loc_2e1e        INC dat_0007_H       ;
-2e20: ca                        DEX                  ;
-2e21: d0 f2                     BNE loc_2e15         ;
-2e23: a5 0b     loc_2e23        LDA dat_0009_H+1     ;
-2e25: f0 09                     BEQ loc_2e30         ;
-2e27: b1 07     loc_2e27        LDA (dat_0007_L),Y   ;
-2e29: 91 09                     STA (dat_0009_L),Y   ;
-2e2b: c8                        INY                  ;
-2e2c: c4 0b                     CPY dat_0009_H+1     ;
-2e2e: d0 f7     loc_2e2e        BNE loc_2e27         ;
-2e30: 60        loc_2e30        RTS                  ;
-2e31: c6 32     loc_2e31        DEC dat_0032_L       ;
-2e33: a2 07                     LDX #$07             ;
-2e35: b5 35     loc_2e35        LDA BFENHI,X         ;
-2e37: 9d 09 63                  STA TME_MINUTES,X    ;
-2e3a: ca                        DEX                  ;
-2e3b: 10 f8                     BPL loc_2e35         ;
-2e3d: e6 32                     INC dat_0032_L       ;
+; Copies X * 256 + Y bytes from the address in dat_0007_L to the address in dat_0009_L
+;
+; Parameters:
+;   X = MSB of number of bytes to copy (16-bit int)
+;   Y = LSB of number of bytes to copy (16-bit int)
+;   dat_0007_L/dat_0007_H = source address (dat_0007_H is modified [incremented by X] on return)
+;   dat_0009_L/dat_0009_H = destination address (dat_0009_H is modified [incremented by X] on return)
+;
+2e0d: 84 0b     COPY_BYTES      STY dat_000b         ; Set dat_000b = Y
+2e0f: a0 00                     LDY #$00             ; Set Y = 0
+; Copy X pages from the address in dat_0007_L to the address in dat_0009_L
+2e11: e0 00                     CPX #$00             ; If (X != 0)
+2e13: f0 0e                     BEQ loc_2e23         ;   Then
+2e15: b1 07     loc_2e15        LDA (dat_0007_L),Y   ;     Loop
+2e17: 91 09                     STA (dat_0009_L),Y   ;         Set (dat_0009_L),Y = (dat_0007_L),Y
+2e19: c8                        INY                  ;         Add 1 to Y
+2e1a: d0 f9                     BNE loc_2e15         ;             and repeat while (Y != 0) [256 repetitions]
+2e1c: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H (next page)
+2e1e: e6 08                     INC dat_0007_H       ;         Add 1 to dat_0007_H (next page)
+2e20: ca                        DEX                  ;         Subtract 1 from X
+2e21: d0 f2                     BNE loc_2e15         ;             and repeat while (X != 0)
+; Copy Y bytes from the address in dat_0007_L to the address in dat_0009_L
+2e23: a5 0b     loc_2e23        LDA dat_000b         ; If (dat_000b != 0)
+2e25: f0 09                     BEQ loc_2e30         ;   Then
+2e27: b1 07     loc_2e27        LDA (dat_0007_L),Y   ;     Loop
+2e29: 91 09                     STA (dat_0009_L),Y   ;         Set (dat_0009_L),Y = (dat_0007_L),Y
+2e2b: c8                        INY                  ;         Add 1 to Y
+2e2c: c4 0b                     CPY dat_000b         ;             and
+2e2e: d0 f7                     BNE loc_2e27         ;             repeat while (Y != dat_000b)
+2e30: 60        loc_2e30        RTS                  ; Return to caller
+
+;
+2e31: c6 32     sub_2e31        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
+2e33: a2 07                     LDX #$07             ; Set X = 7
+2e35: b5 35     loc_2e35        LDA BFENHI,X         ; Loop
+2e37: 9d 09 63                  STA TME_MINUTES,X    ;     Set TME_MINUTES,X = BFENHI,X
+2e3a: ca                        DEX                  ;     Subtract 1 from X
+2e3b: 10 f8                     BPL loc_2e35         ;         and repeat while (X >= 0)
+2e3d: e6 32                     INC flg_PAUSED       ; Add 1 to flg_PAUSED
 2e3f: 60                        RTS                  ; Return to caller
 
 2e40: a0 01     loc_2e40        LDY #$01             ;
@@ -2869,13 +3118,13 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2e9b: 85 46                     STA dat_0045_H       ;
 2e9d: 60                        RTS                  ; Return to caller
 
-2e9e: a5 0b     loc_2e9e        LDA dat_0009_H+1     ;
+2e9e: a5 0b     loc_2e9e        LDA dat_000b         ;
 2ea0: 49 ff                     EOR #$ff             ;
-2ea2: 85 0b                     STA dat_0009_H+1     ;
+2ea2: 85 0b                     STA dat_000b         ;
 2ea4: a5 0c                     LDA dat_000c         ;
 2ea6: 49 ff                     EOR #$ff             ;
 2ea8: 85 0c                     STA dat_000c         ;
-2eaa: e6 0b                     INC dat_0009_H+1     ;
+2eaa: e6 0b                     INC dat_000b         ;
 2eac: d0 02                     BNE loc_2eb0         ;
 2eae: e6 0c                     INC dat_000c         ;
 2eb0: a0 00     loc_2eb0        LDY #$00             ;
@@ -2885,57 +3134,59 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2eb7: d0 04                     BNE loc_2ebd         ;
 2eb9: e6 08                     INC dat_0007_H       ;
 2ebb: e6 0a                     INC dat_0009_H       ;
-2ebd: e6 0b     loc_2ebd        INC dat_0009_H+1     ;
+2ebd: e6 0b     loc_2ebd        INC dat_000b         ;
 2ebf: d0 f1                     BNE loc_2eb2         ;
 2ec1: e6 0c                     INC dat_000c         ;
 2ec3: d0 ed                     BNE loc_2eb2         ;
 2ec5: 60                        RTS                  ; Return to caller
 
-; Initialization code?
-2ec6: a2 ff     loc_2ec6        LDX #$ff             ; Set the stack
+; Initialization code called from KERNEL_ENTRY after base initialization
+;
+2ec6: a2 ff     KERNEL_INIT     LDX #$ff             ; Set the stack
 2ec8: 9a                        TXS                  ;     pointer to $ff (effective addr $01ff - std start of stack)
-      ; Set 230 bytes to 0, starting @ $18b7 [dat_18b7]
+; Set 230 bytes to 0, starting @ $18b7 [dat_18b7]
 2ec9: a2 e6                     LDX #$e6             ; Set X = $e6 (230) - 230 iterations
-2ecb: a9 00                     LDA #$00             ; Set
-2ecd: 9d b6 18  loc_2ecd        STA dat_18b7-1,X     ;     dat_18b7 - 1 + X = 0
-2ed0: ca                        DEX                  ; Subtract 1 from X
-2ed1: d0 fa                     BNE loc_2ecd         ; Repeat while X > 0
-2ed3: a9 00                     LDA #$00             ;
-2ed5: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
-2ed8: a9 07                     LDA #$07             ; Set ???
+2ecb: a9 00                     LDA #$00             ; Set A = 0
+2ecd: 9d b6 18  loc_2ecd        STA dat_18b7-1,X     ; Loop
+                                                     ;     Set dat_18b7 - 1 + X = 0
+2ed0: ca                        DEX                  ;     Subtract 1 from X
+2ed1: d0 fa                     BNE loc_2ecd         ;     Repeat while X > 0
+2ed3: a9 00                     LDA #$00             ; Set display mode to 0
+2ed5: 20 0d 1a                  JSR SET_DISP_MODE    ;     (plain 40x25 character display)
+2ed8: a9 07                     LDA #$07             ; Set addr_0016_L/H
 2eda: 85 16                     STA addr_0016_L      ;     address
 2edc: a9 20                     LDA #$20             ;     to
 2ede: 85 17                     STA addr_0016_H      ;     $2007 [str_BLANK] "" (empty string)
-2ee0: 20 8c 1c                  JSR sub_1c8c         ;
-2ee3: 8e 33 19                  STX dat_1933         ;
-2ee6: a9 07                     LDA #$07             ; Set ???
+2ee0: 20 8c 1c                  JSR sub_1c8c         ; Call $1c8c [sub_1c8c]
+2ee3: 8e 33 19                  STX dat_1933         ; Set dat_1933 = X     TODO: Is X assigned by sub_1c8c?
+2ee6: a9 07                     LDA #$07             ; Set tbl_1913_L/H
 2ee8: 8d 13 19                  STA tbl_1913_L       ;     address
 2eeb: a9 20                     LDA #$20             ;     to
 2eed: 8d 23 19                  STA tbl_1923_H       ;     $2007 [str_BLANK] "" (empty string)
-2ef0: a9 19                     LDA #$19             ;
-2ef2: 8d 09 19                  STA dat_1909         ;
-2ef5: a9 00                     LDA #$00             ; Set
-2ef7: 8d 0b 19                  STA dat_190b_L       ;    address @ $190b/$190c
+2ef0: a9 19                     LDA #$19             ; Set
+2ef2: 8d 09 19                  STA dat_1909         ;     dat_1909 = $19 (25)
+2ef5: a9 00                     LDA #$00             ; Set dat_190b_L/H
+2ef7: 8d 0b 19                  STA dat_190b_L       ;    address
 2efa: a9 76                     LDA #$76             ;    to
-2efc: 8d 0c 19                  STA dat_190c_H       ;    $7600 []
+2efc: 8d 0c 19                  STA dat_190c_H       ;    $7600 [loc_7600]
 2eff: 20 ad 2c                  JSR sub_2cad         ;
-2f02: 20 00 76                  JSR $7600            ;
+2f02: 20 00 76                  JSR loc_7600         ;
 2f05: a9 02                     LDA #$02             ;
 2f07: 8d 53 02                  STA dat_0253         ;
-2f0a: a9 ff                     LDA #$ff             ;
-2f0c: 8d 00 ac                  STA MAP_NUMBER       ;
-2f0f: 8d 00 76                  STA $7600            ;
+2f0a: a9 ff                     LDA #$ff             ; Set
+2f0c: 8d 00 ac                  STA MAP_NUMBER       ;     MAP_NUMBER = $ff (unassigned)
+2f0f: 8d 00 76                  STA loc_7600         ; Set loc_7600 = $ff
 2f12: 8d f0 96                  STA TEX_HEADERS      ;
 2f15: 8d 35 19                  STA dat_1935         ;
-2f18: a9 01                     LDA #$01             ;
-2f1a: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
+2f18: a9 01                     LDA #$01             ; Set display mode to 1
+2f1a: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
 2f1d: a2 07                     LDX #$07             ;
 2f1f: bd 09 63  loc_2f1f        LDA TME_MINUTES,X    ;
 2f22: 95 35                     STA BFENHI,X         ;
 2f24: ca                        DEX                  ;
 2f25: 10 f8                     BPL loc_2f1f         ;
 2f27: e8                        INX                  ;
-2f28: 86 32                     STX dat_0032_L       ;
+2f28: 86 32                     STX flg_PAUSED       ;
 2f2a: 86 0f                     STX dat_000f         ;
 2f2c: a2 13                     LDX #$13             ;
 2f2e: a9 47     loc_2f2e        LDA #$47             ;
@@ -2945,12 +3196,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2f36: 9d a3 45                  STA tbl_45a3,X       ;
 2f39: ca                        DEX                  ;
 2f3a: 10 f2                     BPL loc_2f2e         ;
-2f3c: a9 17                     LDA #$17             ; Set ???
+2f3c: a9 17                     LDA #$17             ; Set addr_0016_L/H
 2f3e: 85 16                     STA addr_0016_L      ;     address
 2f40: a9 39                     LDA #$39             ;     to
 2f42: 85 17                     STA addr_0016_H      ;     $3917 [str_3917] Top status lines (Level, Stats, Exp, HP)
 2f44: 20 84 1c                  JSR sub_1c84         ;
-2f47: a9 69                     LDA #$69             ; Set ???
+2f47: a9 69                     LDA #$69             ; Set addr_0016_L/H
 2f49: 85 16                     STA addr_0016_L      ;     address
 2f4b: a9 39                     LDA #$39             ;     to
 2f4d: 85 17                     STA addr_0016_H      ;     $3969 [str_3969] Status value template. Contains embedded addr refs to char stats.
@@ -2975,8 +3226,8 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2f78: 3c 3d 3e 3e 3e 3e 3f 00  dat_2f78_H  .BYTE $3c,$3d,$3e,$3e,$3e,$3e,$3f,$00  ; <=>>>>?.
 
 2f80: 20 2c 32  loc_2f80        JSR sub_322c         ;
-2f83: ad 00 76                  LDA $7600            ;
-2f86: cd 1e 63                  CMP CHR_UNK_BYTE_631E ;
+2f83: ad 00 76                  LDA loc_7600         ; If (CHR_UNK_BYTE_631E != loc_7600)
+2f86: cd 1e 63                  CMP CHR_UNK_BYTE_631E ;   Then
 2f89: f0 5a                     BEQ loc_2fe5         ;
 2f8b: a9 ff                     LDA #$ff             ;
 2f8d: 8d 12 19                  STA ZONE_ID          ;
@@ -2995,12 +3246,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 2faf: f0 09                     BEQ loc_2fba         ;
 2fb1: c9 02                     CMP #$02             ;
 2fb3: f0 05                     BEQ loc_2fba         ;
-2fb5: a9 01                     LDA #$01             ;
-2fb7: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
-2fba: a9 00     loc_2fba        LDA #$00             ; Set
-2fbc: 8d 0b 19                  STA dat_190b_L       ;   ??
-2fbf: a9 76                     LDA #$76             ;   address
-2fc1: 8d 0c 19                  STA dat_190c_H       ;   to $7600
+2fb5: a9 01                     LDA #$01             ;     Set display mode to 1
+2fb7: 20 0d 1a                  JSR SET_DISP_MODE    ;         (normal gameplay)
+2fba: a9 00     loc_2fba        LDA #$00             ;     Set
+2fbc: 8d 0b 19                  STA dat_190b_L       ;       dat_190b_L/H
+2fbf: a9 76                     LDA #$76             ;       address
+2fc1: 8d 0c 19                  STA dat_190c_H       ;       to $7600 [loc_7600]
 2fc4: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
 2fc7: 18                        CLC                  ;
 2fc8: 69 10                     ADC #$10             ;
@@ -3034,23 +3285,23 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 300a: 20 96 35                  JSR sub_3596         ;
 300d: ad 71 19  loc_300d        LDA dat_1971         ;
 3010: 30 6d                     BMI loc_307f         ;
-3012: ad 00 76                  LDA $7600            ;
+3012: ad 00 76                  LDA loc_7600         ;
 3015: d0 68                     BNE loc_307f         ;
 3017: ad 79 19                  LDA loc_1979         ;
 301a: 10 16                     BPL loc_3032         ;
 301c: a9 00                     LDA #$00             ;
 301e: 8d 79 19                  STA loc_1979         ;
-3021: ad 1e 63                  LDA CHR_UNK_BYTE_631E  ;
-3024: 8d 1f 63                  STA CHR_UNK_BYTE_631F  ;
+3021: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
+3024: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;
 3027: a9 02                     LDA #$02             ;
-3029: 8d 1e 63                  STA CHR_UNK_BYTE_631E  ;
+3029: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
 302c: 20 07 76                  JSR JMP_SUB_7607     ;
 302f: 4c 80 2f                  JMP loc_2f80         ; Continue execution @ $2f80 [loc_2f80]
 3032: ad 7b 19  loc_3032        LDA loc_197b         ;
 3035: f0 05                     BEQ loc_303c         ;
 3037: a9 47                     LDA #$47             ;
 3039: 4c aa 30                  JMP loc_30aa         ; Continue execution @ $30aa [loc_30aa]
-303c: ad 20 63  loc_303c        LDA CHR_UNK_BYTE_6320  ;
+303c: ad 20 63  loc_303c        LDA CHR_UNK_BYTE_6320 ;
 303f: 10 05                     BPL loc_3046         ;
 3041: ad 5d 19                  LDA UNK_BYTE_195D    ;
 3044: f0 39                     BEQ loc_307f         ;
@@ -3062,10 +3313,10 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3052: ad 17 63                  LDA $6317            ;
 3055: c9 12                     CMP #$12             ;
 3057: d0 11                     BNE loc_306a         ;
-3059: ad 1e 63                  LDA CHR_UNK_BYTE_631E  ;
-305c: 8d 1f 63                  STA CHR_UNK_BYTE_631F  ;
+3059: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
+305c: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;
 305f: a9 01                     LDA #$01             ;
-3061: 8d 1e 63                  STA CHR_UNK_BYTE_631E  ;
+3061: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
 3064: 20 07 76                  JSR JMP_SUB_7607     ;
 3067: 4c 80 2f                  JMP loc_2f80         ; Continue execution @ $2f80 [loc_2f80]
 306a: ce 56 19  loc_306a        DEC UNK_BYTE_COUNTER ;
@@ -3142,16 +3393,16 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 30f1: a5 2e                     LDA ICAX5Z           ;
 30f3: 2c 74 3b                  BIT BMASK_01         ;
 30f6: d0 2c                     BNE loc_3124         ;
-30f8: 2c 75 3b                  BIT BMASK_02         ;
-30fb: d0 1e                     BNE loc_311b         ;
-30fd: 2c 76 3b                  BIT BMASK_04         ;
-3100: d0 06                     BNE loc_3108         ;
-3102: ee 12 63                  INC CHR_LOC_ORIENT   ;
-3105: 4c 0b 31                  JMP loc_310b         ;
-3108: ce 12 63  loc_3108        DEC CHR_LOC_ORIENT   ;
-310b: ad 12 63  loc_310b        LDA CHR_LOC_ORIENT   ;
-310e: 29 03                     AND #$03             ;
-3110: 8d 12 63                  STA CHR_LOC_ORIENT   ;
+30f8: 2c 75 3b                  BIT BMASK_02         ; If bit 1 (2) is set,
+30fb: d0 1e                     BNE loc_311b         ;     jump to
+30fd: 2c 76 3b                  BIT BMASK_04         ; If bit 2 (4) is clear,
+3100: d0 06                     BNE loc_3108         ;     Then
+3102: ee 12 63                  INC CHR_LOC_ORIENT   ;     Add 1 to CHR_LOC_ORIENT (Turn to the right)
+3105: 4c 0b 31                  JMP loc_310b         ; Otherwise
+3108: ce 12 63  loc_3108        DEC CHR_LOC_ORIENT   ;     Subtract 1 from CHR_LOC_ORIENT (Turn to the left)
+310b: ad 12 63  loc_310b        LDA CHR_LOC_ORIENT   ; Limit CHR_LOC_ORIENT
+310e: 29 03                     AND #$03             ;     value
+3110: 8d 12 63                  STA CHR_LOC_ORIENT   ;     to 0..3
 3113: a9 ff                     LDA #$ff             ;
 3115: 8d 75 19                  STA UNK_BYTE_1975    ;
 3118: 4c 80 31                  JMP loc_3180         ;
@@ -3161,7 +3412,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3121: 4c 27 31                  JMP loc_3127         ;
 3124: ae 12 63  loc_3124        LDX CHR_LOC_ORIENT   ;
 3127: 8e 7f 31  loc_3127        STX dat_317f         ;
-312a: 20 ca 32                  JSR sub_32ca         ;
+312a: 20 ca 32                  JSR SAVE_CHR_LOC     ; Save current player location
 312d: bd 44 3b                  LDA dat_3b44,X       ;
 3130: 49 01                     EOR #$01             ;
 3132: a8                        TAY                  ;
@@ -3174,6 +3425,11 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3143: 18                        CLC                  ;
 3144: 6d 83 63                  ADC CHR_MOVE_SPEED   ;
 3147: 4c 51 31                  JMP loc_3151         ;
+; TODO: This sub may be more generic than just move forward. X & Y seem to specify the specific properties to read/update.
+; Sub which moves the player forward (e.g. when the 'I' key is pressed)
+; Parameters:
+;     X = Offset relative to dat_3b4c, dat_3b64, dat_3b6c
+;     Y = Offset relative to $6316
 314a: b9 16 63  DO_MOVE_FORWARD  LDA $6316,Y         ;
 314d: 38                        SEC                  ;
 314e: ed 83 63                  SBC CHR_MOVE_SPEED   ;
@@ -3183,6 +3439,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3158: 18                        CLC                  ;
 3159: 7d 4c 3b                  ADC dat_3b4c,X       ;
 315c: 99 16 63                  STA $6316,Y          ;
+      ; Read map cell data
 315f: bc 64 3b                  LDY dat_3b64,X       ;
 3162: b1 10                     LDA (addr_MapCell_L),Y ;
 3164: bc 6c 3b                  LDY dat_3b6c,X       ;
@@ -3195,7 +3452,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 316f: a8                        TAY                  ; Set Y = A
 3170: b9 24 3b                  LDA tbl_3b24_L,Y     ; Self-modifying code:
 3173: 8d 7d 31                  STA smc_317c+1       ;     Set the JMP address
-3176: b9 34 3b                  LDA tbl_3b34_H,Y     ;     @ $317c below
+3176: b9 34 3b                  LDA tbl_3b34_H,Y     ;     @ $317c [smc_317c] below
 3179: 8d 7e 31                  STA smc_317c+2       ;     to tbl_3b24_L + Y/tbl_3b34_H + Y
 317c: 4c ff ff  smc_317c        JMP $ffff            ; Continue @ the address assigned from tbl_3b24_L/tbl_3b34_H
                                                      ; One of the following addresses:
@@ -3210,22 +3467,22 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 317f: 00        dat_317f        .BYTE $00            ;
 
 3180: 4c 8c 31  loc_3180        JMP loc_318c         ;
-3183: 20 ca 32  loc_3183        JSR sub_32ca         ;
+3183: 20 ca 32  loc_3183        JSR SAVE_CHR_LOC     ; Save current player location
 3186: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
 3189: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;
-318c: ad 15 63  loc_318c        LDA CHR_LOC_MAP      ;
-318f: cd 00 ac                  CMP MAP_NUMBER       ;
-3192: f0 25                     BEQ loc_31b9         ;
+318c: ad 15 63  loc_318c        LDA CHR_LOC_MAP      ; If the character's current map #
+318f: cd 00 ac                  CMP MAP_NUMBER       ;     is equal to the loaded map #
+3192: f0 25                     BEQ loc_31b9         ;     Then no need to load new map
       ; Player's current map location does not match the currently loaded map
-3194: aa                        TAX                  ;
-3195: bd 25 32                  LDA tbl_MAP_NUM2LVL,X ;
-3198: 8d 1d 63                  STA $631d            ;
-319b: 8a                        TXA                  ;
-319c: 18                        CLC                  ;
-319d: 69 01                     ADC #$01             ;
-319f: 8d 09 19                  STA dat_1909         ;
-31a2: a9 01                     LDA #$01             ;
-31a4: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
+3194: aa                        TAX                  ; Set X = CHR_LOC_MAP (map number to load)
+3195: bd 25 32                  LDA tbl_MAP_NUM2LVL,X ; Set
+3198: 8d 1d 63                  STA CHR_DUNGEON_LEVEL ;     CHR_DUNGEON_LEVEL = the Dungeon level number for the new map number
+319b: 8a                        TXA                  ; Set
+319c: 18                        CLC                  ;     ...
+319d: 69 01                     ADC #$01             ;     ...
+319f: 8d 09 19                  STA dat_1909         ;     dat_1909 = CHR_LOC_MAP + 1
+31a2: a9 01                     LDA #$01             ; Set display mode to 1
+31a4: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
 31a7: a9 00                     LDA #$00             ; Set
 31a9: 8d 0b 19                  STA dat_190b_L       ;    ???
 31ac: a9 ac                     LDA #$ac             ;    address
@@ -3233,6 +3490,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 31b1: 20 ad 2c                  JSR sub_2cad         ;
 31b4: a9 ff                     LDA #$ff             ;
 31b6: 8d 12 19                  STA ZONE_ID          ;
+      ; end of load new map
 31b9: 20 31 35  loc_31b9        JSR sub_3531         ;
 31bc: a0 02                     LDY #$02             ;
 31be: b1 10                     LDA (addr_MapCell_L),Y ;
@@ -3362,15 +3620,27 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 32be: a6 01 04 59 6f 75 20 61  str_YOU_ARE  .BYTE $a6,$01,$04,$59,$6f,$75,$20,$61  ; ...You a
 32c4: 72 65 20 ff               .BYTE $72,$65,$20,$ff  ; re .
 
-32ca: 8a        sub_32ca        TXA                  ;
-32cb: 48                        PHA                  ;
-32cc: a2 04                     LDX #$04             ;
-32ce: bd 13 63  loc_32ce        LDA CHR_LOC_X,X      ;
-32d1: 9d 18 63                  STA $6318,X          ;
-32d4: ca                        DEX                  ;
-32d5: 10 f7                     BPL loc_32ce         ;
-32d7: 68                        PLA                  ;
-32d8: aa                        TAX                  ;
+; Saves the current player position to restore later
+;
+; - Copies 5 bytes from CHR_LOC_X to CHR_SAV_LOC_X
+;     CHR_LOC_X      -> CHR_SAV_LOC_X
+;     CHR_LOC_Y      -> CHR_SAV_LOC_Y
+;     CHR_LOC_MAP    -> CHR_SAV_LOC_MAP
+;     CHR_FRAC_LOC_X -> CHR_SAV_FRAC_LOC_X
+;     CHR_FRAC_LOC_Y -> CHR_SAV_FRAC_LOC_Y
+;
+; Return
+;   X is unchanged on return
+;
+32ca: 8a        SAVE_CHR_LOC    TXA                  ; Save the value
+32cb: 48                        PHA                  ;     of X to the stack
+32cc: a2 04                     LDX #$04             ; Set X = 4 (5 repetitions)
+32ce: bd 13 63  loc_32ce        LDA CHR_LOC_X,X      ; Loop
+32d1: 9d 18 63                  STA CHR_SAV_LOC_X,X  ;     Set CHR_SAV_LOC_X,X = CHR_LOC_X,X
+32d4: ca                        DEX                  ;     Subtract 1 from X
+32d5: 10 f7                     BPL loc_32ce         ; Repeat while (X >= 0)
+32d7: 68                        PLA                  ; Restore the
+32d8: aa                        TAX                  ;     original value of X
 32d9: 60                        RTS                  ; Return to caller
 
 ; Dynamically invoked
@@ -3679,7 +3949,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3590: 8d 2a 19                  STA UNK_BYTE_192A    ;
 3593: 4c 0d 32                  JMP loc_320d         ;
 
-3596: ad 00 76  sub_3596        LDA $7600            ;
+3596: ad 00 76  sub_3596        LDA loc_7600            ;
 3599: d0 24                     BNE loc_35bf         ;
 359b: ad 0a 76                  LDA $760a            ;
 359e: 85 12                     STA RTCLOK           ;
@@ -3766,7 +4036,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3635: a9 ff     sub_3635        LDA #$ff             ;
 3637: 8d 7a 19                  STA loc_197a         ;
 363a: c6 0f                     DEC dat_000f         ;
-363c: c6 32                     DEC dat_0032_L       ;
+363c: c6 32                     DEC flg_PAUSED       ;
 363e: ce 37 19                  DEC dat_1937         ;
 3641: ce 71 19                  DEC dat_1971         ;
 3644: ad 77 19                  LDA cont_addr_1977_L ; Preserve the current
@@ -3787,7 +4057,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3668: 8d 77 19                  STA cont_addr_1977_L ;     that was saved in sub_3635
 366b: ad 82 36                  LDA dat_3681_H       ; Restore the previous value of cont_addr_1977_H
 366e: 8d 78 19                  STA cont_addr_1977_H ;     that was saved in sub_3635
-3671: e6 32                     INC dat_0032_L       ;
+3671: e6 32                     INC flg_PAUSED       ;
 3673: ee 37 19                  INC dat_1937         ;
 3676: e6 0f                     INC dat_000f         ;
 3678: ee 71 19                  INC dat_1971         ;
@@ -3880,7 +4150,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 377d: 20 7e 57                  JSR sub_577e         ;
 3780: 4c 62 36                  JMP loc_3662         ; Continue @ $3662 [loc_3662]
 
-3783: ad 00 76  sub_3783        LDA $7600            ;
+3783: ad 00 76  sub_3783        LDA loc_7600            ;
 3786: f0 01                     BEQ loc_3789         ;
 3788: 60                        RTS                  ; Return to caller
 
@@ -3901,9 +4171,9 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 37ab: a9 00                     LDA #$00             ; Set
 37ad: 8d 0b 19                  STA dat_190b_L       ;     ??
 37b0: a9 76                     LDA #$76             ;     address
-37b2: 8d 0c 19                  STA dat_190c_H       ;     to $7600
+37b2: 8d 0c 19                  STA dat_190c_H       ;     to loc_7600
 37b5: 20 ad 2c                  JSR sub_2cad         ;
-37b8: 4c 00 76                  JMP $7600            ;
+37b8: 4c 00 76                  JMP loc_7600            ;
 37bb: 4c 62 36  loc_37bb        JMP loc_3662         ; Continue @ $3662 [loc_3662]
 
 37be: a6 00 02 a5 53 61 76 65  str_SAV_CHRCTR  .BYTE $a6,$00,$02,$a5,$53,$61,$76,$65  ; ....Save
@@ -3911,7 +4181,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 37ce: 65 72 3f 0d 0d ac 2e 38   .BYTE $65,$72,$3f,$0d,$0d,$ac,$2e,$38  ; er?....8
 
 ; TODO: How does this code get executed?
-37d6: c6 32     sub_37d6        DEC dat_0032_L
+37d6: c6 32     sub_37d6        DEC flg_PAUSED       ;
 37d8: a9 04                     LDA #$04             ; Set ???
 37da: 85 16                     STA addr_0016_L      ;     address
 37dc: a9 38                     LDA #$38             ;     to
@@ -3922,12 +4192,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 37e8: 20 a5 2b                  JSR sub_2ba5         ;
 37eb: c9 59                     CMP #$59             ;
 37ed: d0 0d                     BNE loc_37fc         ;
-37ef: a9 00                     LDA #$00             ;
-37f1: 8d 2f 02                  STA SDMCTL           ;
-37f4: a9 01                     LDA #$01             ;
-37f6: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
-37f9: 4c c6 2e                  JMP loc_2ec6         ;
-37fc: e6 32     loc_37fc        INC dat_0032_L       ;
+37ef: a9 00                     LDA #$00             ; Set
+37f1: 8d 2f 02                  STA dat_022f         ;     dat_022f = 0
+37f4: a9 01                     LDA #$01             ; Set display mode to 1
+37f6: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
+37f9: 4c c6 2e                  JMP KERNEL_INIT      ; Continue @ $2ec6 [KERNEL_INIT]
+37fc: e6 32     loc_37fc        INC flg_PAUSED       ;
 37fe: ce 35 19                  DEC dat_1935         ;
 3801: 4c 2d 3c                  JMP sub_3c2d         ;
 
@@ -3942,7 +4212,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3844: a1 4e a0 29 0d ff         .BYTE $a1,$4e,$a0,$29,$0d,$ff  ; .N.)..
 
 ; TODO: How is this code invoked?
-384a: c6 32                     DEC dat_0032_L
+384a: c6 32                     DEC flg_PAUSED
 384c: a9 60                     LDA #$60             ; Set ???
 384e: 85 16                     STA addr_0016_L      ;     address
 3850: a9 38                     LDA #$38             ;     to
@@ -3950,7 +4220,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 3854: 20 a5 3c                  JSR sub_3ca5         ;
 3857: 20 b0 2b                  JSR sub_2bb0         ;
 385a: 20 c2 3c                  JSR sub_3cc2         ;
-385d: e6 32                     INC dat_0032_L       ;
+385d: e6 32                     INC flg_PAUSED       ;
 385f: 60                        RTS                  ; Return to caller
 
 3860: a8 a6 00 02 a5 28 50 61  str_PAUSED  .BYTE $a8,$a6,$00,$02,$a5,$28,$50,$61  ; .....(Pa
@@ -4495,20 +4765,20 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 40f7: 9d 45 63  loc_40f7        STA CHR_HP_CURRENT_HI,X  ;
 40fa: ca                        DEX                  ;
 40fb: 10 fa                     BPL loc_40f7         ;
-40fd: a9 00                     LDA #$00             ;
-40ff: 8d 2f 02                  STA SDMCTL           ;
-4102: a2 03                     LDX #$03             ;
-4104: 9d 00 d0  loc_4104        STA HPOSP0,X         ;
+40fd: a9 00                     LDA #$00             ; Set
+40ff: 8d 2f 02                  STA dat_022f         ;     dat_022f = 0
+4102: a2 03                     LDX #$03             ; Set
+4104: 9d 00 d0  loc_4104        STA HPOSP0,X         ;     HPOSP0+X = 3
 4107: ca                        DEX                  ;
 4108: 10 fa                     BPL loc_4104         ;
-410a: a9 01                     LDA #$01             ;
-410c: 20 0d 1a                  JSR DISPLAY_SUB_1a0d ;
+410a: a9 01                     LDA #$01             ; Set display mode to 1
+410c: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
 410f: a9 69                     LDA #$69             ; Set ???
 4111: 85 16                     STA addr_0016_L      ;     address
 4113: a9 39                     LDA #$39             ;     to
 4115: 85 17                     STA addr_0016_H      ;     $3969 [str_3969]
 4117: 20 84 1c                  JSR sub_1c84         ;
-411a: c6 32                     DEC dat_0032_L       ;
+411a: c6 32                     DEC flg_PAUSED       ;
 411c: c6 0f                     DEC dat_000f         ;
 411e: a9 f0                     LDA #$f0             ;
 4120: 20 66 2c  loc_4120        JSR WAIT_FOR_VBLK_B  ;
@@ -4519,18 +4789,18 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 412b: a9 00                     LDA #$00             ; Set
 412d: 8d 0b 19                  STA dat_190b_L       ;     ??
 4130: a9 76                     LDA #$76             ;     address
-4132: 8d 0c 19                  STA dat_190c_H       ;     to $7600
+4132: 8d 0c 19                  STA dat_190c_H       ;     to loc_7600
 4135: 20 ad 2c                  JSR sub_2cad         ;
-4138: 4c 00 76                  JMP $7600            ;
+4138: 4c 00 76                  JMP loc_7600            ;
 
 413b: 60        loc_413b        RTS                  ;
 
 413c: 00        dat_413c        .BYTE $00            ;
 
-413d: ad 00 76  loc_413d        LDA $7600            ;
-4140: d0 2f                     BNE loc_4171         ;
-4142: 24 32                     BIT dat_0032_L       ;
-4144: 30 2b                     BMI loc_4171         ;
+413d: ad 00 76  loc_413d        LDA loc_7600         ; If ($7600 [loc_7600] == 0)
+4140: d0 2f                     BNE loc_4171         ;    OR (flg_PAUSED < 0)
+4142: 24 32                     BIT flg_PAUSED       ;   Then
+4144: 30 2b                     BMI loc_4171         ;     Return to caller
 4146: ad 82 63                  LDA $6382            ;
 4149: ae 73 19                  LDX dat_1973         ;
 414c: 38                        SEC                  ;
@@ -4660,20 +4930,20 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 426c: 8d e6 42                  STA dat_42e6         ;
 426f: c6 4b     loc_426f        DEC CASSBT           ;
 4271: 10 dc                     BPL loc_424f         ;
-4273: a2 04                     LDX #$04             ;
-4275: 8a        loc_4275        TXA                  ;
-4276: 0a                        ASL                  ;
-4277: a8                        TAY                  ;
-4278: b9 b1 63                  LDA INV_GOLD_U16_HI,Y  ;
-427b: 85 58                     STA SAVMSC           ;
-427d: b9 b2 63                  LDA INV_GOLD,Y       ;
-4280: bc f0 41                  LDY tbl_41f0,X       ;
-4283: f0 06     loc_4283        BEQ loc_428b         ;
-4285: 46 58                     LSR SAVMSC           ;
-4287: 6a                        ROR                  ;
-4288: 88                        DEY                  ;
-4289: 10 f8                     BPL loc_4283         ;
-428b: 18        loc_428b        CLC                  ;
+4273: a2 04                     LDX #$04             ; Set X = 4
+4275: 8a        loc_4275        TXA                  ; Set
+4276: 0a                        ASL                  ;     ...
+4277: a8                        TAY                  ;     Y = X * 2
+4278: b9 b1 63                  LDA INV_GOLD_U16_HI,Y ; Set
+427b: 85 58                     STA dat_0058_L       ;     dat_0058_L = INV_GOLD_U16_HI + Y
+427d: b9 b2 63                  LDA INV_GOLD,Y       ; Set A = INV_GOLD + Y
+4280: bc f0 41                  LDY tbl_41f0,X       ; Set Y = tbl_41f0 + X
+4283: f0 06     loc_4283        BEQ loc_428b         ; If (Y == 0) Then exit loop & continue @ $428b [loc_428b]
+4285: 46 58                     LSR dat_0058_L       ; Otherwise, Set dat_0058_L /= 2
+4287: 6a                        ROR                  ; Divide A by 2
+4288: 88                        DEY                  ; Subtract 1 from Y
+4289: 10 f8                     BPL loc_4283         ;     and repeat while (Y >= 0)
+428b: 18        loc_428b        CLC                  ; Clear carry flag
 428c: 6d e5 42                  ADC dat_42e5         ;
 428f: 8d e5 42                  STA dat_42e5         ;
 4292: ad e6 42                  LDA dat_42e6         ;
@@ -4744,12 +5014,12 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4322: 8d b5 45                  STA tbl_45b5_L       ;     address
 4325: a9 47                     LDA #$47             ;     to
 4327: 8d b6 45                  STA tbl_45b5_H       ;     $47d8 [str_CURSED]
-432a: a2 06     loc_432a        LDX #$06             ;
-432c: 86 5c                     STX dat_005c         ;
-432e: bd e0 45  loc_432e        LDA tbl_45e0_L,X     ;
-4331: 85 58                     STA SAVMSC           ;
-4333: bd e7 45                  LDA tbl_45e7_H,X     ;
-4336: 85 59                     STA SAVMSC+1         ;
+432a: a2 06     loc_432a        LDX #$06             ; Set X = 6
+432c: 86 5c                     STX dat_005c         ; Set dat_005c = 6
+432e: bd e0 45  loc_432e        LDA tbl_45e0_L,X     ; Set ???
+4331: 85 58                     STA dat_0058_L           ;     address
+4333: bd e7 45                  LDA tbl_45e7_H,X     ;     to
+4336: 85 59                     STA dat_0058_H         ;     tbl_45e0_L+X/tbl_45e7_H+X
 4338: bd ee 45                  LDA tbl_45ee_L,X     ;
 433b: 85 5a                     STA dat_005a_L       ;
 433d: bd f5 45                  LDA tbl_45f5_H,X     ;
@@ -4758,7 +5028,7 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 4345: a8                        TAY                  ;
 4346: b9 00 63                  LDA $6300,Y          ;
 4349: a0 00                     LDY #$00             ;
-434b: d1 58     loc_434b        CMP (SAVMSC),Y       ;
+434b: d1 58     loc_434b        CMP (dat_0058_L),Y       ;
 434d: 90 05                     BCC loc_4354         ;
 434f: f0 03                     BEQ loc_4354         ;
 4351: c8                        INY                  ;
@@ -4785,18 +5055,18 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 
 4377: ad 9b 63  sub_4377        LDA CHR_ENERGY       ;
 437a: 8d c5 43                  STA dat_43c5         ;
-437d: a2 06                     LDX #$06             ;
-437f: 86 5c                     STX dat_005c         ;
+437d: a2 06                     LDX #$06             ; Set X = 6
+437f: 86 5c                     STX dat_005c         ; Set dat_005c = 6
 4381: de 95 45  loc_4381        DEC tbl_4595,X       ;
 4384: d0 2d                     BNE loc_43b3         ;
 4386: bd 9c 45                  LDA tbl_459c,X       ;
 4389: 9d 95 45                  STA tbl_4595,X       ;
-438c: bd fc 45                  LDA tbl_45fc_L,X     ;
-438f: 85 58                     STA SAVMSC           ;
-4391: bd 03 46                  LDA tbl_4603_H,X     ;
-4394: 85 59                     STA SAVMSC+1         ;
+438c: bd fc 45                  LDA tbl_45fc_L,X     ; Set ???
+438f: 85 58                     STA dat_0058_L           ;     address
+4391: bd 03 46                  LDA tbl_4603_H,X     ;     to
+4394: 85 59                     STA dat_0058_H         ;     tbl_45fc_L+X/tbl_4603_H+X
 4396: bc 63 19                  LDY loc_1963,X       ;
-4399: b1 58                     LDA (SAVMSC),Y       ;
+4399: b1 58                     LDA (dat_0058_L),Y       ;
 439b: f0 16                     BEQ loc_43b3         ;
 439d: 0a                        ASL                  ;
 439e: a8                        TAY                  ;
@@ -4835,71 +5105,81 @@ Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
 43e1: 2c a9 3a                  BIT loc_3aa9         ;
 43e4: 8d 99 04                  STA DISP_HP_SEP_CHAR ;
 43e7: a9 49                     LDA #$49             ; Set ???
-43e9: 85 58                     STA SAVMSC           ;     address
+43e9: 85 58                     STA dat_0058_L           ;     address
 43eb: a9 63                     LDA #$63             ;     to
-43ed: 85 59                     STA SAVMSC+1         ;     $6349 []
-43ef: a2 06                     LDX #$06             ;
-43f1: a0 01     STAT_LOOP       LDY #$01             ;
-43f3: b1 58                     LDA (SAVMSC),Y       ;
-43f5: 18                        CLC                  ;
-43f6: a0 02                     LDY #$02             ;
-43f8: 71 58                     ADC (SAVMSC),Y       ;
-43fa: 90 02                     BCC loc_43fe         ;
-43fc: a9 ff                     LDA #$ff             ;
+43ed: 85 59                     STA dat_0058_H         ;     $6349 [CHR_STA_EFFECTIVE]
+43ef: a2 06                     LDX #$06             ; Set X = 6 (7 iterations, one for each stat)
+43f1: a0 01     STAT_LOOP       LDY #$01             ; Set
+43f3: b1 58                     LDA (dat_0058_L),Y       ;     A = (dat_0058_L),1
+43f5: 18                        CLC                  ; Clear carry flag
+43f6: a0 02                     LDY #$02             ; Set
+43f8: 71 58                     ADC (dat_0058_L),Y       ;     A = A + (dat_0058_L),2
+43fa: 90 02                     BCC loc_43fe         ; If (the result > $ff [255]) Then
+43fc: a9 ff                     LDA #$ff             ;     Set A = $ff
 43fe: 38        loc_43fe        SEC                  ;
 43ff: c8                        INY                  ;
-4400: f1 58                     SBC (SAVMSC),Y       ;
+4400: f1 58                     SBC (dat_0058_L),Y       ;
 4402: b0 02                     BCS loc_4406         ;
 4404: a9 00                     LDA #$00             ;
 4406: c8        loc_4406        INY                  ;
 4407: 38                        SEC                  ;
-4408: f1 58                     SBC (SAVMSC),Y       ;
+4408: f1 58                     SBC (dat_0058_L),Y       ;
 440a: b0 02                     BCS loc_440e         ;
 440c: a9 00                     LDA #$00             ;
 440e: c8        loc_440e        INY                  ;
 440f: 38                        SEC                  ;
-4410: f1 58                     SBC (SAVMSC),Y       ;
+4410: f1 58                     SBC (dat_0058_L),Y       ;
 4412: b0 02                     BCS loc_4416         ;
 4414: a9 00                     LDA #$00             ;
 4416: c8        loc_4416        INY                  ;
 4417: 38                        SEC                  ;
-4418: f1 58                     SBC (SAVMSC),Y       ;
+4418: f1 58                     SBC (dat_0058_L),Y       ;
 441a: b0 02                     BCS loc_441e         ;
 441c: a9 00                     LDA #$00             ;
 441e: a0 00     loc_441e        LDY #$00             ;
-4420: 91 58     loc_4420        STA (SAVMSC),Y       ;
+4420: 91 58     loc_4420        STA (dat_0058_L),Y       ;
 4422: a9 08                     LDA #$08             ;
 4424: 18                        CLC                  ;
-4425: 65 58                     ADC SAVMSC           ;
-4427: 85 58                     STA SAVMSC           ;
+4425: 65 58                     ADC dat_0058_L           ;
+4427: 85 58                     STA dat_0058_L           ;
 4429: 90 02                     BCC loc_442d         ;
-442b: e6 59                     INC SAVMSC+1         ;
-442d: ca        loc_442d        DEX                  ;
-442e: 10 c1                     BPL STAT_LOOP        ;
-4430: ad 79 63                  LDA CHR_SPD_EFFECTIVE ;
-4433: 4a                        LSR                  ;
-4434: 4a                        LSR                  ;
-4435: 4a                        LSR                  ;
-4436: 4a                        LSR                  ;
-4437: aa                        TAX                  ;
-4438: bd 5f 44                  LDA MOVEMENT_SPEED_TBL,X ;
-443b: 8d 83 63                  STA CHR_MOVE_SPEED   ;
-443e: 2c 98 63                  BIT CHR_STOMACH      ;
-4441: 10 03                     BPL loc_4446         ;
-4443: 4e 83 63                  LSR CHR_MOVE_SPEED   ;
-4446: ad 83 63  loc_4446        LDA CHR_MOVE_SPEED   ;
-4449: c9 04                     CMP #$04             ;
-444b: b0 05                     BCS loc_4452         ;
-444d: a9 04                     LDA #$04             ;
-444f: 8d 83 63                  STA CHR_MOVE_SPEED   ;
-4452: ad 94 63  loc_4452        LDA CHR_BURDEN       ;
-4455: c9 e0                     CMP #$e0             ;
-4457: 90 05                     BCC loc_445e         ;
-4459: a9 02                     LDA #$02             ;
-445b: 8d 83 63                  STA CHR_MOVE_SPEED   ;
+442b: e6 59                     INC dat_0058_H         ;
+442d: ca        loc_442d        DEX                  ; Subtract 1 from X
+442e: 10 c1                     BPL STAT_LOOP        ;     and repeat while (X >= 0)
+; Compute the CHR_MOVE_SPEED based on SPD stat, fullness, burden
+;    If (CHR_BURDEN >= $e0 [224]) Then
+;        CHR_MOVE_SPEED = 2
+;    Else
+;        CHR_MOVE_SPEED = tbl_MOVE_SPEED[CHR_SPD_EFFECTIVE / 16]
+;        If (CHR_STOMACH > 127) Then CHR_MOVE_SPEED /= 2
+;        If (CHR_MOVE_SPEED < 4) Then CHR_MOVE_SPEED = 4
+4430: ad 79 63                  LDA CHR_SPD_EFFECTIVE ; Set A = CHR_SPD_EFFECTIVE
+4433: 4a                        LSR                  ; Divide
+4434: 4a                        LSR                  ;     A
+4435: 4a                        LSR                  ;     by
+4436: 4a                        LSR                  ;     16
+4437: aa                        TAX                  ; Set X = A
+4438: bd 5f 44                  LDA tbl_MOVE_SPEED,X ;
+443b: 8d 83 63                  STA CHR_MOVE_SPEED   ; Set CHR_MOVE_SPEED = tbl_MOVE_SPEED + X
+                                                     ; One of:
+                                                     ;     $06,$07,$08,$09,$0a,$0b,$0c,$0d
+                                                     ;     $0e,$0f,$10,$11,$11,$11,$12,$12
+443e: 2c 98 63                  BIT CHR_STOMACH      ; If (CHR_STOMACH > 127)
+4441: 10 03                     BPL loc_4446         ;   Then
+4443: 4e 83 63                  LSR CHR_MOVE_SPEED   ;     Divide CHR_MOVE_SPEED by 2
+4446: ad 83 63  loc_4446        LDA CHR_MOVE_SPEED   ; If
+4449: c9 04                     CMP #$04             ;    (CHR_MOVE_SPEED < 4)
+444b: b0 05                     BCS loc_4452         ;   Then
+444d: a9 04                     LDA #$04             ;     Set
+444f: 8d 83 63                  STA CHR_MOVE_SPEED   ;       CHR_MOVE_SPEED = 4
+4452: ad 94 63  loc_4452        LDA CHR_BURDEN       ; If
+4455: c9 e0                     CMP #$e0             ;    (CHR_BURDEN >= $e0 [224])
+4457: 90 05                     BCC loc_445e         ;   Then
+4459: a9 02                     LDA #$02             ;     Set
+445b: 8d 83 63                  STA CHR_MOVE_SPEED   ;         CHR_MOVE_SPEED = 2
 445e: 60        loc_445e        RTS                  ; Return to caller
 
-445f: 06 07 08 09 0a 0b 0c 0d  MOVEMENT_SPEED_TBL  .BYTE $06,$07,$08,$09,$0a,$0b,$0c,$0d  ; ........
+445f: 06 07 08 09 0a 0b 0c 0d  tbl_MOVE_SPEED  .BYTE $06,$07,$08,$09,$0a,$0b,$0c,$0d  ; ........
 4467: 0e 0f 10 11 11 11 12 12   .BYTE $0e,$0f,$10,$11,$11,$11,$12,$12  ; ........
 
 446f: ad 0a d2  loc_446f        LDA RANDOM           ;
@@ -5583,7 +5863,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 4b0d: a9 75                     LDA #$75             ; .u
 4b0f: e5 08                     SBC dat_0007_H       ; ..
 4b11: aa                        TAX                  ; .
-4b12: 20 0d 2e                  JSR sub_2e0d         ;  ..
+4b12: 20 0d 2e                  JSR COPY_BYTES       ;  ..
 4b15: 38                        SEC                  ; 8
 4b16: ad e4 64                  LDA $64e4            ; ..d
 4b19: e5 4f                     SBC COLRSH           ; .O
@@ -5627,7 +5907,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 4b68: 85 09                     STA dat_0009_L       ; ..
 4b6a: a5 42                     LDA CRITIC           ; .B
 4b6c: 85 0a                     STA dat_0009_H       ; ..
-4b6e: 20 0d 2e                  JSR sub_2e0d         ;  ..
+4b6e: 20 0d 2e                  JSR COPY_BYTES       ;  ..
 4b71: a5 4b                     LDA CASSBT           ; .K
 4b73: 60        loc_4b73        RTS                  ; Return to caller
 
@@ -6344,7 +6624,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 51b6: a9 00     sub_51b6        LDA #$00             ;
 51b8: 8d 7f 62                  STA loc_627f         ;
 51bb: a9 04                     LDA #$04             ;
-51bd: ae 00 76                  LDX $7600            ;
+51bd: ae 00 76                  LDX loc_7600            ;
 51c0: e0 01                     CPX #$01             ;
 51c2: d0 02                     BNE loc_51c6         ;
 51c4: a9 00                     LDA #$00             ;
@@ -6551,7 +6831,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 536f: 69 20                     ADC #$20             ;
 5371: c9 ff                     CMP #$ff             ;
 5373: 90 1b                     BCC loc_5390         ;
-5375: ac 00 76                  LDY $7600            ;
+5375: ac 00 76                  LDY loc_7600            ;
 5378: 88                        DEY                  ;
 5379: f0 07                     BEQ loc_5382         ;
 537b: ad 0a d2                  LDA RANDOM           ;
@@ -7043,7 +7323,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 572a: 85 16                     STA addr_0016_L      ;     address
 572c: a9 61                     LDA #$61             ;     to
 572e: 85 17                     STA addr_0016_H      ;     $6161 [str_TIME] "It is ? minutes past the ?th hour."
-5730: 20 31 2e                  JSR loc_2e31         ;
+5730: 20 31 2e                  JSR sub_2e31         ;
 5733: a9 73                     LDA #$73             ;
 5735: ae 09 63                  LDX TME_MINUTES      ;
 5738: e0 01                     CPX #$01             ;
@@ -7591,12 +7871,12 @@ xxx - TODO: this can't be a sub and a string, can it?
 5d04: 00        dat_5d04        BRK               ; Used to temporarily store the X register in
 5d05: a6 00                     LDX dat_0000      ; ..
 5d07: 02                        .BYTE $02         ; .
-5d08: a5 59                     LDA SAVMSC+1      ; .Y
+5d08: a5 59                     LDA bad_0059      ; .Y
 5d0a: 6f                        .BYTE $6f         ; o
 5d0b: 75 72                     ADC COLAC,X       ; ur
 5d0d: 20 69 6e                  JSR $6e69         ;  in
 5d10: 20 75 73                  JSR $7375         ;  us
-5d13: 65 20                     ADC bad_0020        ; e
+5d13: 65 20                     ADC bad_0020      ; e
 5d15: 77                        .BYTE $77         ; w
 5d16: 65 61                     ADC NEWCOL        ; ea
 5d18: 70 6f                     BVS bad_5d89      ; po
@@ -7607,7 +7887,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 5d23: 6d 6f 72                  ADC $726f         ; mor
 5d26: 0d a5 68                  ORA $68a5         ; ..h
 5d29: 61 76                     ADC (DELTAR,X)    ; av
-5d2b: 65 20                     ADC bad_0020        ; e
+5d2b: 65 20                     ADC bad_0020      ; e
 5d2d: 62                        .BYTE $62         ; b
 5d2e: 65 65                     ADC ADRESS+1      ; ee
 5d30: 6e 20 72                  ROR $7220         ; n r
@@ -7616,7 +7896,7 @@ xxx - TODO: this can't be a sub and a string, can it?
 5d37: 72                        .BYTE $72         ; r
 5d38: 65 64                     ADC ADRESS        ; ed
 5d3a: 2e 0d ff                  ROL $ff0d         ; ...
-5d3d: 31 32                     AND (bad_0032_L),Y    ; 12
+5d3d: 31 32                     AND (bad_0032_L),Y ; 12
 5d3f: 33 34                     .BYTE $33,$34     ; 34
 
 5d41: a6 00 00 a2 b4 3a 19 28  dat_5d41  .BYTE $a6,$00,$00,$a2,$b4,$3a,$19,$28  ; .....:.(

@@ -11,15 +11,16 @@ rw  0003,1   dat_0003               ;
 rw  0004,1   dat_0004               ;
 rw  0005,1   dat_0005               ; 1 byte related to the previous 3
 rw  0006,1   dat_0006               ;
-rw  0007,1   dat_0007_L             ; LSB of 16-bit int
-rw  0008,1   dat_0007_H             ; MSB of 16-bit int
+rw  0007,1   dat_0007_L             ; LSB of address / 16-bit int
+rw  0008,1   dat_0007_H             ; MSB of address / 16-bit int
 
 rw  0009,1   dat_0009_L             ; LSB of address. Related to $190b. display list related
 rw  000a,1   dat_0009_H             ; MSB of address. Related to $190c. display list related
-
+rw  000b,1   dat_000b               ;
 rw  000c,1   dat_000c               ; LSB of address
-;rw  000d,1   dat_000d_L             ; LSB of address
-;rw  000e,1   dat_000d_H             ; MSB of address
+
+rw  000d,1   dat_000d_L             ; LSB of address
+rw  000e,1   dat_000d_H             ; MSB of address
 
 rw  000f,1   dat_000f               ; 1 byte
 rw  0010,1   addr_MapCell_L         ; LSB of address of current map cell data.
@@ -53,7 +54,7 @@ rw  002c,1   dat_002c               ; 1 byte related to the previous 3
 
 rw  002d,1   dat_002d               ; 1 byte of storage; Updated in sub_1e9d
 
-rw  0032,1   dat_0032_L             ; LSB of address.
+rw  0032,1   flg_PAUSED             ; If <0, then gamed is paused
 rw  0033,1   dat_0032_H             ; LSB of address.
 
 rw  003d,1   dat_003d_L             ; LSB of address. Updated in
@@ -70,7 +71,8 @@ rw  004c,1   dat_004c               ; 1 byte of storage
 
 rw  0051,1   dat_0051               ; 1 byte of storage
 
-rw  0058,2   SAVMSC                 ; Contains the lowest address of screen memory
+rw  0058,1   dat_0058_L             ; LSB of address
+rw  0059,1   dat_0058_H             ; MSB of address
 
 rw  005a,1   dat_005a_L             ; LSB of address
 rw  005b,1   dat_005a_H             ; MSB of address
@@ -91,15 +93,20 @@ rw  0185,1   dat_0185_H             ; MSB of 16-bit int. Related to $1902 [dat_1
 rw  0208,2   VKEYBD                 ; Standard keyboard interrupt vector
 rw  020c,2   VSEROR                 ; POKEY serial I/O transmit ready interrupt vector
 rw  020e,2   VSEROC                 ; POKEY Serial bus transmit complete interrupt vector
+rw  0216,2   VIMIRQ                 ; IRQ immediate interrupt vector
+rw  0222,2   VVBLKI                 ; VBLANK immediate interrupt vector
 
-rw  0230,1   SDLST                  ; LSB of display list address
-;rw  0231,1   SDLSTH                 ; MSB of display list address
+rw  022f,1   dat_022f               ;
+
+rw  0230,1   dat_0230               ;
+rw  0231,1   dat_0231               ;
 
 rw  0232,1   dat_0232_L             ; LSB of address
 rw  0233,1   dat_0232_H             ; MSB of address
-
-rw  0236,1   dat_0236               ; 1 byte of storage
-rw  0237,1   dat_0237               ; 1 byte of storage
+rw  0234,1   dat_0234_L             ; LSB of address
+rw  0235,1   dat_0234_H             ; MSB of address
+rw  0236,1   CUR_IRQEN              ; Current value to write to IRQEN
+rw  0237,1   CUR_SKCTL              ; Current value to write to SKCTL
 rw  0238,1   dat_0238               ;
 rw  0239,1   dat_0239               ;
 rw  023a,1   dat_023a               ;
@@ -127,7 +134,7 @@ rw  024d,1   dat_024d               ;
 rw  0253,1   dat_0253               ; 1 byte of storage
 rw  0254,1   CUR_DLISTL             ; LSB of current DLIST addr
 rw  0255,1   CUR_DLISTH             ; MSB of current DLIST addr
-
+rw  0256,1   dat_0256               ;
 rw  0257,1   bool_0257              ; Boolean flag? Set to one of $00 or $ff
 rw  0258,1   dat_0258               ; 1 byte - only read?
 rw  0259,1   dat_0259               ; 1 byte
@@ -139,22 +146,61 @@ rw  0264,1   dat_0264               ;
 
 rw  0266,4   tbl_0266               ; 4? byte table. Written, but not read?
 
+rw  0400,8c0 DISP_START             ; 2240 bytes: 23 rows x 40 characters
 
+rw  0401,19  DISP_NAME              ; Position in display buffer to write player name (text - 25 characters)
 
-rw  04c8,1   UNK_BYTE_04c8          ; ?? related to display list processing updated from UNK_BYTE_TBL_1C21
+rw  0425,1   DISP_LEVEL             ; Position in display buffer to write player level (text - 2 chars, left justified)
+rw  0453,1   DISP_TIME_SPINNER      ; Position in display buffer to write time spinner char (text - 1 char)
+rw  0459,3   DISP_STA_VAL           ; Position in display buffer to write STA stat (text - 3 chars, left justified)
+rw  045e,3   DISP_CHA_VAL           ; Position in display buffer to write CHA stat (text - 3 chars, left justified)
+rw  0463,3   DISP_STR_VAL           ; Position in display buffer to write STR stat (text - 3 chars, left justified)
+rw  0468,3   DISP_INT_VAL           ; Position in display buffer to write INT stat (text - 3 chars, left justified)
+rw  046d,3   DISP_WIS_VAL           ; Position in display buffer to write WIS stat (text - 3 chars, left justified)
+rw  0472,3   DISP_SKL_VAL           ; Position in display buffer to write SKL stat (text - 3 chars, left justified)
+rw  0484,3   DISP_EXP_VAL           ; Position in display buffer to write player experience points (text- 10 chars, left justified)
+rw  0499,1   DISP_HP_SEP_CHAR       ; Position in display buffer to write ':' (HP < Max) or '=' (HP = Max) (text - 1 char)
+rw  049a,5   DISP_HP_VAL            ; Position in display buffer to write current HP (text - 5 chars, left justified)
+rw  04a0,28  DISP_YOU_ARE           ; 40 bytes: Start of 5th row of text (e.g. "You are in a well-lighted area.", etc.)
+rw  04a1,27  DISP_LOC_DESC          ; Position in display buffer to write location description (text - 39 chars, left justified, starting with "You are ")
+rw  04c9,27  DISP_SOMETHING_HERE    ; Position in display buffer to write "There is something here." (text - 39 chars, left justified)
 
-rw  04f0,78  dat_04f0               ; 120 bytes related to display updates (seems to be in visible display buffer)
-rw  0568,78  dat_0568               ; 120 bytes related to display updates (seems to be in visible display buffer)
-rw  05e0,78  dat_05e0               ; 120 bytes related to display updates (seems to be in visible display buffer)
+rw  04c8,28  DISP_LINE6             ; 40 bytes: Start of 6th row of text (e.g. "There is something here" or similar)
+rw  04f0,78  DISP_GFX_TOP           ; 120 bytes: Position in display buffer containing top third of "graphical" area
+rw  0568,78  DISP_GFX_MDL           ; 120 bytes: Position in display buffer containing middle third of "graphical" area
+rw  05e0,78  DISP_GFX_BTM           ; 120 bytes: Position in display buffer containing bottom third of "graphical" area
 
-rw  0800,400 UNK_CHRSET_1           ; character set font
-rw  0c00,400 UNK_CHRSET_2           ; character set font
-rw  1000,400 UNK_CHRSET_3           ; character set font
-rw  1400,400 DUNGEON_CHRSET         ; Dungeon character set font
+; The following are for reference, but aren't actually updated while navigating
+; Instead, the bits of the underlying character set are updated to change the display.
+rw  0543,6   DISP_CMPS_L1           ; 6 bytes: Line 1 of the compass [$d3 $d4 $d5 $d6 $d7 $d8] (font 1)
+rw  056b,6   DISP_CMPS_L2           ; 6 bytes: Line 2 of the compass [$83 $84 $85 $86 $87 $88] (font 2)
+rw  0593,6   DISP_CMPS_L3           ; 6 bytes: Line 3 of the compass [$ab $ac $ad $ae $af $b0] (font 2)
+rw  05bb,6   DISP_CMPS_L4           ; 6 bytes: Line 4 of the compass [$d3 $d4 $d5 $d6 $d7 $d8] (font 2)
+rw  05e3,6   DISP_CMPS_L5           ; 6 bytes: Line 5 of the compass [$83 $84 $85 $86 $87 $88] (font 3)
+
+; The following are for reference, but aren't actually updated while navigating
+; Instead, the bits of the underlying character set are updated to change the display.
+; (Note sign bit is set on these values so they are drawn inverted)
+;   Up arrow:    [$c9 $ca $cb] (font 1), [$f1 $f2 $f3] (font 1), [$a1 $a2 $a3] (font 2)
+;   Left arrow:  [$9f $a0 $a1] (font 2), [$c7 $c8 $c9] (font 2), [$ef $f0 $f1] (font 2)
+;   Right arrow: [$a3 $a4 $a5] (font 2), [$cb $cc $cd] (font 2), [$f3 $f4 $f5] (font 2)
+;   Down arrow:  [$f1 $f2 $f3] (font 2), [$a1 $a2 $a3] (font 3), [$c9 $ca $cb] (font 3)
+rw  0537,7   DISPL_ARWS_L1          ; 7 bytes: Line 1 of direction arrows [$c7 $c8 $c9 $ca $cb $cc $cd] (font 1)
+rw  055f,7   DISPL_ARWS_L2          ; 7 bytes: Line 2 of direction arrows [$ef $f0 $f1 $f2 $f3 $f4 $f5] (font 1)
+rw  0587,7   DISPL_ARWS_L3          ; 7 bytes: Line 3 of direction arrows [$9f $a0 $a1 $a2 $a3 $a4 $a5] (font 2)
+rw  05af,7   DISPL_ARWS_L4          ; 7 bytes: Line 4 of direction arrows [$c7 $c8 $c9 $ca $cb $cc $cd] (font 2)
+rw  05d7,7   DISPL_ARWS_L5          ; 7 bytes: Line 5 of direction arrows [$ef $f0 $f1 $f2 $f3 $f4 $f5] (font 2)
+rw  05ff,7   DISPL_ARWS_L6          ; 7 bytes: Line 6 of direction arrows [$9f $a0 $a1 $a2 $a3 $a4 $a5] (font 3)
+rw  0627,7   DISPL_ARWS_L7          ; 7 bytes: Line 7 of direction arrows [$c7 $c8 $c9 $ca $cb $cc $cd] (font 3)
+
+rw  0800,400 GFX_TOP_CHRSET         ; Character set for top third of the graphical area (2bpp - font 1)
+rw  0c00,400 GFX_MID_CHRSET         ; Character set for middle third of the graphical area (2bpp - font 2)
+rw  1000,400 GFX_BTM_CHRSET         ; Character set for bottom third of the graphical area (2bpp - font 3)
+rw  1400,400 DUNGEON_CHRSET         ; Dungeon character set font (1bpp)
 
 rw  18b7,156 krnl_state             ; Kernel game state data block
 rw  18b7,1   dat_18b7               ; Updated in HANDLE_VBLKI, but not read?
-rw  18B8,1   UNK_1C19OFS_18B8       ; Offset to values at 1C19 (COLPF2 value table?)
+rw  18B8,1   CUR_COLPF2_NUM         ; Offset to values at $1c19 [tbl_COLPF2_1c19] (one of: $46, $68, $88)
 rw  18B9,1   CUR_DLIST_NUM          ; Currently active DLIST number
 
 rw  18ba,1   CUR_COLPF0             ; Value assigned to COLPF0 (playfield 0 color) during display rendering
@@ -164,10 +210,9 @@ rw  18bd,1   CUR_COLBK              ; Value assigned to COLBK during display ren
 rw  18be,1   COLBK_SET_18Be         ; Value assigned to COLBK during display rendering
 rw  18bf,1   CUR_COLPF3             ; Value assigned to COLPF3 during display rendering
 
-rw  18c1,3   tbl_18c1               ; 3? byte table
-
-rw  18c4,1   dat_18c4               ; 1 byte of data
-rw  18c7,1   dat_18c7               ; 1 byte of data
+rw  18c1,3   tbl_18c1               ; 3 bytes of data
+rw  18c4,3   tbl_18c4               ; 3 bytes of data
+rw  18c7,1   tbl_18c7               ; 3 bytes of data
 
 rw  18ca,8   dat_18ca               ; 8? byte table of data
 
@@ -184,7 +229,17 @@ rw  1905,1   dat_1905               ;
 rw  1906,1   dat_1906               ;
 rw  1907,1   dat_1907               ; 1 byte of data
 rw  1908,1   dat_1908               ; 1 byte. Only updated directly. Referenced indirectly via dat_1905
-rw  1909,1   dat_1909               ; 1 byte of storage
+rw  1909,1   dat_1909               ; 1 byte of storage. Related to encounters/scenarios/current map.
+                                    ;     0 =
+                                    ;     1..7 = current map ID + 1
+                                    ;     $11 = encounter
+                                    ;     $19 = ?
+                                    ;     $2f = ?
+                                    ;     $44 = ?
+                                    ;     $43 = ?
+                                    ;     $42 = ?
+                                    ;     $3f = ?
+
 
 rw  190b,1   dat_190b_L             ; LSB of address. Related to $09
 rw  190c,1   dat_190c_H             ; MSH of address. Related to $0a
@@ -244,38 +299,89 @@ rw  1976,1   dat_1976               ; 1 byte of storage
 rw  1977,1   cont_addr_1977_L       ; LSB of address to continue execution at from JMP loc_2ff3
 rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at from JMP loc_2ff3
 
+rw  197c,20  dat_197c               ; 32 byte display buffer used by DLIST_19f5 & zeroed in sub_2cfb.
+                                    ;   Related to loading encounters/scenarios
+
+rw  1987,1   dat_1987               ; 10? bytes. Encounter/scenario related.
+
 rw  199c,1   dat_199c               ; 1 byte of data
-rw  199d,21  DLIST_199d             ; DLIST data
-rw  19be,31  DLIST_19be             ; DLIST data
+rw  199d,21  DLIST_199d             ; DLIST data (33 bytes)
+                                    ; This display list seems to be a 40x25? 1bpp character display (20 + 25 * 8 = 220 scanlines?)
+                                    ;   $70 $70 $30 - 8 + 8 + 4 [20] blank scanlines
+                                    ;   $42 $00 $04 - 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                    ;                 resets display memory position to $0400
+                                    ;   $02 $02 $02 $02 $02 $02 $02 $02 - 24 rows of Graphic mode 0 - 40x24 8x8 1bpp characters
+                                    ;   $02 $02 $02 $02 $02 $02 $02 $02
+                                    ;   $02 $02 $02 $02 $02 $02 $02 $02
+                                    ;   $41 $9d $19 - JVB $199d - Jump on vblank to $199d [DLIST_199d], e.g. repeat
+rw  19be,31  DLIST_19be             ; DLIST data (49 bytes)
+                                    ; This display list is used to render the normal gameplay
+                                    ; 23 total lines of text
+                                    ;   6 lines of text (Normal 1bpp Dungeon character set)
+                                    ;   9 lines of gfx area (2bpp character set used as graphics)
+                                    ;   8 lines of text (Normal 1bpp Dungeon character set)
+                                    ; (20 + 8 + 5*9 + 9*8 + 2 + 8 + 7*9 = 210 scanlines)
+                                    ;   $70 $70 $30 - 8 + 8 + 4 [20] blank scanlines
+                                    ;   $42 $00 $04 - 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                    ;                 resets display memory position to $0400
+                                    ;   $80 $02 $80 $02 $80 $02 $80 $02 - 4 x Skip 1 scanline w/display list interrupt [$00 + $80]
+                                    ;                                         & 1 row of 8x8 1bpp characters [$02]
+                                    ;   $02         - 1 row of 8x8 1bpp characters
+                                    ;   $80         - Skip 1 scanline w/display list interrupt
+                                    ;   $44 $f0 $04 - 1 row of 8x8 2bpp characters w/Load memory scan
+                                    ;                 resets display memory position to $04f0
+                                    ;   $04         - 1 row of 8x8 2bpp characters
+                                    ;   $84 $84     - 2 rows of 8x8 2bpp characters w/display list interrupt
+                                    ;   $04         - 1 row of 8x8 2bpp characters
+                                    ;   $84         - 1 row of 8x8 2bpp characters w/display list interrupt
+                                    ;   $04 $04     - 2 rows of 8x8 2bpp characters
+                                    ;   $84         - 1 row of 8x8 2bpp characters w/display list interrupt
+                                    ;   $00 $00     - Skip 2 scanlines
+                                    ;   $42 $58 $06 - 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                    ;                 resets display memory position to $0658 []
+                                    ;   $00 $02 $00 $02 $00 $02 $00 $02 - 7 x Skip 1 scanline [$00]
+                                    ;                                         & 1 row of 8x8 1bpp characters [$02]
+                                    ;   $00 $02 $00 $02 $00 $02
+                                    ;   $41 $be $19 - JVB $19be - Jump on vblank to $19be [DLIST_19be], e.g. repeat
 
 rw  19ef,3   TBL_DLISTH             ; Table of 3 bytes (MSB of DLIST addrs stored @ CUR_DLISTH ($255))
 rw  19f2,3   TBL_DLISTL             ; Table of 3 bytes (LSB of DLIST addrs stored @ CUR_DLISTL ($254))
 
+rw  19f5,15  DLIST_19f5             ; DLIST data (21 bytes)  TODO: Where is this used?
+                                    ; This display list renders a single line of text starting 120 scanlines from the top
+                                    ;   $70 $70 $70 $70 $70 $70 $70 $70 - 15 x Skip 8 scanlines [120 scanlines total]
+                                    ;   $70 $70 $70 $70 $70 $70 $70
+                                    ;   $42 $7c $19 - 1 row of 8x8 1bpp characters w/Load memory scan [$02 + $40]
+                                    ;                 resets display memory position to $197c [dat_197c]
+                                    ;   $41,$f5,$19 - JVB $19f5 - Jump on vblank to $19f5 [DLIST_19f5]
+
+rw  1a0a,3   DLIST_1a0a             ; Display list assigned in HANDLE_VBLKI
+                                    ; This display list renders a blank screen
+                                    ;   $41 $0a $1a - JVB $1a0a - Jump on vblank to $1a0a [DLIST_1a0a], e.g. repeat
+
 rw  1a41,3   TBL_NXT_DSUBH          ; Table of 3 bytes (MSB of indirect jump address for VBLANK continuation vector)
 rw  1a44,3   TBL_NXT_DSUBL          ; Table of 3 bytes (LSB of indirect jump address for VBLANK continuation vector)
 
-rw  1a0a,3   DLIST_1a0a             ; Display list assigned in HANDLE_VBLKI
+rwx 1a0d,1   SET_DISP_MODE          ; Initializes a display mode based on the input parameter (A)
+rwx 1a47,1   DISPLAY_SUB_1a47       ; Indirectly called from SET_DISP_MODE
+rwx 1a65,1   DISPLAY_SUB_1a65       ; Indirectly called from SET_DISP_MODE
+rwx 1b19,1   DISPLAY_SUB_1b19       ; Sets the VDSLST (NMI Display List Interrupts (DLI)) to $1b2f [HANDLE_VDSLST_1B2F]
+                                    ; Indirectly invoked from SET_DISP_MODE
 
-rwx 1a0d,1   DISPLAY_SUB_1a0d       ; Sets HPOSP0-HOPSP3 to 0; Waits for vblank;
-rwx 1a47,1   DISPLAY_SUB_1a47       ; Indirectly called from DISPLAY_SUB_1a0d
-rwx 1a65,1   DISPLAY_SUB_1a65       ; Indirectly called from DISPLAY_SUB_1a0d
-rwx 1b19,1   DO_VDSLST_1b2f         ; Sets the VDSLST (NMI Display List Interrupts (DLI)) to $1b2f [HANDLE_VDSLST_1B2F]
-                                    ; Indirectly invoked from DISPLAY_SUB_1a0d
-
-rwx 1b2f,1   IRQ_VDSLST_1b2f        ; Interrupt handler for VDSLST
-                                    ;     Assigned to VDSLST and CUR_VDSLSTL/H in DO_VDSLST_1b2f
-rwx 1b55,1   IRQ_VDSLST_1b55        ; Interrupt handler for VDSLST (Just an RTI no op)
+rwx 1b2f,1   irq_VDSLST_1b2f        ; Interrupt handler for VDSLST
+                                    ;     Assigned to VDSLST and CUR_VDSLSTL/H in DISPLAY_SUB_1b19
+rwx 1b55,1   irq_VDSLST_1b55        ; Interrupt handler for VDSLST (Just an RTI no op)
                                     ;     Assigned to VDSLST by DISPLAY_SUB_1a47
-rwx 1b56,1   IRQ_VDSLST_1b56        ; Interrupt handler for VDSLST
+rwx 1b56,1   irq_VDSLST_1b56        ; Interrupt handler for VDSLST
                                     ;     Assigned to VDSLST_A_LO/HI in DISPLAY_SUB_1a65
-rwx 1ba2,1   IRQ_VDSLST_1ba2        ; Interrupt handler for VDSLST
-                                    ;     Assigned to VDSLST_A_LO/HI in IRQ_VDSLST_1b56
-rwx 1bb7,1   IRQ_VDSLST_1bb7        ; Interrupt handler for VDSLST
-                                    ;     Assigned to VDSLST in IRQ_VDSLST_1ba2
-rwx 1bd6,1   IRQ_VDSLST_1bd6        ; Interrupt handler for VDSLST
-                                    ;     Assigned to VDSLST in IRQ_VDSLST_1bb7
+rwx 1ba2,1   irq_VDSLST_1ba2        ; Interrupt handler for VDSLST
+                                    ;     Assigned to VDSLST_A_LO/HI in irq_VDSLST_1b56
+rwx 1bb7,1   irq_VDSLST_1bb7        ; Interrupt handler for VDSLST
+                                    ;     Assigned to VDSLST in irq_VDSLST_1ba2
+rwx 1bd6,1   irq_VDSLST_1bd6        ; Interrupt handler for VDSLST
+                                    ;     Assigned to VDSLST in irq_VDSLST_1bb7
 
-rwx 1c09,1   sub_1c09               ;
+rwx 1c09,1   INIT_GFX_AREA          ; Initializes the 3 graphical area buffs (DISP_GFX_TOP/MDL/BTM)
 
 rw  1c19,3   tbl_COLPF2_1c19        ; 3 byte lookup table of row background colors ($46,$68,$88)
                                     ;     0: $46 - Mid-intensity Reddish-Orange
@@ -283,9 +389,10 @@ rw  1c19,3   tbl_COLPF2_1c19        ; 3 byte lookup table of row background colo
                                     ;     2: $88 - Mid-intensity Bluish
 rw  1c1c,5   tbl_COLPM3_1c1c        ; 5 byte lookup table ($b6,$76,$9e,$34,$00)
 
-rw  1c21,3   UNK_BYTE_TBL_1C21      ; Table of 3 bytes (?? related to display list processing - $00,$27,$13)
-rw  1c24,4   TBL_HPOSM              ; 4 byte lookup table of Missile positions (M3=$20, M2=$28, M1=$d0, M0=$d8)
-rw  1c28,4   TBL_HPOSP              ; 4 byte lookup table of Player  positions (P3=$38, P2=$ac, P1=$00, P0=$00)
+rw  1c21,3   tbl_CLEAR_NUM          ; 3 bytes: Lookup for SET_DISP_MODE
+                                    ; Number of 0's to fill starting at $04C8 [DISP_LINE6]
+rw  1c24,4   tbl_HPOSM              ; 4 byte lookup table of Missile positions (M3=$20, M2=$28, M1=$d0, M0=$d8)
+rw  1c28,4   tbl_HPOSP              ; 4 byte lookup table of Player  positions (P3=$38, P2=$ac, P1=$00, P0=$00)
 
 rwx 1c2c,1   sub_1c2c               ;
 rwx 1c84,1   sub_1c84               ;
@@ -329,7 +436,7 @@ rw  1f23,1   dat_1f23               ; 1 byte of storage
 rw  1f24,1   dat_1f24               ; 1 byte of storage
 rw  1f25,1   dat_1f25               ; 1 byte of storage
 rwx 1f26,1   sub_1f26               ;
-rwx 1f31,1   sub_1f31               ;
+rwx 1f31,1   GET_NEXT_BYTE          ; Reads the byte at addr_0016_L/H and increments addr_0016_L/H
 rwx 1f3c,1   sub_1f3c               ;
 
 rwx 1f9a,2   smc_1f9a               ; The argument to this CMP is dynamically modified
@@ -353,14 +460,39 @@ rw  2007,2   str_BLANK              ; 2 bytes: "" (empty string)
 
 rwx 2009,1   sub_2009               ;
 
+rwx 21e7,1   irq_VSERIN_21e7        ; Assigned in the KERNEL_LOADER to handle
+                                    ;     the VSERIN (POKEY serial I/O bus receive data ready) interrupt.
+                                    ;     Invoked from irq_VIMIRQ_22ac.
+rwx 224f,1   irq_VSEROR_224f        ; Assigned in the KERNEL_LOADER to handle
+                                    ;     the VSEROR (POKEY serial I/O transmit ready) interrupt.
+                                    ;     Invoked from irq_VIMIRQ_22ac.
+rwx 2297,1   irq_VSEROC_2297        ; Assigned in the KERNEL_LOADER to handle
+                                    ;     the VSEROC (POKEY serial bus transmit complete) interrupt.
+                                    ;     Invoked from irq_VIMIRQ_22ac.
+rwx 22ac,1   irq_VIMIRQ_22ac        ; Assigned in the KERNEL_LOADER to handle
+                                    ;     the VIMIRQ (IRQ immediate) interrupt.
+
 rwx 22f4,3   smc_22f4               ; The address for this JMP is dynamically modified
 
-rw  2301,3   tbl_2301               ; 3 byte table. Only the last entry seems to be used.
-rw  2304,3   tbl_2304_L             ; 3 byte table. LSB of address relative to $0200
+rw  2301,3   tbl_IRQST              ; 3 byte table of interrupt status flags
+                                    ;     ($40 (64) [VKEYBD], $08 (8) [VSEROC], $10 (16) [VSEROR])
+rw  2304,3   tbl_IRQVEC_L           ; 3 byte table. LSB of IRQ vector address relative to $0200
                                     ;     0: $0208 [VKEYBD] Keyboard interrupt vector
                                     ;     1: $020e [VSEROC] POKEY Serial bus transmit complete interrupt vector
                                     ;     2: $020c [VSEROR] POKEY serial I/O transmit ready interrupt vector
-rw  2307,3   tbl_2307               ; 3 byte table.
+rw  2307,3   tbl_DMACTL             ; 3 byte table of DMACTL values, indexed by CUR_DLIST_NUM
+                                    ;     0: $22 - Enable DMA Fetch instructions ($20)
+                                    ;                & Use normal/40 character playfield ($02)
+                                    ;     1: $22 - Enable DMA Fetch instructions ($20)
+                                    ;                & Use normal/40 character playfield ($02)
+                                    ;     2: $2e - Enable DMA Fetch instructions ($20)
+                                    ;                & Use normal/40 character playfield ($02)
+                                    ;                & Enable missile DMA ($04)
+                                    ;                & Enable player DMA ($08)
+
+rwx 2347,1   irq_VVBLKI             ; Assigned in the KERNEL_LOADER to handle
+                                    ;     the VVBLKI (VBLANK immediate) interrupt.
+                                    ;     Invoked from ??.
 
 rwx 2454,1   WAIT_FOR_VBLK_A        ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_B/C)
 
@@ -370,7 +502,14 @@ rwx 24a3,1   sub_24a3               ;
 
 rw  24fb,8   dat_24fb               ; 8? bytes of data
 
-rwx 248e,1   sub_248e
+rwx 248e,1   sub_248e               ; This sub is an entry point for sub_2494 with
+                                    ; the following parameter values:
+                                    ;   A = $52 (82)
+                                    ;   X = $40 (64)
+                                    ;   Y = $03 (3)
+
+rwx 2494,1   sub_2494               ;
+
 
 rw  25be,1   dat_25be               ; ? bytes of data (indexed table of bytes)
 rw  25bf,1   dat_25bf               ; 1 byte of data/storage (updated, but not read directly)
@@ -388,6 +527,11 @@ rw  2617,6   dat_2617               ; 6? bytes of data (indexed table of bytes)
 rw  261d,6   dat_261d               ; 6? bytes of data (indexed table of bytes)
 rw  2623,6   dat_2623               ; 6? bytes of data (indexed table of bytes)
 rw  2629,6   dat_2629               ; 6? bytes of data (indexed table of bytes)
+
+rwx 2653,1   irq_VKEYBD_2653        ; Assigned in the KERNEL_LOADER to handle
+                                    ;     the VSERIN (POKEY keyboard) interrupt.
+                                    ;     Invoked from irq_VIMIRQ_22ac.
+
 
 rw  26d1,8a  dat_26d1               ; 138? bytes of data
 
@@ -418,6 +562,7 @@ rwx 2c88,1   rtn_2c88               ; Dynamically specified return location stor
 
 rw  2c99,1   tmp_2c99_L             ; Used for preserving the value of cont_addr_1977_L
 rw  2c9a,1   tmp_2c99_H             ; Used for preserving the value of cont_addr_1977_H
+rwx 2c9b,1   sub_2c9b               ;
 
 rwx 2cab,1   sub_2cab               ; Does nothing / debug BRK
 
@@ -426,6 +571,8 @@ rw  2cf7,4   dat_2cf7               ; 4 bytes of data
 rw  2d85,5   tbl_2d85               ; 5 bytes of data
 rw  2d8a,5   tbl_2d8a               ; 5 bytes of data
 
+rwx 2d8f,5   INIT_BYTES             ;
+
 rwx 2dd9,3   smc_2dd9               ; The address for this LDA is dynamically modified
 rwx 2ddc,3   smc_2ddc               ; The op here is dynamically switched between an ORA and an AND
 rwx 2ddf,3   smc_2ddf               ; The address for this STA is dynamically modified
@@ -433,9 +580,11 @@ rwx 2ddf,3   smc_2ddf               ; The address for this STA is dynamically mo
 rw  2dfd,8   tbl_2dfd               ; 8 byte table dynamically selected in sub_2dab
 rw  2e05,8   tbl_2e05               ; 8 byte table dynamically selected in sub_2dab
 
-rwx 2e0d,1   sub_2e0d               ; Params in SRC_ADDR ($07,$08), DEST_ADDR ($09,$0A), X, Y
+rwx 2e0d,1   COPY_BYTES             ; Copies X * 256 + Y bytes from the address in dat_0007_L/H to the address in dat_0009_L/H
+rwx 2e31,1   sub_2e31               ;
+rwx 2e40,1   sub_2e40               ;
 
-rwx 2e23,1   sub_2e23               ;
+rwx 2ec6,1   KERNEL_INIT            ; Initialization code called from KERNEL_ENTRY after base initialization
 
 rw  2f70,8   dat_2f70_L             ; LSB of address
 rw  2f78,8   dat_2f78_H             ; MSB of address
@@ -452,16 +601,20 @@ rwx 30d1,3   smc_30d1               ; The address for this JSR abs is dynamicall
 
 rw  30e1,2   dat_30e1               ; 2 byte table of data
 
+rwx 314A,1  DO_MOVE_FORWARD         ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
+
 rwx 317c,3   smc_317c               ; The address for this JMP is dynamically modified
 
-rw  317f,1   dat_317f               ; 1 byte
+rw  317f,1   dat_CHR_ORIENT         ; 1 byte: Holds character orientation
 
 rwx 31f5,3   smc_31f5               ; The address for this JMP is dynamically modified
 
-rw  32be,c   str_YOU_ARE            ; 12 bytes: "You are "
-
 rw  3225,7   tbl_MAP_NUM2LVL        ; ? bytes: Table for translating a map number to corresponding dungeon level
                                     ;     [01 01 01 01 02 03 04]
+
+rw  32be,c   str_YOU_ARE            ; 12 bytes: "You are "
+
+rwx 32ca,1   SAVE_CHR_LOC           ; Saves the current player position to restore later
 
 rwx 33c6,1   rtn_33c6               ; Dynamically specified return location stored in cont_addr_1977_L/H
 
@@ -659,7 +812,11 @@ rwx 43c6,1   sub_43c6               ;
 
 rwx 43cf,1   DO_HOURLY_UPDATES      ; Sub called at the start of each in-game hour
 
-rw  445f,10  MOVEMENT_SPEED_TBL     ; Table of 16 x 1 byte values indexed by CHR_SPD_EFFECTIVE/16
+rw  445f,10  tbl_MOVE_SPEED         ; Table of 16 x 1 byte values indexed by CHR_SPD_EFFECTIVE/16
+                                    ;   and assigned to CHR_MOVE_SPEED
+                                    ;   One of:
+                                    ;     $06,$07,$08,$09,$0a,$0b,$0c,$0d
+                                    ;     $0e,$0f,$10,$11,$11,$11,$12,$12
 
 rwx 4481,1   sub_4481               ;
 rwx 448f,1   sub_448f               ;
@@ -1069,6 +1226,12 @@ rw  625a,1c str_SOMTH_ODD           ; 28? bytes: "Something is odd here."
 rw  6276,23 dat_6276                ; 35? bytes of data: TODO: Needs more analysis
 rw  6299,61 str_MAP_POS             ; 97? bytes: "You are ?? squares North and ?? squares East from the Southwest corner of level ?"
 rw  62fa,6  dat_62fa                ; 6 bytes of data: TODO: Needs more analysis
+
+rw  6313,1  CHR_LOC_X               ; Player position X
+rw  6318,1  CHR_SAV_LOC_X           ; Saved player position X
+
+
+rwx 7600,1  loc_7600                ; Currently loaded map data
 
 ;xxx
 ;Low byte of a memory reference  (is assigned to $7641, $7648)

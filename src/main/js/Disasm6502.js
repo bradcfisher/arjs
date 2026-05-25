@@ -803,6 +803,18 @@ export class DisasmOptions {
     showOffsets = true;
 
     /**
+     * Whether to display comments on each line representing the raw bytes for the line.
+     * Default is true.
+     *
+     * When comments are visible, they are displayed as the final component of the line.
+     *
+     * For example:
+     *
+     * @type {boolean}
+     */
+    showComments = true;
+
+    /**
      * Whether to include the raw bytes in the listing.
      * Default is true.
      *
@@ -1087,19 +1099,21 @@ export class AsmOp {
             }
         }
 
-        let comment = this.comment;
-        if (comment == null) {
-            comment = this.bytes.map((byte) => {
-                if (byte >= 0x20 && byte <= 0x7f) {
-                    return String.fromCharCode(byte);
-                } else {
-                    return ".";
-                }
-            }).join('');
-        }
+        if (options.showComments) {
+            let comment = this.comment;
+            if (comment == null) {
+                comment = this.bytes.map((byte) => {
+                    if (byte >= 0x20 && byte <= 0x7f) {
+                        return String.fromCharCode(byte);
+                    } else {
+                        return ".";
+                    }
+                }).join('');
+            }
 
-        if (comment != null) {
-            result += " ".repeat(Math.max(1, options.preferredCommentColumn - result.length - 1)) + " ; " + comment;
+            if (comment != null) {
+                result += " ".repeat(Math.max(1, options.preferredCommentColumn - result.length - 1)) + " ; " + comment;
+            }
         }
 
         return result;
