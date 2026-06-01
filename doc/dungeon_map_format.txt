@@ -46,10 +46,17 @@ The first byte appears to be a version or level number
 
 ---
 
-The second and third bytes are unknown
+The second and third bytes are a direct pointer to the start of the location description table.
+It is not necessary to parse the map data, but avoids the need to scan the fragment table to
+compute the offset.
 
-	9a (80+1a / 154)	- ?
-	ac (80+2c / 172)	- always AC?
+    Map 0 (L1NW) - $ac47 "toast! LEV 1.1"
+    Map 1 (L1NE) - $ac9a "toast! LEV 1.2"
+    Map 2 (L1SW) - $ac6f "toast! LEV 1.3"
+    Map 3 (L1SE) - $ac9b "toast! LEV 1.4"
+    Map 4 (L2)   - $ac44 "toast! LEV 2"
+    Map 5 (L3)   - $ac4b "toast! LEV 3"
+    Map 6 (L4)   - $ac0e "toast! LEV 4"
 
 ---
 

@@ -109,10 +109,10 @@
 80b9: 85 26                     STA dat_0026         ; Set dat_0026 = 0
 80bb: 60                        RTS                  ; Return to caller
 
-80bc: a9 07     sub_80bc        LDA #$07             ;
-80be: 8d 00 19                  STA $1900            ;
-80c1: a9 00                     LDA #$00             ;
-80c3: 8d 65 02                  STA LINBUF+30        ;
+80bc: a9 07     sub_80bc        LDA #$07             ; Set
+80be: 8d 00 19                  STA dat_1900         ;     $1900 [dat_1900] = 7
+80c1: a9 00                     LDA #$00             ; Set
+80c3: 8d 65 02                  STA dat_0265         ;     $0265 [dat_0265] = 0
 80c6: 85 2e                     STA ICAX5Z           ;
 80c8: 8d ff 18                  STA $18ff            ;
 80cb: 85 2f                     STA CIOCHR           ;

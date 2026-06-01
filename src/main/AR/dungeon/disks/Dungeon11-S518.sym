@@ -6,6 +6,7 @@ Altirra symbol file
 
 rw  0000,1   dat_0000               ; 1 byte
 rw  0001,1   dat_0001               ; 1 byte
+; Next 4 used for converting uint32 to string?
 rw  0002,1   dat_0002               ; 1 byte related to the next 3
 rw  0003,1   dat_0003               ;
 rw  0004,1   dat_0004               ;
@@ -25,34 +26,43 @@ rw  000e,1   dat_000d_H             ; MSB of address
 rw  000f,1   dat_000f               ; 1 byte
 rw  0010,1   addr_MapCell_L         ; LSB of address of current map cell data.
 rw  0011,1   addr_MapCell_H         ; MSB of address of current map cell data.
+rw  0012,1   MSG_TBL_L              ; LSB of current map location description table address
+rw  0013,1   MSG_TBL_H              ; MSB of current map location description table address
+rw  0014,1   dat_0014_L             ; LSB of address
+rw  0015,1   dat_0014_H             ; MSB of address
 
 rw  0016,1   addr_0016_L            ; LSB of address
 rw  0017,1   addr_0016_H            ; MSB of address
+
 rw  0018,1   sub_add_0018_L         ; LSB of sub address
 rw  0019,1   sub_add_0018_H         ; MSB of sub address
 
-rw  001a,1   dat_001a               ; 1 byte of temp storage? Used to preserve A in sub_1c2c
-rw  001b,1   tmp_001b               ; 1 byte of temp storage? Used to preserve X in sub_1c2c
-rw  001c,1   dat_001c               ; Updated in sub_1c2c, read in
-rw  001d,1   dat_001d               ; 1 byte of storage
-rw  001e,1   dat_001e               ; 1 byte of storage
-rw  001f,1   dat_001f               ; 1 byte of storage
-rw  0020,1   dat_0020               ; 1 byte of storage
-rw  0021,1   dat_0021               ; 1 byte of storage
+             ; Values related to OUTPUT_CHAR
+rw  001a,1   OUT_TMP_A              ; 1 byte: Used in OUTPUT_CHAR to preserve/restore A
+rw  001b,1   OUT_TMP_X              ; 1 byte: Used in OUTPUT_CHAR to preserve/restore X
+rw  001c,1   OUT_TMP_Y              ; 1 byte: Used in OUTPUT_CHAR to preserve/restore Y
+rw  001d,1   OUT_ADDR_L             ; LSB of dest addr in display buffer
+rw  001e,1   OUT_ADDR_H             ; MSB of dest addr in display buffer
+rw  001f,1   OUT_COL                ; Current output column in display buffer (analogous to cursor column/COLCRS)
+rw  0020,1   OUT_ROW                ; Current output row in display buffer (analogous to cursor row/ROWCRS)
+rw  0021,1   dat_0021               ; 1 byte: Inverse/blink flag? ORd with each byte output.
 
-rw  0023,1   dat_0023               ; 1 byte of storage (0, 1 or 2). An index into tbl_18c1
-rw  0024,1   dat_0024               ; 1 byte of storage
-rw  0025,1   dat_0025               ; 1 byte of storage
-rw  0026,1   dat_0026               ; 1 byte of storage
+             ; Values related to sub_1c84
+rw  0023,1   dat_0023               ; 1 byte: mode?/nesting depth? (0, 1 or 2)
+                                    ;   An index into sav_OUT_COL, sav_OUT_ROW, tbl_18c7, dat_1fa8, dat_1fab
+rw  0024,1   dat_0024               ; 1 byte: only bits 7 and 8 are used
+                                    ;    bit 8:
+                                    ;    bit 7:
+                                    ; (sub_1c84/sub_1c88/sub_1c8c (set 0), cont_1d0a (set $80), cont_1d3b (set $c0), cont_1d9a (use))
+rw  0025,1   dat_0025               ; 1 byte: length of string being output?
+rw  0026,1   dat_0026               ; 1 byte
+
+             ; Values related to
 rw  0027,1   sub_add_0027_L         ; LSB of sub address
-rw  0028,1   sub_add_0028_H         ; MSB of sub address
+rw  0028,1   sub_add_0027_H         ; MSB of sub address
 
-rw  0029,1   dat_0029               ; 1 byte related to the next 3
-rw  002a,1   dat_002a               ;
-rw  002b,1   dat_002b               ;
-rw  002c,1   dat_002c               ; 1 byte related to the previous 3
-
-rw  002d,1   dat_002d               ; 1 byte of storage; Updated in sub_1e9d
+rw  0029,4   tmp_BE_UINT32          ; 4 bytes: Temp big-endian uint32 to convert to string
+rw  002d,1   dat_002d               ; 1 byte: length of string / output column?
 
 rw  0032,1   flg_PAUSED             ; If <0, then gamed is paused
 rw  0033,1   dat_0032_H             ; LSB of address.
@@ -61,15 +71,22 @@ rw  003d,1   dat_003d_L             ; LSB of address. Updated in
 rw  003e,1   dat_003d_H             ; MSB of address. Updated in
 
 rw  0041,1   dat_0041               ;
+rw  0042,1   addr_0041_H            ;
+rw  0043,1   addr_0043_L            ; LSB of address
+rw  0044,1   addr_0043_H            ; MSB of address
 
 rw  0045,1   dat_0045_L             ; LSB of address (std name = ZDRVA Page zero drive pointer)
 rw  0046,1   dat_0045_H             ; MSB of address
 
-rw  0049,1   dat_0049               ; 1 byte of storage
+rw  0049,1   dat_0049               ; 1 byte: temp
 
-rw  004c,1   dat_004c               ; 1 byte of storage
+rw  004b,1   dat_004b               ; 1 byte
+rw  004c,1   dat_004c               ; 1 byte
+rw  004d,1   dat_004d               ; 1 byte
 
-rw  0051,1   dat_0051               ; 1 byte of storage
+rw  0051,1   dat_0051               ; 1 byte
+
+rw  0054,1   dat_0054               ; 1 byte
 
 rw  0058,1   dat_0058_L             ; LSB of address
 rw  0059,1   dat_0058_H             ; MSB of address
@@ -78,6 +95,9 @@ rw  005a,1   dat_005a_L             ; LSB of address
 rw  005b,1   dat_005a_H             ; MSB of address
 rw  005c,1   dat_005c               ; Index into tbl_45e0_L/tbl_45e7_H/tbl_4595
                                     ;     tbl_459c/tbl_45fc
+
+rw  00a0,1   dat_00a0               ;
+
 
 ; $0100 to $01ff holds the stack
 ;-----
@@ -144,6 +164,7 @@ rw  025c,1   dat_025c               ; 1 byte - only written?
 
 rw  0264,1   dat_0264               ;
 
+rw  0265,1   dat_0265               ; 1? byte
 rw  0266,4   tbl_0266               ; 4? byte table. Written, but not read?
 
 rw  0400,8c0 DISP_START             ; 2240 bytes: 23 rows x 40 characters
@@ -198,6 +219,68 @@ rw  0c00,400 GFX_MID_CHRSET         ; Character set for middle third of the grap
 rw  1000,400 GFX_BTM_CHRSET         ; Character set for bottom third of the graphical area (2bpp - font 3)
 rw  1400,400 DUNGEON_CHRSET         ; Dungeon character set font (1bpp)
 
+rwx 1800,1   j_sub_2979             ; Alias for sub_2979
+rwx 1803,1   j_loc_2f80             ; Alias for loc_2f80
+rwx 1806,1   j_loc_2ff3             ; Alias for loc_2ff3
+rwx 1809,1   j_loc_30e3             ; Alias for loc_30e3
+rwx 180c,1   j_loc_3183             ; Alias for loc_3183
+rwx 180f,1   j_SET_DISP_MODE        ; Alias for SET_DISP_MODE
+rwx 1812,1   j_sub_1c84             ; Alias for sub_1c84
+rwx 1815,1   j_sub_1c88             ; Alias for sub_1c88
+rwx 1818,1   j_sub_1c8c             ; Alias for sub_1c8c
+rwx 181b,1   j_OUTPUT_CHAR          ; Alias for OUTPUT_CHAR
+rwx 181e,1   j_sub_2643             ; Alias for sub_2643
+rwx 1821,1   j_sub_262f             ; Alias for sub_262f
+rwx 1824,1   j_sub_275b             ; Alias for sub_275b
+rwx 1827,1   j_sub_245d             ; Alias for sub_245d
+rwx 182a,1   j_sub_28a1             ; Alias for sub_28a1
+rwx 182d,1   j_sub_248e             ; Alias for sub_248e
+rwx 1830,1   j_loc_24c6             ; Alias for loc_24c6
+rwx 1833,1   j_sub_2494             ; Alias for sub_2494
+rwx 1836,1   j_loc_3c61             ; Alias for loc_3c61
+rwx 1839,1   j_READ_LINE            ; Alias for READ_LINE
+rwx 183c,1   j_sub_2bb0             ; Alias for sub_2bb0
+rwx 183f,1   j_sub_2ba5             ; Alias for sub_2ba5
+rwx 1842,1   j_sub_2cad             ; Alias for sub_2cad
+rwx 1845,1   j_sub_3c27             ; Alias for sub_3c27
+rwx 1848,1   j_sub_3c2d             ; Alias for sub_3c2d
+rwx 184b,1   j_sub_3ca5             ; Alias for sub_3ca5
+rwx 184e,1   j_sub_3cc2             ; Alias for sub_3cc2
+rwx 1851,1   j_sub_3c5c             ; Alias for sub_3c5c
+rwx 1854,1   j_INIT_BYTES           ; Alias for INIT_BYTES
+rwx 1857,1   j_loc_2c6f             ; Alias for loc_2c6f
+rwx 185a,1   j_sub_2bfc             ; Alias for sub_2bfc
+rwx 185d,1   j_sub_2c9b             ; Alias for sub_2c9b
+rwx 1860,1   j_sub_2dab             ; Alias for sub_2dab
+rwx 1863,1   j_sub_2de3             ; Alias for sub_2de3
+rwx 1866,1   j_COPY_BYTES           ; Alias for COPY_BYTES
+rwx 1869,1   j_sub_2e31             ; Alias for sub_2e31
+rwx 186c,1   j_sub_2e6b             ; Alias for sub_2e6b
+rwx 186f,1   j_sub_2e69             ; Alias for sub_2e69
+rwx 1872,1   j_sub_2e66             ; Alias for sub_2e66
+rwx 1875,1   j_sub_2e45             ; Alias for sub_2e45
+rwx 1878,1   j_loc_2e43             ; Alias for loc_2e43
+rwx 187b,1   j_sub_2e40             ; Alias for sub_2e40
+rwx 187e,1   j_sub_2e9e             ; Alias for sub_2e9e
+rwx 1881,1   j_sub_2cc2             ; Alias for sub_2cc2
+rwx 1884,1   j_loc_4b4d             ; Alias for loc_4b4d
+rwx 1887,1   j_sub_4b74             ; Alias for sub_4b74
+rwx 188a,1   j_loc_4ac9             ; Alias for loc_4ac9
+rwx 188d,1   j_sub_4e06             ; Alias for sub_4e06
+rwx 1890,1   j_loc_49b0             ; Alias for loc_49b0
+rwx 1893,1   j_loc_55b7             ; Alias for loc_55b7
+rwx 1896,1   j_sub_4ec4             ; Alias for sub_4ec4
+rwx 1899,1   j_sub_RND_2b6b         ; Alias for sub_RND_2b6b
+rwx 189c,1   j_sub_5471             ; Alias for sub_5471
+rwx 189f,1   j_sub_375f             ; Alias for sub_375f
+rwx 18a2,1   j_sub_2b47             ; Alias for sub_2b47
+rwx 18a5,1   j_sub_408b             ; Alias for sub_408b
+rwx 18a8,1   j_act_USE              ; Alias for act_USE
+rwx 18ab,1   j_loc_5bb8             ; Alias for loc_5bb8
+rwx 18ae,1   j_sub_2aa0             ; Alias for sub_2aa0
+rwx 18b1,1   j_loc_5492             ; Alias for loc_5492
+rwx 18b4,1   j_KERNEL_INIT          ; Alias for KERNEL_INIT
+
 rw  18b7,156 krnl_state             ; Kernel game state data block
 rw  18b7,1   dat_18b7               ; Updated in HANDLE_VBLKI, but not read?
 rw  18B8,1   CUR_COLPF2_NUM         ; Offset to values at $1c19 [tbl_COLPF2_1c19] (one of: $46, $68, $88)
@@ -210,14 +293,14 @@ rw  18bd,1   CUR_COLBK              ; Value assigned to COLBK during display ren
 rw  18be,1   COLBK_SET_18Be         ; Value assigned to COLBK during display rendering
 rw  18bf,1   CUR_COLPF3             ; Value assigned to COLPF3 during display rendering
 
-rw  18c1,3   tbl_18c1               ; 3 bytes of data
-rw  18c4,3   tbl_18c4               ; 3 bytes of data
-rw  18c7,1   tbl_18c7               ; 3 bytes of data
+rw  18c1,3   sav_OUT_COL            ; 3 bytes: Holds saved OUT_COL values
+rw  18c4,3   sav_OUT_ROW            ; 3 bytes: Holds saved OUT_ROW values (combined with dat_1fa8 for final row)
+rw  18c7,1   tbl_18c7               ; 3 bytes: updated at runtime
 
 rw  18ca,8   dat_18ca               ; 8? byte table of data
 
-rw  18d4,1   dat_18d4               ; 1 byte
-rw  18d5,1   dat_18d5               ; 1 byte
+rw  18d4,1   LBUF_LIMIT             ; 1 byte: Line buffer input length limit
+rw  18d5,2a  LINEBUF                ; 42? byte string line buffer
 
 rw  18ff,1   dat_18ff               ; 1 byte
 rw  1900,1   dat_1900               ; 1 byte
@@ -252,10 +335,14 @@ rw  1913,10  tbl_1913_L             ; Table of 16? bytes. Holds LSB of address, 
 rw  1923,10  tbl_1923_H             ; Table of 16? bytes. Holds MSB of address, LSB in tbl_1913_L
 rw  192a,1   UNK_BYTE_192A          ; Assigned to 0
 rw  1933,1   dat_1933               ;
+rw  1934,1   dat_1934               ;
 rw  1935,1   dat_1935               ;
 rw  1937,1   dat_1937               ;
-rw  1938,1   UNK_BYTE_1938
-rw  1939,1   UNK_BYTE_1939
+rw  1938,1   UNK_BYTE_1938          ;
+rw  1939,1   UNK_BYTE_1939          ;
+
+rw  193a,1   addr_193a_L            ; LSB of address: NUL-terminated string
+rw  193b,1   addr_193a_H            ; MSB of address: NUL-terminated string
 
 rw  1944,1   addr_1944_L            ; LSB of address
 rw  1945,1   addr_1944_H            ; MSB of address
@@ -287,17 +374,21 @@ rw  1960,1   UNK_BYTE_1960          ;
 
 rw  1968,1   UNK_BYTE_1968          ; Value compared to 1
 
-rw  196a,1   UNK_BYTE_196A          ;
-
-rw  1971,1   dat_1971               ;
-rw  1972,1   dat_1972               ;
-rw  1973,1   dat_1973               ;
-
+rw  196a,1   UNK_BYTE_196A          ; 1 byte
+rw  196b,4   dat_196b               ; 4 bytes: player position (ORIENT, X, Y, MAP)
+rw  196f,1   dat_196f               ; 1 byte
+rw  1970,1   dat_1970               ; 1 byte
+rw  1971,1   dat_1971               ; 1 byte
+rw  1972,1   dat_1972               ; 1 byte
+rw  1973,1   dat_1973               ; 1 byte
 rw  1974,1   UNK_BYTE_1974
 rw  1975,1   UNK_BYTE_1975          ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
 rw  1976,1   dat_1976               ; 1 byte of storage
 rw  1977,1   cont_addr_1977_L       ; LSB of address to continue execution at from JMP loc_2ff3
 rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at from JMP loc_2ff3
+
+rw  197a,1   dat_197a               ; 1 byte
+rw  197b,1   dat_197b               ;
 
 rw  197c,20  dat_197c               ; 32 byte display buffer used by DLIST_19f5 & zeroed in sub_2cfb.
                                     ;   Related to loading encounters/scenarios
@@ -383,78 +474,93 @@ rwx 1bd6,1   irq_VDSLST_1bd6        ; Interrupt handler for VDSLST
 
 rwx 1c09,1   INIT_GFX_AREA          ; Initializes the 3 graphical area buffs (DISP_GFX_TOP/MDL/BTM)
 
-rw  1c19,3   tbl_COLPF2_1c19        ; 3 byte lookup table of row background colors ($46,$68,$88)
-                                    ;     0: $46 - Mid-intensity Reddish-Orange
-                                    ;     1: $68 - Mid-intensity Purplish
-                                    ;     2: $88 - Mid-intensity Bluish
-rw  1c1c,5   tbl_COLPM3_1c1c        ; 5 byte lookup table ($b6,$76,$9e,$34,$00)
-
+rw  1c19,4   tbl_COLPF2_1c19        ; 4 byte lookup table of row background (COLPF2) colors
+                                    ;     0: $46 - Mid-intensity Red (reddish-orange, #9e4b4d)
+                                    ;     1: $68 - Mid-intensity Cobalt Blue (lavendar-ish, #a75bed)
+                                    ;     2: $88 - Mid-intensity Medium Blue (grayish-blue, #7570ff)
+                                    ;     3: $b6 - Mid Olive-Green ( #2b8362 )
+                                    ;        (This value overlaps with tbl_COLPM3_1c1c below, but is part of tbl_COLPF2_1c19)
+rw  1c1c,6   tbl_COLPM3_1c1c        ; 5 byte lookup table (starts at index 1)
+                                    ;     0: not used (actually last entry of tbl_COLPF2_1c19 above)
+                                    ;     1: $76 - COLPF0: Mid-intensity Ultramarine Blue (purplish, #7649f9)
+                                    ;     2: $9e - COLPF1: Light-intensity dark blue (powder blue, #cbefff)
+                                    ;     3: $34 - COLPF2: Dark Orange (brownish, #6e3200)
+                                    ;     4: $00 - COLPF3: Black (black, #000000)
+                                    ;     5: $00 - COLBK: Black (black, #000000)
 rw  1c21,3   tbl_CLEAR_NUM          ; 3 bytes: Lookup for SET_DISP_MODE
-                                    ; Number of 0's to fill starting at $04C8 [DISP_LINE6]
+                                    ;   Number of 0's to fill starting at $04C8 [DISP_LINE6]
+                                    ;     0: $00 (0 = clear 1 byte) - ...same byte as tbl_COLPM3_1c1c[5] above...
+                                    ;     1: $27 (39 = clear 40 bytes)
+                                    ;     2: $13 (19 = clear 20 bytes)
+
 rw  1c24,4   tbl_HPOSM              ; 4 byte lookup table of Missile positions (M3=$20, M2=$28, M1=$d0, M0=$d8)
 rw  1c28,4   tbl_HPOSP              ; 4 byte lookup table of Player  positions (P3=$38, P2=$ac, P1=$00, P0=$00)
 
-rwx 1c2c,1   sub_1c2c               ;
-rwx 1c84,1   sub_1c84               ;
-rwx 1c88,1   sub_1c88               ;
-rwx 1c8c,1   sub_1c8c               ;
+rwx 1c2c,1   OUTPUT_CHAR            ; Output a character to the screen
+rwx 1c84,1   sub_1c84               ; Output interpolated string (mode 0)
+rwx 1c88,1   sub_1c88               ; Output interpolated string (mode 1)
+rwx 1c8c,1   sub_1c8c               ; Output interpolated string (mode 2)
 
-rwx 1ccf,1   cont_1ccf              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1ce7,1   cont_1ce7              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1ced,1   cont_1ced              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
-rwx 1cf3,1   cont_1cf3              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1cfe,1   cont_1cfe              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d07,1   sub_1d07               ;
-rwx 1d0a,1   cont_1d0a              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d21,1   cont_1d21              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d2a,1   cont_1d2a              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d3b,1   cont_1d3b              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d50,1   cont_1d50              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d74,1   cont_1d74              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1d7a,1   sub_1d7a               ;
-rwx 1d9a,1   cont_1d9a              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1dc0,1   cont_1dc0              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1dc9,1   cont_1dc9              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1dd9,1   cont_1dd9              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
+; Special character code handlers
+rwx 1ccf,1   af_BRK_RTS             ; ($af) BRK & RTS (triggers break, then returns to caller)
+rwx 1cd1,1   ff_SAVE_RTS            ; ($ff) End of string found: Save current output position and return to caller.
+rwx 1ce7,1   a0_BLINK_OFF           ; ($a0) Set normal text (no blink) mode
+rwx 1ced,1   a1_BLINK_ON            ; ($a1) Set blinking text mode
+rwx 1cf3,1   a4_BYTE2HEX            ; ($a4) Reads byte at address and outputs as hex
+rwx 1cfe,1   a3_CALL_SUB            ; ($a3) Invoke subroutine at address
+rwx 1d07,1   sub_1d07               ; Dynamically invokes the subroutine @ sub_add_0018_L/H
+rwx 1d0a,1   cont_1d0a              ;
+rwx 1d21,1   cont_1d21              ;
+rwx 1d2a,1   a6_SET_POS             ; ($a6) Set output position to col/row
+rwx 1d3b,1   cont_1d3b              ;
+rwx 1d50,1   cont_1d50              ;
+rwx 1d74,1   cont_1d74              ;
+rwx 1d7a,1   sub_1d7a               ;  -- clears lines of output??
+rwx 1d9a,1   cont_1d9a              ;
+rwx 1dc0,1   cont_1dc0              ;
+rwx 1dc9,1   b0_UI32_2_DEC          ; ($b0) Read big endian uint32 at address and output as decimal string
+rwx 1dd9,1   b1_UI16_2_DEC          ; ($b1) Read big endian uint16 at address and output as decimal string
 
 rwx 1d91,3   smc_1d91               ; The dest address of this STA abs,Y is dynamically modified
 
-rwx 1dec,1   cont_1dec              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
+rwx 1dec,1   b2_UI8_2_DEC           ; ($b2) Read uint8 at address and output as decimal string
 
 rwx 1e8b,1   sub_1e8b               ;
 rwx 1e98,1   sub_1e98               ;
 rwx 1e9d,1   sub_1e9d               ;
 rwx 1ea8,1   sub_1ea8               ;
 
-rwx 1eb4,1   cont_1eb4              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
-rwx 1ebf,1   cont_1ebf              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
-rwx 1ee3,1   cont_1ee3              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1efb,1   cont_1efb              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
-rwx 1f16,1   cont_1f16              ; Indirectly called using lookup tables tbl_1fd4_L/dat_1fbf_H
+rwx 1eb4,1   cont_1eb4              ;
+rwx 1ebf,1   cont_1ebf              ;
+rwx 1ee3,1   cont_1ee3              ;
+rwx 1efb,1   cont_1efb              ;
+rwx 1f16,1   cont_1f16              ;
 
-rw  1f23,1   dat_1f23               ; 1 byte of storage
-rw  1f24,1   dat_1f24               ; 1 byte of storage
-rw  1f25,1   dat_1f25               ; 1 byte of storage
-rwx 1f26,1   sub_1f26               ;
+rw  1f23,1   dat_1f23               ; 1 byte
+rw  1f24,1   dat_1f24               ; 1 byte
+rw  1f25,1   dat_1f25               ; 1 byte
+rwx 1f26,1   GET_NEXT_WORD          ; Reads a 16-bit word from addr_0016_L/H into sub_add_0018_L/H
 rwx 1f31,1   GET_NEXT_BYTE          ; Reads the byte at addr_0016_L/H and increments addr_0016_L/H
-rwx 1f3c,1   sub_1f3c               ;
+rwx 1f3c,1   sub_1f3c               ;    handle a character?
 
 rwx 1f9a,2   smc_1f9a               ; The argument to this CMP is dynamically modified
 
-rw  1fa8,3   dat_1fa8               ; 3? bytes of data. Related to dat_0020
-rw  1fab,3   dat_1fab               ; 3? bytes of data. Related to dat_1fa8 & dat_0020
-rw  1fae,9   dat_1fae               ; 9? bytes of data. Related to dat_002d
-rw  1fb7,8   dat_1fb7               ; 7? bytes of data. Related to dat_002d
-rw  1fb8,7   dat_1fb8               ; 7? bytes of data. Related to dat_002d
+rw  1fa8,3   dat_1fa8               ; 3 bytes: ($00, $0f, $00) Base mode row offset added when OUT_ROW is assigned
+rw  1fab,3   dat_1fab               ; 3 bytes: ($05, $07, $18) Additional mode row offset added to OUT_ROW
+rw  1fae,9   dat_1fae               ; 9? bytes: Related to dat_002d
+                                    ;    $01, $01, $02,$03,$05,$06,$07,$09
+rw  1fb7,8   dat_1fb7               ; 7? bytes: Related to dat_002d
+rw  1fb8,7   dat_1fb8               ; 7? bytes: Related to dat_002d
 
 rw  1fbf,15  tbl_1fbf_H             ; 21 byte lookup tbl LSB of address
-                                    ; Refers to the following addresses (after adding 1 to get final addr to execute)
+                                    ; Together with tbl_1fd4_L, refers to the following addresses
+                                    ; (after adding 1 to get final addr to execute)
                                     ;     $1ce7,$1ced,$1d21,$1cfe,$1cf3,$1d0a,$1d2a,$1d3b
                                     ;     $1d50,$1d74,$1dc0,$1d9a,$1ee3,$1efb,$1f16,$1ccf
                                     ;     $1dc9,$1dd9,$1dec,$1eb4,$1ebf
 rw  1fd4,15  tbl_1fd4_L             ; 21 byte lookup tbl MSB of address
 
-rwx 1fe9,1   sub_1fe9               ;
+rwx 1fe9,1   MUL_8                  ; Multiplies A by Y returning 16-bit result in dat_0002/dat_0003
 
 rw  2007,2   str_BLANK              ; 2 bytes: "" (empty string)
 
@@ -541,7 +647,12 @@ rw  2a24,a   str_LOADING            ; 10 bytes: "Loading..."
 rw  2a2e,a   str_ENCOUNTR           ; 10 bytes: "Encounter!"
 rw  2a38,9   dat_2a38_unk           ; 9 bytes - TODO: where is this used?
 
-rw  2b46,1   dat_2b46               ; 1 byte
+rwx 2a41,1   READ_LINE              ; Read a line of keyboard input into LINEBUF
+
+rw  2aa0,1   sub_2aa0               ;
+
+rwx 2b0f,1   TRIM_LBUF              ; Removes leading and trailing spaces from string in LINEBUF.
+rw  2b46,1   TLBUF_LEN              ; 1 byte: Length of LINEBUF after trimming by TRIM_LBUF
 
 rwx 2b6b,1   sub_RND_2b6b           ; Computes a random value within a specified range
 
@@ -583,6 +694,11 @@ rw  2e05,8   tbl_2e05               ; 8 byte table dynamically selected in sub_2
 rwx 2e0d,1   COPY_BYTES             ; Copies X * 256 + Y bytes from the address in dat_0007_L/H to the address in dat_0009_L/H
 rwx 2e31,1   sub_2e31               ;
 rwx 2e40,1   sub_2e40               ;
+rwx 2e45,1   sub_2e45               ;
+
+rwx 2e6b,1   sub_2e6b               ;
+rxw 2e8d,1   sub_2e8d               ;
+rwx 2e9e,1   sub_2e9e               ;
 
 rwx 2ec6,1   KERNEL_INIT            ; Initialization code called from KERNEL_ENTRY after base initialization
 
@@ -599,9 +715,11 @@ rw  2f78,8   dat_2f78_H             ; MSB of address
 
 rwx 30d1,3   smc_30d1               ; The address for this JSR abs is dynamically modified
 
-rw  30e1,2   dat_30e1               ; 2 byte table of data
+rwx 30db,1   cont_30db              ; Continuation address. Sets A to a random byte, then JMP (cont_addr_1977_L)
 
-rwx 314A,1  DO_MOVE_FORWARD         ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
+rw  30e1,2   dat_30e1               ; 2 byte table, randomly selected (0: $2c, 1: $2e)
+
+rwx 314A,1   DO_MOVE_FORWARD        ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
 
 rwx 317c,3   smc_317c               ; The address for this JMP is dynamically modified
 
@@ -632,6 +750,8 @@ rw  352e,1   dat_352e               ; 1 byte
 rw  352f,1   dat_352f               ; 1 byte
 rw  3530,1   dat_3530               ; 1 byte
 
+rwx 3531,1   MAP_CELL_ADDR          ; Computes the address of the character's current cell within the map data
+
 ; The following are from addr_3b9f_L/addr_3ba3_H
 rwx 3548,1   cont_3548              ;
 rwx 3564,1   cont_3564              ;
@@ -642,7 +762,7 @@ rw  3630,5   TLPTMPBUF              ; 5 byte temporary storage buffer
 rw  3681,1   dat_3681_L             ; Used for preserving the value of cont_addr_1977_L
 rw  3682,1   dat_3681_H             ; Used for preserving the value of cont_addr_1977_H
 
-rwx 3683,1   sub_3683               ;
+rwx 3683,1   act_EXMN               ; Examine items or spells action
 
 rw  36ef,67  dat_36ef               ; 103 bytes of data?
 
@@ -650,17 +770,21 @@ rw  3710,1f  str_EXM_ITM_SPL        ; 31 bytes: "Examine Items or Spells?"
 
 rw  3732,24  str_FWD_BCK_ESC        ; 36 bytes: "Forward, Back, or ESC to exit"
 
-rwx 3756,1   sub_3756               ;
-rwx 3768,1   sub_3768               ;
-rwx 3771,1   sub_3771               ;
-rwx 377a,1   sub_377a               ;
-rwx 3783,1   sub_3783               ;
+rwx 3756,1   act_GET                ; (G) Get action
+rwx 375f,1   sub_375f               ;
+rwx 3768,1   act_DROP               ; (D) Drop action
+rwx 3771,1   act_USE                ; (U) Use action
+rwx 377a,1   act_CAST               ; (C) Cast spell action
+rwx 3783,1   act_SAVE               ; (S) Save character action
 
 rw  37be,18  str_SAV_CHRCTR         ; 24? bytes: "Save character?"
 
-rwx 37d6,1   sub_37d6               ;
+rwx 37d6,1   act_QUIT               ; (Q) Quit game action
 
 rw  3804,46  str_QT_WO_SAVE         ; 70 bytes: "Quit game without saving character? Are you sure (Y or N)"
+
+rwx 384a,1   act_PAUSE              ; (P) Pause game action
+
 rw  3860,f   str_PAUSED             ; 15 bytes: "(Paused)"
 
 rw  38cf,1   dat_38cf               ; 1 byte
@@ -668,7 +792,7 @@ rw  38d0,5   str_BLANK_38d0         ; 5 bytes: "" (empty string)
 rw  38d5,24  str_THNGS_HERE         ; 36 bytes: "There are several things here."
 rw  38f9,1e  str_SOMTH_HRE          ; 30 bytes: "There is something here"
 rw  3917,70  str_3917               ; 112 bytes: Top status lines (Level, Stats, Exp, HP)
-rw  3969,42  str_3969               ; 66 bytes: Status value template. Contains embedded addr refs to char stats.
+rw  3969,42  str_3969               ; 66 bytes: Character stats template. Contains embedded addr refs to char stats.
 rw  39ab,5   str_39ab               ; 5 bytes: ?? TODO: where is this used ??
 rw  39b0,98  str_DOOR_MENU          ; 152 bytes : Menu displayed for a locked/barred/enchanted door
 rw  3a48,1a  str_DOOR_APRS          ; 26 bytes : "The door appears to"
@@ -717,21 +841,27 @@ rw  3b6c,8   dat_3b6c               ; 8? bytes of data
 rw  3b74,1   BMASK_01               ; Contains the value $01
 rw  3b75,1   BMASK_02               ; Contains the value $02
 rw  3b76,1   BMASK_04               ; Contains the value $04
-rw  3b77,d   BMASK_08               ; Contains the value $08 (unused?)
+rw  3b77,1   BMASK_08               ; Contains the value $08 (unused?)
 
-rw  3b85,d   tbl_3b85_L             ; 13? byte table of LSB of subroutine address
-                                    ;     0: $3756 [sub_3756]
-                                    ;     1: $3768 [sub_3768]
-                                    ;     2: $3771 [sub_3771]
-                                    ;     3: $377a [sub_377a]
-                                    ;     4: $3783 [sub_3783]
-                                    ;     5: $3683 [sub_3683]
-                                    ;     6: $37d6 [sub_37d6]
-                                    ;     7: $384a [sub_384a]
-                                    ;     8: $3c8c [sub_3c8c]
-                                    ;     9: $3c71 [sub_3c71]
-                                    ;    10: $3c71 [sub_3c71]
-                                    ;    11: $3c8c [sub_3c8c]
+rw  3b78,d   tbl_3b78               ; 13 byte table of characters mapped to corresponding entries
+                                    ; in tbl_3b85_L/tbl_3b92_H:
+                                    ;     0: "G", 1: "D", 2: "U", 3: "C",  4: "S",  5: "E"
+                                    ;     6: "Q", 7: "P", 8: ",", 9: ".", 10: $10, 11: $11
+                                    ;    12: $13
+
+rw  3b85,d   tbl_3b85_L             ; 13 byte table of LSB of subroutine address
+                                    ;     0: $3756 [act_GET]   - (G) Get action
+                                    ;     1: $3768 [act_DROP]  - (D) Drop action
+                                    ;     2: $3771 [act_USE]   - (U) Use action
+                                    ;     3: $377a [act_CAST]  - (C) Cast spell action
+                                    ;     4: $3783 [act_SAVE]  - (S) Save character action
+                                    ;     5: $3683 [act_EXMN]  - (E) Examine items or spells action
+                                    ;     6: $37d6 [act_QUIT]  - (Q) Quit game action
+                                    ;     7: $384a [act_PAUSE] - (P) Pause game action
+                                    ;     8: $3c8c [sub_3c8c] - (,) Previous status page action
+                                    ;     9: $3c71 [sub_3c71] - (.) Next status page action
+                                    ;    10: $3c71 [sub_3c71] -
+                                    ;    11: $3c8c [sub_3c8c] -
                                     ;    12: $2cab [sub_2cab] - does nothing/debug BRK
 rw  3b92,d   tbl_3b92_H             ; 13? byte table of MSB of subroutine address
 
@@ -831,10 +961,10 @@ rwx 453e,1   sub_453e               ;
 rwx 4563,1   sub_4563               ;
 rwx 4578,1   sub_4578               ;
 rwx 4582,1   sub_4582               ;
-rwx 458c,1   sub_458c               ; Simply an RTS
-rwx 458d,1   sub_458d               ; Simply an RTS
-rwx 458e,1   sub_458e               ; Simply an RTS
-rwx 458f,1   sub_458f               ; Simply an RTS
+rwx 458c,1   rts_458c               ; NOP: Simply returns to caller
+rwx 458d,1   rts_458d               ; NOP: Simply returns to caller
+rwx 458e,1   rts_458e               ; NOP: Simply returns to caller
+rwx 458f,1   rts_458f               ; NOP: Simply returns to caller
 
 rw  4590,1   dat_4590               ; 1 byte
 rw  4591,1   dat_4591               ; 1 byte
@@ -865,19 +995,26 @@ rw  45b6,24  tbl_45b5_H             ; 36? byte table: MSB of address
                                     ;    8: $453e [sub_453e]
                                     ;    9: $4578 [sub_4578]
                                     ;   10: $4582 [sub_4582]
-                                    ;   11: $458c [sub_458c] - Simply an RTS
-                                    ;   12: $458d [sub_458d] - Simply an RTS
-                                    ;   13: $458e [sub_458e] - Simply an RTS
-                                    ;   14: $458f [sub_458f] - Simply an RTS
+                                    ;   11: $458c [rts_458c] - NOP: Simply returns to caller
+                                    ;   12: $458d [rts_458d] - NOP: Simply returns to caller
+                                    ;   13: $458e [rts_458e] - NOP: Simply returns to caller
+                                    ;   14: $458f [rts_458f] - NOP: Simply returns to caller
                                     ;   15: $44d4 [sub_44d4]
                                     ;   16: $4519 [sub_4519]
                                     ;   17: $4563 [sub_4563]
 
 rw  45d9,7   tbl_45d9               ; 7 byte table: Values used as an offset relative to $6300
+                                    ;   0: $95 -> $6395 [CHR_WARMTH]
+                                    ;   1: $99 -> $6399 [CHR_HUNGER]
+                                    ;   2: $9a -> $639a [CHR_THIRST]
+                                    ;   3: $9b -> $639b [CHR_ENERGY]
+                                    ;   4: $94 -> $6394 [CHR_BURDEN]
+                                    ;   5: $97 -> $6397 [CHR_DRUNK]
+                                    ;   6: $98 -> $6398 [CHR_STOMACH]
 
 rw  45e0,7   tbl_45e0_L             ; 7 byte table: LSB of address
 rw  45e7,7   tbl_45e7_H             ; 7 byte table: MSB of address
-                                    ; Assigned to SAVMSC (start of screen memory)
+                                    ; Assigned to dat_0058_L/H
                                     ;     0: $460a [dat_460a]
                                     ;     1: $4626 [dat_4626]
                                     ;     2: $4636 [dat_4636]
@@ -890,7 +1027,7 @@ rw  45ee,7   tbl_45ee_L             ; 7 byte table: LSB of address
 rw  45f5,7   tbl_45f5_H             ; 7 byte table: MSB of address
                                     ;   Each of these addresses point at
                                     ;   a table of strings/descriptions.
-                                    ;     0: $4618 [tbl_4618] - Temperature
+                                    ;     0: $4618 [tbl_4618] - Warmth
                                     ;     1: $462e [tbl_462e] - Hunger
                                     ;     2: $463e [tbl_463e] - Thirst
                                     ;     3: $464e [tbl_464e] - Exhaustion
@@ -900,7 +1037,7 @@ rw  45f5,7   tbl_45f5_H             ; 7 byte table: MSB of address
 
 rw  45fc,7   tbl_45fc_L             ; 7 byte table: LSB of address
 rw  4603,7   tbl_4603_H             ; 7 byte table: MSB of address
-                                    ; Assigned to SAVMSC (start of screen memory)
+                                    ; Assigned to dat_0058_L/H
                                     ;     0: $4611 [dat_4611]
                                     ;     1: $462a [dat_462a]
                                     ;     2: $463a [dat_463a]
@@ -1002,10 +1139,10 @@ rw  47e5,d   str_BLANK              ; 13 bytes: "            "
 ;rwx 47e5,1   sub_47e5               ;
 
 rwx 4936,3   smc_4936               ; The address for this JMP is dynamically modified
-rwx 4939,1   cont_4939              ; Continuation address from tbl_4968_L/tbl_4968_H
-rwx 494d,1   cont_494d              ; Continuation address from tbl_4968_L/tbl_4968_H
-rwx 4953,1   cont_4953              ; Continuation address from tbl_4968_L/tbl_4968_H
-rwx 4959,1   cont_4959              ; Continuation address from tbl_4968_L/tbl_4968_H
+rwx 4939,1   cont_4939              ; Continuation address from tbl_4968_L/H
+rwx 494d,1   cont_494d              ; Continuation address from tbl_4968_L/H
+rwx 4953,1   cont_4953              ; Continuation address from tbl_4968_L/H
+rwx 4959,1   cont_4959              ; Continuation address from tbl_4968_L/H
 
 rw  4965,3   dat_4965               ; 3 bytes of data (unused?)
 rw  4968,10  tbl_4968_L             ; Table of addresses (LSB)
@@ -1018,21 +1155,23 @@ rw  4969,f   tbl_4968_H             ; Table of addresses (MSB)
                                     ;    4: $4959 [cont_4959]
                                     ;    5: $4959 [cont_4959]
                                     ;    6: $4959 [cont_4959]
-                                    ;    7: $4982 [cont_4982] - this sub is simply a BRK, RTS sequence
+                                    ;    7: $4982 [brk_rts_4982] - this sub is simply a BRK, RTS sequence
 
 rwx 4978,1   cont_4978              ;
-rwx 4982,1   cont_4982              ; Continuation address from tbl_4968_L/tbl_4968_H
+rwx 4982,1   brk_rts_4982           ; Continuation address from tbl_4968_L/H
 
 rwx 4b74,1   sub_4b74               ; Expected to update zero flag on return
+
+rwx 4baa,1   sub_4baa               ;
 rwx 4bb3,1   sub_4bb3               ;
 
-rwx 4be2,1   sub_4be2               ; Sub referenced in tbl_4cbf_L/tbl_4cbf_H
-rwx 4bf5,1   sub_4bf5               ; Sub referenced in tbl_4cbf_L/tbl_4cbf_H
-rwx 4c5a,1   sub_4c5a               ; Sub referenced in tbl_4cbf_L/tbl_4cbf_H
-rwx 4c6b,1   sub_4c6b               ; Sub referenced in tbl_4cbf_L/tbl_4cbf_H
-rwx 4c86,1   sub_4c86               ; Sub referenced in tbl_4cbf_L/tbl_4cbf_H
-rwx 4c9c,1   sub_4c9c               ; Just an RTS. Sub referenced in tbl_4cbf_L/tbl_4cbf_H
-rwx 4c9d,1   sub_4c9d               ; Sub referenced in tbl_4cbf_L/tbl_4cbf_H
+rwx 4be2,1   sub_4be2               ; Sub referenced in tbl_4cbf_L/H
+rwx 4bf5,1   sub_4bf5               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c5a,1   sub_4c5a               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c6b,1   sub_4c6b               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c86,1   sub_4c86               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c9c,1   rts_4c9c               ; NOP - Just an RTS. Sub referenced in tbl_4cbf_L/H
+rwx 4c9d,1   sub_4c9d               ; Sub referenced in tbl_4cbf_L/H
 
 rw  4cbf,12  tbl_4cbf_L             ; LSB of continuation addr (18 byte table of 9 x 2 byte entries)
 rw  4cc0,1   tbl_4cbf_H             ; MSB of continuation addr
@@ -1042,9 +1181,9 @@ rw  4cc0,1   tbl_4cbf_H             ; MSB of continuation addr
                                     ;     2: $4c5a [sub_4c5a]
                                     ;     3: $4c6b [sub_4c6b]
                                     ;     4: $4c9d [sub_4c9d]
-                                    ;     5: $4c9c [sub_4c9c]
-                                    ;     6: $4c9c [sub_4c9c]
-                                    ;     7: $4c9c [sub_4c9c]
+                                    ;     5: $4c9c [rts_4c9c] - NOP
+                                    ;     6: $4c9c [rts_4c9c] - NOP
+                                    ;     7: $4c9c [rts_4c9c] - NOP
                                     ;     8: $4c86 [sub_4c86]
 
 rwx 4d93,1   sub_4d93               ;
@@ -1066,6 +1205,10 @@ rw  502d,1   dat_502d               ; 1 byte of storage
 
 rwx 5077,1   rtn_5077               ; Dynamically specified return location stored in cont_addr_1977_L/H
 
+rwx 51b0,1   smc_51b0               ; Dynamically updated branch instruction (set to BEQ or BNE)
+
+rwx 5209,1   cont_5209
+
 rw  5229,8   tbl_5229_H             ; 8 byte table with MSB of address
                                     ; Contains the following addresses (after adding 1 to get final addr to execute)
                                     ;     $5239,$52c3,$540f,$54aa
@@ -1086,6 +1229,8 @@ rwx 5293,1   cont_5293              ; Indirectly called using lookup tables tbl_
 
 rwx 52c3,1   cont_52c3              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 
+rwx 5835,1   sub_5835               ;
+
 rw  5409,2   tbl_5409_L             ; 2 byte table with LSB of address
                                     ; Contains the following addresses (after adding 1 to get final addr to execute)
                                     ;     $57ed,$5cc5
@@ -1096,6 +1241,8 @@ rw  540d,2   tbl_540d               ; 2 byte table of data [$08, $10].
 rwx 540f,1   cont_540f              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 rw  5470,1   dat_5470               ; 1 byte of storage
 rwx 5471,1   sub_5471               ;
+
+rwx 548e,1   sub_548e               ;
 rwx 54aa,1   cont_54aa              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 rwx 54ee,1   cont_54ee              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 rwx 5505,1   cont_5505              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
@@ -1126,7 +1273,12 @@ rwx 56a7,1   cont_56a7              ; ? Use water flask ?
 rwx 56ea,1   cont_56ea              ; ? Use torch ?
 rwx 5723,1   cont_5723              ; ? Use timepiece ?
 
+rwx 5795,1   sub_5795               ;
+
 rwx 57ed,1   cont_57ed              ;
+
+rwx 5857,1   sub_5857               ;
+rw  58c1,1   dat_58c1               ;
 
 rwx 5921,1   rtn_5921               ; Dynamically specified return location stored in cont_addr_1977_L/H
 
@@ -1154,15 +1306,16 @@ rw  5cc4,1   addr_5cc3_H            ; MSB of address
 rwx 5cc5,1   cont_5cc5              ;
 
 rw  5d04,1   dat_5d04               ;
-
-rw  5d41,10  dat_5d41               ; 16? bytes
+rw  5d05,38  str_ITMS_REPRD         ; 56 bytes: "Your in use weapons and\narmor have been repaired.\n"
+rw  5d3d,4   dat_5d3d               ; 4 bytes: "1234"
+rw  5d41,6b  str_4SEL_MENU1         ; 107 bytes: 4 selection menu template
 
 rw  5d51,1   dat_5d51               ; ? only idexed updates relative to this
 rw  5dac,1   dat_5dac_L             ; LSB of address
 rw  5dad,1   dat_5dac_H             ; MSB of address
 rw  5dae,1   dat_5dae               ; 1 byte of storage. Updated, but not read?
 rw  5daf,1   dat_5daf               ; 1 byte of storage.
-rw  5db0,1   dat_5db0               ; 1 byte?
+rw  5db0,1   dat_5db0               ; 1? (or 6?) byte
 
 ;xxx - remove the below at some point
 rw  5e09,4f6 dat_5e09               ; 1269? bytes of data
@@ -1223,15 +1376,29 @@ rw  61e1,2c str_YOU_CAST            ; 44? bytes: "You cast the spell of ..."
 rw  620d,17 str_SPEL_FAIL           ; 23? bytes: "The spell failed!"
 rw  6224,36 str_SPEL_BKFR           ; 54? bytes: "The spell failed and backfired for xxx!"
 rw  625a,1c str_SOMTH_ODD           ; 28? bytes: "Something is odd here."
-rw  6276,23 dat_6276                ; 35? bytes of data: TODO: Needs more analysis
-rw  6299,61 str_MAP_POS             ; 97? bytes: "You are ?? squares North and ?? squares East from the Southwest corner of level ?"
+rw  6276,1  dat_6276                ; 1 byte
+rw  6277,1  dat_6277                ; 1 byte
+rw  6278,21 dat_6278                ; 33? bytes of data: TODO: Needs more analysis
+
+rw  6283,1  dat_6283                ;
+rw  6284,?  dat_6284                ;
+
+rw  6299,61 str_MAP_POS             ; 97? bytes: "You are ? squares North and ? squares East from the Southwest corner of level ?"
 rw  62fa,6  dat_62fa                ; 6 bytes of data: TODO: Needs more analysis
 
 rw  6313,1  CHR_LOC_X               ; Player position X
+rw  6316,1  CHR_FRAC_LOC_X          ; Fractional X position: 0-35 ($23)
 rw  6318,1  CHR_SAV_LOC_X           ; Saved player position X
 
 
 rwx 7600,1  loc_7600                ; Currently loaded map data
+
+rw  7600,1  map_hdr_number ??
+rw  760a,1  map_hdr_addr_L ??
+rw  760b,1  map_hdr_addr_H ??
+
+rw  ac00,1  MAP_NUMBER              ; Number/ID of the loaded map
+
 
 ;xxx
 ;Low byte of a memory reference  (is assigned to $7641, $7648)

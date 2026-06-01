@@ -1102,13 +1102,7 @@ export class AsmOp {
         if (options.showComments) {
             let comment = this.comment;
             if (comment == null) {
-                comment = this.bytes.map((byte) => {
-                    if (byte >= 0x20 && byte <= 0x7f) {
-                        return String.fromCharCode(byte);
-                    } else {
-                        return ".";
-                    }
-                }).join('');
+                comment = this.bytes.map(byteToCharRepr).join('');
             }
 
             if (comment != null) {
@@ -1117,6 +1111,20 @@ export class AsmOp {
         }
 
         return result;
+    }
+}
+
+function byteToCharRepr(byte) {
+    if (byte >= 0x20 && byte < 0x7f) {
+        return String.fromCharCode(byte);
+    } else if (byte == 0x7f) {
+        // Map DEL character $7f to Unicode Control Picture 0x2421 "DEL"
+        return String.fromCharCode(0x2421);
+    } else if (byte < 0x20) {
+        // Map ctrl character to Unicode Control Picture 0x2400 + byte
+        return String.fromCharCode(0x2400 + byte);
+    } else {
+        return byteToCharRepr(byte & 0x7f) + String.fromCharCode(0x0359);
     }
 }
 

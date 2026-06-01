@@ -111,9 +111,9 @@ Entry  62: [42a7 0001] D1 S1: sector=679 [2a7], length= 256
                 { size: 0x0446, start: 0xB7D7 }
             ]},
         { id: 0x480A, description: "D2S1 S011 - Map 0 (Level 1.1 NW)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
-        { id: 0x4833, description: "D2S1 S052 - Map 1 (Level 1.2 NW)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
-        { id: 0x485C, description: "D2S1 S093 - Map 2 (Level 1.3 NW)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
-        { id: 0x4885, description: "D2S1 S134 - Map 3 (Level 1.4 NW)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
+        { id: 0x4833, description: "D2S1 S052 - Map 1 (Level 1.2 NE)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
+        { id: 0x485C, description: "D2S1 S093 - Map 2 (Level 1.3 SW)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
+        { id: 0x4885, description: "D2S1 S134 - Map 3 (Level 1.4 SE)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
         { id: 0x48AE, description: "D2S1 S175 - Map 4 (Level 2)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
         { id: 0x48D7, description: "D2S1 S216 - Map 5 (Level 3)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
         { id: 0x4900, description: "D2S1 S257 - Map 6 (Level 4)", type: "map", segments: 0xAC00 }, // length = 0x1400 (5120)
@@ -1028,12 +1028,7 @@ function dumpBytesRow(bytes, offset, rowSize, radix, offsetRadix) {
     for (let i = 0; i < rowSize; ++i) {
         const ofs = offset + i;
         if (ofs < endOffset) {
-            const byte = bytes[ofs];
-            if (byte >= 0x20 && byte <= 0x7f) {
-                value += String.fromCharCode(byte);
-            } else {
-                value += ".";
-            }
+            value += byteToCharRepr(bytes[ofs]);
         } else {
             value += " ";
         }
@@ -1043,6 +1038,21 @@ function dumpBytesRow(bytes, offset, rowSize, radix, offsetRadix) {
 
     return value;
 }
+
+function byteToCharRepr(byte) {
+    if (byte >= 0x20 && byte < 0x7f) {
+        return String.fromCharCode(byte);
+    } else if (byte == 0x7f) {
+        // Map DEL character $7f to Unicode Control Picture 0x2421 "DEL"
+        return String.fromCharCode(0x2421);
+    } else if (byte < 0x20) {
+        // Map ctrl character to Unicode Control Picture 0x2400 + byte
+        return String.fromCharCode(0x2400 + byte);
+    } else {
+        return byteToCharRepr(byte & 0x7f) + String.fromCharCode(0x0359);
+    }
+}
+
 
 /**
  *
