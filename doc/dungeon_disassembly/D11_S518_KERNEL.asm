@@ -136,21 +136,21 @@
 1806: 4c f3 2f  j_loc_2ff3      JMP loc_2ff3         ;
 1809: 4c e3 30  j_loc_30e3      JMP loc_30e3         ;
 180c: 4c 83 31  j_loc_3183      JMP loc_3183         ;
-180f: 4c 0d 1a  j_SET_DISP_MODE  JMP SET_DISP_MODE   ;
+180f: 4c 0d 1a  j_SET_DISP_MODE  JMP SET_DISP_MODE   ; Initializes a display mode based on the input parameter (A)
 1812: 4c 84 1c  j_sub_1c84      JMP sub_1c84         ;
 1815: 4c 88 1c  j_SUB_1815      JMP sub_1c88         ;
 1818: 4c 8c 1c  j_sub_1c8c      JMP sub_1c8c         ;
-181b: 4c 2c 1c  j_OUTPUT_CHAR   JMP OUTPUT_CHAR      ;
+181b: 4c 2c 1c  j_OUTPUT_CHAR   JMP OUTPUT_CHAR      ; Output a character to the screen
 181e: 4c 43 26  j_sub_2643      JMP sub_2643         ;
-1821: 4c 2f 26  j_sub_262f      JMP sub_262f         ;
+1821: 4c 2f 26  j_READ_STICK    JMP READ_STICK       ; Read joystick Jack 1 Stick 0 direction and trigger button status
 1824: 4c 5b 27  j_sub_275b      JMP sub_275b         ;
 1827: 4c 5d 24  j_sub_245d      JMP sub_245d         ;
-182a: 4c a1 28  j_sub_28a1      JMP sub_28a1         ;
+182a: 4c a1 28  j_GET_FILE_ENTRY  JMP GET_FILE_ENTRY ; Reads a file segment directory entry
 182d: 4c 8e 24  j_sub_248e      JMP sub_248e         ;
-1830: 4c c6 24  j_loc_24c6      JMP loc_24c6         ;
+1830: 4c c6 24  j_sub_24c6      JMP sub_24c6         ;
 1833: 4c 94 24  j_sub_2494      JMP sub_2494         ;
-1836: 4c 61 3c  j_loc_3c61      JMP loc_3c61         ;
-1839: 4c 41 2a  j_READ_LINE     JMP READ_LINE        ;
+1836: 4c 61 3c  j_sub_3c61      JMP sub_3c61         ;
+1839: 4c 41 2a  j_READ_LINE     JMP READ_LINE        ; Read a line of keyboard input into LINEBUF
 183c: 4c b0 2b  j_sub_2bb0      JMP sub_2bb0         ;
 183f: 4c a5 2b  j_sub_2ba5      JMP sub_2ba5         ;
 1842: 4c ad 2c  j_sub_2cad      JMP sub_2cad         ;
@@ -159,13 +159,13 @@
 184b: 4c a5 3c  j_sub_3ca5      JMP sub_3ca5         ;
 184e: 4c c2 3c  j_sub_3cc2      JMP sub_3cc2         ;
 1851: 4c 5c 3c  j_sub_3c5c      JMP sub_3c5c         ;
-1854: 4c 8f 2d  j_INIT_BYTES    JMP INIT_BYTES       ;
-1857: 4c 6f 2c  j_loc_2c6f      JMP loc_2c6f         ;
+1854: 4c 8f 2d  j_INIT_BYTES    JMP INIT_BYTES       ; Initializes bytes to a specified value
+1857: 4c 6f 2c  j_sub_2c6f      JMP sub_2c6f         ;
 185a: 4c fc 2b  j_sub_2bfc      JMP sub_2bfc         ;
 185d: 4c 9b 2c  j_sub_2c9b      JMP sub_2c9b         ;
 1860: 4c ab 2d  j_sub_2dab      JMP sub_2dab         ;
 1863: 4c e3 2d  j_sub_2de3      JMP sub_2de3         ;
-1866: 4c 0d 2e  j_COPY_BYTES    JMP COPY_BYTES       ;
+1866: 4c 0d 2e  j_COPY_BYTES    JMP COPY_BYTES       ; Copies X * 256 + Y bytes from the address in dat_0007_L to the address in dat_0009_L
 1869: 4c 31 2e  j_sub_2e31      JMP sub_2e31         ;
 186c: 4c 6b 2e  j_sub_2e6b      JMP sub_2e6b         ;
 186f: 4c 69 2e  j_sub_2e69      JMP sub_2e69         ;
@@ -175,23 +175,23 @@
 187b: 4c 40 2e  j_sub_2e40      JMP sub_2e40         ;
 187e: 4c 9e 2e  j_sub_2e9e      JMP sub_2e9e         ;
 1881: 4c c2 2c  j_sub_2cc2      JMP sub_2cc2         ;
-1884: 4c 4d 4b  j_loc_4b4d      JMP loc_4b4d         ;
-1887: 4c 74 4b  j_sub_4b74      JMP sub_4b74         ;
-188a: 4c c9 4a  j_loc_4ac9      JMP loc_4ac9         ;
+1884: 4c 4d 4b  j_sub_4b4d      JMP sub_4b4d         ;
+1887: 4c 74 4b  j_sub_4b74      JMP sub_4b74         ; Call $4b74 [sub_4b74]
+188a: 4c c9 4a  j_sub_4ac9      JMP sub_4ac9         ;
 188d: 4c 06 4e  j_sub_4e06      JMP sub_4e06         ;
-1890: 4c b0 49  j_loc_49b0      JMP loc_49b0         ;
+1890: 4c b0 49  j_sub_49b0      JMP sub_49b0         ;
 1893: 4c b7 55  j_loc_55b7      JMP loc_55b7         ;
 1896: 4c c4 4e  j_sub_4ec4      JMP sub_4ec4         ;
 1899: 4c 6b 2b  j_sub_RND_2b6b  JMP sub_RND_2b6b     ;
 189c: 4c 71 54  j_sub_5471      JMP sub_5471         ;
 189f: 4c 5f 37  j_sub_375f      JMP sub_375f         ;
-18a2: 4c 47 2b  j_MUL_16        JMP MUL_16           ;
+18a2: 4c 47 2b  j_MUL_16        JMP MUL_16           ; Multiplies big-endian 16-bit values in dat_0002/3 and dat_0007/8
 18a5: 4c 8b 40  j_sub_408b      JMP sub_408b         ;
-18a8: 4c 71 37  j_act_USE       JMP act_USE          ;
+18a8: 4c 71 37  j_act_USE       JMP act_USE          ; (U) Use action
 18ab: 4c b8 5b  j_loc_5bb8      JMP loc_5bb8         ;
 18ae: 4c a0 2a  j_sub_2aa0      JMP sub_2aa0         ;
 18b1: 4c 92 54  j_loc_5492      JMP loc_5492         ;
-18b4: 4c c6 2e  j_KERNEL_INIT   JMP KERNEL_INIT      ;
+18b4: 4c c6 2e  j_KERNEL_INIT   JMP KERNEL_INIT      ; Initialization code called from KERNEL_ENTRY after base initialization
 
 18b7: 00        dat_18b7        .BYTE $00            ;
 18b8: 00        CUR_COLPF2_NUM  .BYTE $00            ; Offset to values at $1c19 [tbl_COLPF2_1c19] (0: $46, 1: $68, 2: $88)
@@ -202,19 +202,20 @@
 18bd: 00        CUR_COLBK       .BYTE $00            ; Value assigned to COLBK during display rendering
 18be: 00        COLBK_SET_18BE  .BYTE $00            ; Value assigned to COLBK during display rendering
 18bf: 00 00     CUR_COLPF3      .BYTE $00,$00        ; Value assigned to COLPF3 during display rendering
-18c1: 00 00 00  sav_OUT_COL     .BYTE $00,$00,$00    ;
-18c4: 00 00 00  sav_OUT_ROW     .BYTE $00,$00,$00    ;
-18c7: 00 00     tbl_18c7        .BYTE $00,$00,$00    ; ...
-18ca: 00        dat_18ca        .BYTE $00
-18cb: 00 00 00 00 00 00         .BYTE $00,$00,$00,$00,$00,$00  ; ........
-18d1: 00 00 00                  .BYTE $00,$00,$00              ; ...
+18c1: 00 00 00  sav_OUT_COL     .BYTE $00,$00,$00    ; 3 bytes: Holds saved OUT_COL values
+18c4: 00 00 00  sav_OUT_ROW     .BYTE $00,$00,$00    ; 3 bytes: Holds saved OUT_ROW values (combined with TOP_MSG_ROW for final row)
+18c7: 00 00     sav_OUT_BLINK   .BYTE $00,$00,$00    ; 3 bytes: Holds saved OUT_BLINK blink values
+18ca: 00        OUT_UBCD_BUF    .BYTE $00            ; 10 bytes (8 used): Used to hold unpacked BCD values for output
+18cb: 00 00 00 00 00 00         .BYTE $00,$00,$00,$00,$00,$00
+18d1: 00 00 00                  .BYTE $00,$00,$00
 18d4: 00        LBUF_LIMIT      .BYTE $00            ; Line buffer input length limit
 18d5: 80 80 80 80  LINEBUF      .BYTE $80,$80,$80,$80  ; Input line buffer
 18d9: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80
 18e1: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80
 18e9: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80
 18f1: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80
-18f9: 80 80 80 80 00 00         .BYTE $80,$80,$80,$80,$00,$00
+18f9: 80 80 80 80 00            .BYTE $80,$80,$80,$80,$00
+18fe: 00        dat_18fe        .BYTE $00            ;
 18ff: 00        dat_18ff        .BYTE $00            ;
 1900: 00        dat_1900        .BYTE $00            ;
 1901: 00        dat_1901_L      .BYTE $00            ;
@@ -227,47 +228,57 @@
 1908: 00        dat_1908        .BYTE $00            ;
 1909: 00 00     dat_1909        .BYTE $00,$00        ;
 190b: 00        dat_190b_L      .BYTE $00            ;
-190c: 00        dat_190c_H      .BYTE $00            ;
+190c: 00        dat_190b_H      .BYTE $00            ;
 190d: 00        dat_190d        .BYTE $00            ;
 190e: 00        dat_190e        .BYTE $00            ;
 190f: 00 00 00  dat_190f        .BYTE $00,$00,$00    ;
-1912: 00        ZONE_ID         .BYTE $00            ; ........
+1912: 00        ZONE_ID         .BYTE $00            ; Zone ID value to apply in PROCESS_HOURLY_UPDATES
 1913: 80 80 80 80 80 80 80  tbl_1913_L  .BYTE $80,$80,$80,$80,$80,$80,$80
 191a: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
 1922: 80                        .BYTE $80            ; .
 1923: 80 80 80 80 80 80 80  tbl_1923_H  .BYTE $80,$80,$80,$80,$80,$80,$80  ; .......
 192a: 80 80 80 80 80 80 80 80  UNK_BYTE_192A  .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ; ........
 1932: 80                        .BYTE $80            ; .
-1933: 00 00     dat_1933        .BYTE $00,$00        ; ..
+1933: 00        dat_1933        .BYTE $00            ; Current status page displayed
+1934: 00        dat_1934        .BYTE $00            ; Number of status pages
 1935: 00 00     dat_1935        .BYTE $00,$00        ; ...
 1937: 00        dat_1937        .BYTE $00            ; .
 1938: 00        UNK_BYTE_1938   .BYTE $00            ; .
-1939: 00 ff ff ff ff ff ff ff  UNK_BYTE_1939  .BYTE $00,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ; ........
-1941: ff                        .BYTE $ff            ; .
-1942: ff ff                     .BYTE $ff,$ff        ; ..
-1944: ff        addr_1944_L     .BYTE $ff            ; .
-1945: ff        addr_1944_H     .BYTE $ff            ; .
-1946: 00 00 00  dat_1946        .BYTE $00,$00,$00    ; ...
-1949: 00                        .BYTE $00            ; .
-194a: 00        dat_194a        .BYTE $00            ; .
-194b: 00        ZONE_TEXTURE_SET  .BYTE $00          ; .
-194c: 00        ZONE_B_BYTE     .BYTE $00            ; .
-194d: 00        ZONE_C_BF_LITE  .BYTE $00            ; .
-194e: 00        ZONE_WALL_CLR0  .BYTE $00            ; .
-194f: 00        ZONE_WALL_CLR1  .BYTE $00            ; .
-1950: 00        ZONE_WALL_CLR2  .BYTE $00            ; .
-1951: 00        ZONE_CEILING_CLR  .BYTE $00          ; .
-1952: 00        ZONE_FLOOR_CLR  .BYTE $00            ; .
-1953: 80 00 00  ZONE_I_BYTE     .BYTE $80,$00,$00    ; ...
-1956: 00 00     UNK_BYTE_COUNTER  .BYTE $00,$00      ; ..
-1958: 00        UNK_BYTE_1958   .BYTE $00            ; .
-1959: 00        UNK_BYTE_1959   .BYTE $00            ; .
-195a: 00 00 00  TELEPORT_INDEX  .BYTE $00,$00,$00    ; ...
-195d: 00        UNK_BYTE_195D   .BYTE $00            ;
+1939: 00        UNK_BYTE_1939   .BYTE $00            ; .
+193a: ff        addr_193a_L     .BYTE $ff            ; LSB of address
+193b: ff        addr_193a_H     .BYTE $ff            ; MSB of address
+193c: ff        addr_193c_L     .BYTE $ff            ; LSB of address (table of 4 addresses)
+193d: ff        addr_193c_H     .BYTE $ff            ; MSB of address (table of 4 addresses)
+193e: ff ff ff ff ff ff         .BYTE $ff,$ff,$ff,$ff,$ff,$ff
+1944: ff        addr_1944_L     .BYTE $ff            ; LSB of address
+1945: ff        addr_1944_H     .BYTE $ff            ; MSB of address
+1946: 00 00 00 00  dat_1946     .BYTE $00,$00,$00,$00 ; 4 byte table
+194a: 00        dat_194a        .BYTE $00            ;
+194b: 00        ZONE_TEXTURE_SET  .BYTE $00          ; The texture set to use. 01 = Typical; 02 = Mirror/Crystal; 03 = Dragon; 04 = Goblin; 05 = Mausoleum
+194c: 00        ZONE_B_BYTE     .BYTE $00            ;
+194d: 00        ZONE_C_BF_LITE  .BYTE $00            ;
+194e: 00        ZONE_WALL_CLR0  .BYTE $00            ; Wall color #1 (e.g. normal walls = 26 Brownish)
+194f: 00        ZONE_WALL_CLR1  .BYTE $00            ; Wall color #2 (e.g. normal walls = 00 Black)
+1950: 00        ZONE_WALL_CLR2  .BYTE $00            ; Wall color #3 (e.g. normal walls = 0A Grey)
+1951: 00        ZONE_CEILING_CLR  .BYTE $00          ; Ceiling color
+1952: 00        ZONE_FLOOR_CLR  .BYTE $00            ; Floor color
+1953: 80        ZONE_I_BYTE     .BYTE $80            ; ?Zone base temperature?
+1954: 00        dat_1954        .BYTE $00            ;
+1955: 00        dat_1955        .BYTE $00            ;
+1956: 00        UNK_BYTE_COUNTER  .BYTE $00          ;
+1957: 00        loc_1957        .BYTE $00            ;
+1958: 00        UNK_BYTE_1958   .BYTE $00            ;
+1959: 00        UNK_BYTE_1959   .BYTE $00            ;
+195a: 00        mCell_SPCL_IDX  .BYTE $00            ; Holds special code index number parameter value for
+                                                     ;   treasure, encounter, message, and teleport special codes.
+195b: 00 00                     .BYTE $00,$00        ;
+195d: 00        dat_195d        .BYTE $00            ;
 195e: 00        dat_195e        .BYTE $00            ;
-
-195f: 00        UNK_BYTE_195F   .BYTE $00            ; .
-1960: 00 00 00 00 00 00 00 00  UNK_BYTE_1960  .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
+195f: 00        UNK_BYTE_195F   .BYTE $00            ;
+1960: 00        UNK_BYTE_1960   .BYTE $00            ;
+1961: 00        dat_1961        .BYTE $00            ;
+1962: 00        dat_1962        .BYTE $00            ;
+1963: 00 00 00 00 00            .BYTE $00,$00,$00,$00,$00  ; ........
 1968: 00 00     UNK_BYTE_1968   .BYTE $00,$00        ; ..
 196a: 00        UNK_BYTE_196A   .BYTE $00
 196b: 00 00 00 00  dat_196b     .BYTE $00,$00,$00,$00  ; Player position (ORIENT, X, Y, MAP)
@@ -275,7 +286,7 @@
 1970: 00        dat_1970        .BYTE $00
 1971: 00        dat_1971        .BYTE $00            ; .
 1972: 00 00                     .BYTE $00,$00        ; ..
-1974: 00        UNK_BYTE_1974   .BYTE $00            ; .
+1974: 00        mCell_DESC_NUM  .BYTE $00            ; Current map cell description index
 1975: 00        UNK_BYTE_1975   .BYTE $00            ;
 1976: 00        dat_1976        .BYTE $00            ;
 
@@ -744,8 +755,8 @@
 1c54: 69 04                     ADC #$04             ;       OUT_ADDR_H
 1c56: 85 1e                     STA OUT_ADDR_H       ;          += 4 + C          (OUT_ADDR_H is MSB, so base is $400 [DISP_START])
 1c58: a5 1a                     LDA OUT_TMP_A        ;     Set
-1c5a: 05 21                     ORA dat_0021         ;       (*OUT_ADDR_L)[Y]
-1c5c: 91 1d                     STA (OUT_ADDR_L),Y   ;         = OUT_TMP_A | dat_0021
+1c5a: 05 21                     ORA OUT_BLINK        ;       (*OUT_ADDR_L)[Y]
+1c5c: 91 1d                     STA (OUT_ADDR_L),Y   ;         = OUT_TMP_A | OUT_BLINK
 1c5e: c8                        INY                  ;     Add 1 to Y
 1c5f: c0 28                     CPY #$28             ;     If Y < $28 (40),
 1c61: 90 09                     BCC loc_1c6c         ;         continue @ $1c6c [loc_1c6c]
@@ -785,48 +796,46 @@
                 ;   dat_0023 = entry mode (0 via sub_1c84, 1 via sub_1c88, 2 via sub_1c8c)
                 ;
                 ;   - Perform the following initialization:
-                ;     OUT_COL  = sav_OUT_COL[X]
-                ;     OUT_ROW  = sav_OUT_ROW[X] + dat_1fa8[X]
-                ;     dat_0021 = tbl_18c7[X]
-                ;     dat_0024 = 0
-                ;     dat_0025 = 0
-                ;     dat_0026 = 0
+                ;     OUT_COL       = sav_OUT_COL[X]
+                ;     OUT_ROW       = sav_OUT_ROW[X] + TOP_MSG_ROW[X]
+                ;     OUT_BLINK     = sav_OUT_BLINK[X]
+                ;     OUT_ALIGN     = 0
+                ;     OUT_ALIGN_LEN = 0
+                ;     dat_0026      = 0
                 ;
-                ;   - Reads characters from addr_0016_L/H and calls sub_1f3c
+                ;   - Reads characters from addr_0016_L/H and calls ALGN_OUTPUT_CH
                 ;     until a byte is read with the sign bit set.
                 ;   - Process byte with sign set
                 ;      $ff         -> end of string, store pos and return to caller
-                ;      $a0         -> Set normal text (no blink) mode
+                ;      $a0         -> Turn off blinking text mode
                 ;      $a1         -> Set blinking text mode
-                ;      $a2         ->
+                ;      $a2         -> Clear from start of line (must be set after center alignment mode ($a5))
                 ;      $a3         -> Invoke subroutine at address
-                ;      $a4         -> Reads byte at address and outputs as hex
-                ;      $a5         ->
+                ;      $a4         -> Reads address and outputs byte from that location as hex
+                ;      $a5         -> Start of center-aligned text
                 ;      $a6         -> Set output position to col/row
-                ;      $a7         ->
-                ;      $a8         ->
-                ;      $a9         ->
-                ;      $aa         ->
-                ;      $ab         ->
-                ;      $ac         ->
-                ;      $ad         ->
-                ;      $ae         ->
+                ;      $a7         -> Start of right-aligned text
+                ;      $a8         -> Clear all message display rows with NUL chars
+                ;      $a9         -> Clear current row with NUL chars
+                ;      $aa         -> Reset (blink off, standard left-aligned output)
+                ;      $ab         -> Clear to end of line (current position unchanged)
+                ;      $ac         -> Read address and continue processing from that location
+                ;      $ad         -> Read address at address and continue processing from that location (indirect)
+                ;      $ae         -> Return to previous template with last $ac or $ad code executed.
                 ;      $af         -> BRK & RTS (triggers break, then returns to caller)
                 ;      $b0         -> Read big endian uint32 at address and output as decimal string
                 ;      $b1         -> Read big endian uint16 at address and output as decimal string
                 ;      $b2         -> Read uint8 at address and output as decimal string
-                ;      $b3         -> ?Output NUL-terminated string?
-                ;      $b4         ->
-                ;      $b5         ->
-                ;      > $b5 (181) -> invalid/unsupported code, trigger BRK and return to caller
-                ;
+                ;      $b3         -> Output NUL-terminated string at address
+                ;      $b4         -> Output NUL-terminated string at address from address (indirect)
+                ;      $b5 .. $fe  -> invalid/unsupported code, trigger BRK and return to caller
+                ;      $ff         -> End of string. Saves current state and returns to caller
                 ;
                 ; Input
-                ;   addr_0016_L = LSB of address
-                ;   addr_0016_H = MSB of address
-                ;   sav_OUT_COL = Previously saved output column position
-                ;   sav_OUT_ROW = Previously saved output row position
-                ;   tbl_18c7 = Previously saved output ?something?
+                ;   addr_0016_L/H - address of string to output
+                ;   sav_OUT_COL   - Previously saved output column positions
+                ;   sav_OUT_ROW   - Previously saved output row positions
+                ;   sav_OUT_BLINK - Previously saved output blink modes
                 ;
 1c84: a2 00     sub_1c84        LDX #$00             ; Set X = 0
 1c86: f0 06                     BEQ loc_1c8e         ;     And continue @ $1c8e [loc_1c8e]
@@ -838,33 +847,35 @@
 1c93: 85 1f                     STA OUT_COL          ;     OUT_COL = sav_OUT_COL[X]   (updated during execution)
 1c95: bd c4 18                  LDA sav_OUT_ROW,X    ; Set
 1c98: 18                        CLC                  ;     OUT_ROW
-1c99: 7d a8 1f                  ADC dat_1fa8,X       ;         =
-1c9c: 85 20                     STA OUT_ROW          ;         sav_OUT_ROW[X] + dat_1fa8[X]
-1c9e: bd c7 18                  LDA tbl_18c7,X       ; Set
-1ca1: 85 21                     STA dat_0021         ;     dat_0021 = tbl_18c7[X]
+1c99: 7d a8 1f                  ADC TOP_MSG_ROW,X    ;         =
+1c9c: 85 20                     STA OUT_ROW          ;         sav_OUT_ROW[X] + TOP_MSG_ROW[X]
+1c9e: bd c7 18                  LDA sav_OUT_BLINK,X  ; Set
+1ca1: 85 21                     STA OUT_BLINK        ;     OUT_BLINK = sav_OUT_BLINK[X]
 1ca3: a9 00                     LDA #$00             ; Set A = 0
-1ca5: 85 24                     STA dat_0024         ; Set dat_0024 = 0
-1ca7: 85 25                     STA dat_0025         ; Set dat_0025 = 0
+1ca5: 85 24                     STA OUT_ALIGN        ; Set OUT_ALIGN = 0
+1ca7: 85 25                     STA OUT_ALIGN_LEN    ; Set OUT_ALIGN_LEN = 0
 1ca9: 85 26                     STA dat_0026         ; Set dat_0026 = 0
                 ; Many points converge here
                 ;
-                ; Repeatedly reads the next byte from addr_0016_L/H and calls sub_1f3c
+                ; Repeatedly reads the next byte from addr_0016_L/H and calls ALGN_OUTPUT_CH
                 ; until a byte is read with the sign bit set.
-1cab: 20 31 1f  loc_1cab        JSR GET_NEXT_BYTE    ; Loop
+1cab: 20 31 1f  out_NEXT_CHAR   JSR GET_NEXT_BYTE    ; Loop
                                                      ;     Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
-1cae: c9 80                     CMP #$80             ;     If (A >= $80 (128))   (Read a byte with sign bit set)
-1cb0: b0 06                     BCS loc_1cb8         ;         Then exit loop
-1cb2: 20 3c 1f                  JSR sub_1f3c         ;     Call $1f3c [sub_1f3c]
-1cb5: 4c ab 1c                  JMP loc_1cab         ; Repeat @ $1cab [loc_1cab]
+1cae: c9 80                     CMP #$80             ;     If (A >= $80 (128)) Then   (Read a byte with sign bit set)
+1cb0: b0 06                     BCS loc_1cb8         ;         Exit Loop
+                                                     ;     End If
+1cb2: 20 3c 1f                  JSR ALGN_OUTPUT_CH   ;     Call $1f3c [ALGN_OUTPUT_CH]
+1cb5: 4c ab 1c                  JMP out_NEXT_CHAR    ; Repeat Loop
                 ; Encountered byte with sign bit set
                 ; If it is $ff, then we reached the end of the string
                 ; Otherwise, subtract $a0 (160) to determine the operation to execute.
-                ; Operations 0 to 14 are supported here and their addresses are
+                ; Operations 0 to 20 are supported here and their addresses are
                 ; stored in tbl_1fd4_L/tbl_1fbf_H.
-                ; After completing their task, they typically return to $1cab [loc_1cab]
+                ; After completing their task, they typically return to $1cab [out_NEXT_CHAR]
                 ; above to continue processing with the next character.
-1cb8: c9 ff     loc_1cb8        CMP #$ff             ; If (A == $ff (255))  (End of string, save position and return to caller)
-1cba: f0 15                     BEQ ff_SAVE_RTS      ;   Then continue @ $1cd1 [ff_SAVE_RTS]
+1cb8: c9 ff     loc_1cb8        CMP #$ff             ; If (A == $ff (255)) Then (End of string, save position and return to caller)
+1cba: f0 15                     BEQ ff_SAVE_RTS      ;     Continue @ $1cd1 [ff_SAVE_RTS]
+                                                     ; End If
 1cbc: 38                        SEC                  ; Set
 1cbd: e9 a0                     SBC #$a0             ;     A -= $a0
 1cbf: c9 15                     CMP #$15             ; If (A >= $15 (21)),  (unexpected? triggers break, then returns to caller)
@@ -876,27 +887,27 @@
 1cca: b9 bf 1f                  LDA tbl_1fd4_L,Y     ;     and push it
 1ccd: 48                        PHA                  ;     onto the stack
 1cce: 60                        RTS                  ; Indirectly jump to address pushed to stack + 1
-                                                     ;      0: $1ce7 [a0_BLINK_OFF]  - ($a0) Set normal text (no blink) mode
+                                                     ;      0: $1ce7 [a0_BLINK_OFF]  - ($a0) Turn off blinking text mode
                                                      ;      1: $1ced [a1_BLINK_ON]   - ($a1) Set blinking text mode
-                                                     ;      2: $1d21 [cont_1d21] - ($a2)
+                                                     ;      2: $1d21 [a2_CLEAR_LFT]  - ($a2) Clear from start of line (must be set after center alignment mode ($a5))
                                                      ;      3: $1cfe [a3_CALL_SUB]   - ($a3) Invoke subroutine at address in next 2 bytes
-                                                     ;      4: $1cf3 [a4_BYTE2HEX]   - ($a4) Reads byte at address and outputs as hex
-                                                     ;      5: $1d0a [cont_1d0a] - ($a5)
+                                                     ;      4: $1cf3 [a4_BYTE2HEX]   - ($a4) Reads address and outputs byte from that location as hex
+                                                     ;      5: $1d0a [a5_CNTR_ALGN]  - ($a5) Start of center-aligned text
                                                      ;      6: $1d2a [a6_SET_POS]    - ($a6) Move output position to col/row
-                                                     ;      7: $1d3b [cont_1d3b] - ($a7)
-                                                     ;      8: $1d50 [cont_1d50] - ($a8)
-                                                     ;      9: $1d74 [cont_1d74] - ($a9)
-                                                     ;     10: $1dc0 [cont_1dc0] - ($aa)
-                                                     ;     11: $1d9a [cont_1d9a] - ($ab)
-                                                     ;     12: $1ee3 [cont_1ee3] - ($ac)
-                                                     ;     13: $1efb [cont_1efb] - ($ad)
-                                                     ;     14: $1f16 [cont_1f16] - ($ae)
-                                                     ;     15: $1ccf [af_BRK_RTS] - ($af) BRK & RTS (triggers break, then returns to caller)
+                                                     ;      7: $1d3b [a7_RGHT_ALGN]  - ($a7) Start of right-aligned text
+                                                     ;      8: $1d50 [a8_CLR_MESSGE] - ($a8) Clear all message display rows with NUL chars
+                                                     ;      9: $1d74 [a9_CLR_ROW]    - ($a9) Clear current row with NUL chars
+                                                     ;     10: $1dc0 [aa_RESET]      - ($aa) Reset (blink off, standard left-aligned output)
+                                                     ;     11: $1d9a [ab_CLR_2_EOL]  - ($ab) Clear to end of line (current position unchanged)
+                                                     ;     12: $1ee3 [ac_FOLLOW]     - ($ac) Read address and continue processing from that location
+                                                     ;     13: $1efb [ad_FOLLOW_IND] - ($ad) Read address at address and continue processing from that location (indirect)
+                                                     ;     14: $1f16 [ae_RETURN]     - ($ae) Return to previous template with last $ac or $ad code executed.
+                                                     ;     15: $1ccf [af_BRK_RTS]    - ($af) BRK & RTS (triggers break, then returns to caller)
                                                      ;     16: $1dc9 [b0_UI32_2_DEC] - ($b0) Read big endian uint32 at address and output as decimal string
                                                      ;     17: $1dd9 [b1_UI16_2_DEC] - ($b1) Read big endian uint16 at address and output as decimal string
                                                      ;     18: $1dec [b2_UI8_2_DEC]  - ($b2) Read uint8 at address and output as decimal string
-                                                     ;     19: $1eb4 [cont_1eb4] - ($b3) ?Output NUL-terminated string?
-                                                     ;     20: $1ebf [cont_1ebf] - ($b4)
+                                                     ;     19: $1eb4 [b3_STRZ]       - ($b3) Output NUL-terminated string at address
+                                                     ;     20: $1ebf [b4_STRZ_IND]   - ($b4) Output NUL-terminated string at address from address (indirect)
 
                 ; ($af) BRK & RTS (triggers break, then returns to caller)
                 ;
@@ -905,252 +916,267 @@
 
                 ; ($ff) End of string found: Save current output position and return to caller.
                 ;
-                ; - Set sav_OUT_COL[dat_0023] = OUT_COL
-                ; - Set sav_OUT_ROW[dat_0023] = OUT_ROW - dat_1fa8[dat_0023]
-                ; - Set tbl_18c7[dat_0023] = dat_0021
+                ; Input
+                ;   dat_0023  - Index to update (0, 1, 2)
+                ;   OUT_COL   - Stored in sav_OUT_COL
+                ;   OUT_ROW   - Stored in sav_OUT_ROW
+                ;   OUT_BLINK - Stored in sav_OUT_BLINK
+                ;
+                ; Output
+                ;   sav_OUT_COL[dat_0023]   - Set to current OUT_COL
+                ;   sav_OUT_ROW[dat_0023]   - Set to current OUT_ROW - TOP_MSG_ROW[dat_0023]
+                ;   sav_OUT_BLINK[dat_0023] - Set to current OUT_BLINK
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
-                ;
-                ; Input
-                ;   OUT_COL  - Value to store in sav_OUT_COL
-                ;   OUT_ROW  -
-                ;   dat_0021 - Value to store in tbl_18c7
-                ;   dat_0023 - index to update (0, 1, 2)
                 ;
 1cd1: a6 23     ff_SAVE_RTS     LDX dat_0023         ; Set X = dat_0023
 1cd3: a5 1f                     LDA OUT_COL          ; Set
 1cd5: 9d c1 18                  STA sav_OUT_COL,X    ;     sav_OUT_COL[X] = OUT_COL
 1cd8: a5 20                     LDA OUT_ROW          ; Set
 1cda: 38                        SEC                  ;     sav_OUT_ROW[X]
-1cdb: fd a8 1f                  SBC dat_1fa8,X       ;       =
-1cde: 9d c4 18                  STA sav_OUT_ROW,X    ;       OUT_ROW - dat_1fa8[X]
-1ce1: a5 21                     LDA dat_0021         ; Set
-1ce3: 9d c7 18                  STA tbl_18c7,X       ;     tbl_18c7[X] = dat_0021
+1cdb: fd a8 1f                  SBC TOP_MSG_ROW,X    ;       =
+1cde: 9d c4 18                  STA sav_OUT_ROW,X    ;       OUT_ROW - TOP_MSG_ROW[X]
+1ce1: a5 21                     LDA OUT_BLINK        ; Set
+1ce3: 9d c7 18                  STA sav_OUT_BLINK,X  ;     sav_OUT_BLINK[X] = OUT_BLINK
 1ce6: 60                        RTS                  ; Return to caller
 
-                ; ($a0) Set normal text (no blink) mode
+                ; ($a0) Turn off blinking text mode
                 ;
-                ; Subsequent characters output to display will not have high bit set.
+                ; Subsequent characters displayed will not automatically have high bit set.
                 ;
-                ; Sets dat_0021 = 0 and jumps to $1cab [loc_1cab] to continue execution
+                ; Output
+                ;   OUT_BLINK  - Set to 0
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1ce7: a9 00     a0_BLINK_OFF    LDA #$00             ; Set
-1ce9: 85 21                     STA dat_0021         ;     dat_0021 = 0
-1ceb: f0 be                     BEQ loc_1cab         ; Continue @ $1cab [loc_1cab]
+1ce9: 85 21                     STA OUT_BLINK        ;     OUT_BLINK = 0
+1ceb: f0 be                     BEQ out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
                 ; ($a1) Set blinking text mode
                 ;
-                ; Subsequent characters output to display will have high bit set.
+                ; All subsequent characters output to display will have high bit set.
                 ;
-                ; Sets dat_0021 = $80 (128) and jumps to $1cab [loc_1cab] to continue execution
+                ; Output
+                ;   OUT_BLINK  - Set to $80 (128)
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1ced: a9 80     a1_BLINK_ON     LDA #$80             ; Set
-1cef: 85 21                     STA dat_0021         ;     dat_0021 = $80 (128)
-1cf1: d0 b8                     BNE loc_1cab         ; Continue @ $1cab [loc_1cab]
+1cef: 85 21                     STA OUT_BLINK        ;     OUT_BLINK = $80 (128)
+1cf1: d0 b8                     BNE out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; ($a4) Reads byte at address and outputs as hex
-                ;
-                ; - Reads address from addr_0016_L/H into sub_add_0018_L/H
-                ; - Retrieves the byte referenced by sub_add_0018_L/H
-                ; - Calls $1e9d [sub_1e9d] with that byte
-                ; - Jumps to $1cab [loc_1cab] to continue execution
+                ; ($a4) Reads address and outputs byte from that location as hex
                 ;
                 ; Input
-                ;   addr_0016_L/H - address of source string.
+                ;   addr_0016_L/H - address of source string template
                 ;
-                ; Return
-                ;   addr_0016_L/H - moved forward 2 bytes
+                ; Output
+                ;   addr_0016_L/H    - moved forward 2 bytes
                 ;   sub_add_0018_L/H - holds address read
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1cf3: 20 26 1f  a4_BYTE2HEX     JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1cf6: b1 18                     LDA (sub_add_0018_L),Y ; Set A = (*sub_add_0018_L)[0]
-1cf8: 20 9d 1e                  JSR sub_1e9d         ; Call $1e9d [sub_1e9d]
-1cfb: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1cf8: 20 9d 1e                  JSR OUT_BYTE2HEX     ; Call $1e9d [OUT_BYTE2HEX]
+1cfb: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
                 ; ($a3) Invoke subroutine at address in next 2 bytes
                 ;
-                ; - Reads address from addr_0016_L/H into sub_add_0018_L/H
-                ; - Calls the subroutine @ sub_add_0018_L/H
-                ; - Jumps to $1cab [loc_1cab] to continue execution
-                ;
                 ; Input
-                ;   addr_0016_L/H - address of source string.
+                ;   addr_0016_L/H - address of source string template
                 ;
-                ; Return
-                ;   addr_0016_L/H - moved forward 2 bytes
+                ; Output
+                ;   addr_0016_L/H    - moved forward 2 bytes
                 ;   sub_add_0018_L/H - holds address read
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1cfe: 20 26 1f  a3_CALL_SUB     JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1d01: 20 07 1d                  JSR sub_1d07         ; Call $1d07 [sub_1d07]
-1d04: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1d04: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
                 ; Dynamically invokes the subroutine @ sub_add_0018_L/H
                 ;
 1d07: 6c 18 00  sub_1d07        JMP (sub_add_0018_L) ; Continue @ (sub_add_0018_L)
 
-                ; ($a5)
-                ;
-                ; - Set dat_1f23 = 0
-                ; - Set dat_0025 = 0
-                ; - Set dat_0026 = 0
-                ; - Set sub_add_0027_L/H = addr_0016_L/H
-                ; - Set A = $80 (128)
-                ; - Set dat_0024 = $80 (128 10000000)
-                ; - Jumps to $1cab [loc_1cab] to continue execution
+                ; ($a5) Start of center-aligned text
                 ;
                 ; Input
-                ;   addr_0016_L/H - address of source string.
+                ;   addr_0016_L/H - address of source string template
+                ;
+                ; Output
+                ;   OUT_ALIGN        - Set to $80 (128 10000000 - Center align)
+                ;   OUT_ALIGN_LEN    - Set to 0 (reset current alignment length)
+                ;   OUT_CLEAR_LFT    - Set to 0 (don't clear from start of line)
+                ;   dat_0026         - Set to 0
+                ;   sub_add_0027_L/H - Set to addr_0016_L/H
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-1d0a: a9 00     cont_1d0a       LDA #$00             ; Set
-1d0c: 8d 23 1f                  STA dat_1f23         ;     dat_1f23 = 0
-1d0f: 85 25     loc_1d0f        STA dat_0025         ; Set dat_0025 = 0
+1d0a: a9 00     a5_CNTR_ALGN    LDA #$00             ; Set
+1d0c: 8d 23 1f                  STA OUT_CLEAR_LFT    ;     OUT_CLEAR_LFT = 0
+1d0f: 85 25     loc_1d0f        STA OUT_ALIGN_LEN    ; Set OUT_ALIGN_LEN = 0
 1d11: 85 26                     STA dat_0026         ; Set dat_0026 = 0
 1d13: a5 16                     LDA addr_0016_L      ; Set
 1d15: 85 27                     STA sub_add_0027_L   ;     sub_add_0027_L/H
 1d17: a5 17                     LDA addr_0016_H      ;     to
 1d19: 85 28                     STA sub_add_0027_H   ;     addr_0016_L/H
 1d1b: a9 80                     LDA #$80             ; Set A = $80 (128)
-1d1d: 85 24                     STA dat_0024         ; Set dat_0024 = $80 (128 10000000)
-1d1f: 30 8a                     BMI loc_1cab         ; Continue @ $1cab [loc_1cab]
+1d1d: 85 24                     STA OUT_ALIGN        ; Set OUT_ALIGN = $80 (128 10000000)
+1d1f: 30 8a                     BMI out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; ($a2)
+                ; ($a2) Clear from start of line (must be set after center alignment mode ($a5))
                 ;
-                ; - Set dat_1f23 = $80 (128)
-                ; - Set A = 0
-                ; - Jumps to $1cab [loc_1cab] to continue execution
+                ; Output
+                ;   A             - Set to 0
+                ;   OUT_CLEAR_LFT - Set to $80 (128 - clear from start of line)
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-1d21: a9 80     cont_1d21       LDA #$80             ; Set
-1d23: 8d 23 1f                  STA dat_1f23         ;     dat_1f23 = $80 (128)
+1d21: a9 80     a2_CLEAR_LFT    LDA #$80             ; Set
+1d23: 8d 23 1f                  STA OUT_CLEAR_LFT    ;     OUT_CLEAR_LFT = $80 (128)
 1d26: a9 00                     LDA #$00             ; Set A = 0
-1d28: f0 e5                     BEQ loc_1d0f         ; Continue @ $1cab [loc_1cab]
+1d28: f0 e5                     BEQ loc_1d0f         ; Continue @ $1cab [out_NEXT_CHAR]
 
                 ; ($a6) Set output position to col/row
                 ;
-                ; Reads the next 2 bytes from addr_0016_L/H
-                ; into OUT_COL and OUT_ROW.
-                ;
-                ; - OUT_COL = addr_0016_L[0]
-                ; - OUT_ROW = addr_0016_L[1] + dat_1fa8[X]
-                ;
                 ; Input
-                ;    addr_0016_L/H - address of source string.
+                ;    addr_0016_L/H - address of source string template
+                ;                     BYTE - new column
+                ;                     BYTE - new row
+                ;    X             - current output mode value (0..2, aka dat_0023)
+                ;
+                ; Output
+                ;   OUT_COL       - Set to addr_0016_L[0]
+                ;   OUT_ROW       - Set to addr_0016_L[1] + TOP_MSG_ROW[X]
+                ;   addr_0016_L/H - moved forward 2 bytes
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1d2a: 20 31 1f  a6_SET_POS      JSR GET_NEXT_BYTE    ; Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
 1d2d: 85 1f                     STA OUT_COL          ; Set OUT_COL = A
 1d2f: 20 31 1f                  JSR GET_NEXT_BYTE    ; Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
 1d32: 18                        CLC                  ; Clear carry flag
-1d33: 7d a8 1f                  ADC dat_1fa8,X       ; Set
-1d36: 85 20                     STA OUT_ROW          ;     OUT_ROW = A + dat_1fa8[X]
-1d38: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_icab]
+1d33: 7d a8 1f                  ADC TOP_MSG_ROW,X    ; Set
+1d36: 85 20                     STA OUT_ROW          ;     OUT_ROW = A + TOP_MSG_ROW[X]
+1d38: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; ($a7)
+                ; ($a7) Start of right-aligned text
                 ;
-                ; - Set sub_add_0027_L/H = addr_0016_L/H
-                ; - Set dat_0024 = $c0 (192, 11000000)
-                ; - Set dat_0025 = 0
-                ; - Set dat_0026 = 0
+                ; Output
+                ;   sub_add_0027_L/H - Set to addr_0016_L/H
+                ;   OUT_ALIGN        - Set to $c0 (192, 11000000 - Right align)
+                ;   OUT_ALIGN_LEN    - Set to 0 (current line length = 0)
+                ;   dat_0026         - Set to 0
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-1d3b: a5 16     cont_1d3b       LDA addr_0016_L      ; Set
+1d3b: a5 16     a7_RGHT_ALGN    LDA addr_0016_L      ; Set
 1d3d: 85 27                     STA sub_add_0027_L   ;     sub_add_0027_L/H
 1d3f: a5 17                     LDA addr_0016_H      ;         =
 1d41: 85 28                     STA sub_add_0027_H   ;           addr_0016_L/H
 1d43: a9 c0                     LDA #$c0             ; Set
-1d45: 85 24                     STA dat_0024         ;     dat_0024 = $c0
+1d45: 85 24                     STA OUT_ALIGN        ;     OUT_ALIGN = $c0
 1d47: a9 00                     LDA #$00             ; Set
-1d49: 85 25                     STA dat_0025         ;     dat_0025 = 0
+1d49: 85 25                     STA OUT_ALIGN_LEN    ;     OUT_ALIGN_LEN = 0
 1d4b: 85 26                     STA dat_0026         ; Set dat_0026 = 0
-1d4d: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1d4d: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; ($a8)
-                ;
-                ; - Set OUT_COL = 0
-                ; - Set OUT_ROW = dat_1fa8[X] + dat_1fab[X]
-                ; - Call
-                ;
-                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; ($a8) Clear all message display rows with NUL chars
                 ;
                 ; Input
-                ;   X - index into dat_1fa8, dat_1fab
+                ;   X              - Should be same as dat_0023. Index into TOP_MSG_ROW, BTM_MSG_ROW
+                ;   TOP_MSG_ROW[X] - First row to clear
+                ;   BTM_MSG_ROW[X] - Last row to clear
                 ;
-1d50: a9 00     cont_1d50       LDA #$00             ; Set
+                ; Output
+                ;   OUT_COL     - Set to 0
+                ;   OUT_ROW     - Set to TOP_MSG_ROW[X] (first message row)
+                ;
+                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
+                ;
+1d50: a9 00     a8_CLR_MESSGE   LDA #$00             ; Set
 1d52: 85 1f                     STA OUT_COL          ;     OUT_COL = 0
-1d54: bd a8 1f                  LDA dat_1fa8,X       ; Set
+1d54: bd a8 1f                  LDA TOP_MSG_ROW,X    ; Set
 1d57: 18                        CLC                  ;     OUT_ROW
-1d58: 7d ab 1f                  ADC dat_1fab,X       ;       =
-1d5b: 85 20                     STA OUT_ROW          ;       dat_1fa8[X] + dat_1fab[X]
-1d5d: 20 7a 1d  loc_1d5d        JSR sub_1d7a         ; Loop
-                                                     ;     Call $1d7a [sub_1d7a]
+1d58: 7d ab 1f                  ADC BTM_MSG_ROW,X    ;       =
+1d5b: 85 20                     STA OUT_ROW          ;       TOP_MSG_ROW[X] + BTM_MSG_ROW[X]
+1d5d: 20 7a 1d  loc_1d5d        JSR NUL_OUT_ROW      ; Loop
+                                                     ;     Call $1d7a [NUL_OUT_ROW]
 1d60: c6 20                     DEC OUT_ROW          ;     Subtract 1 from OUT_ROW
 1d62: a5 20                     LDA OUT_ROW          ; Repeat
 1d64: 38                        SEC                  ;    while
-1d65: fd a8 1f                  SBC dat_1fa8,X       ;    (OUT_ROW - dat_1fa8[X]
+1d65: fd a8 1f                  SBC TOP_MSG_ROW,X    ;    (OUT_ROW - TOP_MSG_ROW[X]
 1d68: c9 ff                     CMP #$ff             ;       !=
 1d6a: d0 f1                     BNE loc_1d5d         ;       $ff (255))
-1d6c: bd a8 1f                  LDA dat_1fa8,X       ; Set
-1d6f: 85 20                     STA OUT_ROW          ;     OUT_ROW = dat_1fa8[X]
-1d71: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1d6c: bd a8 1f                  LDA TOP_MSG_ROW,X    ; Set
+1d6f: 85 20                     STA OUT_ROW          ;     OUT_ROW = TOP_MSG_ROW[X]
+1d71: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; ($a9)
-                ;
-                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
-                ;
-                ; - Call $1d7a [sub_1d7a]
-                ; - Continue @ $1cab [loc_1cab]
-                ;
-1d74: 20 7a 1d  cont_1d74       JSR sub_1d7a         ; Call $1d7a [sub_1d7a]
-1d77: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
-
+                ; ($a9) Clear current row with NUL chars
                 ;
                 ; Input
-                ;   X = byte value to assign
-                ;   OUT_ROW = ?
+                ;   OUT_ROW  - Output row to clear
+                ;
+                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
+                ;
+1d74: 20 7a 1d  a9_CLR_ROW      JSR NUL_OUT_ROW      ; Call $1d7a [NUL_OUT_ROW]
+1d77: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
+
+                ; Writes NUL bytes to all positions of the current OUT_ROW
+                ;
+                ; Input
+                ;   OUT_ROW  - Output row to clear
                 ;
                 ; Output
-                ;   X = dat_0023
+                ;   X        - dat_0023 (expected to be same as value on input)
                 ;
-1d7a: a4 20     sub_1d7a        LDY OUT_ROW          ; Set Y = OUT_ROW
+1d7a: a4 20     NUL_OUT_ROW     LDY OUT_ROW          ; Set Y = OUT_ROW
 1d7c: a9 28                     LDA #$28             ; Set A = $28 (40)
-1d7e: 20 e9 1f                  JSR MUL_8            ; Call $1fe9 [MUL_8] with params A & Y
-1d81: 18                        CLC                  ; Clear the carry flag
-1d82: 69 00                     ADC #$00             ; Self modifying code:
-1d84: 8d 92 1d                  STA smc_1d91+1       ; Set the destination addr
-1d87: a5 03                     LDA dat_0003         ;     for the STA @ $1d91
-1d89: 69 04                     ADC #$04             ;     to (dat_0003 + 4) * 256  (or: $400 [DISP_START] + dat_0003 << 8)
-1d8b: 8d 93 1d                  STA smc_1d91+2       ; Self modifying code: Update the MSB of the destination addr below
+1d7e: 20 e9 1f                  JSR MUL_8            ; Call $1fe9 [MUL_8] with params A & Y (result in A/dat_0003, X = 0)
+1d81: 18                        CLC                  ; Self modifying code:
+1d82: 69 00                     ADC #$00             ;   Set the destination
+1d84: 8d 92 1d                  STA smc_1d91+1       ;     address for
+1d87: a5 03                     LDA dat_0003         ;     the STA @ $1d91
+1d89: 69 04                     ADC #$04             ;     to
+1d8b: 8d 93 1d                  STA smc_1d91+2       ;     $400 [DISP_START] + dat_0003 * 256 + A (same as dat_0002)
 1d8e: a0 27                     LDY #$27             ; Set Y = $27 (39) - 40 iterations
-1d90: 8a                        TXA                  ;
+1d90: 8a                        TXA                  ; Set A = 0  (X = 0 from MUL_8 call above)
 1d91: 99 ff ff  smc_1d91        STA $ffff,Y          ; Loop
-                                                     ;     Set *((dat_0003 + 4) * 256 + Y) = X
+                                                     ;     Set *((dat_0003 + 4) * 256 + Y) = 0
 1d94: 88                        DEY                  ;     Subtract 1 from Y
 1d95: 10 fa                     BPL smc_1d91         ; Repeat while (Y >= 0)
-1d97: a6 23                     LDX dat_0023         ; Set X = dat_0023 (Load X with return value?)
+1d97: a6 23                     LDX dat_0023         ; Set X = dat_0023   (restore X to proper value)
 1d99: 60                        RTS                  ; Return to caller
 
-                ; ($ab)
-                ;
-                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; ($ab) Clear to end of line (current position unchanged)
                 ;
                 ; Input
-                ;   dat_0024 -
-                ;   OUT_ROW  -
+                ;   OUT_ALIGN - Current alignment mode (only clears if bit 7 == 0 / std output mode)
+                ;   OUT_COL   - Current output column position
+                ;   OUT_ROW   - Current output row position
                 ;
-1d9a: 24 24     cont_1d9a       BIT dat_0024         ; If (dat_0024 >= 0)
+                ; Temp
+                ;   dat_0002     - LSB of int16 result of OUT_ROW * 40
+                ;   dat_0003     - MSB of int16 result of OUT_ROW * 40
+                ;   dat_0009_L/H - Used to store address to write spaces to
+                ;
+                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
+                ;
+1d9a: 24 24     ab_CLR_2_EOL    BIT OUT_ALIGN        ; If (OUT_ALIGN bit 7 == 0)  (left alignment/std output mode)
 1d9c: 30 1f                     BMI loc_1dbd         ; Then
 1d9e: a9 28                     LDA #$28             ;     Set A = $28 (40)
 1da0: a4 20                     LDY OUT_ROW          ;     Set Y = OUT_ROW
@@ -1163,7 +1189,7 @@
 1dac: a5 03                     LDA dat_0003         ;     Set
 1dae: 69 04                     ADC #$04             ;         dat_0009_H
 1db0: 85 0a                     STA dat_0009_H       ;           = dat_0003 + 4
-                ;
+                ; Write spaces from current position to end of line
 1db2: a4 1f                     LDY OUT_COL          ;     Set Y = OUT_COL
 1db4: a9 20                     LDA #$20             ;     Set A = $20 (32 ' ')
 1db6: 91 09     loc_1db6        STA (dat_0009_L),Y   ;     Loop
@@ -1172,32 +1198,40 @@
 1db9: c0 28                     CPY #$28             ;     Repeat
 1dbb: 90 f9                     BCC loc_1db6         ;          while (Y < $28 (40))
                                                      ; End If
-1dbd: 4c ab 1c  loc_1dbd        JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1dbd: 4c ab 1c  loc_1dbd        JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; ($aa)
+                ; ($aa) Reset (blink off, standard left-aligned output)
+                ;
+                ; Output
+                ;   OUT_BLINK  - Set to 0  (turn off blink)
+                ;   OUT_ALIGN  - Set to 0  (standard left-aligned output)
                 ;
                 ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-                ; - Set dat_0021 = 0
-                ; - dat_0024 = 0
-                ; - Continue @ $1cab [loc_1cab]
-                ;
-1dc0: a9 00     cont_1dc0       LDA #$00             ; Set
-1dc2: 85 21                     STA dat_0021         ;     dat_0021 = 0
-1dc4: 85 24                     STA dat_0024         ; Set dat_0024 = 0
-1dc6: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1dc0: a9 00     aa_RESET        LDA #$00             ; Set
+1dc2: 85 21                     STA OUT_BLINK        ;     OUT_BLINK = 0
+1dc4: 85 24                     STA OUT_ALIGN        ; Set OUT_ALIGN = 0
+1dc6: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
                 ; ($b0) Read big endian uint32 at address and output as decimal string
                 ;
-                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; - Read address of value to output
+                ; - Read column width
+                ; - Output uint32 @ address to current screen output position as base-10 value
+                ;   - Trailing spaces are output to fill entire width if necessary
+                ;   - If value won't fit, fills space with '!' characters
                 ;
                 ; Input
-                ;   addr_0016_L/H - address of source string containing address and length
+                ;   addr_0016_L/H - address of source string template containing address and length
                 ;                     WORD - address of value to output
-                ;                     BYTE - column width?
+                ;                     BYTE - output width
                 ;
                 ; Output
                 ;   addr_0016_L/H - moved forward 3 bytes
+                ;
+                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1dc9: 20 26 1f  b0_UI32_2_DEC   JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
                 ; Copy 4 bytes (big endian) from sub_add_0018_L/H to tmp_BE_UINT32
@@ -1206,19 +1240,26 @@
 1dd1: c8                        INY                  ;     Add 1 to Y
 1dd2: c0 04                     CPY #$04             ; Repeat
 1dd4: 90 f6                     BCC loc_1dcc         ;     while (Y < 4)
-1dd6: 4c f9 1d                  JMP loc_1df9         ; Continue @ $1df9 [loc_1df9]
+1dd6: 4c f9 1d                  JMP cont_UI32_2_DEC  ; Continue @ $1df9 [cont_UI32_2_DEC]
 
                 ; ($b1) Read big endian uint16 at address and output as decimal string
                 ;
-                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; - Read address of value to output
+                ; - Read column width
+                ; - Output uint16 @ address to current screen output position as base-10 value
+                ;   - Trailing spaces are output to fill entire width if necessary
+                ;   - If value won't fit, fills space with '!' characters
                 ;
                 ; Input
-                ;   addr_0016_L/H - address of source string containing address and length
+                ;   addr_0016_L/H - address of source string template containing address and length
                 ;                     WORD - address of value to output
-                ;                     BYTE - column width?
+                ;                     BYTE - output width
                 ;
                 ; Output
                 ;   addr_0016_L/H - moved forward 3 bytes
+                ;
+                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1dd9: 20 26 1f  b1_UI16_2_DEC   JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1ddc: 84 29                     STY tmp_BE_UINT32    ; Set tmp_BE_UINT32[0] = 0
@@ -1228,21 +1269,30 @@
 1de4: c8                        INY                  ; Add 1 to Y
 1de5: b1 18                     LDA (sub_add_0018_L),Y ; Set
 1de7: 85 2c                     STA tmp_BE_UINT32+3  ;     tmp_BE_UINT32[3] = (sub_add_0018_L)[1]
-1de9: 4c f9 1d                  JMP loc_1df9         ; Continue @ $1df9 [loc_1df9]
+1de9: 4c f9 1d                  JMP cont_UI32_2_DEC  ; Continue @ $1df9 [cont_UI32_2_DEC]
 
                 ; ($b2) Read uint8 at address and output as decimal string
                 ;
                 ; - Read address of value to output
                 ; - Read column width
                 ; - Output uint8 @ address to current screen output position as base-10 value
-                ;
-                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ;   - Trailing spaces are output to fill entire width if necessary
+                ;   - If value won't fit, fills space with '!' characters
                 ;
                 ; Input
-                ;   addr_0016_L/addr_0016_H - the address of string template
+                ;   addr_0016_L/H - the address of string template
+                ;                     WORD - address of value to output
+                ;                     BYTE - output width
                 ;
-                ; Return
-                ;   addr_0016_L/H - moved forward 3 bytes
+                ; Output
+                ;   addr_0016_L/H  - moved forward 3 bytes
+                ;
+                ; Temp
+                ;   OUT_UBCD_BUF   - holds unpacked BCD value
+                ;   OUT_WIDTH      - assigned the width read
+                ;
+                ; Indirectly called using lookup tables tbl_1fd4_L/tbl_1fbf_H
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1dec: 20 26 1f  b2_UI8_2_DEC    JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1def: 84 29                     STY tmp_BE_UINT32    ; Set tmp_BE_UINT32[0] = 0
@@ -1253,8 +1303,8 @@
                 ; This location is also called from $1dc9 [b0_UI32_2_DEC] and $1dd9 [b1_UI16_2_DEC]
                 ; Before this point, tmp_BE_UINT32 is loaded with a big-endian uint32 value
                 ; Reads length? mode? from addr_0016_L/H, then outputs in decimal
-1df9: 20 31 1f  loc_1df9        JSR GET_NEXT_BYTE    ; Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
-1dfc: 85 2d                     STA dat_002d         ; Set dat_002d = A (length? mode?)
+1df9: 20 31 1f  cont_UI32_2_DEC  JSR GET_NEXT_BYTE    ; Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
+1dfc: 85 2d                     STA OUT_WIDTH        ; Set OUT_WIDTH = A
                 ; Convert binary uint32 () to 32-bit BCD (8 decimal digits)
                 ; ----
 1dfe: f8                        SED                  ; Set D = 1 (Turn on decimal mode for ADC/SBC)
@@ -1298,15 +1348,16 @@
 1e2f: d8                        CLD                  ; Set D = 0 (Turn off decimal mode)
 1e30: a2 00                     LDX #$00             ; Set X = 0
 1e32: a0 00                     LDY #$00             ; Set Y = 0
-1e34: 20 8b 1e  loc_1e34        JSR sub_1e8b         ; Loop
-                                                     ;     Call $1e8b [sub_1e8b]
+1e34: 20 8b 1e  loc_1e34        JSR UNPCK_BCD_BYTE   ; Loop
+                                                     ;     Call $1e8b [UNPCK_BCD_BYTE]
 1e37: e8                        INX                  ;     Add 1 to X
 1e38: e0 04                     CPX #$04             ; Repeat
 1e3a: 90 f8                     BCC loc_1e34         ;   While (X < 4)
+                ; Find position of first non-zero byte of value
 1e3c: a2 00                     LDX #$00             ; Set X = 0
-1e3e: a0 08                     LDY #$08             ; Set Y = 8 (8 iterations)
-1e40: bd ca 18  loc_1e40        LDA dat_18ca,X       ; Loop
-                                                     ;     If (dat_18ca[X] == 0) Then
+1e3e: a0 08                     LDY #$08             ; Set Y = 8 (max 8 iterations/digits)
+1e40: bd ca 18  loc_1e40        LDA OUT_UBCD_BUF,X   ; Loop
+                                                     ;     If (OUT_UBCD_BUF[X] == 0) Then
 1e43: d0 06                     BNE loc_1e4b         ;         Continue @ $1e4b [loc_1e4b]
                                                      ;     End If
 1e45: e8                        INX                  ;     Add 1 to X
@@ -1315,128 +1366,154 @@
                 ; If no match was found in the loop, then backup one step
 1e49: ca                        DEX                  ; Subtract 1 from X (X = 7)
 1e4a: c8                        INY                  ; Add 1 to Y        (Y = 1)
-                ;
+                ; If value would exceed max width, fill with '!' chars
+                ; Otherwise, output the decoded decimal value
 1e4b: 38        loc_1e4b        SEC                  ; Set A
-1e4c: a5 2d                     LDA dat_002d         ;       =
-1e4e: f9 ae 1f                  SBC dat_1fae,Y       ;         dat_002d - dat_1fae[Y]
+1e4c: a5 2d                     LDA OUT_WIDTH        ;       =
+1e4e: f9 ae 1f                  SBC OUT_DEC_WID,Y    ;         OUT_WIDTH - OUT_DEC_WID[Y]
 1e51: 90 2b                     BCC loc_1e7e         ; If (A < 0) Then
-                                                     ;     (from below)
-                                                     ;
-                                                     ;
+                                                     ;     Continue @ $1e7e [loc_1e7e]
                                                      ; Else
-1e53: 85 2d                     STA dat_002d         ;     Set dat_002d = A
-1e55: bd b7 1f                  LDA dat_1fb7,X       ;     Set
-1e58: a8                        TAY                  ;         Y = dat_1fb7[X]
-1e59: bd ca 18  loc_1e59        LDA dat_18ca,X       ;     Loop
-1e5c: 09 30                     ORA #$30             ;         Set A = dat_18ca[X] | $30  (to ASCII digit character)
-1e5e: 20 3c 1f                  JSR sub_1f3c         ;         Call $1f3c [sub_1f3c]      Note: sub_1f3c may not return and may jump to loc_1cab instead
+1e53: 85 2d                     STA OUT_WIDTH        ;     Set OUT_WIDTH = A
+1e55: bd b7 1f                  LDA OUT_TS_DIGTS,X   ;     Set        (Y = number of digits before thousands separator)
+1e58: a8                        TAY                  ;         Y = OUT_TS_DIGTS[X]
+1e59: bd ca 18  loc_1e59        LDA OUT_UBCD_BUF,X   ;     Loop
+1e5c: 09 30                     ORA #$30             ;         Set A = OUT_UBCD_BUF[X] | $30  (to ASCII digit character)
+1e5e: 20 3c 1f                  JSR ALGN_OUTPUT_CH   ;         Call $1f3c [ALGN_OUTPUT_CH]
 1e61: 88                        DEY                  ;         Subtract 1 from Y
 1e62: d0 08                     BNE loc_1e6c         ;         If (Y == 0) Then
 1e64: a9 2c                     LDA #$2c             ;             Set A = $2c (34 ',')
-1e66: 20 3c 1f                  JSR sub_1f3c         ;             Call $1f3c [sub_1f3c]  Note: sub_1f3c may not return and may jump to loc_1cab instead
-1e69: bc b8 1f                  LDY dat_1fb8,X       ;             Set Y = dat_1fb8[X]
+1e66: 20 3c 1f                  JSR ALGN_OUTPUT_CH   ;             Call $1f3c [ALGN_OUTPUT_CH]
+1e69: bc b8 1f                  LDY OUT_TS_DIGTS+1,X ;             Set Y = OUT_TS_DIGTS+1[X]
                                                      ;         End If
 1e6c: e8        loc_1e6c        INX                  ;         Add 1 to X
 1e6d: e0 08                     CPX #$08             ;     Repeat
 1e6f: 90 e8                     BCC loc_1e59         ;       While (X < 8)
-1e71: 2c fe 18                  BIT loc_18fe         ;     If (loc_18fe < 0)
-1e74: 30 12                     BMI loc_1e88         ;        Or (dat_002d == 0)
-1e76: a5 2d                     LDA dat_002d         ;     Then
-1e78: f0 0e                     BEQ loc_1e88         ;         Continue @ $1e88 [loc_1e88]
+1e71: 2c fe 18                  BIT dat_18fe         ;     If (dat_18fe < 0)
+1e74: 30 12                     BMI loc_1e88         ;        Or (OUT_WIDTH == 0)
+1e76: a5 2d                     LDA OUT_WIDTH        ;     Then
+1e78: f0 0e                     BEQ loc_1e88         ;         Continue @ $1e88 [loc_1e88] -> $1cab [out_NEXT_CHAR]
 1e7a: a9 20                     LDA #$20             ;     Set A = $20 (32 ' ')
-1e7c: d0 03                     BNE loc_1e81         ; End If
-                ;
+1e7c: d0 03                     BNE loc_1e81         ;     Continue @ $1e81 [loc_1e81] (fill remainder with spaces)
+                                                     ; End If
+                ; Value doesn't fit. Fill space with '!' characters
 1e7e: d8        loc_1e7e        CLD                  ; Set D = 0 (Turn off decimal mode)
 1e7f: a9 21                     LDA #$21             ; Set A = $21 (33 '!')
-1e81: 20 3c 1f  loc_1e81        JSR sub_1f3c         ; Loop
-                                                     ;     Call $1f3c [sub_1f3c]         Note: sub_1f3c may not return and may jump to loc_1cab instead
-1e84: c6 2d                     DEC dat_002d         ;     Subtract 1 from dat_002d
-1e86: d0 f9                     BNE loc_1e81         ; Repeat while (dat_002d)
-1e88: 4c ab 1c  loc_1e88        JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+                ; Fill remaining space with value in A (either ' ' or '!')
+1e81: 20 3c 1f  loc_1e81        JSR ALGN_OUTPUT_CH   ; Loop
+                                                     ;     Call $1f3c [ALGN_OUTPUT_CH]         Note: ALGN_OUTPUT_CH may not return and may jump to out_NEXT_CHAR instead
+1e84: c6 2d                     DEC OUT_WIDTH        ;     Subtract 1 from OUT_WIDTH
+1e86: d0 f9                     BNE loc_1e81         ; Repeat while (OUT_WIDTH != 0)
+1e88: 4c ab 1c  loc_1e88        JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; Splits the nibbles of dat_0002[X] into dat_18ca[Y] (lo) and dat_18ca[Y + 1] (hi)
+                ; Unpacks BCD value
+                ; Splits the nibbles of dat_0002[X] into OUT_UBCD_BUF[Y] (lo) and OUT_UBCD_BUF[Y + 1] (hi)
                 ;
                 ; Input
-                ;   X = index relative to dat_0002
-                ;   Y = index relative to dat_18ca
+                ;   X           - index relative to dat_0002
+                ;   Y           - index relative to OUT_UBCD_BUF
+                ;   dat_0002[X] - source byte
                 ;
-                ; Return
-                ;   dat_18ca[Y]   = (dat_0002[X] >> 4) & $0f
-                ;   dat_18ca[Y+1] = dat_0002[X] & $0f
-                ;   Y = increased by 2
+                ; Output
+                ;   OUT_UBCD_BUF[Y]   - (dat_0002[X] >> 4) & $0f
+                ;   OUT_UBCD_BUF[Y+1] - dat_0002[X] & $0f
+                ;   Y                 - increased by 2
                 ;
-1e8b: b5 02     sub_1e8b        LDA dat_0002,X       ; Set
+1e8b: b5 02     UNPCK_BCD_BYTE  LDA dat_0002,X       ; Set
 1e8d: 4a                        LSR                  ;     A = dat_0002[X] >>> 4
 1e8e: 4a                        LSR                  ;         (e.g. divide by 16)
 1e8f: 4a                        LSR                  ; ...
 1e90: 4a                        LSR                  ; ...
-1e91: 20 98 1e                  JSR sub_1e98         ; Call $1e98 [sub_1e98]     (process high nibble)
+1e91: 20 98 1e                  JSR UNPCK_BCD_NBBL   ; Call $1e98 [UNPCK_BCD_NBBL]     (process high nibble)
 1e94: b5 02                     LDA dat_0002,X       ; Set
 1e96: 29 0f                     AND #$0f             ;     A = dat_0002[X] & $0f (process low nibble)
-                ; Process the nibble in lowest 4 bits of A
-1e98: 99 ca 18  sub_1e98        STA dat_18ca,Y       ; Set dat_18ca[Y] = dat_0002[X] & $0f
+                ; Place low nibble of A into OUT_UBCD_BUF[Y]
+                ;
+                ; Input
+                ;   A      - low nibble is value to store
+                ;   Y      - index relative to OUT_UBCD_BUF
+                ;
+                ; Output
+                ;   OUT_UBCD_BUF[Y] - A & $0f
+                ;
+1e98: 99 ca 18  UNPCK_BCD_NBBL  STA OUT_UBCD_BUF,Y   ; Set OUT_UBCD_BUF[Y] = A
 1e9b: c8                        INY                  ; Add 1 to Y
 1e9c: 60                        RTS                  ; Return to caller
 
-                ; Convert byte in A to a 2 character hex representation
+                ; Output byte in A as 2 character hex representation
                 ;
                 ; For the high and low nibbles of A:
                 ; - A_parm = ((A_in >> 4) & $0f) + '0'
                 ;   If (A_parm > '9') Then A_parm += 7
-                ; - Call sub_1f3c (A = A_parm)
+                ; - Call ALGN_OUTPUT_CH (A = A_parm)
                 ;
                 ; Input
                 ;   A = value to process
                 ;
-1e9d: 48        sub_1e9d        PHA                  ; Save current value of A
+1e9d: 48        OUT_BYTE2HEX    PHA                  ; Save current value of A
 1e9e: 4a                        LSR                  ; Divide
 1e9f: 4a                        LSR                  ;     A by 16
 1ea0: 4a                        LSR                  ;     and process
 1ea1: 4a                        LSR                  ;     the high
-1ea2: 20 a8 1e                  JSR sub_1ea8         ;     nibble
+1ea2: 20 a8 1e                  JSR OUT_NBBL2HEX     ;     nibble
 1ea5: 68                        PLA                  ; Restore previous value of A
 1ea6: 29 0f                     AND #$0f             ;     and process the low nibble
-                ; Process the nibble in lowest 4 bits of A
-1ea8: 18        sub_1ea8        CLC                  ; Set C = 0
+                ; Output low nibble of A as hex character
+1ea8: 18        OUT_NBBL2HEX    CLC                  ; Set C = 0
 1ea9: 69 30                     ADC #$30             ; Set A += $30 (48 '0')    (Assume digit)
 1eab: c9 3a                     CMP #$3a             ; If (A >= $3a (58 ':')) Then
 1ead: 90 02                     BCC loc_1eb1         ;     Set A += 7           (Map 10-15 -> A-F)
 1eaf: 69 06                     ADC #$06             ; End If
-1eb1: 4c 3c 1f  loc_1eb1        JMP sub_1f3c         ; Continue @ $1f3c [sub_1f3c]
+1eb1: 4c 3c 1f  loc_1eb1        JMP ALGN_OUTPUT_CH   ; Continue @ $1f3c [ALGN_OUTPUT_CH]
 
-                ; ($b3) Output NUL-terminated string
+                ; ($b3) Output NUL-terminated string at address
                 ;
                 ; - Reads address (uint16)
                 ; - Reads max width
                 ; - Outputs NUL-terminated string @ address to current screen position
+                ;   - Stops at NUL or when max width is reached.
                 ;
                 ; Input
-                ;   addr_0016_L/addr_0016_H - the address of string template
+                ;   addr_0016_L/H - the address of string template
+                ;                     WORD - address of string to output
+                ;                     BYTE - max output width
                 ;
-                ; Return
+                ; Output
                 ;   sub_add_0018_L/H - assigned the address read
+                ;   OUT_WIDTH        - assigned the width read
+                ;   addr_0016_L/H    - moved forward 3 bytes
                 ;
                 ; This location is indirectly jumped to from sub_1c84
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-1eb4: 20 26 1f  cont_1eb4       JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
+1eb4: 20 26 1f  b3_STRZ         JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1eb7: 20 31 1f                  JSR GET_NEXT_BYTE    ; Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
-1eba: 85 2d                     STA dat_002d         ; Set dat_002d = A
+1eba: 85 2d                     STA OUT_WIDTH        ; Set OUT_WIDTH = A
 1ebc: 4c d4 1e                  JMP loc_1ed4         ; Continue @ $1ed4 [loc_1ed4]
 
-                ; ($b4) Output indirect NUL-terminated string
+                ; ($b4) Output NUL-terminated string at address from address (indirect)
                 ;
-                ; - Reads address (uint16)
+                ; - Reads address (uint16) to pull string address from
                 ; - Reads max width
                 ; - Outputs NUL-terminated string @ address to current screen position
+                ;   - Stops at NUL or when max width is reached.
                 ;
                 ; Input
-                ;   addr_0016_L/addr_0016_H - the address of string template
+                ;   addr_0016_L/H - the address of string template
+                ;                     WORD - address to retrieve address of string to output from
+                ;                     BYTE - max output width
+                ;
+                ; Output
+                ;   sub_add_0018_L/H - assigned the address read
+                ;   OUT_WIDTH        - assigned the width read
+                ;   addr_0016_L/H    - moved forward 3 bytes
                 ;
                 ; This location is indirectly jumped to from sub_1c84
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-1ebf: 20 26 1f  cont_1ebf       JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
+1ebf: 20 26 1f  b4_STRZ_IND     JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1ec2: 20 31 1f                  JSR GET_NEXT_BYTE    ; Call $1f31 [GET_NEXT_BYTE] (Byte in A, Y = 0)
-1ec5: 85 2d                     STA dat_002d         ; Set dat_002d = A
+1ec5: 85 2d                     STA OUT_WIDTH        ; Set OUT_WIDTH = A
                 ; This next section updates sub_add_0018_L/H to address read from current address.
                 ; Essentially:
                 ;   Set sub_add_0018_L/H = (int16) (*sub_add_0018_L/H)
@@ -1454,25 +1531,37 @@
                 ; Input
                 ;   Y                - Offset from sub_add_0018_L/H to start at
                 ;   sub_add_0018_L/H - Base address of string to output
-                ;   dat_002d         - Length / column width?
+                ;   OUT_WIDTH        - Max number of characters to output
                 ;
-                ; Return
-                ;   Y - Offset from sub_add_0018_L/H to terminating NUL byte of string
+                ; Output
+                ;   Y     - Offset from sub_add_0018_L/H to terminating NUL byte of string
+                ;
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
 1ed4: b1 18     loc_1ed4        LDA (sub_add_0018_L),Y ; Loop
                                                      ;     Set A = (sub_add_0018_L)[Y]
-                                                     ;     If (A == 0) Then
+                                                     ;     If (A == 0) Then  (end of string)
 1ed6: f0 08                     BEQ loc_1ee0         ;         Exit Loop
                                                      ;     End If
-1ed8: 20 3c 1f                  JSR sub_1f3c         ;     Call $1f3c [sub_1f3c]  Note: sub_1f3c may not return and may jump to loc_1cab instead
+1ed8: 20 3c 1f                  JSR ALGN_OUTPUT_CH   ;     Call $1f3c [ALGN_OUTPUT_CH]  Note: ALGN_OUTPUT_CH may not return and may jump to out_NEXT_CHAR instead
 1edb: c8                        INY                  ;     Add 1 to Y
-1edc: c4 2d                     CPY dat_002d         ; Repeat
-1ede: 90 f4                     BCC loc_1ed4         ;   While (Y < dat_002d)
-1ee0: 4c ab 1c  loc_1ee0        JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1edc: c4 2d                     CPY OUT_WIDTH        ; Repeat
+1ede: 90 f4                     BCC loc_1ed4         ;   While (Y < OUT_WIDTH)
+1ee0: 4c ab 1c  loc_1ee0        JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; This location is indirectly jumped to from sub_1c84
+                ; ($ac) Read address and continue processing from that location
                 ;
-1ee3: 20 26 1f  cont_1ee3       JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
+                ; Input
+                ;   addr_0016_L/H - Address of source string template
+                ;
+                ; Output
+                ;   dat_1f24_L/H  - Assigned previous value of addr_0016_L/H
+                ;   addr_0016_L/H - Assigned new address read from original addr_0016_L/H string on input
+                ;
+                ; This location is indirectly jumped to from sub_1c84
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
+                ;
+1ee3: 20 26 1f  ac_FOLLOW       JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1ee6: a5 16                     LDA addr_0016_L      ; Set
 1ee8: 8d 24 1f                  STA dat_1f24_L       ;     dat_1f24_L = addr_0016_L
 1eeb: a5 17                     LDA addr_0016_H      ; Set
@@ -1481,33 +1570,51 @@
 1ef2: 85 16                     STA addr_0016_L      ;     addr_0016_L = sub_add_0018_L
 1ef4: a5 19                     LDA sub_add_0018_H   ; Set
 1ef6: 85 17                     STA addr_0016_H      ;     addr_0016_H = sub_add_0018_H
-1ef8: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1ef8: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
+                ; ($ad) Read address at address and continue processing from that location (indirect)
+                ;
+                ; Input
+                ;   addr_0016_L/H - Address of source string template
+                ;
+                ; Output
+                ;   dat_1f24_L/H  - Assigned previous value of addr_0016_L/H
+                ;   addr_0016_L/H - Assigned address at location read from original addr_0016_L/H string
+                ;
                 ; This location is indirectly jumped to from sub_1c84
-1efb: 20 26 1f  cont_1efb       JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
+                ;
+1efb: 20 26 1f  ad_FOLLOW_IND   JSR GET_NEXT_WORD    ; Call $1f26 [GET_NEXT_WORD] (Also sets Y = 0)
 1efe: a5 16                     LDA addr_0016_L      ; Set
 1f00: 8d 24 1f                  STA dat_1f24_L       ;     dat_1f24_L = addr_0016_L
 1f03: a5 17                     LDA addr_0016_H      ; Set
 1f05: 8d 25 1f                  STA dat_1f24_H       ;     dat_1f24_H = addr_0016_H
-1f08: a0 00                     LDY #$00             ;
-1f0a: b1 18                     LDA (sub_add_0018_L),Y ;
-1f0c: 85 16                     STA addr_0016_L      ;
-1f0e: c8                        INY                  ;
-1f0f: b1 18                     LDA (sub_add_0018_L),Y ;
-1f11: 85 17                     STA addr_0016_H      ;
-1f13: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1f08: a0 00                     LDY #$00             ; Set Y = 0
+1f0a: b1 18                     LDA (sub_add_0018_L),Y ; Set
+1f0c: 85 16                     STA addr_0016_L      ;     addr_0016_L = (*sub_add_0018_L)[0]
+1f0e: c8                        INY                  ; Add 1 to Y
+1f0f: b1 18                     LDA (sub_add_0018_L),Y ; Set
+1f11: 85 17                     STA addr_0016_H      ;     addr_0016_H = (*sub_add_0018_L)[1]
+1f13: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-                ; Copies addr_0016_L/H to dat_1f24_L/H
+                ; ($ae) Return to previous template with last $ac or $ad code executed.
+                ;
+                ; Input
+                ;   dat_1f24_L/H  - Address to return to
+                ;
+                ; Output
+                ;   addr_0016_L/H - Set to value stored in dat_1f24_L/H
                 ;
                 ; This location is indirectly jumped to from sub_1c84
+                ; Jumps back to $1cab [out_NEXT_CHAR] to continue execution
                 ;
-1f16: ad 24 1f  cont_1f16       LDA dat_1f24_L       ; Set
-1f19: 85 16                     STA addr_0016_L      ;     dat_1f24_L/H
+1f16: ad 24 1f  ae_RETURN       LDA dat_1f24_L       ; Set
+1f19: 85 16                     STA addr_0016_L      ;     addr_0016_L/H
 1f1b: ad 25 1f                  LDA dat_1f24_H       ;     to
-1f1e: 85 17                     STA addr_0016_H      ;     addr_0016_L/H
-1f20: 4c ab 1c                  JMP loc_1cab         ; Continue @ $1cab [loc_1cab]
+1f1e: 85 17                     STA addr_0016_H      ;     dat_1f24_L/H
+1f20: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
 
-1f23: 00        dat_1f23        .BYTE $00            ;
+1f23: 00        OUT_CLEAR_LFT   .BYTE $00            ; If bit 7 == 1, will clear left edge of screen when center-aligning output
 1f24: 00        dat_1f24_L      .BYTE $00            ;
 1f25: 00        dat_1f24_H      .BYTE $00            ;
 
@@ -1545,103 +1652,122 @@
 1f39: e6 17                     INC addr_0016_H      ;     then carry over to addr_0016_H
 1f3b: 60        loc_1f3b        RTS                  ; Return to caller
 
-                ; Outputs a character (into a fixed width field or with alignment?)
-                ;
-                ; Some code seems to be related to computing positioning and/or length as well as dealing
-                ; with line breaks ($0d CR).
+                ; Outputs a character or computes output alignment for a character.
                 ;
                 ; Input
-                ;   A - ATASCII character code
-                ;   dat_0024 - only bit 7 (sign) and bit 6 are examined.
-                ;                Bit 7 may control length calc (1) vs output (0)
-                ;                Bit 6 may indicate right alignment?
-                ;   dat_0025 - length of string?
-                ;   dat_0026 - Updated to $0d if dat_0024 >= 0 and dat_0026 < 0 and A = $0d
+                ;   A        - ATASCII character code
+                ;   OUT_ALIGN - Only bit 7 (sign) and bit 6 are used
+                ;                Bit 7-6: 0? - Character in A is output if not $0d (13)
+                ;                         10 - Compute center alignment
+                ;                         11 - Compute right alignment
+                ;   dat_0026 - Only bit 7 is significant. Applied when OUT_ALIGN bit 7 = 0
+                ;                Bit 7: 0 - Output CR chars normally
+                ;                       1 - Do not output next CR (flag cleared after next CR skipped)
+                ;   OUT_CLEAR_LFT - Only bit 7 (sign) is used
+                ;                Bit 7: 0 - Do not write spaces
+                ;                       1 - Write spaces from left of screen to start position when CR found
+                ;                           and center justify mode is set in OUT_ALIGN.
+                ;   OUT_ALIGN_LEN  - Count of non-CR characters encountered in previous calls.
                 ;
-                ; Return
-                ;   dat_0024 - Set to 0 if (dat_0024 bit 7 is 1 or dat_0026 >= 0) and A == $0d (13 CR)
-                ;   dat_0025 - Incremented if dat_0024 bit 7 is 1 and A != $0d (13 CR)
-                ;   dat_0026 - Set to $0d (13 CR) if dat_0024 bit 7 is 0, dat_0026 < 0 and A is $0d (13 CR)
-                ;              Set to $80 if bit 6 of dat_0024 = 1
-                ;   OUT_COL  -
-                ;   addr_0016_L/H - Set equal to sub_add_0027_L/H if (dat_0024 bit 7 = 0 or dat_0026 >= 0) and A == $0d and dat_0024 bit 6 is 1
+                ; Output
+                ;   OUT_ALIGN     - Set to 0 if (OUT_ALIGN bit 7 is 1 or dat_0026 bit 7 is 0) and A == $0d (13 CR)
+                ;   OUT_ALIGN_LEN - Incremented if A != $0d (13 CR)
+                ;   dat_0026 - Set to $0d (13 CR) if OUT_ALIGN bit 7 is 0, dat_0026 < 0 and A is $0d (13 CR)
+                ;              Set to $80 if bit 6 of OUT_ALIGN = 1
+                ;   OUT_COL  - Updated to align output
+                ;   addr_0016_L/H - Set equal to sub_add_0027_L/H if (OUT_ALIGN bit 7 = 0 or dat_0026 >= 0) and A == $0d and OUT_ALIGN bit 6 is 1
                 ;
-1f3c: 24 24     sub_1f3c        BIT dat_0024         ; If (dat_0024 bit 7 is 0)
+1f3c: 24 24     ALGN_OUTPUT_CH  BIT OUT_ALIGN        ; If (OUT_ALIGN bit 7 == 0)
 1f3e: 30 0e                     BMI loc_1f4e         ; Then
-1f40: 24 26                     BIT dat_0026         ;     If (dat_0026 < 0)
-1f42: 10 07                     BPL loc_1f4b         ;     Then
-1f44: c9 0d                     CMP #$0d             ;         If (A == $0d (13 CR))
-1f46: d0 03                     BNE loc_1f4b         ;         Then
-1f48: 85 26                     STA dat_0026         ;             Set dat_0026 = A ($0d (13 CR))
-1f4a: 60                        RTS                  ;             Return to caller
-                                                     ;         End If
-1f4b: 4c 2c 1c  loc_1f4b        JMP OUTPUT_CHAR      ;         Continue @ $1c2c [OUTPUT_CHAR]
+1f40: 24 26                     BIT dat_0026         ;     If (dat_0026 bit 7 == 1)
+1f42: 10 07                     BPL loc_1f4b         ;        And
+1f44: c9 0d                     CMP #$0d             ;        (A == $0d (13 CR))
+1f46: d0 03                     BNE loc_1f4b         ;     Then
+                ; In output mode and CR and dat_0026 bit 7 set,
+                ; so clear dat_0026 bit 7 and return
+1f48: 85 26                     STA dat_0026         ;         Set dat_0026 = A ($0d (13 CR))
+1f4a: 60                        RTS                  ;         Return to caller
                                                      ;     End If
+                ; In output mode and non-CR so output character to the screen
+1f4b: 4c 2c 1c  loc_1f4b        JMP OUTPUT_CHAR      ;     Continue @ $1c2c [OUTPUT_CHAR]
                                                      ; End If
 1f4e: c9 0d     loc_1f4e        CMP #$0d             ; If (A != $0d (13 CR))
 1f50: f0 03                     BEQ loc_1f55         ; Then
-1f52: e6 25                     INC dat_0025         ;     Add 1 to dat_0025
+1f52: e6 25                     INC OUT_ALIGN_LEN    ;     Add 1 to OUT_ALIGN_LEN
 1f54: 60                        RTS                  ;     Return to caller
                                                      ; End If
+                ; CR found and in length calc mode (OUT_ALIGN bit 7 == 1)
+                ;
 1f55: a9 00     loc_1f55        LDA #$00             ; Set
-1f57: 24 24                     BIT dat_0024         ;     V = bit 6 of dat_0024
-1f59: 85 24                     STA dat_0024         ; Set dat_0024 = 0
-1f5b: 50 20                     BVC loc_1f7d         ; If (V == 1) Then
-1f5d: a9 28                     LDA #$28             ;     Set
-1f5f: 38                        SEC                  ;         A
-1f60: e5 25                     SBC dat_0025         ;           = $28 (40) - dat_0025    TODO: Could this be right justification?
-1f62: c9 28                     CMP #$28             ;     If (A >= $28 (40)) Then
-1f64: 90 02                     BCC loc_1f68         ;         Set A = 0
-1f66: a9 00                     LDA #$00             ;     End If
-1f68: 85 1f     loc_1f68        STA OUT_COL          ;     Set OUT_COL = A
-1f6a: d0 04                     BNE loc_1f70         ;     If (A == 0) Then Continue @ $1f70 [loc_1f70] (skip next assignment)
-1f6c: a9 80     loc_1f6c        LDA #$80             ;     Set
-1f6e: 85 26                     STA dat_0026         ;         dat_0026 = $80
+1f57: 24 24                     BIT OUT_ALIGN        ;     V = bit 6 of OUT_ALIGN
+1f59: 85 24                     STA OUT_ALIGN        ; Set OUT_ALIGN = 0
+1f5b: 50 20                     BVC loc_1f7d         ; If (V == 0) Then
+                                                     ;     Continue @ $1f7d [loc_1f7d]
+                                                     ; End If
+                ; This section right-justifies the output by subtracting the number
+                ;     of characters encountered so far from 40.
+1f5d: a9 28                     LDA #$28             ; Set          (Compute column from right side of of screen)
+1f5f: 38                        SEC                  ;     A
+1f60: e5 25                     SBC OUT_ALIGN_LEN    ;       = $28 (40) - OUT_ALIGN_LEN
+1f62: c9 28                     CMP #$28             ; If (A >= $28 (40)) Then
+1f64: 90 02                     BCC loc_1f68         ;     Set A = 0, Z = 1    (underflow)
+1f66: a9 00                     LDA #$00             ; End If
+1f68: 85 1f     loc_1f68        STA OUT_COL          ; Set OUT_COL = A
+1f6a: d0 04                     BNE loc_1f70         ; If (A != 0) Then
+                                                     ;     Continue @ $1f70 [loc_1f70] (skip next assignment)
+                                                     ; End If
+                ;
+1f6c: a9 80     loc_1f6c        LDA #$80             ; Set
+1f6e: 85 26                     STA dat_0026         ;     dat_0026 = $80
+
                 ; At this point, the sub will not return to the caller.
                 ; Instead:
                 ;   - Discard caller return address
                 ;   - Set addr_0016_L/H = sub_add_0027_L/H
-                ;   - Continue @ $1cab [loc_1cab]
-1f70: 68        loc_1f70        PLA                  ;     Pop and discard
-1f71: 68                        PLA                  ;         caller return address
-1f72: a5 27                     LDA sub_add_0027_L   ;     Set
-1f74: 85 16                     STA addr_0016_L      ;         addr_0016_L/H
-1f76: a5 28                     LDA sub_add_0027_H   ;         to
-1f78: 85 17                     STA addr_0016_H      ;         sub_add_0027_L/H
-1f7a: 4c ab 1c                  JMP loc_1cab         ;     Continue @ $1cab [loc_1cab]
-                                                     ; End If
-                ; We get here if A != $d (13) and bit 6 of dat_0024 on sub entry == 0
+                ;   - Continue @ $1cab [out_NEXT_CHAR]
+1f70: 68        loc_1f70        PLA                  ; Pop and discard
+1f71: 68                        PLA                  ;     caller return address
+1f72: a5 27                     LDA sub_add_0027_L   ; Set
+1f74: 85 16                     STA addr_0016_L      ;     addr_0016_L/H
+1f76: a5 28                     LDA sub_add_0027_H   ;     to
+1f78: 85 17                     STA addr_0016_H      ;     sub_add_0027_L/H
+1f7a: 4c ab 1c                  JMP out_NEXT_CHAR    ; Continue @ $1cab [out_NEXT_CHAR]
+
+                ; We get here if A == $d (13 CR) and bit 6 of OUT_ALIGN was 0 on entry to sub
+                ; Center-justifies the output by computing (40 - number of characters) / 2.
 1f7d: a9 28     loc_1f7d        LDA #$28             ; Set
 1f7f: 38                        SEC                  ;     A
-1f80: e5 25                     SBC dat_0025         ;       = $28 (40) - dat_0025
+1f80: e5 25                     SBC OUT_ALIGN_LEN    ;       = $28 (40) - OUT_ALIGN_LEN
 1f82: 4a                        LSR                  ; Set A /= 2
-1f83: 10 02                     BPL loc_1f87         ; If (A < 0) Then   Note: Bug? LSR above sets N=0, so this condition is never true
+1f83: 10 02                     BPL loc_1f87         ; If (A < 0) Then   (Bug? LSR above sets N=0, so this is never true)
 1f85: a9 00                     LDA #$00             ;     Set A = 0
                                                      ; End If
-1f87: 8d 9b 1f  loc_1f87        STA smc_1f9a+1       ; Self-modifying code: Set CMP value below to A
-1f8a: 2c 23 1f                  BIT dat_1f23         ; If (dat_1f23 < 0)
+1f87: 8d 9b 1f  loc_1f87        STA smc_1f9a+1       ; Self-modifying code: Set CMP value below to A (start col of centered text)
+                ; If OUT_CLEAR_LFT bit 7 is set, write spaces from left of
+                ;   screen up to calculated start position
+1f8a: 2c 23 1f                  BIT OUT_CLEAR_LFT    ; If (OUT_CLEAR_LFT bit 7 == 1)
 1f8d: 10 0f                     BPL loc_1f9e         ; Then
 1f8f: a9 00                     LDA #$00             ;     Set
 1f91: 85 1f                     STA OUT_COL          ;         OUT_COL = 0
 1f93: a9 20     loc_1f93        LDA #$20             ;     Loop
                                                      ;         Set A = #20 (32 ' ')
 1f95: 20 2c 1c                  JSR OUTPUT_CHAR      ;         Call $1c2c [OUTPUT_CHAR]
-1f98: a5 1f                     LDA OUT_COL          ;         Set A = OUT_COL
-1f9a: c9 ff     smc_1f9a        CMP #$ff             ;     Repeat    (Note: The value compared here is assigned above)
-1f9c: d0 f5                     BNE loc_1f93         ;       While (A != smc_1f9a+1)
+1f98: a5 1f                     LDA OUT_COL          ;     Repeat
+1f9a: c9 ff     smc_1f9a        CMP #$ff             ;       while  (Note: The immediate value for this CMP is dynamically updated above)
+1f9c: d0 f5                     BNE loc_1f93         ;          (OUT_COL != smc_1f9a+1)
                                                      ; End If
 1f9e: 85 1f     loc_1f9e        STA OUT_COL          ; Set OUT_COL = A
-1fa0: a5 25                     LDA dat_0025         ; If (dat_0025 == $28 (40)) Then
+1fa0: a5 25                     LDA OUT_ALIGN_LEN    ; If (OUT_ALIGN_LEN == $28 (40)) Then
 1fa2: c9 28                     CMP #$28             ;     Continue @ $1f6c [loc_1f6c]
 1fa4: f0 c6                     BEQ loc_1f6c         ; End If
 1fa6: d0 c8                     BNE loc_1f70         ; Continue @ $1f70 [loc_1f70]
 
-1fa8: 00 0f 00  dat_1fa8        .BYTE $00,$0f,$00    ; ...
-1fab: 05 07 18  dat_1fab        .BYTE $05,$07,$18    ; ...
-1fae: 01 01 02 03 05 06 07 09  dat_1fae  .BYTE $01,$01,$02,$03,$05,$06,$07,$09  ; ........
-1fb6: 0a                        .BYTE $0a            ; .
-1fb7: 02        dat_1fb7        .BYTE $02            ; .
-1fb8: 01 03 02 01 09 09 09  dat_1fb8  .BYTE $01,$03,$02,$01,$09,$09,$09  ; .......
+1fa8: 00 0f 00  TOP_MSG_ROW     .BYTE $00,$0f,$00    ; First message row for given output mode
+1fab: 05 07 18  BTM_MSG_ROW     .BYTE $05,$07,$18    ; Last message row for given output mode
+1fae: 01 01 02  OUT_DEC_WID     .BYTE $01,$01,$02    ; Number of columns required to output decimal X digits (including ','s)
+1fb6: 03 05 06 07 09 0a         .BYTE $03,$05,$06,$07,$09,$0a
+1fb7: 02        OUT_TS_DIGTS    .BYTE $02            ; Number of digits to output before next ',' thousands separator
+1fb8: 01 03 02 01 09 09 09      .BYTE $01,$03,$02,$01,$09,$09,$09
 1fbf: e6 ec 20 fd f2 09 29 3a  tbl_1fbf_H  .BYTE $e6,$ec,$20,$fd,$f2,$09,$29,$3a  ; .. ...):
 1fc7: 4f 73 bf 99 e2 fa 15 ce   .BYTE $4f,$73,$bf,$99,$e2,$fa,$15,$ce  ; Os......
 1fcf: c8 d8 eb b3 be            .BYTE $c8,$d8,$eb,$b3,$be  ; .....
@@ -1659,6 +1785,7 @@
                 ; Return
                 ;   dat_0002 - LSB of 16-bit result
                 ;   dat_0003 - MSB of 16-bit result
+                ;   X        - Set to 0
                 ;
 1fe9: 85 04     MUL_8           STA dat_0004         ; Set dat_0004 = A
 1feb: 84 05                     STY dat_0005         ; Set dat_0005 = Y
@@ -1683,219 +1810,333 @@
 
 2007: a8 ff     str_BLANK       .BYTE $a8,$ff        ; "" (empty string)
 
-2009: a9 07     sub_2009        LDA #$07             ; Set
+                ; Intitialize serial transmission
+                ;
+                ; Input
+                ;   X         - Offset from AUDC4
+                ;
+                ; Output
+                ;   CUR_SKCTL - Bits 0, 1, 2 unaffected
+                ;               Bits 3, 4, 6, 7 cleared
+                ;               Bit 5 set ($20 - set transfer mode)
+                ;   SKCTL     - Same value as CUR_SKCTL
+                ;   CUR_IRQEN - Clear bits 3 and 5 (Disable VSEROC [$8 - xmit done] and VSERIN [$20 - data ready])
+                ;               Set bit 4 (Enable VSEROR [$10 - data needed])
+                ;   IRQEN     - Same value as CUR_IRQEN
+                ;   AUDCTL    - $28  ($20 = Clock channel three with 1.79 MHz, $8 = Join channels 3 & 4 (16 bit))
+                ;
+2009: a9 07     SIO_INIT_XMIT   LDA #$07             ; Set
 200b: 2d 37 02                  AND CUR_SKCTL        ;     CUR_SKCTL
 200e: 09 20                     ORA #$20             ;     =
-2010: 8d 37 02                  STA CUR_SKCTL        ;     (CUR_SKCTL & 7) | $20
-2013: 8d 0f d2                  STA SKCTL            ;
-2016: a9 c7                     LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $c7 | $10
+2010: 8d 37 02                  STA CUR_SKCTL        ;     (CUR_SKCTL & 7) | $20   (set serial transmit mode)
+2013: 8d 0f d2                  STA SKCTL            ; Set SKCTL = CUR_SKCTL
+2016: a9 c7                     LDA #$c7             ; Set A = CUR_IRQEN & $c7 | $10
 2018: 2d 36 02                  AND CUR_IRQEN        ;     (Disable VSEROC [$8 - xmit done],
 201b: 09 10                     ORA #$10             ;       Disable VSERIN [$20 - data ready],
-201d: 8d 36 02  loc_201d        STA CUR_IRQEN        ;       Enable VSEROR [$10 - data needed])
-2020: 8d 0e d2  loc_2020        STA IRQEN            ; Set IRQEN = CUR_IRQEN
-2023: a9 28                     LDA #$28             ;
-2025: 8d 08 d2                  STA AUDCTL           ;
-2028: a9 a0                     LDA #$a0             ;
-202a: 9d 07 d2                  STA AUDC4,X          ;
-202d: 8d 05 d2                  STA AUDC3            ;
-2030: 8d 03 d2                  STA AUDC2            ;
-2033: 8d 01 d2                  STA AUDC1            ;
+                                                     ;       Enable VSEROR [$10 - data needed])
+                ; SIO_INIT_RECV also jumps here with A set to the IRQEN value
+201d: 8d 36 02  rts_SIO_INIT    STA CUR_IRQEN        ; Set CUR_IRQEN = A
+2020: 8d 0e d2  loc_2020        STA IRQEN            ; Set IRQEN = A
+2023: a9 28                     LDA #$28             ; Set AUDCTL = $28  ($20 = Clock channel three with 1.79 MHz,
+2025: 8d 08 d2                  STA AUDCTL           ;                     $8 = Join channels four and three (16 bit))
+2028: a9 a0                     LDA #$a0             ; Set
+202a: 9d 07 d2                  STA AUDC4,X          ;     AUDC4[X] = $a0
+202d: 8d 05 d2                  STA AUDC3            ; Set AUDC3 = $a0
+2030: 8d 03 d2                  STA AUDC2            ; Set AUDC2 = $a0
+2033: 8d 01 d2                  STA AUDC1            ; Set AUDC1 = $a0
 2036: 60                        RTS                  ; Return to caller
 
-2037: a9 c7     sub_2037        LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $d7
+                ; Disables serial send and receive interrupts
+                ;
+                ; Output
+                ;   CUR_IRQEN   - Clear bits 3 and 5 (Disable VSEROC [$8 - xmit done] and VSERIN [$20 - data ready])
+                ;   IRQEN       - Same as CUR_IRQEN
+                ;   AUDC1/2/3/4 - Silence all 4 audio channels
+                ;
+2037: a9 c7     SIO_END_IO      LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $d7
 201b: 09 10                     ORA #$10             ;     (Disable VSEROC [$8 - xmit done]
 2039: 2d 36 02                  AND CUR_IRQEN        ;      and VSERIN [$20 - data ready],
 203c: 8d 36 02                  STA CUR_IRQEN        ;      No change to VSEROR [$10 - data needed])
 203f: 8d 0e d2                  STA IRQEN            ; Set IRQEN = CUR_IRQEN
                 ; Silence all four audio channels
 2042: a2 06                     LDX #$06             ; Set X = 6 (4 iterations @ step size -2, repeat while X >= 0)
-2044: a9 00                     LDA #$00             ;
-2046: 9d 01 d2  loc_2046        STA AUDC1,X          ; Set AUDC1/2/3/4 = 0
-2049: ca                        DEX                  ; Set
-204a: ca                        DEX                  ;     X = X - 2
+2044: a9 00                     LDA #$00             ; Set A = 0
+2046: 9d 01 d2  loc_2046        STA AUDC1,X          ; Loop
+                                                     ;     Set AUDC1[X] = 0
+2049: ca                        DEX                  ;     Set
+204a: ca                        DEX                  ;         X = X - 2
 204b: 10 f9                     BPL loc_2046         ; Repeat while (X >= 0)
 204d: 60                        RTS                  ; Return to caller
-                ; Jump to here from 24a0
-204e: a9 01     loc_204e        LDA #$01             ; Set
+
+                ; sub_2494 jumps to here after initializing
+                ;   dat_0231, dat_0247, dat_023d and dat_0246
+                ;
+204e: a9 01     cont_204e       LDA #$01             ; Set
 2050: 8d 3f 02                  STA dat_023f         ;     dat_023f = $01 (1)
 2053: a9 0d     loc_2053        LDA #$0d             ; Set
 2055: 8d 3e 02                  STA dat_023e         ;     dat_023e = $0d (13)
-2058: a2 03     loc_2058        LDX #$03             ; Set X = 3 (4 iterations)
-205a: bd 30 02  loc_205a        LDA dat_0230,X       ; Copy dat_0230[X]
-205d: 9d 66 02                  STA tbl_0266,X       ;     to tbl_0266[X]
-2060: ca                        DEX                  ; Subtract 1 from X
-2061: 10 f7     loc_2061        BPL loc_205a         ;     and repeat while X >= 0
-2063: a9 28                     LDA #$28             ; Set
-2065: 8d 04 d2                  STA AUDF3            ;     AUDF3 = $28 (40)
-2068: a9 00                     LDA #$00             ; Set
-206a: 8d 06 d2                  STA AUDF4            ;     AUDF4 = 0
-206d: 18                        CLC                  ; Set C = 0
-206e: 18                        CLC                  ; Set C = 0  (why twice?)
-206f: a9 66                     LDA #$66             ; Set
-2071: 85 00                     STA dat_0000         ;     dat_0000 = $66 (102)
-2073: 69 04     loc_2073        ADC #$04             ; Set
-2075: 8d 3a 02                  STA dat_023a         ;     dat_023a = $6A (106)
-2078: a9 02                     LDA #$02             ; Set
-207a: 85 01                     STA dat_0001         ;     dat_0001 = 2
-207c: 8d 3b 02                  STA dat_023b         ; Set dat_023b = 2
-207f: a9 34                     LDA #$34             ; Set
-2081: 8d 03 d3                  STA PBCTL            ;     PBCTL = $34 (52)
-2084: 20 f7 20                  JSR sub_20f7         ;
-2087: ad 57 02                  LDA bool_0257        ;
-208a: d0 03                     BNE loc_208f         ;
-208c: 98                        TYA                  ;
-208d: d0 08                     BNE loc_2097         ;
-208f: ce 3e 02  loc_208f        DEC dat_023e         ;
-2092: 10 c4                     BPL loc_2058         ;
-2094: 4c e5 20                  JMP loc_20e5         ;
-2097: ad 46 02  loc_2097        LDA dat_0246         ;
-209a: 10 0d                     BPL loc_20a9         ;
-209c: a9 0d                     LDA #$0d             ;
-209e: 8d 3e 02                  STA dat_023e         ;
-20a1: 20 d1 21                  JSR sub_21d1         ;
-20a4: 20 f7 20                  JSR sub_20f7         ;
-20a7: f0 e6                     BEQ loc_208f         ;
+2058: a2 03     loc_2058        LDX #$03             ; Loop
+                                                     ;     Set X = 3 (4 iterations)
+205a: bd 30 02  loc_205a        LDA dat_0230,X       ;     Loop
+                                                     ;         Set
+205d: 9d 66 02                  STA tbl_0266,X       ;             tbl_0266[X] = dat_0230[X]
+2060: ca                        DEX                  ;         Subtract 1 from X
+2061: 10 f7     loc_2061        BPL loc_205a         ;     Repeat while (X >= 0)
+2063: a9 28                     LDA #$28             ;     Set
+2065: 8d 04 d2                  STA AUDF3            ;         AUDF3 = $28 (40)
+2068: a9 00                     LDA #$00             ;     Set
+206a: 8d 06 d2                  STA AUDF4            ;         AUDF4 = 0
+206d: 18                        CLC                  ;     Set C = 0
+206e: 18                        CLC                  ;     Set C = 0  (why twice?)
+206f: a9 66                     LDA #$66             ;     Set SIO_POS_L/H
+2071: 85 00                     STA SIO_POS_L        ;         address
+2073: 69 04                     ADC #$04             ;         to
+2075: 8d 3a 02                  STA SIO_END_L        ;         $0266 [tbl_0266]
+2078: a9 02                     LDA #$02             ;     Set SIO_END_L/H
+207a: 85 01                     STA SIO_POS_H        ;         address
+207c: 8d 3b 02                  STA SIO_END_H        ;         to $026a [tbl_0266 + 4] (4 bytes)
+207f: a9 34                     LDA #$34             ;     Set
+2081: 8d 03 d3                  STA PBCTL            ;         PBCTL = $34 (52)  (4 = use as PORTB, bit 0 clear = no IRQ)
+2084: 20 f7 20                  JSR sub_20f7         ;     Call $20f7 [sub_20f7]
+2087: ad 57 02                  LDA bool_0257        ;     If (bool_0257 == 0)
+208a: d0 03                     BNE loc_208f         ;     Then
+208c: 98                        TYA                  ;         Set A = Y
+208d: d0 08                     BNE loc_2097         ;         If (A != 0) Then
+                                                     ;             Continue @ $2097 [loc_2097]
+                                                     ;         End If
+                                                     ;     End If
+208f: ce 3e 02  loc_208f        DEC dat_023e         ;     Subtract 1 from dat_023e
+2092: 10 c4                     BPL loc_2058         ; Repeat while (dat_023e >= 0)
+2094: 4c e5 20                  JMP loc_20e5         ; Continue @ $20e5 [loc_20e5]
+
+                ; Input
+                ;   dat_0238 -
+                ;   dat_0246 -
+                ;   dat_0247 -
+                ;   loc_20cd -
+                ;
+                ; Output
+                ;   SIO_POS_L/H - Set to $100
+                ;   SIO_END_L/H - Set to $100 + dat_0234_L/H
+                ;   dat_023d -
+                ;   dat_023e -
+                ;   dat_023f -
+                ;   bool_0257 -
+                ;   Y        - Same value as dat_0246
+                ;   dat_0246 -
+                ;
+2097: ad 46 02  loc_2097        LDA dat_0246         ; If (dat_0246 < 0)
+209a: 10 0d                     BPL loc_20a9         ; Then
+209c: a9 0d                     LDA #$0d             ;     Set
+209e: 8d 3e 02                  STA dat_023e         ;         dat_023e = $0d
+20a1: 20 d1 21                  JSR sub_21d1         ;     Call $21d1 [sub_21d1]
+20a4: 20 f7 20                  JSR sub_20f7         ;     Call $20f7 [sub_20f7]
+20a7: f0 e6                     BEQ loc_208f         ;     If (Z == 1) Then   (TODO: meaning?)
+                                                     ;         Continue @ $208f [loc_208f]  (re-enters the loop above)
+                                                     ;     End If
+                                                     ; End If
 20a9: ad 47 02  loc_20a9        LDA dat_0247         ; Set A = dat_0247
-20ac: 6a                        ROR                  ;
-20ad: 6a                        ROR                  ;
-20ae: a8                        TAY                  ;
-20af: 29 3f                     AND #$3f             ;
-20b1: aa                        TAX                  ;
-20b2: 98                        TYA                  ;
-20b3: 6a                        ROR                  ;
-20b4: 29 c0                     AND #$c0             ;
-20b6: a8                        TAY                  ;
+20ac: 6a                        ROR                  ; Set A = (A / 2) | (C << 7),  C = old bit 0 of A    (TODO: What is value of C here?)
+20ad: 6a                        ROR                  ; Set A = (A / 2) | (C << 7),  C = old bit 0 of A
+20ae: a8                        TAY                  ; Set Y = A
+20af: 29 3f                     AND #$3f             ; Set
+20b1: aa                        TAX                  ;     X = A & $3f
+20b2: 98                        TYA                  ; Set
+20b3: 6a                        ROR                  ;     Y
+20b4: 29 c0                     AND #$c0             ;       =
+20b6: a8                        TAY                  ;         (Y / 2) | (C << 7)
 20b7: a9 00                     LDA #$00             ; Set
 20b9: 8d 57 02                  STA bool_0257        ;     bool_0257 = 0 (false)
-20bc: 20 26 21                  JSR sub_2126         ;
-20bf: f0 12                     BEQ loc_20d3         ;
-20c1: 2c 46 02                  BIT dat_0246         ;
-20c4: 70 07                     BVS loc_20cd         ;
-20c6: ad 57 02                  LDA bool_0257        ;
-20c9: d0 1a                     BNE loc_20e5         ;
-20cb: f0 20                     BEQ loc_20ed         ;
-20cd: 20 d1 21  loc_20cd        JSR sub_21d1         ;
-20d0: 20 8e 21                  JSR sub_218e         ;
-20d3: ad 57 02  loc_20d3        LDA bool_0257        ;
-20d6: f0 06                     BEQ loc_20de         ;
-20d8: ad 38 02                  LDA dat_0238         ;
-20db: 8d 3d 02                  STA dat_023d         ;
-20de: ad 3d 02  loc_20de        LDA dat_023d         ;
-20e1: c9 01                     CMP #$01             ;
-20e3: f0 08                     BEQ loc_20ed         ;
-20e5: ce 3f 02  loc_20e5        DEC dat_023f         ;
-20e8: 30 03                     BMI loc_20ed         ;
-20ea: 4c 53 20                  JMP loc_2053         ;
-20ed: 20 37 20  loc_20ed        JSR sub_2037         ;
-20f0: ac 3d 02                  LDY dat_023d         ;
-20f3: 8c 46 02                  STY dat_0246         ;
+20bc: 20 26 21                  JSR sub_2126         ; Call $2126 [sub_2126]
+20bf: f0 12                     BEQ loc_20d3         ; If (Z == 0) Then   (TODO: meaning?)
+20c1: 2c 46 02                  BIT dat_0246         ;     If (loc_20cd bit 6 == 0)
+20c4: 70 07                     BVS loc_20cd         ;     Then
+20c6: ad 57 02                  LDA bool_0257        ;         If (bool_0257 != 0) Then
+20c9: d0 1a                     BNE loc_20e5         ;             Continue @ $20e5 [loc_20e5]
+20cb: f0 20                     BEQ loc_20ed         ;         Else
+                                                     ;             Continue @ $20ed [loc_20ed]
+                                                     ;     End If
+20cd: 20 d1 21  loc_20cd        JSR sub_21d1         ;     Call $21d1 [sub_21d1]
+20d0: 20 8e 21                  JSR sub_218e         ;     Call $218e [sub_218e]
+                                                     ; End If
+20d3: ad 57 02  loc_20d3        LDA bool_0257        ; If (bool_0257 != 0)
+20d6: f0 06                     BEQ loc_20de         ; Then
+20d8: ad 38 02                  LDA dat_0238         ;     Set
+20db: 8d 3d 02                  STA dat_023d         ;         dat_023d = dat_0238
+                                                     ; End If
+20de: ad 3d 02  loc_20de        LDA dat_023d         ; If
+20e1: c9 01                     CMP #$01             ;    (dat_023d != 1)
+20e3: f0 08                     BEQ loc_20ed         ; Then
+20e5: ce 3f 02  loc_20e5        DEC dat_023f         ;     Subtract 1 from dat_023f
+20e8: 30 03                     BMI loc_20ed         ;     If (dat_023f >= 0) Then
+20ea: 4c 53 20                  JMP loc_2053         ;         Continue @ $2053 [loc_2053]
+                                                     ;     End If
+                                                     ; End If
+20ed: 20 37 20  loc_20ed        JSR SIO_END_IO       ; Call $2037 [SIO_END_IO]
+20f0: ac 3d 02                  LDY dat_023d         ; Set
+20f3: 8c 46 02                  STY dat_0246         ;     dat_0246 = dat_023d
 20f6: 60                        RTS                  ; Return to caller
 
-20f7: a2 00     sub_20f7        LDX #$00             ;
-20f9: ca        loc_20f9        DEX                  ;
-20fa: d0 fd                     BNE loc_20f9         ;
-20fc: ca        loc_20fc        DEX                  ;
-20fd: d0 fd                     BNE loc_20fc         ;
-20ff: a9 01                     LDA #$01             ;
-2101: 8d 3d 02                  STA dat_023d         ;
-2104: 20 09 20                  JSR sub_2009         ;
-2107: a0 00                     LDY #$00             ;
-2109: 8c 3c 02                  STY dat_023c         ;
-210c: 8c 43 02                  STY dat_0243         ;
-210f: 8c 41 02                  STY dat_0241         ;
-2112: b1 00                     LDA (dat_0000),Y     ;
-2114: 8d 0d d2                  STA SEROUT           ;
-2117: 8d 3c 02                  STA dat_023c         ;
-211a: ad 41 02  loc_211a        LDA dat_0241         ;
-211d: f0 fb                     BEQ loc_211a         ;
-211f: 20 37 20                  JSR sub_2037         ;
+                ; Send buffer of data over the serial bus
+                ;
+                ; Output
+                ;   SIO_CHKSUM   - Checksum of bytes sent
+                ;   dat_023d     -
+                ;   SIO_XMT_DONE - Set to non-0 when transmission is complete
+                ;   dat_0243     -
+                ;
+20f7: a2 00     sub_20f7        LDX #$00             ; Set X = 0
+                ; The next two loops seem to exist just to delay things a bit?
+20f9: ca        loc_20f9        DEX                  ; Loop
+                                                     ;     Subtract 1 from X
+20fa: d0 fd                     BNE loc_20f9         ; Repeat while (X != 0)  (256 iterations)
+20fc: ca        loc_20fc        DEX                  ; Loop
+                                                     ;     Subtract 1 from X
+20fd: d0 fd                     BNE loc_20fc         ; Repeat while (X != 0)  (256 iterations)
+20ff: a9 01                     LDA #$01             ; Set
+2101: 8d 3d 02                  STA dat_023d         ;     dat_023d = 1
+2104: 20 09 20                  JSR SIO_INIT_XMIT    ; Call $2009 [SIO_INIT_XMIT]
+2107: a0 00                     LDY #$00             ; Set
+2109: 8c 3c 02                  STY SIO_CHKSUM       ;     SIO_CHKSUM = 0
+210c: 8c 43 02                  STY dat_0243         ; Set dat_0243 = 0
+210f: 8c 41 02                  STY SIO_XMT_DONE     ; Set SIO_XMT_DONE = 0
+2112: b1 00                     LDA (SIO_POS_L),Y    ; Set
+2114: 8d 0d d2                  STA SEROUT           ;     SEROUT = (*SIO_POS_L)[0]
+2117: 8d 3c 02                  STA SIO_CHKSUM       ; Set SIO_CHKSUM = (*SIO_POS_L)[0]
+                ; Wait until the entire buffer has been sent
+211a: ad 41 02  loc_211a        LDA SIO_XMT_DONE     ; Loop
+211d: f0 fb                     BEQ loc_211a         ; Repeat while (SIO_XMT_DONE == 0)
+211f: 20 37 20                  JSR SIO_END_IO       ; Call $2037 [SIO_END_IO]
 2122: a0 02                     LDY #$02             ; Set Y = 2
 2124: a2 00                     LDX #$00             ; Set X = 0
-2126: a9 00     sub_2126        LDA #$00             ; Set A = 0
-2128: 8d 39 02                  STA dat_0239         ;
-212b: 8c 4c 02                  STY dat_024c         ;
-212e: 8e 4d 02                  STX dat_024d         ;
-2131: ee 39 02                  INC dat_0239         ;
+
+                ; Input
+                ;   X         -
+                ;   Y         -
+                ;   PADDL0    -
+                ;
+                ; Output
+                ;   A            -
+                ;   SIO_POS_L/H  - $0270
+                ;   SIO_END_L/H  - $0271
+                ;   bool_0257 -
+                ;   dat_0238  -
+                ;   dat_023d  -
+                ;
+2126: a9 00     sub_2126        LDA #$00             ; Set
+2128: 8d 39 02                  STA dat_0239         ;     dat_0239 = 0
+212b: 8c 4c 02                  STY dat_024c         ; Set dat_024c = Y
+212e: 8e 4d 02                  STX dat_024d         ; Set dat_024d = X
+2131: ee 39 02                  INC dat_0239         ; Add 1 to dat_0239
 2134: a9 00                     LDA #$00             ; Set
 2136: 8d 57 02                  STA bool_0257        ;     bool_0257 = 0 (false)
-2139: 18                        CLC                  ;
-213a: a9 70                     LDA #$70             ;
-213c: 85 00                     STA dat_0000         ;
-213e: 69 01                     ADC #$01             ;
-2140: 8d 3a 02                  STA dat_023a         ;
-2143: a9 02                     LDA #$02             ;
-2145: 85 01                     STA dat_0001         ;
-2147: 8d 3b 02                  STA dat_023b         ;
-214a: a9 ff                     LDA #$ff             ;
-214c: 8d 45 02                  STA dat_0245         ;
-214f: 20 8e 21                  JSR sub_218e         ;
-2152: a0 ff                     LDY #$ff             ;
-2154: ad 3d 02                  LDA dat_023d         ;
-2157: c9 01                     CMP #$01             ;
-2159: d0 1b                     BNE loc_2176         ;
-215b: ad 70 02                  LDA PADDL0           ; TODO: ??
-215e: c9 41                     CMP #$41             ;
-2160: f0 24                     BEQ loc_2186         ;
-2162: c9 43                     CMP #$43             ;
-2164: f0 20                     BEQ loc_2186         ;
-2166: c9 45                     CMP #$45             ;
-2168: d0 07                     BNE loc_2171         ;
-216a: a9 90                     LDA #$90             ;
-216c: 8d 3d 02                  STA dat_023d         ;
-216f: d0 05                     BNE loc_2176         ;
-2171: a9 8b     loc_2171        LDA #$8b             ;
-2173: 8d 3d 02                  STA dat_023d         ;
-2176: ad 3d 02  loc_2176        LDA dat_023d         ;
-2179: c9 8a                     CMP #$8a             ;
-217b: f0 07                     BEQ loc_2184         ;
-217d: a9 ff                     LDA #$ff             ; Set
-217f: 8d 57 02                  STA bool_0257        ;     bool_0257 = $ff (true)
-2182: d0 02                     BNE loc_2186         ;
-2184: a0 00     loc_2184        LDY #$00             ;
-2186: ad 3d 02  loc_2186        LDA dat_023d         ;
-2189: 8d 38 02                  STA dat_0238         ;
-218c: 98                        TYA                  ;
+2139: 18                        CLC                  ; Set C = 0
+213a: a9 70                     LDA #$70             ; Set
+213c: 85 00                     STA SIO_POS_L        ;     SIO_POS_L = $70
+213e: 69 01                     ADC #$01             ; Set
+2140: 8d 3a 02                  STA SIO_END_L        ;     SIO_END_L = $71
+2143: a9 02                     LDA #$02             ; Set
+2145: 85 01                     STA SIO_POS_H        ;     SIO_POS_H = 2    (SIO_POS_L/H = $0270 [TODO: label??])
+2147: 8d 3b 02                  STA SIO_END_H        ; Set SIO_END_H = 2    (SIO_END_L/H = $0271 [TODO: label??])
+214a: a9 ff                     LDA #$ff             ; Set
+214c: 8d 45 02                  STA dat_0245         ;     dat_0245 = $ff
+214f: 20 8e 21                  JSR sub_218e         ; Call $218e [sub_218e]
+2152: a0 ff                     LDY #$ff             ; Set Y = $ff
+2154: ad 3d 02                  LDA dat_023d         ; If
+2157: c9 01                     CMP #$01             ;    (dat_023d == 1)
+2159: d0 1b                     BNE loc_2176         ; Then
+215b: ad 70 02                  LDA PADDL0           ;     If ((PADDL0 == $41 (65 'A'))
+215e: c9 41                     CMP #$41             ;         Or
+2160: f0 24                     BEQ loc_2186         ;         (PADDL0 == $43 (67 'C')))
+2162: c9 43                     CMP #$43             ;     Then
+2164: f0 20                     BEQ loc_2186         ;         Continue @ $2186 [loc_2186]
+2166: c9 45                     CMP #$45             ;     Else If (PADDL0 == $45 (69 'E'))
+2168: d0 07                     BNE loc_2171         ;     Then
+216a: a9 90                     LDA #$90             ;        Set
+216c: 8d 3d 02                  STA dat_023d         ;            dat_023d = $90 (144)
+216f: d0 05                     BNE loc_2176         ;     Else
+2171: a9 8b     loc_2171        LDA #$8b             ;         Set
+2173: 8d 3d 02                  STA dat_023d         ;             dat_023d = $8b (139)
+                                                     ;     End If
+                                                     ; End If
+2176: ad 3d 02  loc_2176        LDA dat_023d         ; If
+2179: c9 8a                     CMP #$8a             ;    (dat_023d != $8a (138))
+217b: f0 07                     BEQ loc_2184         ; Then
+217d: a9 ff                     LDA #$ff             ;     Set
+217f: 8d 57 02                  STA bool_0257        ;         bool_0257 = $ff (true)
+2182: d0 02                     BNE loc_2186         ; Else
+2184: a0 00     loc_2184        LDY #$00             ;     Set Y = 0
+                                                     ; End If
+2186: ad 3d 02  loc_2186        LDA dat_023d         ; Set
+2189: 8d 38 02                  STA dat_0238         ;     dat_0238 = dat_023d
+218c: 98                        TYA                  ; Set A = Y
 218d: 60                        RTS                  ; Return to caller
 
-218e: a9 00     sub_218e        LDA #$00             ;
-2190: 8d 3c 02                  STA dat_023c         ; Set dat_023c = 0
+                ;
+                ;
+218e: a9 00     sub_218e        LDA #$00             ; Set
+2190: 8d 3c 02                  STA SIO_CHKSUM       ;     SIO_CHKSUM = 0
 2193: 8d 42 02                  STA dat_0242         ; Set dat_0242 = 0
 2196: 8d 40 02                  STA dat_0240         ; Set dat_0240 = 0
-2199: a9 01                     LDA #$01             ;
-219b: 8d 3d 02                  STA dat_023d         ; Set dat_023d = 1
-219e: 20 b7 21                  JSR sub_21b7         ;
-21a1: a9 3c                     LDA #$3c             ;
-21a3: 8d 03 d3                  STA PBCTL            ;
-21a6: ad 39 02  loc_21a6        LDA dat_0239         ;
-21a9: f0 06                     BEQ loc_21b1         ;
-21ab: ad 40 02                  LDA dat_0240         ;
-21ae: f0 f6                     BEQ loc_21a6         ;
+2199: a9 01                     LDA #$01             ; Set
+219b: 8d 3d 02                  STA dat_023d         ;     dat_023d = 1
+219e: 20 b7 21                  JSR sub_21b7         ; Call $21b7 [sub_21b7]
+21a1: a9 3c                     LDA #$3c             ; Set
+21a3: 8d 03 d3                  STA PBCTL            ;     PBCTL = $3c    (TODO: meaning)
+21a6: ad 39 02  loc_21a6        LDA dat_0239         ; Loop
+                                                     ;     If (dat_0239 == 0) then
+21a9: f0 06                     BEQ loc_21b1         ;         Continue @ $21b1 [loc_21b1]
+                                                     ;     End If
+21ab: ad 40 02                  LDA dat_0240         ; Repeat
+21ae: f0 f6                     BEQ loc_21a6         ;    while (dat_0240 == 0)
 21b0: 60                        RTS                  ; Return to caller
 21b1: a9 8a     loc_21b1        LDA #$8a             ; Set
 21b3: 8d 3d 02                  STA dat_023d         ;     dat_023d = $8a (138)
 21b6: 60                        RTS                  ; Return to caller
 
-21b7: a9 07     sub_21b7        LDA #$07             ; Set CUR_SKCTL = CUR_SKCTL & $07 | $10
-21b9: 2d 37 02                  AND CUR_SKCTL        ;
-21bc: 09 10                     ORA #$10             ;
-21be: 8d 37 02                  STA CUR_SKCTL        ;
-21c1: 8d 0f d2                  STA SKCTL            ;
-21c4: 8d 0a d2                  STA SKRES            ; Resets BITs 5 - 7 of SKCTL to 1
-21c7: a9 c7                     LDA #$c7             ; Set CUR_IRQEN = CUR_IRQEN & $c7 | $20
+                ; Intitialize serial receive
+                ;
+                ; Output
+                ;   CUR_SKCTL - Bits 0, 1, 2 unaffected
+                ;               Bits 3, 5, 6, 7 cleared
+                ;               Bit 4 set ($10 - set receive asynch mode)
+                ;   SKCTL     - Same value as CUR_SKCTL
+                ;   SKRES     - Reset to default
+                ;   CUR_IRQEN - Bits 3 and 5 cleared (Disable VSEROC [$8 - xmit done] and VSERIN [$20 - data ready])
+                ;               Bit 4 set (Enable VSEROR [$10 - data needed])
+                ;   IRQEN     - Same value as CUR_IRQEN
+                ;   AUDCTL    - $28  ($20 = Clock channel three with 1.79 MHz, $8 = Join channels 3 & 4 (16 bit))
+                ;
+21b7: a9 07     SIO_INIT_RECV   LDA #$07             ; Set
+21b9: 2d 37 02                  AND CUR_SKCTL        ;     CUR_SKCTL
+21bc: 09 10                     ORA #$10             ;        =
+21be: 8d 37 02                  STA CUR_SKCTL        ;          CUR_SKCTL & $07 | $10  (serial receive asynch mode)
+21c1: 8d 0f d2                  STA SKCTL            ; Set SKCTL = CUR_SKCTL
+21c4: 8d 0a d2                  STA SKRES            ; Reset serial port/keyboard status register
+21c7: a9 c7                     LDA #$c7             ; Set A = CUR_IRQEN & $c7 | $20
 21c9: 2d 36 02                  AND CUR_IRQEN        ;     (Clear VSEROC [$8 - xmit done],
                                                      ;      Clear VSEROR [$10 - data needed],
 21cc: 09 20                     ORA #$20             ;      Set VSERIN [$20 - data ready])
-21ce: 4c 1d 20                  JMP loc_201d         ;
+21ce: 4c 1d 20                  JMP rts_SIO_INIT     ; Continue @ $201d [rts_SIO_INIT]   (complete intialization)
 
-21d1: 18        sub_21d1        CLC                  ; Clear the carry flag
+                ; Initializes an SIO buffer starting at $100 and dat_0234_L/H bytes in size.
+                ;
+                ; Input
+                ;   dat_0234_L/H - Number of bytes to read/write
+                ;
+                ; Output
+                ;   SIO_POS_L/H  - Set to $100 (e.g. overlaps stack page)
+                ;   SIO_END_L/H  - Set to $100 + dat_0234_L/H
+                ;
+21d1: 18        sub_21d1        CLC                  ; Set C = 0
 21d2: a9 00                     LDA #$00             ; Set
-21d4: 85 00                     STA dat_0000         ;     dat_0000 = 0
-21d6: 6d 34 02                  ADC LPENH            ;
-21d9: 8d 3a 02                  STA dat_023a         ;
-21dc: a9 01                     LDA #$01             ;
-21de: 85 01                     STA dat_0001         ;
-21e0: 6d 35 02                  ADC LPENV            ;
-21e3: 8d 3b 02                  STA dat_023b         ;
+21d4: 85 00                     STA SIO_POS_L        ;     SIO_POS_L = 0
+21d6: 6d 34 02                  ADC dat_0234_L       ; Set
+21d9: 8d 3a 02                  STA SIO_END_L        ;     SIO_END_L = dat_0234_L
+21dc: a9 01                     LDA #$01             ; Set
+21de: 85 01                     STA SIO_POS_H        ;     SIO_POS_H = 1
+21e0: 6d 35 02                  ADC dat_0234_H       ; Set
+21e3: 8d 3b 02                  STA SIO_END_H        ;     SIO_END_H = 1 + dat_0234_H
 21e6: 60                        RTS                  ; Return to caller
 
                 ; This is assigned in the KERNEL_LOADER to handle
@@ -1918,82 +2159,115 @@
 21f8: d0 05                     BNE loc_21ff         ; Then
 21fa: a0 8e                     LDY #$8e             ;     Set dat_023d = $8e
 21fc: 8c 3d 02                  STY dat_023d         ; End If
-21ff: ad 42 02  loc_21ff        LDA dat_0242         ;
-2202: f0 16                     BEQ loc_221a         ;
-2204: ad 0d d2                  LDA SEROUT           ;
-2207: cd 3c 02                  CMP dat_023c         ;
-220a: f0 05                     BEQ loc_2211         ;
-220c: a0 8f     loc_220c        LDY #$8f             ;
-220e: 8c 3d 02                  STY dat_023d         ;
-2211: a9 ff     loc_2211        LDA #$ff             ;
-2213: 8d 40 02                  STA dat_0240         ;
-2216: 68        loc_2216        PLA                  ; Restore previous
+21ff: ad 42 02  loc_21ff        LDA dat_0242         ; If (dat_0242 == 0) Then
+2202: f0 16                     BEQ loc_221a         ;     Continue @ $221a [loc_221a]
+                                                     ; End If
+2204: ad 0d d2                  LDA SEROUT           ; If
+2207: cd 3c 02                  CMP SIO_CHKSUM       ;    (SEROUT != SIO_CHKSUM)
+220a: f0 05                     BEQ loc_2211         ; Then
+220c: a0 8f     loc_220c        LDY #$8f             ;    Set
+220e: 8c 3d 02                  STY dat_023d         ;        dat_023d = $8f
+                                                     ; End If
+2211: a9 ff     loc_2211        LDA #$ff             ; Set
+2213: 8d 40 02                  STA dat_0240         ;     dat_0240 = $ff
+                ; Restore state and return from interrupt
+2216: 68        rti_2216        PLA                  ; Restore previous
 2217: a8                        TAY                  ;     value of Y
 2218: 68                        PLA                  ; Restore previous value of A (TODO: where is this value pushed?)
 2219: 40                        RTI                  ; Return from interrupt handler
-221a: ad 0d d2  loc_221a        LDA SEROUT           ;
-221d: a0 00                     LDY #$00             ;
-221f: 91 00                     STA (dat_0000),Y     ;
-2221: 18                        CLC                  ;
-2222: 6d 3c 02                  ADC dat_023c         ;
-2225: 69 00                     ADC #$00             ;
-2227: 8d 3c 02                  STA dat_023c         ;
-222a: e6 00                     INC dat_0000         ;
-222c: d0 02                     BNE loc_2230         ;
-222e: e6 01                     INC dat_0001         ;
-2230: a5 00     loc_2230        LDA dat_0000         ;
-2232: cd 3a 02                  CMP dat_023a         ;
-2235: a5 01                     LDA dat_0001         ;
-2237: ed 3b 02                  SBC dat_023b         ;
-223a: 90 da                     BCC loc_2216         ;
-223c: ad 45 02                  LDA dat_0245         ;
-223f: f0 07                     BEQ loc_2248         ;
-2241: a9 00                     LDA #$00             ;
-2243: 8d 45 02                  STA dat_0245         ;
-2246: f0 c9                     BEQ loc_2211         ; ?? Always true? Seems like it should be
-2248: a9 ff     loc_2248        LDA #$ff             ;
-224a: 8d 42 02                  STA dat_0242         ;
-224d: d0 c7                     BNE loc_2216         ; ?? Always true? Seems like it should be
+                ;
+221a: ad 0d d2  loc_221a        LDA SEROUT           ; Set A = SEROUT
+221d: a0 00                     LDY #$00             ; Set Y = 0
+221f: 91 00                     STA (SIO_POS_L),Y    ; Set (*SIO_POS_L)[0] = A
+                ; Checksum calculation?
+2221: 18                        CLC                  ; Set
+2222: 6d 3c 02                  ADC SIO_CHKSUM       ;     A += SIO_CHKSUM
+2225: 69 00                     ADC #$00             ; If (C == 1) Then    (if overflow)
+                                                     ;     Add 1 to A
+                                                     ; End If
+2227: 8d 3c 02                  STA SIO_CHKSUM       ; Set SIO_CHKSUM = A
+                ; Move buffer position forward
+222a: e6 00                     INC SIO_POS_L        ; Add 1 to SIO_POS_L
+222c: d0 02                     BNE loc_2230         ; If (SIO_POS_L == 0) Then   (overflow)
+222e: e6 01                     INC SIO_POS_H        ;     Add 1 to SIO_POS_H
+                                                     ; End If
+2230: a5 00     loc_2230        LDA SIO_POS_L        ; If
+2232: cd 3a 02                  CMP SIO_END_L        ;   .
+2235: a5 01                     LDA SIO_POS_H        ;    (SIO_POS_L/H <= SIO_END_L/H)
+2237: ed 3b 02                  SBC SIO_END_H        ; Then
+223a: 90 da                     BCC rti_2216         ;     Continue @ $2216 [rti_2216]
+                                                     ; End If
+223c: ad 45 02                  LDA dat_0245         ; If (dat_0245 != 0)
+223f: f0 07                     BEQ loc_2248         ; Then
+2241: a9 00                     LDA #$00             ;     Set
+2243: 8d 45 02                  STA dat_0245         ;         dat_0245 = 0
+2246: f0 c9                     BEQ loc_2211         ;     Continue @ $2211 [loc_2211]  (condition always true here)
+                                                     ; End If
+2248: a9 ff     loc_2248        LDA #$ff             ; Set
+224a: 8d 42 02                  STA dat_0242         ;     dat_0242 = $ff
+224d: d0 c7                     BNE rti_2216         ; Continue @ $2216 [rti_2216]   (condition always true here)
 
                 ; This is assigned in the KERNEL_LOADER to handle
                 ;     the VSEROR (POKEY serial I/O transmit ready) interrupt.
                 ;
-                ; Note that it appears to have non-standard IRQ handling in that
-                ;     A is never pushed, but it is popped before exiting.
+                ; Writes the next available byte to the serial bus.
+                ;
+                ; The VSEROR vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
+                ;
+                ; Input
+                ;   dat_0243     - ??Serial Transmission complete flag?? (0 = ready for next byte, $ff = transmitting)
+                ;   SIO_POS_L/H  - Current location in serial transmission buffer
+                ;   SIO_END_L/H  - Address of end of buffer (points 1 byte past last byte of valid data in buffer)
+                ;
+                ; Output
+                ;   dat_0243     - Set to $ff if end of buffer and value was 0 on entry
+                ;   SIO_POS_L/H  - Incremented by 1
+                ;   CUR_IRQEN    - Bit 3 set when TODO (enables the VSEROC "Serial output transmission done" IRQ)
+                ;   IRQEN        - Same as CUR_IRQEN
+                ;   SIO_CHKSUM   - Assigned byte read from SIO_POS_L/H if not end of buffer
+                ;   SEROUT       - Value in SIO_CHKSUM is sent if not end of buffer
+                ;                    or dat_0243 was 0 on entry (value in latter case would be from previous call)
+                ;
+                ; Note:
+                ;     A is pushed to the stack before this handler is invoked from irq_VIMIRQ_22ac
+                ;     A is popped before exiting this handler
                 ;
 224f: 98        irq_VSEROR_224f  TYA                 ; Preserve value
 2250: 48                        PHA                  ;     of Y to restore later
-                ; TODO: dat_0000/dat_0001 seem to be a 16-bit counter?
-2251: e6 00                     INC dat_0000         ; Add 1 to dat_0000
-2253: d0 02                     BNE loc_2257         ; If (dat_0000 == 0) Then
-2255: e6 01                     INC dat_0001         ;     Add 1 to dat_0001
-2257: a5 00     loc_2257        LDA dat_0000         ; If
-2259: cd 3a 02                  CMP dat_023a         ;    (dat_0000 >= dat_023a)
-225c: a5 01                     LDA dat_0001         ;    Then dat_023b = dat_023b - dat_0001 - 1
-225e: ed 3b 02                  SBC dat_023b         ;    Else dat_023b = dat_023b - dat_0001
-2261: 90 21                     BCC loc_2284         ;
-2263: ad 43 02                  LDA dat_0243         ;
-2266: d0 0d                     BNE loc_2275         ;
-2268: ad 3c 02                  LDA dat_023c         ;
-226b: 8d 0d d2                  STA SEROUT           ;
-226e: a9 ff                     LDA #$ff             ;
-2270: 8d 43 02                  STA dat_0243         ;
-2273: d0 0b                     BNE loc_2280         ;
-2275: ad 36 02  loc_2275        LDA CUR_IRQEN        ; Set
-2278: 09 08                     ORA #$08             ;     CUR_IRQEN = CUR_IRQEN | $08
-227a: 8d 36 02                  STA CUR_IRQEN        ;     (Enable VSEROC [$8 - xmit done])
-227d: 8d 0e d2                  STA IRQEN            ; Set IRQEN = CUR_IRQEN
-2280: 68        loc_2280        PLA                  ; Restore Y to
-2281: a8                        TAY                  ;     previous value
-2282: 68                        PLA                  ; Restore A to previous value (TODO: where is this value pushed?)
-2283: 40                        RTI                  ; Return from interrupt handler
-2284: a0 00     loc_2284        LDY #$00             ;
-2286: b1 00                     LDA (dat_0000),Y     ;
-2288: 8d 0d d2                  STA SEROUT           ;
-228b: 18                        CLC                  ;
-228c: 6d 3c 02                  ADC dat_023c         ;
-228f: 69 00                     ADC #$00             ;
-2291: 8d 3c 02                  STA dat_023c         ;
+2251: e6 00                     INC SIO_POS_L        ; Add 1 to SIO_POS_L
+2253: d0 02                     BNE loc_2257         ; If (SIO_POS_L == 0) Then   (overflow)
+2255: e6 01                     INC SIO_POS_H        ;     Add 1 to SIO_POS_H
+                                                     ; End If
+2257: a5 00     loc_2257        LDA SIO_POS_L        ; If
+2259: cd 3a 02                  CMP SIO_END_L        ;   .
+225c: a5 01                     LDA SIO_POS_H        ;     (SIO_POS_L/H >= SIO_END_L/H)
+225e: ed 3b 02                  SBC SIO_END_H        ;   .
+2261: 90 21                     BCC loc_2284         ; Then
+2263: ad 43 02                  LDA dat_0243         ;     If (dat_0243 == 0)
+2266: d0 0d                     BNE loc_2275         ;     Then
+2268: ad 3c 02                  LDA SIO_CHKSUM       ;         Set
+226b: 8d 0d d2                  STA SEROUT           ;             SEROUT = SIO_CHKSUM
+226e: a9 ff                     LDA #$ff             ;         Set
+2270: 8d 43 02                  STA dat_0243         ;             dat_0243 = $ff
+2273: d0 0b                     BNE loc_2280         ;     Else
+2275: ad 36 02  loc_2275        LDA CUR_IRQEN        ;         Set
+2278: 09 08                     ORA #$08             ;             CUR_IRQEN = CUR_IRQEN | $08
+227a: 8d 36 02                  STA CUR_IRQEN        ;             (Enable VSEROC [$8 - xmit done])
+227d: 8d 0e d2                  STA IRQEN            ;         Set IRQEN = CUR_IRQEN
+                                                     ;     End If
+                ; Restores A, Y and RTI
+2280: 68        loc_2280        PLA                  ;     Restore Y to
+2281: a8                        TAY                  ;         previous value
+2282: 68                        PLA                  ;     Restore A to previous value (pushed in irq_VIMIRQ_22ac)
+2283: 40                        RTI                  ;     Return from interrupt handler
+                                                     ; End If
+2284: a0 00     loc_2284        LDY #$00             ; Set Y = 0
+2286: b1 00                     LDA (SIO_POS_L),Y    ; Set
+2288: 8d 0d d2                  STA SEROUT           ;     SEROUT = (*SIO_POS_L)[0]
+228b: 18                        CLC                  ; Set
+228c: 6d 3c 02                  ADC SIO_CHKSUM       ;     SIO_CHKSUM
+228f: 69 00                     ADC #$00             ;        =
+2291: 8d 3c 02                  STA SIO_CHKSUM       ;          SIO_CHKSUM + (*SIO_POS_L)[0]
 2294: 4c 80 22                  JMP loc_2280         ; Jump up to return code (restore A,Y and RTI)
 
                 ; This is assigned in the KERNEL_LOADER to handle
@@ -2005,13 +2279,21 @@
                 ;
                 ; The VSEROC vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
                 ;
+                ; Input
+                ;   dat_0243 -
+                ;
+                ; Output
+                ;   SIO_XMT_DONE - Set equal to dat_0243 if dat_0243 != 0
+                ;   CUR_IRQEN    - Bit 3 is cleared (disables the VSEROC "Serial output transmission done" IRQ)
+                ;   IRQEN        - Bit 3 is cleared (disables the VSEROC "Serial output transmission done" IRQ)
+                ;
                 ; Note:
                 ;     A is pushed to the stack before this handler is invoked from irq_VIMIRQ_22ac
                 ;     A is popped before exiting this handler
                 ;
-2297: ad 43 02  irq_VSEROC_2297  LDA dat_0243        ; If (dat_0243 != 0)
-229a: f0 0e                     BEQ loc_22aa         ;   Then
-229c: 8d 41 02                  STA dat_0241         ;     Set dat_0241 = dat_0243
+2297: ad 43 02  irq_VSEROC_2297  LDA dat_0243        ; If (dat_0243 != 0) Then
+229a: f0 0e                     BEQ loc_22aa         ;     Set SIO_XMT_DONE = dat_0243
+229c: 8d 41 02                  STA SIO_XMT_DONE     ; End If
 229f: ad 36 02                  LDA CUR_IRQEN        ; Clear bit 3 ($8)
 22a2: 29 f7                     AND #$f7             ;     of CUR_IRQEN
 22a4: 8d 36 02                  STA CUR_IRQEN        ;     (disables the VSEROC "Serial output transmission done" IRQ)
@@ -2098,7 +2380,7 @@
 
                 ; Called from irq_VVBLKI when dat_0253 < 0
                 ;
-230a: a9 f5     loc_230a        LDA $f5              ; Set the
+230a: a9 f5     vblk_cont_230a  LDA $f5              ; Set the
 230c: 8d 02 d4                  STA DLIST            ;     Display List
 230f: a9 19                     LDA #$19             ;     Address
 2311: 8d 03 d4                  STA DLIST+1          ;     to $19f5 [DLIST_19f5]
@@ -2106,22 +2388,24 @@
 2316: 8d 0e d4                  STA NMIEN            ;     & disable Display List Interrupts (DLI)
 2319: a9 21                     LDA #$21             ; Set DMACTL = $21
 231b: 8d 00 d4                  STA DMACTL           ;     (Enable DMA Fetch instructions ($20) & Use narrow/32 character playfield ($01))
-231e: ad 39 02                  LDA dat_0239         ;
-2321: f0 21                     BEQ loc_2344         ;
-2323: ad 4c 02                  LDA dat_024c         ;
-2326: 0d 4d 02                  ORA dat_024d         ;
-2329: f0 19                     BEQ loc_2344         ;
-232b: 38                        SEC                  ;
-232c: ad 4c 02                  LDA dat_024c         ;
-232f: e9 01                     SBC #$01             ;
-2331: 8d 4c 02                  STA dat_024c         ;
-2334: ad 4d 02                  LDA dat_024d         ;
-2337: e9 00                     SBC #$00             ;
-2339: 8d 4d 02                  STA dat_024d         ;
-233c: 0d 4c 02                  ORA dat_024c         ;
-233f: d0 03                     BNE loc_2344         ;
-2341: 8d 39 02                  STA dat_0239         ;
-2344: 4c 4b 24  loc_2344        JMP loc_244b         ;
+231e: ad 39 02                  LDA dat_0239         ; If
+2321: f0 21                     BEQ loc_2344         ;    (dat_0239 != 0)
+2323: ad 4c 02                  LDA dat_024c         ;    And
+2326: 0d 4d 02                  ORA dat_024d         ;    ((dat_024c | dat_024d) != 0)
+2329: f0 19                     BEQ loc_2344         ; Then
+232b: 38                        SEC                  ;     Set             (16-bit decrement dat_024c/dat_024d)
+232c: ad 4c 02                  LDA dat_024c         ;         dat_024c
+232f: e9 01                     SBC #$01             ;            =
+2331: 8d 4c 02                  STA dat_024c         ;              dat_024c - 1, C = 0 on underflow else 1
+2334: ad 4d 02                  LDA dat_024d         ;     Set
+2337: e9 00                     SBC #$00             ;         dat_024d
+2339: 8d 4d 02                  STA dat_024d         ;            = dat_024d - ~C
+233c: 0d 4c 02                  ORA dat_024c         ;     If ((dat_024c | dat_024d) == 0)
+233f: d0 03                     BNE loc_2344         ;     Then
+2341: 8d 39 02                  STA dat_0239         ;         Set dat_0239 = 0
+                                                     ;     End If
+                                                     ; End If
+2344: 4c 4b 24  loc_2344        JMP rts_VVBLKI       ; Continue @ $244b [rts_VVBLKI]
 
                 ; VBLKI interrupt handler
                 ; Assigned to VVBLKI in KERNEL_LOADER
@@ -2133,34 +2417,38 @@
 2351: 8d 00 d4                  STA DMACTL           ;     (one of $22, $22, or $2e)
 2354: a9 14                     LDA #$14             ; Set the character set
 2356: 8d 09 d4                  STA CHBASE           ;     address to $1400 (DUNGEON_CHRSET)
-2359: ad 53 02                  LDA dat_0253         ; If (dat_0253 < 0) then
-235c: f0 11                     BEQ loc_236f         ;     Continue @ $230a [loc_230a]
-235e: 30 aa                     BMI loc_230a         ; Else If (dat_0253 > 0) then
+2359: ad 53 02                  LDA dat_0253         ; If (dat_0253 < 0) Then
+235c: f0 11                     BEQ loc_236f         ;     Continue @ $230a [vblk_cont_230a]
+235e: 30 aa                     BMI vblk_cont_230a   ; Else If (dat_0253 > 0) Then
 2360: ce 53 02                  DEC dat_0253         ;     Subtract one from dat_0253
 2363: a9 0a                     LDA #$0a             ;     Set the
-2365: 8d 02 d4                  STA DLIST            ;       display
-2368: a9 1a                     LDA #$1a             ;       list address
-236a: 8d 03 d4                  STA DLIST+1          ;       to $1a0a [DLIST_1a0a]
-236d: d0 d5                     BNE loc_2344         ;     Jump to $2344 [loc_2344] (Zero flag is never set here due to LDA @ $2368)
-236f: ad 54 02  loc_236f        LDA CUR_DLISTL       ; Else If (dat_0253 = 0) then
-2372: 8d 02 d4                  STA DLIST            ;     Set the display list address
-2375: ad 55 02                  LDA CUR_DLISTH       ;       to the value
-2378: 8d 03 d4                  STA DLIST+1          ;       stored @ CUR_DLISTL/H
-237b: ad 48 02                  LDA CUR_VDSLSTL      ;     Set the NMI Display List Interrupts (DLI)
-237e: 8d 00 02                  STA VDSLST           ;       handler address
-2381: ad 49 02                  LDA CUR_VDSLSTH      ;       to the value
-2384: 8d 01 02                  STA VDSLST+1         ;       stored @ CUR_VDSLSTL/H
-2387: a9 c0                     LDA #$c0             ;     Enable Display List Interrupts (DLI)
-2389: 8d 0e d4                  STA NMIEN            ;       and Vertical Blank Interrupts (VBI)
+2365: 8d 02 d4                  STA DLIST            ;         display
+2368: a9 1a                     LDA #$1a             ;         list address
+236a: 8d 03 d4                  STA DLIST+1          ;         to $1a0a [DLIST_1a0a]
+236d: d0 d5                     BNE loc_2344         ;     Continue @ $2344 [loc_2344] -> $244b [rts_VVBLKI] (Z=0 here per LDA @ $2368)
+                                                     ; End If
+                ; Execution reaches this point when dat_0253 is 0
+236f: ad 54 02  loc_236f        LDA CUR_DLISTL       ; Set the display
+2372: 8d 02 d4                  STA DLIST            ;     list address
+2375: ad 55 02                  LDA CUR_DLISTH       ;     to the value
+2378: 8d 03 d4                  STA DLIST+1          ;     stored @ CUR_DLISTL/H
+237b: ad 48 02                  LDA CUR_VDSLSTL      ; Set the NMI Display List Interrupts (DLI)
+237e: 8d 00 02                  STA VDSLST           ;     handler address
+2381: ad 49 02                  LDA CUR_VDSLSTH      ;     to the value
+2384: 8d 01 02                  STA VDSLST+1         ;     stored @ CUR_VDSLSTL/H
+2387: a9 c0                     LDA #$c0             ; Enable Display List Interrupts (DLI)
+2389: 8d 0e d4                  STA NMIEN            ;     and Vertical Blank Interrupts (VBI)
 238c: ad 56 02                  LDA dat_0256         ; If ($0256 [dat_0256] != 0)
-238f: f0 03                     BEQ loc_2394         ;   Then
-2391: 4c 4b 24                  JMP loc_244b         ;     Jump down to cleanup and return code
+238f: f0 03                     BEQ loc_2394         ; Then
+2391: 4c 4b 24                  JMP rts_VVBLKI       ;     Continue @ $244b [rts_VVBLKI] - cleanup and return
+                                                     ; End If
 2394: ee 56 02  loc_2394        INC dat_0256         ; Add 1 to $0256 [dat_0256]
 2397: ae b9 18                  LDX CUR_DLIST_NUM    ; Set X = CUR_DLIST_NUM
 239a: ca                        DEX                  ; Subtract 1 from X
 239b: d0 04                     BNE loc_23a1         ; If (X == 0) Then
 239d: ca                        DEX                  ;     Set
 239e: 8e 11 d0                  STX GRAFM            ;         GRAFM = $ff (255) All missile pixels visible
+                                                     ; End If
                 ; The following loop sets:
                 ;     COLPF0 = tbl_COLPM3_1c1c[1]
                 ;     COLPF1 = tbl_COLPM3_1c1c[2]
@@ -2173,90 +2461,102 @@
 23a6: 9d 15 d0                  STA COLPM3,X         ;         COLPM3[X] = tbl_COLPM3_1c1c[X]
 23a9: ca                        DEX                  ;     Subtract 1 from X
 23aa: d0 f7                     BNE loc_23a3         ; Repeat while (X != 0)
-23ac: 8e b8 18                  STX CUR_COLPF2_NUM ; Set $18b8 [CUR_COLPF2_NUM] = 0 (X = 0 from loop above)
-23af: 8e b7 18                  STX dat_18b7         ; Set $18b7 [dat_18b7] = 0
+23ac: 8e b8 18                  STX CUR_COLPF2_NUM   ; Set CUR_COLPF2_NUM = 0 (X = 0 from loop above)
+23af: 8e b7 18                  STX dat_18b7         ; Set dat_18b7 = 0
 23b2: ae b9 18                  LDX CUR_DLIST_NUM    ; If (CUR_DLIST_NUM == 0)
-23b5: d0 03                     BNE loc_23ba         ;   Then
+23b5: d0 03                     BNE loc_23ba         ; Then
 23b7: 8e 18 d0                  STX COLPF2           ;     Set COLPF2 = 0
-23ba: 20 7a 26  loc_23ba        JSR sub_267a         ; Call sub_267a
+                                                     ; End If
+23ba: 20 7a 26  loc_23ba        JSR sub_267a         ; Call $267a [sub_267a]
 23bd: a6 32                     LDX flg_PAUSED       ; Set X = flg_PAUSED
-23bf: 30 6d                     BMI loc_242e         ;
-23c1: 2c 55 19                  BIT loc_1955         ;
-23c4: 10 03                     BPL loc_23c9         ;
-23c6: 20 e5 24                  JSR sub_24e5         ;
-23c9: e6 33     loc_23c9        INC BUFRHI           ;
-23cb: a5 33                     LDA BUFRHI           ;
-23cd: c9 04                     CMP #$04             ;
-23cf: 90 5d                     BCC loc_242e         ;
-23d1: 86 33                     STX BUFRHI           ; Set BUFRHI = X
-23d3: 2c 55 19                  BIT loc_1955         ;
-23d6: 30 17                     BMI loc_23ef         ;
-23d8: ce ff 24                  DEC loc_24ff         ;
-23db: 10 08                     BPL loc_23e5         ;
-23dd: a9 02                     LDA #$02             ;
-23df: 8d ff 24                  STA loc_24ff         ;
-23e2: 20 e5 24                  JSR sub_24e5         ;
-23e5: e6 34     loc_23e5        INC BFENLO           ;
-23e7: a5 34                     LDA BFENLO           ;
-23e9: c9 3c                     CMP #$3c             ;
-23eb: 90 41                     BCC loc_242e         ;
-23ed: 86 34                     STX BFENLO           ;
-23ef: a5 50     loc_23ef        LDA dat_023e         ;
-23f1: d0 03                     BNE loc_23f6         ;
-23f3: ee 62 19                  INC loc_1962         ;
-23f6: 86 50     loc_23f6        STX dat_023e         ;
-23f8: 86 50                     STX dat_023e         ;
-23fa: e6 35                     INC BFENHI           ;
-23fc: a5 35                     LDA BFENHI           ;
-23fe: c9 3c                     CMP #$3c             ;
-2400: 90 2c                     BCC loc_242e         ;
-2402: 86 35                     STX BFENHI           ;
-2404: e6 36                     INC CRETRY           ;
-2406: a5 36                     LDA CRETRY           ;
-2408: c9 18                     CMP #$18             ;
-240a: 90 22                     BCC loc_242e         ;
-240c: 86 36                     STX CRETRY           ;
-240e: e6 3b                     INC CHKSNT           ;
-2410: d0 02                     BNE loc_2414         ;
-2412: e6 3c                     INC NOCKSM           ;
-2414: e6 37     loc_2414        INC DRETRY           ;
-2416: a5 37                     LDA DRETRY           ;
-2418: c9 1e                     CMP #$1e             ;
-241a: 90 12                     BCC loc_242e         ;
-241c: 86 37                     STX DRETRY           ;
-241e: e6 38                     INC BUFRFL           ;
-2420: a5 38                     LDA BUFRFL           ;
-2422: c9 0c                     CMP #$0c             ;
-2424: 90 08                     BCC loc_242e         ;
-2426: 86 38                     STX BUFRFL           ;
-2428: e6 3a                     INC XMTDON           ;
-242a: d0 02                     BNE loc_242e         ;
-242c: e6 39                     INC RECVDN           ;
+23bf: 30 6d                     BMI vvblki_BLINK     ; If (X >= 0) Then
+                                                     ;     Continue @ $242e [vvblki_BLINK]
+                                                     ; End If
+23c1: 2c 55 19                  BIT dat_1955         ; If (dat_1955 < 0)
+23c4: 10 03                     BPL loc_23c9         ; Then
+23c6: 20 e5 24                  JSR sub_24e5         ;     Call $24e5 [sub_24e5]
+                                                     ; End If
+23c9: e6 33     loc_23c9        INC dat_0033         ; Add 1 to dat_0033
+23cb: a5 33                     LDA dat_0033         ; If (dat_0033 < 4) Then
+23cd: c9 04                     CMP #$04             ;     Continue @ $242e [vvblki_BLINK]
+23cf: 90 5d                     BCC vvblki_BLINK     ; End If
+23d1: 86 33                     STX dat_0033         ; Set dat_0033 = X
+23d3: 2c 55 19                  BIT dat_1955         ; If (dat_1955 >= 0)
+23d6: 30 17                     BMI loc_23ef         ; Then
+23d8: ce ff 24                  DEC dat_24ff         ;     Subtract 1 from dat_24ff
+23db: 10 08                     BPL loc_23e5         ;     If (dat_24ff < 0) Then
+23dd: a9 02                     LDA #$02             ;         Set
+23df: 8d ff 24                  STA dat_24ff         ;             dat_24ff = 2
+23e2: 20 e5 24                  JSR sub_24e5         ;         Call $24e5 [sub_24e5]
+                                                     ;     End If
+23e5: e6 34     loc_23e5        INC dat_0034         ;     Add 1 to dat_0034
+23e7: a5 34                     LDA dat_0034         ;     If (dat_0034 ? $3c) Then
+23e9: c9 3c                     CMP #$3c             ;         Continue @ $242e [vvblki_BLINK]
+23eb: 90 41                     BCC vvblki_BLINK     ;     End If
+23ed: 86 34                     STX dat_0034         ;     Set X = dat_0034
+                                                     ; End If
+23ef: a5 50     loc_23ef        LDA dat_023e         ; If (dat_023e != 0)
+23f1: d0 03                     BNE loc_23f6         ; Then
+23f3: ee 62 19                  INC dat_1962         ;     Add 1 to dat_1962
+                                                     ; End If
+23f6: 86 50     loc_23f6        STX dat_023e         ; Set dat_023e = X
+23f8: 86 50                     STX dat_023e         ; Set dat_023e = X     (TODO: Why twice?)
+23fa: e6 35                     INC dat_0035         ; Add 1 to dat_0035
+23fc: a5 35                     LDA dat_0035         ; If (dat_0035 < $3c (60)) Then
+23fe: c9 3c                     CMP #$3c             ;     Continue @ $242e [vvblki_BLINK]
+2400: 90 2c                     BCC vvblki_BLINK     ; End If
+2402: 86 35                     STX dat_0035         ; Set dat_0035 = X
+2404: e6 36                     INC dat_0036         ; Add 1 to dat_0036
+2406: a5 36                     LDA dat_0036         ; If (dat_0036 ? $18 (24)) Then
+2408: c9 18                     CMP #$18             ;     Continue @ $242e [vvblki_BLINK]
+240a: 90 22                     BCC vvblki_BLINK     ; End If
+240c: 86 36                     STX dat_0036         ; Set dat_0036 = X
+240e: e6 3b                     INC dat_003b         ; Add 1 to dat_003b
+2410: d0 02                     BNE loc_2414         ; If (dat_003b == 0) Then  (overflow)
+2412: e6 3c                     INC dat_003c         ;     Add 1 to dat_003c
+                                                     ; End If
+2414: e6 37     loc_2414        INC dat_0037         ; Add 1 to dat_0037
+2416: a5 37                     LDA dat_0037         ; If (dat_0037 < $1e (30)) Then
+2418: c9 1e                     CMP #$1e             ;     Continue @ $242e [vvblki_BLINK]
+241a: 90 12                     BCC vvblki_BLINK     ; End If
+241c: 86 37                     STX dat_0037         ; Set dat_0037 = X
+241e: e6 38                     INC dat_0038         ; Add 1 to dat_0038
+2420: a5 38                     LDA dat_0038         ; If (dat_0038 ? $0c (12)) Then
+2422: c9 0c                     CMP #$0c             ;     Continue @ $242e [vvblki_BLINK]
+2424: 90 08                     BCC vvblki_BLINK     ; End If
+2426: 86 38                     STX dat_0038         ; Set dat_0038 = X
+2428: e6 3a                     INC dat_003a         ; Add 1 to dat_003a
+242a: d0 02                     BNE vvblki_BLINK     ; If (dat_003a == 0) Then
+242c: e6 39                     INC dat_0039         ;     Add 1 to dat_0039
+                                                     ; End If
                 ; Toggle normal/inverse characters for text blinking effect
                 ; Displays inverse characters for 8/63 vertical blank periods (approx. 0.133 seconds)
                 ;     and normal characters for 55/63 vertical blanks (approx. 0.916 seconds)
-242e: a2 00     loc_242e        LDX #$00             ; Set X = 0
+242e: a2 00     vvblki_BLINK    LDX #$00             ; Set X = 0
 2430: ad 52 02                  LDA VBLK_COUNTER     ; Set
 2433: 29 3f                     AND #$3f             ;     A = VBLK_COUNTER & $3f (63)
 2435: c9 08                     CMP #$08             ; If (A < 8)
-2437: b0 01                     BCS loc_243a         ;   Then
+2437: b0 01                     BCS loc_243a         ; Then
 2439: e8                        INX                  ;     Set X = 1
+                                                     ; End If
 243a: 8e 01 d4  loc_243a        STX CHACTL           ; Set CHACTL = X  (0 = normal; 1 = inverse)
                 ;
-243d: ad 2f 02                  LDA dat_022f         ; If (dat_022f >= 0)
-2440: 10 03                     BPL loc_2445         ;   Then
-2442: 20 51 24                  JSR sub_2451         ;     Call sub_2451
+243d: ad 2f 02                  LDA vblk_CRITIC      ; If (vblk_CRITIC >= 0)
+2440: 10 03                     BPL loc_2445         ; Then
+2442: 20 51 24                  JSR call_VVBLKD      ;     Call call_VVBLKD
+                                                     ; End If
 2445: 20 03 25  loc_2445        JSR sub_2503         ; Call sub_2503
 2448: ce 56 02                  DEC dat_0256         ; Subtract 1 from $0256 [dat_0256]
-                ; Restore register state and return from interrupt
-244b: 68        loc_244b        PLA                  ; Restore the original
+                ; Restore register state and return from VVBLKI interrupt
+244b: 68        rts_VVBLKI      PLA                  ; Restore the original
 244c: a8                        TAY                  ;     value of Y
 244d: 68                        PLA                  ; Restore the original
 244e: aa                        TAX                  ;     value of X
 244f: 68                        PLA                  ; Restore the original value of A
 2450: 40                        RTI                  ; Return from interrupt handler
 
-2451: 6c 24 02  sub_2451        JMP (VVBLKD)         ;
+                ; Indirectly invokes the sub referenced by VVBLKD (VBLANK deferred interrupt vector)
+2451: 6c 24 02  call_VVBLKD     JMP (VVBLKD)         ; Continue @ the sub referenced by VVBLKD
 
                 ; Waits for the VBLK_COUNTER value to change, indicating a vblank occurred
 2454: ad 52 02  WAIT_FOR_VBLK_A  LDA VBLK_COUNTER    ; Set A = VBLK_COUNTER
@@ -2295,192 +2595,325 @@
                 ;   A = ?
                 ;   X = ?
                 ;   Y = ?
+                ;
+                ; Assigns the following and then transfers execution to $204e [cont_204e]
+                ;   dat_0231 = A
+                ;   dat_0247 = Y
+                ;   dat_023d = X
+                ;   dat_0246 = X
+                ;
 2494: 8d 31 02  sub_2494        STA dat_0231         ; Set dat_0231 = A
 2497: 8c 47 02                  STY dat_0247         ; Set dat_0247 = Y
 249a: 8e 3d 02                  STX dat_023d         ; Set dat_023d = X
 249d: 8e 46 02                  STX dat_0246         ; Set dat_0246 = X
-24a0: 4c 4e 20                  JMP loc_204e         ; Continue @ $204e [loc_204e]
+24a0: 4c 4e 20                  JMP cont_204e        ; Continue @ $204e [cont_204e]
 
+                ; TODO: How is the following code executed?
 24a3: a9 00                     LDA #$00             ; Set the lowest (top) byte
 24a5: 8d 00 01                  STA dat_0100         ;     of the stack to $00   TODO: Why?
-24a8: 8d 35 02                  STA LPENV            ; Set
-24ab: a9 04                     LDA #$04             ;     LPENV/LPENH
-24ad: 8d 34 02                  STA LPENH            ;     to $0400 [DISP_START] ???
+24a8: 8d 35 02                  STA dat_0234_H       ; Set
+24ab: a9 04                     LDA #$04             ;     dat_0234_L/H
+24ad: 8d 34 02                  STA dat_0234_L       ;     to $0004
 24b0: a9 53                     LDA #$53             ; Set A = $53 (83)
 24b2: a2 40                     LDX #$40             ; Set X = $40 (64)
 24b4: a0 03                     LDY #$03             ; Set Y = $03 (3)
 24b6: 20 94 24                  JSR sub_2494         ;
 24b9: 08                        PHP                  ; Push processor status register to the stack
 24ba: a9 80                     LDA #$80             ; Set
-24bc: 8d 34 02                  STA LPENH            ;     LPENV/LPENH
+24bc: 8d 34 02                  STA dat_0234_L       ;     dat_0234_L/H
 24bf: a9 00                     LDA #$00             ;     to
-24c1: 8d 35 02                  STA LPENV            ;     $8000
+24c1: 8d 35 02                  STA dat_0234_H       ;     $0080
 24c4: 28                        PLP                  ; Restore processor status register from the stack
 24c5: 60                        RTS                  ; Return to caller
 
-24c6: 08        loc_24c6        PHP                  ;
-24c7: a9 40                     LDA #$40             ;
-24c9: 8d 36 02                  STA CUR_IRQEN        ;
-24cc: 8d 0e d2                  STA IRQEN            ;
-24cf: a9 03                     LDA #$03             ;
-24d1: 8d 0f d2                  STA SKCTL            ;
-24d4: a9 00                     LDA #$00             ;
-24d6: 8d 08 d2                  STA AUDCTL           ;
-24d9: a9 01                     LDA #$01             ;
-24db: 8d 53 02                  STA dat_0253         ;
-24de: ad 53 02  loc_24de        LDA dat_0253         ;
-24e1: d0 fb                     BNE loc_24de         ;
-24e3: 28                        PLP                  ;
+24c6: 08        sub_24c6        PHP                  ; Save processor status
+24c7: a9 40                     LDA #$40             ; Set
+24c9: 8d 36 02                  STA CUR_IRQEN        ;     CUR_IRQEN = $40
+24cc: 8d 0e d2                  STA IRQEN            ; Set IRQEN = $40
+24cf: a9 03                     LDA #$03             ; Set
+24d1: 8d 0f d2                  STA SKCTL            ;     SKCTL = 3
+24d4: a9 00                     LDA #$00             ; Set
+24d6: 8d 08 d2                  STA AUDCTL           ;     AUDCTL = 0
+24d9: a9 01                     LDA #$01             ; Set
+24db: 8d 53 02                  STA dat_0253         ;     dat_0253 = 1
+24de: ad 53 02  loc_24de        LDA dat_0253         ; Wait until
+24e1: d0 fb                     BNE loc_24de         ;     (dat_0253 != 0)
+24e3: 28                        PLP                  ; Restore processor status
 24e4: 60                        RTS                  ; Return to caller
 
-24e5: ad 53 04  sub_24e5        LDA DISP_TIME_SPINNER ;
-24e8: c9 7b                     CMP #$7b             ;
-24ea: 90 0e                     BCC loc_24fa         ;
-24ec: ee f0 24                  INC loc_24f0         ;
-24ef: a9 ff                     LDA #$ff             ;
-24f1: 29 03                     AND #$03             ;
-24f3: aa                        TAX                  ;
-24f4: bd fb 24                  LDA dat_24fb,X       ;
-24f7: 8d 53 04                  STA DISP_TIME_SPINNER ;
+24e5: ad 53 04  sub_24e5        LDA DISP_TIME_SPINNER ; If
+24e8: c9 7b                     CMP #$7b             ;    (DISP_TIME_SPINNER >= $7b (123 '{'}))
+24ea: 90 0e                     BCC loc_24fa         ; Then
+24ec: ee f0 24                  INC loc_24f0         ;     Add 1 to loc_24f0
+24ef: a9 ff                     LDA #$ff             ;     (Why LDA #$ff/AND #$03 instead of LDA #$03?)
+24f1: 29 03                     AND #$03             ;     Set
+24f3: aa                        TAX                  ;         DISP_TIME_SPINNER
+24f4: bd fb 24                  LDA tbl_TME_SPNR,X   ;           =
+24f7: 8d 53 04                  STA DISP_TIME_SPINNER ;              tbl_TME_SPNR[3]
+                                                     ; End If
 24fa: 60        loc_24fa        RTS                  ; Return to caller
 
-24fb: 7b 7c 7d 7e 02 00 00 00  dat_24fb  .BYTE $7b,$7c,$7d,$7e,$02,$00,$00,$00  ; {|}~....
+24fb: 7b 7c 7d 7e  tbl_TME_SPNR  .BYTE $7b,$7c,$7d,$7e ; {|}~
+24ff: 02        dat_24ff     .BYTE $02
+2500: 00 00 00  unk_2500     .BYTE  $00,$00,$00
 
-2503: ad 9c 19  sub_2503        LDA dat_199c         ;
-2506: 30 03                     BMI loc_250b         ;
-2508: 4c 4f 25                  JMP loc_254f         ;
-250b: 29 7f     loc_250b        AND #$7f             ;
-250d: aa                        TAX                  ;
-250e: a9 00                     LDA #$00             ;
-2510: a0 08                     LDY #$08             ;
-2512: 8d 9c 19                  STA dat_199c         ;
-2515: 99 00 d2  loc_2515        STA AUDF1,Y          ;
-2518: 88                        DEY                  ;
-2519: 10 fa                     BPL loc_2515         ;
-251b: bd 23 26                  LDA dat_2623,X       ;
-251e: 85 f0                     STA FCHRFLG          ;
-2520: bd 29 26                  LDA dat_2629,X       ;
-2523: 85 f1                     STA DIGRT            ;
-2525: bd 17 26  loc_2525        LDA dat_2617,X       ;
-2528: 85 f2                     STA CIX              ;
-252a: bd 1d 26                  LDA dat_261d,X       ;
-252d: 85 f3                     STA INBUFF           ;
-252f: a9 01                     LDA #$01             ;
-2531: 8d be 25                  STA dat_25be         ;
-2534: a9 04                     LDA #$04             ;
-2536: 8d bf 25                  STA dat_25bf         ;
-2539: bd 11 26                  LDA dat_2611,X       ;
-253c: 8d c0 25                  STA dat_25c0         ;
-253f: 8d c1 25                  STA dat_25c1         ;
-2542: 8e c3 25                  STX dat_25c3         ;
-2545: bc e5 25                  LDY dat_25e5,X       ;
-2548: 8c 08 d2                  STY AUDCTL           ;
-254b: 8d 9c 19                  STA dat_199c         ;
-254e: 60                        RTS                  ; Return to caller
-254f: d0 01     loc_254f        BNE loc_2552         ;
-2551: 60        loc_2551        RTS                  ; Return to caller
-2552: ad c0 25  loc_2552        LDA dat_25c0         ;
-2555: 0d c1 25                  ORA dat_25c1         ;
-2558: 8d 9c 19                  STA dat_199c         ;
-255b: f0 f4                     BEQ loc_2551         ;
-255d: a9 01                     LDA #$01             ;
-255f: 8d c4 25                  STA dat_25c4         ;
-2562: 20 6b 25  loc_2562        JSR sub_256b         ;
-2565: ce c4 25                  DEC dat_25c4         ;
-2568: 10 f8                     BPL loc_2562         ;
+                ; Audio related
+                ; Called from VVBLKI
+                ;
+                ; Input
+                ;   dat_199c   - Controls action taken
+                ;                If =0, the sub returns without any updates
+                ;                If <0 ($80 (-128) to $85 (-123)), the sign bit is cleared from the value
+                ;                and the result (0..5) is used as an index to:
+                ;                  - Retrieve an address from tbl_2623_L/tbl_2629_H
+                ;                  - Retrieve an address from dat_2617_L/dat_261d_H
+                ;                  - Retrieve a byte from dat_2611
+                ;                If >0, ...
+                ;
+                ;   tbl_2623_L - Table containing LSB of address
+                ;   tbl_2629_H - Table containing MSB of address
+                ;
+                ; Output
+                ;   If (dat_199c < 0):
+                ;     dat_25c3      - Set to dat_199c & $7f
+                ;     dat_00f0_L/H  - Set to tbl_2623_L[dat_25c3]/tbl_2629_H[dat_25c3]
+                ;     dat_00f2_L/H  - Set to dat_2617_L[dat_25c3]/dat_261d_H[dat_25c3]
+                ;     dat_25be      - Set to 1
+                ;     dat_25bf      - Set to 4
+                ;     dat_25c0      - Set to dat_2611[dat_25c3]
+                ;     dat_25c1      - Set to dat_2611[dat_25c3]
+                ;     dat_199c      - Set to dat_2611[dat_25c3]
+                ;     AUDCTL        - Set to dat_25e5[dat_25c3]
+                ;   If (dat_199c > 0):
+                ;     dat_199c      - Set to dat_25c0 | dat_25c1
+                ;
+2503: ad 9c 19  sub_2503        LDA dat_199c         ; If
+2506: 30 03                     BMI loc_250b         ;    (dat_199c < 0)
+2508: 4c 4f 25                  JMP loc_254f         ; Then
+                ; Extract offset by clearing sign bit
+250b: 29 7f     loc_250b        AND #$7f             ;     Set
+250d: aa                        TAX                  ;         X = dat_199c & $7f
+                ; Silence audio by setting the following to 0:
+                ;   dat_199c, AUDF1/2/3/4, AUDC1/2/3/4, AUDCTL
+250e: a9 00                     LDA #$00             ;     Set A = 0
+2510: a0 08                     LDY #$08             ;     Set Y = 8 (9 iterations)
+2512: 8d 9c 19                  STA dat_199c         ;     Set dat_199c = 0   (Set NOP mode for reentrant IRQ calls or unecessary?)
+2515: 99 00 d2  loc_2515        STA AUDF1,Y          ;     Loop
+                                                     ;         Set AUDF1[Y] = 0
+2518: 88                        DEY                  ;         Subtract 1 from Y
+2519: 10 fa                     BPL loc_2515         ;     Repeat while (Y >= 0)
+                ; The following lookups require X = [0..5] (extracted from dat_199c earlier)
+251b: bd 23 26                  LDA tbl_2623_L,X     ;     Set dat_00f0_L/H
+251e: 85 f0                     STA dat_00f0_L       ;         address
+2520: bd 29 26                  LDA tbl_2629_H,X     ;         to
+2523: 85 f1                     STA dat_00f0_H       ;         tbl_2623_L[X]/tbl_2629_H[X]
+2525: bd 17 26                  LDA dat_2617_L,X     ;     Set dat_00f2_L/H
+2528: 85 f2                     STA dat_00f2_L       ;         address
+252a: bd 1d 26                  LDA dat_261d_H,X     ;         to
+252d: 85 f3                     STA dat_00f2_H       ;         dat_2617_L[X]/dat_261d_H[X]
+252f: a9 01                     LDA #$01             ;     Set
+2531: 8d be 25                  STA dat_25be         ;         dat_25be = 1
+2534: a9 04                     LDA #$04             ;     Set
+2536: 8d bf 25                  STA dat_25bf         ;         dat_25bf = 4
+2539: bd 11 26                  LDA dat_2611,X       ;     Set
+253c: 8d c0 25                  STA dat_25c0         ;         dat_25c0 = dat_2611[X]
+253f: 8d c1 25                  STA dat_25c1         ;     Set dat_25c1 = dat_2611[X]
+2542: 8e c3 25                  STX dat_25c3         ;     Set dat_25c3 = X
+2545: bc e5 25                  LDY dat_25e5,X       ;     Set
+2548: 8c 08 d2                  STY AUDCTL           ;         AUDCTL = dat_25e5[X]
+254b: 8d 9c 19                  STA dat_199c         ;     Set dat_199c = dat_2611[X]
+254e: 60                        RTS                  ;     Return to caller
+254f: d0 01     loc_254f        BNE loc_2552         ; Else If (dat_199c == 0) Then  (NOP)
+2551: 60        loc_2551        RTS                  ;     Return to caller
+                                                     ; End If
+2552: ad c0 25  loc_2552        LDA dat_25c0         ; Set
+2555: 0d c1 25                  ORA dat_25c1         ;     dat_199c
+2558: 8d 9c 19                  STA dat_199c         ;        = dat_25c0 | dat_25c1
+255b: f0 f4                     BEQ loc_2551         ; If (dat_199c == 0) Then
+                                                     ;     Return to caller
+                                                     ; End If
+255d: a9 01                     LDA #$01             ; Set
+255f: 8d c4 25                  STA dat_25c4         ;     dat_25c4 = 1 (2 iterations)
+2562: 20 6b 25  loc_2562        JSR sub_256b         ; Loop
+                                                     ;     Call $256b [sub_256b]
+2565: ce c4 25                  DEC dat_25c4         ;     Subtract 1 from dat_25c4
+2568: 10 f8                     BPL loc_2562         ; Repeat while (dat_25c4 >= 0)
 256a: 60                        RTS                  ; Return to caller
 
-256b: ae c4 25  sub_256b        LDX dat_25c4         ;
-256e: de be 25                  DEC dat_25be,X       ;
-2571: d0 38                     BNE loc_25ab         ;
-2573: de c0 25                  DEC dat_25c0,X       ;
-2576: f0 32                     BEQ loc_25aa         ;
-2578: bc c0 25                  LDY dat_25c0,X       ;
-257b: 88                        DEY                  ;
-257c: b1 f2                     LDA (CIX),Y          ;
-257e: 9d be 25                  STA dat_25be,X       ;
-2581: b1 f0                     LDA (FCHRFLG),Y      ;
-2583: 8d c2 25                  STA dat_25c2         ;
-2586: 8a                        TXA                  ;
-2587: 0a                        ASL                  ;
-2588: 0a                        ASL                  ;
-2589: a8                        TAY                  ;
-258a: 4a                        LSR                  ;
-258b: 6d c2 25                  ADC dat_25c2         ;
-258e: 99 00 d2                  STA AUDF1,Y          ;
-2591: 18                        CLC                  ;
-2592: 69 01                     ADC #$01             ;
-2594: 99 02 d2                  STA AUDF2,Y          ;
-2597: ae c3 25                  LDX dat_25c3         ;
-259a: bd eb 25                  LDA dat_25eb,X       ;
-259d: c0 00                     CPY #$00             ;
-259f: d0 03                     BNE loc_25a4         ;
-25a1: 18                        CLC                  ;
-25a2: 69 03                     ADC #$03             ;
-25a4: 99 01 d2  loc_25a4        STA AUDC1,Y          ;
-25a7: 99 02 d2                  STA AUDF2,Y          ;
-25aa: 60        loc_25aa        RTS                  ; Return to caller
-25ab: bd be 25  loc_25ab        LDA dat_25be,X       ;
-25ae: c9 01                     CMP #$01             ;
-25b0: d0 0b                     BNE loc_25bd         ;
-25b2: 8a                        TXA                  ;
-25b3: 0a                        ASL                  ;
-25b4: aa                        TAX                  ;
-25b5: a9 00                     LDA #$00             ;
-25b7: 9d 01 d2                  STA AUDC1,X          ;
-25ba: 9d 03 d2                  STA AUDC2,X          ;
+                ; Audio related.
+                ; Called from sub_2503
+                ; Seems to implement a couple modes, updating either channel or frequency
+                ; Also controls timing based on number of invocations (e.g. vblank periods)
+                ;
+                ; Input
+                ;   dat_00f2_L/H -
+                ;   dat_00f0_L/H -
+                ;   dat_25c4     - Value [0..1] indicating the source parms to use
+                ;                   0 - Audio channel   (updates AUDC1/AUDC2)
+                ;                   1 - Audio frequency (updates AUDF1/AUDF2)
+                ;   When dat_25c4 is 0:
+                ;     dat_25be  - Remaining initial time in vblanks? Counts down on each call.
+                ;                 Updated to value at (*dat_00f2_L)[dat_25c0 - 1] when 0 and dat_25c0 >= 1
+                ;     dat_25c0  - Offset plus one relative to dat_00f2_L/H. Counts down when dat_25be reaches 0.
+                ;     dat_25c2  - Audio frequency? Set to value at (*dat_00f0_L)[dat_25c0 - 1]
+                ;     dat_25c3  - Index to dat_25eb
+                ;     dat_25eb  -
+                ;   When dat_25c4 is 1:
+                ;     dat_25bf  - Remaining initial time in vblanks? Counts down on each call.
+                ;                 Updated to value at (*dat_00f2_L)[dat_25c1 - 1] when 0 and dat_25c1 >= 1
+                ;     dat_25c1  - Offset plus one relative to dat_00f2_L/H. Counts down when dat_25be reaches 0.
+                ;     dat_25ec  - Set to value at (*dat_00f2_L)[dat_25c1 - 1]
+                ;     dat_25c2  - Audio frequency? Set to value at (*dat_00f0_L)[dat_25c1 - 1]
+                ;
+                ; Output
+                ;   dat_25c2    - Set to
+                ;
+256b: ae c4 25  sub_256b        LDX dat_25c4         ; Set X = dat_25c4
+256e: de be 25                  DEC dat_25be,X       ; Subtract 1 from dat_25be[X]
+2571: d0 38                     BNE loc_25ab         ; If (dat_25be[X] == 0) Then
+2573: de c0 25                  DEC dat_25c0,X       ;     Subtract 1 from dat_25c0[X]
+2576: f0 32                     BEQ loc_25aa         ;     If (dat_25c0[X] != 0) Then
+2578: bc c0 25                  LDY dat_25c0,X       ;         Set
+257b: 88                        DEY                  ;             Y = dat_25c0[X] - 1
+257c: b1 f2                     LDA (dat_00f2_L),Y   ;         Set
+257e: 9d be 25                  STA dat_25be,X       ;             dat_25be[X] = (*dat_00f2_L)[Y]
+2581: b1 f0                     LDA (dat_00f0_L),Y   ;         Set
+2583: 8d c2 25                  STA dat_25c2         ;             dat_25c2 = (*dat_00f0_L)[Y]
+2586: 8a                        TXA                  ;         Set A
+2587: 0a                        ASL                  ;               =
+2588: 0a                        ASL                  ;                 X * 4
+2589: a8                        TAY                  ;         Set Y = A
+258a: 4a                        LSR                  ;         Set A /= 1, C = old bit 0 of A
+258b: 6d c2 25                  ADC dat_25c2         ;         Set A += dat_25c2 + C
+258e: 99 00 d2                  STA AUDF1,Y          ;         Set AUDF1[Y] = A
+2591: 18                        CLC                  ;         Set
+2592: 69 01                     ADC #$01             ;             A += 1, C = 1 on overflow else 0
+2594: 99 02 d2                  STA AUDF2,Y          ;         Set AUDF2[Y] = A
+2597: ae c3 25                  LDX dat_25c3         ;         Set X = dat_25c3
+259a: bd eb 25                  LDA dat_25eb,X       ;         If
+259d: c0 00                     CPY #$00             ;            (dat_25eb[X] == 0)
+259f: d0 03                     BNE loc_25a4         ;         Then
+25a1: 18                        CLC                  ;             Set
+25a2: 69 03                     ADC #$03             ;                 A += 3
+                                                     ;         End If
+25a4: 99 01 d2  loc_25a4        STA AUDC1,Y          ;         Set AUDC1[Y] = A
+25a7: 99 02 d2                  STA AUDF2,Y          ;         Set AUDF2[Y] = A
+                                                     ;     End If
+25aa: 60        loc_25aa        RTS                  ;     Return to caller
+25ab: bd be 25  loc_25ab        LDA dat_25be,X       ; Else If
+25ae: c9 01                     CMP #$01             ;    (dat_25be[X] == 1)
+25b0: d0 0b                     BNE loc_25bd         ; Then
+25b2: 8a                        TXA                  ;     Set X
+25b3: 0a                        ASL                  ;           =
+25b4: aa                        TAX                  ;             X * 2
+25b5: a9 00                     LDA #$00             ;     Set A = 0
+25b7: 9d 01 d2                  STA AUDC1,X          ;     Set AUDC1[X] = 0
+25ba: 9d 03 d2                  STA AUDC2,X          ;     Set AUDC2[X] = 0
+                                                     ; End If
 25bd: 60        loc_25bd        RTS                  ; Return to caller
 
-25be: 00        dat_25be        .BYTE $00            ; .
-25bf: 00        dat_25bf        .BYTE $00            ; .
-25c0: 00        dat_25c0        .BYTE $00            ; .
-25c1: 00        dat_25c1        .BYTE $00            ; .
-25c2: 00        dat_25c2        .BYTE $00            ; .
-25c3: 00        dat_25c3        .BYTE $00            ; .
-25c4: 00 cc b6 ad f0 ff ee f8  dat_25c4  .BYTE $00,$cc,$b6,$ad,$f0,$ff,$ee,$f8  ; ........
-25cc: 88 88 72 99 88 66 fc ad   .BYTE $88,$88,$72,$99,$88,$66,$fc,$ad  ; ..r..f..
-25d4: a2 99 f3 66 4c 4c 5b 5b   .BYTE $a2,$99,$f3,$66,$4c,$4c,$5b,$5b  ; ...fLL[[
-25dc: 5b 5b 79 90 80 79 60 55   .BYTE $5b,$5b,$79,$90,$80,$79,$60,$55  ; [[y..y`U
-25e4: 60                        .BYTE $60            ; `
+25be: 00        dat_25be        .BYTE $00            ; 2 bytes: table indexed by dat_25c4
+25bf: 00        dat_25bf        .BYTE $00            ;
+25c0: 00        dat_25c0        .BYTE $00            ; 2 bytes: table indexed by dat_25c4
+25c1: 00        dat_25c1        .BYTE $00            ;
+25c2: 00        dat_25c2        .BYTE $00            ; 1 byte
+25c3: 00        dat_25c3        .BYTE $00            ;
+25c4: 00        dat_25c4        .BYTE $00
+25c5: cc b6 ad  dat_25c5        .BYTE $cc,$b6,$ad
+25c8: f0 ff ee f8  dat_25c8     .BYTE $f0,$ff,$ee,$f8
+25cc: 88 88 72 99 88 66  dat_25cc  .BYTE $88,$88,$72,$99,$88,$66
+25d2: fc ad a2 99 f3  dat_25d2  .BYTE $fc,$ad,$a2,$99,$f3
+25d7: 66 4c 4c 5b 5b 5b 5b  dat_25d7  .BYTE $66,$4c,$4c,$5b,$5b,$5b,$5b
+25de: 79 90 80 79 60 55 60  dat_25de  .BYTE $79,$90,$80,$79,$60,$55,$60
 25e5: 00 40 04 07 07 06  dat_25e5  .BYTE $00,$40,$04,$07,$07,$06  ; .@....
-25eb: a1 01 a1 a1 a1 a1 40 08  dat_25eb  .BYTE $a1,$01,$a1,$a1,$a1,$a1,$40,$08  ; ......@.
-25f3: 08 04 01 03 03 10 08 08   .BYTE $08,$04,$01,$03,$03,$10,$08,$08  ; ........
-25fb: 06 05 05 50 2f 08 26 2f   .BYTE $06,$05,$05,$50,$2f,$08,$26,$2f  ; ...P/.&/
-2603: 61 0c 0c 17 0c 17 0c 20   .BYTE $61,$0c,$0c,$17,$0c,$17,$0c,$20  ; a......
-260b: 40 08 08 08 08 08         .BYTE $40,$08,$08,$08,$08,$08  ; @.....
+25eb: a1 01 a1 a1 a1 a1  dat_25eb  .BYTE $a1,$01,$a1,$a1,$a1,$a1  ; ......
+25f1: 40 08 08  dat_25f1        .BYTE $40,$08,$08
+25f4: 04 01 03 03  dat_25f4     .BYTE $04,$01,$03,$03
+25f8: 10 08 08 06 05 05  dat_25f8  .BYTE $10,$08,$08,$06,$05,$05
+25fe: 50 2f 08 26 2f  dat_25fe  .BYTE $50,$2f,$08,$26,$2f
+2603: 61 0c 0c 17 0c 17 0c  dat_2603  .BYTE $61,$0c,$0c,$17,$0c,$17,$0c
+260a: 20 40 08 08 08 08 08  dat_260a  .BYTE $20,$40,$08,$08,$08,$08,$08
 2611: 04 05     dat_2611        .BYTE $04,$05        ; ..
 2613: 07 06 08 08               .BYTE $07,$06,$08,$08  ; ....
-2617: f1 f4 f8 fe 03 0a  dat_2617  .BYTE $f1,$f4,$f8,$fe,$03,$0a  ; ......
-261d: 25 25 25 25 26 26  dat_261d  .BYTE $25,$25,$25,$25,$26,$26  ; %%%%&&
-2623: c5 c8 cc d2 d7 de  dat_2623  .BYTE $c5,$c8,$cc,$d2,$d7,$de  ; ......
-2629: 25 25 25 25 25 25  dat_2629  .BYTE $25,$25,$25,$25,$25,$25  ; %%%%%%
+2617: f1 f4 f8 fe 03 0a  dat_2617_L  .BYTE $f1,$f4,$f8,$fe,$03,$0a  ; 6 bytes: LSB of address (with dat_261d_H)
+261d: 25 25 25 25 26 26  dat_261d_H  .BYTE $25,$25,$25,$25,$26,$26  ; 6 bytes: MSB of address (with dat_2617_L)
+                                                                    ;    0: $25f1 [dat_25f1] (3 bytes)
+                                                                    ;    1: $25f4 [dat_25f4] (4 bytes)
+                                                                    ;    2: $25f8 [dat_25f8] (6 bytes)
+                                                                    ;    3: $25fe [dat_25fe] (5 bytes)
+                                                                    ;    4: $2603 [dat_2603] (7 bytes)
+                                                                    ;    5: $260a [dat_260a] (7? bytes)
+2623: c5 c8 cc d2 d7 de  tbl_2623_L  .BYTE $c5,$c8,$cc,$d2,$d7,$de  ; 6 bytes: LSB of address (with tbl_2629_H)
+2629: 25 25 25 25 25 25  tbl_2629_H  .BYTE $25,$25,$25,$25,$25,$25  ; 6 bytes: MSB of address (with tbl_2623_L)
+                                                                    ;    0: $25c5 [dat_25c5] (3 bytes)
+                                                                    ;    1: $25c8 [dat_25c8] (4 bytes)
+                                                                    ;    2: $25cc [dat_25cc] (6 bytes)
+                                                                    ;    3: $25d2 [dat_25d2] (5 bytes)
+                                                                    ;    4: $25d7 [dat_25d7] (7 bytes)
+                                                                    ;    5: $25de [dat_25de] (7 bytes)
 
-262f: ad 10 d0  sub_262f        LDA TRIG0            ;
-2632: 4a                        LSR                  ;
-2633: ad 00 d3                  LDA PORTA            ;
-2636: 29 0f                     AND #$0f             ;
-2638: 90 02                     BCC loc_263c         ;
-263a: 09 80                     ORA #$80             ;
-263c: 49 8f     loc_263c        EOR #$8f             ;
-263e: 05 2f                     ORA CIOCHR           ;
-2640: 85 2e                     STA ICAX5Z           ;
+                ; Read joystick Jack 1 Stick 0 direction and trigger button status
+                ;
+                ; Input
+                ;   STK_KBD_DIR - Current keyboard-driven stick direction
+                ;                 (assigned if one of 'i', 'j', 'k', 'l' are pressed)
+                ;
+                ; Output
+                ;   Z           - Set if STK_STATUS is 0 (no movement, no trigger)
+                ;   N           - Set if trigger button pressed
+                ;   STK_STATUS  - Set to port 1 Stick 0 direction and trigger button status
+                ;                   Bit    7 - Button status (1 = pressed, 0 = not pressed)
+                ;                   Bits 3-0 - Direction (0 = centered, )
+                ;
+262f: ad 10 d0  READ_STICK      LDA TRIG0            ; Set
+2632: 4a                        LSR                  ;     C = TRIG0 & 1     (0 = button pressed, 1 = not pressed)
+2633: ad 00 d3                  LDA PORTA            ; Set
+2636: 29 0f                     AND #$0f             ;     A = PORTA & $0f (15)  (Jack 1 Stick 0)
+2638: 90 02                     BCC loc_263c         ; If (C == 1) Then      (joystick button NOT pressed)
+263a: 09 80                     ORA #$80             ;     Set A |= $80 (128 - bit 7 set)
+                                                     ; End If
+263c: 49 8f     loc_263c        EOR #$8f             ; Set A = A xor $8f     (invert bits 7,3,2,1,0)
+263e: 05 2f                     ORA STK_KBD_DIR      ; Set A |= STK_KBD_DIR  (combine with keyboard movement)
+2640: 85 2e                     STA STK_STATUS       ; Set STK_STATUS = A
 2642: 60                        RTS                  ; Return to caller
 
                 ; TODO: Does this read a key from the keyboard?
-2643: a5 30     sub_2643        LDA STATUS           ;
-2645: 30 09                     BMI loc_2650         ;
-2647: 85 31                     STA CHKSUM           ;
-2649: 09 80                     ORA #$80             ;
-264b: 85 30                     STA STATUS           ;
-264d: 29 7f                     AND #$7f             ;
-264f: 60                        RTS                  ; Return to caller
-2650: 85 31     loc_2650        STA CHKSUM           ;
+                ;
+                ; Input
+                ;   KBD_LAST_CHAR - ATASCII of most recent key read (if bit 7 clear)
+                ;
+                ; Output
+                ;   KBD_LAST_CHAR - Bit 7 is set on exit (no key available)
+                ;   dat_0031      - Set to original value of KBD_LAST_CHAR on entry
+                ;   A             - Set to original value of KBD_LAST_CHAR on entry
+                ;
+2643: a5 30     sub_2643        LDA KBD_LAST_CHAR    ; If (KBD_LAST_CHAR >= 0)
+2645: 30 09                     BMI loc_2650         ; Then
+2647: 85 31                     STA dat_0031         ;     Set dat_0031 = KBD_LAST_CHAR
+2649: 09 80                     ORA #$80             ;     Set
+264b: 85 30                     STA KBD_LAST_CHAR    ;         KBD_LAST_CHAR = KBD_LAST_CHAR | 80
+264d: 29 7f                     AND #$7f             ;     Set A = KBD_LAST_CHAR
+264f: 60                        RTS                  ;     Return to caller
+                                                     ; End If
+2650: 85 31     loc_2650        STA dat_0031         ; Set dat_0031 = KBD_LAST_CHAR
 2652: 60                        RTS                  ; Return to caller
 
                 ; This is assigned in the KERNEL_LOADER to handle
                 ;     the VKEYBD (POKEY keyboard) interrupt.
                 ;
+                ; Input
+                ;   KBD_LAST_CHAR - A new key is read only if this value is less than 0 on input
+                ;   dat_18ff      - A new key is read only if this vaue is 0 on input
+                ;   SKSTAT        - Serial port status. A new key is read only if bit 5 is set on input
+                ;   KBCODE        - Keyboard matrix code for the key that was pressed. Codes indicating the
+                ;                   control key is pressed (bit 7 set) are ignored.
                 ;
+                ; Output
+                ;   KBD_LAST_CHAR - Assigned the ATASCII value of the key that was pressed,
+                ;                   but only if the input preconditions are met. Result will
+                ;                   be less than 0 if no mapping exists for the key that was
+                ;                   pressed.
+                ;   dat_18ff      - 4 if a key was read
                 ;
                 ; The VKEYBD vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
                 ;
@@ -2490,68 +2923,95 @@
                 ;
 2653: 8a        irq_VKEYBD_2653  TXA                 ; Save original
 2654: 48                        PHA                  ;     value of X
-2655: a5 30                     LDA STATUS           ;
-2657: 10 1d                     BPL loc_2676         ;
-2659: ad ff 18                  LDA dat_18ff         ;
+2655: a5 30                     LDA KBD_LAST_CHAR    ; If (KBD_LAST_CHAR < 0)  (Only update if ready for next key)
+2657: 10 1d                     BPL loc_2676         ;    And
+2659: ad ff 18                  LDA dat_18ff         ;    (dat_18ff == 0)      (Only update if ready for next key)
 265c: d0 18                     BNE loc_2676         ;
-265e: ad 0f d2                  LDA SKSTAT           ;
-2661: 29 20                     AND #$20             ;
-2663: f0 11                     BEQ loc_2676         ;
-2665: a9 04                     LDA #$04             ;
-2667: 8d ff 18                  STA dat_18ff         ;
-266a: ae 09 d2                  LDX KBCODE           ;
-266d: 30 07                     BMI loc_2676         ;
-266f: bd d1 26                  LDA dat_26d1,X       ;
-2672: 30 02                     BMI loc_2676         ;
-2674: 85 30                     STA STATUS           ;
+265e: ad 0f d2                  LDA SKSTAT           ;    And
+2661: 29 20                     AND #$20             ;    (SKSTAT & $20 != 0)
+2663: f0 11                     BEQ loc_2676         ; Then
+2665: a9 04                     LDA #$04             ;     Set
+2667: 8d ff 18                  STA dat_18ff         ;         dat_18ff = 4
+266a: ae 09 d2                  LDX KBCODE           ;     If (KBCODE >= 0)    (Ignore control codes)
+266d: 30 07                     BMI loc_2676         ;        And
+266f: bd d1 26                  LDA KBCD2ATA,X       ;        (KBCD2ATA[KBCODE] >= 0)
+2672: 30 02                     BMI loc_2676         ;     Then
+2674: 85 30                     STA KBD_LAST_CHAR    ;         Set KBD_LAST_CHAR = KBCD2ATA[KBCODE]
+                                                     ;     End If
+                                                     ; End If
 2676: 68        loc_2676        PLA                  ; Restore original
 2677: aa                        TAX                  ;     value of X
 2678: 68                        PLA                  ; Restore original value of A
 2679: 40                        RTI                  ; Return from interrupt handler
 
-267a: a9 08     sub_267a        LDA #$08             ;
-267c: 8d 1f d0                  STA CONSOL           ;
-267f: a5 30                     LDA STATUS           ;
-2681: 10 1f                     BPL loc_26a2         ;
-2683: ad 1f d0                  LDA CONSOL           ;
-2686: c9 07                     CMP #$07             ;
-2688: d0 15                     BNE loc_269f         ;
-268a: ad 00 19                  LDA dat_1900         ;
-268d: c9 07                     CMP #$07             ;
-268f: f0 0e                     BEQ loc_269f         ;
-2691: a2 10                     LDX #$10             ;
-2693: 4a                        LSR                  ;
-2694: 90 05                     BCC loc_269b         ;
-2696: e8                        INX                  ;
-2697: 4a                        LSR                  ;
-2698: 90 01                     BCC loc_269b         ;
-269a: e8                        INX                  ;
-269b: 86 30     loc_269b        STX STATUS           ;
-269d: a9 07                     LDA #$07             ;
-269f: 8d 00 19  loc_269f        STA dat_1900         ;
-26a2: a0 00     loc_26a2        LDY #$00             ;
-26a4: ad 0f d2                  LDA SKSTAT           ;
-26a7: 29 04                     AND #$04             ;
-26a9: d0 12                     BNE loc_26bd         ;
-26ab: a2 04                     LDX #$04             ;
-26ad: ad 09 d2                  LDA KBCODE           ;
-26b0: dd 51 27  loc_26b0        CMP loc_2751,X       ;
-26b3: f0 05                     BEQ loc_26ba         ;
-26b5: ca                        DEX                  ;
-26b6: 10 f8                     BPL loc_26b0         ;
-26b8: 30 03                     BMI loc_26bd         ;
-26ba: bc 56 27  loc_26ba        LDY loc_2756,X       ;
-26bd: 84 2f     loc_26bd        STY CIOCHR           ;
-26bf: ad ff 18                  LDA dat_18ff         ;
-26c2: f0 0c                     BEQ loc_26d0         ;
-26c4: a0 01                     LDY #$01             ;
-26c6: 8c 1f d0                  STY CONSOL           ;
-26c9: 88                        DEY                  ;
-26ca: 8c 1f d0                  STY CONSOL           ;
-26cd: 8c ff 18                  STY dat_18ff         ;
+                ; appears to be related to keyboard input
+                ; called from irq_VVBLKI
+                ;
+                ; Input
+                ;   KBD_LAST_CHAR -
+                ;   dat_18ff      -
+                ;   dat_1900      -
+                ;
+                ;
+267a: a9 08     sub_267a        LDA #$08             ; Set
+267c: 8d 1f d0                  STA CONSOL           ;     CONSOL = 8
+267f: a5 30                     LDA KBD_LAST_CHAR    ; If (KBD_LAST_CHAR < 0)
+2681: 10 1f                     BPL loc_26a2         ; Then
+2683: ad 1f d0                  LDA CONSOL           ;     Set A = CONSOL
+2686: c9 07                     CMP #$07             ;     If (A == 7)
+2688: d0 15                     BNE loc_269f         ;     Then
+268a: ad 00 19                  LDA dat_1900         ;         Set A = dat_1900
+268d: c9 07                     CMP #$07             ;         If (A != 7)
+268f: f0 0e                     BEQ loc_269f         ;             Continue @ $269f [loc_269f]
+                                                     ;         End If
+2691: a2 10                     LDX #$10             ;         Set X = $10 (16)
+2693: 4a                        LSR                  ;         Set A /= 2, C = old Bit 0 of A
+2694: 90 05                     BCC loc_269b         ;         If (C == 1) Then
+2696: e8                        INX                  ;             Add 1 to X
+2697: 4a                        LSR                  ;             Set A /= 2, C = old Bit 0 of A
+2698: 90 01                     BCC loc_269b         ;             If (C == 1) Then
+269a: e8                        INX                  ;                 Add 1 to X
+                                                     ;             End If
+                                                     ;         End If
+269b: 86 30     loc_269b        STX KBD_LAST_CHAR    ;         Set KBD_LAST_CHAR = X
+269d: a9 07                     LDA #$07             ;         Set A = 7
+                                                     ;     End If
+269f: 8d 00 19  loc_269f        STA dat_1900         ;     Set dat_1900 = A
+                                                     ; End If
+26a2: a0 00     loc_26a2        LDY #$00             ; Set Y = 0
+26a4: ad 0f d2                  LDA SKSTAT           ; If (SKSTAT & 4 == 0) Then
+26a7: 29 04                     AND #$04             ;    Continue @ $26bd [loc_26bd]
+26a9: d0 12                     BNE loc_26bd         ; End If
+                ; Test if KBCODE matches a character assigned a movement direction (IJKL)
+26ab: a2 04                     LDX #$04             ; Set X = 4  (max 5 iterations)
+26ad: ad 09 d2                  LDA KBCODE           ; Set A = KBCODE
+26b0: dd 51 27  loc_26b0        CMP stk_KBCODE,X     ; Loop
+                                                     ;     If (A == stk_KBCODE[X]) Then
+26b3: f0 05                     BEQ loc_26ba         ;         Continue @ $26ba [loc_26ba]
+                                                     ;     End If
+26b5: ca                        DEX                  ;     Subtract 1 from X
+26b6: 10 f8                     BPL loc_26b0         ; Repeat while (X >= 0)
+26b8: 30 03                     BMI loc_26bd         ; Continue @ $26bd [loc_26bd]
+                ; The following instruction is only executed if the loop exits early
+                ; In that case, lookup the joystick direction code
+26ba: bc 56 27  loc_26ba        LDY stk_DIRCODE,X    ; Set Y = stk_DIRCODE[X]
+                ;
+26bd: 84 2f     loc_26bd        STY STK_KBD_DIR      ; Set STK_KBD_DIR = Y
+26bf: ad ff 18                  LDA dat_18ff         ; If (dat_18ff != 0)
+26c2: f0 0c                     BEQ loc_26d0         ; Then
+26c4: a0 01                     LDY #$01             ;     Set
+26c6: 8c 1f d0                  STY CONSOL           ;         CONSOL = 1
+26c9: 88                        DEY                  ;     Set
+26ca: 8c 1f d0                  STY CONSOL           ;         CONSOL = 0
+26cd: 8c ff 18                  STY dat_18ff         ;     Set dat_18ff = 0
+                                                     ; End If
 26d0: 60        loc_26d0        RTS                  ; Return to caller
 
-26d1: 6c 6a 3b ff ff 6b 2b 2a  dat_26d1  .BYTE $6c,$6a,$3b,$ff,$ff,$6b,$2b,$2a  ; lj;..k+*
+                ; Mapping of keyboard code (offset) to ASCII code (value)
+                ;   - Lower 64 bytes are mappings for lowercase (no shift key)
+                ;   - Upper 64 bytes are mappings for uppercase (shift key down)
+                ;   - Control key down codes are not mapped and are ignored by the VKEYBD handler.
+26d1: 6c 6a 3b ff ff 6b 2b 2a  KBCD2ATA  .BYTE $6c,$6a,$3b,$ff,$ff,$6b,$2b,$2a  ; lj;..k+*
 26d9: 6f ff 70 75 0d 69 2d 3d   .BYTE $6f,$ff,$70,$75,$0d,$69,$2d,$3d  ; o.pu.i-=
 26e1: 76 3f 63 ff ff 62 78 7a   .BYTE $76,$3f,$63,$ff,$ff,$62,$78,$7a  ; v?c..bxz
 26e9: 34 ff 33 36 1b 35 32 31   .BYTE $34,$ff,$33,$36,$1b,$35,$32,$31  ; 4.36.521
@@ -2559,6 +3019,7 @@
 26f9: 72 ff 65 79 ff 74 77 71   .BYTE $72,$ff,$65,$79,$ff,$74,$77,$71  ; r.ey.twq
 2701: 39 ff 30 37 08 38 3c 3e   .BYTE $39,$ff,$30,$37,$08,$38,$3c,$3e  ; 9.07.8<>
 2709: 66 68 64 ff ff 67 73 61   .BYTE $66,$68,$64,$ff,$ff,$67,$73,$61  ; fhd..gsa
+                ;   Shift key pressed (uppercase)
 2711: 4c 4a 3a ff ff 4b 5c 5e   .BYTE $4c,$4a,$3a,$ff,$ff,$4b,$5c,$5e  ; LJ:..K\^
 2719: 4f ff 50 55 0d 49 2d 3d   .BYTE $4f,$ff,$50,$55,$0d,$49,$2d,$3d  ; O.PU.I-=
 2721: 56 3f 43 ff ff 42 58 5a   .BYTE $56,$3f,$43,$ff,$ff,$42,$58,$5a  ; V?C..BXZ
@@ -2567,192 +3028,277 @@
 2739: 52 ff 45 59 ff 54 57 51   .BYTE $52,$ff,$45,$59,$ff,$54,$57,$51  ; R.EY.TWQ
 2741: 28 ff 29 27 ff 40 3c 3e   .BYTE $28,$ff,$29,$27,$ff,$40,$3c,$3e  ; (.)'.@<>
 2749: 46 48 44 ff ff 47 53 41   .BYTE $46,$48,$44,$ff,$ff,$47,$53,$41  ; FHD..GSA
-2751: 0d 01 05 00 21 01 04 02   .BYTE $0d,$01,$05,$00,$21,$01,$04,$02  ; ....!...
-2759: 08 80                     .BYTE $08,$80        ; ..
+2751: 0d 01 05 00  stk_KBCODE   .BYTE $0d,$01,$05,$00                  ; KBCODEs corresponding to next table of joystick direction values
+                                                                       ;   - $0d -> 'i' (forward)
+                                                                       ;   - $01 -> 'j' (left)
+                                                                       ;   - $05 -> 'k' (back)
+                                                                       ;   - $00 -> 'l' (right)
+2755: 21 01 04 02  stk_DIRCODE  .BYTE $21,$01,$04,$02                  ; Joystick direction values corresponding to KBCODEs in prev table
+2759: 08 80                     .BYTE $08,$80        ;  More KBCODEs?   $08 -> O, $80 -> ?
 
-275b: 20 88 27  sub_275b        JSR sub_2788         ;
-275e: 20 5d 24                  JSR sub_245d         ;
-2761: 20 a1 28                  JSR sub_28a1         ;
+                ;
+                ;
+275b: 20 88 27  sub_275b        JSR sub_2788         ; Call $2788 [sub_2788]
+275e: 20 5d 24                  JSR sub_245d         ; Call $245d [sub_245d]
+2761: 20 a1 28                  JSR GET_FILE_ENTRY   ; Call $28a1 [GET_FILE_ENTRY]
 2764: a9 04                     LDA #$04             ; Set
 2766: 8d 0f 19                  STA dat_190f         ;     dat_190f = 4
-2769: ad 30 02  loc_2769        LDA dat_0230         ; Set
-276c: 29 0f                     AND #$0f             ;     ...
-276e: aa                        TAX                  ;     X = dat_0230 & $0f
-276f: bd 4d 02                  LDA dat_024d,X       ; Set A = dat_024d[X]
-2772: 30 05     loc_2772        BMI loc_2779         ; If (A >= 0) Then
-2774: 20 99 27                  JSR sub_2799         ;     Call sub_2799
-2777: 90 09                     BCC loc_2782         ;     If (carry flag = 0) Then exit loop & continue @ $2782 [loc_2782]
-2779: 20 85 27  loc_2779        JSR sub_2785         ; Call sub_2785
-277c: ce 0f 19                  DEC dat_190f         ; Subtract 1 from dat_190f
-277f: d0 e8                     BNE loc_2769         ;     and repeat while (dat_190f != 0)
-2781: 38                        SEC                  ;
-2782: 4c c6 24  loc_2782        JMP loc_24c6         ;
+2769: ad 30 02  loc_2769        LDA dat_0230         ; Loop
+                                                     ;     Set
+276c: 29 0f                     AND #$0f             ;         X
+276e: aa                        TAX                  ;           = dat_0230 & $0f   (convert ATASCII digit to base 10)
+276f: bd 4d 02                  LDA dat_024d,X       ;     Set A = dat_024d[X]
+2772: 30 05                     BMI loc_2779         ;     If (A >= 0) Then
+2774: 20 99 27                  JSR sub_2799         ;         Call sub_2799
+2777: 90 09                     BCC loc_2782         ;         If (C == 0) Then
+                                                     ;             Continue @ $2782 [loc_2782] -> $24c6 [sub_24c6]
+                                                     ;         End If
+                                                     ;     End If
+2779: 20 85 27  loc_2779        JSR sub_2785         ;     Call sub_2785
+277c: ce 0f 19                  DEC dat_190f         ;     Subtract 1 from dat_190f
+277f: d0 e8                     BNE loc_2769         ; Repeat while (dat_190f != 0)
+2781: 38                        SEC                  ; Set C = 1
+2782: 4c c6 24  loc_2782        JMP sub_24c6         ; Continue @ $24c6 [sub_24c6]
 
-2785: ee 30 02  sub_2785        INC dat_0230         ;
-2788: ad 30 02  sub_2788        LDA dat_0230         ;
-278b: c9 31                     CMP #$31             ;
-278d: 90 04                     BCC loc_2793         ;
-278f: c9 35                     CMP #$35             ;
-2791: 90 05                     BCC loc_2798         ;
-2793: a9 31     loc_2793        LDA #$31             ;
-2795: 8d 30 02                  STA dat_0230         ;
+                ; Increments dat_0230 and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
+                ;
+                ; Input
+                ;    dat_0230 - value to update
+                ;
+                ; Output
+                ;    dat_0230 - Updated to next digit if between '1' and '3' (inclusive)
+                ;               Set to '1' ($31 49) otherwise
+                ;
+2785: ee 30 02  sub_2785        INC dat_0230         ; Add 1 to dat_0230
+
+                ; Tests dat_0230 and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
+                ;
+                ; Input
+                ;    dat_0230 - value to test and optionally update
+                ;
+                ; Output
+                ;    dat_0230 - Unchanged if between '1' and '4' (inclusive)
+                ;               Set to '1' ($31 49) otherwise
+                ;
+2788: ad 30 02  sub_2788        LDA dat_0230         ; If
+278b: c9 31                     CMP #$31             ;    (dat_0230 < $31 (49 '1'))
+278d: 90 04                     BCC loc_2793         ;    Or
+278f: c9 35                     CMP #$35             ;    (dat_0230 >= $35 (53 '5'))
+2791: 90 05                     BCC loc_2798         ; Then
+2793: a9 31     loc_2793        LDA #$31             ;     Set
+2795: 8d 30 02                  STA dat_0230         ;         dat_0230 = $31 (49 '1')
+                                                     ; End If
 2798: 60        loc_2798        RTS                  ; Return to caller
 
-2799: 20 37 29  sub_2799        JSR sub_2937         ; Call sub_2937
-279c: 30 38                     BMI loc_27d6         ; If (negative flag is set) Then continue @ $27d6 [loc_27d6]
-279e: 20 79 29  loc_279e        JSR sub_2979         ; Call sub_2979
-27a1: 30 33                     BMI loc_27d6         ; If (negative flag is set) Then continue @ $27d6 [loc_27d6]
+2799: 20 37 29  sub_2799        JSR sub_2937         ; Call $2937 [sub_2937]
+279c: 30 38                     BMI loc_27d6         ; If (N == 1) Then
+                                                     ;     Continue @ $27d6 [loc_27d6]
+                                                     ; End If
+279e: 20 79 29  loc_279e        JSR sub_2979         ; Call $2979 [sub_2979]
+27a1: 30 33                     BMI loc_27d6         ; If (N == 1) Then
+                                                     ;     Continue @ $27d6 [loc_27d6]
+                                                     ; End If
 27a3: a9 00                     LDA #$00             ; Set
 27a5: 8d 0e 19                  STA dat_190e         ;     dat_190e = 0
 27a8: a8                        TAY                  ; Set Y = 0
-27a9: b9 00 01  loc_27a9        LDA dat_0100,Y       ; Set
-27ac: 91 09                     STA (dat_0009_L),Y   ;    (dat_0009_L) =
-27ae: 38                        SEC                  ;
-27af: a5 0b                     LDA dat_000b         ;
-27b1: e9 01                     SBC #$01             ;
-27b3: 85 0b                     STA dat_000b         ;
-27b5: b0 02                     BCS loc_27b9         ;
-27b7: c6 0c                     DEC dat_000c         ;
-27b9: 05 0c     loc_27b9        ORA dat_000c         ;
-27bb: f0 10                     BEQ loc_27cd         ;
-27bd: c8                        INY                  ;
-27be: 10 e9                     BPL loc_27a9         ;
-27c0: 98                        TYA                  ;
-27c1: 18                        CLC                  ;
-27c2: 65 09                     ADC dat_0009_L       ;
-27c4: 85 09                     STA dat_0009_L       ;
-27c6: 90 02                     BCC loc_27ca         ;
-27c8: e6 0a                     INC dat_0009_H       ;
-27ca: 4c 9e 27  loc_27ca        JMP loc_279e         ;
-27cd: a9 00     loc_27cd        LDA #$00             ;
-27cf: 8d 0d 19                  STA dat_190d         ;
-27d2: 20 de 27                  JSR sub_27de         ;
+27a9: b9 00 01  loc_27a9        LDA dat_0100,Y       ; Loop
+                                                     ;     Set
+27ac: 91 09                     STA (dat_0009_L),Y   ;         (*dat_0009_L)[Y] = dat_0100[Y]
+27ae: 38                        SEC                  ;     Set
+27af: a5 0b                     LDA dat_000b         ;         dat_000b
+27b1: e9 01                     SBC #$01             ;            =
+27b3: 85 0b                     STA dat_000b         ;              dat_000b - 1
+27b5: b0 02                     BCS loc_27b9         ;     If (C == 1) Then   (underflow occurred, subtract 1 from high byte)
+27b7: c6 0c                     DEC dat_000c         ;         Subtract 1 from dat_000c
+                                                     ;     End If
+27b9: 05 0c     loc_27b9        ORA dat_000c         ;     If (dat_000b | dat_000c == 0) Then
+27bb: f0 10                     BEQ loc_27cd         ;         Continue @ $27cd [loc_27cd]
+                                                     ;     End If
+27bd: c8                        INY                  ;     Add 1 to Y
+27be: 10 e9                     BPL loc_27a9         ; Repeat while (Y >= 0)
+27c0: 98                        TYA                  ; Set
+27c1: 18                        CLC                  ;     dat_0009_L
+27c2: 65 09                     ADC dat_0009_L       ;        =
+27c4: 85 09                     STA dat_0009_L       ;          dat_0009_L + Y
+27c6: 90 02                     BCC loc_27ca         ; If (C = 1) Then   (overflow occurred, add 1 to high byte)
+27c8: e6 0a                     INC dat_0009_H       ;     Add 1 to dat_0009_H
+                                                     ; End If
+27ca: 4c 9e 27  loc_27ca        JMP loc_279e         ; Continue @ $279e [loc_279e]
+27cd: a9 00     loc_27cd        LDA #$00             ; Set
+27cf: 8d 0d 19                  STA dat_190d         ;     dat_190d = 0
+27d2: 20 de 27                  JSR sub_27de         ; Call $27de [sub_27de]
 27d5: 60                        RTS                  ; Return to caller
-27d6: 38        loc_27d6        SEC                  ;
+                ;
+27d6: 38        loc_27d6        SEC                  ; Set C = 1
 27d7: 60                        RTS                  ; Return to caller
-27d8: 18                        CLC                  ;
-27d9: 24 38                     BIT BUFRFL           ;
-27db: 4c c6 24                  JMP loc_24c6         ;
+                ; TODO: How would this code be invoked?
+27d8: 18                        CLC                  ; Set C = 0
+27d9: 24 38                     BIT dat_0038         ; hmm... updates Z, N, V?...
+27db: 4c c6 24                  JMP sub_24c6         ; Continue @ [$24c6] sub_24c6
 
-27de: a0 00     sub_27de        LDY #$00             ; Set Y = 0
-27e0: a2 00     loc_27e0        LDX #$00             ; Set X = 0
-27e2: bd 80 01  loc_27e2        LDA dat_0180,X       ; Set dat_0100[Y]
-27e5: 99 00 01                  STA dat_0100,Y       ;     = dat_0180[X]
-27e8: c8                        INY                  ; Add one to Y
-27e9: 30 07                     BMI loc_27f2         ; Exit loop after 128 bytes have been copied
-27eb: e8                        INX                  ; Add one to X
-27ec: e0 10                     CPX #$10             ; If X < 10
-27ee: 90 f2                     BCC loc_27e2         ;     Then copy next byte
-27f0: b0 ee                     BCS loc_27e0         ; If X >= 10 Then reset X = 0 and copy next byte
-27f2: a0 00     loc_27f2        LDY #$00             ;
-27f4: 8c 01 19                  STY dat_1901_L       ;
-27f7: 8c 02 19                  STY dat_1902_H       ;
-27fa: ad 0b 19                  LDA dat_190b_L       ;
-27fd: 85 09                     STA dat_0009_L       ;
-27ff: ad 0c 19                  LDA dat_190c_H       ;
-2802: 85 0a                     STA dat_0009_H       ;
-2804: ae 08 19                  LDX dat_1908         ;
-2807: f0 1e                     BEQ loc_2827         ;
-2809: 86 0c                     STX dat_000c         ;
-280b: a2 00                     LDX #$00             ;
-280d: b1 09     loc_280d        LDA (dat_0009_L),Y   ;
-280f: 4a                        LSR                  ;
-2810: 90 02                     BCC loc_2814         ;
-2812: 09 80                     ORA #$80             ;
-2814: 5d 00 01  loc_2814        EOR dat_0100,X       ;
-2817: 91 09                     STA (dat_0009_L),Y   ;
-2819: e8                        INX                  ;
-281a: 10 02                     BPL loc_281e         ;
-281c: a2 00                     LDX #$00             ;
-281e: c8        loc_281e        INY                  ;
-281f: d0 ec                     BNE loc_280d         ;
-2821: e6 0a                     INC dat_0009_H       ;
-2823: c6 0c                     DEC dat_000c         ;
-2825: d0 e6                     BNE loc_280d         ;
-2827: a2 00     loc_2827        LDX #$00             ;
-2829: ad 07 19                  LDA dat_1907         ;
-282c: f0 17                     BEQ loc_2845         ;
+                ; Decrypts a buffer of data using a 16-byte encryption key
+                ;
+                ; Input
+                ;   dat_0180     - decryption key
+                ;   dat_190b_L/H - Address of
+                ;   dat_1908     -
+                ;
+                ; Output
+                ;   dat_0009_L/H - Assigned to dat_190b_L/H
+                ;   dat_0100     - Decryption key buffer (updated with repeated copies of decryption key)
+                ;   dat_000c     -
+                ;
+                ;
+27de: a0 00     sub_27de        LDY #$00             ; Set Y = 0    (index to data buffer)
+                ; Copy the decryption key repeatedly to fill 128-byte buffer
+27e0: a2 00     loc_27e0        LDX #$00             ; Loop
+                                                     ;     Set X = 0    (index to decryption key)
+27e2: bd 80 01  loc_27e2        LDA dat_0180,X       ;     Loop
+27e5: 99 00 01                  STA dat_0100,Y       ;         Set dat_0100[Y] = dat_0180[X]
+27e8: c8                        INY                  ;         Add 1 to Y
+27e9: 30 07                     BMI loc_27f2         ;         If (Y < 0) Then  (done after 128 bytes have been copied)
+                                                     ;             Continue $27f2 @ [loc_27f2] (Exit both loops)
+                                                     ;         End If
+27eb: e8                        INX                  ;         Add 1 to X
+27ec: e0 10                     CPX #$10             ;     Repeat
+27ee: 90 f2                     BCC loc_27e2         ;         while (X < $10 (16))
+27f0: b0 ee                     BCS loc_27e0         ; Repeat Loop
+27f2: a0 00     loc_27f2        LDY #$00             ; Set
+27f4: 8c 01 19                  STY dat_1901_L       ;     dat_1901_L = 0
+27f7: 8c 02 19                  STY dat_1902_H       ; Set dat_1902_H = 0
+27fa: ad 0b 19                  LDA dat_190b_L       ; Set
+27fd: 85 09                     STA dat_0009_L       ;     dat_0009_L = dat_190b_L
+27ff: ad 0c 19                  LDA dat_190b_H       ; Set
+2802: 85 0a                     STA dat_0009_H       ;     dat_0009_H = dat_190b_H
+2804: ae 08 19                  LDX dat_1908         ; If (dat_1908 != 0)
+2807: f0 1e                     BEQ loc_2827         ; Then
+2809: 86 0c                     STX dat_000c         ;     Set dat_000c = dat_1908
+280b: a2 00                     LDX #$00             ;     Set X = 0
+280d: b1 09     loc_280d        LDA (dat_0009_L),Y   ;     Loop
+280f: 4a                        LSR                  ;         Set A = (*dat_0009_L)[Y] >> 1
+2810: 90 02                     BCC loc_2814         ;         If (C = 1) Then
+2812: 09 80                     ORA #$80             ;             Set A |= $80  (apply old Bit 0 as Bit 6)
+                                                     ;         End If
+2814: 5d 00 01  loc_2814        EOR dat_0100,X       ;         Set
+2817: 91 09                     STA (dat_0009_L),Y   ;             (*dat_0009_L)[Y] = A xor dat_0100[X]
+2819: e8                        INX                  ;         Add 1 to X
+281a: 10 02                     BPL loc_281e         ;         If (X < 0) Then   (aka X > 127)
+281c: a2 00                     LDX #$00             ;             Set X = 0
+                                                     ;         End If
+281e: c8        loc_281e        INY                  ;         Add 1 to Y
+281f: d0 ec                     BNE loc_280d         ;         If (Y != 0) Then  (no overflow, Y<=$ff)
+2821: e6 0a                     INC dat_0009_H       ;             Add 1 to dat_0009_H
+2823: c6 0c                     DEC dat_000c         ;             Subtract 1 from dat_000c
+                                                     ;         End If
+2825: d0 e6                     BNE loc_280d         ;     Repeat while (dat_000c != 0)
+                                                     ; End If
+2827: a2 00     loc_2827        LDX #$00             ; Set X = 0
+2829: ad 07 19                  LDA dat_1907         ; If (dat_1907 != 0)
+282c: f0 17                     BEQ loc_2845         ; Then
 282e: b1 09     loc_282e        LDA (dat_0009_L),Y   ;
 2830: 4a                        LSR                  ;
 2831: 90 02                     BCC loc_2835         ;
 2833: 09 80                     ORA #$80             ;
 2835: 5d 00 01  loc_2835        EOR dat_0100,X       ;
 2838: 91 09                     STA (dat_0009_L),Y   ;
-283a: e8                        INX                  ;
-283b: 10 02                     BPL loc_283f         ;
-283d: a2 00                     LDX #$00             ;
-283f: c8        loc_283f        INY                  ;
-2840: cc 07 19                  CPY dat_1907         ;
-2843: 90 e9                     BCC loc_282e         ;
-2845: ad 0b 19  loc_2845        LDA dat_190b_L       ;
-2848: 85 09                     STA dat_0009_L       ;
-284a: ad 0c 19                  LDA dat_190c_H       ;
-284d: 85 0a                     STA dat_0009_H       ;
-284f: a0 00                     LDY #$00             ;
-2851: ae 08 19                  LDX dat_1908         ;
-2854: f0 16                     BEQ loc_286c         ;
-2856: b1 09     loc_2856        LDA (dat_0009_L),Y   ;
-2858: 18                        CLC                  ;
-2859: 6d 01 19                  ADC dat_1901_L       ;
-285c: 8d 01 19                  STA dat_1901_L       ;
-285f: 90 03                     BCC loc_2864         ;
-2861: ee 02 19                  INC dat_1902_H       ;
-2864: c8        loc_2864        INY                  ;
-2865: d0 ef                     BNE loc_2856         ;
-2867: e6 0a                     INC dat_0009_H       ;
-2869: ca                        DEX                  ;
-286a: d0 ea                     BNE loc_2856         ;
-286c: ae 07 19  loc_286c        LDX dat_1907         ;
-286f: f0 14                     BEQ loc_2885         ;
-2871: b1 09     loc_2871        LDA (dat_0009_L),Y   ;
-2873: 18                        CLC                  ;
-2874: 6d 01 19                  ADC dat_1901_L       ;
-2877: 8d 01 19                  STA dat_1901_L       ;
-287a: 90 03                     BCC loc_287f         ;
-287c: ee 02 19                  INC dat_1902_H       ;
-287f: c8        loc_287f        INY                  ;
-2880: cc 07 19                  CPY dat_1907         ;
-2883: 90 ec                     BCC loc_2871         ;
-2885: ad 01 19  loc_2885        LDA dat_1901_L       ;
-2888: cd 84 01                  CMP dat_0184_L       ;
+283a: e8                        INX                  ;         Add 1 to X
+283b: 10 02                     BPL loc_283f         ;         If (X < 0) Then
+283d: a2 00                     LDX #$00             ;             Set X = 0
+                                                     ;         End If
+283f: c8        loc_283f        INY                  ;         Add 1 to Y
+2840: cc 07 19                  CPY dat_1907         ;     Repeat
+2843: 90 e9                     BCC loc_282e         ;       while (Y < dat_1907)
+                                                     ; End If
+2845: ad 0b 19  loc_2845        LDA dat_190b_L       ; Set
+2848: 85 09                     STA dat_0009_L       ;     dat_0009_L = dat_190b_L
+284a: ad 0c 19                  LDA dat_190b_H       ; Set
+284d: 85 0a                     STA dat_0009_H       ;     dat_0009_H = dat_190b_H
+284f: a0 00                     LDY #$00             ; Set Y = 0
+2851: ae 08 19                  LDX dat_1908         ; If (dat_1908 != 0)
+2854: f0 16                     BEQ loc_286c         ; Then
+2856: b1 09     loc_2856        LDA (dat_0009_L),Y   ;     Loop
+                                                     ;         Loop
+2858: 18                        CLC                  ;             Set dat_1901_L
+2859: 6d 01 19                  ADC dat_1901_L       ;                    =
+285c: 8d 01 19                  STA dat_1901_L       ;                      dat_1901_L + (*dat_0009_L)[Y]
+285f: 90 03                     BCC loc_2864         ;             If (C == 1) Then
+2861: ee 02 19                  INC dat_1902_H       ;                 Add 1 to dat_1902_H
+                                                     ;             End If
+2864: c8        loc_2864        INY                  ;             Add 1 to Y
+2865: d0 ef                     BNE loc_2856         ;         Repeat while (Y != 0)
+2867: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H
+2869: ca                        DEX                  ;         Subtract 1 from X
+286a: d0 ea                     BNE loc_2856         ;     Repeat while (X != 0)
+                                                     ; End If
+286c: ae 07 19  loc_286c        LDX dat_1907         ; If (dat_1907 != 0)
+286f: f0 14                     BEQ loc_2885         ; Then
+2871: b1 09     loc_2871        LDA (dat_0009_L),Y   ;     Loop
+2873: 18                        CLC                  ;         Set dat_1901_L
+2874: 6d 01 19                  ADC dat_1901_L       ;                =
+2877: 8d 01 19                  STA dat_1901_L       ;                  dat_1901_L + (*dat_0009_L)[Y]
+287a: 90 03                     BCC loc_287f         ;         If (C == 1) Then
+287c: ee 02 19                  INC dat_1902_H       ;             Add 1 to dat_1902_H
+                                                     ;         End If
+287f: c8        loc_287f        INY                  ;         Add 1 to Y
+2880: cc 07 19                  CPY dat_1907         ;    Repeat
+2883: 90 ec                     BCC loc_2871         ;      while (Y < dat_1907)
+                                                     ; End If
+2885: ad 01 19  loc_2885        LDA dat_1901_L       ; If
+2888: cd 84 01                  CMP dat_0184_L       ;    (dat_1901_L == dat_0184_L)
 288b: d0 0a                     BNE loc_2897         ;
-288d: ad 02 19                  LDA dat_1902_H       ;
-2890: cd 85 01                  CMP dat_0185_H       ;
-2893: d0 02                     BNE loc_2897         ;
-2895: 18                        CLC                  ;
-2896: 60                        RTS                  ; Return to caller
+288d: ad 02 19                  LDA dat_1902_H       ;    And
+2890: cd 85 01                  CMP dat_0185_H       ;    (dat_1902_H == dat_0185_H)
+2893: d0 02                     BNE loc_2897         ; Then
+2895: 18                        CLC                  ;     Set C = 0
+2896: 60                        RTS                  ;     Return to caller
+                                                     ; End If
 2897: a9 00     loc_2897        LDA #$00             ; Set
 2899: 8d 5b 02                  STA dat_025b         ;     dat_025b = 0
-289c: ce 64 02                  DEC dat_0264         ;
-289f: 38                        SEC                  ;
+289c: ce 64 02                  DEC dat_0264         ; Subtract 1 from dat_0264
+289f: 38                        SEC                  ; Set C = 1
 28a0: 60                        RTS                  ; Return to caller
 
-28a1: a9 00     sub_28a1        LDA #$00             ;
-28a3: 85 08                     STA dat_0007_H       ;
-28a5: ad 09 19                  LDA dat_1909         ;
-28a8: a2 02                     LDX #$02             ;
-28aa: 0a        loc_28aa        ASL                  ;
-28ab: 26 08                     ROL dat_0007_H       ;
-28ad: ca                        DEX                  ;
-28ae: d0 fa                     BNE loc_28aa         ;
-28b0: 69 80                     ADC #$80             ;
-28b2: 85 07                     STA dat_0007_L       ;
-28b4: a5 08                     LDA dat_0007_H       ;
-28b6: 69 02                     ADC #$02             ;
-28b8: 85 08                     STA dat_0007_H       ;
-28ba: a0 03                     LDY #$03             ;
-28bc: b1 07     loc_28bc        LDA (dat_0007_L),Y   ;
-28be: 99 05 19                  STA dat_1905,Y       ;
-28c1: 88                        DEY                  ;
-28c2: 10 f8                     BPL loc_28bc         ;
-28c4: 48                        PHA                  ; Save value of A to restore later
-28c5: 29 fc                     AND #$fc             ;
-28c7: 8d 5c 02                  STA dat_025c         ;
-28ca: 68                        PLA                  ; Restore previous value of A
-28cb: 29 03                     AND #$03             ;
-28cd: 8d 04 19                  STA dat_1904_H       ;
-28d0: ad 06 19                  LDA dat_1906         ;
-28d3: 8d 03 19                  STA dat_1903_L       ;
+                ; Reads a file segment directory entry
+                ;
+                ; Input
+                ;   dat_1909     - The file number to load the entry for (0 .. 44)
+                ;
+                ; Output
+                ;   dat_0007_L/H - $280 [FILE_SEG_DIR] + (dat_1909 * 4) + (dat_1909 >> 7) & 1
+                ;   dat_1903_L/H - ((*dat_0007_L)[0] & 3) * 256 + (*dat_0007_L)[1]
+                ;   dat_1905     - Assigned 4 bytes copied from (*dat_0007_L)
+                ;   dat_025c     - (*dat_0007_L)[0] & $fc
+                ;
+28a1: a9 00     GET_FILE_ENTRY  LDA #$00             ; Set
+28a3: 85 08                     STA dat_0007_H       ;     dat_0007_H = 0
+28a5: ad 09 19                  LDA dat_1909         ; Set A = dat_1909
+28a8: a2 02                     LDX #$02             ; Set X = 2  (2 iterations)
+                ; Shift bits 7 and 8 of dat_1909 into bits 0 and 1 of dat_0007_H
+28aa: 0a        loc_28aa        ASL                  ; Loop
+                                                     ;     Set A = A << 1, C = old bit 7 of A
+28ab: 26 08                     ROL dat_0007_H       ;     Set dat_0007_H = dat_0007_H * 2 + C
+28ad: ca                        DEX                  ;     Subtract 1 from X    (Note: does not affect C)
+28ae: d0 fa                     BNE loc_28aa         ; Repeat while (X != 0)
+                ; Compute dat_0007_L/H = $280 + (dat_1909 * 4) + (dat_1909 >> 7) & 1
+28b0: 69 80                     ADC #$80             ; Set                (C is old bit 7 of A from last iteration)
+28b2: 85 07                     STA dat_0007_L       ;     dat_0007_L = A + $80 + C
+28b4: a5 08                     LDA dat_0007_H       ; Set
+28b6: 69 02                     ADC #$02             ;     dat_0007_H
+28b8: 85 08                     STA dat_0007_H       ;        = dat_0007_H + 2 + C
+                ; Copy 4 bytes from (*dat_0007_L) to dat_1905
+28ba: a0 03                     LDY #$03             ; Set Y = 3  (4 iterations)
+28bc: b1 07     loc_28bc        LDA (dat_0007_L),Y   ; Loop
+28be: 99 05 19                  STA dat_1905,Y       ;     Set dat_1905[Y] = (*dat_0007_L)[Y]
+28c1: 88                        DEY                  ;     Subtract 1 from Y
+28c2: 10 f8                     BPL loc_28bc         ; Repeat while (Y >= 0)
+28c4: 48                        PHA                  ; Set
+28c5: 29 fc                     AND #$fc             ;     dat_025c
+28c7: 8d 5c 02                  STA dat_025c         ;        =
+28ca: 68                        PLA                  ;          (*dat_0007_L)[0] & $fc
+28cb: 29 03                     AND #$03             ; Set
+28cd: 8d 04 19                  STA dat_1904_H       ;     dat_1904_H = (*dat_0007_L)[0] & 3
+28d0: ad 06 19                  LDA dat_1906         ; Set
+28d3: 8d 03 19                  STA dat_1903_L       ;     dat_1903_L = dat_1906
 28d6: 60                        RTS                  ; Return to caller
 
 28d7: ad 05 19  sub_28d7        LDA dat_1905         ; Set A = dat_1905
@@ -2781,9 +3327,9 @@
 2903: 85 17                     STA addr_0016_H      ;         $2a07 [str_PRESS_ESC] "or press ESC to abort"
 2905: 20 88 1c                  JSR sub_1c88         ;     Call $1c88 [sub_1c88]
                                                      ; End If
-2908: 20 2f 26  loc_2908        JSR sub_262f         ; Loop
-                                                     ;     Call $262f [sub_262f]
-290b: 30 19                     BMI loc_2926         ;     If (N == 1) Then   (TODO: what does it really mean?)
+2908: 20 2f 26  loc_2908        JSR READ_STICK       ; Loop
+                                                     ;     Call $262f [READ_STICK]
+290b: 30 19                     BMI loc_2926         ;     If (N == 1) Then   (trigger button pressed)
                                                      ;         Continue @ $2926 [loc_2926]
                                                      ;     End If
 290d: 20 43 26                  JSR sub_2643         ;     Call $2643 [sub_2643]
@@ -2814,7 +3360,7 @@
 
                 ; Input
                 ;   dat_190b_L -
-                ;   dat_190c_H -
+                ;   dat_190b_H -
                 ;   dat_1903_L -
                 ;   dat_1904_H -
                 ;   dat_1907   -
@@ -2824,13 +3370,13 @@
                 ;   X            - ? length / position of first mismatch ?
                 ;   dat_000b     - set to dat_1907
                 ;   dat_000c     - set to dat_1908
-                ;   dat_0009_L/H - set to dat_190b_L/dat_190c_H
+                ;   dat_0009_L/H - set to dat_190b_L/dat_190b_H
                 ;   dat_0232_L/H -
                 ;
 2937: ad 0b 19  sub_2937        LDA dat_190b_L       ; Set
 293a: 85 09                     STA dat_0009_L       ;     dat_0009_L = dat_190b_L
-293c: ad 0c 19                  LDA dat_190c_H       ; Set
-293f: 85 0a                     STA dat_0009_H       ;     dat_0009_H = dat_190c_H
+293c: ad 0c 19                  LDA dat_190b_H       ; Set
+293f: 85 0a                     STA dat_0009_H       ;     dat_0009_H = dat_190b_H
 2941: ad 03 19                  LDA dat_1903_L       ; Set
 2944: 8d 32 02                  STA dat_0232_L       ;     dat_0232_L = dat_1903_L
 2947: ad 04 19                  LDA dat_1904_H       ; Set
@@ -3151,43 +3697,43 @@
                 ;    LDA #$10           ; Push $10 to the stack
                 ;    JSR sub_RND_2b6b   ; Invoke the sub
                 ;
-2b6b: 48        sub_RND_2b6b    PHA               ; Preserve current value of A (MAX).
-                                                  ;     This stack location is updated inside the sub as it executes.
-2b6c: 8a                        TXA               ; Preserve current
-2b6d: 48                        PHA               ;     value of X
-2b6e: 98                        TYA               ; Preserve current
-2b6f: 48                        PHA               ;     value of Y
-2b70: ba                        TSX               ; Set X = stack pointer value
-2b71: fe 03 01                  INC rnd_0103,X    ; Add 1 to the value 3 bytes down the stack.
-                                                  ;     That location is where MAX was pushed earlier.
-2b74: d0 06                     BNE loc_2b7c      ; If the result <> 0, then jump to $2b7c [loc_2b7c] to calculate
-                                                  ;     a new random value within the specified range
+2b6b: 48        sub_RND_2b6b    PHA                  ; Preserve current value of A (MAX).
+                                                     ;     This stack location is updated inside the sub as it executes.
+2b6c: 8a                        TXA                  ; Preserve current
+2b6d: 48                        PHA                  ;     value of X
+2b6e: 98                        TYA                  ; Preserve current
+2b6f: 48                        PHA                  ;     value of Y
+2b70: ba                        TSX                  ; Set X = stack pointer value
+2b71: fe 03 01                  INC rnd_0103,X       ; Add 1 to the value 3 bytes down the stack.
+                                                     ;     That location is where MAX was pushed earlier.
+2b74: d0 06                     BNE loc_2b7c         ; If the result <> 0, then jump to $2b7c [loc_2b7c] to calculate
+                                                     ;     a new random value within the specified range
                 ; The value was $ff, so simply return a random value from 0-$ff
-2b76: ad 0a d2                  LDA RANDOM        ; Read a random byte
-2b79: 4c 92 2b                  JMP loc_2b92      ; Continue @ $2b92 [loc_2b92] (Skip alternate random calc)
+2b76: ad 0a d2                  LDA RANDOM           ; Read a random byte
+2b79: 4c 92 2b                  JMP loc_2b92         ; Continue @ $2b92 [loc_2b92] (Skip alternate random calc)
                 ; The value was less than $ff.
                 ; Determine the highest bit set
                 ; Compute a random value within the range supported by that number of bits.
                 ; Repeat the process until the random value is <= the value on the stack.
-2b7c: bd 03 01  loc_2b7c        LDA rnd_0103,X    ; Set A = MAX + 1
-2b7f: a0 07                     LDY #$07          ; Set Y = 7 (8 iterations)
-2b81: 0a        loc_2b81        ASL               ; Multiply A by 2
-2b82: b0 03                     BCS loc_2b87      ; If an overflow occurred (bit 7 was 1), exit the loop
-2b84: 88                        DEY               ; Subtract 1 from Y
-2b85: 10 fa                     BPL loc_2b81      ; Repeat while Y >= 0
-2b87: ad 0a d2  loc_2b87        LDA RANDOM        ; Read a random byte
-2b8a: 39 9d 2b                  AND tbl_2b9d,Y    ;    and mask it by the byte @ tbl_2b9d + Y
-                                                  ;    (limit to number of bits computed above)
-2b8d: dd 03 01                  CMP rnd_0103,X    ; If A >= MAX + 1
-2b90: b0 f5                     BCS loc_2b87      ;     then repeat the process again
-2b92: 9d 03 01  loc_2b92        STA rnd_0103,X    ; Replace the value on the stack with the random value
-2b95: 68                        PLA               ; Restore previous
-2b96: a8                        TAY               ;     value of Y
-2b97: 68                        PLA               ; Restore previous
-2b98: aa                        TAX               ;     value of X
-2b99: 68                        PLA               ; Set A = the computed random value pulled from the stack
-2b9a: 09 00                     ORA #$00          ; TODO: Why the OR? This should have no effect, other than wasting cycles...
-2b9c: 60                        RTS               ; Return to caller
+2b7c: bd 03 01  loc_2b7c        LDA rnd_0103,X       ; Set A = MAX + 1
+2b7f: a0 07                     LDY #$07             ; Set Y = 7 (8 iterations)
+2b81: 0a        loc_2b81        ASL                  ; Multiply A by 2
+2b82: b0 03                     BCS loc_2b87         ; If an overflow occurred (bit 7 was 1), exit the loop
+2b84: 88                        DEY                  ; Subtract 1 from Y
+2b85: 10 fa                     BPL loc_2b81         ; Repeat while Y >= 0
+2b87: ad 0a d2  loc_2b87        LDA RANDOM           ; Read a random byte
+2b8a: 39 9d 2b                  AND tbl_2b9d,Y       ;    and mask it by the byte @ tbl_2b9d + Y
+                                                     ;    (limit to number of bits computed above)
+2b8d: dd 03 01                  CMP rnd_0103,X       ; If A >= MAX + 1
+2b90: b0 f5                     BCS loc_2b87         ;     then repeat the process again
+2b92: 9d 03 01  loc_2b92        STA rnd_0103,X       ; Replace the value on the stack with the random value
+2b95: 68                        PLA                  ; Restore previous
+2b96: a8                        TAY                  ;     value of Y
+2b97: 68                        PLA                  ; Restore previous
+2b98: aa                        TAX                  ;     value of X
+2b99: 68                        PLA                  ; Set A = the computed random value pulled from the stack
+2b9a: 09 00                     ORA #$00             ; TODO: Why the OR? This should have no effect, other than wasting cycles...
+2b9c: 60                        RTS                  ; Return to caller
 
 2b9d: 01 03 07 0f 1f 3f 7f ff  tbl_2b9d  .BYTE $01,$03,$07,$0f,$1f,$3f,$7f,$ff  ; 8 byte table of bitmask bytes
 
@@ -3228,40 +3774,41 @@
                 ;    A = ? : one of [$1, $2, $4, $6, $10]
                 ;
 2bfc: 8d 64 2c  sub_2bfc        STA exe_cnt_2c64     ; Set exe_cnt_2c64 = A
-2bfe: c6 32                     DEC flg_PAUSED       ;
-2c01: c6 0f                     DEC dat_000f         ;
-2c03: ce 37 19                  DEC dat_1937         ;
-2c06: a9 01                     LDA #$01             ;
-2c08: 8d 65 2c                  STA cnt_2c65         ;
+2bfe: c6 32                     DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
+2c01: c6 0f                     DEC dat_000f         ; Subtract 1 from dat_000f
+2c03: ce 37 19                  DEC dat_1937         ; Subtract 1 from dat_1937
+2c06: a9 01                     LDA #$01             ; Set
+2c08: 8d 65 2c                  STA cnt_2c65         ;     cnt_2c65 = 1
 2c0b: 20 43 26                  JSR sub_2643         ; Call $2643 [sub_2643]
 2c0e: a9 06     loc_2c0e        LDA #$06             ; Set
-2c10: 8d 63 2c                  STA cnt_2c63         ;    $2c63 [cnt_2c63] = 6
-2c13: a2 0a     loc_2c13        LDX #$0a             ; Wait
-2c15: 20 66 2c  loc_2c15        JSR WAIT_FOR_VBLK_B  ;     for 10 vertical
-2c18: ca                        DEX                  ;     blank periods
-2c19: d0 fa                     BNE loc_2c15         ;     to pass (1/6th second)
-2c1b: ad 65 2c                  LDA cnt_2c65         ;
-2c1e: 30 06                     BMI loc_2c26         ;
-2c20: ce 65 2c                  DEC cnt_2c65         ;
-2c23: 4c 0e 2c                  JMP loc_2c0e         ;
-2c26: ad 77 19  loc_2c26        LDA cont_addr_1977_L ; Save previous
-2c29: 8d 99 2c                  STA tmp_2c99_L       ;     return
-2c2c: ad 78 19                  LDA cont_addr_1977_H ;     address
-2c2f: 8d 9a 2c                  STA tmp_2c99_H       ;     in tmp_2c99_L/tmp_2c99_H
-2c32: a9 3f                     LDA #$3f             ; Set return
-2c34: 8d 77 19                  STA cont_addr_1977_L ;     address
-2c37: a9 2c                     LDA #$2c             ;     to
-2c39: 8d 78 19                  STA cont_addr_1977_H ;     $2c3f [rtn_2c3f]
-2c3c: 4c f3 2f                  JMP loc_2ff3         ;
-2c3f: ad 99 2c  rtn_2c3f        LDA tmp_2c99_L       ; Restore the
-2c42: 8d 77 19                  STA cont_addr_1977_L ;     previous
-2c45: ad 9a 2c                  LDA tmp_2c99_H       ;     return
-2c48: 8d 78 19                  STA cont_addr_1977_H ;     address
-2c4b: a5 31                     LDA CHKSUM           ;
-2c4d: c9 20                     CMP #$20             ;
-2c4f: f0 0a                     BEQ loc_2c5b         ;
-2c51: ce 63 2c                  DEC cnt_2c63         ;
-2c54: d0 bd                     BNE loc_2c13         ;
+2c10: 8d 63 2c                  STA cnt_2c63         ;     $2c63 [cnt_2c63] = 6  ()
+2c13: a2 0a     loc_2c13        LDX #$0a             ; Loop
+2c15: 20 66 2c  loc_2c15        JSR WAIT_FOR_VBLK_B  ;     Wait for 10 vertical
+2c18: ca                        DEX                  ;         blank periods
+2c19: d0 fa                     BNE loc_2c15         ;         to pass (1/6th second)
+2c1b: ad 65 2c                  LDA cnt_2c65         ;     If (cnt_2c65 > 0)
+2c1e: 30 06                     BMI loc_2c26         ;     Then
+2c20: ce 65 2c                  DEC cnt_2c65         ;         Subtract 1 from cnt_2c65
+2c23: 4c 0e 2c                  JMP loc_2c0e         ;         Continue @ $2c0e [loc_2c0e]
+                                                     ;     End If
+2c26: ad 77 19  loc_2c26        LDA cont_addr_1977_L ;     Save previous
+2c29: 8d 99 2c                  STA tmp_2c99_L       ;         return
+2c2c: ad 78 19                  LDA cont_addr_1977_H ;         address
+2c2f: 8d 9a 2c                  STA tmp_2c99_H       ;         in tmp_2c99_L/tmp_2c99_H
+2c32: a9 3f                     LDA #$3f             ;     Set return address
+2c34: 8d 77 19                  STA cont_addr_1977_L ;         cont_addr_1977_L/H
+2c37: a9 2c                     LDA #$2c             ;         to
+2c39: 8d 78 19                  STA cont_addr_1977_H ;         $2c3f [rtn_2c3f]
+2c3c: 4c f3 2f                  JMP loc_2ff3         ;     Continue @ $2ff3 [loc_2ff3] (returns to next instruction)
+2c3f: ad 99 2c  rtn_2c3f        LDA tmp_2c99_L       ;     Restore the
+2c42: 8d 77 19                  STA cont_addr_1977_L ;         previous
+2c45: ad 9a 2c                  LDA tmp_2c99_H       ;         return
+2c48: 8d 78 19                  STA cont_addr_1977_H ;         address
+2c4b: a5 31                     LDA dat_0031         ;     If (dat_0031 ? $20 (32)) Then
+2c4d: c9 20                     CMP #$20             ;         Continue @ $2c5b [loc_2c5b]
+2c4f: f0 0a                     BEQ loc_2c5b         ;     End If
+2c51: ce 63 2c                  DEC cnt_2c63         ;     Subtract 1 from cnt_2c63
+2c54: d0 bd                     BNE loc_2c13         ; Repeat while (cnt_2c63 != 0)
 2c56: ce 64 2c                  DEC exe_cnt_2c64     ; If # of executions of this section of code is
 2c59: d0 b3                     BNE loc_2c0e         ;    not evenly divisible by 256, jump to $2c0e [loc_2c0e]
                                                      ; Otherwise,
@@ -3275,26 +3822,36 @@
                                                      ;     Used to execute different code when exe_cnt_2c64 % 256 = 0
 2c65: 00        cnt_2c65        .BYTE $00            ; Loop counter (2 iterations : counts from 1 down to -1)
 
+                ; Waits for a vertical blank to occur
+                ;
+                ; Input
+                ;   VBLK_COUNTER - Repeatedly inspects this value until it changes (updated in VVBLKI)
+                ;
+                ; Note: X & Y registers are untouched by this sub
+                ;
 2c66: ad 52 02  WAIT_FOR_VBLK_B  LDA VBLK_COUNTER    ; Continually read
 2c69: cd 52 02  loc_2c69        CMP VBLK_COUNTER     ;     the vblank counter
 2c6c: f0 fb                     BEQ loc_2c69         ;     until it updates
 2c6e: 60                        RTS                  ; Return to caller
 
-2c6f: ad 77 19  loc_2c6f        LDA cont_addr_1977_L ; Preserve the current
-2c72: 8d 99 2c                  STA tmp_2c99_L       ;     value of cont_addr_1977_L
-2c75: ad 78 19                  LDA cont_addr_1977_H ; Preserve the current
-2c78: 8d 9a 2c                  STA tmp_2c99_H       ;     value of cont_addr_1977_H
-2c7b: a9 88                     LDA #$88             ; Set return
-2c7d: 8d 77 19                  STA cont_addr_1977_L ;     address
-2c80: a9 2c                     LDA #$2c             ;     to
-2c82: 8d 78 19                  STA cont_addr_1977_H ;     $2c88 [rtn_2c88]
-2c85: 4c f3 2f                  JMP loc_2ff3         ;
-2c88: ad 99 2c  rtn_2c88        LDA tmp_2c99_L       ; Restore the previous
-2c8b: 8d 77 19                  STA cont_addr_1977_L ;     value of cont_addr_1977_L
-2c8e: ad 9a 2c                  LDA tmp_2c99_H       ; Restore the previous
-2c91: 8d 78 19                  STA cont_addr_1977_H ;     value of cont_addr_1977_H
-2c94: a5 31                     LDA CHKSUM           ;
-2c96: 30 d7                     BMI loc_2c6f         ;
+                ; Repeatedly executes loc_2ff3 while dat_0031 is < 0
+                ;
+2c6f: ad 77 19  sub_2c6f        LDA cont_addr_1977_L ; Loop
+                                                     ;     Preserve the current
+2c72: 8d 99 2c                  STA tmp_2c99_L       ;         value of cont_addr_1977_L
+2c75: ad 78 19                  LDA cont_addr_1977_H ;     Preserve the current
+2c78: 8d 9a 2c                  STA tmp_2c99_H       ;         value of cont_addr_1977_H
+2c7b: a9 88                     LDA #$88             ;     Set return address
+2c7d: 8d 77 19                  STA cont_addr_1977_L ;         cont_addr_1977_L/H
+2c80: a9 2c                     LDA #$2c             ;         to
+2c82: 8d 78 19                  STA cont_addr_1977_H ;         $2c88 [rtn_2c88]
+2c85: 4c f3 2f                  JMP loc_2ff3         ;     Continue @ $2ff3 [loc_2ff3] (returns to next instruction)
+2c88: ad 99 2c  rtn_2c88        LDA tmp_2c99_L       ;     Restore the previous
+2c8b: 8d 77 19                  STA cont_addr_1977_L ;         value of cont_addr_1977_L
+2c8e: ad 9a 2c                  LDA tmp_2c99_H       ;     Restore the previous
+2c91: 8d 78 19                  STA cont_addr_1977_H ;         value of cont_addr_1977_H
+2c94: a5 31                     LDA dat_0031         ; Repeat
+2c96: 30 d7                     BMI sub_2c6f         ;   while (dat_0031 < 0)
 2c98: 60                        RTS                  ; Return to caller
 
 2c99: ff        tmp_2c99_L      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_L
@@ -3330,14 +3887,16 @@
 2cab: 00        sub_2cab        BRK                  ;
 2cac: 60                        RTS                  ; Return to caller
 
-;
+                ;
+                ;
 2cad: c6 32     sub_2cad        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
 2caf: a9 00                     LDA #$00             ; Set
 2cb1: 8d 0e 19                  STA dat_190e         ;     dat_190e = 0
 2cb4: 20 fb 2c  loc_2cb4        JSR sub_2cfb         ; Loop
                                                      ;     Call $2cfb [sub_2cfb]
-2cb7: 90 06                     BCC loc_2cbf         ;     If (Carry flag is clear) Then
+2cb7: 90 06                     BCC loc_2cbf         ;     If (C == 0) Then
                                                      ;         Exit loop
+                                                     ;     End If
 2cb9: 20 d7 28                  JSR sub_28d7         ;     Call $28d7 [sub_28d7]
 2cbc: 4c b4 2c                  JMP loc_2cb4         ; Repeat loop
 2cbf: e6 32     loc_2cbf        INC flg_PAUSED       ; Add 1 to flg_PAUSED
@@ -3356,13 +3915,15 @@
 2cc4: ad 09 19                  LDA dat_1909         ; Set A = dat_1909
 2cc7: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations)
 2cc9: dd f7 2c  loc_2cc9        CMP dat_2cf7,X       ; Loop
-2ccc: f0 05                     BEQ loc_2cd3         ;     If (dat_2cf7,X == dat_1909) Then
+2ccc: f0 05                     BEQ loc_2cd3         ;     If (dat_2cf7[X] == dat_1909) Then
                                                      ;         Exit loop
+                                                     ;     End If
 2cce: ca                        DEX                  ;     Subtract 1 from X
 2ccf: 10 f8                     BPL loc_2cc9         ; Repeat while (X >= 0)
 2cd1: 30 05                     BMI loc_2cd8         ; If (X >= 0)  - e.g. exited the loop early
-2cd3: a9 00     loc_2cd3        LDA #$00             ;   Then
+2cd3: a9 00     loc_2cd3        LDA #$00             ; Then
 2cd5: 8d 0e 19                  STA dat_190e         ;     Set dat_190e = 0
+                                                     ; End If
 2cd8: 20 fb 2c  loc_2cd8        JSR sub_2cfb         ; Loop
                                                      ;     Call $2cfb [sub_2cfb]
 2cdb: 90 17                     BCC loc_2cf4         ;     If (Carry flag is clear) Then
@@ -3380,8 +3941,8 @@
 2ce7: 9d 13 63                  STA CHR_LOC_X,X      ;     Set CHR_LOC_X,X = CHR_SAV_LOC_X,X
 2cea: ca                        DEX                  ;     Subtract 1 from X
 2ceb: 10 f7                     BPL loc_2ce4         ; Repeat while (X >= 0)
-2ced: ad 1f 63                  LDA CHR_UNK_BYTE_631F ; Set
-2cf0: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;     CHR_UNK_BYTE_631E = CHR_UNK_BYTE_631F
+2ced: ad 1f 63                  LDA dat_631f         ; Set
+2cf0: 8d 1e 63                  STA dat_631e         ;     dat_631e = dat_631f
 2cf3: 38                        SEC                  ; Set the Carry Flag
 2cf4: e6 32     loc_2cf4        INC flg_PAUSED       ; Add 1 to flg_PAUSED
 2cf6: 60                        RTS                  ; Return to caller
@@ -3390,27 +3951,33 @@
 
                 ; Related to encounters or loading new scenarios
                 ;
-                ; Parameters
-                ;   dat_1909
-                ; Return
-                ;   C = ?
+                ; Input
+                ;   dat_1909 -
+                ;
+                ; Output
+                ;   dat_197c -
+                ;   C        - ?
+                ;
 2cfb: ad 09 19  sub_2cfb        LDA dat_1909         ; Preserve the current
 2cfe: 48                        PHA                  ;     value of dat_1909
                 ; Set 32 bytes to zero starting @ $197c [dat_197c]
 2cff: a2 1f     loc_2cff        LDX #$1f             ; Set X = $1f (32 iterations)
 2d01: a9 00                     LDA #$00             ; Set A = 0
-2d03: 9d 7c 19  loc_2d03        STA dat_197c,X       ; Set dat_197c[X] = 0
-2d06: ca                        DEX                  ; Subtract 1 from X
-2d07: 10 fa                     BPL loc_2d03         ;     and repeat while X >= 0
+2d03: 9d 7c 19  loc_2d03        STA dat_197c,X       ; Loop
+                                                     ;     Set dat_197c[X] = 0
+2d06: ca                        DEX                  ;     Subtract 1 from X
+2d07: 10 fa                     BPL loc_2d03         ; Repeat while (X >= 0)
                 ; ?Display? either "Encounter!" (dat_1909 = $11 (17)) or "Loading..." (dat_1909 <> $11 (17))
 2d09: a2 09                     LDX #$09             ; Set X = 9 (10 iterations)
 2d0b: ac 09 19                  LDY dat_1909         ; Set Y = dat_1909
-2d0e: bd 2e 2a  loc_2d0e        LDA str_ENCOUNTR,X   ; Set A = str_ENCOUNTR[X] ("Encounter!")
-2d11: c0 11                     CPY #$11             ; If
-2d13: f0 03                     BEQ loc_2d18         ;     Y <> $11 (17)
-2d15: bd 24 2a                  LDA str_LOADING,X    ;     Then set A = str_LOADING[X] ("Loading...")
-2d18: 9d 87 19  loc_2d18        STA dat_197c+11,X    ; Set dat_197c[11 + X] = A
-2d1b: ca                        DEX                  ; Subtract 1 from X
+2d0e: bd 2e 2a  loc_2d0e        LDA str_ENCOUNTR,X   ; Loop
+                                                     ;     Set A = str_ENCOUNTR[X] ("Encounter!")
+2d11: c0 11                     CPY #$11             ;     If (Y <> $11 (17))
+2d13: f0 03                     BEQ loc_2d18         ;     Then
+2d15: bd 24 2a                  LDA str_LOADING,X    ;         Then set A = str_LOADING[X] ("Loading...")
+                                                     ;     End If
+2d18: 9d 87 19  loc_2d18        STA dat_197c+11,X    ;     Set dat_197c[11 + X] = A
+2d1b: ca                        DEX                  ;     Subtract 1 from X
 2d1c: 10 f0                     BPL loc_2d0e         ; Repeat while X >= 0
                 ;
 2d1e: a9 00                     LDA #$00             ; Set A = 0
@@ -3418,44 +3985,56 @@
 2d23: 8d 59 02                  STA dat_0259         ; Set dat_0259 = 0
 2d26: 8d 5a 02                  STA dat_025a         ; Set dat_025a = 0
 2d29: 8d 5b 02                  STA dat_025b         ; Set dat_025b = 0
-2d2c: 2c 58 02                  BIT dat_0258         ;
+2d2c: 2c 58 02                  BIT dat_0258         ; If (dat_0258 < 0)
 2d2f: 10 0f                     BPL loc_2d40         ;
-2d31: ad 09 19                  LDA dat_1909         ; Set A = dat_1909
-2d34: c9 0e                     CMP #$0e             ;
-2d36: b0 08                     BCS loc_2d40         ;
-2d38: ce 59 02                  DEC dat_0259         ;
-2d3b: 20 53 f9                  JSR $f953            ;
-2d3e: 90 22                     BCC loc_2d62         ; If carry bit is NOT set, jump to return code (carry clear)
+2d31: ad 09 19                  LDA dat_1909         ;    And
+2d34: c9 0e                     CMP #$0e             ;    (dat_1909 < $0e ())
+2d36: b0 08                     BCS loc_2d40         ; Then
+2d38: ce 59 02                  DEC dat_0259         ;    Subtract 1 from dat_0259
+2d3b: 20 53 f9                  JSR $f953            ;    Call $f953 [TODO: label?]
+2d3e: 90 22                     BCC rts_C_CLR_2d62   ;    If (C == 0) Then   (jump to return code (carry clear))
+                                                     ;        Continue @ $2d62 [rts_C_CLR_2d62]
+                                                     ;    End If
+                                                     ; End If
 2d40: ad 09 19  loc_2d40        LDA dat_1909         ; Set A = dat_1909
 2d43: a2 2a                     LDX #$2a             ; Set X = $2a (42)
 2d45: a0 38                     LDY #$38             ; Set Y = $38 (56)
-2d47: 20 e3 2d                  JSR sub_2de3         ;
-2d4a: 6e 5a 02                  ROR dat_025a         ;
-2d4d: 20 5b 27                  JSR sub_275b         ;
-2d50: b0 0a                     BCS loc_2d5c         ;
-2d52: 2c 59 02                  BIT dat_0259         ;
-2d55: 10 0b                     BPL loc_2d62         ; If the result doesn't have the sign bit set, jump to return code (carry clear)
-2d57: 20 00 f9                  JSR $f900            ;
-2d5a: 90 06                     BCC loc_2d62         ; If carry bit is NOT set, jump to return code (carry clear)
-2d5c: 2c 3d 02  loc_2d5c        BIT dat_023d         ;
-2d5f: 10 06                     BPL loc_2d67         ;
+2d47: 20 e3 2d                  JSR sub_2de3         ; Call $2de3 [sub_2de3]
+2d4a: 6e 5a 02                  ROR dat_025a         ; Set dat_025a /= 2     (TODO: Is C used by sub_275b?)
+2d4d: 20 5b 27                  JSR sub_275b         ; Call $275b [sub_275b]
+2d50: b0 0a                     BCS loc_2d5c         ; If (C == 0) Then
+2d52: 2c 59 02                  BIT dat_0259         ;     If (dat_0259 >= 0) Then
+2d55: 10 0b                     BPL rts_C_CLR_2d62   ;         If the result doesn't have the sign bit set, jump to return code (carry clear)
+                                                     ;     End If
+2d57: 20 00 f9                  JSR $f900            ;     Call $f900 [TODO: label?]
+2d5a: 90 06                     BCC rts_C_CLR_2d62   ;     If (C == 0) Then
+                                                     ;       carry bit is NOT set, jump to return code (carry clear)
+                                                     ;     End If
+                                                     ; End If
+2d5c: 2c 3d 02  loc_2d5c        BIT dat_023d         ; If (dat_023d >= 0) Then
+2d5f: 10 06                     BPL loc_2d67         ;     Continue @ $2d67 [loc_2d67]
+                                                     ; End If
                 ; Jumps to here cause carry bit set on return
-2d61: 38        loc_2d61        SEC                  ; Set the carry flag
+2d61: 38        rts_C_SET_2d61  SEC                  ; Set C = 1
                 ; Jumps to here mean carry bit is clear
-2d62: 68        loc_2d62        PLA                  ; Restore the original
+2d62: 68        rts_C_CLR_2d62  PLA                  ; Restore the original
 2d63: 8d 09 19                  STA dat_1909         ;     value of dat_1909
 2d66: 60                        RTS                  ; Return to caller
                 ;
 2d67: ad 09 19  loc_2d67        LDA dat_1909         ; Set A = dat_1909
 2d6a: a2 05                     LDX #$05             ; Set X = 5
-2d6c: 2c 58 02                  BIT dat_0258         ;
-2d6f: 50 01                     BVC loc_2d72         ;
-2d71: ca                        DEX                  ; Subtract 1 from X
-2d72: dd 85 2d  loc_2d72        CMP tbl_2d85,X       ;
-2d75: f0 05                     BEQ loc_2d7c         ;
-2d77: ca                        DEX                  ; Subtract 1 from X
+2d6c: 2c 58 02                  BIT dat_0258         ; If (dat_0258 bit 6 == 1)
+2d6f: 50 01                     BVC loc_2d72         ; Then
+2d71: ca                        DEX                  ;     Subtract 1 from X
+                                                     ; End If
+2d72: dd 85 2d  loc_2d72        CMP tbl_2d85,X       ; Loop
+                                                     ;     If (tbl_2d85[X] != 0)
+2d75: f0 05                     BEQ loc_2d7c         ;     Then
+2d77: ca                        DEX                  ;         Subtract 1 from X
+                                                     ; Continue @
+                                                     ;     End If
 2d78: 10 f8                     BPL loc_2d72         ; Repeat while X >= 0
-2d7a: 30 e5                     BMI loc_2d61         ; If the loop above completed, return to caller with carry flag set
+2d7a: 30 e5                     BMI rts_C_SET_2d61   ; If the loop above completed, return to caller with carry flag set
 2d7c: bd 8a 2d  loc_2d7c        LDA tbl_2d8a,X       ; Otherwise,
 2d7f: 8d 09 19                  STA dat_1909         ;     Set dat_1909 = tbl_2d8a[X] (where X is in 0..4)
 2d82: 4c ff 2c                  JMP loc_2cff         ; Jump back up to the start of the sub
@@ -3573,11 +4152,11 @@
 
                 ; Copies X * 256 + Y bytes from the address in dat_0007_L to the address in dat_0009_L
                 ;
-                ; Parameters:
-                ;   X = MSB of number of bytes to copy (16-bit int)
-                ;   Y = LSB of number of bytes to copy (16-bit int)
-                ;   dat_0007_L/dat_0007_H = source address (dat_0007_H is modified [incremented by X] on return)
-                ;   dat_0009_L/dat_0009_H = destination address (dat_0009_H is modified [incremented by X] on return)
+                ; Input
+                ;   X            - MSB of number of bytes to copy (16-bit int)
+                ;   Y            - LSB of number of bytes to copy (16-bit int)
+                ;   dat_0007_L/H - source address (dat_0007_H is modified [incremented by X] on return)
+                ;   dat_0009_L/H - destination address (dat_0009_H is modified [incremented by X] on return)
                 ;
 2e0d: 84 0b     COPY_BYTES      STY dat_000b         ; Set dat_000b = Y
 2e0f: a0 00                     LDY #$00             ; Set Y = 0
@@ -3605,8 +4184,8 @@
                 ;
 2e31: c6 32     sub_2e31        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
 2e33: a2 07                     LDX #$07             ; Set X = 7
-2e35: b5 35     loc_2e35        LDA BFENHI,X         ; Loop
-2e37: 9d 09 63                  STA TME_MINUTES,X    ;     Set TME_MINUTES,X = BFENHI,X
+2e35: b5 35     loc_2e35        LDA dat_0035,X       ; Loop
+2e37: 9d 09 63                  STA TME_MINUTES,X    ;     Set TME_MINUTES[X] = dat_0035[X]
 2e3a: ca                        DEX                  ;     Subtract 1 from X
 2e3b: 10 f8                     BPL loc_2e35         ;         and repeat while (X >= 0)
 2e3d: e6 32                     INC flg_PAUSED       ; Add 1 to flg_PAUSED
@@ -3647,6 +4226,9 @@
                                                      ; End If
 2e65: 60        loc_2e65        RTS                  ; Return to caller
 
+2e66: a0 01     sub_2e66        LDY #$01             ; Set Y = 1
+2e68: 2c
+
                 ; abc xyz
                 ;
                 ; Input
@@ -3654,8 +4236,8 @@
                 ;   dat_0054     -
                 ;   dat_0045_L/H -
                 ;
-2e66: a0 01     sub_2e66        LDY #$01             ; Set Y = 1
-2e68: 2c a0 00                  BIT dat_00a0         ;    TODO: Why? What flag is needed by sub_2e8d? Z? N? V?
+2e69: a0 00     sub_2e69        LDA #$00             ; Set A = 0
+
                 ;
 2e6b: 20 8d 2e  sub_2e6b        JSR sub_2e8d         ; Call $2e8d [sub_2e8d]
                                                      ;    TODO: Is Y modified by sub?
@@ -3762,7 +4344,7 @@
 2ef5: a9 00                     LDA #$00             ; Set dat_190b_L/H
 2ef7: 8d 0b 19                  STA dat_190b_L       ;    address
 2efa: a9 76                     LDA #$76             ;    to
-2efc: 8d 0c 19                  STA dat_190c_H       ;    $7600 [loc_7600]
+2efc: 8d 0c 19                  STA dat_190b_H       ;    $7600 [loc_7600]
 2eff: 20 ad 2c                  JSR sub_2cad         ;
 2f02: 20 00 76                  JSR loc_7600         ;
 2f05: a9 02                     LDA #$02             ;
@@ -3776,7 +4358,7 @@
 2f1a: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
 2f1d: a2 07                     LDX #$07             ;
 2f1f: bd 09 63  loc_2f1f        LDA TME_MINUTES,X    ;
-2f22: 95 35                     STA BFENHI,X         ;
+2f22: 95 35                     STA dat_0035,X       ;
 2f24: ca                        DEX                  ;
 2f25: 10 f8                     BPL loc_2f1f         ;
 2f27: e8                        INX                  ;
@@ -3813,15 +4395,15 @@
 2f64: 8e 33 19                  STX dat_1933         ; Set dat_1933 = X
 2f67: ca                        DEX                  ; Subtract 1 from X
 2f68: 10 ee                     BPL loc_2f58         ; Repeat while X >= 0
-2f6a: 20 2d 3c                  JSR sub_3c2d         ;
-2f6d: 4c 8c 31                  JMP loc_318c         ; Continue execution @ $318c [loc_318c]
+2f6a: 20 2d 3c                  JSR sub_3c2d         ; Call $3c2d [sub_3c2d]
+2f6d: 4c 8c 31                  JMP cont_318c        ; Continue execution @ $318c [cont_318c]
 
 2f70: de 84 31 a2 d1 e9 03 00  dat_2f70_L  .BYTE $de,$84,$31,$a2,$d1,$e9,$03,$00  ; ..1.....
 2f78: 3c 3d 3e 3e 3e 3e 3f 00  dat_2f78_H  .BYTE $3c,$3d,$3e,$3e,$3e,$3e,$3f,$00  ; <=>>>>?.
 
 2f80: 20 2c 32  loc_2f80        JSR sub_322c         ; Call $322c [sub_322c]
 2f83: ad 00 76                  LDA loc_7600         ; If
-2f86: cd 1e 63                  CMP CHR_UNK_BYTE_631E ;    (CHR_UNK_BYTE_631E != loc_7600)
+2f86: cd 1e 63                  CMP dat_631e         ;    (dat_631e != loc_7600)
 2f89: f0 5a                     BEQ loc_2fe5         ; Then
 2f8b: a9 ff                     LDA #$ff             ;     Set
 2f8d: 8d 12 19                  STA ZONE_ID          ;         ZONE_ID = $ff
@@ -3830,15 +4412,15 @@
 2f96: 8d 39 19                  STA UNK_BYTE_1939    ;     Set UNK_BYTE_1939 = $ff
 2f99: 8d 5f 19                  STA UNK_BYTE_195F    ;     Set UNK_BYTE_195F = $ff
 2f9c: 8d 60 19                  STA UNK_BYTE_1960    ;     Set UNK_BYTE_1960 = $ff
-2f9f: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;     If
-2fa2: c9 01                     CMP #$01             ;        (CHR_UNK_BYTE_631E != 1)
+2f9f: ad 1e 63                  LDA dat_631e         ;     If
+2fa2: c9 01                     CMP #$01             ;        (dat_631e != 1)
 2fa4: f0 14                     BEQ loc_2fba         ;
 2fa6: c9 02                     CMP #$02             ;        And
-2fa8: f0 10                     BEQ loc_2fba         ;        (CHR_UNK_BYTE_631E != 2)
-2faa: ad 1f 63                  LDA CHR_UNK_BYTE_631F ;       And
-2fad: c9 01                     CMP #$01             ;        (CHR_UNK_BYTE_631F != 1)
+2fa8: f0 10                     BEQ loc_2fba         ;        (dat_631e != 2)
+2faa: ad 1f 63                  LDA dat_631f         ;        And
+2fad: c9 01                     CMP #$01             ;        (dat_631f != 1)
 2faf: f0 09                     BEQ loc_2fba         ;        And
-2fb1: c9 02                     CMP #$02             ;        (CHR_UNK_BYTE_631F != 2)
+2fb1: c9 02                     CMP #$02             ;        (dat_631f != 2)
 2fb3: f0 05                     BEQ loc_2fba         ;     Then
 2fb5: a9 01                     LDA #$01             ;         Set display mode to 1
 2fb7: 20 0d 1a                  JSR SET_DISP_MODE    ;             (normal gameplay)
@@ -3846,11 +4428,11 @@
 2fba: a9 00     loc_2fba        LDA #$00             ;     Set
 2fbc: 8d 0b 19                  STA dat_190b_L       ;       dat_190b_L/H
 2fbf: a9 76                     LDA #$76             ;       address
-2fc1: 8d 0c 19                  STA dat_190c_H       ;       to $7600 [loc_7600]
-2fc4: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;    Set
+2fc1: 8d 0c 19                  STA dat_190b_H       ;       to $7600 [loc_7600]
+2fc4: ad 1e 63                  LDA dat_631e         ;    Set
 2fc7: 18                        CLC                  ;         dat_1909
 2fc8: 69 10                     ADC #$10             ;            =
-2fca: 8d 09 19                  STA dat_1909         ;              CHR_UNK_BYTE_631E + $10 (16)
+2fca: 8d 09 19                  STA dat_1909         ;              dat_631e + $10 (16)
 2fcd: a9 ff                     LDA #$ff             ;     Set
 2fcf: 8d 0e 19                  STA dat_190e         ;         dat_190e = $ff (255)
 2fd2: 20 c2 2c                  JSR sub_2cc2         ;     Call $2cc2 [sub_2cc2]
@@ -3859,19 +4441,20 @@
                                                      ;     End If
 2fda: a2 f3     loc_2fda        LDX #$f3             ;     Set X = $f3 (243)
 2fdc: a9 00                     LDA #$00             ;     Set A = 0
-2fde: 95 00     loc_2fde        STA dat_0000,X       ;     Loop
-                                                     ;         Set dat_0000[X] = 0
+2fde: 95 00     loc_2fde        STA SIO_POS_L,X      ;     Loop
+                                                     ;         Set SIO_POS_L[X] = 0
 2fe0: ca                        DEX                  ;         Subtract 1 from X
 2fe1: e0 62                     CPX #$62             ;     Repeat
 2fe3: b0 f9                     BCS loc_2fde         ;       while (X > $63 (99))
                                                      ; End If
-2fe5: ad 1f 63  loc_2fe5        LDA CHR_UNK_BYTE_631F ; If
-2fe8: cd 1e 63                  CMP CHR_UNK_BYTE_631E ;    (CHR_UNK_BYTE_631F != CHR_UNK_BYTE_631E)
+2fe5: ad 1f 63  loc_2fe5        LDA dat_631f         ; If
+2fe8: cd 1e 63                  CMP dat_631e         ;    (dat_631f != dat_631e)
 2feb: f0 03                     BEQ loc_2ff0         ; Then
 2fed: 20 01 76                  JSR JMP_SUB_7601     ;     Continue @ $7601 [JMP_SUB_7601]
                                                      ; End If
 2ff0: 6c 77 19  loc_2ff0        JMP (cont_addr_1977_L) ; Continue @ address in cont_addr_1977_L/H
 
+                ;
 2ff3: 20 8b 40  loc_2ff3        JSR sub_408b         ; Call $408b [sub_408b]
 2ff6: 20 6f 38                  JSR sub_386f         ; Call $386f [sub_386f]
 2ff9: ad 58 19                  LDA UNK_BYTE_1958    ; If
@@ -3892,10 +4475,10 @@
 301a: 10 16                     BPL loc_3032         ; Then
 301c: a9 00                     LDA #$00             ;     Set
 301e: 8d 79 19                  STA loc_1979         ;         loc_1979 = 0
-3021: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;     Set
-3024: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;         CHR_UNK_BYTE_631F = CHR_UNK_BYTE_631E
+3021: ad 1e 63                  LDA dat_631e         ;     Set
+3024: 8d 1f 63                  STA dat_631f         ;         dat_631f = dat_631e
 3027: a9 02                     LDA #$02             ;     Set
-3029: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;         CHR_UNK_BYTE_631E = 2
+3029: 8d 1e 63                  STA dat_631e         ;         dat_631e = 2
 302c: 20 07 76                  JSR JMP_SUB_7607     ;     Call $7607 [JMP_SUB_7607]
 302f: 4c 80 2f                  JMP loc_2f80         ;     Continue execution @ $2f80 [loc_2f80]
                                                      ; End If
@@ -3904,22 +4487,24 @@
 3037: a9 47                     LDA #$47             ;     Set A = $47 (71 'G')
 3039: 4c aa 30                  JMP loc_30aa         ;     Continue execution @ $30aa [loc_30aa]
                                                      ; End If
-303c: ad 20 63  loc_303c        LDA CHR_UNK_BYTE_6320 ;
-303f: 10 05                     BPL loc_3046         ;
-3041: ad 5d 19                  LDA UNK_BYTE_195D    ;
-3044: f0 39                     BEQ loc_307f         ;
+303c: ad 20 63  loc_303c        LDA dat_6320         ; If (dat_6320 < 0)
+303f: 10 05                     BPL loc_3046         ; Then
+3041: ad 5d 19                  LDA dat_195d         ;     If (dat_195d == 0) Then
+3044: f0 39                     BEQ loc_307f         ;         Continue @ loc_307f [loc_307f]
+                                                     ;     End If
+                                                     ; End If
 3046: a9 ff     loc_3046        LDA #$ff             ; Set
-3048: 8d 5d 19                  STA UNK_BYTE_195D    ;     UNK_BYTE_195D = $ff
+3048: 8d 5d 19                  STA dat_195d         ;     dat_195d = $ff
 304b: ad 16 63                  LDA CHR_FRAC_LOC_X   ; If
 304e: c9 12                     CMP #$12             ;    (CHR_FRAC_LOC_X == $12)
 3050: d0 18                     BNE loc_306a         ;    And
 3052: ad 17 63                  LDA CHR_FRAC_LOC_Y   ;    (CHR_FRAC_LOC_Y == $12)
 3055: c9 12                     CMP #$12             ;
 3057: d0 11                     BNE loc_306a         ; Then
-3059: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;     Set
-305c: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;         CHR_UNK_BYTE_631F = CHR_UNK_BYTE_631E
+3059: ad 1e 63                  LDA dat_631e         ;     Set
+305c: 8d 1f 63                  STA dat_631f         ;         dat_631f = dat_631e
 305f: a9 01                     LDA #$01             ;     Set
-3061: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;         CHR_UNK_BYTE_631E = 1
+3061: 8d 1e 63                  STA dat_631e         ;         dat_631e = 1
 3064: 20 07 76                  JSR JMP_SUB_7607     ;     Call $7607 [JMP_SUB_7607]
 3067: 4c 80 2f                  JMP loc_2f80         ;     Continue execution @ $2f80 [loc_2f80]
                                                      ; End If
@@ -3941,7 +4526,7 @@
 307d: 30 5c                     BMI cont_30db        ; Continue @ $30db [cont_30db]
                 ;
 307f: a9 00     loc_307f        LDA #$00             ; Set
-3081: 8d 5d 19                  STA UNK_BYTE_195D    ;     UNK_BYTE_195D = 0
+3081: 8d 5d 19                  STA dat_195d         ;     dat_195d = 0
 3084: ad 68 19                  LDA UNK_BYTE_1968    ; If
 3087: c9 01                     CMP #$01             ;    (UNK_BYTE_1968 >= 1)
 3089: 90 1a                     BCC loc_30a5         ;    AND
@@ -3954,7 +4539,7 @@
 309a: 29 01                     AND #$01             ;    Set A &= 1
 309c: aa                        TAX                  ;    Set X = A
 309d: bd e1 30                  LDA dat_30e1,X       ;    Set
-30a0: 85 31                     STA CHKSUM           ;        CHKSUM = dat_30e1,X  (Randomly selected: $2c or $2e)
+30a0: 85 31                     STA dat_0031         ;        dat_0031 = dat_30e1[X]  (Randomly selected: $2c or $2e)
 30a2: 4c aa 30                  JMP loc_30aa         ; Else
 30a5: 20 43 26  loc_30a5        JSR sub_2643         ;     Call $2643 [sub_2643]
 30a8: 30 31                     BMI cont_30db        ;     If (A < 0) Then continue @ $30db [cont_30db]
@@ -3991,12 +4576,12 @@
                                                      ;         6: $37d6 [act_QUIT]     - (Q) Quit game action
                                                      ;         7: $384a [act_PAUSE]    - (P) Pause game action
                                                      ;         8: $3c8c [act_PRV_STAT] - (,) Previous status page action
-                                                     ;         9: $3c71 [sub_3c71]     - (.) Next status page action
-                                                     ;        10: $3c71 [sub_3c71]
-                                                     ;        11: $3c8c [act_PRV_STAT]
+                                                     ;         9: $3c71 [act_NXT_STAT] - (.) Next status page action
+                                                     ;        10: $3c71 [act_NXT_STAT] - () Next status page action
+                                                     ;        11: $3c8c [act_PRV_STAT] - () Previous status page action
                                                      ;        12: $2cab [sub_2cab] - does nothing/debug BRK
 30d4: a9 ff                     LDA #$ff             ;     Set
-30d6: 85 31                     STA CHKSUM           ;         CHKSUM = $ff (255)
+30d6: 85 31                     STA dat_0031         ;         dat_0031 = $ff (255)
 30d8: 20 6f 38                  JSR sub_386f         ;     Call $386f [sub_386f]
 30db: ad 0a d2  cont_30db       LDA RANDOM           ;     Set A = random byte
                                                      ; End If
@@ -4006,10 +4591,10 @@
 
 30e3: a9 00     loc_30e3        LDA #$00             ;
 30e5: 8d 75 19                  STA UNK_BYTE_1975    ;
-30e8: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
-30eb: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;
+30e8: ad 1e 63                  LDA dat_631e         ;
+30eb: 8d 1f 63                  STA dat_631f         ;
 30ee: 20 31 35                  JSR MAP_CELL_ADDR    ;
-30f1: a5 2e                     LDA ICAX5Z           ;
+30f1: a5 2e                     LDA STK_STATUS       ;
 30f3: 2c 74 3b                  BIT BMASK_01         ;
 30f6: d0 2c                     BNE loc_3124         ;
 30f8: 2c 75 3b                  BIT BMASK_02         ; If bit 1 (2) is set,
@@ -4024,7 +4609,7 @@
 3110: 8d 12 63                  STA CHR_LOC_ORIENT   ;     to 0..3
 3113: a9 ff                     LDA #$ff             ;
 3115: 8d 75 19                  STA UNK_BYTE_1975    ;
-3118: 4c 80 31                  JMP loc_3180         ; Continue @ $3180 [loc_3180]
+3118: 4c 80 31                  JMP cont_3180        ; Continue @ $3180 [cont_3180] -> $318c [cont_318c]
 311b: ad 12 63  loc_311b        LDA CHR_LOC_ORIENT   ;
 311e: 09 04                     ORA #$04             ;
 3120: aa                        TAX                  ;
@@ -4054,7 +4639,7 @@
 314e: ed 83 63                  SBC CHR_MOVE_SPEED   ;       -=
 3151: 99 16 63  loc_3151        STA CHR_FRAC_LOC_X,Y ;       CHR_MOVE_SPEED
 3154: c9 24                     CMP #$24             ; If (CHR_FRAC_LOC_X[Y] ) Then
-3156: 90 28                     BCC loc_3180         ; Continue @ $3180 [loc_3180]
+3156: 90 28                     BCC cont_3180        ; Continue @ $3180 [cont_3180] -> $318c [cont_318c]
 3158: 18                        CLC                  ;
 3159: 7d 4c 3b                  ADC dat_3b4c,X       ;
 315c: 99 16 63                  STA CHR_FRAC_LOC_X,Y ;
@@ -4085,66 +4670,69 @@
 
 317f: 00        dat_317f        .BYTE $00            ;
 
-3180: 4c 8c 31  loc_3180        JMP loc_318c         ; Continue @ $318c [loc_318c]
+3180: 4c 8c 31  cont_3180       JMP cont_318c        ; Continue @ $318c [cont_318c]
 3183: 20 ca 32  loc_3183        JSR SAVE_CHR_LOC     ; Save current player location
-3186: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
-3189: 8d 1f 63                  STA CHR_UNK_BYTE_631F ;
-318c: ad 15 63  loc_318c        LDA CHR_LOC_MAP      ; If the character's current map #
-318f: cd 00 ac                  CMP MAP_NUMBER       ;     is equal to the loaded map #
-3192: f0 25                     BEQ loc_31b9         ;     Then no need to load new map
-                ; Player's current map location does not match the currently loaded map
-3194: aa                        TAX                  ; Set X = CHR_LOC_MAP (map number to load)
-3195: bd 25 32                  LDA tbl_MAP_NUM2LVL,X ; Set
-3198: 8d 1d 63                  STA CHR_DUNGEON_LEVEL ;     CHR_DUNGEON_LEVEL = the Dungeon level number for the new map number
-319b: 8a                        TXA                  ; Set
-319c: 18                        CLC                  ;     ...
-319d: 69 01                     ADC #$01             ;     ...
-319f: 8d 09 19                  STA dat_1909         ;     dat_1909 = CHR_LOC_MAP + 1
-31a2: a9 01                     LDA #$01             ; Set display mode to 1
-31a4: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
-31a7: a9 00                     LDA #$00             ; Set
-31a9: 8d 0b 19                  STA dat_190b_L       ;    dat_190b_L/H
-31ac: a9 ac                     LDA #$ac             ;    address
-31ae: 8d 0c 19                  STA dat_190c_H       ;    to $ac00 [MAP_NUMBER]
-31b1: 20 ad 2c                  JSR sub_2cad         ;
-31b4: a9 ff                     LDA #$ff             ; Set
-31b6: 8d 12 19                  STA ZONE_ID          ;     ZONE_ID = $ff
-                ; end of load new map
-31b9: 20 31 35  loc_31b9        JSR MAP_CELL_ADDR    ;
-31bc: a0 02                     LDY #$02             ;
-31be: b1 10                     LDA (addr_MapCell_L),Y ;
-31c0: 8d 74 19                  STA UNK_BYTE_1974    ;
-31c3: a0 03                     LDY #$03             ;
-31c5: b1 10                     LDA (addr_MapCell_L),Y ;
-31c7: 10 2f                     BPL loc_31f8         ;
-31c9: 29 1f                     AND #$1f             ;
-31cb: 8d 5a 19                  STA TELEPORT_INDEX   ;
-31ce: a9 00                     LDA #$00             ;
-31d0: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
-31d3: 2c 58 19                  BIT UNK_BYTE_1958    ;
-31d6: 30 35                     BMI loc_320d         ;
-31d8: b1 10                     LDA (addr_MapCell_L),Y ;
-31da: 2a                        ROL                  ;
-31db: 2a                        ROL                  ;
-31dc: 2a                        ROL                  ;
-31dd: 2a                        ROL                  ;
-31de: 29 03                     AND #$03             ;
-31e0: 8d 59 19                  STA UNK_BYTE_1959    ;
-31e3: aa                        TAX                  ;
-31e4: bd 9f 3b                  LDA addr_3b9f_L,X    ; Self-modifying code:
-31e7: 8d f6 31                  STA smc_31f5+1       ;     Set the JMP address
-31ea: bd a3 3b                  LDA addr_3ba3_H,X    ;     @ $31f5 below
-31ed: 8d f7 31                  STA smc_31f5+2       ;     to addr_3b9f_L[X]/addr_3ba3_H[X]
-31f0: a9 ff                     LDA #$ff             ; Set
-31f2: 8d 58 19                  STA UNK_BYTE_1958    ;     UNK_BYTE_1958 = $ff
-31f5: 4c ff ff  smc_31f5        JMP $ffff            ; Continue @ the address assigned from addr_3b9f_L/addr_3ba3_H
-                                                     ; One of the following addresses:
-                                                     ;    0: $3548 [cont_3548]
-                                                     ;    1: $3564 [cont_3564]
-                                                     ;    2: $3583 [cont_3583]
-                                                     ;    3: $35c1 [DO_TELEPORT_PLAYER]
+3186: ad 1e 63                  LDA dat_631e         ;
+3189: 8d 1f 63                  STA dat_631f         ;
+318c: ad 15 63  cont_318c       LDA CHR_LOC_MAP      ; If the character's current map #
+318f: cd 00 ac                  CMP MAP_NUMBER       ;     is NOT equal to the loaded map #
+3192: f0 25                     BEQ loc_31b9         ; Then
+3194: aa                        TAX                  ;     Set X = CHR_LOC_MAP (map number to load)
+3195: bd 25 32                  LDA tbl_MAP_NUM2LVL,X ;     Set
+3198: 8d 1d 63                  STA CHR_DUNGEON_LEVEL ;         CHR_DUNGEON_LEVEL = the Dungeon level number for the new map number
+319b: 8a                        TXA                  ;     Set
+319c: 18                        CLC                  ;         dat_1909
+319d: 69 01                     ADC #$01             ;            =
+319f: 8d 09 19                  STA dat_1909         ;              CHR_LOC_MAP + 1
+31a2: a9 01                     LDA #$01             ;     Set display mode to 1
+31a4: 20 0d 1a                  JSR SET_DISP_MODE    ;         (normal gameplay)
+31a7: a9 00                     LDA #$00             ;     Set
+31a9: 8d 0b 19                  STA dat_190b_L       ;        dat_190b_L/H
+31ac: a9 ac                     LDA #$ac             ;        address
+31ae: 8d 0c 19                  STA dat_190b_H       ;        to $ac00 [MAP_NUMBER]
+31b1: 20 ad 2c                  JSR sub_2cad         ;     Call $2cad [sub_2cad]
+31b4: a9 ff                     LDA #$ff             ;     Set
+31b6: 8d 12 19                  STA ZONE_ID          ;         ZONE_ID = $ff
+                                                     ; End If
+31b9: 20 31 35  loc_31b9        JSR MAP_CELL_ADDR    ; Call $3531 [MAP_CELL_ADDR]  (compute cell addr)
+31bc: a0 02                     LDY #$02             ; Set
+31be: b1 10                     LDA (addr_MapCell_L),Y ;     mCell_DESC_NUM
+31c0: 8d 74 19                  STA mCell_DESC_NUM   ;          = (*addr_MapCell_L)[2]
+31c3: a0 03                     LDY #$03             ; If
+31c5: b1 10                     LDA (addr_MapCell_L),Y ;    ((*addr_MapCell_L)[3] < 0)
+31c7: 10 2f                     BPL loc_31f8         ; Then
+                ; Handle encounter, treasure, message or teleport codes
+                ;   80-9F=Encounter 0-31        A0-BF=Treasure 0-31
+                ;   C0-DF=Message 0-31          E0-FF=Teleport 0-31
+31c9: 29 1f                     AND #$1f             ;     Set
+31cb: 8d 5a 19                  STA mCell_SPCL_IDX   ;         mCell_SPCL_IDX = (*addr_MapCell_L)[3] & $1f
+31ce: a9 00                     LDA #$00             ;     Set
+31d0: 8d 1e 63                  STA dat_631e         ;         dat_631e = 0
+31d3: 2c 58 19                  BIT UNK_BYTE_1958    ;     If (UNK_BYTE_1958 < 0)
+31d6: 30 35                     BMI loc_320d         ;     Then
+31d8: b1 10                     LDA (addr_MapCell_L),Y ;         Set A = (*addr_MapCell_L)[Y]
+31da: 2a                        ROL                  ;           Swap
+31db: 2a                        ROL                  ;             low and
+31dc: 2a                        ROL                  ;             high nibbles
+31dd: 2a                        ROL                  ;             of A
+31de: 29 03                     AND #$03             ;           Set A = A & 3
+31e0: 8d 59 19                  STA UNK_BYTE_1959    ;           Set UNK_BYTE_1959 = A
+31e3: aa                        TAX                  ;     Set X = A
+31e4: bd 9f 3b                  LDA addr_3b9f_L,X    ;     Self-modifying code:
+31e7: 8d f6 31                  STA smc_31f5+1       ;         Set the JMP address
+31ea: bd a3 3b                  LDA addr_3ba3_H,X    ;         @ $31f5 below
+31ed: 8d f7 31                  STA smc_31f5+2       ;         to addr_3b9f_L[X]/addr_3ba3_H[X]
+31f0: a9 ff                     LDA #$ff             ;     Set
+31f2: 8d 58 19                  STA UNK_BYTE_1958    ;         UNK_BYTE_1958 = $ff
+31f5: 4c ff ff  smc_31f5        JMP $ffff            ;     Continue @ the address assigned from addr_3b9f_L/addr_3ba3_H
+                                                     ;     One of the following addresses:
+                                                     ;        0: $3548 [cont_3548]  (handle encounter?)
+                                                     ;        1: $3564 [cont_3564]  (handle treasure?)
+                                                     ;        2: $3583 [cont_3583]  (handle message?)
+                                                     ;        3: $35c1 [DO_TELEPORT_PLAYER]
+                                                     ; End If
 31f8: 29 1f     loc_31f8        AND #$1f             ;
-31fa: 8d 1e 63                  STA CHR_UNK_BYTE_631E ;
+31fa: 8d 1e 63                  STA dat_631e         ;
 31fd: a9 ff                     LDA #$ff             ;
 31ff: 8d 59 19                  STA UNK_BYTE_1959    ;
 3202: b1 10                     LDA (addr_MapCell_L),Y ;
@@ -4154,11 +4742,11 @@
 3207: 2a                        ROL                  ;
 3208: 29 03                     AND #$03             ;
 320a: 8d 73 19                  STA dat_1973         ;
-320d: ad 1f 63  loc_320d        LDA CHR_UNK_BYTE_631F ;
+320d: ad 1f 63  loc_320d        LDA dat_631f         ;
 3210: c9 ff                     CMP #$ff             ;
 3212: f0 0e                     BEQ loc_3222         ;
-3214: ad 1e 63                  LDA CHR_UNK_BYTE_631E ;
-3217: cd 1f 63                  CMP CHR_UNK_BYTE_631F ;
+3214: ad 1e 63                  LDA dat_631e         ;
+3217: cd 1f 63                  CMP dat_631f         ;
 321a: d0 03                     BNE loc_321f         ;
 321c: 4c 80 2f                  JMP loc_2f80         ;
 321f: 20 04 76  loc_321f        JSR JMP_SUB_7604     ;
@@ -4169,10 +4757,10 @@
 322c: ad 00 ac  sub_322c        LDA MAP_NUMBER       ; If
 322f: cd 15 63                  CMP CHR_LOC_MAP      ;    (MAP_NUMBER == CHR_LOC_MAP)
 3232: d0 62                     BNE END_SUB_RTS_3296 ;    And
-3234: ad 74 19                  LDA UNK_BYTE_1974    ;    (UNK_BYTE_1974 != UNK_BYTE_1939)
+3234: ad 74 19                  LDA mCell_DESC_NUM   ;    (mCell_DESC_NUM != UNK_BYTE_1939)
 3237: cd 39 19                  CMP UNK_BYTE_1939    ; Then
 323a: f0 5a                     BEQ END_SUB_RTS_3296 ;
-323c: 8d 39 19                  STA UNK_BYTE_1939    ;     Set UNK_BYTE_1939 = UNK_BYTE_1974
+323c: 8d 39 19                  STA UNK_BYTE_1939    ;     Set UNK_BYTE_1939 = mCell_DESC_NUM
 323f: a9 be                     LDA #$be             ;     Set addr_0016_L/H
 3241: 85 16                     STA addr_0016_L      ;         address
 3243: a9 32                     LDA #$32             ;         to
@@ -4182,46 +4770,59 @@
 324a: ad 01 ac                  LDA MAP_DESC_TBL_L   ;    Set
 324d: 85 12                     STA MSG_TBL_L        ;         MSG_TBL_L = MAP_DESC_TBL_L
 324f: ad 02 ac                  LDA MAP_DESC_TBL_H   ;    Set
-3252: 85 13                     STA zMAP_DESC_TBL_H  ;         zMAP_DESC_TBL_H = MAP_DESC_TBL_H
-                ; Move address in MSG_TBL_L/H forward at most Max(UNK_BYTE_1974, 1) bytes
+3252: 85 13                     STA MSG_TBL_H        ;         MSG_TBL_H = MAP_DESC_TBL_H
+                ; Move address in MSG_TBL_L/H forward at most Max(mCell_DESC_NUM, 1) bytes
                 ;   until it points at a non-0 byte
                 ; Note: No change occurs for any of the maps shipped with the game
 3254: a0 00                     LDY #$00             ;     Set Y = 0
-3256: ae 74 19                  LDX UNK_BYTE_1974    ;     Set X = UNK_BYTE_1974
+3256: ae 74 19                  LDX mCell_DESC_NUM   ;     Set X = mCell_DESC_NUM
 3259: ca        loc_3259        DEX                  ;     Loop
                                                      ;         Subtract 1 from X
-325a: 30 0f                     BMI loc_326b         ;         If (X < 0) Then exit loop
+325a: 30 0f                     BMI loc_326b         ;         If (X < 0) Then
+                                                     ;             Exit loop
+                                                     ;         End If
 325c: b1 12     loc_325c        LDA (MSG_TBL_L),Y    ;         Loop
                                                      ;             Set A = (MSG_TBL_L),0
 325e: e6 12                     INC MSG_TBL_L        ;             Add 1 to MSG_TBL_L    (increment uint16)
 3260: d0 02                     BNE loc_3264         ;             If (MSG_TBL_L == 0) Then
-3262: e6 13                     INC zMAP_DESC_TBL_H  ;                 Add 1 to zMAP_DESC_TBL_H
+3262: e6 13                     INC MSG_TBL_H        ;                 Add 1 to MSG_TBL_H
+                                                     ;             End If
 3264: 09 00     loc_3264        ORA #$00             ;         Repeat
 3266: f0 f1                     BEQ loc_3259         ;             while (A != 0)
 3268: 4c 5c 32                  JMP loc_325c         ;     Repeat loop
 326b: b1 12     loc_326b        LDA (MSG_TBL_L),Y    ;     Set A = (MSG_TBL_L),0
 326d: e6 12                     INC MSG_TBL_L        ;     Add 1 to MSG_TBL_L    (increment uint16)
-326f: d0 02                     BNE loc_3273         ;     If (MSG_TBL_L == 0)
-3271: e6 13                     INC zMAP_DESC_TBL_H  ;         Add 1 to zMAP_DESC_TBL_H
+326f: d0 02                     BNE loc_3273         ;     If (MSG_TBL_L == 0) Then
+3271: e6 13                     INC MSG_TBL_H        ;         Add 1 to MSG_TBL_H
+                                                     ;     End If
 3273: 09 00     loc_3273        ORA #$00             ;     If (A == 0) Then
-3275: f0 3a                     BEQ loc_32b1         ;         continue @ $32b1 [loc_32b1]
-3277: 10 32                     BPL loc_32ab         ;     If (A > 0) Then continue @ $32ab [loc_32ab]
+3275: f0 3a                     BEQ loc_32b1         ;         Continue @ $32b1 [loc_32b1]
+                                                     ;     End If
+3277: 10 32                     BPL loc_32ab         ;     If (A > 0) Then
+                                                     ;         Continue @ $32ab [loc_32ab]
+                                                     ;     End If
 3279: 29 7f                     AND #$7f             ;     Set
 327b: aa                        TAX                  ;         X = A & $7f (127)   (clears sign bit)
-327c: a9 03                     LDA #$03             ;     Set
-327e: 85 14                     STA dat_0014_L       ;         dat_0014_L = 3
-3280: a9 ac                     LDA #$ac             ;
-3282: 85 15                     STA dat_0014_H       ;
-3284: ca        loc_3284        DEX                  ;
-3285: 30 10                     BMI loc_3297         ;
-3287: b1 14     loc_3287        LDA (dat_0014_L),Y   ;
-3289: e6 14                     INC dat_0014_L       ;
-328b: d0 02                     BNE loc_328f         ;
-328d: e6 15                     INC dat_0014_H       ;
-328f: 09 00     loc_328f        ORA #$00             ;
-3291: 30 f1                     BMI loc_3284         ;
-3293: 4c 87 32                  JMP loc_3287         ;
+327c: a9 03                     LDA #$03             ;     Set dat_0014_L/H
+327e: 85 14                     STA dat_0014_L       ;         address
+3280: a9 ac                     LDA #$ac             ;         to
+3282: 85 15                     STA dat_0014_H       ;         $ac03 [MAP_MESSAGE_TBL]
+3284: ca        loc_3284        DEX                  ;     Loop
+                                                     ;         Subtract 1 from X
+3285: 30 10                     BMI loc_3297         ;         If (X < 0) Then
+                                                     ;
+                                                     ;         End If
+3287: b1 14     loc_3287        LDA (dat_0014_L),Y   ;         Set A = (*dat_0014_L)[Y]
+3289: e6 14                     INC dat_0014_L       ;         Add 1 to dat_0014_L
+328b: d0 02                     BNE loc_328f         ;         If (dat_0014_L == 0) Then   (overflow)
+328d: e6 15                     INC dat_0014_H       ;             Add 1 to dat_0014_H
+                                                     ;         End If
+328f: 09 00     loc_328f        ORA #$00             ;     Repeat
+3291: 30 f1                     BMI loc_3284         ;        while (A < 0)
+3293: 4c 87 32                  JMP loc_3287         ;     Continue @ $3287 [loc_3287]
+                                                     ; End If
 3296: 60        END_SUB_RTS_3296  RTS                ; Return to caller
+                                                     ;
 3297: b1 14     loc_3297        LDA (dat_0014_L),Y   ;
 3299: 08                        PHP                  ;
 329a: e6 14                     INC dat_0014_L       ;
@@ -4279,11 +4880,11 @@
 32e0: d9 1b 63                  CMP $631b,Y          ; If ($631b[Y] == 0)
 32e3: d0 08                     BNE loc_32ed         ; Then
 32e5: a9 ff                     LDA #$ff             ;     Set
-32e7: 8d 54 19                  STA loc_1954         ;         loc_1954 = $ff
+32e7: 8d 54 19                  STA dat_1954         ;         dat_1954 = $ff
 32ea: bd 5c 3b                  LDA loc_3b5c,X       ;     Set A = loc_3b5c[X]
                                                      ; End If
 32ed: 99 16 63  loc_32ed        STA CHR_FRAC_LOC_X,Y ; Set CHR_FRAC_LOC_X[Y] = A
-32f0: 4c 80 31                  JMP loc_3180         ; Continue @ $3180 [loc_3180]
+32f0: 4c 80 31                  JMP cont_3180        ; Continue @ $3180 [cont_3180] -> $318c [cont_318c]
 
 32f3: bc 44 3b  loc_32f3        LDY dat_3b44,X       ;
 32f6: bd 5c 3b                  LDA loc_3b5c,X       ;
@@ -4291,31 +4892,32 @@
 32fc: d0 03                     BNE loc_3301         ;
 32fe: bd 5c 3b                  LDA loc_3b5c,X       ;
 3301: 99 16 63  loc_3301        STA CHR_FRAC_LOC_X,Y ;
-3304: 4c 80 31                  JMP loc_3180         ; Continue @ $3180 [loc_3180]
+3304: 4c 80 31                  JMP cont_3180        ; Continue @ $3180 [cont_3180] -> $318c [cont_318c]
 
-3307: a9 80     cont_3307       LDA #$80             ;
-3309: 8d 9c 19                  STA dat_199c         ;
-330c: 4c 14 33                  JMP loc_3314         ;
-330f: a9 81     cont_330f       LDA #$81             ;
-3311: 8d 9c 19                  STA dat_199c         ;
-3314: ad 0a d2  loc_3314        LDA RANDOM           ;
-3317: 29 51                     AND #$51             ;
-3319: d0 03                     BNE loc_331e         ;
-331b: ce 5d 19                  DEC UNK_BYTE_195D    ;
-331e: ae 7f 31  loc_331e        LDX dat_317f         ;
-3321: bc 44 3b  cont_3321       LDY dat_3b44,X       ;
-3324: 18                        CLC                  ;
-3325: b9 13 63                  LDA CHR_LOC_X,Y      ;
-3328: 7d 54 3b                  ADC dat_3b54,X       ;
-332b: 99 13 63                  STA CHR_LOC_X,Y      ;
-332e: a9 ff                     LDA #$ff             ;
-3330: 8d 75 19                  STA UNK_BYTE_1975    ;
-3333: a9 00                     LDA #$00             ;
-3335: 8d 58 19                  STA UNK_BYTE_1958    ;
-3338: 8d 1a 19                  STA loc_191a         ;
-333b: 8d 2a 19                  STA UNK_BYTE_192A    ;
-333e: 20 2d 3c                  JSR sub_3c2d         ;
-3341: 4c 80 31                  JMP loc_3180         ; Continue @ $3180 [loc_3180]
+3307: a9 80     cont_3307       LDA #$80             ; Set
+3309: 8d 9c 19                  STA dat_199c         ;     dat_199c = $80 (128)
+330c: 4c 14 33                  JMP loc_3314         ; Continue @ $3314 [loc_3314]
+330f: a9 81     cont_330f       LDA #$81             ; Set
+3311: 8d 9c 19                  STA dat_199c         ;     dat_199c = $81 (129)
+3314: ad 0a d2  loc_3314        LDA RANDOM           ; Set
+3317: 29 51                     AND #$51             ;     A = random byte & $51
+3319: d0 03                     BNE loc_331e         ; If (A == 0) Then
+331b: ce 5d 19                  DEC dat_195d         ;     Subtract 1 from dat_195d
+                                                     ; End If
+331e: ae 7f 31  loc_331e        LDX dat_317f         ; Set X = dat_317f
+3321: bc 44 3b  cont_3321       LDY dat_3b44,X       ; Set Y = dat_3b44[X]
+3324: 18                        CLC                  ; Set
+3325: b9 13 63                  LDA CHR_LOC_X,Y      ;     CHR_LOC_X[Y]
+3328: 7d 54 3b                  ADC dat_3b54,X       ;       =
+332b: 99 13 63                  STA CHR_LOC_X,Y      ;         CHR_LOC_X[Y] + dat_3b54[X]
+332e: a9 ff                     LDA #$ff             ; Set
+3330: 8d 75 19                  STA UNK_BYTE_1975    ;     UNK_BYTE_1975 = $ff
+3333: a9 00                     LDA #$00             ; Set
+3335: 8d 58 19                  STA UNK_BYTE_1958    ;     UNK_BYTE_1958 = 0
+3338: 8d 1a 19                  STA loc_191a         ; Set loc_191a = 0
+333b: 8d 2a 19                  STA UNK_BYTE_192A    ; Set UNK_BYTE_192A = 0
+333e: 20 2d 3c                  JSR sub_3c2d         ; Call $3c2d [sub_3c2d]
+3341: 4c 80 31                  JMP cont_3180        ; Continue @ $3180 [cont_3180] - $318c [cont_318c]
 
 3344: a9 00     cont_3344       LDA #$00             ; Set A = 0
 3346: f0 06                     BEQ loc_334e         ; Continue @ $334e [loc_334e]   (condition always true)
@@ -4373,23 +4975,24 @@
 33b0: 8d 2f 35                  STA dat_352f         ;     value of cont_addr_1977_L
 33b3: ad 78 19                  LDA cont_addr_1977_H ; Preserve the current
 33b6: 8d 30 35                  STA dat_3530         ;     value of cont_addr_1977_H
-33b9: a9 c6                     LDA #$c6             ; Set cont_addr_1977_L/H
-33bb: 8d 77 19                  STA cont_addr_1977_L ;    address
+33b9: a9 c6                     LDA #$c6             ; Set return address
+33bb: 8d 77 19                  STA cont_addr_1977_L ;     cont_addr_1977_L/H
 33be: a9 33                     LDA #$33             ;     to
 33c0: 8d 78 19                  STA cont_addr_1977_H ;     $33c6 [rtn_33c6]
-33c3: 4c f3 2f                  JMP loc_2ff3         ;
+33c3: 4c f3 2f                  JMP loc_2ff3         ; Continue @ $2ff3 [loc_2ff3]  (returns to next instruction)
 33c6: ad 2f 35  rtn_33c6        LDA dat_352f         ; Restore the previous
 33c9: 8d 77 19                  STA cont_addr_1977_L ;     value of cont_addr_1977_L
 33cc: ad 30 35                  LDA dat_3530         ; Restore the previous
 33cf: 8d 78 19                  STA cont_addr_1977_H ;     value of cont_addr_1977_H
-33d2: ad 5d 19                  LDA UNK_BYTE_195D    ;
-33d5: 10 0f                     BPL loc_33e6         ;
-33d7: ee 37 19                  INC dat_1937         ;
-33da: ee 71 19                  INC dat_1971         ;
-33dd: 20 c2 3c                  JSR sub_3cc2         ;
-33e0: ae 12 63                  LDX CHR_LOC_ORIENT   ;
-33e3: 4c f3 32                  JMP loc_32f3         ;
-33e6: a5 31     loc_33e6        LDA CHKSUM           ;
+33d2: ad 5d 19                  LDA dat_195d         ; If (dat_195d >= 0)
+33d5: 10 0f                     BPL loc_33e6         ; Then
+33d7: ee 37 19                  INC dat_1937         ;     Add 1 to dat_1937
+33da: ee 71 19                  INC dat_1971         ;     Add 1 to dat_1971
+33dd: 20 c2 3c                  JSR sub_3cc2         ;     Call $3cc2 [sub_3cc2]
+33e0: ae 12 63                  LDX CHR_LOC_ORIENT   ;     Set X = CHR_LOC_ORIENT
+33e3: 4c f3 32                  JMP loc_32f3         ;     Continue @ $32f3 [loc_32f3]
+                                                     ; End If
+33e6: a5 31     loc_33e6        LDA dat_0031         ; If (dat_0031 >= 0)
 33e8: 30 c3                     BMI loc_33ad         ;
 33ea: 38                        SEC                  ;
 33eb: e9 30                     SBC #$30             ;
@@ -4404,7 +5007,7 @@
 33fd: ae 2e 35                  LDX dat_352e         ;
 3400: 20 5c 3c                  JSR sub_3c5c         ;
 3403: a2 f0                     LDX #$f0             ;
-3405: 20 66 2c  loc_3405        JSR WAIT_FOR_VBLK_B  ;
+3405: 20 66 2c  loc_3405        JSR WAIT_FOR_VBLK_B  ; Call $2c66 [WAIT_FOR_VBLK_B]
 3408: ca                        DEX                  ;
 3409: d0 fa                     BNE loc_3405         ;
 340b: ad 6f 19                  LDA dat_196f         ;
@@ -4503,12 +5106,12 @@
 34e5: ae 2e 35                  LDX dat_352e         ;
 34e8: 20 5c 3c                  JSR sub_3c5c         ;
 34eb: a2 78                     LDX #$78             ;
-34ed: 20 66 2c  loc_34ed        JSR WAIT_FOR_VBLK_B  ;
+34ed: 20 66 2c  loc_34ed        JSR WAIT_FOR_VBLK_B  ; Call $2c66 [WAIT_FOR_VBLK_B]
 34f0: ca                        DEX                  ;
 34f1: d0 fa                     BNE loc_34ed         ;
-34f3: a9 01                     LDA #$01             ;
-34f5: a2 65                     LDX #$65             ;
-34f7: 20 69 2e                  JSR sub_2e69         ;
+34f3: a9 01                     LDA #$01             ; Set A = 1
+34f5: a2 65                     LDX #$65             ; Set X = $65 (101)
+34f7: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
 34fa: ad 0a d2                  LDA RANDOM           ;
 34fd: 4a                        LSR                  ;
 34fe: cd 61 63                  CMP CHR_INT_EFFECTIVE ;
@@ -4554,25 +5157,27 @@
 3545: 85 10                     STA addr_MapCell_L   ;
 3547: 60                        RTS                  ; Return to caller
 
-3548: ad 5a 19  cont_3548       LDA TELEPORT_INDEX   ; Set A = TELEPORT_INDEX
+                ; Probably handle encounter
+3548: ad 5a 19  cont_3548       LDA mCell_SPCL_IDX   ; Set A = mCell_SPCL_IDX
 354b: a2 75                     LDX #$75             ; Set X = $75
 354d: a0 00                     LDY #$00             ; Set Y = 0
 354f: 20 e3 2d                  JSR sub_2de3         ; Call $2de3 [sub_2de3]
 3552: b0 08                     BCS loc_355c         ; If (C = 1) Then continue @ $355c [loc_355c]
 3554: a9 ff                     LDA #$ff             ; Set
-3556: 8d 5d 19                  STA UNK_BYTE_195D    ;     UNK_BYTE_195D = $ff (255)
+3556: 8d 5d 19                  STA dat_195d         ;     dat_195d = $ff (255)
 3559: 4c 0d 32                  JMP loc_320d         ; Continue @ $320d [loc_320d]
 
 355c: a9 ff     loc_355c        LDA #$ff             ; Set
 355e: 8d 59 19                  STA UNK_BYTE_1959    ;     UNK_BYTE_1959 = $ff (255)
 3561: 4c 0d 32                  JMP loc_320d         ; Continue @ $320d [loc_320d]
 
-3564: ad 5a 19  cont_3564       LDA TELEPORT_INDEX   ; Set A = TELEPORT_INDEX
+                ; Probably handle treasure
+3564: ad 5a 19  cont_3564       LDA mCell_SPCL_IDX   ; Set A = mCell_SPCL_IDX
 3567: a2 75                     LDX #$75             ; Set X = $75 (117)
 3569: a0 04                     LDY #$04             ; Set Y = 4
 356b: 20 e3 2d                  JSR sub_2de3         ; Call $2de3 [sub_2de3]
 356e: b0 ec                     BCS loc_355c         ; If (C = 1) Then continue @ $355c [loc_355c]
-3570: ad 5a 19                  LDA TELEPORT_INDEX   ; Set A = TELEPORT_INDEX
+3570: ad 5a 19                  LDA mCell_SPCL_IDX   ; Set A = mCell_SPCL_IDX
 3573: a2 75                     LDX #$75             ; Set X = $75 (117)
 3575: a0 04                     LDY #$04             ; Set Y = 4
 3577: 38                        SEC                  ; Set C = 1
@@ -4581,6 +5186,7 @@
 357d: 8d 79 19                  STA loc_1979         ;     loc_1979 = $ff (255)
 3580: 4c 0d 32                  JMP loc_320d         ; Continue @ $320d [loc_320d]
 
+                ; Probably handle message
 3583: 20 96 35  cont_3583       JSR sub_3596         ; Call $3596 [sub_3596]
 3586: b0 03                     BCS loc_358b         ; If (C = 0)
 3588: 4c 0d 32                  JMP loc_320d         ; Then
@@ -4594,8 +5200,8 @@
 359b: ad 0a 76                  LDA $760a            ;
 359e: 85 12                     STA MSG_TBL_L        ;
 35a0: ad 0b 76                  LDA $760b            ;
-35a3: 85 13                     STA zMAP_DESC_TBL_H  ;
-35a5: ad 5a 19                  LDA TELEPORT_INDEX   ;
+35a3: 85 13                     STA MSG_TBL_H        ;
+35a5: ad 5a 19                  LDA mCell_SPCL_IDX   ;
 35a8: 0a                        ASL                  ;
 35a9: a8                        TAY                  ;
 35aa: b1 12                     LDA (MSG_TBL_L),Y    ;
@@ -4611,7 +5217,7 @@
 35bf: 38        loc_35bf        SEC                  ;
 35c0: 60                        RTS                  ; Return to caller
 
-35c1: ad 5a 19  DO_TELEPORT_PLAYER  LDA TELEPORT_INDEX    ; Load teleport index param into A (0-31)
+35c1: ad 5a 19  DO_TELEPORT_PLAYER  LDA mCell_SPCL_IDX    ; Load teleport index param into A (0-31)
 35c4: 0a                        ASL                       ; Multiply A by 4 to get table offset
 35c5: 0a                        ASL                       ;     (table entries are 4 bytes)
 35c6: aa                        TAX                       ; Store A into X
@@ -4669,7 +5275,7 @@
 3624: 8d 12 19                  STA ZONE_ID          ; Update current Zone ID to #$ff (-1) to trigger update
 3627: 8d 38 19                  STA UNK_BYTE_1938    ;
 362a: 8d 39 19                  STA UNK_BYTE_1939    ;
-362d: 4c 8c 31                  JMP loc_318c         ; Continue @ $318c [loc_318c]
+362d: 4c 8c 31                  JMP cont_318c        ; Continue @ $318c [cont_318c]
 
 3630: 00 00 00 00 00  TLPTMPBUF  .BYTE $00,$00,$00,$00,$00  ; 5 bytes of temporary storage
 
@@ -4774,7 +5380,7 @@
 36c8: a9 01                     LDA #$01             ; Set addr_193a_L/H
 36ca: 8d 3a 19                  STA addr_193a_L      ;     address
 36cd: a9 37                     LDA #$37             ;     to
-36cf: 8d 3b 19                  STA addr_193a_H      ;     $3701 [abc xyz]
+36cf: 8d 3b 19                  STA addr_193a_H      ;     $3701 [zts_EXMN_SPLS]
 36d2: a9 32     loc_36d2        LDA #$32             ; Set addr_1944_L/H
 36d4: 8d 44 19                  STA addr_1944_L      ;     address
 36d7: a9 37                     LDA #$37             ;     to
@@ -4790,7 +5396,7 @@
 36ef: 45 78 61 6d 69 6e 65 20  zts_EXM_ITEMS  .BYTE $45,$78,$61,$6d,$69,$6e,$65,$20  ; Examine
 36f7: 49 6e 76 65 6e 74 6f 72   .BYTE $49,$6e,$76,$65,$6e,$74,$6f,$72  ; Inventor
 36ff: 79 00                     .BYTE $79,$00   ; y.
-3701: 45 78 61 6d 69 6e  dat_3701  .BYTE $45,$78,$61,$6d,$69,$6e  ; Examin
+3701: 45 78 61 6d 69 6e  zts_EXMN_SPLS  .BYTE $45,$78,$61,$6d,$69,$6e  ; Examin
 3707: 65 20 53 70 65 6c 6c 73   .BYTE $65,$20,$53,$70,$65,$6c,$6c,$73  ; e Spells
 370f: 00                        .BYTE $00            ; .
 3710: a6 00 02 a5 45 78 61 6d  str_EXM_ITM_SPL  .BYTE $a6,$00,$02,$a5,$45,$78,$61,$6d  ; ....Exam
@@ -4863,9 +5469,9 @@
 37a6: a9 31                     LDA #$31             ;     Set
 37a8: 8d 09 19                  STA dat_1909         ;         dat_1909 = $31 (49 '1')
 37ab: a9 00                     LDA #$00             ;     Set
-37ad: 8d 0b 19                  STA dat_190b_L       ;         dat_190b_L/dat_190c_H
+37ad: 8d 0b 19                  STA dat_190b_L       ;         dat_190b_L/H
 37b0: a9 76                     LDA #$76             ;         address
-37b2: 8d 0c 19                  STA dat_190c_H       ;         to loc_7600
+37b2: 8d 0c 19                  STA dat_190b_H       ;         to loc_7600
 37b5: 20 ad 2c                  JSR sub_2cad         ;     Call $2cad [sub_2cad]
 37b8: 4c 00 76                  JMP loc_7600         ;     Continue @ $7600 [loc_7600]
                                                      ; End If
@@ -4900,7 +5506,7 @@
 37eb: c9 59                     CMP #$59             ; If (A == $59 (89 'Y'))
 37ed: d0 0d                     BNE loc_37fc         ; Then
 37ef: a9 00                     LDA #$00             ;     Set
-37f1: 8d 2f 02                  STA dat_022f         ;         dat_022f = 0
+37f1: 8d 2f 02                  STA vblk_CRITIC      ;         vblk_CRITIC = 0
 37f4: a9 01                     LDA #$01             ;     Set display mode to 1
 37f6: 20 0d 1a                  JSR SET_DISP_MODE    ;         (normal gameplay)
 37f9: 4c c6 2e                  JMP KERNEL_INIT      ;     Reset game to main menu [KERNEL_INIT]
@@ -4942,7 +5548,7 @@
 3876: 85 16                     STA addr_0016_L      ;     address
 3878: a9 38                     LDA #$38             ;     to
 387a: 85 17                     STA addr_0016_H      ;     $38d0 [str_BLANK_38d0] "" (blank string)
-387c: ad 1e 63                  LDA CHR_UNK_BYTE_631E ; If (CHR_UNK_BYTE_631E != 0) Then
+387c: ad 1e 63                  LDA dat_631e         ; If (dat_631e != 0) Then
 387f: f0 01                     BEQ loc_3882         ;     Return to caller
 3881: 60                        RTS                  ; End If
 3882: a2 0f     loc_3882        LDX #$0f             ; Set X = $0f (16 iterations)
@@ -5119,15 +5725,17 @@
 3c19: 01 02 1a 05 01 00 1c 07   .BYTE $01,$02,$1a,$05,$01,$00,$1c,$07  ; ........
 3c21: 01 02 18 1b 02 03         .BYTE $01,$02,$18,$1b,$02,$03  ; ......
 
+                ; Executes sub_3c2d if A is not equal to dat_1933
                 ;
                 ; Input
                 ;   A        =
                 ;   dat_1933 =
                 ;   dat_1935 =
                 ;
-3c27: cd 33 19  sub_3c27        CMP dat_1933         ; If
-3c2a: f0 01                     BEQ sub_3c2d         ;    (A <> dat_1933)
-3c2c: 60                        RTS                  ;   Then return to caller
+3c27: cd 33 19  sub_3c27        CMP dat_1933         ; If (A <> dat_1933)
+3c2a: f0 01                     BEQ sub_3c2d         ; Then
+3c2c: 60                        RTS                  ;     Then return to caller
+                                                     ; End If
                 ;
                 ; Input
                 ;   dat_1933 =
@@ -5162,7 +5770,8 @@
                 ;       Specifies offset to store current addr_0016_L/addr_0016_H to.
 3c5c: a9 ff     sub_3c5c        LDA #$ff             ; Set
 3c5e: 8d 35 19                  STA dat_1935         ;     dat_1935 = $ff (255 / -1)
-3c61: 8e 33 19  loc_3c61        STX dat_1933         ; Set dat_1933 = X
+                ; Same as sub_3c5c, except dat_1935 is not updated
+3c61: 8e 33 19  sub_3c61        STX dat_1933         ; Set dat_1933 = X
 3c64: a5 16                     LDA addr_0016_L      ; Set
 3c66: 9d 13 19                  STA tbl_1913_L,X     ;     tbl_1913_L[X] = addr_0016_L
 3c69: a5 17                     LDA addr_0016_H      ; Set
@@ -5170,11 +5779,11 @@
 3c6e: 4c 2d 3c                  JMP sub_3c2d         ; Continue @ $3c2d [sub_3c2d]
 
                 ; Input
-                ;   dat_1933   -
-                ;   dat_1934   - Limit for dat_1933
+                ;   dat_1933   - Current status page displayed
+                ;   dat_1934   - Number of status pages
                 ;   tbl_1923_H -
                 ;
-3c71: ee 33 19  sub_3c71        INC dat_1933         ; Loop
+3c71: ee 33 19  act_NXT_STAT    INC dat_1933         ; Loop
                                                      ;     Add 1 to dat_1933
 3c74: ad 33 19                  LDA dat_1933         ;     If
 3c77: cd 34 19                  CMP dat_1934         ;        (dat_1933 >= dat_1934)
@@ -5183,43 +5792,53 @@
 3c7e: 8d 33 19                  STA dat_1933         ;     End If
 3c81: ae 33 19  loc_3c81        LDX dat_1933         ; Repeat
 3c84: bd 23 19                  LDA tbl_1923_H,X     ;    while
-3c87: f0 e8                     BEQ sub_3c71         ;       (tbl_1923_H[dat_1933] == 0)
+3c87: f0 e8                     BEQ act_NXT_STAT     ;       (tbl_1923_H[dat_1933] == 0)
 3c89: 4c 2d 3c                  JMP sub_3c2d         ; Continue @ $3c2d [sub_3c2d]
 
                 ; (,) Previous status page action
                 ;
-3c8c: ce 33 19  act_PRV_STAT    DEC dat_1933         ;
-3c8f: 10 09                     BPL loc_3c9a         ;
-3c91: ad 34 19                  LDA dat_1934         ;
-3c94: 38                        SEC                  ;
-3c95: e9 01                     SBC #$01             ;
-3c97: 8d 33 19                  STA dat_1933         ;
-3c9a: ae 33 19  loc_3c9a        LDX dat_1933         ;
-3c9d: bd 23 19                  LDA tbl_1923_H,X     ;
-3ca0: f0 ea                     BEQ act_PRV_STAT     ;
+                ; Input
+                ;   dat_1933   - Current status page
+                ;   dat_1934   - Number of status pages
+                ;   tbl_1923_H - Lookup table of status page addresses???
+                ;
+3c8c: ce 33 19  act_PRV_STAT    DEC dat_1933         ; Loop
+                                                     ;     Subtract 1 from dat_1933
+3c8f: 10 09                     BPL loc_3c9a         ;     If (dat_1933 < 0) Then
+3c91: ad 34 19                  LDA dat_1934         ;         Set
+3c94: 38                        SEC                  ;             dat_1933
+3c95: e9 01                     SBC #$01             ;                =
+3c97: 8d 33 19                  STA dat_1933         ;                  dat_1934 - 1
+                                                     ;     End If
+3c9a: ae 33 19  loc_3c9a        LDX dat_1933         ; Repeat
+3c9d: bd 23 19                  LDA tbl_1923_H,X     ;    while
+3ca0: f0 ea                     BEQ act_PRV_STAT     ;       (tbl_1923_H[dat_1933] == 0)
 3ca2: 4c 2d 3c                  JMP sub_3c2d         ; Continue @ $3c2d [sub_3c2d]
 
-3ca5: ae 33 19  sub_3ca5        LDX dat_1933         ;
-3ca8: 8e 36 19                  STX loc_1936         ;
-3cab: ae 34 19                  LDX dat_1934         ;
-3cae: 8e 33 19                  STX dat_1933         ;
-3cb1: a5 16                     LDA addr_0016_L      ;
-3cb3: 9d 13 19                  STA tbl_1913_L,X     ;
-3cb6: a5 17                     LDA addr_0016_H      ;
-3cb8: 9d 23 19                  STA tbl_1923_H,X     ;
-3cbb: e8                        INX                  ;
-3cbc: 8e 34 19                  STX dat_1934         ;
-3cbf: 4c 2d 3c                  JMP sub_3c2d         ;
-3cc2: ce 34 19  sub_3cc2        DEC dat_1934         ;
-3cc5: ad 33 19                  LDA dat_1933         ;
-3cc8: cd 34 19                  CMP dat_1934         ;
-3ccb: 90 10                     BCC loc_3cdd         ;
-3ccd: ad 36 19                  LDA loc_1936         ;
-3cd0: cd 34 19                  CMP dat_1934         ;
-3cd3: 90 02                     BCC loc_3cd7         ;
-3cd5: a9 00                     LDA #$00             ;
-3cd7: 8d 33 19  loc_3cd7        STA dat_1933         ;
-3cda: 4c 2d 3c                  JMP sub_3c2d         ;
+3ca5: ae 33 19  sub_3ca5        LDX dat_1933         ; Set
+3ca8: 8e 36 19                  STX loc_1936         ;     loc_1936 = dat_1933
+3cab: ae 34 19                  LDX dat_1934         ; Set
+3cae: 8e 33 19                  STX dat_1933         ;     dat_1933 = dat_1934
+3cb1: a5 16                     LDA addr_0016_L      ; Set
+3cb3: 9d 13 19                  STA tbl_1913_L,X     ;     tbl_1913_L[dat_1934] = addr_0016_L
+3cb6: a5 17                     LDA addr_0016_H      ; Set
+3cb8: 9d 23 19                  STA tbl_1923_H,X     ;     tbl_1923_H[dat_1934] = addr_0016_H
+3cbb: e8                        INX                  ; Add 1 to X
+3cbc: 8e 34 19                  STX dat_1934         ; Set dat_1934 = X
+3cbf: 4c 2d 3c                  JMP sub_3c2d         ; Continue @ $3c2d [sub_3c2d]
+
+3cc2: ce 34 19  sub_3cc2        DEC dat_1934         ; Subtract 1 from dat_1934
+3cc5: ad 33 19                  LDA dat_1933         ; If
+3cc8: cd 34 19                  CMP dat_1934         ;    (dat_1933 >= dat_1934)
+3ccb: 90 10                     BCC loc_3cdd         ; Then
+3ccd: ad 36 19                  LDA loc_1936         ;     If
+3cd0: cd 34 19                  CMP dat_1934         ;        (loc_1936 >= dat_1934)
+3cd3: 90 02                     BCC loc_3cd7         ;     Then
+3cd5: a9 00                     LDA #$00             ;         Set A = 0
+                                                     ;     End If
+3cd7: 8d 33 19  loc_3cd7        STA dat_1933         ;     Set dat_1933 = A
+3cda: 4c 2d 3c                  JMP sub_3c2d         ;     Continue @ $3c2d [sub_3c2d]
+                                                     ; End If
 3cdd: 60        loc_3cdd        RTS                  ; Return to caller
 
 3cde: a6 00 00 46 6f 6f 64 20  str_FD_TRCH_FLSK  .BYTE $a6,$00,$00,$46,$6f,$6f,$64,$20  ; ...Food
@@ -5324,13 +5943,13 @@
 3f66: ae 7d 40  loc_3f66        LDX dat_407d         ;
 3f69: bd 9c 63                  LDA $639c,X          ;
 3f6c: 30 19                     BMI loc_3f87         ;
-3f6e: 20 74 4b                  JSR sub_4b74         ;
+3f6e: 20 74 4b                  JSR sub_4b74         ; Call $4b74 [sub_4b74]
 3f71: f0 14                     BEQ loc_3f87         ;
 3f73: 18        loc_3f73        CLC                  ;
 3f74: ad 7d 40                  LDA dat_407d         ;
 3f77: 0a                        ASL                  ;
 3f78: a8                        TAY                  ;
-3f79: a5 41     loc_3f79        LDA SOUNDR           ;
+3f79: a5 41     loc_3f79        LDA addr_0041_L      ;
 3f7b: 69 06                     ADC #$06             ;
 3f7d: 99 7f 40                  STA dat_407f,Y       ;
 3f80: a9 00                     LDA #$00             ;
@@ -5372,23 +5991,26 @@
 3fc8: d0 df                     BNE loc_3fa9         ;
 3fca: a9 03                     LDA #$03             ;
 3fcc: 8d 7d 40                  STA dat_407d         ;
-3fcf: ae 7d 40  loc_3fcf        LDX dat_407d         ;
-3fd2: bd a2 63                  LDA $63a2,X          ;
-3fd5: 30 19                     BMI loc_3ff0         ;
-3fd7: 20 74 4b                  JSR sub_4b74         ;
-3fda: f0 14                     BEQ loc_3ff0         ;
-3fdc: ad 7d 40                  LDA dat_407d         ;
-3fdf: 0a                        ASL                  ;
-3fe0: aa                        TAX                  ;
-3fe1: 18                        CLC                  ;
-3fe2: a5 41                     LDA SOUNDR           ;
-3fe4: 69 06                     ADC #$06             ;
-3fe6: 9d 7f 40                  STA dat_407f,X       ;
-3fe9: a5 42                     LDA addr_0041_H      ;
-3feb: 69 00                     ADC #$00             ;
-3fed: 9d 80 40                  STA dat_4080,X       ;
-3ff0: ce 7d 40  loc_3ff0        DEC dat_407d         ;
-3ff3: 10 da                     BPL loc_3fcf         ;
+3fcf: ae 7d 40  loc_3fcf        LDX dat_407d         ; Loop
+                                                     ;     Set X = dat_407d
+3fd2: bd a2 63                  LDA $63a2,X          ;     If ($63a2[X] >= 0)
+3fd5: 30 19                     BMI loc_3ff0         ;     Then
+3fd7: 20 74 4b                  JSR sub_4b74         ;         Call $4b74 [sub_4b74]
+3fda: f0 14                     BEQ loc_3ff0         ;         If (addr_0041_H != 0) Then
+3fdc: ad 7d 40                  LDA dat_407d         ;             Set X
+3fdf: 0a                        ASL                  ;                   =
+3fe0: aa                        TAX                  ;                     dat_407d * 2
+3fe1: 18                        CLC                  ;             Set
+3fe2: a5 41                     LDA addr_0041_L      ;                 dat_407f[X]
+3fe4: 69 06                     ADC #$06             ;                    =
+3fe6: 9d 7f 40                  STA dat_407f,X       ;                      addr_0041_L + 6, C = 1 on overflow otherwise 0
+3fe9: a5 42                     LDA addr_0041_H      ;             Set
+3feb: 69 00                     ADC #$00             ;                 dat_4080[X]
+3fed: 9d 80 40                  STA dat_4080,X       ;                    = addr_0041_H + C
+                                                     ;         End If
+                                                     ;     End If
+3ff0: ce 7d 40  loc_3ff0        DEC dat_407d         ;     Subtract 1 from dat_407d
+3ff3: 10 da                     BPL loc_3fcf         ; Repeat while (loc_3fcf >= 0)
 3ff5: 60                        RTS                  ; Return to caller
 
                 ; TODO: How is this code invoked?
@@ -5407,9 +6029,9 @@
 4011: a9 00                     LDA #$00             ;
 4013: 85 3d                     STA dat_003d_L       ;
 4015: a9 65                     LDA #$65             ;
-4017: 85 3e                     STA FTYPE            ;
+4017: 85 3e                     STA dat_003d_H       ;
 4019: a9 00                     LDA #$00             ;
-401b: 85 49                     STA ERRNO            ;
+401b: 85 49                     STA dat_0049         ;
 401d: 8d 7d 40                  STA dat_407d         ;
 4020: a0 00     loc_4020        LDY #$00             ;
 4022: b1 3d                     LDA (dat_003d_L),Y   ;
@@ -5424,7 +6046,7 @@
 4034: a5 3d                     LDA dat_003d_L       ;
 4036: 69 03                     ADC #$03             ;
 4038: 9d 7f 40                  STA dat_407f,X       ;
-403b: a5 3e                     LDA FTYPE            ;
+403b: a5 3e                     LDA dat_003d_H       ;
 403d: 69 00                     ADC #$00             ;
 403f: 9d 80 40                  STA dat_4080,X       ;
 4042: ee 7d 40                  INC dat_407d         ;
@@ -5436,9 +6058,9 @@
 404f: 69 10                     ADC #$10             ;
 4051: 85 3d                     STA dat_003d_L       ;
 4053: 90 02                     BCC loc_4057         ;
-4055: e6 3e                     INC FTYPE            ;
-4057: e6 49     loc_4057        INC ERRNO            ;
-4059: a5 49                     LDA ERRNO            ;
+4055: e6 3e                     INC dat_003d_H       ;
+4057: e6 49     loc_4057        INC dat_0049         ;
+4059: a5 49                     LDA dat_0049         ;
 405b: c9 40                     CMP #$40             ;
 405d: 90 c1                     BCC loc_4020         ;
 405f: 60        loc_405f        RTS                  ; Return to caller
@@ -5457,159 +6079,179 @@
 4083: 00        dat_4083        .BYTE $00            ; .
 4084: 00 00 00 00 00 00 00  unk_4084  .BYTE $00,$00,$00,$00,$00,$00,$00  ; .......
 
-408b: 20 5f 4a  sub_408b        JSR loc_4a5f         ;
-408e: a6 50                     LDX dat_023e         ;
-4090: f0 03                     BEQ loc_4095         ;
-4092: 4c cd 40                  JMP loc_40cd         ;
-4095: ca        loc_4095        DEX                  ;
-4096: a0 00                     LDY #$00             ;
-4098: ad 62 19                  LDA loc_1962         ;
-409b: 86 50                     STX dat_023e         ;
-409d: 8c 62 19                  STY loc_1962         ;
-40a0: 8d 3c 41                  STA dat_413c         ;
-40a3: 20 fc 41                  JSR sub_41fc         ;
-40a6: 20 f2 47  loc_40a6        JSR sub_47f2         ;
-40a9: 20 76 41                  JSR sub_4176         ;
-40ac: 20 e7 42                  JSR sub_42e7         ;
-40af: 20 77 43                  JSR sub_4377         ;
-40b2: 20 c6 43                  JSR sub_43c6         ;
-40b5: ad 8b 63                  LDA $638b            ;
-40b8: f0 05                     BEQ loc_40bf         ;
-40ba: ce 56 19                  DEC UNK_BYTE_COUNTER ;
-40bd: a9 ff                     LDA #$ff             ;
-40bf: 8d 57 19  loc_40bf        STA loc_1957         ;
-40c2: 20 3d 41                  JSR loc_413d         ;
-40c5: ce 3c 41                  DEC dat_413c         ;
-40c8: 30 03                     BMI loc_40cd         ;
-40ca: 4c a6 40                  JMP loc_40a6         ;
-40cd: ad 5f 19  loc_40cd        LDA UNK_BYTE_195F    ;
-40d0: f0 19                     BEQ loc_40eb         ;
-40d2: 20 e7 42                  JSR sub_42e7         ;
-40d5: 20 c6 43                  JSR sub_43c6         ;
-40d8: a9 69                     LDA #$69             ; Set addr_0016_L/H
-40da: 85 16                     STA addr_0016_L      ;     address
-40dc: a9 39                     LDA #$39             ;     to
-40de: 85 17                     STA addr_0016_H      ;     $3969 [str_3969] Character stats template ""
-40e0: 20 84 1c                  JSR sub_1c84         ;
-40e3: 20 2d 3c                  JSR sub_3c2d         ;
-40e6: a9 00                     LDA #$00             ;
-40e8: 8d 5f 19                  STA UNK_BYTE_195F    ;
-40eb: ad 45 63  loc_40eb        LDA CHR_HP_CURRENT_HI  ;
-40ee: 0d 46 63                  ORA CHR_HP_CURRENT_LO  ;
-40f1: d0 48                     BNE loc_413b         ;
-40f3: a9 ff                     LDA #$ff             ;
-40f5: a2 03                     LDX #$03             ;
-40f7: 9d 45 63  loc_40f7        STA CHR_HP_CURRENT_HI,X  ;
-40fa: ca                        DEX                  ;
-40fb: 10 fa                     BPL loc_40f7         ;
-40fd: a9 00                     LDA #$00             ; Set
-40ff: 8d 2f 02                  STA dat_022f         ;     dat_022f = 0
-4102: a2 03                     LDX #$03             ; Set
-4104: 9d 00 d0  loc_4104        STA HPOSP0,X         ;     HPOSP0+X = 3
-4107: ca                        DEX                  ;
-4108: 10 fa                     BPL loc_4104         ;
-410a: a9 01                     LDA #$01             ; Set display mode to 1
-410c: 20 0d 1a                  JSR SET_DISP_MODE    ;     (normal gameplay)
-410f: a9 69                     LDA #$69             ; Set addr_0016_L/H
-4111: 85 16                     STA addr_0016_L      ;     address
-4113: a9 39                     LDA #$39             ;     to
-4115: 85 17                     STA addr_0016_H      ;     $3969 [str_3969] Character stats template
-4117: 20 84 1c                  JSR sub_1c84         ;
-411a: c6 32                     DEC flg_PAUSED       ;
-411c: c6 0f                     DEC dat_000f         ;
-411e: a9 f0                     LDA #$f0             ;
-4120: 20 66 2c  loc_4120        JSR WAIT_FOR_VBLK_B  ;
-4123: ca                        DEX                  ;
-4124: d0 fa                     BNE loc_4120         ;
-4126: a9 35                     LDA #$35             ;
-4128: 8d 09 19                  STA dat_1909         ;
-412b: a9 00                     LDA #$00             ; Set
-412d: 8d 0b 19                  STA dat_190b_L       ;     ??
-4130: a9 76                     LDA #$76             ;     address
-4132: 8d 0c 19                  STA dat_190c_H       ;     to loc_7600
-4135: 20 ad 2c                  JSR sub_2cad         ;
-4138: 4c 00 76                  JMP loc_7600            ;
-
-413b: 60        loc_413b        RTS                  ;
+408b: 20 5f 4a  sub_408b        JSR sub_4a5f         ; Call $4a5f [sub_4a5f]
+408e: a6 50                     LDX dat_023e         ; If (dat_023e != 0)
+4090: f0 03                     BEQ loc_4095         ; Then
+4092: 4c cd 40                  JMP loc_40cd         ;     Continue @ $40cd [loc_40cd]
+                                                     ; End If
+4095: ca        loc_4095        DEX                  ; Subtract 1 from X
+4096: a0 00                     LDY #$00             ; Set Y = 0
+4098: ad 62 19                  LDA dat_1962         ; Set A = dat_1962
+409b: 86 50                     STX dat_023e         ; Set dat_023e = X
+409d: 8c 62 19                  STY dat_1962         ; Set dat_1962 = Y
+40a0: 8d 3c 41                  STA dat_413c         ; Set dat_413c = A
+40a3: 20 fc 41                  JSR sub_41fc         ; Call $41fc [sub_41fc]
+40a6: 20 f2 47  loc_40a6        JSR sub_47f2         ; Loop
+40a9: 20 76 41                  JSR sub_4176         ;     Call $4176 [sub_4176]
+40ac: 20 e7 42                  JSR sub_42e7         ;     Call $42e7 [sub_42e7]
+40af: 20 77 43                  JSR sub_4377         ;     Call $4377 [sub_4377]
+40b2: 20 c6 43                  JSR sub_43c6         ;     Call $43c6 [sub_43c6]
+40b5: ad 8b 63                  LDA $638b            ;     Set A = $638b [TODO: label?]
+40b8: f0 05                     BEQ loc_40bf         ;     If (A != 0) Then
+40ba: ce 56 19                  DEC UNK_BYTE_COUNTER ;         Subtract 1 from UNK_BYTE_COUNTER
+40bd: a9 ff                     LDA #$ff             ;         Set A = $ff
+                                                     ;     End If
+40bf: 8d 57 19  loc_40bf        STA dat_1957         ;     Set dat_1957 = A
+40c2: 20 3d 41                  JSR sub_413d         ;     Call $413d [sub_413d]
+40c5: ce 3c 41                  DEC dat_413c         ;     Subtract 1 from dat_413c
+40c8: 30 03                     BMI loc_40cd         ; Repeat
+40ca: 4c a6 40                  JMP loc_40a6         ;   while (dat_413c >= 0)
+40cd: ad 5f 19  loc_40cd        LDA UNK_BYTE_195F    ; If (UNK_BYTE_195F != 0)
+40d0: f0 19                     BEQ loc_40eb         ; Then
+40d2: 20 e7 42                  JSR sub_42e7         ;     Call $42e7 [sub_42e7]
+40d5: 20 c6 43                  JSR sub_43c6         ;     Call $43c6 [sub_43c6]
+40d8: a9 69                     LDA #$69             ;     Set addr_0016_L/H
+40da: 85 16                     STA addr_0016_L      ;         address
+40dc: a9 39                     LDA #$39             ;         to
+40de: 85 17                     STA addr_0016_H      ;         $3969 [str_3969] Character stats template ""
+40e0: 20 84 1c                  JSR sub_1c84         ;     Call $1c84 [sub_1c84]
+40e3: 20 2d 3c                  JSR sub_3c2d         ;     Call $3c2d [sub_3c2d]
+40e6: a9 00                     LDA #$00             ;     Set
+40e8: 8d 5f 19                  STA UNK_BYTE_195F    ;         UNK_BYTE_195F = 0
+                                                     ; End If
+40eb: ad 45 63  loc_40eb        LDA CHR_HP_CURRENT_HI ; If
+40ee: 0d 46 63                  ORA CHR_HP_CURRENT_LO ;    (CHR_HP_CURRENT_LO | CHR_HP_CURRENT_HI == 0)
+40f1: d0 48                     BNE loc_413b         ; Then
+40f3: a9 ff                     LDA #$ff             ;     Set A = $ff
+40f5: a2 03                     LDX #$03             ;     Set X = 3   (4 iterations)
+40f7: 9d 45 63  loc_40f7        STA CHR_HP_CURRENT_HI,X ;   Loop
+                                                     ;         Set CHR_HP_CURRENT_HI[X] = A
+40fa: ca                        DEX                  ;         Subtract 1 from X
+40fb: 10 fa                     BPL loc_40f7         ;     Repeat while (X >= 0)
+40fd: a9 00                     LDA #$00             ;     Set A = 0
+40ff: 8d 2f 02                  STA vblk_CRITIC      ;     Set vblk_CRITIC = 0
+4102: a2 03                     LDX #$03             ;     Set X = 3   (4 iterations)
+4104: 9d 00 d0  loc_4104        STA HPOSP0,X         ;     Loop
+                                                     ;         Set HPOSP0[X] = 0
+4107: ca                        DEX                  ;         Subtract 1 from X
+4108: 10 fa                     BPL loc_4104         ;     Repeat while (X >= 0)
+410a: a9 01                     LDA #$01             ;     Set display mode to 1
+410c: 20 0d 1a                  JSR SET_DISP_MODE    ;         (normal gameplay)
+410f: a9 69                     LDA #$69             ;     Set addr_0016_L/H
+4111: 85 16                     STA addr_0016_L      ;         address
+4113: a9 39                     LDA #$39             ;         to
+4115: 85 17                     STA addr_0016_H      ;         $3969 [str_3969] Character stats template
+4117: 20 84 1c                  JSR sub_1c84         ;     Call $1c84 [sub_1c84]
+411a: c6 32                     DEC flg_PAUSED       ;     Subtract 1 from flg_PAUSED
+411c: c6 0f                     DEC dat_000f         ;     Subtract 1 from dat_000f
+411e: a9 f0                     LDA #$f0             ;     Set A = $f0 (240)
+4120: 20 66 2c  loc_4120        JSR WAIT_FOR_VBLK_B  ;     Loop
+                                                     ;         Call $2c66 [WAIT_FOR_VBLK_B]   (X not modified)
+4123: ca                        DEX                  ;         Subtract 1 from X
+4124: d0 fa                     BNE loc_4120         ;     Repeat while (X != 0)
+4126: a9 35                     LDA #$35             ;     Set
+4128: 8d 09 19                  STA dat_1909         ;         dat_1909 = $35 (53 '5')
+412b: a9 00                     LDA #$00             ;     Set
+412d: 8d 0b 19                  STA dat_190b_L       ;         dat_190b_L/H
+4130: a9 76                     LDA #$76             ;         address
+4132: 8d 0c 19                  STA dat_190b_H       ;         to loc_7600
+4135: 20 ad 2c                  JSR sub_2cad         ;     Call 2cad [sub_2cad]
+4138: 4c 00 76                  JMP loc_7600         ;     Continue @ $7600 [loc_7600]
+                                                     ; End If
+413b: 60        loc_413b        RTS                  ; Return to caller
 
 413c: 00        dat_413c        .BYTE $00            ;
 
-413d: ad 00 76  loc_413d        LDA loc_7600         ; If ($7600 [loc_7600] == 0)
-4140: d0 2f                     BNE loc_4171         ;    OR (flg_PAUSED < 0)
-4142: 24 32                     BIT flg_PAUSED       ;   Then
-4144: 30 2b                     BMI loc_4171         ;     Return to caller
-4146: ad 82 63                  LDA $6382            ;
-4149: ae 73 19                  LDX dat_1973         ;
-414c: 38                        SEC                  ;
-414d: e9 80                     SBC #$80             ;
-414f: 18                        CLC                  ;
-4150: 30 09                     BMI loc_415b         ;
-4152: 7d 72 41                  ADC tbl_4172,X       ;
-4155: 90 0b                     BCC loc_4162         ;
-4157: a9 ff                     LDA #$ff             ;
-4159: 30 07                     BMI loc_4162         ;
-415b: 7d 72 41  loc_415b        ADC tbl_4172,X       ;
-415e: b0 02                     BCS loc_4162         ;
-4160: a9 00                     LDA #$00             ; Self-modifying:
-4162: 8d 69 41  loc_4162        STA smc_4168+1       ;     Set the CMP value below to $00
-4165: ad 0a d2                  LDA RANDOM           ;
+413d: ad 00 76  sub_413d        LDA loc_7600         ; If ($7600 [loc_7600] != 0)
+4140: d0 2f                     BNE loc_4171         ;    Or (flg_PAUSED < 0)
+4142: 24 32                     BIT flg_PAUSED       ; Then
+4144: 30 2b                     BMI loc_4171         ;     Continue @ $4171 [loc_4171] (Return to caller)
+                                                     ; End If
+4146: ad 82 63                  LDA $6382            ; Set A = $6382 [TODO: label?]
+4149: ae 73 19                  LDX dat_1973         ; Set X = dat_1973
+414c: 38                        SEC                  ; Set
+414d: e9 80                     SBC #$80             ;     A -= $80
+414f: 18                        CLC                  ; Set C = 0
+4150: 30 09                     BMI loc_415b         ; If (A >= 0) Then
+4152: 7d 72 41                  ADC tbl_4172,X       ;     Set A += tbl_4172[X]  (C = 1 on overflow else 0)
+4155: 90 0b                     BCC loc_4162         ;     If (C == 1) Then      (overflow)
+4157: a9 ff                     LDA #$ff             ;         Set A = $ff
+                                                     ;     End If
+4159: 30 07                     BMI loc_4162         ; Else
+415b: 7d 72 41  loc_415b        ADC tbl_4172,X       ;     Set A += tbl_4172[X]  (C = 1 on overflow else 0)
+415e: b0 02                     BCS loc_4162         ;     If (C == 0) Then      (no overflow)
+4160: a9 00                     LDA #$00             ;         Set A = 0
+                                                     ;     End If
+                                                     ; End If
+4162: 8d 69 41  loc_4162        STA smc_4168+1       ; Self-modifying: Set the CMP value below to A
+4165: ad 0a d2                  LDA RANDOM           ; Set A = random byte
 4168: c9 ff     smc_4168        CMP #$ff             ; Note: The comparison value here is changed to $00 above
-416a: f0 02                     BEQ loc_416e         ;
-416c: b0 03                     BCS loc_4171         ;
-416e: ce 5d 19  loc_416e        DEC UNK_BYTE_195D    ;
+416a: f0 02                     BEQ loc_416e         ; If (Z == 0)      (A is not equal to the test value)
+416c: b0 03                     BCS loc_4171         ;    And (C == 0)  (A is less than the test value)
+                                                     ; Then
+416e: ce 5d 19  loc_416e        DEC dat_195d         ;     Subtract 1 from dat_195d
+                                                     ; End If
 4171: 60        loc_4171        RTS                  ; Return to caller
 
-4172: 0c 10 18 20  tbl_4172     .BYTE $0c,$10,$18,$20  ; ...
+4172: 0c 10 18 20  tbl_4172     .BYTE $0c,$10,$18,$20  ;
 
-4176: ce 90 45  sub_4176        DEC dat_4590         ;
-4179: d0 0c                     BNE loc_4198         ;
-417b: a9 21                     LDA #$21             ;
-417d: 8d 90 45                  STA dat_4590         ;
-4180: a2 99                     LDX #$99             ;
-4182: a9 01                     LDA #$01             ;
-4184: 20 69 2e                  JSR sub_2e69         ;
-4187: ce 91 45                  DEC dat_4591         ;
-418a: d0 0c                     BNE loc_4198         ;
-418c: a9 16                     LDA #$16             ;
-418e: 8d 91 45                  STA dat_4591         ;
-4191: a2 9a                     LDX #$9a             ;
-4193: a9 01                     LDA #$01             ;
-4195: 20 69 2e                  JSR sub_2e69         ;
-4198: ce 92 45  loc_4198        DEC dat_4592         ;
-419b: d0 11                     BNE loc_41ae         ;
-419d: a9 0e                     LDA #$0e             ;
-419f: 8d 92 45                  STA dat_4592         ;
-41a2: 2c 72 19                  BIT dat_1972         ;
-41a5: 30 07                     BMI loc_41ae         ;
-41a7: a2 9b                     LDX #$9b             ;
-41a9: a9 01                     LDA #$01             ;
-41ab: 20 69 2e                  JSR sub_2e69         ;
-41ae: ce 93 45  loc_41ae        DEC dat_4593         ;
-41b1: d0 2b                     BNE loc_41de         ;
-41b3: a9 01                     LDA #$01             ;
-41b5: 8d 93 45                  STA dat_4593         ;
-41b8: ad 96 63                  LDA $6396            ;
-41bb: f0 0d                     BEQ loc_41ca         ;
-41bd: ce 96 63                  DEC $6396            ;
-41c0: a2 97                     LDX #$97             ;
-41c2: a9 01                     LDA #$01             ;
-41c4: 20 43 2e                  JSR loc_2e43         ;
-41c7: 4c de 41                  JMP loc_41de         ;
-41ca: ad d3 41  loc_41ca        LDA dat_41d3         ;
-41cd: 49 ff                     EOR #$ff             ;
-41cf: 8d d3 41                  STA dat_41d3         ;
-41d2: a9 ff                     LDA #$ff             ;
-41d4: 30 08                     BMI loc_41de         ;
-41d6: ad 97 63                  LDA CHR_DRUNK        ;
-41d9: f0 03                     BEQ loc_41de         ;
-41db: ce 97 63                  DEC CHR_DRUNK        ;
-41de: ce 94 45  loc_41de        DEC dat_4594         ;
-41e1: d0 0c                     BNE loc_41ef         ;
-41e3: a9 02                     LDA #$02             ;
-41e5: 8d 94 45                  STA dat_4594         ;
-41e8: a2 98                     LDX #$98             ;
-41ea: a9 01                     LDA #$01             ;
-41ec: 20 69 2e                  JSR sub_2e69         ;
+4176: ce 90 45  sub_4176        DEC dat_4590         ; Subtract 1 from dat_4590
+4179: d0 0c                     BNE loc_4198         ; If (loc_4198 >= 0) Then
+417b: a9 21                     LDA #$21             ;     Set
+417d: 8d 90 45                  STA dat_4590         ;         dat_4590 = $21 (33 '3')
+4180: a2 99                     LDX #$99             ;     Set X = $99
+4182: a9 01                     LDA #$01             ;     Set A = 1
+4184: 20 69 2e                  JSR sub_2e69         ;     Call $2e69 [sub_2e69]
+4187: ce 91 45                  DEC dat_4591         ;     Subtract 1 from dat_4591
+418a: d0 0c                     BNE loc_4198         ;     If (dat_4591 == 0) Then
+418c: a9 16                     LDA #$16             ;         Set
+418e: 8d 91 45                  STA dat_4591         ;             dat_4591 = $16
+4191: a2 9a                     LDX #$9a             ;         Set X = $9a
+4193: a9 01                     LDA #$01             ;         Set A = 1
+4195: 20 69 2e                  JSR sub_2e69         ;         Call $2e69 [sub_2e69]
+                                                     ;     End If
+                                                     ; End If
+4198: ce 92 45  loc_4198        DEC dat_4592         ; Subtract 1 from dat_4592
+419b: d0 11                     BNE loc_41ae         ; If (dat_4592 == 0) Then
+419d: a9 0e                     LDA #$0e             ;     Set
+419f: 8d 92 45                  STA dat_4592         ;         dat_4592 = $0e (14)
+41a2: 2c 72 19                  BIT dat_1972         ;     If (dat_1972 < 0)
+41a5: 30 07                     BMI loc_41ae         ;     Then
+41a7: a2 9b                     LDX #$9b             ;         Set X = $9b (155)
+41a9: a9 01                     LDA #$01             ;         Set A = 1
+41ab: 20 69 2e                  JSR sub_2e69         ;         Call $2e69 [sub_2e69]
+                                                     ;     End If
+                                                     ; End If
+41ae: ce 93 45  loc_41ae        DEC dat_4593         ; Subtract 1 from dat_4593
+41b1: d0 2b                     BNE loc_41de         ; If (dat_4593 == 0) Then
+41b3: a9 01                     LDA #$01             ;     Set
+41b5: 8d 93 45                  STA dat_4593         ;         dat_4593 = 1
+41b8: ad 96 63                  LDA $6396            ;     If ($6396 [TODO: label??] != 0)
+41bb: f0 0d                     BEQ loc_41ca         ;     Then
+41bd: ce 96 63                  DEC $6396            ;         Subtract 1 from $6396
+41c0: a2 97                     LDX #$97             ;         Set X = $97
+41c2: a9 01                     LDA #$01             ;         Set A = 1
+41c4: 20 43 2e                  JSR loc_2e43         ;         Call $2e43 [loc_2e43]
+41c7: 4c de 41                  JMP loc_41de         ;     Else
+41ca: ad d3 41  loc_41ca        LDA dat_41d3         ;         Set dat_41d3
+41cd: 49 ff                     EOR #$ff             ;                =
+41cf: 8d d3 41                  STA dat_41d3         ;                  dat_41d3 xor $ff
+41d2: a9 ff                     LDA #$ff             ;         Set A = $ff
+41d4: 30 08                     BMI loc_41de         ;         If (A >= 0)   (Note: always FALSE!)
+41d6: ad 97 63                  LDA CHR_DRUNK        ;            And (CHR_DRUNK != 0)
+41d9: f0 03                     BEQ loc_41de         ;         Then
+41db: ce 97 63                  DEC CHR_DRUNK        ;             Subtract 1 from CHR_DRUNK
+                                                     ;         End If
+                                                     ;     End If
+                                                     ; End If
+41de: ce 94 45  loc_41de        DEC dat_4594         ; Subtract 1 from dat_4594
+41e1: d0 0c                     BNE loc_41ef         ; If (dat_4594 == 0) Then
+41e3: a9 02                     LDA #$02             ;     Set
+41e5: 8d 94 45                  STA dat_4594         ;         dat_4594 = 2
+41e8: a2 98                     LDX #$98             ;     Set X = $98
+41ea: a9 01                     LDA #$01             ;     Set A = 1
+41ec: 20 69 2e                  JSR sub_2e69         ;     Call $2e69 [sub_2e69]
+                                                     ; End If
 41ef: 60        loc_41ef        RTS                  ; Return to caller
 
 41f0: 04 04 04 03 03  tbl_41f0  .BYTE $04,$04,$04,$03,$03  ; .....
@@ -5628,8 +6270,8 @@
 4207: 8d 76 19                  STA dat_1976         ; Set dat_1976 = 0
 420a: 8d 5e 19                  STA dat_195e         ; Set dat_195e = 0
 420d: 8d 94 63                  STA CHR_BURDEN       ; Set CHR_BURDEN = 0
-4210: 8d e5 42                  STA dat_42e5         ; Set dat_42e5 = 0
-4213: 8d e6 42                  STA dat_42e6         ; Set dat_42e6 = 0
+4210: 8d e5 42                  STA dat_42e5_L       ; Set dat_42e5_L = 0
+4213: 8d e6 42                  STA dat_42e5_H       ; Set dat_42e5_H = 0
 4216: a9 03                     LDA #$03             ; Set
 4218: 85 5c                     STA dat_005c         ;     dat_005c = 3
 421a: a6 5c     loc_421a        LDX dat_005c         ; Loop
@@ -5642,103 +6284,109 @@
 4229: a0 00                     LDY #$00             ;         Set Y = 0
 422b: ad 76 19                  LDA dat_1976         ;         Set dat_1976
 422e: 71 43                     ADC (addr_0043_L),Y  ;               =
-4230: 8d 76 19                  STA dat_1976         ;                 dat_1976 + (*addr_0043_L)[Y] + C   (TODO: value of C?)
+4230: 8d 76 19                  STA dat_1976         ;                 dat_1976 + (*addr_0043_L)[0] + C   (TODO: value of C?)
 4233: c8                        INY                  ;         Add 1 to Y
 4234: ad 5e 19                  LDA dat_195e         ;         Set
 4237: 18                        CLC                  ;             dat_195e
 4238: 71 43                     ADC (addr_0043_L),Y  ;               =
-423a: 8d 5e 19                  STA dat_195e         ;                 dat_195e + (*addr_0043_L)[Y]
+423a: 8d 5e 19                  STA dat_195e         ;                 dat_195e + (*addr_0043_L)[1]
                                                      ;     End If
 423d: c6 5c     loc_423d        DEC dat_005c         ;     Subtract 1 from dat_005c
 423f: 10 d9                     BPL loc_421a         ; Repeat while (dat_005c >= 0)
-4241: ad 5e 19                  LDA dat_195e         ;
-4244: 18                        CLC                  ;
-4245: 6d 53 19                  ADC ZONE_I_BYTE      ;
-4248: 8d 95 63                  STA CHR_WARMTH       ;
-424b: a9 3f                     LDA #$3f             ;
-424d: 85 4b                     STA dat_004b         ;
-424f: a5 4b     loc_424f        LDA dat_004b         ;
-4251: 20 74 4b                  JSR sub_4b74         ;
-4254: f0 19                     BEQ loc_426f         ;
-4256: a0 00                     LDY #$00             ;
-4258: b1 41                     LDA (dat_0041),Y     ;
-425a: 10 13                     BPL loc_426f         ;
-425c: a0 04                     LDY #$04             ;
-425e: b1 41                     LDA (dat_0041),Y     ;
-4260: 18                        CLC                  ;
-4261: 6d e5 42                  ADC dat_42e5         ;
-4264: 8d e5 42                  STA dat_42e5         ;
-4267: ad e6 42                  LDA dat_42e6         ;
-426a: 69 00                     ADC #$00             ;
-426c: 8d e6 42                  STA dat_42e6         ;
-426f: c6 4b     loc_426f        DEC dat_004b         ;
-4271: 10 dc                     BPL loc_424f         ;
+4241: ad 5e 19                  LDA dat_195e         ; Set
+4244: 18                        CLC                  ;     CHR_WARMTH
+4245: 6d 53 19                  ADC ZONE_I_BYTE      ;        =
+4248: 8d 95 63                  STA CHR_WARMTH       ;          dat_195e + ZONE_I_BYTE
+424b: a9 3f                     LDA #$3f             ; Set
+424d: 85 4b                     STA dat_004b         ;     dat_004b = $3f (63)
+424f: a5 4b     loc_424f        LDA dat_004b         ; Loop
+                                                     ;     Set A = dat_004b
+4251: 20 74 4b                  JSR sub_4b74         ;     Call $4b74 [sub_4b74]
+4254: f0 19                     BEQ loc_426f         ;     If (Z != 0)    (e.g. addr_0041_L != 0)
+4256: a0 00                     LDY #$00             ;        And
+4258: b1 41                     LDA (addr_0041_L),Y  ;        ((*addr_0041_L)[0] < 0)
+425a: 10 13                     BPL loc_426f         ;     Then
+425c: a0 04                     LDY #$04             ;         Set
+425e: b1 41                     LDA (addr_0041_L),Y  ;             dat_42e5_L
+4260: 18                        CLC                  ;                =
+4261: 6d e5 42                  ADC dat_42e5_L       ;                  dat_42e5_L
+4264: 8d e5 42                  STA dat_42e5_L       ;                     + (*addr_0041_L)[4]
+4267: ad e6 42                  LDA dat_42e5_H       ;         If (C == 1) Then   (overflow)
+426a: 69 00                     ADC #$00             ;             Add 1 to dat_42e5_H
+426c: 8d e6 42                  STA dat_42e5_H       ;         End If
+                                                     ;     End If
+426f: c6 4b     loc_426f        DEC dat_004b         ;     Subtract 1 from dat_004b
+4271: 10 dc                     BPL loc_424f         ; Repeat while (dat_004b >= 0)
 4273: a2 04                     LDX #$04             ; Set X = 4
-4275: 8a        loc_4275        TXA                  ; Set
-4276: 0a                        ASL                  ;     ...
-4277: a8                        TAY                  ;     Y = X * 2
-4278: b9 b1 63                  LDA INV_GOLD_U16_HI,Y ; Set
-427b: 85 58                     STA dat_0058_L       ;     dat_0058_L = INV_GOLD_U16_HI + Y
-427d: b9 b2 63                  LDA INV_GOLD,Y       ; Set A = INV_GOLD[Y]
-4280: bc f0 41                  LDY tbl_41f0,X       ; Set Y = tbl_41f0[X]
-4283: f0 06     loc_4283        BEQ loc_428b         ; If (Y == 0) Then exit loop & continue @ $428b [loc_428b]
-4285: 46 58                     LSR dat_0058_L       ; Otherwise, Set dat_0058_L /= 2
-4287: 6a                        ROR                  ; Divide A by 2
-4288: 88                        DEY                  ; Subtract 1 from Y
-4289: 10 f8                     BPL loc_4283         ;     and repeat while (Y >= 0)
-428b: 18        loc_428b        CLC                  ; Clear carry flag
-428c: 6d e5 42                  ADC dat_42e5         ;
-428f: 8d e5 42                  STA dat_42e5         ;
-4292: ad e6 42                  LDA dat_42e6         ;
-4295: 69 00                     ADC #$00             ;
-4297: 8d e6 42                  STA dat_42e6         ;
-429a: ca                        DEX                  ;
-429b: 10 d8                     BPL loc_4275         ;
-429d: a2 06                     LDX #$06             ;
-429f: bd bb 63  loc_429f        LDA INV_FOOD,X       ;
-42a2: bc f5 41                  LDY tbl_41f5,X       ;
-42a5: f0 04     loc_42a5        BEQ loc_42ab         ;
-42a7: 4a                        LSR                  ;
-42a8: 88                        DEY                  ;
-42a9: 10 fa                     BPL loc_42a5         ;
-42ab: 18        loc_42ab        CLC                  ;
-42ac: 6d e5 42                  ADC dat_42e5         ;
-42af: 8d e5 42                  STA dat_42e5         ;
-42b2: ad e6 42                  LDA dat_42e6         ;
-42b5: 69 00                     ADC #$00             ;
-42b7: 8d e6 42                  STA dat_42e6         ;
-42ba: ca                        DEX                  ;
-42bb: 10 e2                     BPL loc_429f         ;
-42bd: ad 59 63                  LDA CHR_STR_EFFECTIVE  ;
-42c0: 4a                        LSR                  ;
-42c1: 8d c9 42                  STA loc_42c9         ;
-42c4: ad e5 42                  LDA dat_42e5         ;
-42c7: 38                        SEC                  ;
-42c8: e9 ff                     SBC #$ff             ;
-42ca: 8d e5 42                  STA dat_42e5         ;
-42cd: ad e6 42                  LDA dat_42e6         ;
-42d0: e9 00                     SBC #$00             ;
-42d2: 8d e6 42                  STA dat_42e6         ;
-42d5: 90 0d                     BCC loc_42e4         ;
-42d7: f0 05                     BEQ loc_42de         ;
-42d9: a9 ff                     LDA #$ff             ;
-42db: 8d e5 42                  STA dat_42e5         ;
-42de: ad e5 42  loc_42de        LDA dat_42e5         ;
-42e1: 8d 94 63                  STA CHR_BURDEN       ;
+4275: 8a        loc_4275        TXA                  ; Loop
+                                                     ;     Set Y
+4276: 0a                        ASL                  ;           =
+4277: a8                        TAY                  ;             X * 2
+4278: b9 b1 63                  LDA INV_GOLD_U16_HI,Y ;     Set
+427b: 85 58                     STA dat_0058_L       ;         dat_0058_L = INV_GOLD_U16_HI + Y
+427d: b9 b2 63                  LDA INV_GOLD,Y       ;     Set A = INV_GOLD[Y]
+4280: bc f0 41                  LDY tbl_41f0,X       ;     Set Y = tbl_41f0[X]
+4283: f0 06     loc_4283        BEQ loc_428b         ;     Loop while (Y != 0)
+4285: 46 58                     LSR dat_0058_L       ;         Set dat_0058_L /= 2
+4287: 6a                        ROR                  ;         Divide A by 2
+4288: 88                        DEY                  ;         Subtract 1 from Y
+4289: 10 f8                     BPL loc_4283         ;     Repeat while (Y >= 0)
+428b: 18        loc_428b        CLC                  ;     Set dat_42e5_L
+428c: 6d e5 42                  ADC dat_42e5_L       ;            =
+428f: 8d e5 42                  STA dat_42e5_L       ;              dat_42e5_L + A   (C = 1 on overflow 0 otherwise)
+4292: ad e6 42                  LDA dat_42e5_H       ;     Set
+4295: 69 00                     ADC #$00             ;         dat_42e5_H
+4297: 8d e6 42                  STA dat_42e5_H       ;            = dat_42e5_H + C
+429a: ca                        DEX                  ;     Subtract 1 from X
+429b: 10 d8                     BPL loc_4275         ; Repeat while (X >= 0)
+429d: a2 06                     LDX #$06             ; Set X = 6
+429f: bd bb 63  loc_429f        LDA INV_FOOD,X       ; Loop
+                                                     ;     Set A = INV_FOOD[X]
+42a2: bc f5 41                  LDY tbl_41f5,X       ;     Set Y = tbl_41f5[X]
+42a5: f0 04     loc_42a5        BEQ loc_42ab         ;     Loop
+42a7: 4a                        LSR                  ;         Set A /= 2
+42a8: 88                        DEY                  ;         Subtract 1 from Y
+42a9: 10 fa                     BPL loc_42a5         ;     Repeat while (Y >= 0)
+42ab: 18        loc_42ab        CLC                  ;     Set
+42ac: 6d e5 42                  ADC dat_42e5_L       ;         dat_42e5_L
+42af: 8d e5 42                  STA dat_42e5_L       ;            = dat_42e5_L + A   (C = 1 on overflow 0 otherwise)
+42b2: ad e6 42                  LDA dat_42e5_H       ;     Set
+42b5: 69 00                     ADC #$00             ;         dat_42e5_H
+42b7: 8d e6 42                  STA dat_42e5_H       ;            = dat_42e5_H + C
+42ba: ca                        DEX                  ;     Subtract 1 from X
+42bb: 10 e2                     BPL loc_429f         ; Repeat while (X >= 0)
+42bd: ad 59 63                  LDA CHR_STR_EFFECTIVE ; Set
+42c0: 4a                        LSR                  ;      loc_42c9
+42c1: 8d c9 42                  STA loc_42c9         ;         = CHR_STR_EFFECTIVE / 2
+42c4: ad e5 42                  LDA dat_42e5_L       ; Set
+42c7: 38                        SEC                  ;     dat_42e5_L
+42c8: e9 ff                     SBC #$ff             ;        =
+42ca: 8d e5 42                  STA dat_42e5_L       ;          dat_42e5_L - $ff (255) (C = 0 on underflow 1 otherwise)
+42cd: ad e6 42                  LDA dat_42e5_H       ; Set
+42d0: e9 00                     SBC #$00             ;     dat_42e5_H
+42d2: 8d e6 42                  STA dat_42e5_H       ;        = dat_42e5_H - ~C        (C = 0 on underflow 1 otherwise)
+42d5: 90 0d                     BCC loc_42e4         ; If (C == 1) Then   (no underflow)
+42d7: f0 05                     BEQ loc_42de         ;     If (dat_42e5_H != 0) Then
+42d9: a9 ff                     LDA #$ff             ;         Set
+42db: 8d e5 42                  STA dat_42e5_L       ;             dat_42e5_L = $ff
+                                                     ;     End If
+42de: ad e5 42  loc_42de        LDA dat_42e5_L       ;     Set
+42e1: 8d 94 63                  STA CHR_BURDEN       ;         CHR_BURDEN = dat_42e5_L
+                                                     ; End If
 42e4: 60        loc_42e4        RTS                  ; Return to caller
 
-42e5: ff        dat_42e5        .BYTE $ff            ; .
-42e6: ff        dat_42e6        .BYTE $ff            ; .
+42e5: ff        dat_42e5_L      .BYTE $ff            ; .
+42e6: ff        dat_42e5_H      .BYTE $ff            ; .
 
                 ; Updates the status strings on the display
 42e7: a9 e5     sub_42e7        LDA #$e5             ; Set
 42e9: 8d b1 45                  STA addr_45b1_L      ;     addr_45b1_L = $e5
 42ec: 8d b3 45                  STA addr_45b3_L      ; Set addr_45b3_L = $e5
-42ef: 8d b5 45                  STA tbl_45b5_L       ; Set tbl_45b5_L = $e5
+42ef: 8d b5 45                  STA addr_45b5_L      ; Set addr_45b5_L = $e5
 42f2: a9 47                     LDA #$47             ; Set
 42f4: 8d b2 45                  STA addr_45b1_H      ;     addr_45b1_L/H = $47e5 [str_BLANK]
 42f7: 8d b4 45                  STA addr_45b3_H      ; Set addr_45b3_L/H = $47e5 [str_BLANK]
-42fa: 8d b6 45                  STA tbl_45b5_H       ; Set tbl_45b5_L/H =  $47e5 [str_BLANK]
+42fa: 8d b6 45                  STA addr_45b5_H      ; Set addr_45b5_L/H = $47e5 [str_BLANK]
 42fd: 2c 91 63                  BIT CHR_DISEASE      ; If (CHR_DISEASE < 0)
 4300: 10 0a                     BPL loc_430c         ; Then
 4302: a9 cb                     LDA #$cb             ;     Set addr_45b1_L/H
@@ -5755,10 +6403,10 @@
                                                      ; End If
 431b: 2c 93 63  loc_431b        BIT CHR_CURSE        ; If (CHR_CURSE < 0)
 431e: 10 0a                     BPL loc_432a         ; Then
-4320: a9 d8     loc_4320        LDA #$d8             ;     Set tbl_45b5_L/H
-4322: 8d b5 45                  STA tbl_45b5_L       ;         address
+4320: a9 d8     loc_4320        LDA #$d8             ;     Set addr_45b5_L/H
+4322: 8d b5 45                  STA addr_45b5_L      ;         address
 4325: a9 47                     LDA #$47             ;         to
-4327: 8d b6 45                  STA tbl_45b5_H       ;         $47d8 [str_CURSED]
+4327: 8d b6 45                  STA addr_45b5_H      ;         $47d8 [str_CURSED]
                                                      ; End If
 432a: a2 06     loc_432a        LDX #$06             ; Set X = 6
 432c: 86 5c                     STX dat_005c         ; Set dat_005c = 6
@@ -5788,9 +6436,9 @@
 435d: 9d 63 19                  STA loc_1963,X       ;         Set loc_1963[X] = Y
                                                      ;     End If
 4360: 0a        loc_4360        ASL                  ;     Set
-4361: a8                        TAY                  ;         Y /= 2
+4361: a8                        TAY                  ;         Y *= 2
 4362: 8a                        TXA                  ;     Set
-4363: 0a                        ASL                  ;         X /= 2
+4363: 0a                        ASL                  ;         X *= 2
 4364: aa                        TAX                  ;
 4365: b1 5a                     LDA (dat_005a_L),Y   ;     Set
 4367: 9d a3 45                  STA tbl_45a3,X       ;         tbl_45a3[X] = (*dat_005a_L)[Y]
@@ -5802,39 +6450,59 @@
 4374: 10 b8                     BPL loc_432e         ;   While (dat_005c >= 0)
 4376: 60                        RTS                  ; Return to caller
 
-4377: ad 9b 63  sub_4377        LDA CHR_ENERGY       ;
-437a: 8d c5 43                  STA dat_43c5         ;
+4377: ad 9b 63  sub_4377        LDA CHR_ENERGY       ; Set
+437a: 8d c5 43                  STA dat_43c5         ;     dat_43c5 = CHR_ENERGY
 437d: a2 06                     LDX #$06             ; Set X = 6
 437f: 86 5c                     STX dat_005c         ; Set dat_005c = 6
-4381: de 95 45  loc_4381        DEC tbl_4595,X       ;
-4384: d0 2d                     BNE loc_43b3         ;
-4386: bd 9c 45                  LDA tbl_459c,X       ;
-4389: 9d 95 45                  STA tbl_4595,X       ;
-438c: bd fc 45                  LDA tbl_45fc_L,X     ; Set ???
-438f: 85 58                     STA dat_0058_L           ;     address
-4391: bd 03 46                  LDA tbl_4603_H,X     ;     to
-4394: 85 59                     STA dat_0058_H         ;     tbl_45fc_L+X/tbl_4603_H+X
-4396: bc 63 19                  LDY loc_1963,X       ;
-4399: b1 58                     LDA (dat_0058_L),Y       ;
-439b: f0 16                     BEQ loc_43b3         ;
-439d: 0a                        ASL                  ;
-439e: a8                        TAY                  ;
-439f: b9 b5 45                  LDA tbl_45b5_L,Y     ; Self-modifying code:
-43a2: 8d b1 43                  STA smc_43b0+1       ;     Set the JSR address
-43a5: b9 b6 45                  LDA tbl_45b5_H,Y     ;     @ $43b0 below
-43a8: 8d b2 43                  STA smc_43b0+2       ;     to tbl_45b5_L + Y/tbl_45b5_H + Y
-43ab: a9 ff                     LDA #$ff             ;
-43ad: 8d 5f 19                  STA UNK_BYTE_195F    ;
-43b0: 20 ff ff  smc_43b0        JSR $ffff            ; Invoke the subroutine @ the address assigned from tbl_45b5_L/tbl_45b5_H
-                                                     ; One of the following addresses:
-
-43b3: c6 5c     loc_43b3        DEC dat_005c         ;
-43b5: a6 5c                     LDX dat_005c         ;
-43b7: 10 c8                     BPL loc_4381         ;
-43b9: 2c 72 19                  BIT dat_1972         ;
-43bc: 10 06                     BPL loc_43c4         ;
-43be: ad c5 43                  LDA dat_43c5         ;
-43c1: 8d 9b 63                  STA CHR_ENERGY       ;
+4381: de 95 45  loc_4381        DEC tbl_4595,X       ; Loop
+                                                     ;     Subtract 1 from tbl_4595[X]
+4384: d0 2d                     BNE loc_43b3         ;     If (tbl_4595[X] == 0) Then
+4386: bd 9c 45                  LDA tbl_459c,X       ;         Set
+4389: 9d 95 45                  STA tbl_4595,X       ;             tbl_4595[X] = tbl_459c[X]
+438c: bd fc 45                  LDA tbl_45fc_L,X     ;         Set dat_0058_L/H
+438f: 85 58                     STA dat_0058_L       ;             address
+4391: bd 03 46                  LDA tbl_4603_H,X     ;             to
+4394: 85 59                     STA dat_0058_H       ;             tbl_45fc_L+X/tbl_4603_H+X
+4396: bc 63 19                  LDY loc_1963,X       ;         Set Y = loc_1963[X]
+4399: b1 58                     LDA (dat_0058_L),Y   ;         Set A = (*dat_0058_L)[Y]
+439b: f0 16                     BEQ loc_43b3         ;         If (A != 0) Then
+439d: 0a                        ASL                  ;             Set
+439e: a8                        TAY                  ;                 Y = A * 2   (Note: A >= 1 so min for Y is 2)
+439f: b9 b5 45                  LDA tbl_45b7_L-2,Y   ;             Self-modifying code:
+43a2: 8d b1 43                  STA smc_43b0+1       ;                 Set the JSR address
+43a5: b9 b6 45                  LDA tbl_45b7_H-2,Y   ;                 @ $43b0 [smc_43b0] below
+43a8: 8d b2 43                  STA smc_43b0+2       ;                 to tbl_45b7_L/H[Y - 2]
+43ab: a9 ff                     LDA #$ff             ;             Set
+43ad: 8d 5f 19                  STA UNK_BYTE_195F    ;                 UNK_BYTE_195F = $ff
+43b0: 20 ff ff  smc_43b0        JSR $ffff            ;             Invoke the subroutine @ the address assigned from tbl_45b7_L/H
+                                                     ;             One of the following addresses (1-based index):
+                                                     ;                1: $4481 [sub_4481]
+                                                     ;                2: $448f [sub_448f]
+                                                     ;                3: $449d [sub_449d]
+                                                     ;                4: $44ae [sub_44ae]
+                                                     ;                5: $44e9 [sub_44e9]
+                                                     ;                6: $44fa [sub_44fa]
+                                                     ;                7: $4527 [sub_4527]
+                                                     ;                8: $453e [sub_453e]
+                                                     ;                9: $4578 [sub_4578]
+                                                     ;               10: $4582 [sub_4582]
+                                                     ;               11: $458c [rts_458c] - NOP: Simply returns to caller
+                                                     ;               12: $458d [rts_458d] - NOP: Simply returns to caller
+                                                     ;               13: $458e [rts_458e] - NOP: Simply returns to caller
+                                                     ;               14: $458f [rts_458f] - NOP: Simply returns to caller
+                                                     ;               15: $44d4 [sub_44d4]
+                                                     ;               16: $4519 [sub_4519]
+                                                     ;               17: $4563 [sub_4563]
+                                                     ;         End If
+                                                     ;     End If
+43b3: c6 5c     loc_43b3        DEC dat_005c         ;     Subtract 1 from dat_005c
+43b5: a6 5c                     LDX dat_005c         ;     Set X = dat_005c
+43b7: 10 c8                     BPL loc_4381         ; Repeat while (X >= 0)
+43b9: 2c 72 19                  BIT dat_1972         ; If (dat_1972 bit 7 == 1)
+43bc: 10 06                     BPL loc_43c4         ; Then
+43be: ad c5 43                  LDA dat_43c5         ;     Set
+43c1: 8d 9b 63                  STA CHR_ENERGY       ;         CHR_ENERGY = dat_43c5
+                                                     ; End If
 43c4: 60        loc_43c4        RTS                  ; Return to caller
 
 43c5: 00        dat_43c5        .BYTE $00            ; .
@@ -5851,9 +6519,9 @@
 43dc: ca                        DEX                  ;
 43dd: 10 f7                     BPL HP_LOOP          ;
 43df: a9 3d                     LDA #$3d             ;
-43e1: 2c a9 3a                  BIT loc_3aa9         ;
+43e1: 2c a9 3a                  BIT str_DOOR_OPNS+13 ;
 43e4: 8d 99 04                  STA DISP_HP_SEP_CHAR ;
-43e7: a9 49                     LDA #$49             ; Set ???
+43e7: a9 49                     LDA #$49             ; Set dat_0058_L/H
 43e9: 85 58                     STA dat_0058_L       ;     address
 43eb: a9 63                     LDA #$63             ;     to
 43ed: 85 59                     STA dat_0058_H       ;     $6349 [CHR_STA_EFFECTIVE]
@@ -5908,33 +6576,36 @@
 4435: 4a                        LSR                  ;     by
 4436: 4a                        LSR                  ;     16
 4437: aa                        TAX                  ; Set X = A
-4438: bd 5f 44                  LDA tbl_MOVE_SPEED,X ;
-443b: 8d 83 63                  STA CHR_MOVE_SPEED   ; Set CHR_MOVE_SPEED = tbl_MOVE_SPEED[X]
+4438: bd 5f 44                  LDA tbl_MOVE_SPEED,X ; Set
+443b: 8d 83 63                  STA CHR_MOVE_SPEED   ;     CHR_MOVE_SPEED = tbl_MOVE_SPEED[X]
                                                      ; One of:
                                                      ;     $06,$07,$08,$09,$0a,$0b,$0c,$0d
                                                      ;     $0e,$0f,$10,$11,$11,$11,$12,$12
 443e: 2c 98 63                  BIT CHR_STOMACH      ; If (CHR_STOMACH > 127)
-4441: 10 03                     BPL loc_4446         ;   Then
-4443: 4e 83 63                  LSR CHR_MOVE_SPEED   ;     Divide CHR_MOVE_SPEED by 2
+4441: 10 03                     BPL loc_4446         ; Then
+4443: 4e 83 63                  LSR CHR_MOVE_SPEED   ;     Set CHR_MOVE_SPEED /= 2
+                                                     ; End If
 4446: ad 83 63  loc_4446        LDA CHR_MOVE_SPEED   ; If
 4449: c9 04                     CMP #$04             ;    (CHR_MOVE_SPEED < 4)
-444b: b0 05                     BCS loc_4452         ;   Then
+444b: b0 05                     BCS loc_4452         ; Then
 444d: a9 04                     LDA #$04             ;     Set
-444f: 8d 83 63                  STA CHR_MOVE_SPEED   ;       CHR_MOVE_SPEED = 4
+444f: 8d 83 63                  STA CHR_MOVE_SPEED   ;         CHR_MOVE_SPEED = 4
+                                                     ; End If
 4452: ad 94 63  loc_4452        LDA CHR_BURDEN       ; If
 4455: c9 e0                     CMP #$e0             ;    (CHR_BURDEN >= $e0 [224])
-4457: 90 05                     BCC loc_445e         ;   Then
+4457: 90 05                     BCC loc_445e         ; Then
 4459: a9 02                     LDA #$02             ;     Set
 445b: 8d 83 63                  STA CHR_MOVE_SPEED   ;         CHR_MOVE_SPEED = 2
+                                                     ; End If
 445e: 60        loc_445e        RTS                  ; Return to caller
 
 445f: 06 07 08 09 0a 0b 0c 0d  tbl_MOVE_SPEED  .BYTE $06,$07,$08,$09,$0a,$0b,$0c,$0d  ; ........
 4467: 0e 0f 10 11 11 11 12 12   .BYTE $0e,$0f,$10,$11,$11,$11,$12,$12  ; ........
 
-446f: ad 0a d2  loc_446f        LDA RANDOM           ; Set
+446f: ad 0a d2  sub_446f        LDA RANDOM           ; Set
 4472: 8d 7a 44                  STA loc_447a         ;     loc_447a = random byte
 4475: ad 49 63                  LDA CHR_STA_EFFECTIVE ; If
-4478: 4a                        LSR                  ;   (CHR_STA_EFFECTIVE / 2
+4478: 4a                        LSR                  ;    (CHR_STA_EFFECTIVE / 2
 4479: c9 ff                     CMP #$ff             ;       < $ff)   (Why would this be false? divide by 2 clears sign)
 447b: b0 01                     BCS loc_447e         ; Then
 447d: 60                        RTS                  ;     Return to caller
@@ -5943,159 +6614,161 @@
 447f: 68                        PLA                  ;     from stack
 4480: 60                        RTS                  ; Return to caller
 
-                ; Referenced in tbl_45b5_L/H
-4481: a2 9b     sub_4481        LDX #$9b             ;
-4483: a9 01                     LDA #$01             ;
-4485: 20 69 2e                  JSR sub_2e69         ;
-4488: a2 99                     LDX #$99             ;
-448a: a9 01                     LDA #$01             ;
-448c: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+4481: a2 9b     sub_4481        LDX #$9b             ; Set X = $9b (155)
+4483: a9 01                     LDA #$01             ; Set A = 1
+4485: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+4488: a2 99                     LDX #$99             ; Set X = $99 (153)
+448a: a9 01                     LDA #$01             ; Set A = 1
+448c: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-448f: a2 9b     sub_448f        LDX #$9b             ;
-4491: a9 01                     LDA #$01             ;
-4493: 20 69 2e                  JSR sub_2e69         ;
-4496: a2 9a                     LDX #$9a             ;
-4498: a9 01                     LDA #$01             ;
-449a: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+448f: a2 9b     sub_448f        LDX #$9b             ; Set X = $9b (155)
+4491: a9 01                     LDA #$01             ; Set A = 1
+4493: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+4496: a2 9a                     LDX #$9a             ; Set X = $9a (154)
+4498: a9 01                     LDA #$01             ; Set A = 1
+449a: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-449d: 20 6f 44  sub_449d        JSR loc_446f         ;
-44a0: a2 5d                     LDX #$5d             ;
-44a2: a9 01                     LDA #$01             ;
-44a4: 20 43 2e                  JSR loc_2e43         ;
-44a7: a2 7d                     LDX #$7d             ;
-44a9: a9 01                     LDA #$01             ;
-44ab: 4c 43 2e                  JMP loc_2e43         ;
+                ; Referenced in tbl_45b7_L/H
+449d: 20 6f 44  sub_449d        JSR sub_446f         ; Call $446f [sub_446f]
+44a0: a2 5d                     LDX #$5d             ; Set X = $5d (93)
+44a2: a9 01                     LDA #$01             ; Set A = a
+44a4: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+44a7: a2 7d                     LDX #$7d             ; Set X = $7d (125)
+44a9: a9 01                     LDA #$01             ; Set A = 1
+44ab: 4c 43 2e                  JMP loc_2e43         ; Continue @ $2e43 [loc_2e43]
 
-                ; Referenced in tbl_45b5_L/H
-44ae: 20 6f 44  sub_44ae        JSR loc_446f         ;
-44b1: a2 45                     LDX #$45             ;
-44b3: a9 01                     LDA #$01             ;
-44b5: 20 66 2e                  JSR sub_2e66         ;
-44b8: a2 5d                     LDX #$5d             ;
-44ba: a9 01                     LDA #$01             ;
-44bc: 20 43 2e                  JSR loc_2e43         ;
-44bf: a2 75                     LDX #$75             ;
-44c1: a9 01                     LDA #$01             ;
-44c3: 20 43 2e                  JSR loc_2e43         ;
-44c6: a2 7d                     LDX #$7d             ;
-44c8: a9 01                     LDA #$01             ;
-44ca: 20 43 2e                  JSR loc_2e43         ;
-44cd: a2 9b                     LDX #$9b             ;
-44cf: a9 01                     LDA #$01             ;
-44d1: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+44ae: 20 6f 44  sub_44ae        JSR sub_446f         ; Call $446f [sub_446f]
+44b1: a2 45                     LDX #$45             ; Set X = $45 (69)
+44b3: a9 01                     LDA #$01             ; Set A = 1
+44b5: 20 66 2e                  JSR sub_2e66         ; Call $2e66 [sub_2e66]
+44b8: a2 5d                     LDX #$5d             ; Set X = $5d (93)
+44ba: a9 01                     LDA #$01             ; Set A = 1
+44bc: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+44bf: a2 75                     LDX #$75             ; Set X = $75 (117)
+44c1: a9 01                     LDA #$01             ; Set A = 1
+44c3: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+44c6: a2 7d                     LDX #$7d             ; Set X = $7d (125)
+44c8: a9 01                     LDA #$01             ; Set A = 1
+44ca: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+44cd: a2 9b                     LDX #$9b             ; Set X = $9b (155)
+44cf: a9 01                     LDA #$01             ; Set A = 1
+44d1: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-44d4: a2 5d     sub_44d4        LDX #$5d             ;
-44d6: a9 01                     LDA #$01             ;
-44d8: 20 69 2e                  JSR sub_2e69         ;
-44db: a2 75                     LDX #$75             ;
-44dd: a9 01                     LDA #$01             ;
-44df: 20 69 2e                  JSR sub_2e69         ;
-44e2: a2 7d                     LDX #$7d             ;
-44e4: a9 01                     LDA #$01             ;
-44e6: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+44d4: a2 5d     sub_44d4        LDX #$5d             ; Set X = $5d (93)
+44d6: a9 01                     LDA #$01             ; Set A = 1
+44d8: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+44db: a2 75                     LDX #$75             ; Set X = $75 (117)
+44dd: a9 01                     LDA #$01             ; Set A = 1
+44df: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+44e2: a2 7d                     LDX #$7d             ; Set X = $7d (125)
+44e4: a9 01                     LDA #$01             ; Set A = 1
+44e6: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-44e9: 20 6f 44  sub_44e9        JSR loc_446f         ;
-44ec: a2 5e                     LDX #$5e             ;
-44ee: a9 01                     LDA #$01             ;
-44f0: 20 43 2e                  JSR loc_2e43         ;
-44f3: a2 7e                     LDX #$7e             ;
-44f5: a9 01                     LDA #$01             ;
-44f7: 4c 43 2e                  JMP loc_2e43         ;
+                ; Referenced in tbl_45b7_L/H
+44e9: 20 6f 44  sub_44e9        JSR sub_446f         ; Call $446f [sub_446f]
+44ec: a2 5e                     LDX #$5e             ; Set X = $5e (94)
+44ee: a9 01                     LDA #$01             ; Set A = 1
+44f0: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+44f3: a2 7e                     LDX #$7e             ; Set X = $7e (126)
+44f5: a9 01                     LDA #$01             ; Set A = 1
+44f7: 4c 43 2e                  JMP loc_2e43         ; Continue @ $2e43 [loc_2e43]
 
-                ; Referenced in tbl_45b5_L/H
-44fa: 20 6f 44  sub_44fa        JSR loc_446f         ;
-44fd: a2 45                     LDX #$45             ;
-44ff: a9 01                     LDA #$01             ;
-4501: 20 66 2e                  JSR sub_2e66         ;
-4504: a2 5e                     LDX #$5e             ;
-4506: a9 01                     LDA #$01             ;
-4508: 20 43 2e                  JSR loc_2e43         ;
-450b: a2 7e                     LDX #$7e             ;
-450d: a9 01                     LDA #$01             ;
-450f: 20 43 2e                  JSR loc_2e43         ;
-4512: a2 9b                     LDX #$9b             ;
-4514: a9 01                     LDA #$01             ;
-4516: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+44fa: 20 6f 44  sub_44fa        JSR sub_446f         ; Call $446f [sub_446f]
+44fd: a2 45                     LDX #$45             ; Set X = $45 (69)
+44ff: a9 01                     LDA #$01             ; Set A = 1
+4501: 20 66 2e                  JSR sub_2e66         ; Call $2e66 [sub_2e66]
+4504: a2 5e                     LDX #$5e             ; Set X = $5e (94)
+4506: a9 01                     LDA #$01             ; Set A = 1
+4508: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+450b: a2 7e                     LDX #$7e             ; Set X = $7e (126)
+450d: a9 01                     LDA #$01             ; Set A = 1
+450f: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+4512: a2 9b                     LDX #$9b             ; Set X = $9b (155)
+4514: a9 01                     LDA #$01             ; Set A = 1
+4516: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-4519: a2 5e     sub_4519        LDX #$5e             ;
-451b: a9 01                     LDA #$01             ;
-451d: 20 69 2e                  JSR sub_2e69         ;
-4520: a2 7e                     LDX #$7e             ;
-4522: a9 01                     LDA #$01             ;
-4524: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+4519: a2 5e     sub_4519        LDX #$5e             ; Set X = $5e (94)
+451b: a9 01                     LDA #$01             ; Set A = 1
+451d: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+4520: a2 7e                     LDX #$7e             ; Set X = $7e (126)
+4522: a9 01                     LDA #$01             ; Set A = 1
+4524: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-4527: 20 6f 44  sub_4527        JSR loc_446f         ;
-452a: ad 72 19                  LDA dat_1972         ;
-452d: 10 01                     BPL loc_4530         ;
-452f: 60                        RTS                  ; Return to caller
-4530: a2 7f     loc_4530        LDX #$7f             ;
-4532: a9 01                     LDA #$01             ;
-4534: 20 43 2e                  JSR loc_2e43         ;
-4537: a2 5f                     LDX #$5f             ;
-4539: a9 01                     LDA #$01             ;
-453b: 4c 43 2e                  JMP loc_2e43         ;
+                ; Referenced in tbl_45b7_L/H
+4527: 20 6f 44  sub_4527        JSR sub_446f         ; Call $446f [sub_446f]
+452a: ad 72 19                  LDA dat_1972         ; If (dat_1972 < 0)
+452d: 10 01                     BPL loc_4530         ; Then
+452f: 60                        RTS                  ;     Return to caller
+                                                     ; End If
+4530: a2 7f     loc_4530        LDX #$7f             ; Set X = $7f (127)
+4532: a9 01                     LDA #$01             ; Set A = 1
+4534: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+4537: a2 5f                     LDX #$5f             ; Set X = $5f (95)
+4539: a9 01                     LDA #$01             ; Set A = 1
+453b: 4c 43 2e                  JMP loc_2e43         ; Continue @ $2e43 [loc_2e43]
 
-                ; Referenced in tbl_45b5_L/H
-453e: 20 6f 44  sub_453e        JSR loc_446f         ;
-4541: 2c 72 19                  BIT dat_1972         ;
-4544: 10 01                     BPL loc_4547         ;
-4546: 60                        RTS                  ; Return to caller
-4547: a2 45     loc_4547        LDX #$45             ;
-4549: a9 01                     LDA #$01             ;
-454b: 20 66 2e                  JSR sub_2e66         ;
-454e: a2 7f                     LDX #$7f             ;
-4550: a9 01                     LDA #$01             ;
-4552: 20 43 2e                  JSR loc_2e43         ;
-4555: a2 5f                     LDX #$5f             ;
-4557: a9 01                     LDA #$01             ;
-4559: 20 43 2e                  JSR loc_2e43         ;
-455c: a2 77                     LDX #$77             ;
-455e: a9 01                     LDA #$01             ;
-4560: 4c 43 2e                  JMP loc_2e43         ; LC.
+                ; Referenced in tbl_45b7_L/H
+453e: 20 6f 44  sub_453e        JSR sub_446f         ; Call $446f [sub_446f]
+4541: 2c 72 19                  BIT dat_1972         ; If (dat_1972 bit 7 == 1)
+4544: 10 01                     BPL loc_4547         ; Then
+4546: 60                        RTS                  ;     Return to caller
+                                                     ; End If
+4547: a2 45     loc_4547        LDX #$45             ; Set X = $45 (69)
+4549: a9 01                     LDA #$01             ; Set A = 1
+454b: 20 66 2e                  JSR sub_2e66         ; Call $2e66 [sub_2e66]
+454e: a2 7f                     LDX #$7f             ; Call X = $7f (127)
+4550: a9 01                     LDA #$01             ; Set A = 1
+4552: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+4555: a2 5f                     LDX #$5f             ; Set X = $5f (95)
+4557: a9 01                     LDA #$01             ; Set A = 1
+4559: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+455c: a2 77                     LDX #$77             ; Set X = $77 (119)
+455e: a9 01                     LDA #$01             ; Set A = 1
+4560: 4c 43 2e                  JMP loc_2e43         ; Continue @ $2e43 [loc_2e43]
 
-                ; Referenced in tbl_45b5_L/H
-4563: a2 7f     sub_4563        LDX #$7f             ;
-4565: a9 01                     LDA #$01             ;
-4567: 20 69 2e                  JSR sub_2e69         ;
-456a: a2 5f                     LDX #$5f             ;
-456c: a9 01                     LDA #$01             ;
-456e: 20 69 2e                  JSR sub_2e69         ;
-4571: a2 77                     LDX #$77             ;
-4573: a9 01                     LDA #$01             ;
-4575: 4c 69 2e                  JMP sub_2e69         ; Li.
+                ; Referenced in tbl_45b7_L/H
+4563: a2 7f     sub_4563        LDX #$7f             ; Set X = $7f (127)
+4565: a9 01                     LDA #$01             ; Set A = 1
+4567: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+456a: a2 5f                     LDX #$5f             ; Set X = $5f (95)
+456c: a9 01                     LDA #$01             ; Set A = 1
+456e: 20 69 2e                  JSR sub_2e69         ; Call $2e69 [sub_2e69]
+4571: a2 77                     LDX #$77             ; Set X = $77 (119)
+4573: a9 01                     LDA #$01             ; Set A = 1
+4575: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-4578: 20 6f 44  sub_4578        JSR loc_446f         ;
-457b: a2 9b                     LDX #$9b             ;
-457d: a9 01                     LDA #$01             ;
-457f: 4c 69 2e                  JMP sub_2e69         ;
+                ; Referenced in tbl_45b7_L/H
+4578: 20 6f 44  sub_4578        JSR sub_446f         ; Call $446f [sub_446f]
+457b: a2 9b                     LDX #$9b             ; Set X = $9b (155)
+457d: a9 01                     LDA #$01             ; Set A = 1
+457f: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
-                ; Referenced in tbl_45b5_L/H
-4582: 20 6f 44  sub_4582        JSR loc_446f         ;
-4585: a2 9b                     LDX #$9b             ;
-4587: a9 01                     LDA #$01             ;
-4589: 4c 69 2e                  JMP sub_2e69         ; Li.
+                ; Referenced in tbl_45b7_L/H
+4582: 20 6f 44  sub_4582        JSR sub_446f         ; Call $446f [sub_446f]
+4585: a2 9b                     LDX #$9b             ; Set X = $9b (155)
+4587: a9 01                     LDA #$01             ; Set A = 1
+4589: 4c 69 2e                  JMP sub_2e69         ; Continue @ $2e69 [sub_2e69]
 
                 ; NOP: Simply returns to caller
-                ; Referenced in tbl_45b5_L/H
+                ; Referenced in tbl_45b7_L/H
 458c: 60        rts_458c        RTS                  ; Return to caller
 
                 ; NOP: Simply returns to caller
-                ; Referenced in tbl_45b5_L/H
+                ; Referenced in tbl_45b7_L/H
 458d: 60        rts_458d        RTS                  ; Return to caller
 
                 ; NOP: Simply returns to caller
-                ; Referenced in tbl_45b5_L/H
+                ; Referenced in tbl_45b7_L/H
 458e: 60        rts_458e        RTS                  ; Return to caller
 
                 ; NOP: Simply returns to caller
-                ; Referenced in tbl_45b5_L/H
+                ; Referenced in tbl_45b7_L/H
 458f: 60        rts_458f        RTS                  ; Return to caller
 
 4590: 21        dat_4590        .BYTE $21            ; !
@@ -6109,12 +6782,14 @@
 45a2: 02                        .BYTE $02            ; .
 45a3: e5 47 e5 47 e5 47 e5 47  tbl_45a3  .BYTE $e5,$47,$e5,$47,$e5,$47,$e5,$47  ; .G.G.G.G
 45ab: e5 47 e5 47 e5 47         .BYTE $e5,$47,$e5,$47,$e5,$47  ; .G.G.G
-45b1: e5        addr_45b1_L     .BYTE $e5            ; .
-45b2: 47        addr_45b1_H     .BYTE $47            ; G
-45b3: e5        addr_45b3_L     .BYTE $e5            ; .
-45b4: 47        addr_45b3_H     .BYTE $47            ; G
-45b5: e5        tbl_45b5_L      .BYTE $e5            ; .
-45b6: 47 81 44 8f 44 9d 44  tbl_45b5_H  .BYTE $47,$81,$44,$8f,$44,$9d,$44  ; G.D.D.D
+45b1: e5        addr_45b1_L     .BYTE $e5            ;
+45b2: 47        addr_45b1_H     .BYTE $47            ;
+45b3: e5        addr_45b3_L     .BYTE $e5            ;
+45b4: 47        addr_45b3_H     .BYTE $47            ;
+45b5: e5        addr_45b5_L     .BYTE $e5            ;
+45b6: 47        addr_45b5_H     .BYTE $47            ;
+45b7: 81        tbl_45b7_L      .BYTE $81            ;
+45b8: 44 8f 44 9d 44  tbl_45b7_H  .BYTE $44,$8f,$44,$9d,$44  ;
 45bd: ae 44 e9 44 fa 44 27 45   .BYTE $ae,$44,$e9,$44,$fa,$44,$27,$45  ; .D.D.D'E
 45c5: 3e 45 78 45 82 45 8c 45   .BYTE $3e,$45,$78,$45,$82,$45,$8c,$45  ; >ExE.E.E
 45cd: 8d 45 8e 45 8f 45 d4 44   .BYTE $8d,$45,$8e,$45,$8f,$45,$d4,$44  ; .E.E.E.D
@@ -6208,34 +6883,33 @@
 47d8: 20 20 20 43 75 72 73 65  str_CURSED  .BYTE $20,$20,$20,$43,$75,$72,$73,$65  ;    Curse
 47e0: 64 21 20 20 00            .BYTE $64,$21,$20,$20,$00  ; d!  .
 
-xxx - TODO: this can't be both a sub and a string, can it?
-47e5: 20 20 20  sub_47e5  str_BLANK        JSR loc_2020         ;
-47e8: 20 20 20                  JSR loc_2020         ;
-47eb: 20 20 20                  JSR loc_2020         ;
-47ee: 20 20 20                  JSR loc_2020         ;
-47f1: 00                        BRK                  ;
+47e5: 20 20 20  str_BLANK       .BYTE $20,$20,$20    ;
+47e8: 20 20 20 20 20 20         .BYTE $20,$20,$20,$20,$20,$20  ;
+47ee: 20 20 20                  .BYTE $20,$20,$20    ;
+47f1: 00                        .BYTE $00            ;
 
-47f2: a5 0f     sub_47f2        LDA dat_000f         ;
-47f4: f0 03                     BEQ loc_47f9         ;
-47f6: 4c af 49                  JMP loc_49af         ;
-47f9: 85 49     loc_47f9        STA ERRNO            ;
-47fb: 8d 91 63                  STA CHR_DISEASE      ;
-47fe: 8d 92 63                  STA CHR_POISON       ;
-4801: 8d 93 63                  STA CHR_CURSE        ;
-4804: a9 f0                     LDA #$f0             ;
-4806: 85 50                     STA dat_023e         ;
-4808: a9 00                     LDA #$00             ;
-480a: 85 3d                     STA dat_003d_L       ;
+47f2: a5 0f     sub_47f2        LDA dat_000f         ; If (dat_000f != 0)
+47f4: f0 03                     BEQ loc_47f9         ; Then
+47f6: 4c af 49                  JMP loc_49af         ;     Continue @ $49af [loc_49af]
+                                                     ; End If
+47f9: 85 49     loc_47f9        STA dat_0049         ; Set dat_0049 = dat_000f
+47fb: 8d 91 63                  STA CHR_DISEASE      ; Set CHR_DISEASE = dat_000f
+47fe: 8d 92 63                  STA CHR_POISON       ; Set CHR_POISON = dat_000f
+4801: 8d 93 63                  STA CHR_CURSE        ; Set CHR_CURSE = dat_000f
+4804: a9 f0                     LDA #$f0             ; Set
+4806: 85 50                     STA dat_023e         ;     dat_023e = $f0
+4808: a9 00                     LDA #$00             ; Set
+480a: 85 3d                     STA dat_003d_L       ;     dat_003d_L = 0
 480c: a9 65                     LDA #$65             ;
-480e: 85 3e                     STA FTYPE            ;
-4810: a0 00     loc_4810        LDY #$00             ;
+480e: 85 3e                     STA dat_003d_H       ;
+4810: a0 00     cont_4810       LDY #$00             ;
 4812: b1 3d                     LDA (dat_003d_L),Y   ;
 4814: c9 81                     CMP #$81             ;
 4816: b0 03                     BCS loc_481b         ;
-4818: 4c 99 49                  JMP loc_4999         ;
+4818: 4c 99 49                  JMP cont_4999        ; Continue @ $4999 [cont_4999]
 481b: c9 e0     loc_481b        CMP #$e0             ;
 481d: 90 03                     BCC loc_4822         ;
-481f: 4c 99 49                  JMP loc_4999         ;
+481f: 4c 99 49                  JMP cont_4999        ; Continue @ $4999 [cont_4999]
 4822: 29 07     loc_4822        AND #$07             ;
 4824: f0 08                     BEQ loc_482e         ;
 4826: c9 04                     CMP #$04             ;
@@ -6247,7 +6921,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4832: c8                        INY                  ;
 4833: 11 3d                     ORA (dat_003d_L),Y   ;
 4835: d0 03                     BNE loc_483a         ;
-4837: 4c 99 49                  JMP loc_4999         ;
+4837: 4c 99 49                  JMP cont_4999        ; Continue @ $4999 [cont_4999]
 483a: 88        loc_483a        DEY                  ;
 483b: 38                        SEC                  ;
 483c: b1 3d                     LDA (dat_003d_L),Y   ;
@@ -6260,42 +6934,42 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4849: 88                        DEY                  ;
 484a: 11 3d                     ORA (dat_003d_L),Y   ;
 484c: f0 03                     BEQ loc_4851         ;
-484e: 4c 99 49                  JMP loc_4999         ;
+484e: 4c 99 49                  JMP cont_4999        ; Continue @ $4999 [cont_4999]
 4851: a0 00     loc_4851        LDY #$00             ;
 4853: b1 3d                     LDA (dat_003d_L),Y   ;
 4855: 29 bf                     AND #$bf             ;
 4857: d1 3d                     CMP (dat_003d_L),Y   ;
 4859: f0 38                     BEQ loc_4893         ;
 485b: 91 3d                     STA (dat_003d_L),Y   ;
-485d: a6 49                     LDX ERRNO            ;
+485d: a6 49                     LDX dat_0049         ;
 485f: a0 01                     LDY #$01             ;
 4861: b1 3d                     LDA (dat_003d_L),Y   ;
-4863: 85 4a                     STA CKEY             ;
+4863: 85 4a                     STA dat_004a         ;
 4865: a5 3d                     LDA dat_003d_L       ;
-4867: 85 3f                     STA FEOF             ;
-4869: a5 3e                     LDA FTYPE            ;
-486b: 85 40                     STA FREQ             ;
+4867: 85 3f                     STA addr_003f_L      ;
+4869: a5 3e                     LDA dat_003d_H       ;
+486b: 85 40                     STA addr_003f_H      ;
 486d: e8        loc_486d        INX                  ;
 486e: e0 40                     CPX #$40             ;
 4870: b0 21                     BCS loc_4893         ;
-4872: a5 3f                     LDA FEOF             ;
+4872: a5 3f                     LDA addr_003f_L      ;
 4874: 18                        CLC                  ;
 4875: 69 10                     ADC #$10             ;
-4877: 85 3f                     STA FEOF             ;
+4877: 85 3f                     STA addr_003f_L      ;
 4879: 90 02                     BCC loc_487d         ;
-487b: e6 40                     INC FREQ             ;
+487b: e6 40                     INC addr_003f_H      ;
 487d: a0 00     loc_487d        LDY #$00             ;
-487f: b1 3f                     LDA (FEOF),Y         ;
+487f: b1 3f                     LDA (addr_003f_L),Y  ;
 4881: c9 e0                     CMP #$e0             ;
 4883: 90 e8                     BCC loc_486d         ;
 4885: c8                        INY                  ;
-4886: b1 3f                     LDA (FEOF),Y         ;
-4888: c5 4a                     CMP CKEY             ;
+4886: b1 3f                     LDA (addr_003f_L),Y  ;
+4888: c5 4a                     CMP dat_004a         ;
 488a: d0 e1                     BNE loc_486d         ;
 488c: 88                        DEY                  ;
-488d: b1 3f                     LDA (FEOF),Y         ;
+488d: b1 3f                     LDA (addr_003f_L),Y  ;
 488f: 09 08                     ORA #$08             ;
-4891: 91 3f                     STA (FEOF),Y         ;
+4891: 91 3f                     STA (addr_003f_L),Y  ;
 4893: a0 06     loc_4893        LDY #$06             ;
 4895: b1 3d                     LDA (dat_003d_L),Y   ;
 4897: aa                        TAX                  ;
@@ -6313,8 +6987,8 @@ xxx - TODO: this can't be both a sub and a string, can it?
 48ad: a0 08                     LDY #$08             ;
 48af: d1 3d                     CMP (dat_003d_L),Y   ;
 48b1: b0 06                     BCS loc_48b9         ;
-48b3: 20 01 4a                  JSR loc_4a01         ;
-48b6: 4c 99 49                  JMP loc_4999         ;
+48b3: 20 01 4a                  JSR sub_4a01         ; Call $4a01 [sub_4a01]
+48b6: 4c 99 49                  JMP cont_4999        ; Continue @ $4999 [cont_4999]
 48b9: a0 0a     loc_48b9        LDY #$0a             ;
 48bb: b1 3d                     LDA (dat_003d_L),Y   ;
 48bd: 85 45                     STA dat_0045_L       ;
@@ -6345,10 +7019,10 @@ xxx - TODO: this can't be both a sub and a string, can it?
 48ee: 85 51                     STA dat_0051         ;
 48f0: a0 0c                     LDY #$0c             ;
 48f2: b1 3d                     LDA (dat_003d_L),Y   ;
-48f4: 85 52                     STA LMARGN           ;
+48f4: 85 52                     STA dat_0052         ;
 48f6: a0 0d                     LDY #$0d             ;
 48f8: b1 3d                     LDA (dat_003d_L),Y   ;
-48fa: 85 53                     STA RMARGN           ;
+48fa: 85 53                     STA dat_0053         ;
 48fc: a0 09                     LDY #$09             ;
 48fe: b1 3d                     LDA (dat_003d_L),Y   ; If ((*dat_003d_L)[Y] >= 0)
 4900: 30 11                     BMI loc_4913         ; Then
@@ -6383,36 +7057,62 @@ xxx - TODO: this can't be both a sub and a string, can it?
                                                      ; End If
 4936: 4c ff ff  smc_4936        JMP $ffff            ; Self-modifying: Continue @ the address assigned above
                                                      ; One of the following:
-                                                     ;    - $4978 [cont_4978]
-                                                     ;    - $494d [cont_494d]
-                                                     ;    - $4953 [cont_4953]
+                                                     ;    - $4978 [cont_4978] -
+                                                     ;    - $494d [cont_494d] -
+                                                     ;    - $4953 [cont_4953] -
                                                      ;    - $4939 [cont_4939] -
                                                      ;    - $4939 [cont_4939] -
-                                                     ;    - $4959 [cont_4959]
-                                                     ;    - $4959 [cont_4959]
-                                                     ;    - $4959 [cont_4959]
+                                                     ;    - $4959 [cont_4959] -
+                                                     ;    - $4959 [cont_4959] -
+                                                     ;    - $4959 [cont_4959] -
                                                      ;    - $4982 [brk_rts_4982] - Signals a BRK then returns to caller
 
-4939: 18        cont_4939       CLC                  ;
-493a: a5 45                     LDA ZDRVA            ;
-493c: 65 53                     ADC RMARGN           ;
-493e: 85 45                     STA ZDRVA            ;
-4940: 90 02                     BCC loc_4944         ;
-4942: e6 46                     INC dat_0045_H       ;
+                ;
+                ; Indirectly invoked from sub_47f2
+                ; Referenced in tbl_4968_L/H
+                ;
+4939: 18        cont_4939       CLC                  ; Set
+493a: a5 45                     LDA dat_0045_L       ;     dat_0045_L
+493c: 65 53                     ADC dat_0053         ;        =
+493e: 85 45                     STA dat_0045_L       ;          dat_0045_L + dat_0053
+4940: 90 02                     BCC loc_4944         ; If (C == 1) Then   (overflow)
+4942: e6 46                     INC dat_0045_H       ;     Add 1 to dat_0045_H
+                                                     ; End If
 4944: a4 54     loc_4944        LDY dat_0054         ; Set Y = dat_0054
-4946: c6 52                     DEC LMARGN           ;
-4948: d0 ec                     BNE smc_4936         ;
-494a: 4c 84 49                  JMP loc_4984         ;
-494d: 20 48 2e  cont_494d       JSR loc_2e48         ;
-4950: 4c 39 49                  JMP cont_4939        ;
-4953: 20 6e 2e  cont_4953       JSR loc_2e6e         ;
-4956: 4c 39 49                  JMP cont_4939        ;
-4959: b1 45     cont_4959       LDA (ZDRVA),Y        ;
-495b: 45 51     loc_495b        EOR dat_0051         ;
-495d: 91 45                     STA (ZDRVA),Y        ;
-495f: 88                        DEY                  ;
-4960: 10 f7                     BPL cont_4959        ;
-4962: 4c 39 49                  JMP cont_4939        ;
+4946: c6 52                     DEC dat_0052         ; Subtract 1 from dat_0052
+4948: d0 ec                     BNE smc_4936         ; If (dat_0052 == 0) Then
+                                                     ;     Continue @ $4936 [smc_4936]
+                                                     ; End If
+494a: 4c 84 49                  JMP cont_4984        ; Continue @ $4984 [cont_4984]
+
+                ;
+                ; Indirectly invoked from sub_47f2
+                ; Referenced in tbl_4968_L/H
+                ;
+494d: 20 48 2e  cont_494d       JSR loc_2e48         ; Call $2e48 [loc_2e48]
+4950: 4c 39 49                  JMP cont_4939        ; Continue @ $4939 [cont_4939]
+
+                ;
+                ; Indirectly invoked from sub_47f2
+                ; Referenced in tbl_4968_L/H
+                ;
+4953: 20 6e 2e  cont_4953       JSR loc_2e6e         ; Call $2e6e [loc_2e6e]
+4956: 4c 39 49                  JMP cont_4939        ; Continue @ $4939 [cont_4939]
+
+                ;
+                ; Input
+                ;   Y  -
+                ;
+                ; Indirectly invoked from sub_47f2
+                ; Referenced in tbl_4968_L/H
+                ;
+4959: b1 45     cont_4959       LDA (dat_0045_L),Y   ; Loop
+                                                     ;     Set
+495b: 45 51     loc_495b        EOR dat_0051         ;         (*dat_0045_L)[Y]
+495d: 91 45                     STA (dat_0045_L),Y   ;            = (*dat_0045_L)[Y] xor dat_0051
+495f: 88                        DEY                  ;     Subtract 1 from Y
+4960: 10 f7                     BPL cont_4959        ; Repeat while (Y >= 0)
+4962: 4c 39 49                  JMP cont_4939        ; Continue @ $4939 [cont_4939]
 
 4965: 45 25 05  dat_4965        .BYTE $45,$25,$05    ; E%.
 4968: 4d        tbl_4968_L      .BYTE $4d            ; M
@@ -6432,258 +7132,325 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4982: 00        brk_rts_4982    BRK                  ; Signal BRK
 4983: 60                        RTS                  ; Return to caller
 
-4984: a0 03     loc_4984        LDY #$03             ;
-4986: b1 3d                     LDA (dat_003d_L),Y   ;
-4988: f0 0a                     BEQ loc_4994         ;
-498a: 38                        SEC                  ;
-498b: e9 01                     SBC #$01             ;
-498d: 91 3d                     STA (dat_003d_L),Y   ;
-498f: d0 03                     BNE loc_4994         ;
-4991: 20 01 4a                  JSR loc_4a01         ;
-4994: a9 80     loc_4994        LDA #$80             ;
-4996: 8d 5f 19                  STA UNK_BYTE_195F    ;
-4999: a5 3d     loc_4999        LDA dat_003d_L       ;
-499b: 18                        CLC                  ;
-499c: 69 10                     ADC #$10             ;
-499e: 85 3d                     STA dat_003d_L       ;
-49a0: 90 02                     BCC loc_49a4         ;
-49a2: e6 3e                     INC FTYPE            ;
-49a4: e6 49     loc_49a4        INC ERRNO            ;
-49a6: a5 49                     LDA ERRNO            ; If ERRNO >= $40 (64)
-49a8: c9 40                     CMP #$40             ;     ...
-49aa: b0 03                     BCS loc_49af         ;     ...
-49ac: 4c 10 48                  JMP loc_4810         ;     then continue @ $4810 [loc_4810]
-49af: 60        loc_49af        RTS                  ;     otherwise, Return to caller
+4984: a0 03     cont_4984       LDY #$03             ; Set Y = 3
+4986: b1 3d                     LDA (dat_003d_L),Y   ; If (*dat_003d_L)[Y] != 0)
+4988: f0 0a                     BEQ loc_4994         ; Then
+498a: 38                        SEC                  ;     Set (*dat_003d_L)[Y]
+498b: e9 01                     SBC #$01             ;            =
+498d: 91 3d                     STA (dat_003d_L),Y   ;              (*dat_003d_L)[Y] - 1
+498f: d0 03                     BNE loc_4994         ;     If ((*dat_003d_L)[Y] == 0) Then
+4991: 20 01 4a                  JSR sub_4a01         ;         Call $4a01 [sub_4a01]
+                                                     ;     End If
+                                                     ; End If
+4994: a9 80     loc_4994        LDA #$80             ; Set
+4996: 8d 5f 19                  STA UNK_BYTE_195F    ;     UNK_BYTE_195F = $80 (128)
+4999: a5 3d     cont_4999       LDA dat_003d_L       ; Set
+499b: 18                        CLC                  ;     dat_003d_L
+499c: 69 10                     ADC #$10             ;        =
+499e: 85 3d                     STA dat_003d_L       ;          dat_003d_L + $10 (16)  (C = 1 on overflow otherwise 0)
+49a0: 90 02                     BCC loc_49a4         ; If (C == 1) Then   (overflow)
+49a2: e6 3e                     INC dat_003d_H       ;     Add 1 to dat_003d_H
+                                                     ; End If
+49a4: e6 49     loc_49a4        INC dat_0049         ; Add 1 to dat_0049
+49a6: a5 49                     LDA dat_0049         ; If
+49a8: c9 40                     CMP #$40             ;    (dat_0049 >= $40 (64))
+49aa: b0 03                     BCS loc_49af         ; Then
+49ac: 4c 10 48                  JMP cont_4810        ;     Continue @ $4810 [cont_4810]
+                                                     ; End If
+49af: 60        loc_49af        RTS                  ; Return to caller
 
-49b0: a2 40     loc_49b0        LDX #$40             ; .@
-49b2: 86 55                     STX COLCRS           ; .U
-49b4: a2 00                     LDX #$00             ; ..
-49b6: 85 57                     STA DINDEX           ; .W
-49b8: c9 f0                     CMP #$f0             ; ..
-49ba: 90 04                     BCC loc_49c0         ; ..
-49bc: a2 10                     LDX #$10             ; ..
-49be: c6 55                     DEC COLCRS           ; .U
-49c0: 86 56     loc_49c0        STX COLCRS+1         ; .V
-49c2: a9 00                     LDA #$00             ; ..
-49c4: 85 3d                     STA dat_003d_L       ; .=
-49c6: a9 65                     LDA #$65             ; .e
-49c8: 85 3e                     STA FTYPE            ; .>
-49ca: a2 00                     LDX #$00             ; ..
-49cc: a4 56     loc_49cc        LDY COLCRS+1         ; .V
-49ce: a9 80                     LDA #$80             ; ..
-49d0: d1 3d                     CMP (dat_003d_L),Y   ; .=
-49d2: d0 0a                     BNE loc_49de         ; ..
-49d4: c0 00                     CPY #$00             ; ..
-49d6: f0 1d                     BEQ loc_49f5         ; ..
-49d8: a0 00                     LDY #$00             ; ..
-49da: d1 3d                     CMP (dat_003d_L),Y   ; .=
-49dc: f0 17                     BEQ loc_49f5         ; ..
-49de: a5 3d     loc_49de        LDA dat_003d_L       ; .=
-49e0: 18                        CLC                  ; .
-49e1: 69 10                     ADC #$10             ; i.
-49e3: 85 3d                     STA dat_003d_L       ; .=
-49e5: 90 02                     BCC loc_49e9         ; ..
-49e7: e6 3e                     INC FTYPE            ; .>
-49e9: e8        loc_49e9        INX                  ; .
-49ea: e4 55                     CPX COLCRS           ; .U
-49ec: 90 de                     BCC loc_49cc         ; ..
-49ee: a2 00                     LDX #$00             ; ..
-49f0: 86 3e                     STX FTYPE            ; .>
-49f2: ca                        DEX                  ; .
-49f3: 30 08                     BMI loc_49fd         ; 0.
-49f5: a5 57     loc_49f5        LDA DINDEX           ; .W
-49f7: 91 3d                     STA (dat_003d_L),Y   ; .=
-49f9: c8                        INY                  ; .
-49fa: 8a                        TXA                  ; .
-49fb: 91 3d                     STA (dat_003d_L),Y   ; .=
-49fd: 86 49     loc_49fd        STX ERRNO            ; .I
-49ff: 8a                        TXA                  ; .
-4a00: 60                        RTS                  ; `
-4a01: ce 5f 19  loc_4a01        DEC UNK_BYTE_195F    ; ._.
-4a04: a5 49                     LDA ERRNO            ; .I
-4a06: a2 04                     LDX #$04             ; ..
-4a08: 0a        loc_4a08        ASL                  ; .
-4a09: 26 40                     ROL FREQ             ; &@
-4a0b: ca                        DEX                  ; .
-4a0c: d0 fa                     BNE loc_4a08         ; ..
-4a0e: 18                        CLC                  ; .
-4a0f: 69 00                     ADC #$00             ; i.
-4a11: 85 3f                     STA FEOF             ; .?
-4a13: a5 40                     LDA FREQ             ; .@
-4a15: 29 0f                     AND #$0f             ; ).
-4a17: 69 65                     ADC #$65             ; ie
-4a19: 85 40                     STA FREQ             ; .@
-4a1b: 20 4a 4a                  JSR loc_4a4a         ;  JJ
-4a1e: a5 49                     LDA ERRNO            ; .I
-4a20: aa                        TAX                  ; .
-4a21: c8                        INY                  ; .
-4a22: d1 3f                     CMP (FEOF),Y         ; .?
-4a24: f0 13                     BEQ loc_4a39         ; ..
-4a26: 60                        RTS                  ; `
-4a27: a0 00     loc_4a27        LDY #$00             ; ..
-4a29: b1 3f                     LDA (FEOF),Y         ; .?
-4a2b: c9 81                     CMP #$81             ; ..
-4a2d: 90 0a                     BCC loc_4a39         ; ..
-4a2f: c8                        INY                  ; .
-4a30: b1 3f                     LDA (FEOF),Y         ; .?
-4a32: c5 49                     CMP ERRNO            ; .I
-4a34: d0 03                     BNE loc_4a39         ; ..
-4a36: 20 4a 4a                  JSR loc_4a4a         ;  JJ
-4a39: a5 3f     loc_4a39        LDA FEOF             ; .?
-4a3b: 18                        CLC                  ; .
-4a3c: 69 10                     ADC #$10             ; i.
-4a3e: 85 3f                     STA FEOF             ; .?
-4a40: 90 02                     BCC loc_4a44         ; ..
-4a42: e6 40                     INC FREQ             ; .@
-4a44: e8        loc_4a44        INX                  ; .
-4a45: e0 40                     CPX #$40             ; .@
-4a47: 90 de                     BCC loc_4a27         ; ..
-4a49: 60                        RTS                  ; `
-4a4a: a0 00     loc_4a4a        LDY #$00             ; ..
-4a4c: b1 3f                     LDA (FEOF),Y         ; .?
-4a4e: c9 f0                     CMP #$f0             ; ..
-4a50: 90 08                     BCC loc_4a5a         ; ..
-4a52: a0 10                     LDY #$10             ; ..
-4a54: a9 80                     LDA #$80             ; ..
-4a56: 91 3f                     STA (FEOF),Y         ; .?
-4a58: a0 00                     LDY #$00             ; ..
-4a5a: a9 80     loc_4a5a        LDA #$80             ; ..
-4a5c: 91 3f                     STA (FEOF),Y         ; .?
-4a5e: 60                        RTS                  ; `
-4a5f: a5 0f     loc_4a5f        LDA dat_000f         ; ..
-4a61: d0 1f                     BNE loc_4a82         ; ..
-4a63: c6 0f                     DEC dat_000f         ; ..
-4a65: a2 00                     LDX #$00             ; ..
-4a67: 86 4b                     STX dat_004b         ; .K
-4a69: bd 4b 64  loc_4a69        LDA INV_ARR_END,X    ; .Kd
-4a6c: f0 0a                     BEQ loc_4a78         ; ..
-4a6e: 85 42                     STA addr_0041_H      ; .B
-4a70: bd 0b 64                  LDA INV_ARR_START,X  ; ..d
-4a73: 85 41                     STA dat_0041         ; .A
-4a75: 20 b3 4b                  JSR sub_4bb3         ;  .K
-4a78: e6 4b     loc_4a78        INC dat_004b         ; .K
-4a7a: a6 4b                     LDX dat_004b         ; .K
-4a7c: e0 40                     CPX #$40             ; .@
-4a7e: 90 e9                     BCC loc_4a69         ; ..
-4a80: e6 0f                     INC dat_000f         ; ..
-4a82: 60        loc_4a82        RTS                  ; `
-4a83: 85 4f     loc_4a83        STA COLRSH           ; .O
-4a85: a2 3f                     LDX #$3f             ; .?
-4a87: bd 4b 64  loc_4a87        LDA INV_ARR_END,X    ; .Kd
-4a8a: f0 05                     BEQ loc_4a91         ; ..
-4a8c: ca                        DEX                  ; .
-4a8d: 10 f8                     BPL loc_4a87         ; ..
-4a8f: 30 2d                     BMI loc_4abe         ; 0-
-4a91: 86 4b     loc_4a91        STX dat_004b         ; .K
-4a93: 18                        CLC                  ; .
-4a94: ad e4 64                  LDA $64e4            ; ..d
-4a97: 9d 0b 64                  STA INV_ARR_START,X  ; ..d
-4a9a: 85 41                     STA dat_0041         ; .A
-4a9c: 65 4f                     ADC COLRSH           ; eO
-4a9e: a8                        TAY                  ; .
-4a9f: ad e5 64                  LDA $64e5            ; ..d
-4aa2: 9d 4b 64                  STA INV_ARR_END,X    ; .Kd
-4aa5: 85 42                     STA addr_0041_H      ; .B
-4aa7: 69 00                     ADC #$00             ; i.
-4aa9: aa                        TAX                  ; .
-4aaa: c9 75                     CMP #$75             ; .u
-4aac: 90 08                     BCC loc_4ab6         ; ..
-4aae: f0 02                     BEQ loc_4ab2         ; ..
-4ab0: b0 0d                     BCS loc_4abf         ; ..
-4ab2: c0 00     loc_4ab2        CPY #$00             ; ..
-4ab4: b0 09                     BCS loc_4abf         ; ..
-4ab6: 8c e4 64  loc_4ab6        STY $64e4            ; ..d
-4ab9: 8e e5 64                  STX $64e5            ; ..d
-4abc: a5 4b                     LDA dat_004b         ; .K
-4abe: 60        loc_4abe        RTS                  ; `
-4abf: a6 4b     loc_4abf        LDX dat_004b         ; .K
-4ac1: a9 00                     LDA #$00             ; ..
-4ac3: 9d 4b 64                  STA INV_ARR_END,X    ; .Kd
-4ac6: a9 ff                     LDA #$ff             ; ..
-4ac8: 60                        RTS                  ; `
-4ac9: 85 4b     loc_4ac9        STA dat_004b         ; .K
-4acb: aa                        TAX                  ; .
-4acc: bd 0b 64                  LDA INV_ARR_START,X  ; ..d
-4acf: 85 41                     STA dat_0041         ; .A
-4ad1: bd 4b 64                  LDA INV_ARR_END,X    ; .Kd
-4ad4: 85 42                     STA addr_0041_H      ; .B
-4ad6: a5 4c                     LDA dat_004c         ; .L
-4ad8: 48                        PHA                  ; H
-4ad9: a9 ff                     LDA #$ff             ; ..
-4adb: 85 4c                     STA dat_004c         ; .L
-4add: 20 93 4d                  JSR sub_4d93         ;  .M
-4ae0: 68                        PLA                  ; h
-4ae1: 85 4c                     STA dat_004c         ; .L
-4ae3: 20 a2 4e                  JSR sub_4ea2         ;  .N
-4ae6: 20 90 4e                  JSR sub_4e90         ;  .N
-4ae9: a6 4b                     LDX dat_004b         ; .K
-4aeb: a9 00                     LDA #$00             ; ..
-4aed: 9d 4b 64                  STA INV_ARR_END,X    ; .Kd
-4af0: a0 01                     LDY #$01             ; ..
-4af2: b1 41                     LDA (dat_0041),Y     ; .A
-4af4: 85 4f                     STA COLRSH           ; .O
-4af6: a5 41                     LDA dat_0041         ; .A
-4af8: 85 09                     STA dat_0009_L       ; ..
-4afa: 18                        CLC                  ; .
-4afb: 65 4f                     ADC COLRSH           ; eO
-4afd: 85 07                     STA dat_0007_L       ; ..
-4aff: a5 42                     LDA addr_0041_H      ; .B
-4b01: 85 0a                     STA dat_0009_H       ; ..
-4b03: 69 00                     ADC #$00             ; i.
-4b05: 85 08                     STA dat_0007_H       ; ..
-4b07: 38                        SEC                  ; 8
-4b08: a9 00                     LDA #$00             ; ..
-4b0a: e5 07                     SBC dat_0007_L       ; ..
-4b0c: a8                        TAY                  ; .
-4b0d: a9 75                     LDA #$75             ; .u
-4b0f: e5 08                     SBC dat_0007_H       ; ..
-4b11: aa                        TAX                  ; .
-4b12: 20 0d 2e                  JSR COPY_BYTES       ;  ..
-4b15: 38                        SEC                  ; 8
-4b16: ad e4 64                  LDA $64e4            ; ..d
-4b19: e5 4f                     SBC COLRSH           ; .O
-4b1b: 8d e4 64                  STA $64e4            ; ..d
-4b1e: ad e5 64                  LDA $64e5            ; ..d
-4b21: e9 00                     SBC #$00             ; ..
-4b23: 8d e5 64                  STA $64e5            ; ..d
-4b26: a2 3f                     LDX #$3f             ; .?
-4b28: 38        loc_4b28        SEC                  ; 8
-4b29: bd 0b 64                  LDA INV_ARR_START,X  ; ..d
-4b2c: e5 4f                     SBC COLRSH           ; .O
-4b2e: a8                        TAY                  ; .
-4b2f: bd 4b 64                  LDA INV_ARR_END,X    ; .Kd
-4b32: f0 15                     BEQ loc_4b49         ; ..
-4b34: e9 00                     SBC #$00             ; ..
-4b36: c5 42                     CMP addr_0041_H      ; .B
-4b38: 90 0f                     BCC loc_4b49         ; ..
-4b3a: f0 02                     BEQ loc_4b3e         ; ..
-4b3c: b0 04                     BCS loc_4b42         ; ..
-4b3e: c4 41     loc_4b3e        CPY dat_0041         ; .A
-4b40: 90 07                     BCC loc_4b49         ; ..
-4b42: 9d 4b 64  loc_4b42        STA INV_ARR_END,X    ; .Kd
-4b45: 98                        TYA                  ; .
-4b46: 9d 0b 64                  STA INV_ARR_START,   X  ; ..d
-4b49: ca        loc_4b49        DEX                  ; .
-4b4a: 10 dc                     BPL loc_4b28         ; ..
-4b4c: 60                        RTS                  ; `
-4b4d: 84 07     loc_4b4d        STY dat_0007_L       ; ..
-4b4f: 86 08                     STX dat_0007_H       ; ..
-4b51: a0 01                     LDY #$01             ; ..
-4b53: b1 07                     LDA (dat_0007_L),Y   ; ..
-4b55: 20 83 4a                  JSR loc_4a83         ;  .J
-4b58: 30 19                     BMI loc_4b73         ; 0.
-4b5a: a2 64                     LDX #$64             ; .d
-4b5c: a0 8b                     LDY #$8b             ; ..
-4b5e: 18                        CLC                  ; .
-4b5f: 20 ab 2d                  JSR sub_2dab         ;  .-
-4b62: a4 4f                     LDY COLRSH           ; .O
-4b64: a2 00                     LDX #$00             ; ..
-4b66: a5 41                     LDA dat_0041         ; .A
-4b68: 85 09                     STA dat_0009_L       ; ..
-4b6a: a5 42                     LDA addr_0041_H      ; .B
-4b6c: 85 0a                     STA dat_0009_H       ; ..
-4b6e: 20 0d 2e                  JSR COPY_BYTES       ;  ..
-4b71: a5 4b                     LDA dat_004b         ; .K
+                ; Adds a new entry to the table at $6500.
+                ;
+                ; Input
+                ;   A            - Value to assign to byte 0 of the entry
+                ;
+                ; Output
+                ;   X            - Index of the entry added (0..63) or $ff if no available
+                ;   A            - same as X
+                ;   dat_0049     - same as X
+                ;   N            - 0 if entry was added, 1 if no available space
+                ;   dat_003d_L/H - When N == 0, set to address of entry inserted which has the following values assigned:
+                ;                     Byte 0: Value of input param A
+                ;                     Byte 1: Index number of the entry (0..63)
+                ;
+                ; Temp
+                ;   dat_0055     - Number of entries: $40 (64) if input param A < $f0 otherwise $39 (63)
+                ;   dat_0056     - Offset from dat_003d_L/H: 0 if input param A < $f0 otherwise $10
+                ;   dat_0057     - Set to value of input param A
+                ;
+49b0: a2 40     sub_49b0        LDX #$40             ; Set
+49b2: 86 55                     STX dat_0055         ;     dat_0055 = $40 (64)
+49b4: a2 00                     LDX #$00             ; Set X = 0
+49b6: 85 57                     STA dat_0057         ; Set dat_0057 = A
+49b8: c9 f0                     CMP #$f0             ; If (A >= $f0)
+49ba: 90 04                     BCC loc_49c0         ; Then
+49bc: a2 10                     LDX #$10             ;     Set X = $10 (16)
+49be: c6 55                     DEC dat_0055         ;     Subtract 1 from dat_0055
+                                                     ; End If
+49c0: 86 56     loc_49c0        STX dat_0056         ; Set dat_0056 = X
+49c2: a9 00                     LDA #$00             ; Set
+49c4: 85 3d                     STA dat_003d_L       ;     dat_003d_L/H
+49c6: a9 65                     LDA #$65             ;     to
+49c8: 85 3e                     STA dat_003d_H       ;     $6500 [TODO: label?  timer-based effects related?]
+49ca: a2 00                     LDX #$00             ; Set X = 0
+49cc: a4 56     loc_49cc        LDY dat_0056         ; Loop
+                                                     ;     Set Y = dat_0056   (either 0 or $10 (16))
+49ce: a9 80                     LDA #$80             ;     Set A = $80        (appears to indicate an open/unused entry)
+49d0: d1 3d                     CMP (dat_003d_L),Y   ;     If (A == (*dat_003d_L)[Y])
+49d2: d0 0a                     BNE loc_49de         ;     Then
+49d4: c0 00                     CPY #$00             ;         If (Y == 0) Then
+49d6: f0 1d                     BEQ loc_49f5         ;             Continue @ $49f5 [loc_49f5]
+                                                     ;         End If
+49d8: a0 00                     LDY #$00             ;         Set Y = 0
+49da: d1 3d                     CMP (dat_003d_L),Y   ;         If ((*dat_003d_L)[0] == 0) Then
+49dc: f0 17                     BEQ loc_49f5         ;             Continue @ $49f5 [loc_49f5]
+                                                     ;         End If
+                                                     ;     End If
+49de: a5 3d     loc_49de        LDA dat_003d_L       ;     (Move to next entry)
+49e0: 18                        CLC                  ;     Set dat_003d_L
+49e1: 69 10                     ADC #$10             ;            =
+49e3: 85 3d                     STA dat_003d_L       ;              dat_003d_L + $10 (16)   (C = 1 on overflow otherwise 0)
+49e5: 90 02                     BCC loc_49e9         ;     If (C == 1) Then   (overflow)
+49e7: e6 3e                     INC dat_003d_H       ;         Add 1 to dat_003d_H
+                                                     ;     End If
+49e9: e8        loc_49e9        INX                  ;     Add 1 to X
+49ea: e4 55                     CPX dat_0055         ; Repeat
+49ec: 90 de                     BCC loc_49cc         ;    while (X < dat_0055)
+49ee: a2 00                     LDX #$00             ; Set X = 0
+49f0: 86 3e                     STX dat_003d_H       ; Set dat_003d_H = 0
+49f2: ca                        DEX                  ; Subtract 1 from X  (e.g. Set X = $ff (-1))
+49f3: 30 08                     BMI loc_49fd         ; Continue @ $49fd [loc_49fd]  (Return A = $ff, X = $ff, dat_0049 = $ff)
+                ; Jumps here if an insertion position is found
+                ;   - Sets byte 0 of the entry to the input param A value
+                ;   - Sets byte 1 of the entry to the input param X value
+49f5: a5 57     loc_49f5        LDA dat_0057         ; Set
+49f7: 91 3d                     STA (dat_003d_L),Y   ;     (*dat_003d_L)[Y] = dat_0057   (original param A value)
+49f9: c8                        INY                  ; Add 1 to Y
+49fa: 8a                        TXA                  ; Set
+49fb: 91 3d                     STA (dat_003d_L),Y   ;     (*dat_003d_L)[Y] = X
+49fd: 86 49     loc_49fd        STX dat_0049         ; Set dat_0049 = X
+49ff: 8a                        TXA                  ; Set A = X    (Sets N to match sign)
+4a00: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+4a01: ce 5f 19  sub_4a01        DEC UNK_BYTE_195F    ; Subtract 1 from UNK_BYTE_195F
+                ; Rotate high nibble of dat_0049 into low nibble of addr_003f_H,
+                ;   low nibble of addr_003f_H into high nibble of addr_003f_H
+4a04: a5 49                     LDA dat_0049         ; Set A = dat_0049
+4a06: a2 04                     LDX #$04             ; Set X = 4  (4 iterations)
+4a08: 0a        loc_4a08        ASL                  ; Loop
+                                                     ;     Set A *= 2, C = old bit 7 of A
+4a09: 26 40                     ROL addr_003f_H      ;     Set addr_003f_H = addr_003f_H * 2 + C
+4a0b: ca                        DEX                  ;     Subtract 1 from X
+4a0c: d0 fa                     BNE loc_4a08         ; Repeat while (X != 0)
+4a0e: 18                        CLC                  ; (Note: A = (dat_0049 & $0f) << 4)
+4a0f: 69 00                     ADC #$00             ; Set
+4a11: 85 3f                     STA addr_003f_L      ;     addr_003f_L = (dat_0049 & $0f) << 4
+4a13: a5 40                     LDA addr_003f_H      ; Set
+4a15: 29 0f                     AND #$0f             ;     addr_003f_H
+4a17: 69 65                     ADC #$65             ;        =
+4a19: 85 40                     STA addr_003f_H      ;          (addr_003f_H & $0f) + $65 (101)
+4a1b: 20 4a 4a                  JSR sub_4a4a         ; Call $4a4a [sub_4a4a]
+4a1e: a5 49                     LDA dat_0049         ; Set
+4a20: aa                        TAX                  ;     X = dat_0049
+4a21: c8                        INY                  ; Add 1 to Y
+4a22: d1 3f                     CMP (addr_003f_L),Y  ; If (dat_0049 == (*addr_003f_L)[Y])
+4a24: f0 13                     BEQ loc_4a39         ;     Continue @ loc_4a39
+                                                     ; End If
+4a26: 60                        RTS                  ; Return to caller
+4a27: a0 00     loc_4a27        LDY #$00             ; Loop
+                                                     ;     Set Y = 0
+4a29: b1 3f                     LDA (addr_003f_L),Y  ;     If
+4a2b: c9 81                     CMP #$81             ;        ((*addr_003f_L)[0] >= $81 (129))
+4a2d: 90 0a                     BCC loc_4a39         ;     Then
+4a2f: c8                        INY                  ;         Add 1 to Y
+4a30: b1 3f                     LDA (addr_003f_L),Y  ;         If
+4a32: c5 49                     CMP dat_0049         ;            ((*addr_003f_L)[Y] == dat_0049)
+4a34: d0 03                     BNE loc_4a39         ;         Then
+4a36: 20 4a 4a                  JSR sub_4a4a         ;             Call $4a4a [sub_4a4a]
+                                                     ;         End If
+                                                     ;     End If
+4a39: a5 3f     loc_4a39        LDA addr_003f_L      ;     Set
+4a3b: 18                        CLC                  ;         addr_003f_L
+4a3c: 69 10                     ADC #$10             ;            =
+4a3e: 85 3f                     STA addr_003f_L      ;              addr_003f_L + $10 (16)
+4a40: 90 02                     BCC loc_4a44         ;     If (C == 1) Then  (overflow)
+4a42: e6 40                     INC addr_003f_H      ;        Add 1 to addr_003f_H
+                                                     ;     End If
+4a44: e8        loc_4a44        INX                  ;     Add 1 to X
+4a45: e0 40                     CPX #$40             ; Repeat
+4a47: 90 de                     BCC loc_4a27         ;   while (X < $40 (64))
+4a49: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+4a4a: a0 00     sub_4a4a        LDY #$00             ; Set Y = 0
+4a4c: b1 3f                     LDA (addr_003f_L),Y  ; If
+4a4e: c9 f0                     CMP #$f0             ;    ((*addr_003f_L)[0] >= $f0 (240))
+4a50: 90 08                     BCC loc_4a5a         ; Then
+4a52: a0 10                     LDY #$10             ;     Set (*addr_003f_L)[$10 (16)]
+4a54: a9 80                     LDA #$80             ;            =
+4a56: 91 3f                     STA (addr_003f_L),Y  ;              $80 (128)
+4a58: a0 00                     LDY #$00             ;     Set Y = 0
+                                                     ; End If
+4a5a: a9 80     loc_4a5a        LDA #$80             ; Set
+4a5c: 91 3f                     STA (addr_003f_L),Y  ;     (*addr_003f_L)[0] = $80 (128)
+4a5e: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+4a5f: a5 0f     sub_4a5f        LDA dat_000f         ; If (dat_000f == 0)
+4a61: d0 1f                     BNE loc_4a82         ; Then
+4a63: c6 0f                     DEC dat_000f         ;     Subtract 1 from dat_000f
+4a65: a2 00                     LDX #$00             ;     Set X = 0
+4a67: 86 4b                     STX dat_004b         ;     Set dat_004b = 0
+4a69: bd 4b 64  loc_4a69        LDA INV_ARR_END,X    ;     Loop
+4a6c: f0 0a                     BEQ loc_4a78         ;         If (INV_ARR_END[X] != 0) Then
+4a6e: 85 42                     STA addr_0041_H      ;             Set addr_0041_H = INV_ARR_END[X]
+4a70: bd 0b 64                  LDA INV_ARR_START,X  ;             Set
+4a73: 85 41                     STA addr_0041_L      ;                 addr_0041_L = INV_ARR_START[X]
+4a75: 20 b3 4b                  JSR sub_4bb3         ;             Call $4bb3 [sub_4bb3]
+                                                     ;         End If
+4a78: e6 4b     loc_4a78        INC dat_004b         ;         Add 1 to dat_004b
+4a7a: a6 4b                     LDX dat_004b         ;     Repeat
+4a7c: e0 40                     CPX #$40             ;       while
+4a7e: 90 e9                     BCC loc_4a69         ;         (dat_004b < $40 (64))
+4a80: e6 0f                     INC dat_000f         ;     Add 1 to dat_000f
+                                                     ; End If
+4a82: 60        loc_4a82        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+4a83: 85 4f     sub_4a83        STA COLRSH           ;
+4a85: a2 3f                     LDX #$3f             ;
+4a87: bd 4b 64  loc_4a87        LDA INV_ARR_END,X    ;
+4a8a: f0 05                     BEQ loc_4a91         ;
+4a8c: ca                        DEX                  ;
+4a8d: 10 f8                     BPL loc_4a87         ;
+4a8f: 30 2d                     BMI loc_4abe         ;
+4a91: 86 4b     loc_4a91        STX dat_004b         ;
+4a93: 18                        CLC                  ;
+4a94: ad e4 64                  LDA $64e4            ;
+4a97: 9d 0b 64                  STA INV_ARR_START,X  ;
+4a9a: 85 41                     STA addr_0041_L      ;
+4a9c: 65 4f                     ADC COLRSH           ;
+4a9e: a8                        TAY                  ;
+4a9f: ad e5 64                  LDA $64e5            ;
+4aa2: 9d 4b 64                  STA INV_ARR_END,X    ;
+4aa5: 85 42                     STA addr_0041_H      ;
+4aa7: 69 00                     ADC #$00             ;
+4aa9: aa                        TAX                  ;
+4aaa: c9 75                     CMP #$75             ;
+4aac: 90 08                     BCC loc_4ab6         ;
+4aae: f0 02                     BEQ loc_4ab2         ;
+4ab0: b0 0d                     BCS loc_4abf         ;
+4ab2: c0 00     loc_4ab2        CPY #$00             ;
+4ab4: b0 09                     BCS loc_4abf         ;
+4ab6: 8c e4 64  loc_4ab6        STY $64e4            ;
+4ab9: 8e e5 64                  STX $64e5            ;
+4abc: a5 4b                     LDA dat_004b         ;
+4abe: 60        loc_4abe        RTS                  ; Return to caller
+4abf: a6 4b     loc_4abf        LDX dat_004b         ;
+4ac1: a9 00                     LDA #$00             ;
+4ac3: 9d 4b 64                  STA INV_ARR_END,X    ;
+4ac6: a9 ff                     LDA #$ff             ;
+4ac8: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+4ac9: 85 4b     sub_4ac9        STA dat_004b         ;
+4acb: aa                        TAX                  ;
+4acc: bd 0b 64                  LDA INV_ARR_START,X  ;
+4acf: 85 41                     STA addr_0041_L      ;
+4ad1: bd 4b 64                  LDA INV_ARR_END,X    ;
+4ad4: 85 42                     STA addr_0041_H      ;
+4ad6: a5 4c                     LDA dat_004c         ;
+4ad8: 48                        PHA                  ;
+4ad9: a9 ff                     LDA #$ff             ;
+4adb: 85 4c                     STA dat_004c         ;
+4add: 20 93 4d                  JSR sub_4d93         ;
+4ae0: 68                        PLA                  ;
+4ae1: 85 4c                     STA dat_004c         ;
+4ae3: 20 a2 4e                  JSR sub_4ea2         ;
+4ae6: 20 90 4e                  JSR sub_4e90         ;
+4ae9: a6 4b                     LDX dat_004b         ;
+4aeb: a9 00                     LDA #$00             ;
+4aed: 9d 4b 64                  STA INV_ARR_END,X    ;
+4af0: a0 01                     LDY #$01             ;
+4af2: b1 41                     LDA (addr_0041_L),Y  ;
+4af4: 85 4f                     STA COLRSH           ;
+4af6: a5 41                     LDA addr_0041_L      ;
+4af8: 85 09                     STA dat_0009_L       ;
+4afa: 18                        CLC                  ;
+4afb: 65 4f                     ADC COLRSH           ;
+4afd: 85 07                     STA dat_0007_L       ;
+4aff: a5 42                     LDA addr_0041_H      ;
+4b01: 85 0a                     STA dat_0009_H       ;
+4b03: 69 00                     ADC #$00             ;
+4b05: 85 08                     STA dat_0007_H       ;
+4b07: 38                        SEC                  ;
+4b08: a9 00                     LDA #$00             ;
+4b0a: e5 07                     SBC dat_0007_L       ;
+4b0c: a8                        TAY                  ;
+4b0d: a9 75                     LDA #$75             ;
+4b0f: e5 08                     SBC dat_0007_H       ;
+4b11: aa                        TAX                  ;
+4b12: 20 0d 2e                  JSR COPY_BYTES       ;
+4b15: 38                        SEC                  ;
+4b16: ad e4 64                  LDA $64e4            ;
+4b19: e5 4f                     SBC COLRSH           ;
+4b1b: 8d e4 64                  STA $64e4            ;
+4b1e: ad e5 64                  LDA $64e5            ;
+4b21: e9 00                     SBC #$00             ;
+4b23: 8d e5 64                  STA $64e5            ;
+4b26: a2 3f                     LDX #$3f             ;
+4b28: 38        loc_4b28        SEC                  ;
+4b29: bd 0b 64                  LDA INV_ARR_START,X  ;
+4b2c: e5 4f                     SBC COLRSH           ;
+4b2e: a8                        TAY                  ;
+4b2f: bd 4b 64                  LDA INV_ARR_END,X    ;
+4b32: f0 15                     BEQ loc_4b49         ;
+4b34: e9 00                     SBC #$00             ;
+4b36: c5 42                     CMP addr_0041_H      ;
+4b38: 90 0f                     BCC loc_4b49         ;
+4b3a: f0 02                     BEQ loc_4b3e         ;
+4b3c: b0 04                     BCS loc_4b42         ;
+4b3e: c4 41     loc_4b3e        CPY addr_0041_L      ;
+4b40: 90 07                     BCC loc_4b49         ;
+4b42: 9d 4b 64  loc_4b42        STA INV_ARR_END,X    ;
+4b45: 98                        TYA                  ;
+4b46: 9d 0b 64                  STA INV_ARR_START,X  ;
+4b49: ca        loc_4b49        DEX                  ;
+4b4a: 10 dc                     BPL loc_4b28         ;
+4b4c: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+4b4d: 84 07     sub_4b4d        STY dat_0007_L       ;
+4b4f: 86 08                     STX dat_0007_H       ;
+4b51: a0 01                     LDY #$01             ;
+4b53: b1 07                     LDA (dat_0007_L),Y   ;
+4b55: 20 83 4a                  JSR sub_4a83         ;
+4b58: 30 19                     BMI loc_4b73         ;
+4b5a: a2 64                     LDX #$64             ;
+4b5c: a0 8b                     LDY #$8b             ;
+4b5e: 18                        CLC                  ;
+4b5f: 20 ab 2d                  JSR sub_2dab         ;
+4b62: a4 4f                     LDY COLRSH           ;
+4b64: a2 00                     LDX #$00             ;
+4b66: a5 41                     LDA addr_0041_L      ;
+4b68: 85 09                     STA dat_0009_L       ;
+4b6a: a5 42                     LDA addr_0041_H      ;
+4b6c: 85 0a                     STA dat_0009_H       ;
+4b6e: 20 0d 2e                  JSR COPY_BYTES       ;
+4b71: a5 4b                     LDA dat_004b         ;
 4b73: 60        loc_4b73        RTS                  ; Return to caller
 
                 ;
@@ -6691,12 +7458,14 @@ xxx - TODO: this can't be both a sub and a string, can it?
                 ;   A - offset relative to INV_ARR_START and INV_ARR_END
                 ;
                 ; Output
-                ;   dat_0041    - set to INV_ARR_START[X]
-                ;   addr_0041_H - set to INV_ARR_END[X]
+                ;   addr_0041_L  - set to INV_ARR_START[X]
+                ;   addr_0041_H  - set to INV_ARR_END[X]
+                ;   N            - 1 if addr_0041_H < 0 otherwise 0
+                ;   Z            - 1 if addr_0041_H is 0 otherwise 0
                 ;
 4b74: aa        sub_4b74        TAX                  ; Set X = A
 4b75: bd 0b 64                  LDA INV_ARR_START,X  ; Set
-4b78: 85 41                     STA dat_0041         ;     dat_0041 = INV_ARR_START[X]
+4b78: 85 41                     STA addr_0041_L      ;     addr_0041_L = INV_ARR_START[X]
 4b7a: bd 4b 64                  LDA INV_ARR_END,X    ; Set
 4b7d: 85 42                     STA addr_0041_H      ;     addr_0041_H = INV_ARR_END[X]
 4b7f: 60                        RTS                  ; Return to caller
@@ -6723,11 +7492,11 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4b92: 20 aa 4b                  JSR sub_4baa         ; Call $4baa [sub_4baa]
 4b95: a5 4b                     LDA dat_004b         ; Set A = dat_004b
 4b97: 20 74 4b                  JSR sub_4b74         ; Call $4b74 [sub_4b74]
-4b9a: f0 0d                     BEQ loc_4ba9         ; If (Z == 0) Then   (? != 0)
+4b9a: f0 0d                     BEQ loc_4ba9         ; If (addr_0041_H != 0) Then
 4b9c: a0 02                     LDY #$02             ;     Set Y = 2
 4b9e: a5 4d                     LDA dat_004d         ;     Set
 4ba0: 85 4c                     STA dat_004c         ;         dat_004c = dat_004d (saved X parm)
-4ba2: 91 41                     STA (dat_0041),Y     ;     Set (*dat_0041)[Y] = dat_004d (saved X parm)
+4ba2: 91 41                     STA (addr_0041_L),Y  ;     Set (*addr_0041_L)[Y] = dat_004d (saved X parm)
 4ba4: 20 b3 4b                  JSR sub_4bb3         ;     Call $4bb3 [sub_4bb3]
 4ba7: a9 ff                     LDA #$ff             ;     Set A = $ff
                                                      ; End If
@@ -6742,14 +7511,14 @@ xxx - TODO: this can't be both a sub and a string, can it?
 
                 ;
 4bb3: a0 02     sub_4bb3        LDY #$02             ;
-4bb5: b1 41                     LDA (dat_0041),Y     ;
+4bb5: b1 41                     LDA (addr_0041_L),Y  ;
 4bb7: d0 01                     BNE loc_4bba         ;
 4bb9: 60                        RTS                  ; Return to caller
 4bba: 85 4c     loc_4bba        STA dat_004c         ;
 4bbc: ce 60 19                  DEC UNK_BYTE_1960    ;
 4bbf: ce 5f 19                  DEC UNK_BYTE_195F    ;
 4bc2: a9 00                     LDA #$00             ;
-4bc4: 91 41                     STA (dat_0041),Y     ;
+4bc4: 91 41                     STA (addr_0041_L),Y  ;
 4bc6: 20 0f 4e                  JSR sub_4e0f         ;
                 ; Count the number of LSB 0 bits in dat_004c
 4bc9: a5 4c                     LDA dat_004c         ; Set A = dat_004c
@@ -6773,8 +7542,8 @@ xxx - TODO: this can't be both a sub and a string, can it?
                 ; Referenced in tbl_4cbf_L/H
 4be2: a9 80     sub_4be2        LDA #$80             ;
 4be4: a0 00                     LDY #$00             ;
-4be6: 11 41                     ORA (dat_0041),Y     ;
-4be8: 91 41                     STA (dat_0041),Y     ;
+4be6: 11 41                     ORA (addr_0041_L),Y  ;
+4be8: 91 41                     STA (addr_0041_L),Y  ;
 4bea: 20 90 4e                  JSR sub_4e90         ;
 4bed: a9 01                     LDA #$01             ;
 4bef: 48                        PHA                  ;
@@ -6783,11 +7552,11 @@ xxx - TODO: this can't be both a sub and a string, can it?
 
                 ; Referenced in tbl_4cbf_L/H
 4bf5: a0 00     sub_4bf5        LDY #$00             ;
-4bf7: b1 41                     LDA (dat_0041),Y     ;
+4bf7: b1 41                     LDA (addr_0041_L),Y  ;
 4bf9: 30 03                     BMI loc_4bfe         ;
 4bfb: 4c 9c 4c                  JMP rts_4c9c         ; Return to caller
 4bfe: 29 7f     loc_4bfe        AND #$7f             ;
-4c00: 91 41                     STA (dat_0041),Y     ;
+4c00: 91 41                     STA (addr_0041_L),Y  ;
 4c02: c9 0b                     CMP #$0b             ;
 4c04: d0 03                     BNE loc_4c09         ;
 4c06: 20 fd 4e                  JSR sub_4efd         ;
@@ -6800,7 +7569,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4c18: 48                        PHA                  ;
 4c19: bd d4 64                  LDA $64d4,X          ;
 4c1c: 85 4b                     STA dat_004b         ;
-4c1e: 20 c9 4a                  JSR loc_4ac9         ;
+4c1e: 20 c9 4a                  JSR sub_4ac9         ;
 4c21: 68                        PLA                  ;
 4c22: 85 4b                     STA dat_004b         ;
 4c24: 20 74 4b                  JSR sub_4b74         ;
@@ -6821,7 +7590,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4c4a: 8d 93 64                  STA $6493            ;
 4c4d: a0 02                     LDY #$02             ;
 4c4f: a9 08                     LDA #$08             ;
-4c51: 91 41                     STA (dat_0041),Y     ;
+4c51: 91 41                     STA (addr_0041_L),Y  ;
 4c53: a9 02                     LDA #$02             ;
 4c55: 48                        PHA                  ;
 4c56: a9 01                     LDA #$01             ;
@@ -6840,7 +7609,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 
                 ; Referenced in tbl_4cbf_L/H
 4c6b: a0 00     sub_4c6b        LDY #$00             ;
-4c6d: b1 41                     LDA (dat_0041),Y     ;
+4c6d: b1 41                     LDA (addr_0041_L),Y  ;
 4c6f: 29 7f                     AND #$7f             ;
 4c71: c9 0b                     CMP #$0b             ;
 4c73: d0 03                     BNE loc_4c78         ;
@@ -6863,116 +7632,129 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4c93: a9 04                     LDA #$04             ;
 4c95: 20 93 4d  loc_4c95        JSR sub_4d93         ;
 4c98: 68                        PLA                  ;
-4c99: 20 cf 4c                  JSR loc_4ccf         ;
+4c99: 20 cf 4c                  JSR sub_4ccf         ;
 
                 ; Referenced in tbl_4cbf_L/H
 4c9c: 60        rts_4c9c        RTS                  ; Return to caller
 
 4c9d: a0 00     sub_4c9d        LDY #$00             ;
-4c9f: b1 41                     LDA (dat_0041),Y     ;
+4c9f: b1 41                     LDA (addr_0041_L),Y  ;
 4ca1: c9 8b                     CMP #$8b             ;
 4ca3: d0 08                     BNE loc_4cad         ;
 4ca5: ad 90 63                  LDA CHR_LIT_TORCH_FLAG ;
 4ca8: f0 03                     BEQ loc_4cad         ;
 4caa: ce 90 63                  DEC CHR_LIT_TORCH_FLAG ;
 4cad: a9 02     loc_4cad        LDA #$02             ;
-4caf: 20 cf 4c                  JSR loc_4ccf         ;
+4caf: 20 cf 4c                  JSR sub_4ccf         ;
 4cb2: a9 08                     LDA #$08             ;
-4cb4: 20 cf 4c                  JSR loc_4ccf         ;
+4cb4: 20 cf 4c                  JSR sub_4ccf         ;
 4cb7: 20 90 4e                  JSR sub_4e90         ;
 4cba: a5 4b                     LDA dat_004b         ;
-4cbc: 4c c9 4a                  JMP loc_4ac9         ; Continue execution @ $4ac9 [loc_4ac9]
+4cbc: 4c c9 4a                  JMP sub_4ac9         ; Continue execution @ $4ac9 [sub_4ac9]
 
 4cbf: e1        tbl_4cbf_L      .BYTE $e1            ; .
 4cc0: 4b f4 4b 59 4c 6a 4c  tbl_4cbf_H  .BYTE $4b,$f4,$4b,$59,$4c,$6a,$4c  ; K.KYLjL
 4cc7: 9c 4c 9b 4c 9b 4c 9b 4c   .BYTE $9c,$4c,$9b,$4c,$9b,$4c,$9b,$4c  ; .L.L.L.L
-4ccf: 85 4c     sub_4ccf        .BYTE $85,$4c        ; .L
 
-; TODO: How does this code get called?
-4cd1: 20 e8 4e                  JSR sub_4ee8         ;
-4cd4: a9 ff                     LDA #$ff             ;
-4cd6: 85 4a                     STA CKEY             ;
-
-4cd8: a0 00     loc_4cd8        LDY #$00             ;
-4cda: b1 43                     LDA (addr_0043_L),Y  ;
-4cdc: d0 03                     BNE loc_4ce1         ;
-4cde: 4c 92 4d                  JMP loc_4d92         ; Return to caller
-4ce1: a0 01     loc_4ce1        LDY #$01             ;
-4ce3: b1 43                     LDA (addr_0043_L),Y  ;
-4ce5: 10 02                     BPL loc_4ce9         ;
-4ce7: 85 4a                     STA CKEY             ;
-4ce9: a0 02     loc_4ce9        LDY #$02             ;
-4ceb: b1 43                     LDA (addr_0043_L),Y  ;
-4ced: 29 20                     AND #$20             ;
-4cef: f0 06                     BEQ loc_4cf7         ;
-4cf1: 25 4c                     AND DSTAT            ;
-4cf3: d0 08                     BNE loc_4cfd         ;
+4ccf: 85 4c     sub_4ccf        STA dat_004c         ; Set dat_004c = A
+4cd1: 20 e8 4e                  JSR sub_4ee8         ; Call $4ee8 [sub_4ee8]
+4cd4: a9 ff                     LDA #$ff             ; Set
+4cd6: 85 4a                     STA dat_004a         ;     dat_004a = $ff
+4cd8: a0 00     loc_4cd8        LDY #$00             ; If ((*addr_0043_L)[0] == 0)
+4cda: b1 43                     LDA (addr_0043_L),Y  ; Then
+4cdc: d0 03                     BNE loc_4ce1         ;     Continue @ $4d92 [rts_4d92]  (Return to caller)
+4cde: 4c 92 4d                  JMP rts_4d92         ; End If
+4ce1: a0 01     loc_4ce1        LDY #$01             ; Set Y = 1
+4ce3: b1 43                     LDA (addr_0043_L),Y  ; If ((*addr_0043_L)[1] < 0)
+4ce5: 10 02                     BPL loc_4ce9         ; Then
+4ce7: 85 4a                     STA dat_004a         ;     Set dat_004a = (*addr_0043_L)[1]
+                                                     ; End If
+4ce9: a0 02     loc_4ce9        LDY #$02             ; Set Y = 2
+4ceb: b1 43                     LDA (addr_0043_L),Y  ; Set
+4ced: 29 20                     AND #$20             ;     A = (*addr_0043_L)[1] & $20 (32)
+4cef: f0 06                     BEQ loc_4cf7         ; If (A == 0) Then
+                                                     ;     Continue @ $4cf7 [loc_4cf7]
+                                                     ; End If
+4cf1: 25 4c                     AND dat_004c         ; Set A = A & dat_004c
+4cf3: d0 08                     BNE loc_4cfd         ; If (A != 0)
 4cf5: f0 0e                     BEQ loc_4d05         ;
-4cf7: a5 4c     loc_4cf7        LDA DSTAT            ;
-4cf9: 29 20                     AND #$20             ;
-4cfb: d0 08     loc_4cfb        BNE loc_4d05         ;
+4cf7: a5 4c     loc_4cf7        LDA dat_004c         ;    And
+4cf9: 29 20                     AND #$20             ;    (dat_004c & $20 == 0)
+4cfb: d0 08                     BNE loc_4d05         ; Then
 4cfd: b1 43     loc_4cfd        LDA (addr_0043_L),Y  ;
-4cff: 25 4c     loc_4cff        AND DSTAT            ;
-4d01: c5 4c                     CMP DSTAT            ;
-4d03: f0 03                     BEQ loc_4d08         ;
-4d05: 4c 79 4d  loc_4d05        JMP loc_4d79         ;
-4d08: b1 43     loc_4d08        LDA (addr_0043_L),Y  ;
-4d0a: 10 05                     BPL loc_4d11         ;
-4d0c: 20 d4 4d                  JSR loc_4dd4         ;
-4d0f: 30 09                     BMI loc_4d1a         ;
-4d11: a0 00     loc_4d11        LDY #$00             ;
-4d13: b1 43                     LDA (addr_0043_L),Y  ;
-4d15: 20 b0 49                  JSR loc_49b0         ;
-4d18: 10 0f                     BPL loc_4d29         ;
-4d1a: a5 4a     loc_4d1a        LDA CKEY             ;
-4d1c: 10 03                     BPL loc_4d21         ;
-4d1e: 4c 92 4d                  JMP loc_4d92         ; Return to caller
-4d21: 85 49     loc_4d21        STA ERRNO            ;
-4d23: 20 01 4a                  JSR loc_4a01         ;
-4d26: 4c 92 4d                  JMP loc_4d92         ; Return to caller
-4d29: a0 01     loc_4d29        LDY #$01             ;
-4d2b: 24 4a                     BIT CKEY             ;
-4d2d: 30 04                     BMI loc_4d33         ;
-4d2f: b1 43                     LDA (addr_0043_L),Y  ;
-4d31: 10 04                     BPL loc_4d37         ;
-4d33: a5 49     loc_4d33        LDA ERRNO            ;
-4d35: 85 4a                     STA CKEY             ;
-4d37: a5 4a     loc_4d37        LDA CKEY             ;
-4d39: 91 3d                     STA (dat_003d_L),Y   ;
-4d3b: 88                        DEY                  ;
-4d3c: b1 3d                     LDA (dat_003d_L),Y   ;
-4d3e: c9 e0                     CMP #$e0             ;
-4d40: b0 11                     BCS loc_4d53         ;
-4d42: a0 0f                     LDY #$0f             ;
-4d44: a5 4b                     LDA dat_004b         ;
-4d46: 91 43                     STA (addr_0043_L),Y  ;
-4d48: a0 02                     LDY #$02             ;
-4d4a: b1 43                     LDA (addr_0043_L),Y  ;
-4d4c: 0a                        ASL                  ;
-4d4d: 10 04                     BPL loc_4d53         ;
-4d4f: a0 0f                     LDY #$0f             ;
-4d51: 91 43                     STA (addr_0043_L),Y  ;
-4d53: a0 00     loc_4d53        LDY #$00             ;
-4d55: b1 43                     LDA (addr_0043_L),Y  ;
-4d57: a0 0f                     LDY #$0f             ;
-4d59: c9 f0                     CMP #$f0             ;
-4d5b: 90 02                     BCC loc_4d5f         ;
-4d5d: a0 1f                     LDY #$1f             ;
-4d5f: b1 43     loc_4d5f        LDA (addr_0043_L),Y  ;
-4d61: 91 3d                     STA (dat_003d_L),Y   ;
-4d63: 88                        DEY                  ;
-4d64: c0 02                     CPY #$02             ;
-4d66: b0 f7                     BCS loc_4d5f         ;
-4d68: a0 05                     LDY #$05             ;
-4d6a: b1 3d                     LDA (dat_003d_L),Y   ;
+4cff: 25 4c                     AND dat_004c         ;
+4d01: c5 4c                     CMP dat_004c         ;
+4d03: f0 03                     BEQ loc_4d08         ; Else
+4d05: 4c 79 4d  loc_4d05        JMP loc_4d79         ;     Continue @ $4d79 [loc_4d79]
+                                                     ; End If
+4d08: b1 43     loc_4d08        LDA (addr_0043_L),Y  ; If ((*addr_0043_L)[Y] < 0)
+4d0a: 10 05                     BPL loc_4d11         ; Then
+4d0c: 20 d4 4d                  JSR sub_4dd4         ;     Call $4dd4 [sub_4dd4]
+4d0f: 30 09                     BMI loc_4d1a         ;     If (N == 1) Then
+                                                     ;         Continue @ $4d1a [loc_4d1a]
+                                                     ;     End If
+                                                     ; End If
+4d11: a0 00     loc_4d11        LDY #$00             ; Set Y = 0
+4d13: b1 43                     LDA (addr_0043_L),Y  ; Set A = (addr_0043_L)[0]
+4d15: 20 b0 49                  JSR sub_49b0         ; Call $49b0 [sub_49b0]
+4d18: 10 0f                     BPL loc_4d29         ; If (N == 1) Then   (unable to add entry)
+4d1a: a5 4a     loc_4d1a        LDA dat_004a         ;     If (dat_004a < 0)
+4d1c: 10 03                     BPL loc_4d21         ;     Then
+4d1e: 4c 92 4d                  JMP rts_4d92         ;         Continue @ $4d92 [rts_4d92]  (Return to caller)
+                                                     ;     End If
+4d21: 85 49     loc_4d21        STA dat_0049         ;     Set dat_0049 = dat_004a
+4d23: 20 01 4a                  JSR sub_4a01         ;     Call $4a01 [sub_4a01]
+4d26: 4c 92 4d                  JMP rts_4d92         ;     Continue @ $4d92 [rts_4d92]  (Return to caller)
+                                                     ; End If
+4d29: a0 01     loc_4d29        LDY #$01             ; Set Y = 1
+4d2b: 24 4a                     BIT dat_004a         ; If (dat_004a < 0)
+4d2d: 30 04                     BMI loc_4d33         ;    Or
+4d2f: b1 43                     LDA (addr_0043_L),Y  ;    ((*addr_0043_L)[1] < 0)
+4d31: 10 04                     BPL loc_4d37         ; Then
+4d33: a5 49     loc_4d33        LDA dat_0049         ;     Set
+4d35: 85 4a                     STA dat_004a         ;         dat_004a = dat_0049
+                                                     ; End If
+4d37: a5 4a     loc_4d37        LDA dat_004a         ; Set
+4d39: 91 3d                     STA (dat_003d_L),Y   ;     (*dat_003d_L)[1] = dat_004a
+4d3b: 88                        DEY                  ; Subtract 1 from Y    (Y == 0)
+4d3c: b1 3d                     LDA (dat_003d_L),Y   ; If
+4d3e: c9 e0                     CMP #$e0             ;    ((*dat_003d_L)[0] < $e0 (224))
+4d40: b0 11                     BCS loc_4d53         ; Then
+4d42: a0 0f                     LDY #$0f             ;     Set
+4d44: a5 4b                     LDA dat_004b         ;         (*addr_0043_L)[$f]
+4d46: 91 43                     STA (addr_0043_L),Y  ;            = dat_004b
+4d48: a0 02                     LDY #$02             ;     Set
+4d4a: b1 43                     LDA (addr_0043_L),Y  ;         A
+4d4c: 0a                        ASL                  ;            = (*addr_0043_L)[2] * 2
+4d4d: 10 04                     BPL loc_4d53         ;     If (bit 7 of A == 1) Then
+4d4f: a0 0f                     LDY #$0f             ;         Set
+4d51: 91 43                     STA (addr_0043_L),Y  ;             (*addr_0043_L)[2] = A
+                                                     ;     End If
+                                                     ; End If
+4d53: a0 00     loc_4d53        LDY #$00             ; Set
+4d55: b1 43                     LDA (addr_0043_L),Y  ;     A = (*addr_0043_L)[0]
+4d57: a0 0f                     LDY #$0f             ; Set Y = $f
+4d59: c9 f0                     CMP #$f0             ; If (A >= $f0)
+4d5b: 90 02                     BCC loc_4d5f         ; Then
+4d5d: a0 1f                     LDY #$1f             ;     Set Y = $1f
+                                                     ; End If
+4d5f: b1 43     loc_4d5f        LDA (addr_0043_L),Y  ; Loop
+                                                     ;     Set
+4d61: 91 3d                     STA (dat_003d_L),Y   ;         (*dat_003d_L)[Y] = (*addr_0043_L)[Y]    (Y = $f or $1f)
+4d63: 88                        DEY                  ;     Subtract 1 from Y
+4d64: c0 02                     CPY #$02             ; Repeat
+4d66: b0 f7                     BCS loc_4d5f         ;   while (Y >= 2)
+4d68: a0 05                     LDY #$05             ; If
+4d6a: b1 3d                     LDA (dat_003d_L),Y   ;    ((*dat_003d_L)[5] == 0)
 4d6c: d0 0b                     BNE loc_4d79         ;
-4d6e: 88                        DEY                  ;
+4d6e: 88                        DEY                  ;    And
 4d6f: b1 3d                     LDA (dat_003d_L),Y   ;
-4d71: c9 01                     CMP #$01             ;
-4d73: d0 04                     BNE loc_4d79         ;
-4d75: a9 00                     LDA #$00             ;
-4d77: 85 50                     STA dat_023e         ;
-4d79: a2 10     loc_4d79        LDX #$10             ;
+4d71: c9 01                     CMP #$01             ;    ((*dat_003d_L)[4] == 1)
+4d73: d0 04                     BNE loc_4d79         ; Then
+4d75: a9 00                     LDA #$00             ;     Set
+4d77: 85 50                     STA dat_023e         ;         dat_023e = 0
+                                                     ; End If
+4d79: a2 10     loc_4d79        LDX #$10             ; Set X = $10 (16)
 4d7b: a0 00                     LDY #$00             ;
 4d7d: b1 43                     LDA (addr_0043_L),Y  ;
 4d7f: c9 f0                     CMP #$f0             ;
@@ -6983,17 +7765,17 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4d87: 65 43                     ADC addr_0043_L      ;
 4d89: 85 43                     STA addr_0043_L      ;
 4d8b: 90 02                     BCC loc_4d8f         ;
-4d8d: e6 44                     INC addr_0043_L+1    ;
+4d8d: e6 44                     INC addr_0043_H      ;
 4d8f: 4c d8 4c  loc_4d8f        JMP loc_4cd8         ;
-4d92: 60        loc_4d92        RTS                  ;
+4d92: 60        rts_4d92        RTS                  ; Return to caller
 
-4d93: 85 4c     sub_4d93        STA DSTAT            ;
+4d93: 85 4c     sub_4d93        STA dat_004c         ;
 4d95: a9 00                     LDA #$00             ;
 4d97: 85 3d                     STA dat_003d_L       ;
 4d99: a9 65                     LDA #$65             ;
-4d9b: 85 3e                     STA FTYPE            ;
+4d9b: 85 3e                     STA dat_003d_H       ;
 4d9d: a2 00                     LDX #$00             ;
-4d9f: 86 49                     STX ERRNO            ;
+4d9f: 86 49                     STX dat_0049         ;
 4da1: a0 00     loc_4da1        LDY #$00             ;
 4da3: b1 3d                     LDA (dat_003d_L),Y   ;
 4da5: c9 81                     CMP #$81             ;
@@ -7006,110 +7788,155 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4db3: d0 0b                     BNE loc_4dc0         ;
 4db5: a0 02                     LDY #$02             ;
 4db7: b1 3d                     LDA (dat_003d_L),Y   ;
-4db9: 25 4c                     AND DSTAT            ;
+4db9: 25 4c                     AND dat_004c         ;
 4dbb: f0 03                     BEQ loc_4dc0         ;
-4dbd: 20 01 4a                  JSR loc_4a01         ;
+4dbd: 20 01 4a                  JSR sub_4a01         ; Call $4a01 [sub_4a01]
 4dc0: a5 3d     loc_4dc0        LDA dat_003d_L       ;
 4dc2: 18                        CLC                  ;
 4dc3: 69 10                     ADC #$10             ;
 4dc5: 85 3d                     STA dat_003d_L       ;
 4dc7: 90 02                     BCC loc_4dcb         ;
-4dc9: e6 3e                     INC FTYPE            ;
-4dcb: e6 49     loc_4dcb        INC ERRNO            ;
-4dcd: a6 49                     LDX ERRNO            ;
+4dc9: e6 3e                     INC dat_003d_H       ;
+4dcb: e6 49     loc_4dcb        INC dat_0049         ;
+4dcd: a6 49                     LDX dat_0049         ;
 4dcf: e0 40                     CPX #$40             ;
 4dd1: 90 ce                     BCC loc_4da1         ;
 4dd3: 60                        RTS                  ; Return to caller
 
-4dd4: a9 00     loc_4dd4        LDA #$00             ;
-4dd6: 85 3f                     STA FEOF             ;
-4dd8: a9 65                     LDA #$65             ;
-4dda: 85 40                     STA FREQ             ;
-4ddc: a2 40                     LDX #$40             ;
-4dde: a0 00     loc_4dde        LDY #$00             ;
-4de0: b1 3f                     LDA (FEOF),Y         ;
-4de2: c9 81                     CMP #$81             ;
-4de4: 90 11                     BCC loc_4df7         ;
-4de6: a0 06                     LDY #$06             ;
-4de8: b1 43     loc_4de8        LDA (addr_0043_L),Y  ;
-4dea: d1 3f                     CMP (FEOF),Y         ;
-4dec: d0 09                     BNE loc_4df7         ;
-4dee: c8                        INY                  ;
-4def: c0 0f                     CPY #$0f             ;
-4df1: 90 f5                     BCC loc_4de8         ;
-4df3: a9 ff                     LDA #$ff             ;
-4df5: 30 0e                     BMI loc_4e05         ;
-4df7: a5 3f     loc_4df7        LDA FEOF             ;
-4df9: 18                        CLC                  ;
-4dfa: 69 10                     ADC #$10             ;
-4dfc: 85 3f                     STA FEOF             ;
-4dfe: 90 02                     BCC loc_4e02         ;
-4e00: e6 40                     INC FREQ             ;
-4e02: ca        loc_4e02        DEX                  ;
-4e03: d0 d9                     BNE loc_4dde         ;
-4e05: 60        loc_4e05        RTS                  ; Return to caller
+                ;
+                ; Searches the table of 64 x 16-byte entries at $6500 [timer-based effects?]
+                ;
+                ; If the first byte of an entry is greater than or equal to $81, then bytes [6..f] are
+                ; compared to the 9 bytes @ addr_0043_L/H. If the bytes do NOT match, the sub exits
+                ; with N = 0 and addr_003f_L/H pointing to the entry.
+                ;
+                ; If none of the entries match the conditions above, the sub returns with N = 1.
+                ;
+                ; Input
+                ;   addr_0043_L/H - Address of 9 byte value to find
+                ;
+                ; Output
+                ;   N             - 0 if an entry matching the conditions is found, otherwise 1
+                ;   addr_003f_L/H - Points at the entry when N is 0
+                ;
+4dd4: a9 00     sub_4dd4        LDA #$00             ; Set addr_003f_L/H
+4dd6: 85 3f                     STA addr_003f_L      ;     address
+4dd8: a9 65                     LDA #$65             ;     to
+4dda: 85 40                     STA addr_003f_H      ;     $6500 [TODO: label? timer-based effects related?]
+4ddc: a2 40                     LDX #$40             ; Set X = $40 (64)
+4dde: a0 00     loc_4dde        LDY #$00             ; Loop
+                                                     ;     Set Y = 0
+4de0: b1 3f                     LDA (addr_003f_L),Y  ;     If
+4de2: c9 81                     CMP #$81             ;        ((*addr_003f_L)[Y] >= $81 (129))
+4de4: 90 11                     BCC cont_4df7        ;     Then
+4de6: a0 06                     LDY #$06             ;         Set Y = 6 (9 iterations: 6..f)
+4de8: b1 43     loc_4de8        LDA (addr_0043_L),Y  ;         Loop
+4dea: d1 3f                     CMP (addr_003f_L),Y  ;             If ((*addr_0043_L)[Y] != (*addr_003f_L)[Y]) Then
+4dec: d0 09                     BNE cont_4df7        ;                 Continue @ $4df7 [cont_4df7]  (exit loop and enclosing if)
+                                                     ;             End If
+4dee: c8                        INY                  ;             Add 1 to Y
+4def: c0 0f                     CPY #$0f             ;         Repeat
+4df1: 90 f5                     BCC loc_4de8         ;            while (Y < $0f)
+4df3: a9 ff                     LDA #$ff             ;         Set A = $ff  (Return N = 1 if no match found)
+4df5: 30 0e                     BMI rts_4e05         ;         Continue @ $4e05 [rts_4e05]  (Return to caller, N = 1)
+                                                     ;     End If
+4df7: a5 3f     cont_4df7       LDA addr_003f_L      ;     (Move to next entry)
+4df9: 18                        CLC                  ;     Set addr_003f_L
+4dfa: 69 10                     ADC #$10             ;           =
+4dfc: 85 3f                     STA addr_003f_L      ;             addr_003f_L + $10 (16)
+4dfe: 90 02                     BCC loc_4e02         ;     If (C == 1) Then  (overflow)
+4e00: e6 40                     INC addr_003f_H      ;         Add 1 to addr_003f_H
+                                                     ;     End If
+4e02: ca        loc_4e02        DEX                  ;     Subtract 1 from X
+4e03: d0 d9                     BNE loc_4dde         ; Repeat while (X != 0)    (N = 0 if loop completes)
+4e05: 60        rts_4e05        RTS                  ; Return to caller
 
-4e06: 20 74 4b  sub_4e06        JSR sub_4b74         ;
-4e09: f0 17                     BEQ loc_4e22         ;
-4e0b: a9 04                     LDA #$04             ;
-4e0d: 85 4c                     STA DSTAT            ;
-4e0f: a5 4c     sub_4e0f        LDA DSTAT            ;
-4e11: 29 05                     AND #$05             ;
-4e13: f0 0d                     BEQ loc_4e22         ;
-4e15: a0 03                     LDY #$03             ;
-4e17: b1 41                     LDA (dat_0041),Y     ;
-4e19: f0 07                     BEQ loc_4e22         ;
-4e1b: 10 06                     BPL loc_4e23         ;
-4e1d: cd 85 63                  CMP CHR_ALIGN        ;
-4e20: b0 06                     BCS loc_4e28         ;
-4e22: 60        loc_4e22        RTS                  ; Return to caller
-4e23: cd 85 63  loc_4e23        CMP CHR_ALIGN        ;
-4e26: b0 fa                     BCS loc_4e22         ;
-4e28: b1 41     loc_4e28        LDA (dat_0041),Y     ;
-4e2a: 10 1d                     BPL loc_4e49         ;
-4e2c: ad 85 63                  LDA CHR_ALIGN        ;
-4e2f: 10 0c                     BPL loc_4e3d         ;
-4e31: a9 9d                     LDA #$9d             ;
-4e33: 8d 2c 50                  STA dat_502c         ;
-4e36: a9 4f                     LDA #$4f             ;
-4e38: 8d 2d 50                  STA dat_502d         ;
+                ;
+                ;
+                ;
+4e06: 20 74 4b  sub_4e06        JSR sub_4b74         ; Call $4b74 [sub_4b74]
+4e09: f0 17                     BEQ rts_4e22         ; If (Z == 1) Then     (TODO: meaning?)
+                                                     ;     Continue @ $4e22 [rts_4e22]  (return to caller)
+                                                     ; End If
+4e0b: a9 04                     LDA #$04             ; Set
+4e0d: 85 4c                     STA dat_004c         ;     dat_004c = 4
+
+                ;
+                ; Input
+                ;   Y             - seems this register may be used if dat_004c & 5 is 0
+                ;   dat_004c      -
+                ;   addr_0041_L/H -
+                ;   CHR_ALIGN     -
+                ;
+                ; Output
+                ;   dat_502a      - probably LSB of address?
+                ;   dat_502b      - probably MSB of address?
+                ;   dat_502c      - probably LSB of address?
+                ;   dat_502d      - probably MSB of address?
+                ;
+4e0f: a5 4c     sub_4e0f        LDA dat_004c         ; If ((dat_004c & 5) == 0) Then
+4e11: 29 05                     AND #$05             ;     Continue @ $4e22 [rts_4e22]  (Return to caller)
+4e13: f0 0d                     BEQ rts_4e22         ; End If
+4e15: a0 03                     LDY #$03             ; Set Y = 3
+4e17: b1 41                     LDA (addr_0041_L),Y  ; If ((*addr_0041_L)[Y] == 0) Then
+4e19: f0 07                     BEQ rts_4e22         ;     Continue @ $4e22 [rts_4e22]  (Return to caller)
+4e1b: 10 06                     BPL loc_4e23         ; Else If ((*addr_0041_L)[Y] < 0) Then
+4e1d: cd 85 63                  CMP CHR_ALIGN        ;     If ((*addr_0041_L)[Y] >= CHR_ALIGN) Then
+4e20: b0 06                     BCS loc_4e28         ;         Continue @ $4e28 [loc_4e28]
+                                                     ;     End If
+4e22: 60        rts_4e22        RTS                  ;     Return to caller
+                                                     ; End If
+4e23: cd 85 63  loc_4e23        CMP CHR_ALIGN        ; If ((*addr_0041_L)[Y] >= CHR_ALIGN) Then
+4e26: b0 fa                     BCS rts_4e22         ;     Continue @ $4e22 [rts_4e22]  (Return to caller)
+                                                     ; End If
+4e28: b1 41     loc_4e28        LDA (addr_0041_L),Y  ; If ((*addr_0041_L)[Y] < 0)
+4e2a: 10 1d                     BPL loc_4e49         ; Then
+4e2c: ad 85 63                  LDA CHR_ALIGN        ;     If (CHR_ALIGN < 0)
+4e2f: 10 0c                     BPL loc_4e3d         ;     Then
+4e31: a9 9d                     LDA #$9d             ;         Set
+4e33: 8d 2c 50                  STA dat_502c         ;             dat_502c = $9d (157)
+4e36: a9 4f                     LDA #$4f             ;         Set
+4e38: 8d 2d 50                  STA dat_502d         ;             dat_502d = $4f (79)
 4e3b: d0 27                     BNE loc_4e64         ;
-4e3d: a9 e4     loc_4e3d        LDA #$e4             ;
-4e3f: 8d 2c 50                  STA dat_502c         ;
-4e42: a9 4f                     LDA #$4f             ;
-4e44: 8d 2d 50                  STA dat_502d         ;
+                                                     ;     End If
+4e3d: a9 e4     loc_4e3d        LDA #$e4             ;     Set
+4e3f: 8d 2c 50                  STA dat_502c         ;         dat_502c = $e4 (228)
+4e42: a9 4f                     LDA #$4f             ;     Set
+4e44: 8d 2d 50                  STA dat_502d         ;         dat_502d = $4f (79)
 4e47: d0 1b                     BNE loc_4e64         ;
-4e49: ad 85 63  loc_4e49        LDA CHR_ALIGN        ;
-4e4c: 30 0c                     BMI loc_4e5a         ;
-4e4e: a9 c0                     LDA #$c0             ;
-4e50: 8d 2c 50                  STA dat_502c         ;
-4e53: a9 4f                     LDA #$4f             ;
-4e55: 8d 2d 50                  STA dat_502d         ;
+                                                     ; End If
+4e49: ad 85 63  loc_4e49        LDA CHR_ALIGN        ; If (CHR_ALIGN < 0)
+4e4c: 30 0c                     BMI loc_4e5a         ; Then
+4e4e: a9 c0                     LDA #$c0             ;     Set
+4e50: 8d 2c 50                  STA dat_502c         ;         dat_502c = $c0
+4e53: a9 4f                     LDA #$4f             ;     Set
+4e55: 8d 2d 50                  STA dat_502d         ;         dat_502d = $4f
 4e58: d0 0a                     BNE loc_4e64         ;
+                                                     ; End If
 4e5a: a9 05     loc_4e5a        LDA #$05             ;
 4e5c: 8d 2c 50                  STA dat_502c         ;
 4e5f: a9 50                     LDA #$50             ;
 4e61: 8d 2d 50                  STA dat_502d         ;
-4e64: 18        loc_4e64        CLC                  ;
-4e65: a9 06                     LDA #$06             ;
-4e67: 65 41                     ADC dat_0041         ;
-4e69: 8d 2a 50                  STA dat_502a         ;
-4e6c: a5 42                     LDA addr_0041_H      ;
-4e6e: 69 00                     ADC #$00             ;
-4e70: 8d 2b 50                  STA dat_502b         ;
-4e73: a9 7d                     LDA #$7d             ; Set ???
+4e64: 18        loc_4e64        CLC                  ; Set
+4e65: a9 06                     LDA #$06             ;     dat_502a
+4e67: 65 41                     ADC addr_0041_L      ;       =
+4e69: 8d 2a 50                  STA dat_502a         ;         addr_0041_L + 6   (C = 1 on overflow otherwise 0)
+4e6c: a5 42                     LDA addr_0041_H      ; Set dat_502b
+4e6e: 69 00                     ADC #$00             ;       =
+4e70: 8d 2b 50                  STA dat_502b         ;         addr_0041_H + C
+4e73: a9 7d                     LDA #$7d             ; Set addr_0016_L/H
 4e75: 85 16                     STA addr_0016_L      ;     address
 4e77: a9 4f                     LDA #$4f             ;     to
 4e79: 85 17                     STA addr_0016_H      ;     $4f7d [str_ITM_SCREAMS]
-4e7b: 20 a5 3c                  JSR sub_3ca5         ;
-4e7e: 20 b0 2b                  JSR sub_2bb0         ;
-4e81: 20 c2 3c                  JSR sub_3cc2         ;
-4e84: a5 4c                     LDA DSTAT            ;
+4e7b: 20 a5 3c                  JSR sub_3ca5         ; Call $3ca5 [sub_3ca5]
+4e7e: 20 b0 2b                  JSR sub_2bb0         ; Call $2bb0 [sub_2bb0]
+4e81: 20 c2 3c                  JSR sub_3cc2         ; Call $3cc2 [sub_3cc2]
+4e84: a5 4c                     LDA dat_004c         ; Set A = dat_004c
 4e86: 48                        PHA                  ; Preserve value of A
-4e87: 09 20                     ORA #$20             ;
-4e89: 20 cf 4c                  JSR loc_4ccf         ;
+4e87: 09 20                     ORA #$20             ; Set A = A | $20
+4e89: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]
 4e8c: 68                        PLA                  ; Restore previous value of A
-4e8d: 85 4c                     STA DSTAT            ;
+4e8d: 85 4c                     STA dat_004c         ; Set dat_004c = A
 4e8f: 60                        RTS                  ; Return to caller
 
 4e90: a2 0f     sub_4e90        LDX #$0f             ;
@@ -7155,30 +7982,30 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4ed7: 65 43                     ADC addr_0043_L      ;
 4ed9: 85 43                     STA addr_0043_L      ;
 4edb: 90 02                     BCC loc_4edf         ;
-4edd: e6 44                     INC addr_0043_L+1    ;
+4edd: e6 44                     INC addr_0043_H      ;
 4edf: d0 e6     loc_4edf        BNE loc_4ec7         ;
 4ee1: e6 43     loc_4ee1        INC addr_0043_L      ;
 4ee3: d0 02                     BNE loc_4ee7         ;
-4ee5: e6 44                     INC addr_0043_L+1    ;
+4ee5: e6 44                     INC addr_0043_H      ;
 4ee7: 60        loc_4ee7        RTS                  ; Return to caller
 
 4ee8: a5 4b     sub_4ee8        LDA dat_004b         ;
 4eea: 20 74 4b                  JSR sub_4b74         ;
 4eed: a0 05                     LDY #$05             ;
 4eef: 18                        CLC                  ;
-4ef0: b1 41                     LDA (dat_0041),Y     ;
-4ef2: 65 41                     ADC dat_0041         ;
+4ef0: b1 41                     LDA (addr_0041_L),Y  ;
+4ef2: 65 41                     ADC addr_0041_L      ;
 4ef4: 85 43                     STA addr_0043_L      ;
 4ef6: a5 42                     LDA addr_0041_H      ;
 4ef8: 69 00                     ADC #$00             ;
-4efa: 85 44                     STA addr_0043_L+1    ;
+4efa: 85 44                     STA addr_0043_H      ;
 4efc: 60                        RTS                  ; Return to caller
 
 4efd: ad 90 63  sub_4efd        LDA CHR_LIT_TORCH_FLAG ;
 4f00: f0 03                     BEQ loc_4f05         ;
 4f02: ce 90 63                  DEC CHR_LIT_TORCH_FLAG ;
 4f05: a0 00     loc_4f05        LDY #$00             ;
-4f07: b1 41                     LDA (dat_0041),Y     ;
+4f07: b1 41                     LDA (addr_0041_L),Y  ;
 4f09: 29 80                     AND #$80             ;
 4f0b: 48                        PHA                  ;
 4f0c: a5 4b                     LDA dat_004b         ;
@@ -7197,10 +8024,10 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4f24: 98                        TYA                  ;
 4f25: 48                        PHA                  ;
 4f26: a5 4b                     LDA dat_004b         ;
-4f28: 20 c9 4a                  JSR loc_4ac9         ;
+4f28: 20 c9 4a                  JSR sub_4ac9         ;
 4f2b: a2 4f                     LDX #$4f             ;
 4f2d: a0 5d                     LDY #$5d             ;
-4f2f: 20 4d 4b                  JSR loc_4b4d         ;
+4f2f: 20 4d 4b                  JSR sub_4b4d         ;
 4f32: 68                        PLA                  ;
 4f33: aa                        TAX                  ;
 4f34: 30 16                     BMI loc_4f4c         ;
@@ -7219,8 +8046,8 @@ xxx - TODO: this can't be both a sub and a string, can it?
 4f52: 9d 9c 63                  STA $639c,X          ;
 4f55: 68        loc_4f55        PLA                  ;
 4f56: a0 00                     LDY #$00             ;
-4f58: 11 41                     ORA (dat_0041),Y     ;
-4f5a: 91 41                     STA (dat_0041),Y     ;
+4f58: 11 41                     ORA (addr_0041_L),Y  ;
+4f5a: 91 41                     STA (addr_0041_L),Y  ;
 4f5c: 60                        RTS                  ; Return to caller
 
 4f5d: 03 20 00 00 02 0c 73 74  dat_4f5d  .BYTE $03,$20,$00,$00,$02,$0c,$73,$74  ; . ....st
@@ -7256,22 +8083,43 @@ xxx - TODO: this can't be both a sub and a string, can it?
 502c: 00        dat_502c        .BYTE $00            ; .
 502d: 00        dat_502d        .BYTE $00            ; .
 
-502e: a2 03     sub_502e        LDX #$03             ;
-5030: a9 ff                     LDA #$ff             ;
-5032: 9d 46 19  loc_5032        STA dat_1946,X       ;
-5035: ca                        DEX                  ;
-5036: 10 fa                     BPL loc_5032         ;
-5038: a2 07                     LDX #$07             ;
-503a: a9 5e     loc_503a        LDA #$5e             ;
-503c: 9d 3c 19                  STA loc_193c,X       ;
-503f: ca                        DEX                  ;
-5040: a9 53                     LDA #$53             ;
-5042: 9d 3c 19                  STA loc_193c,X       ;
-5045: ca                        DEX                  ;
-5046: 10 f2                     BPL loc_503a         ;
+                ; ? Initialization of ?
+                ;
+                ; Output
+                ;   dat_1946      - All four entries of dat_1946 are set to $ff
+                ;   addr_193c_L/H - All four addresses starting at $193c are set to $5e53 [dat_5e53]
+                ;
+502e: a2 03     sub_502e        LDX #$03             ; Set X = 3    (4 iterations)
+5030: a9 ff                     LDA #$ff             ; Set A = $ff
+5032: 9d 46 19  loc_5032        STA dat_1946,X       ; Loop
+                                                     ;     Set dat_1946[X] = A ($ff)
+5035: ca                        DEX                  ;     Subtract 1 from X
+5036: 10 fa                     BPL loc_5032         ; Repeat while (X >= 0)
+                                                     ; (Update first four addresses in addr_193c_L to $5e53 [dat_5e53])
+5038: a2 07                     LDX #$07             ; Set X = 7 (4 iterations @ step -2)
+503a: a9 5e     loc_503a        LDA #$5e             ; Loop
+                                                     ;     Set
+503c: 9d 3c 19                  STA addr_193c_L,X    ;         addr_193c_L[X] = $5e (94)
+503f: ca                        DEX                  ;     Subtract 1 from X
+5040: a9 53                     LDA #$53             ;     Set
+5042: 9d 3c 19                  STA addr_193c_L,X    ;         addr_193c_L[X] = $53 (83)
+5045: ca                        DEX                  ;     Subtract 1 from X
+5046: 10 f2                     BPL loc_503a         ; Repeat while (X >= 0)
 5048: 60                        RTS                  ; Return to caller
 
-5049: ad 77 62  loc_5049        LDA dat_6277         ; If
+                ; Display 4-selection menu of options and handle user input
+                ;
+                ; Input
+                ;   dat_194a  - The action to perform on the selection?
+                ;
+                ; Output
+                ;   dat_0031           -
+                ;   addr_0016_L/H      - set to a string template to display (e.g. the menu)
+                ;   cont_addr_1977_L/H - set to $5077 [rtn_5077] (address to return to after executing action??)
+                ;   C   - 0 if an item was selected, 1 if user cancelled
+                ;   A   - The selected item number when C is 0
+                ;
+5049: ad 77 62  sub_5049        LDA dat_6277         ; If
 504c: cd 76 62                  CMP dat_6276         ;    (dat_6277 < dat_6276)
 504f: b0 0b                     BCS loc_505c         ; Then
 5051: a9 09                     LDA #$09             ;     Set addr_0016_L/H
@@ -7284,46 +8132,60 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5060: a9 5d                     LDA #$5d             ;         to
 5062: 85 17                     STA addr_0016_H      ;         $5d41 [str_4SEL_MENU1] (4 selection menu with in use items marked)
                                                      ; End If
-5064: ae 4a 19  loc_5064        LDX dat_194a         ;
-5067: 20 61 3c                  JSR loc_3c61         ;
-506a: a9 77     loc_506a        LDA #$77             ; Set return
-506c: 8d 77 19                  STA cont_addr_1977_L ;     address
-506f: a9 50                     LDA #$50             ;     to
-5071: 8d 78 19                  STA cont_addr_1977_H ;     $5077 [rtn_5077]
-5074: 4c f3 2f                  JMP loc_2ff3         ;
-5077: a5 31     rtn_5077        LDA CHKSUM           ;
-5079: 30 ef                     BMI loc_506a         ;
-507b: c9 31                     CMP #$31             ;
-507d: 90 08                     BCC loc_5087         ;
-507f: c9 35                     CMP #$35             ;
-5081: b0 04                     BCS loc_5087         ;
-5083: e9 30                     SBC #$30             ;
-5085: 18                        CLC                  ;
-5086: 60                        RTS                  ; Return to caller
-5087: 20 a5 2b  loc_5087        JSR sub_2ba5         ;  .+
-508a: 38                        SEC                  ; 8
-508b: 60                        RTS                  ; `
-508c: a9 03     loc_508c        LDA #$03             ; ..
-508e: 85 06                     STA dat_0006         ; ..
-5090: a6 06     loc_5090        LDX dat_0006         ; ..
-5092: bd 46 19                  LDA dat_1946,X       ; .F.
-5095: 30 16                     BMI loc_50ad         ; 0.
-5097: 20 74 4b                  JSR sub_4b74         ;  tK
-509a: a5 06                     LDA dat_0006         ; ..
-509c: 0a                        ASL                  ; .
-509d: a8                        TAY                  ; .
-509e: 18                        CLC                  ; .
-509f: a9 06                     LDA #$06             ; ..
-50a1: 65 41     loc_50a1        ADC dat_0041         ; eA
-50a3: 99 3c 19                  STA loc_193c,Y       ; .<.
-50a6: a5 42                     LDA addr_0041_H      ; .B
-50a8: 69 00                     ADC #$00             ; i.
-50aa: 99 3d 19                  STA loc_193d,Y       ; .=.
-50ad: c6 06     loc_50ad        DEC dat_0006         ; ..
-50af: 10 df                     BPL loc_5090         ; ..
-50b1: 60                        RTS                  ; `
-50b2: a9 00     sub_50b2        LDA #$00             ; ..
-50b4: 8d 77 62                  STA dat_6277         ; .wb
+5064: ae 4a 19  loc_5064        LDX dat_194a         ; Set X = dat_194a
+5067: 20 61 3c                  JSR sub_3c61         ; Call $3c61 [sub_3c61]
+506a: a9 77     loc_506a        LDA #$77             ; Loop
+                                                     ;     Set return address
+506c: 8d 77 19                  STA cont_addr_1977_L ;         cont_addr_1977_L/H
+506f: a9 50                     LDA #$50             ;         to
+5071: 8d 78 19                  STA cont_addr_1977_H ;         $5077 [rtn_5077]
+5074: 4c f3 2f                  JMP loc_2ff3         ;     Continue @ $2ff3 [loc_2ff3] (returns to next instruction)
+5077: a5 31     rtn_5077        LDA dat_0031         ; Repeat
+5079: 30 ef                     BMI loc_506a         ;   while (dat_0031 < 0)
+507b: c9 31                     CMP #$31             ; If (dat_0031 >= $31 (49 '1'))
+507d: 90 08                     BCC loc_5087         ;    And
+507f: c9 35                     CMP #$35             ;    (dat_0031 < $35 (53 '5'))
+5081: b0 04                     BCS loc_5087         ; Then
+5083: e9 30                     SBC #$30             ;     Set A = dat_0031 - $30 (convert digit character to decimal number)
+5085: 18                        CLC                  ;     Set C = 0
+5086: 60                        RTS                  ;     Return to caller
+                                                     ; End If
+5087: 20 a5 2b  loc_5087        JSR sub_2ba5         ; Call $2ba5 [sub_2ba5]
+508a: 38                        SEC                  ; Set C = 1
+508b: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+508c: a9 03     sub_508c        LDA #$03             ; Set
+508e: 85 06                     STA dat_0006         ;     dat_0006 = 3
+5090: a6 06     loc_5090        LDX dat_0006         ; Loop
+5092: bd 46 19                  LDA dat_1946,X       ;     If (dat_1946[dat_0006] >= 0)
+5095: 30 16                     BMI loc_50ad         ;     Then
+5097: 20 74 4b                  JSR sub_4b74         ;         Call $4b74 [sub_4b74]
+509a: a5 06                     LDA dat_0006         ;         Set
+509c: 0a                        ASL                  ;             Y
+509d: a8                        TAY                  ;               = dat_0006 * 2
+509e: 18                        CLC                  ;         Set
+509f: a9 06                     LDA #$06             ;             addr_193c_L[Y]
+50a1: 65 41     loc_50a1        ADC addr_0041_L      ;                =
+50a3: 99 3c 19                  STA addr_193c_L,Y    ;                  addr_0041_L + 6  (C = 1 on overflow otherwise 0)
+50a6: a5 42                     LDA addr_0041_H      ;         Set
+50a8: 69 00                     ADC #$00             ;             loc_193d[Y]
+50aa: 99 3d 19                  STA loc_193d,Y       ;                = addr_0041_H + C
+                                                     ;     End If
+50ad: c6 06     loc_50ad        DEC dat_0006         ;     Subtract 1 from dat_0006
+50af: 10 df                     BPL loc_5090         ; Repeat while (dat_0006 >= 0)
+50b1: 60                        RTS                  ; Return to caller
+
+                ;
+                ;
+                ;
+50b2: a9 00     sub_50b2        LDA #$00             ; Set
+50b4: 8d 77 62                  STA dat_6277         ;     dat_6277 = 0
+                ;
+                ;
+                ;
 50b7: 20 2e 50  sub_50b7        JSR sub_502e         ;  .P
 50ba: a9 00                     LDA #$00             ; ..
 50bc: 8d 78 62                  STA loc_6278         ; .xb
@@ -7337,7 +8199,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 50cf: 29 07                     AND #$07             ; ).
 50d1: aa                        TAX                  ; .
 50d2: b9 0d 5f                  LDA loc_5f0d,Y       ; .._
-50d5: 9d 3c 19                  STA loc_193c,X       ; .<.
+50d5: 9d 3c 19                  STA addr_193c_L,X    ; .<.
 50d8: b9 0e 5f                  LDA loc_5f0e,Y       ; .._
 50db: 9d 3d 19                  STA loc_193d,X       ; .=.
 50de: ae 78 62                  LDX loc_6278         ; .xb
@@ -7387,8 +8249,8 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5152: ad 78 62                  LDA loc_6278         ;
 5155: c9 04                     CMP #$04             ;
 5157: 90 cc                     BCC loc_5125         ;
-5159: 20 8c 50  loc_5159        JSR loc_508c         ;
-515c: 20 49 50  loc_515c        JSR loc_5049         ;
+5159: 20 8c 50  loc_5159        JSR sub_508c         ; Call $508c [sub_508c]
+515c: 20 49 50  loc_515c        JSR sub_5049         ;
 515f: 90 0d                     BCC loc_516e         ;
 5161: c9 46                     CMP #$46             ;
 5163: f0 1b                     BEQ loc_5180         ;
@@ -7422,7 +8284,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 51a1: 20 74 4b  loc_51a1        JSR sub_4b74         ;
 51a4: f0 0e                     BEQ loc_51b4         ;
 51a6: a0 00                     LDY #$00             ;
-51a8: b1 41                     LDA (dat_0041),Y     ;
+51a8: b1 41                     LDA (addr_0041_L),Y  ;
 51aa: 10 08                     BPL loc_51b4         ;
 51ac: 29 07                     AND #$07             ;
 51ae: c9 01                     CMP #$01             ;
@@ -7432,7 +8294,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 51b4: 38        loc_51b4        SEC                  ;
 51b5: 60                        RTS                  ; Return to caller
 51b6: a9 00     sub_51b6        LDA #$00             ;
-51b8: 8d 7f 62                  STA loc_627f         ;
+51b8: 8d 7f 62                  STA dat_627f         ;
 51bb: a9 04                     LDA #$04             ;
 51bd: ae 00 76                  LDX loc_7600         ;
 51c0: e0 01                     CPX #$01             ;
@@ -7444,7 +8306,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 51ce: a9 25                     LDA #$25             ; Set addr_193a_L/H
 51d0: 8d 3a 19                  STA addr_193a_L      ;     address
 51d3: a9 5f                     LDA #$5f             ;     to
-51d5: 8d 3b 19                  STA addr_193a_H      ;     $5f25 [abc xyz]
+51d5: 8d 3b 19                  STA addr_193a_H      ;     $5f25 [zts_USE]
 51d8: a9 57     loc_51d8        LDA #$57             ; Set addr_1944_L/H
 51da: 8d 44 19                  STA addr_1944_L      ;     address
 51dd: a9 5f                     LDA #$5f             ;     to
@@ -7458,7 +8320,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 51f0: 20 74 4b                  JSR sub_4b74         ;
 51f3: 20 c4 4e                  JSR sub_4ec4         ;
 51f6: a0 00                     LDY #$00             ;
-51f8: b1 41                     LDA (dat_0041),Y     ;
+51f8: b1 41                     LDA (addr_0041_L),Y  ;
 51fa: 29 07                     AND #$07             ;
 51fc: 8d 7e 62                  STA loc_627e         ;
 51ff: aa                        TAX                  ;
@@ -7475,11 +8337,11 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5210: a5 4b                     LDA dat_004b         ;     Set A = dat_004b
 5212: 20 86 4b                  JSR loc_4b86         ;     Call $4b86 [loc_4b86]
 5215: ad 7e 62                  LDA loc_627e         ;     Set
-5218: 8d 61 19                  STA loc_1961         ;         loc_1961 = loc_627e
-521b: 2c 7f 62                  BIT loc_627f         ;     If ((loc_1961 & loc_627f) < 0)
+5218: 8d 61 19                  STA dat_1961         ;         dat_1961 = loc_627e
+521b: 2c 7f 62                  BIT dat_627f         ;     If ((dat_1961 & dat_627f) < 0)
 521e: 10 05                     BPL loc_5225         ;     Then
 5220: a5 4b                     LDA dat_004b         ;         Set A = dat_004b
-5222: 20 c9 4a                  JSR loc_4ac9         ;         Call $4ac9 [loc_4ac9]
+5222: 20 c9 4a                  JSR sub_4ac9         ;         Call $4ac9 [sub_4ac9]
                                                      ;     End If
                                                      ; End If
 5225: ce 5f 19  loc_5225        DEC UNK_BYTE_195F    ; Subtract 1 from UNK_BYTE_195F
@@ -7490,7 +8352,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 
 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 5239: a0 00     cont_5239       LDY #$00             ;
-523b: b1 41                     LDA (dat_0041),Y     ;
+523b: b1 41                     LDA (addr_0041_L),Y  ;
 523d: 29 78                     AND #$78             ;
 523f: d0 03                     BNE loc_5244         ;
 5241: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
@@ -7524,7 +8386,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5274: 85 17                     STA addr_0016_H      ;     $6102 []
 5276: ae 4a 19                  LDX dat_194a         ;
 5279: 20 5c 3c                  JSR sub_3c5c         ;
-527c: 20 fa 2b                  JSR loc_2bfa         ;
+527c: 20 fa 2b                  JSR sub_2bfa         ;
 527f: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
 
 ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
@@ -7534,7 +8396,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5287: e9 01                     SBC #$01             ;
 5289: 91 43                     STA (addr_0043_L),Y  ;
 528b: d0 03                     BNE loc_5290         ;
-528d: ce 7f 62                  DEC loc_627f         ;
+528d: ce 7f 62                  DEC dat_627f         ;
 5290: 4c 09 52  loc_5290        JMP cont_5209        ; Continue @ 5209 [cont_5209]
 
 ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
@@ -7545,7 +8407,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 529a: e9 01                     SBC #$01             ;
 529c: 91 43                     STA (addr_0043_L),Y  ;
 529e: d0 03                     BNE loc_52a3         ;
-52a0: ce 7f 62                  DEC loc_627f         ;
+52a0: ce 7f 62                  DEC dat_627f         ;
 52a3: c8        loc_52a3        INY                  ;
 52a4: b1 43                     LDA (addr_0043_L),Y  ;
 52a6: c9 01                     CMP #$01             ;
@@ -7565,13 +8427,13 @@ xxx - TODO: this can't be both a sub and a string, can it?
 
 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 52c3: a9 00     cont_52c3       LDA #$00             ;
-52c5: 8d 7f 62                  STA loc_627f         ;
-52c8: 8d 61 19                  STA loc_1961         ;
+52c5: 8d 7f 62                  STA dat_627f         ;
+52c8: 8d 61 19                  STA dat_1961         ;
 52cb: a5 4b                     LDA dat_004b         ;
 52cd: 8d 7b 62                  STA loc_627b         ;
 52d0: a5 43                     LDA addr_0043_L      ;
 52d2: 85 47                     STA ZSBA             ;
-52d4: a5 44                     LDA addr_0043_L+1    ;
+52d4: a5 44                     LDA addr_0043_H      ;
 52d6: 85 48                     STA ZSBA+1           ;
 52d8: a0 02                     LDY #$02             ;
 52da: b1 47     loc_52da        LDA (ZSBA),Y         ;
@@ -7584,7 +8446,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 52e8: 20 74 4b                  JSR sub_4b74         ;
 52eb: f0 13                     BEQ loc_5300         ;
 52ed: a0 00                     LDY #$00             ;
-52ef: b1 41                     LDA (dat_0041),Y     ;
+52ef: b1 41                     LDA (addr_0041_L),Y  ;
 52f1: c9 82                     CMP #$82             ;
 52f3: d0 0b                     BNE loc_5300         ;
 52f5: 20 c4 4e                  JSR sub_4ec4         ;
@@ -7643,7 +8505,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 536f: 69 20                     ADC #$20             ;
 5371: c9 ff                     CMP #$ff             ;
 5373: 90 1b                     BCC loc_5390         ;
-5375: ac 00 76                  LDY loc_7600            ;
+5375: ac 00 76                  LDY loc_7600         ;
 5378: 88                        DEY                  ;
 5379: f0 07                     BEQ loc_5382         ;
 537b: ad 0a d2                  LDA RANDOM           ;
@@ -7661,9 +8523,9 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5393: 85 4b                     STA dat_004b         ;
 5395: 20 74 4b                  JSR sub_4b74         ;
 5398: 18                        CLC                  ;
-5399: a5 41                     LDA dat_0041         ;
+5399: a5 41                     LDA addr_0041_L      ;
 539b: 69 06                     ADC #$06             ;
-539d: 8d 3c 19                  STA loc_193c         ;
+539d: 8d 3c 19                  STA addr_193c_L      ;
 53a0: a5 42                     LDA addr_0041_H      ;
 53a2: 69 00                     ADC #$00             ;
 53a4: 8d 3d 19                  STA loc_193d         ;
@@ -7678,7 +8540,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 53ba: a9 01                     LDA #$01             ;
 53bc: 20 fc 2b                  JSR sub_2bfc         ;
 53bf: a0 00                     LDY #$00             ;
-53c1: b1 41                     LDA (dat_0041),Y     ;
+53c1: b1 41                     LDA (addr_0041_L),Y  ;
 53c3: 29 78                     AND #$78             ;
 53c5: d0 2c                     BNE loc_53f3         ;
 53c7: 4c 09 52                  JMP cont_5209        ; Continue @ $5209 [cont_5209]
@@ -7697,7 +8559,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 53e5: 85 17                     STA addr_0016_H      ;     $6224 [str_SPEL_BKFR] ("The spell failed and backfired....")
 53e7: ae 4a 19  loc_53e7        LDX dat_194a         ;
 53ea: 20 5c 3c                  JSR sub_3c5c         ;
-53ed: 20 fa 2b                  JSR loc_2bfa         ;
+53ed: 20 fa 2b                  JSR sub_2bfa         ;
 53f0: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
 53f3: a2 01     loc_53f3        LDX #$01             ; Set X = 1
 53f5: dd 0d 54  loc_53f5        CMP tbl_540d,X       ;
@@ -7718,42 +8580,47 @@ xxx - TODO: this can't be both a sub and a string, can it?
 540d: 08 10     tbl_540d        .BYTE $08 $10        ; 2 byte table of data
 
 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
-540f: a5 4b     cont_540f       LDA $4b              ;
-5411: 8d 7c 62                  STA loc_627c         ;
-5414: a5 43                     LDA addr_0043_L      ;
-5416: 85 07                     STA dat_0007_L       ;
-5418: a5 44                     LDA addr_0043_L+1    ;
-541a: 85 08                     STA dat_0007_H       ;
-541c: a0 00                     LDY #$00             ;
-541e: b1 07                     LDA (dat_0007_L),Y   ;
-5420: c9 01                     CMP #$01             ;
-5422: f0 2c                     BEQ loc_5450         ;
-5424: ad 9c 63                  LDA $639c            ;
-5427: 30 44                     BMI loc_546d         ;
-5429: 85 4b                     STA dat_004b         ;
-542b: 20 74 4b                  JSR sub_4b74         ;
-542e: 20 c4 4e                  JSR sub_4ec4         ;
-5431: a0 00                     LDY #$00             ;
-5433: b1 43                     LDA (addr_0043_L),Y  ;
-5435: d1 07                     CMP (dat_0007_L),Y   ;
-5437: d0 34                     BNE loc_546d         ;
-5439: a0 0c                     LDY #$0c             ;
-543b: b1 07     loc_543b        LDA (dat_0007_L),Y   ;
-543d: 91 43                     STA (addr_0043_L),Y  ;
-543f: 88                        DEY                  ;
-5440: d0 f9                     BNE loc_543b         ;
-5442: 20 71 54                  JSR sub_5471         ;
-5445: ad 7c 62                  LDA loc_627c         ;
-5448: 85 4b                     STA dat_004b         ;
-544a: ce 7f 62                  DEC loc_627f         ;
-544d: 4c 09 52                  JMP cont_5209        ; Continue @ $5209 [cont_5209]
-5450: c8        loc_5450        INY                  ;
-5451: b1 07                     LDA (dat_0007_L),Y   ;
-5453: c9 63                     CMP #$63             ;
-5455: b0 16                     BCS loc_546d         ;
-5457: ae be 63                  LDX INV_CRYSTALS     ;
-545a: f0 11                     BEQ loc_546d         ;
-545c: ce be 63                  DEC INV_CRYSTALS     ;
+540f: a5 4b     cont_540f       LDA $4b              ; Set
+5411: 8d 7c 62                  STA dat_627c         ;     dat_627c = $4b (75)
+5414: a5 43                     LDA addr_0043_L      ; Set dat_0007_L/H
+5416: 85 07                     STA dat_0007_L       ;     address
+5418: a5 44                     LDA addr_0043_H      ;     to
+541a: 85 08                     STA dat_0007_H       ;     addr_0043_L/H
+541c: a0 00                     LDY #$00             ; Set Y = 0
+541e: b1 07                     LDA (dat_0007_L),Y   ; If
+5420: c9 01                     CMP #$01             ;    ((*dat_0007_L)[0] != 1)
+5422: f0 2c                     BEQ loc_5450         ; Then
+5424: ad 9c 63                  LDA $639c            ;     If ($639c [TODO: label] < 0) Then
+5427: 30 44                     BMI loc_546d         ;         Continue @ $546d [loc_546d] -> $5225 [loc_5225]
+                                                     ;     End If
+5429: 85 4b                     STA dat_004b         ;     Set dat_004b = $639c [TODO: label]
+542b: 20 74 4b                  JSR sub_4b74         ;     Call $4b74 [sub_4b74]
+542e: 20 c4 4e                  JSR sub_4ec4         ;     Call $4ec4 [sub_4ec4]
+5431: a0 00                     LDY #$00             ;     Set Y = 0
+5433: b1 43                     LDA (addr_0043_L),Y  ;     If ((*addr_0043_L)[0] != (*dat_0007_L)[0])
+5435: d1 07                     CMP (dat_0007_L),Y   ;     Then
+5437: d0 34                     BNE loc_546d         ;         Continue @ $546d [loc_546d] -> $5225 [loc_5225]
+                                                     ;     End If
+5439: a0 0c                     LDY #$0c             ;     Set Y = $c (12 iterations)
+543b: b1 07     loc_543b        LDA (dat_0007_L),Y   ;     Loop
+                                                     ;         Set
+543d: 91 43                     STA (addr_0043_L),Y  ;             (*addr_0043_L)[Y] = (*dat_0007_L)[Y]
+543f: 88                        DEY                  ;         Subtract 1 from Y
+5440: d0 f9                     BNE loc_543b         ;     Repeat while (Y != 0)
+5442: 20 71 54                  JSR sub_5471         ;     Call $5471 [sub_5471]
+5445: ad 7c 62                  LDA dat_627c         ;     Set
+5448: 85 4b                     STA dat_004b         ;         dat_004b = dat_627c
+544a: ce 7f 62                  DEC dat_627f         ;     Subtract 1 from dat_627f
+544d: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]
+                                                     ; End If
+5450: c8        loc_5450        INY                  ; Add 1 to Y
+5451: b1 07                     LDA (dat_0007_L),Y   ; If ((*dat_0007_L)[Y] >= $63 (99))
+5453: c9 63                     CMP #$63             ;    Or
+5455: b0 16                     BCS loc_546d         ;    (INV_CRYSTALS == 0)
+5457: ae be 63                  LDX INV_CRYSTALS     ; Then
+545a: f0 11                     BEQ loc_546d         ;     Continue @ $546d [loc_546d] -> $5225 [loc_5225]
+                                                     ; End If
+545c: ce be 63                  DEC INV_CRYSTALS     ; Subtract 1 from INV_CRYSTALS
 545f: 18                        CLC                  ;
 5460: 69 0a                     ADC #$0a             ;
 5462: c9 63                     CMP #$63             ;
@@ -7770,7 +8637,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
                 ; Input
                 ;   dat_0002    - Decimal digit value (0..9)
                 ;   dat_0003    - Decimal digit value (0..9)
-                ;   dat_0041    - LSB of address
+                ;   addr_0041_L - LSB of address
                 ;   addr_0041_H - MSB of address
                 ;   addr_0043_L - LSB of address
                 ;   addr_0043_H - MSB of address
@@ -7781,19 +8648,19 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5473: b1 43                     LDA (addr_0043_L),Y  ; Set A = (*addr_0043_L)[Y]
 5475: 20 8e 54                  JSR sub_548e         ; Call $548e [sub_548e]
 5478: a0 05                     LDY #$05             ; Set Y = 5
-547a: b1 41                     LDA (dat_0041),Y     ; Set A
+547a: b1 41                     LDA (addr_0041_L),Y  ; Set A
 547c: 38                        SEC                  ;       =
-547d: e9 04                     SBC #$04             ;         (*dat_0041)[5] - 4
+547d: e9 04                     SBC #$04             ;         (*addr_0041_L)[5] - 4
 547f: a8                        TAY                  ; Set Y = A
                 ; Convert dat_0002 & dat_0003 from decimal to digit characters
-                ;   and store @ (*dat_0041)[Y]
+                ;   and store @ (*addr_0041_L)[Y]
 5480: a5 02                     LDA dat_0002         ; Set
-5482: 09 30                     ORA #$30             ;     (*dat_0041)[Y]
-5484: 91 41                     STA (dat_0041),Y     ;        = dat_0002 | $30
+5482: 09 30                     ORA #$30             ;     (*addr_0041_L)[Y]
+5484: 91 41                     STA (addr_0041_L),Y  ;        = dat_0002 | $30
 5486: c8                        INY                  ; Add 1 to Y
 5487: a5 03                     LDA dat_0003         ; Set
-5489: 09 30                     ORA #$30             ;     (*dat_0041)[Y]
-548b: 91 41                     STA (dat_0041),Y     ;        = dat_0003 | $30
+5489: 09 30                     ORA #$30             ;     (*addr_0041_L)[Y]
+548b: 91 41                     STA (addr_0041_L),Y  ;        = dat_0003 | $30
 548d: 60                        RTS                  ; Return to caller
 
                 ; Parameters
@@ -7837,24 +8704,24 @@ xxx - TODO: this can't be both a sub and a string, can it?
 54b6: ca                        DEX                  ;
 54b7: 10 fa                     BPL loc_54b3         ;
 54b9: a9 00                     LDA #$00             ;
-54bb: 85 49                     STA ERRNO            ;
+54bb: 85 49                     STA dat_0049         ;
 54bd: a9 00                     LDA #$00             ;
 54bf: 85 3d                     STA dat_003d_L       ;
 54c1: a9 65                     LDA #$65             ;
-54c3: 85 3e                     STA FTYPE            ;
+54c3: 85 3e                     STA dat_003d_H       ;
 54c5: a0 00     loc_54c5        LDY #$00             ;
 54c7: b1 3d                     LDA (dat_003d_L),Y   ;
 54c9: c9 87                     CMP #$87             ;
 54cb: d0 03                     BNE loc_54d0         ;
-54cd: 20 01 4a                  JSR loc_4a01         ;
-54d0: e6 49     loc_54d0        INC ERRNO            ;
+54cd: 20 01 4a                  JSR sub_4a01         ; Call $4a01 [sub_4a01]
+54d0: e6 49     loc_54d0        INC dat_0049         ;
 54d2: a5 3d                     LDA dat_003d_L       ;
 54d4: 18                        CLC                  ;
 54d5: 69 10                     ADC #$10             ;
 54d7: 85 3d                     STA dat_003d_L       ;
 54d9: 90 02                     BCC loc_54dd         ;
-54db: e6 3e                     INC FTYPE            ;
-54dd: a5 49     loc_54dd        LDA ERRNO            ;
+54db: e6 3e                     INC dat_003d_H       ;
+54dd: a5 49     loc_54dd        LDA dat_0049         ;
 54df: c9 40                     CMP #$40             ;
 54e1: 90 e2                     BCC loc_54c5         ;
 54e3: 20 35 58                  JSR sub_5835         ;
@@ -7898,7 +8765,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 552d: a9 85                     LDA #$85             ; Set addr_193a_L/H
 552f: 8d 3a 19                  STA addr_193a_L      ;     address
 5532: a9 5f                     LDA #$5f             ;     to
-5534: 8d 3b 19                  STA addr_193a_H      ;     $5f85 [abc xyz]
+5534: 8d 3b 19                  STA addr_193a_H      ;     $5f85 [str_WEAR_INSTD]
 5537: a9 3d                     LDA #$3d             ; Set addr_1944_L/H
 5539: 8d 44 19                  STA addr_1944_L      ;     address
 553c: a9 5f                     LDA #$5f             ;     to
@@ -7908,8 +8775,8 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5546: 9d 46 19                  STA dat_1946,X       ;
 5549: ca                        DEX                  ;
 554a: 10 f7                     BPL loc_5543         ;
-554c: 20 8c 50                  JSR loc_508c         ;
-554f: 20 49 50  loc_554f        JSR loc_5049         ;
+554c: 20 8c 50                  JSR sub_508c         ; Call $508c [sub_508c]
+554f: 20 49 50  loc_554f        JSR sub_5049         ;
 5552: 90 06                     BCC loc_555a         ;
 5554: c9 1b                     CMP #$1b             ;
 5556: f0 10                     BEQ loc_5568         ;
@@ -7923,15 +8790,15 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5568: 4c 25 52  loc_5568        JMP loc_5225         ;
 
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
-556b: ce 7f 62  cont_556b       DEC loc_627f         ;
+556b: ce 7f 62  cont_556b       DEC dat_627f         ;
 556e: ad 98 63                  LDA CHR_STOMACH      ;
 5571: 10 03                     BPL loc_5576         ;
 5573: 4c c1 56                  JMP loc_56c1         ;
 5576: a9 04     loc_5576        LDA #$04             ;
 5578: a0 02                     LDY #$02             ;
-557a: 20 d7 56                  JSR loc_56d7         ;
+557a: 20 d7 56                  JSR sub_56d7         ;
 557d: a0 00                     LDY #$00             ;
-557f: b1 41                     LDA (dat_0041),Y     ;
+557f: b1 41                     LDA (addr_0041_L),Y  ;
 5581: 29 78                     AND #$78             ;
 5583: f0 0a                     BEQ loc_558f         ;
 5585: a2 00                     LDX #$00             ; Set X = 0 (1 iteration)
@@ -7966,69 +8833,72 @@ xxx - TODO: this can't be both a sub and a string, can it?
 55b7: a9 00     loc_55b7        LDA #$00             ;
 55b9: 85 3d                     STA dat_003d_L       ;
 55bb: a9 65                     LDA #$65             ;
-55bd: 85 3e                     STA FTYPE            ;
+55bd: 85 3e                     STA dat_003d_H       ;
 55bf: a9 00                     LDA #$00             ;
-55c1: 85 49                     STA ERRNO            ;
+55c1: 85 49                     STA dat_0049         ;
 55c3: a0 00     loc_55c3        LDY #$00             ;
 55c5: b1 3d                     LDA (dat_003d_L),Y   ;
 55c7: 29 83                     AND #$83             ;
 55c9: c5 51                     CMP dat_0051         ;
 55cb: d0 03                     BNE loc_55d0         ;
-55cd: 20 01 4a                  JSR loc_4a01         ;
+55cd: 20 01 4a                  JSR sub_4a01         ; Call $4a01 [sub_4a01]
 55d0: a5 3d     loc_55d0        LDA dat_003d_L       ;
 55d2: 18                        CLC                  ;
 55d3: 69 10                     ADC #$10             ;
 55d5: 85 3d                     STA dat_003d_L       ;
 55d7: 90 02                     BCC loc_55db         ;
-55d9: e6 3e                     INC FTYPE            ;
-55db: e6 49     loc_55db        INC ERRNO            ;
-55dd: a5 49                     LDA ERRNO            ;
+55d9: e6 3e                     INC dat_003d_H       ;
+55db: e6 49     loc_55db        INC dat_0049         ;
+55dd: a5 49                     LDA dat_0049         ;
 55df: c9 40                     CMP #$40             ;
 55e1: 90 e0                     BCC loc_55c3         ;
-55e3: a5 51                     LDA dat_0051         ;
-55e5: 29 03                     AND #$03             ;
+55e3: a5 51                     LDA dat_0051         ; If
+55e5: 29 03                     AND #$03             ;    (dat_0051 & 3 == 3)
 55e7: c9 03                     CMP #$03             ;
-55e9: d0 16                     BNE loc_5601         ;
-55eb: aa                        TAX                  ;
-55ec: a9 00                     LDA #$00             ;
-55ee: 9d 90 63                  STA CHR_LIT_TORCH_FLAG,X ;
-55f1: a2 00                     LDX #$00             ;
-55f3: a9 00     loc_55f3        LDA #$00             ;
-55f5: 9d 50 63                  STA CHR_STA_UNKNOWN,X ;
-55f8: 8a                        TXA                  ;
-55f9: 18                        CLC                  ;
-55fa: 69 08                     ADC #$08             ;
-55fc: aa                        TAX                  ;
-55fd: c9 38                     CMP #$38             ;
-55ff: 90 f2                     BCC loc_55f3         ;
+55e9: d0 16                     BNE loc_5601         ; Then
+55eb: aa                        TAX                  ;     Set X = A
+55ec: a9 00                     LDA #$00             ;     Set
+55ee: 9d 90 63                  STA CHR_LIT_TORCH_FLAG,X ;         CHR_LIT_TORCH_FLAG[X] = 0
+55f1: a2 00                     LDX #$00             ;     Set X = 0
+55f3: a9 00     loc_55f3        LDA #$00             ;     Loop
+                                                     ;         Set
+55f5: 9d 50 63                  STA CHR_STA_UNKNOWN,X ;             CHR_STA_UNKNOWN[X] = 0
+55f8: 8a                        TXA                  ;         Set
+55f9: 18                        CLC                  ;             X
+55fa: 69 08                     ADC #$08             ;               =
+55fc: aa                        TAX                  ;                 X + 8
+55fd: c9 38                     CMP #$38             ;     Repeat
+55ff: 90 f2                     BCC loc_55f3         ;       while (X < $38 (56 '8'))
+                                                     ; End If
 5601: 60        loc_5601        RTS                  ; Return to caller
 
 5602: 18        sub_5602        CLC                  ; Set
-5603: a9 06                     LDA #$06             ;     loc_193c
-5605: 65 41                     ADC dat_0041         ;       =
-5607: 8d 3c 19                  STA loc_193c         ;         dat_0041 + 6
-560a: 85 07                     STA dat_0007_L       ; Set dat_0007_L = dat_0041 + 6
+5603: a9 06                     LDA #$06             ;     addr_193c_L
+5605: 65 41                     ADC addr_0041_L      ;       =
+5607: 8d 3c 19                  STA addr_193c_L      ;         addr_0041_L + 6
+560a: 85 07                     STA dat_0007_L       ; Set dat_0007_L = addr_0041_L + 6
 560c: a9 00                     LDA #$00             ; Set
 560e: 65 42                     ADC addr_0041_H      ;
 5610: 8d 3d 19                  STA loc_193d         ;
 5613: 85 08                     STA dat_0007_H       ;
-5615: a0 06                     LDY #$06             ;
-5617: b1 07                     LDA (dat_0007_L),Y   ;
-5619: d0 04                     BNE loc_561f         ;
-561b: a9 20                     LDA #$20             ;
-561d: 91 07                     STA (dat_0007_L),Y   ;
+5615: a0 06                     LDY #$06             ; If
+5617: b1 07                     LDA (dat_0007_L),Y   ;    ((*dat_0007_L)[6] == 0)
+5619: d0 04                     BNE loc_561f         ; Then
+561b: a9 20                     LDA #$20             ;    Set
+561d: 91 07                     STA (dat_0007_L),Y   ;        (*dat_0007_L)[6] = $20
+                                                     ; End If
 561f: a9 e8     loc_561f        LDA #$e8             ; Set ???
 5621: 85 16                     STA addr_0016_L      ;     address
 5623: a9 60                     LDA #$60             ;     to
 5625: 85 17                     STA addr_0016_H      ;     $60e8 [str_YOU_DRNK] "You drink a ..."
-5627: ae 4a 19                  LDX dat_194a         ;
-562a: 20 5c 3c                  JSR sub_3c5c         ;
-562d: a9 02                     LDA #$02             ;
-562f: 4c fc 2b                  JMP sub_2bfc         ;
+5627: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
+562a: 20 5c 3c                  JSR sub_3c5c         ; Call $3c5c [sub_3c5c]
+562d: a9 02                     LDA #$02             ; Set A = 2
+562f: 4c fc 2b                  JMP sub_2bfc         ; Continue @ $2bfc [sub_2bfc]
 
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 5632: a0 00     cont_5632       LDY #$00             ;
-5634: b1 41                     LDA (dat_0041),Y     ;
+5634: b1 41                     LDA (addr_0041_L),Y  ;
 5636: 29 78                     AND #$78             ;
 5638: f0 0a                     BEQ loc_5644         ;
 563a: a2 00                     LDX #$00             ; TODO: This is looking at code below
@@ -8074,131 +8944,149 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5663: 66 a6 e9 22  tbl_5663_L   .BYTE $66,$a6,$e9,$22
 
                 ; May be USE food packet?
-5667: ad bb 63  cont_5667       LDA INV_FOOD         ;
-566a: d0 03                     BNE loc_566f         ;
-566c: 4c 74 57                  JMP loc_5774         ;
-566f: ce bb 63  loc_566f        DEC INV_FOOD         ;
-5672: ad 98 63                  LDA CHR_STOMACH      ;
-5675: 30 1a                     BMI loc_5691         ;
-5677: ad 99 63                  LDA CHR_HUNGER       ;
-567a: 4a                        LSR                  ;
-567b: 4a                        LSR                  ;
-567c: 4a                        LSR                  ;
-567d: 4a                        LSR                  ;
-567e: aa                        TAX                  ;
-567f: bd 54 60                  LDA loc_6054,X       ;
-5682: a2 99                     LDX #$99             ;
-5684: 20 43 2e                  JSR loc_2e43         ;
-5687: a9 1c                     LDA #$1c             ;
-5689: a2 98                     LDX #$98             ;
-568b: 20 43 2e                  JSR loc_2e43         ;
-568e: 4c 25 52                  JMP loc_5225         ;
-5691: a9 ef     loc_5691        LDA #$ef             ; Set ???
+5667: ad bb 63  cont_5667       LDA INV_FOOD         ; If (INV_FOOD == 0)
+566a: d0 03                     BNE loc_566f         ; Then
+566c: 4c 74 57                  JMP loc_5774         ;     Continue @ $5774 [loc_5774]
+                                                     ; End If
+566f: ce bb 63  loc_566f        DEC INV_FOOD         ; Subtract 1 from INV_FOOD
+5672: ad 98 63                  LDA CHR_STOMACH      ; If (CHR_STOMACH >= 0)
+5675: 30 1a                     BMI loc_5691         ; Then
+5677: ad 99 63                  LDA CHR_HUNGER       ;     Set
+567a: 4a                        LSR                  ;        .
+567b: 4a                        LSR                  ;        .
+567c: 4a                        LSR                  ;        .
+567d: 4a                        LSR                  ;        .
+567e: aa                        TAX                  ;         X = CHR_HUNGER / 32
+567f: bd 54 60                  LDA loc_6054,X       ;     Set A = loc_6054[X]
+5682: a2 99                     LDX #$99             ;     Set X = $99
+5684: 20 43 2e                  JSR loc_2e43         ;     Call $2e43 [loc_2e43]
+5687: a9 1c                     LDA #$1c             ;     Set A = $1c
+5689: a2 98                     LDX #$98             ;     Set X = $98
+568b: 20 43 2e                  JSR loc_2e43         ;     Call $2e43 [loc_2e43]
+568e: 4c 25 52                  JMP loc_5225         ;     Continue @ $5225 [loc_5225]
+                                                     ; End If
+5691: a9 ef     loc_5691        LDA #$ef             ; Set addr_0016_L/H
 5693: 85 16                     STA addr_0016_L      ;    address
 5695: a9 5f                     LDA #$5f             ;    to
 5697: 85 17                     STA addr_0016_H      ;    $5fef [str_TOO_FULL] "Your stomach turns at the thought of eating another bite..."
-5699: ae 4a 19                  LDX dat_194a         ;
-569c: 20 5c 3c                  JSR sub_3c5c         ;
-569f: a9 10                     LDA #$10             ;
-56a1: 20 fc 2b                  JSR sub_2bfc         ;
-56a4: 4c 25 52                  JMP loc_5225         ;
+5699: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
+569c: 20 5c 3c                  JSR sub_3c5c         ; Call $3c5c [sub_3c5c]
+569f: a9 10                     LDA #$10             ; Set A = $10
+56a1: 20 fc 2b                  JSR sub_2bfc         ; Set $2bfc [sub_2bfc]
+56a4: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
 
                 ; May be USE water flask?
-56a7: ad bc 63  cont_56a7       LDA INV_WATER        ;
-56aa: d0 03                     BNE loc_56af         ;
-56ac: 4c 74 57                  JMP loc_5774         ;
-56af: ce bc 63  loc_56af        DEC INV_WATER        ;
-56b2: ad 98 63                  LDA CHR_STOMACH      ;
-56b5: 30 0a                     BMI loc_56c1         ;
-56b7: a9 10                     LDA #$10             ;
-56b9: a0 08                     LDY #$08             ;
-56bb: 20 d7 56                  JSR loc_56d7         ;
-56be: 4c 25 52                  JMP loc_5225         ;
-56c1: a9 64     loc_56c1        LDA #$64             ; Set ???
+56a7: ad bc 63  cont_56a7       LDA INV_WATER        ; If (INV_WATER == 0) Then
+56aa: d0 03                     BNE loc_56af         ;    Continue @ $5774 [loc_5774]
+56ac: 4c 74 57                  JMP loc_5774         ; End If
+56af: ce bc 63  loc_56af        DEC INV_WATER        ; Subtract 1 from INV_WATER
+56b2: ad 98 63                  LDA CHR_STOMACH      ; If (CHR_STOMACH >= 0)
+56b5: 30 0a                     BMI loc_56c1         ; Then
+56b7: a9 10                     LDA #$10             ;     Set A = $10
+56b9: a0 08                     LDY #$08             ;     Set Y = 8
+56bb: 20 d7 56                  JSR sub_56d7         ;     Call $56d7 [sub_56d7]
+56be: 4c 25 52                  JMP loc_5225         ;     Continue @ $5225 [loc_5225]
+                                                     ; End If
+56c1: a9 64     loc_56c1        LDA #$64             ; Set addr_0016_L/H
 56c3: 85 16                     STA addr_0016_L      ;     address
 56c5: a9 60                     LDA #$60             ;     to
 56c7: 85 17                     STA addr_0016_H      ;     $6064 [str_NO_DRNK] "Your throat fails to allow..."
-56c9: ae 4a 19                  LDX dat_194a         ;
-56cc: 20 5c 3c                  JSR sub_3c5c         ;
-56cf: a9 10                     LDA #$10             ;
-56d1: 20 fc 2b                  JSR sub_2bfc         ;
-56d4: 4c 25 52                  JMP loc_5225         ;
-56d7: 48        loc_56d7        PHA                  ;
-56d8: 98                        TYA                  ;
-56d9: a2 98                     LDX #$98             ;
-56db: 20 43 2e                  JSR loc_2e43         ;
-56de: 68                        PLA                  ;
-56df: a2 9a                     LDX #$9a             ;
-56e1: 4c 43 2e                  JMP loc_2e43         ;
-56e4: 20 dc 57  loc_56e4        JSR loc_57dc         ;
-56e7: 4c 25 52                  JMP loc_5225         ;
+56c9: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
+56cc: 20 5c 3c                  JSR sub_3c5c         ; Call $3c5c [sub_3c5c]
+56cf: a9 10                     LDA #$10             ; Set A = $10
+56d1: 20 fc 2b                  JSR sub_2bfc         ; Call $2bfc [sub_2bfc]
+56d4: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
+
+                ;
+56d7: 48        sub_56d7        PHA                  ; Preserve value of A
+56d8: 98                        TYA                  ; Set A = Y
+56d9: a2 98                     LDX #$98             ; Set X = $98
+56db: 20 43 2e                  JSR loc_2e43         ; Call $2e43 [loc_2e43]
+56de: 68                        PLA                  ; Restore original value of A
+56df: a2 9a                     LDX #$9a             ; Set X = $9a
+56e1: 4c 43 2e                  JMP loc_2e43         ; Continue @ $2e43 [loc_2e43]
+
+                ;
+56e4: 20 dc 57  loc_56e4        JSR loc_57dc         ; Call $57dc [loc_57dc]
+56e7: 4c 25 52                  JMP loc_5225         ; Continue @ $5225 [loc_5225]
 
                 ; May be USE torch?
-56ea: ad bd 63  cont_56ea       LDA INV_TORCHES      ;
-56ed: d0 06                     BNE loc_56f5         ;
-56ef: 4c 74 57                  JMP loc_5774         ;
-56f2: 4c 25 52  loc_56f2        JMP loc_5225         ;
-56f5: 20 ab 57  loc_56f5        JSR loc_57ab         ;
-56f8: b0 f8                     BCS loc_56f2         ;
-56fa: a2 61                     LDX #$61             ;
-56fc: a0 29                     LDY #$29             ;
-56fe: 20 4d 4b                  JSR loc_4b4d         ;
-5701: 30 e1                     BMI loc_56e4         ;
-5703: a9 88                     LDA #$88             ;
-5705: 20 b0 49                  JSR loc_49b0         ;
-5708: 30 da                     BMI loc_56e4         ;
-570a: a0 02                     LDY #$02             ;
-570c: b9 1a 61  loc_570c        LDA loc_611a,Y       ;
-570f: 91 3d                     STA (dat_003d_L),Y   ;
-5711: c8                        INY                  ;
-5712: c0 0f                     CPY #$0f             ;
-5714: d0 f6                     BNE loc_570c         ;
-5716: a5 4b                     LDA dat_004b         ;
-5718: 91 3d                     STA (dat_003d_L),Y   ;
-571a: ce bd 63                  DEC INV_TORCHES      ;
-571d: ee 90 63                  INC CHR_LIT_TORCH_FLAG  ;
-5720: 4c af 54  loc_5720        JMP loc_54af         ;
+56ea: ad bd 63  cont_56ea       LDA INV_TORCHES      ; If (INV_TORCHES == 0)
+56ed: d0 06                     BNE loc_56f5         ; Then
+56ef: 4c 74 57                  JMP loc_5774         ;     Continue @ $5774 [loc_5774]
+                                                     ; End If
+56f2: 4c 25 52  loc_56f2        JMP loc_5225         ; Call $57ab [loc_57ab]
+56f5: 20 ab 57  loc_56f5        JSR loc_57ab         ; If (C == 0) Then   (TODO: meaning?)
+56f8: b0 f8                     BCS loc_56f2         ;     Continue @ $5225 [loc_5225]
+                                                     ; End If
+56fa: a2 61                     LDX #$61             ; Set X = $61
+56fc: a0 29                     LDY #$29             ; Set Y = $29
+56fe: 20 4d 4b                  JSR sub_4b4d         ; Call $4b4d [sub_4b4d]
+5701: 30 e1                     BMI loc_56e4         ; If (N == 1) Then   (TODO: meaning?)
+                                                     ;     Continue @ $56e4 [loc_56e4]
+                                                     ; End If
+5703: a9 88                     LDA #$88             ; Set A = $88
+5705: 20 b0 49                  JSR sub_49b0         ; Call $49b0 [sub_49b0]
+5708: 30 da                     BMI loc_56e4         ; If (N == 1) Then   (TODO: meaning?)
+                                                     ;     Continue @ $56e4 [loc_56e4]
+                                                     ; End If
+570a: a0 02                     LDY #$02             ; Set Y = 2  (13 iterations: 2..e)
+570c: b9 1a 61  loc_570c        LDA loc_611a,Y       ; Loop
+570f: 91 3d                     STA (dat_003d_L),Y   ;     Set ($dat_003d_L)[Y] = loc_611a[Y]
+5711: c8                        INY                  ;     Add 1 to Y
+5712: c0 0f                     CPY #$0f             ; Repeat
+5714: d0 f6                     BNE loc_570c         ;   while (Y != $f)
+5716: a5 4b                     LDA dat_004b         ; Set
+5718: 91 3d                     STA (dat_003d_L),Y   ;     (*dat_003d_L)[Y] = dat_004b
+571a: ce bd 63                  DEC INV_TORCHES      ; Subtract 1 from INV_TORCHES
+571d: ee 90 63                  INC CHR_LIT_TORCH_FLAG  ; Add 1 to CHR_LIT_TORCH_FLAG
+5720: 4c af 54  loc_5720        JMP loc_54af         ; Continue @ $54af [loc_54af]
 
                 ; May be USE timepiece?
-5723: ad c1 63  cont_5723       LDA INV_TIMEPIECES   ;
-5726: f0 4c                     BEQ loc_5774         ;
-5728: a9 61                     LDA #$61             ; Set ???
-572a: 85 16                     STA addr_0016_L      ;     address
-572c: a9 61                     LDA #$61             ;     to
-572e: 85 17                     STA addr_0016_H      ;     $6161 [str_TIME] "It is ? minutes past the ?th hour."
-5730: 20 31 2e                  JSR sub_2e31         ;
-5733: a9 73                     LDA #$73             ;
-5735: ae 09 63                  LDX TME_MINUTES      ;
-5738: e0 01                     CPX #$01             ;
-573a: d0 02                     BNE loc_573e         ;
-573c: a9 20                     LDA #$20             ;
-573e: 8d 76 61  loc_573e        STA loc_6176         ;
-5741: a9 01                     LDA #$01             ;
-5743: e0 0a                     CPX #$0a             ;
-5745: 90 02                     BCC loc_5749         ;
-5747: a9 02                     LDA #$02             ;
-5749: 8d 6e 61  loc_5749        STA loc_616e         ;
-574c: ad 0a 63                  LDA TME_HOURS        ;
-574f: a0 01                     LDY #$01             ;
-5751: c9 0a                     CMP #$0a             ;
-5753: 90 02                     BCC loc_5757         ;
-5755: a0 02                     LDY #$02             ;
-5757: 8c 86 61  loc_5757        STY loc_6186         ;
-575a: 0a                        ASL                  ;
-575b: aa                        TAX                  ;
-575c: bd 91 61                  LDA loc_6191,X       ;
-575f: 8d 87 61                  STA loc_6187         ;
-5762: bd 92 61                  LDA loc_6192,X       ;
-5765: 8d 88 61                  STA loc_6188         ;
-5768: ae 4a 19  loc_5768        LDX dat_194a         ;
-576b: 20 5c 3c                  JSR sub_3c5c         ;
-576e: 20 fa 2b                  JSR loc_2bfa         ;
-5771: 4c 25 52                  JMP loc_5225         ;
+5723: ad c1 63  cont_5723       LDA INV_TIMEPIECES   ; If (INV_TIMEPIECES != 0)
+5726: f0 4c                     BEQ loc_5774         ; Then
+5728: a9 61                     LDA #$61             ;     Set addr_0016_L/H
+572a: 85 16                     STA addr_0016_L      ;         address
+572c: a9 61                     LDA #$61             ;         to
+572e: 85 17                     STA addr_0016_H      ;         $6161 [str_TIME] "It is ? minutes past the ?th hour."
+5730: 20 31 2e                  JSR sub_2e31         ;     Call $2e31 [sub_2e31]
+5733: a9 73                     LDA #$73             ;     Set A = $73 (115 's')
+                ; Minutes
+5735: ae 09 63                  LDX TME_MINUTES      ;     Set X = TME_MINUTES
+5738: e0 01                     CPX #$01             ;     If (X == 1) Then
+573a: d0 02                     BNE loc_573e         ;         Set A = $20 (32 ' ')
+573c: a9 20                     LDA #$20             ;     End If
+573e: 8d 76 61  loc_573e        STA loc_6176         ;     Set loc_6176 = A
+5741: a9 01                     LDA #$01             ;     Set A = 1
+5743: e0 0a                     CPX #$0a             ;     If (X >= $a (10))
+5745: 90 02                     BCC loc_5749         ;     Then
+5747: a9 02                     LDA #$02             ;         Set A = 2
+                                                     ;     End If
+                ; Hours
+5749: 8d 6e 61  loc_5749        STA loc_616e         ;     Set loc_616e = A
+574c: ad 0a 63                  LDA TME_HOURS        ;     Set A = TME_HOURS
+574f: a0 01                     LDY #$01             ;     Set Y = 1
+5751: c9 0a                     CMP #$0a             ;     If (A >= $a (10))
+5753: 90 02                     BCC loc_5757         ;     Then
+5755: a0 02                     LDY #$02             ;         Set Y = 2
+                                                     ;     End If
+5757: 8c 86 61  loc_5757        STY loc_6186         ;     Set loc_6186 = Y
+575a: 0a                        ASL                  ;     Set
+575b: aa                        TAX                  ;         X = A * 2
+575c: bd 91 61                  LDA loc_6191,X       ;     Set
+575f: 8d 87 61                  STA loc_6187         ;         loc_6187 = loc_6191[X]
+5762: bd 92 61                  LDA loc_6192,X       ;     Set
+5765: 8d 88 61                  STA loc_6188         ;         loc_6188 = loc_6192[X]
+5768: ae 4a 19  loc_5768        LDX dat_194a         ;     Set X = dat_194a
+576b: 20 5c 3c                  JSR sub_3c5c         ;     Call $3c5c [sub_3c5c]
+576e: 20 fa 2b                  JSR sub_2bfa         ;     Call $2bfa [sub_2bfa]
+5771: 4c 25 52                  JMP loc_5225         ;     Continue @ $5225 [loc_5225]
+                                                     ; End If
 5774: a9 4d     loc_5774        LDA #$4d             ; Set addr_0016_L/H
 5776: 85 16                     STA addr_0016_L      ;     address
 5778: a9 61                     LDA #$61             ;     to
 577a: 85 17                     STA addr_0016_H      ;     $614d [str_HAV_NONE] "You have none."
-577c: d0 ea                     BNE loc_5768         ;
+577c: d0 ea                     BNE loc_5768         ; Continue @ $5768 [loc_5768]  (condition always true)
                 ;
 577e: a9 00     sub_577e        LDA #$00             ; Set
 5780: 8d 76 62                  STA dat_6276         ;     dat_6276 = 0
@@ -8207,7 +9095,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 5788: a9 2e                     LDA #$2e             ; Set addr_193a_L/H
 578a: 8d 3a 19                  STA addr_193a_L      ;     address
 578d: a9 5f                     LDA #$5f             ;     to
-578f: 8d 3b 19                  STA addr_193a_H      ;     $5f2e [abc xyz]
+578f: 8d 3b 19                  STA addr_193a_H      ;     $5f2e [zts_CAST]
 5792: 4c d8 51                  JMP loc_51d8         ; Continue @ $51d8 [loc_51d8]
                 ;
 5795: c9 80     sub_5795        CMP #$80             ;
@@ -8222,7 +9110,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 57a8: 91 09                     STA (dat_0009_L),Y   ;
 57aa: 60        loc_57aa        RTS                  ; Return to caller
 
-57ab: a9 96     loc_57ab        LDA #$96             ; Set ???
+57ab: a9 96     loc_57ab        LDA #$96             ; Set addr_0016_L/H
 57ad: 85 16                     STA addr_0016_L      ;     address
 57af: a9 5f                     LDA #$5f             ;     to
 57b1: 85 17                     STA addr_0016_H      ;     $5f96 []
@@ -8233,7 +9121,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 57be: a9 57                     LDA #$57             ;     to
 57c0: 8d 78 19                  STA cont_addr_1977_H ;     $57c6 [rtn_57c6]
 57c3: 4c f3 2f                  JMP loc_2ff3         ;
-57c6: a5 31     rtn_57c6        LDA CHKSUM           ;
+57c6: a5 31     rtn_57c6        LDA dat_0031         ;
 57c8: 30 ef                     BMI loc_57b9         ;
 57ca: c9 1b                     CMP #$1b             ;
 57cc: f0 0d                     BEQ loc_57db         ;
@@ -8252,7 +9140,7 @@ xxx - TODO: this can't be both a sub and a string, can it?
 57e2: 85 17                     STA addr_0016_H      ;     $61c1 []
 57e4: ae 4a 19                  LDX dat_194a         ;
 57e7: 20 5c 3c                  JSR sub_3c5c         ;
-57ea: 4c fa 2b                  JMP loc_2bfa         ; Continue execution @ $2bfa [loc_2bfa]
+57ea: 4c fa 2b                  JMP sub_2bfa         ; Continue execution @ $2bfa [sub_2bfa]
 
 57ed: ae 15 63                  LDX CHR_LOC_MAP      ;
 57f0: ad 13 63                  LDA CHR_LOC_X        ;
@@ -8271,10 +9159,10 @@ xxx - TODO: this can't be both a sub and a string, can it?
 580f: a9 62                     LDA #$62             ;     to
 5811: 85 17                     STA addr_0016_H      ;     $6299 [str_MAP_POS] ("You are ?? squares North...)
 5813: ae 4a 19                  LDX dat_194a         ;
-5816: ce fe 18                  DEC loc_18fe         ;
+5816: ce fe 18                  DEC dat_18fe         ;
 5819: 20 5c 3c                  JSR sub_3c5c         ;
 581c: a9 00                     LDA #$00             ;
-581e: 8d fe 18                  STA loc_18fe         ;
+581e: 8d fe 18                  STA dat_18fe         ;
 5821: 20 b0 2b                  JSR sub_2bb0         ;
 5824: a9 07                     LDA #$07             ; Set ???
 5826: 85 16                     STA addr_0016_L      ;     address
@@ -8324,10 +9212,10 @@ abc xyz
 5885: d0 1e                     BNE loc_58a5         ;     Then
 5887: 24 4b                     BIT dat_004b         ;         If (dat_004b >= 0)
 5889: 10 0a                     BPL loc_5895         ;         Then
-588b: a9 53                     LDA #$53             ;             Set loc_59c1/loc_59c2
-588d: 8d c1 59                  STA loc_59c1         ;                 address
+588b: a9 53                     LDA #$53             ;             Set dat_59c1_L/dat_59c1_H
+588d: 8d c1 59                  STA dat_59c1_L       ;                 address
 5890: a9 5e                     LDA #$5e             ;                 to
-5892: 8d c2 59                  STA loc_59c2         ;                 $5e53 [dat_5e53]
+5892: 8d c2 59                  STA dat_59c1_H       ;                 $5e53 [dat_5e53]
                                                      ;         End If
 5895: ae 84 62  loc_5895        LDX dat_6284         ;         Set X = dat_6284
 5898: bd d4 64                  LDA $64d4,X          ;         Set
@@ -8340,34 +9228,35 @@ abc xyz
                                                      ;     End If
 58a5: ce 84 62  loc_58a5        DEC dat_6284         ;     Subtract 1 from dat_6284
 58a8: 10 bb                     BPL loc_5865         ; Repeat while (dat_6284 >= 0)
-58aa: ad c1 58                  LDA dat_58c1         ;
-58ad: 10 11                     BPL loc_58c0         ;
-58af: a9 ee                     LDA #$ee             ; Set addr_0016_L/H
-58b1: 85 16                     STA addr_0016_L      ;     address
-58b3: a9 59                     LDA #$59             ;     to
-58b5: 85 17                     STA addr_0016_H      ;     $59ee [str_NTHNG_HRE] "Nothing here."
-58b7: ae 4a 19                  LDX dat_194a         ;
-58ba: 20 5c 3c                  JSR sub_3c5c         ;
-58bd: 20 b0 2b                  JSR sub_2bb0         ;
+58aa: ad c1 58                  LDA dat_58c1         ; If (dat_58c1 < 0)
+58ad: 10 11                     BPL loc_58c0         ; Then
+58af: a9 ee                     LDA #$ee             ;     Set addr_0016_L/H
+58b1: 85 16                     STA addr_0016_L      ;         address
+58b3: a9 59                     LDA #$59             ;         to
+58b5: 85 17                     STA addr_0016_H      ;         $59ee [str_NTHNG_HRE] "Nothing here."
+58b7: ae 4a 19                  LDX dat_194a         ;     Set X = dat_194a
+58ba: 20 5c 3c                  JSR sub_3c5c         ;     Call $3c5c [sub_3c5c]
+58bd: 20 b0 2b                  JSR sub_2bb0         ;     Call $2bb0 [sub_2bb0]
+                                                     ; End If
 58c0: 60        loc_58c0        RTS                  ; Return to caller
 
 58c1: 00        dat_58c1        .BYTE $00            ;
 
-58c2: a5 4b     loc_58c2        LDA dat_004b         ;
-58c4: 20 74 4b                  JSR sub_4b74         ;
-58c7: a9 06                     LDA #$06             ;
-58c9: 18                        CLC                  ;
-58ca: 65 41                     ADC dat_0041         ;
-58cc: 8d c1 59                  STA loc_59c1         ;
-58cf: a5 42                     LDA addr_0041_H      ;
-58d1: 69 00                     ADC #$00             ;
-58d3: 8d c2 59                  STA loc_59c2         ;
-58d6: a9 9b                     LDA #$9b             ; Set ???
+58c2: a5 4b     loc_58c2        LDA dat_004b         ; Set A = dat_004b
+58c4: 20 74 4b                  JSR sub_4b74         ; Call $4b74 [sub_4b74]
+58c7: a9 06                     LDA #$06             ; Set
+58c9: 18                        CLC                  ;     dat_59c1_L/dat_59c1_H
+58ca: 65 41                     ADC addr_0041_L      ;     address
+58cc: 8d c1 59                  STA dat_59c1_L       ;     to
+58cf: a5 42                     LDA addr_0041_H      ;     addr_0041_L/H
+58d1: 69 00                     ADC #$00             ;     plus
+58d3: 8d c2 59                  STA dat_59c1_H       ;     4
+58d6: a9 9b                     LDA #$9b             ; Set addr_5955_L/H
 58d8: 8d 55 59                  STA addr_5955_L      ;     address
 58db: a9 59                     LDA #$59             ;     to
 58dd: 8d 56 59                  STA addr_5955_H      ;     $599b [dat_599b]
 58e0: a0 00                     LDY #$00             ;
-58e2: b1 41                     LDA (dat_0041),Y     ;
+58e2: b1 41                     LDA (addr_0041_L),Y  ;
 58e4: 29 7f                     AND #$7f             ;
 58e6: d0 1c                     BNE loc_5904         ;
 58e8: a5 4b                     LDA dat_004b         ;
@@ -8378,11 +9267,11 @@ abc xyz
 58f4: c8                        INY                  ;
 58f5: b1 43                     LDA (addr_0043_L),Y  ;
 58f7: 8d e4 59                  STA dat_59e4         ;
-58fa: a9 ab                     LDA #$ab             ; Set ???
+58fa: a9 ab                     LDA #$ab             ; Set addr_5955_L/h
 58fc: 8d 55 59                  STA addr_5955_L      ;     address
 58ff: a9 59                     LDA #$59             ;     to
 5901: 8d 56 59                  STA addr_5955_H      ;     $59ab [str_GET_Y_N_ESC] "GET? ??? Yes, No or ESC"
-5904: ad 55 59  loc_5904        LDA addr_5955_L      ; Set ???
+5904: ad 55 59  loc_5904        LDA addr_5955_L      ; Set addr_0016_L/h
 5907: 85 16                     STA addr_0016_L      ;     address
 5909: ad 56 59                  LDA addr_5955_H      ;     to
 590c: 85 17                     STA addr_0016_H      ;     $59ab [str_GET_Y_N_ESC] "GET? ??? Yes, No or ESC"
@@ -8393,7 +9282,7 @@ abc xyz
 5919: a9 59                     LDA #$59             ;     to
 591b: 8d 78 19                  STA cont_addr_1977_H ;   $5921 [rtn_5921]
 591e: 4c f3 2f                  JMP loc_2ff3         ;
-5921: a5 31     rtn_5921        LDA CHKSUM           ;
+5921: a5 31     rtn_5921        LDA dat_0031         ;
 5923: 30 ef                     BMI loc_5914         ;
 5925: c9 1b                     CMP #$1b             ;
 5927: f0 24                     BEQ loc_594d         ;
@@ -8403,17 +9292,17 @@ abc xyz
 5930: c9 59                     CMP #$59             ;
 5932: d0 d0                     BNE loc_5904         ;
 5934: a9 08                     LDA #$08             ;
-5936: 8d 61 19                  STA loc_1961         ;
+5936: 8d 61 19                  STA dat_1961         ;
 5939: a0 00                     LDY #$00             ;
-593b: b1 41                     LDA (dat_0041),Y     ;
+593b: b1 41                     LDA (addr_0041_L),Y  ;
 593d: d0 06                     BNE loc_5945         ;
-593f: 20 57 59                  JSR loc_5957         ;
+593f: 20 57 59                  JSR sub_5957         ;
 5942: 4c 4b 59                  JMP loc_594b         ;
 5945: a0 02     loc_5945        LDY #$02             ;
 5947: a9 01                     LDA #$01             ;
-5949: 91 41                     STA (dat_0041),Y     ;
+5949: 91 41                     STA (addr_0041_L),Y  ;
 594b: 18        loc_594b        CLC                  ;
-594c: 24 38                     BIT BUFRFL           ;
+594c: 24 38                     BIT dat_0038         ;
 594e: ce 5f 19                  DEC UNK_BYTE_195F    ;
 5951: ce 60 19                  DEC UNK_BYTE_1960    ;
 5954: 60                        RTS                  ; Return to caller
@@ -8421,20 +9310,23 @@ abc xyz
 5955: 9b        addr_5955_L     .BYTE $9b            ;
 5956: 59        addr_5955_H     .BYTE $59            ;
 
-5957: a0 16                     LDY #$16             ;
-5959: b1 41                     LDA (dat_0041),Y     ;
+                ;
+                ;
+                ;
+5957: a0 16     sub_5957        LDY #$16             ;
+5959: b1 41                     LDA (addr_0041_L),Y  ;
 595b: aa                        TAX                  ;
-595c: bd a8 5a                  LDA loc_5aa8,X       ;
+595c: bd a8 5a                  LDA dat_5aa8,X       ;
 595f: a0 18                     LDY #$18             ;
 5961: e0 07                     CPX #$07             ;
 5963: 90 1f                     BCC loc_5984         ;
 5965: aa                        TAX                  ;
 5966: 18                        CLC                  ;
-5967: b1 41                     LDA (dat_0041),Y     ;
+5967: b1 41                     LDA (addr_0041_L),Y  ;
 5969: 7d 01 63                  ADC $6301,X          ;
 596c: 9d 01 63                  STA $6301,X          ;
 596f: 88                        DEY                  ;
-5970: b1 41                     LDA (dat_0041),Y     ;
+5970: b1 41                     LDA (addr_0041_L),Y  ;
 5972: 7d 00 63                  ADC $6300,X          ;
 5975: 9d 00 63                  STA $6300,X          ;
 5978: 90 1b                     BCC loc_5995         ;
@@ -8444,21 +9336,23 @@ abc xyz
 5982: d0 11                     BNE loc_5995         ;
 5984: aa        loc_5984        TAX                  ;
 5985: 18                        CLC                  ;
-5986: b1 41                     LDA (dat_0041),Y     ;
+5986: b1 41                     LDA (addr_0041_L),Y  ;
 5988: 7d 00 63                  ADC $6300,X          ;
 598b: 9d 00 63                  STA $6300,X          ;
 598e: 90 05                     BCC loc_5995         ;
 5990: a9 ff                     LDA #$ff             ;
 5992: 9d 00 63                  STA $6300,X          ;
 5995: a5 4b     loc_5995        LDA dat_004b         ;
-5997: 20 c9 4a                  JSR loc_4ac9         ;
+5997: 20 c9 4a                  JSR sub_4ac9         ;
 599a: 60                        RTS                  ; Return to caller
 
 599b: a6 00 00 a5 47 45 54 3f  dat_599b  .BYTE $a6,$00,$00,$a5,$47,$45,$54,$3f  ; ....GET?
 59a3: 0d 0d 0d a9 a5 ac c0 59   .BYTE $0d,$0d,$0d,$a9,$a5,$ac,$c0,$59  ; .......Y
 59ab: a6 00 00 a5 47 45 54 3f  str_GET_Y_N_ESC  .BYTE $a6,$00,$00,$a5,$47,$45,$54,$3f  ; ....GET?
 59b3: 0d 0d 0d a3 e8 59 a9 a5   .BYTE $0d,$0d,$0d,$a3,$e8,$59,$a9,$a5  ; .....Y..
-59bb: b1 e3 59 06 20 b3 53 5e   .BYTE $b1,$e3,$59,$06,$20,$b3,$53,$5e  ; ..Y. .S^
+59bb: b1 e3 59 06 20 b3         .BYTE $b1,$e3,$59,$06,$20,$b3  ; ..Y. .
+59c1: 53        dat_59c1_L      .BYTE $53
+59c2: 5e        dat_59c1_H      .BYTE $5e
 59c3: 26 0d a3 e5 59 a6 00 07   .BYTE $26,$0d,$a3,$e5,$59,$a6,$00,$07  ; &...Y...
 59cb: a5 a1 59 a0 65 73 2c 20   .BYTE $a5,$a1,$59,$a0,$65,$73,$2c,$20  ; ..Y.es,
 59d3: a1 4e a0 6f 20 6f 72 20   .BYTE $a1,$4e,$a0,$6f,$20,$6f,$72,$20  ; .N.o or
@@ -8471,30 +9365,50 @@ abc xyz
 59f6: 69 6e 67 20 68 65 72 65   .BYTE $69,$6e,$67,$20,$68,$65,$72,$65  ; ing here
 59fe: 2e 0d ff                  .BYTE $2e,$0d,$ff    ; ...
 5a01: 80 19 02 00 00  unk_5a01  .BYTE $80,$19,$02,$00,$00  ; .....
-5a06: 15 46 6f 6f 64 20 50 61   .BYTE $15,$46,$6f,$6f,$64,$20,$50,$61  ; .Food Pa
+5a06: 15                        .BYTE $15
+5a07: 46 6f 6f 64 20 50 61  dat_5a07  .BYTE $46,$6f,$6f,$64,$20,$50,$61  ; .Food Pa
 5a0e: 63 6b 65 74 28 73 29 00   .BYTE $63,$6b,$65,$74,$28,$73,$29,$00  ; cket(s).
-5a16: 00 00 00 00 46 6f 6f 64   .BYTE $00,$00,$00,$00,$46,$6f,$6f,$64  ; ....Food
-5a1e: 20 50 61 63 6b 65 74 28   .BYTE $20,$50,$61,$63,$6b,$65,$74,$28  ;  Packet(
-5a26: 73 29 00 57 61 74 65 72   .BYTE $73,$29,$00,$57,$61,$74,$65,$72  ; s).Water
-5a2e: 20 46 6c 61 73 6b 28 73   .BYTE $20,$46,$6c,$61,$73,$6b,$28,$73  ;  Flask(s
-5a36: 29 00 54 6f 72 63 68 28   .BYTE $29,$00,$54,$6f,$72,$63,$68,$28  ; ).Torch(
-5a3e: 65 73 29 00 54 69 6d 65   .BYTE $65,$73,$29,$00,$54,$69,$6d,$65  ; es).Time
-5a46: 70 69 65 63 65 28 73 29   .BYTE $70,$69,$65,$63,$65,$28,$73,$29  ; piece(s)
-5a4e: 00 43 6f 6d 70 61 73 73   .BYTE $00,$43,$6f,$6d,$70,$61,$73,$73  ; .Compass
-5a56: 28 65 73 29 00 4b 65 79   .BYTE $28,$65,$73,$29,$00,$4b,$65,$79  ; (es).Key
-5a5e: 28 73 29 00 43 72 79 73   .BYTE $28,$73,$29,$00,$43,$72,$79,$73  ; (s).Crys
-5a66: 74 61 6c 28 73 29 00 47   .BYTE $74,$61,$6c,$28,$73,$29,$00,$47  ; tal(s).G
-5a6e: 65 6d 28 73 29 00 4a 65   .BYTE $65,$6d,$28,$73,$29,$00,$4a,$65  ; em(s).Je
-5a76: 77 65 6c 28 73 29 00 47   .BYTE $77,$65,$6c,$28,$73,$29,$00,$47  ; wel(s).G
-5a7e: 6f 6c 64 00 53 69 6c 76   .BYTE $6f,$6c,$64,$00,$53,$69,$6c,$76  ; old.Silv
-5a86: 65 72 00 43 6f 70 70 65   .BYTE $65,$72,$00,$43,$6f,$70,$70,$65  ; er.Coppe
-5a8e: 72 00 1a 29 38 42 4f 5b   .BYTE $72,$00,$1a,$29,$38,$42,$4f,$5b  ; r..)8BO[
-5a96: 62 6d 74 7d 82 89 5a 5a   .BYTE $62,$6d,$74,$7d,$82,$89,$5a,$5a  ; bmt}..ZZ
-5a9e: 5a 5a 5a 5a 5a 5a 5a 5a   .BYTE $5a,$5a,$5a,$5a,$5a,$5a,$5a,$5a  ; ZZZZZZZZ
-5aa6: 5a 5a bb bc bd c1 c0 bf   .BYTE $5a,$5a,$bb,$bc,$bd,$c1,$c0,$bf  ; ZZ......
+5a16: 00                        .BYTE $00
+5a17: 00        dat_5a17        .BYTE $00
+5a18: 00        dat_5a18        .BYTE $00
+5a19: 00        dat_5a19        .BYTE $00
+5a1a: 46 6f 6f  zts_FOOD_PKTS   .BYTE $46,$6f,$6f                      ; Foo
+5a1d: 64 20 50 61 63 6b 65 74   .BYTE $64,$20,$50,$61,$63,$6b,$65,$74  ; d Packet
+5a25: 28 73 29 00               .BYTE $28,$73,$29,$00                  ; (s).
+5a29: 57 61 74  zts_WTR_FLSKS   .BYTE $57,$61,$74                      ; Wat
+5a2c: 65 72 20 46 6c 61 73 6b   .BYTE $65,$72,$20,$46,$6c,$61,$73,$6b  ; er Flask
+5a34: 28 73 29 00               .BYTE $28,$73,$29,$00                  ; (s).
+5a38: 54 6f 72  zts_TORCHES     .BYTE $54,$6f,$72                      ; Tor
+5a3b: 63 68 28 65 73 29 00      .BYTE $63,$68,$28,$65,$73,$29,$00      ; ch(es).
+5a42: 54 69 6d  zts_TIMEPCS     .BYTE $54,$69,$6d                      ; Tim
+5a45: 65 70 69 65 63 65 28 73   .BYTE $65,$70,$69,$65,$63,$65,$28,$73  ; epiece(s
+5a4d: 29 00                     .BYTE $29,$00                          ; ).
+5a4f: 43 6f 6d  zts_COMPASSES   .BYTE $43,$6f,$6d                      ; Com
+5a52: 70 61 73 73 28 65 73 29   .BYTE $70,$61,$73,$73,$28,$65,$73,$29  ; pass(es)
+5a5a: 00                        .BYTE $00                              ; .
+5a5b: 4b 65 79  zts_KEYS        .BYTE $4b,$65,$79                      ; Key
+5a5e: 28 73 29 00               .BYTE $28,$73,$29,$00                  ; (s).
+5a63: 43 72 79  zts_CRYSTALS    .BYTE $43,$72,$79                      ; Cry
+5a65: 73 74 61 6c 28 73 29 00   .BYTE $73,$74,$61,$6c,$28,$73,$29,$00  ; stal(s).
+5a6d: 47 65 6d  zts_GEMS        .BYTE $47,$65,$6d                      ; Gem
+5a70: 28 73 29 00               .BYTE $28,$73,$29,$00                  ; (s).
+5a74: 4a 65 77  zts_JEWELS      .BYTE $4a,$65,$77                      ; Jew
+5a77: 65 6c 28 73 29 00         .BYTE $65,$6c,$28,$73,$29,$00          ; el(s).
+5a7d: 47 6f 6c  zts_GOLD        .BYTE $47,$6f,$6c                      ; Gol
+5a80: 64 00                     .BYTE $64,$00                          ; d.
+5a82: 53 69 6c  zts_SILVER      .BYTE $53,$69,$6c                      ; Sil
+5a85: 76 65 72 00               .BYTE $76,$65,$72,$00                  ; ver.
+5a89: 43 6f 70  zts_COPPER      .BYTE $43,$6f,$70                      ; Cop
+5a8c: 70 65 72 00               .BYTE $70,$65,$72,$00                  ; per.
+5a90: 1a 29 38 42  dat_5a90_L   .BYTE $1a,$29,$38,$42
+5a94: 4f 5b 62 6d 74 7d 82 89   .BYTE $4f,$5b,$62,$6d,$74,$7d,$82,$89
+5a9c: 5a 5a 5a 5a  dat_5a9c_H   .BYTE $5a,$5a,$5a,$5a
+5aa0: 5a 5a 5a 5a 5a 5a 5a 5a   .BYTE $5a,$5a,$5a,$5a,$5a,$5a,$5a,$5a
+5aa8: bb bc bd c1 c0 bf  dat_5aa8  .BYTE $bb,$bc,$bd,$c1,$c0,$bf  ; ZZ......
 5aae: be b7 b9 b1 b3 b5         .BYTE $be,$b7,$b9,$b1,$b3,$b5  ; ......
 
-abc xyz
+                ;
+                ;
                 ;
 5ab4: a9 37     sub_5ab4        LDA #$37             ; Set addr_193a_L/H
 5ab6: 8d 3a 19                  STA addr_193a_L      ;     address
@@ -8505,6 +9419,8 @@ abc xyz
 5ac3: a9 5c                     LDA #$5c             ;     to
 5ac5: 8d c4 5c                  STA addr_5cc3_H      ;     $5c53 [str_OFR_AMT] "Offer how many?..."
 5ac8: 4c df 5a                  JMP loc_5adf         ; Continue @ $5adf [loc_5adf]
+                ;
+                ;
                 ;
 5acb: a9 29     sub_5acb        LDA #$29             ; Set addr_193a_L/H
 5acd: 8d 3a 19                  STA addr_193a_L      ;     address
@@ -8523,85 +9439,91 @@ abc xyz
 5aee: a9 f0                     LDA #$f0             ; Self-modifying
 5af0: 8d b0 51                  STA smc_51b0         ;     code ($f0 = BEQ)
 5af3: 20 b2 50                  JSR sub_50b2         ; Call $50b2 [sub_50b2]
-5af6: b0 16                     BCS loc_5b0e         ; If (C == 0) Then
+5af6: b0 16                     BCS rts_5b0e         ; If (C == 0) Then
 5af8: c9 80                     CMP #$80             ;     If (A >= $80) Then
 5afa: b0 19                     BCS loc_5b15         ;         Continue @ $5b15 [loc_5b15]
                                                      ;     End If
 5afc: 85 4b                     STA dat_004b         ;     Set dat_004b = A
 5afe: 20 74 4b                  JSR sub_4b74         ;     Call $4b74 [sub_4b74]
-5b01: f0 0b                     BEQ loc_5b0e         ;     If (Z == 0) Then    (TODO:  A == 0?)
+5b01: f0 0b                     BEQ rts_5b0e         ;     If (Z == 0) Then    (TODO:  A == 0?)
 5b03: a9 09                     LDA #$09             ;         Set
-5b05: 8d 61 19                  STA loc_1961         ;             loc_1961 = 9
+5b05: 8d 61 19                  STA dat_1961         ;             dat_1961 = 9
 5b08: a9 02                     LDA #$02             ;         Set
-5b0a: a0 02                     LDY #$02             ;             (*dat_0041)[Y]
-5b0c: 91 41                     STA (dat_0041),Y     ;                = 2
+5b0a: a0 02                     LDY #$02             ;             (*addr_0041_L)[Y]
+5b0c: 91 41                     STA (addr_0041_L),Y  ;                = 2
                                                      ;     End If
                                                      ; End If
                 ;
-5b0e: ce 5f 19  loc_5b0e        DEC UNK_BYTE_195F    ; Subtract 1 from UNK_BYTE_195F
+5b0e: ce 5f 19  rts_5b0e        DEC UNK_BYTE_195F    ; Subtract 1 from UNK_BYTE_195F
 5b11: ce 60 19                  DEC UNK_BYTE_1960    ; Subtract 1 from UNK_BYTE_1960
 5b14: 60                        RTS                  ; Return to caller
 
-5b15: 29 03     loc_5b15        AND #$03             ;
-5b17: 18                        CLC                  ;
-5b18: 6d 77 62                  ADC dat_6277         ;
-5b1b: 8d 17 5a                  STA loc_5a17         ;
-5b1e: aa                        TAX                  ;
-5b1f: a9 00                     LDA #$00             ;
-5b21: 8d 85 62                  STA loc_6285         ;
-5b24: 8d 86 62                  STA loc_6286         ;
-5b27: bc a8 5a                  LDY loc_5aa8,X       ;
-5b2a: e0 07                     CPX #$07             ;
-5b2c: 90 07                     BCC loc_5b35         ;
-5b2e: b9 00 63                  LDA $6300,Y          ;
-5b31: 8d 85 62                  STA loc_6285         ;
-5b34: c8                        INY                  ;
-5b35: b9 00 63  loc_5b35        LDA $6300,Y          ;
-5b38: 8d 86 62                  STA loc_6286         ;
-5b3b: 0d 85 62                  ORA loc_6285         ;
-5b3e: f0 ce                     BEQ loc_5b0e         ;
+                ; At this point, A >= $80
+5b15: 29 03     loc_5b15        AND #$03             ; Set A &= 3
+5b17: 18                        CLC                  ; Set
+5b18: 6d 77 62                  ADC dat_6277         ;     dat_5a17
+5b1b: 8d 17 5a                  STA dat_5a17         ;        = dat_6277 + A
+5b1e: aa                        TAX                  ; Set X = A
+5b1f: a9 00                     LDA #$00             ; Set
+5b21: 8d 85 62                  STA loc_6285         ;     loc_6285 = 0
+5b24: 8d 86 62                  STA loc_6286         ; Set loc_6286 = 0
+5b27: bc a8 5a                  LDY dat_5aa8,X       ; Set Y = dat_5aa8[X]
+5b2a: e0 07                     CPX #$07             ; If (X >= 7)
+5b2c: 90 07                     BCC loc_5b35         ; Then
+5b2e: b9 00 63                  LDA $6300,Y          ;     Set
+5b31: 8d 85 62                  STA loc_6285         ;         loc_6285 = $6300[Y]   (TODO: label)
+5b34: c8                        INY                  ;     Add 1 to Y
+                                                     ; End If
+5b35: b9 00 63  loc_5b35        LDA $6300,Y          ; Set
+5b38: 8d 86 62                  STA loc_6286         ;     loc_6286 = $6300[Y]   (TODO: label)
+5b3b: 0d 85 62                  ORA loc_6285         ; If (loc_6286 | loc_6285 == 0) Then
+5b3e: f0 ce                     BEQ rts_5b0e         ;     Continue @ $5b0e [rts_5b0e] (Return to caller)
+                                                     ; End If
 5b40: ad c3 5c  loc_5b40        LDA addr_5cc3_L      ; Set addr_0016_L/H
 5b43: 85 16                     STA addr_0016_L      ;     address to the
 5b45: ad c4 5c                  LDA addr_5cc3_H      ;     address at
 5b48: 85 17                     STA addr_0016_H      ;     addr_5cc3_L/H
-5b4a: ae 4a 19                  LDX dat_194a         ;
-5b4d: 20 5c 3c                  JSR sub_3c5c         ;
-5b50: 20 a0 2a                  JSR sub_2aa0         ;
-5b53: b0 b9                     BCS loc_5b0e         ;
-5b55: f0 b7                     BEQ loc_5b0e         ;
-5b57: 10 14                     BPL loc_5b6d         ;
-5b59: a9 a4                     LDA #$a4             ; Set addr_0016_L/H
-5b5b: 85 16     loc_5b5b        STA addr_0016_L      ;     address
-5b5d: a9 5c                     LDA #$5c             ;     to
-5b5f: 85 17                     STA addr_0016_H      ;     $5ca4 [str_INV_TRY_AGN]
-5b61: ae 4a 19                  LDX dat_194a         ;
-5b64: 20 5c 3c                  JSR sub_3c5c         ;
-5b67: 20 fa 2b                  JSR loc_2bfa         ;
-5b6a: 4c 40 5b                  JMP loc_5b40         ;
-5b6d: a6 03     loc_5b6d        LDX dat_0003         ;
-5b6f: a4 02                     LDY dat_0002         ;
-5b71: 84 03                     STY dat_0003         ;
-5b73: 86 02                     STX dat_0002         ;
-5b75: a9 09                     LDA #$09             ;
-5b77: 8d 61 19                  STA loc_1961         ;
-5b7a: 38                        SEC                  ;
-5b7b: ad 86 62                  LDA loc_6286         ;
-5b7e: e5 03                     SBC dat_0003         ;
-5b80: 8d 88 62                  STA loc_6288         ;
-5b83: ad 85 62                  LDA loc_6285         ;
-5b86: e5 02                     SBC dat_0002         ;
-5b88: 8d 87 62                  STA loc_6287         ;
-5b8b: b0 14                     BCS loc_5ba1         ;
-5b8d: ad 85 62                  LDA loc_6285         ;
-5b90: 85 02                     STA dat_0002         ;
-5b92: ad 86 62                  LDA loc_6286         ;
-5b95: 85 03                     STA dat_0003         ;
-5b97: a9 00                     LDA #$00             ;
-5b99: 8d 87 62                  STA loc_6287         ;
-5b9c: a9 00                     LDA #$00             ;
-5b9e: 8d 88 62                  STA loc_6288         ;
-5ba1: ae 17 5a  loc_5ba1        LDX loc_5a17         ;
-5ba4: bc a8 5a                  LDY loc_5aa8,X       ;
+5b4a: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
+5b4d: 20 5c 3c                  JSR sub_3c5c         ; Call $3c5c [sub_3c5c]
+5b50: 20 a0 2a                  JSR sub_2aa0         ; Call $2aa0 [sub_2aa0]
+5b53: b0 b9                     BCS rts_5b0e         ; If ((C == 1) Or (Z == 1)) Then    (TODO: meaning?)
+5b55: f0 b7                     BEQ rts_5b0e         ;     Continue @ $5b0e [rts_5b0e] (Return to caller)
+                                                     ; End If
+5b57: 10 14                     BPL loc_5b6d         ; If (N == 1) Then
+5b59: a9 a4                     LDA #$a4             ;     Set addr_0016_L/H
+5b5b: 85 16     loc_5b5b        STA addr_0016_L      ;         address
+5b5d: a9 5c                     LDA #$5c             ;         to
+5b5f: 85 17                     STA addr_0016_H      ;         $5ca4 [str_INV_TRY_AGN]
+5b61: ae 4a 19                  LDX dat_194a         ;     Set X = dat_194a
+5b64: 20 5c 3c                  JSR sub_3c5c         ;     Call $3c5c [sub_3c5c]
+5b67: 20 fa 2b                  JSR sub_2bfa         ;     Call $2bfa [sub_2bfa]
+5b6a: 4c 40 5b                  JMP loc_5b40         ;     Continue @ $5b40 [loc_5b40]
+                                                     ; End If
+5b6d: a6 03     loc_5b6d        LDX dat_0003         ; Set X = dat_0003
+5b6f: a4 02                     LDY dat_0002         ; Set
+5b71: 84 03                     STY dat_0003         ;     dat_0003 = dat_0002
+5b73: 86 02                     STX dat_0002         ; Set dat_0002 = X
+5b75: a9 09                     LDA #$09             ; Set
+5b77: 8d 61 19                  STA dat_1961         ;     dat_1961 = 9
+5b7a: 38                        SEC                  ; Set
+5b7b: ad 86 62                  LDA loc_6286         ;     loc_6288
+5b7e: e5 03                     SBC dat_0003         ;        =
+5b80: 8d 88 62                  STA loc_6288         ;          loc_6286 - dat_0003,  C = 0 on underflow otherwise 1
+5b83: ad 85 62                  LDA loc_6285         ; Set loc_6287
+5b86: e5 02                     SBC dat_0002         ;        =
+5b88: 8d 87 62                  STA loc_6287         ;          loc_6285 - dat_0002 - ~C
+5b8b: b0 14                     BCS loc_5ba1         ; If (C == 0) Then
+5b8d: ad 85 62                  LDA loc_6285         ;     Set
+5b90: 85 02                     STA dat_0002         ;         dat_0002 = loc_6285   (TODO: what is this loc?)
+5b92: ad 86 62                  LDA loc_6286         ;     Set
+5b95: 85 03                     STA dat_0003         ;         dat_0003 = loc_6286   (TODO: what is this loc?)
+5b97: a9 00                     LDA #$00             ;     Set
+5b99: 8d 87 62                  STA loc_6287         ;         loc_6287 = 0
+5b9c: a9 00                     LDA #$00             ;     Set
+5b9e: 8d 88 62                  STA loc_6288         ;         loc_6288 = 0
+                                                     ; End If
+5ba1: ae 17 5a  loc_5ba1        LDX dat_5a17         ;
+5ba4: bc a8 5a                  LDY dat_5aa8,X       ;
 5ba7: e0 07                     CPX #$07             ;
 5ba9: 90 07                     BCC loc_5bb2         ;
 5bab: ad 87 62                  LDA loc_6287         ;
@@ -8609,82 +9531,91 @@ abc xyz
 5bb1: c8                        INY                  ;
 5bb2: ad 88 62  loc_5bb2        LDA loc_6288         ;
 5bb5: 99 00 63                  STA $6300,Y          ;
-5bb8: 8e 17 5a  loc_5bb8        STX loc_5a17         ;
-5bbb: a5 02                     LDA dat_0002         ;
-5bbd: 8d 18 5a                  STA loc_5a18         ;
-5bc0: a5 03                     LDA dat_0003         ;
-5bc2: 8d 19 5a                  STA loc_5a19         ;
-5bc5: bd 90 5a                  LDA loc_5a90,X       ;
-5bc8: 85 07                     STA dat_0007_L       ;
-5bca: bd 9c 5a                  LDA loc_5a9c,X       ;
-5bcd: 85 08                     STA dat_0007_H       ;
-5bcf: a0 00                     LDY #$00             ;
-5bd1: b1 07     loc_5bd1        LDA (dat_0007_L),Y   ;
-5bd3: f0 06                     BEQ loc_5bdb         ;
-5bd5: 99 07 5a                  STA loc_5a07,Y       ;
-5bd8: c8                        INY                  ;
-5bd9: d0 f6                     BNE loc_5bd1         ;
-5bdb: a9 00     loc_5bdb        LDA #$00             ;
-5bdd: 99 07 5a  loc_5bdd        STA loc_5a07,Y       ;
-5be0: c8                        INY                  ;
-5be1: c0 0f                     CPY #$0f             ;
-5be3: 90 f8                     BCC loc_5bdd         ;
-5be5: a9 0f                     LDA #$0f             ;
-5be7: 8d 84 62                  STA dat_6284         ;
-5bea: ae 84 62  loc_5bea        LDX dat_6284         ;
-5bed: bd 94 64                  LDA $6494,X          ;
-5bf0: c9 02                     CMP #$02             ;
+5bb8: 8e 17 5a  loc_5bb8        STX dat_5a17         ;
+5bbb: a5 02                     LDA dat_0002         ; Set
+5bbd: 8d 18 5a                  STA dat_5a18         ;     dat_5a18 = dat_0002
+5bc0: a5 03                     LDA dat_0003         ; Set
+5bc2: 8d 19 5a                  STA dat_5a19         ;     dat_5a19 = dat_0003
+5bc5: bd 90 5a                  LDA dat_5a90_L,X     ; Set dat_0007_L/H
+5bc8: 85 07                     STA dat_0007_L       ;     address
+5bca: bd 9c 5a                  LDA dat_5a9c_H,X     ;     to
+5bcd: 85 08                     STA dat_0007_H       ;     dat_5a90_L[X]/dat_5a9c_H[X]
+                ; Copies NULL-terminated string from (*dat_0007_L) to dat_5a07
+5bcf: a0 00                     LDY #$00             ; Set Y = 0
+5bd1: b1 07     loc_5bd1        LDA (dat_0007_L),Y   ; Loop
+                                                     ;     If ((*dat_0007_L)[Y] == 0) Then
+5bd3: f0 06                     BEQ loc_5bdb         ;         Exit Loop
+                                                     ;     End If
+5bd5: 99 07 5a                  STA dat_5a07,Y       ;     Set dat_5a07[Y] = (*dat_0007_L)[Y]
+5bd8: c8                        INY                  ;     Add 1 to Y
+5bd9: d0 f6                     BNE loc_5bd1         ; Repeat while (Y != 0)
+5bdb: a9 00     loc_5bdb        LDA #$00             ; Set A = 0
+5bdd: 99 07 5a  loc_5bdd        STA dat_5a07,Y       ; Loop
+                                                     ;     Set dat_5a07[Y] = A
+5be0: c8                        INY                  ;     Add 1 to Y
+5be1: c0 0f                     CPY #$0f             ; Repeat
+5be3: 90 f8                     BCC loc_5bdd         ;   while (Y < $f (15))
+5be5: a9 0f                     LDA #$0f             ; Set
+5be7: 8d 84 62                  STA dat_6284         ;     dat_6284 = $f (15 - max 16 iterations)
+5bea: ae 84 62  loc_5bea        LDX dat_6284         ; Loop
+                                                     ;     Set X = dat_6284
+5bed: bd 94 64                  LDA $6494,X          ;     If
+5bf0: c9 02                     CMP #$02             ;        ($6494[X] == 2)             (TODO: label?)
 5bf2: d0 50                     BNE loc_5c44         ;
-5bf4: bd a4 64                  LDA $64a4,X          ;
-5bf7: cd 13 63                  CMP CHR_LOC_X        ;
+5bf4: bd a4 64                  LDA $64a4,X          ;        And
+5bf7: cd 13 63                  CMP CHR_LOC_X        ;        ($64a4[X] == CHR_LOC_X)     (TODO: label?)
 5bfa: d0 48                     BNE loc_5c44         ;
-5bfc: bd b4 64                  LDA $64b4,X          ;
-5bff: cd 14 63                  CMP CHR_LOC_Y        ;
+5bfc: bd b4 64                  LDA $64b4,X          ;        And
+5bff: cd 14 63                  CMP CHR_LOC_Y        ;        ($64b4[X] == CHR_LOC_Y)     (TODO: label?)
 5c02: d0 40                     BNE loc_5c44         ;
-5c04: bd c4 64                  LDA $64c4,X          ;
-5c07: cd 15 63                  CMP CHR_LOC_MAP      ;
-5c0a: d0 38                     BNE loc_5c44         ;
-5c0c: bd d4 64                  LDA $64d4,X          ;
-5c0f: 85 4b                     STA dat_004b         ;
-5c11: 20 74 4b                  JSR sub_4b74         ;
-5c14: f0 2e                     BEQ loc_5c44         ;
+5c04: bd c4 64                  LDA $64c4,X          ;        And
+5c07: cd 15 63                  CMP CHR_LOC_MAP      ;        ($64c4[X] == CHR_LOC_MAP)   (TODO: label?)
+5c0a: d0 38                     BNE loc_5c44         ;     Then
+5c0c: bd d4 64                  LDA $64d4,X          ;         Set
+5c0f: 85 4b                     STA dat_004b         ;             dat_004b = $64d4[X]    (TODO: label?)
+5c11: 20 74 4b                  JSR sub_4b74         ;         Call $4b74 [sub_4b74]
+5c14: f0 2e                     BEQ loc_5c44         ;         If (Z == 0) Then
 5c16: a0 00                     LDY #$00             ;
-5c18: b1 41                     LDA (dat_0041),Y     ;
-5c1a: d0 28                     BNE loc_5c44         ;
+5c18: b1 41                     LDA (addr_0041_L),Y  ;            And
+5c1a: d0 28                     BNE loc_5c44         ;            ((*addr_0041_L)[0] == 0)
 5c1c: a0 16                     LDY #$16             ;
-5c1e: b1 41                     LDA (dat_0041),Y     ;
-5c20: cd 17 5a                  CMP loc_5a17         ;
-5c23: d0 1f                     BNE loc_5c44         ;
-5c25: a0 18                     LDY #$18             ;
-5c27: 18                        CLC                  ;
-5c28: ad 19 5a                  LDA loc_5a19         ;
-5c2b: 71 41                     ADC (dat_0041),Y     ;
-5c2d: 91 41                     STA (dat_0041),Y     ;
-5c2f: 88                        DEY                  ;
-5c30: ad 18 5a                  LDA loc_5a18         ;
-5c33: 71 41                     ADC (dat_0041),Y     ;
-5c35: 99 41 00                  STA dat_0041,Y       ;
-5c38: 90 07                     BCC loc_5c41         ;
-5c3a: a9 ff                     LDA #$ff             ;
-5c3c: 91 41                     STA (dat_0041),Y     ;
-5c3e: c8                        INY                  ;
-5c3f: 91 41                     STA (dat_0041),Y     ;
-5c41: 4c 0e 5b  loc_5c41        JMP loc_5b0e         ;
-5c44: ce 84 62  loc_5c44        DEC dat_6284         ;
-5c47: 10 a1                     BPL loc_5bea         ;
-5c49: a2 5a                     LDX #$5a             ;
-5c4b: a0 01                     LDY #$01             ;
-5c4d: 20 4d 4b                  JSR loc_4b4d         ;
-5c50: 4c 0e 5b                  JMP loc_5b0e         ;
+5c1e: b1 41                     LDA (addr_0041_L),Y  ;            And
+5c20: cd 17 5a                  CMP dat_5a17         ;            ((addr_0041_L)[16] == 0)
+5c23: d0 1f                     BNE loc_5c44         ;         Then
+5c25: a0 18                     LDY #$18             ;             Set Y = $18
+5c27: 18                        CLC                  ;             Set
+5c28: ad 19 5a                  LDA dat_5a19         ;                 (*addr_0041_L)[Y]
+5c2b: 71 41                     ADC (addr_0041_L),Y  ;                     =
+5c2d: 91 41                     STA (addr_0041_L),Y  ;                       (*addr_0041_L)[Y] + dat_5a19, C = 1 on overflow
+5c2f: 88                        DEY                  ;             Subtract 1 from Y
+5c30: ad 18 5a                  LDA dat_5a18         ;             Set
+5c33: 71 41                     ADC (addr_0041_L),Y  ;                 addr_0041_L[Y]  (TODO: Bug? Shouldn't this be indirect update?)
+5c35: 99 41 00                  STA addr_0041_L,Y    ;                    = (*addr_0041_L)[Y] + dat_5a18 + C, C = 1 on overflow
+5c38: 90 07                     BCC loc_5c41         ;             If (C == 1) then
+5c3a: a9 ff                     LDA #$ff             ;                 Set
+5c3c: 91 41                     STA (addr_0041_L),Y  ;                     (*addr_0041_L)[Y] = $ff
+5c3e: c8                        INY                  ;                 Add 1 to Y
+5c3f: 91 41                     STA (addr_0041_L),Y  ;                 Set (*addr_0041_L)[Y] = $ff
+                                                     ;             End If
+5c41: 4c 0e 5b  loc_5c41        JMP rts_5b0e         ;             Continue @ $5b0e [rts_5b0e]
+                                                     ;         End If
+                                                     ;     End If
+5c44: ce 84 62  loc_5c44        DEC dat_6284         ;     Subtract 1 from dat_6284
+5c47: 10 a1                     BPL loc_5bea         ; Repeat while (dat_6284 >= 0)
+5c49: a2 5a                     LDX #$5a             ; Set X = $5a ()
+5c4b: a0 01                     LDY #$01             ; Set Y = 1
+5c4d: 20 4d 4b                  JSR sub_4b4d         ; Call $4b4d [sub_4b4d]
+5c50: 4c 0e 5b                  JMP rts_5b0e         ; Continue @ $5b0e [rts_5b0e]
 
 5c53: a6 00 00 a5 4f 66 66 65  str_OFR_AMT  .BYTE $a6,$00,$00,$a5,$4f,$66,$66,$65  ; ....Offe
 5c5b: 72 20 68 6f 77 20 6d 61   .BYTE $72,$20,$68,$6f,$77,$20,$6d,$61  ; r how ma
 5c63: 6e 79 3f 0d ac 7d 5c      .BYTE $6e,$79,$3f,$0d,$ac,$7d,$5c  ; ny?..}\
 
-5c6a: a6          str_DRP_AMT      .BYTE $a6         ; .
+5c6a: a6        str_DRP_AMT     .BYTE $a6         ; .
 5c6b: 00 00 a5 44 72 6f 70 20   .BYTE $00,$00,$a5,$44,$72,$6f,$70,$20  ; ...Drop
 5c73: 68 6f 77 20 6d 61 6e 79   .BYTE $68,$6f,$77,$20,$6d,$61,$6e,$79  ; how many
-5c7b: 3f 0d a6 00 07 a5 45 6e   .BYTE $3f,$0d,$a6,$00,$07,$a5,$45,$6e  ; ?.....En
+5c7b: 3f 0d                     .BYTE $3f,$0d                          ; ?.
+5c7d: a6 00 07 a5 45 6e  str_ENTER_AMT  .BYTE $a6,$00,$07,$a5,$45,$6e  ; ....En
 5c83: 74 65 72 20 61 6d 6f 75   .BYTE $74,$65,$72,$20,$61,$6d,$6f,$75  ; ter amou
 5c8b: 6e 74 20 6f 72 20 70 72   .BYTE $6e,$74,$20,$6f,$72,$20,$70,$72  ; nt or pr
 5c93: 65 73 73 20 a1 45 53 43   .BYTE $65,$73,$73,$20,$a1,$45,$53,$43  ; ess .ESC
@@ -8729,84 +9660,35 @@ abc xyz
 5cff: 85 4b                     STA dat_004b         ;
 5d01: 4c 09 52                  JMP cont_5209        ;
 
-5d04: 00        dat_5d04        BRK               ; Used to temporarily store the X register in
-5d05: a6 00     str_ITMS_REPRD  LDX dat_0000      ; ..
-5d07: 02                        .BYTE $02         ; .
-5d08: a5 59                     LDA bad_0059      ; .Y
-5d0a: 6f                        .BYTE $6f         ; o
-5d0b: 75 72                     ADC COLAC,X       ; ur
-5d0d: 20 69 6e                  JSR $6e69         ;  in
-5d10: 20 75 73                  JSR $7375         ;  us
-5d13: 65 20                     ADC bad_0020      ; e
-5d15: 77                        .BYTE $77         ; w
-5d16: 65 61                     ADC NEWCOL        ; ea
-5d18: 70 6f                     BVS bad_5d89      ; po
-5d1a: 6e 73 20                  ROR bad_2073      ; ns
-5d1d: 61 6e                     ADC (BITMSK,X)    ; an
-5d1f: 64                        .BYTE $64         ; d
-5d20: 20 61 72                  JSR $7261         ;  ar
-5d23: 6d 6f 72                  ADC $726f         ; mor
-5d26: 0d a5 68                  ORA $68a5         ; ..h
-5d29: 61 76                     ADC (DELTAR,X)    ; av
-5d2b: 65 20                     ADC bad_0020      ; e
-5d2d: 62                        .BYTE $62         ; b
-5d2e: 65 65                     ADC ADRESS+1      ; ee
-5d30: 6e 20 72                  ROR $7220         ; n r
-5d33: 65 70                     ADC ROWAC         ; ep
-5d35: 61 69                     ADC (SAVADR+1,X)  ; ai
-5d37: 72                        .BYTE $72         ; r
-5d38: 65 64                     ADC ADRESS        ; ed
-5d3a: 2e 0d ff                  ROL $ff0d         ; ...
-5d3d: 31 32     dat_5d3d        AND (bad_0032_L),Y ; 12
-5d3f: 33 34                     .BYTE $33,$34     ; 34
-
-5d41: a6 00 00 a2 b4 3a 19 28  str_4SEL_MENU1  .BYTE $a6,$00,$00,$a2,$b4,$3a,$19,$28  ; .....:.(
-5d49: ab 0d a3 b6 5d a6 03 02   .BYTE $ab,$0d,$a3,$b6,$5d,$a6,$03,$02  ; ....]...
-5d51: 20        dat_5d51        .BYTE $20            ;
-5d52: 28                        PLP                  ; (
-5d54: 31 a0                     AND ($a0),Y       ; 1.
-5d56: 29 20                     AND #$20          ; )
-5d58: b4 3c                     LDY NOCKSM,X      ; .<
-5d5a: 19 1d 20                  ORA bad_201d,Y    ; ..
-5d5d: ad ac 5d                  LDA bad_5dac      ; ..]
-5d60: ab                        .BYTE $ab         ; .
-5d61: a6 03                     LDX bad_0003      ; ..
-5d63: 03 a3 bb                  .BYTE $03,$a3,$bb  ; ...
-5d66: 5d 20 28                  EOR bad_2820,X    ; ] (
-5d69: a1 32                     LDA (bad_0032_L,X)    ; .2
-5d6b: a0 29                     LDY #$29          ; .)
-5d6d: 20 b4 3e                  JSR bad_3eb4      ;  .>
-5d70: 19 1d 20                  ORA bad_201d,Y    ; ..
-5d73: ad ac 5d                  LDA bad_5dac      ; ..]
-5d76: ab                        .BYTE $ab         ; .
-5d77: a6 03                     LDX bad_0003      ; ..
-5d79: 04 a3 bb                  .BYTE $04,$a3,$bb  ; ...
-5d7c: 5d 20 28                  EOR bad_2820,X    ; ] (
-5d7f: a1 33                     LDA (BUFRHI,X)    ; .3
-5d81: a0 29                     LDY #$29          ; .)
-5d83: 20 b4 40                  JSR bad_40b4      ;  .@
-5d86: 19 1d 20                  ORA bad_201d,Y    ; ..
-5d89: ad ac 5d                  LDA bad_5dac      ; ..]
-5d8c: ab                        .BYTE $ab         ; .
-5d8d: a6 03                     LDX bad_0003      ; ..
-5d8f: 05 a3                     ORA $a3           ; ..
-5d91: bb                        .BYTE $bb         ; .
-5d92: 5d 20 28                  EOR bad_2820,X    ; ] (
-5d95: a1 34                     LDA (BFENLO,X)    ; .4
-5d97: a0 29                     LDY #$29          ; .)
-5d99: 20 b4 42                  JSR bad_42b4      ;  .B
-5d9c: 19 1d 20                  ORA bad_201d,Y    ; ..
-5d9f: ad ac 5d                  LDA bad_5dac      ; ..]
-5da2: ab                        .BYTE $ab         ; .
-5da3: 0d 0d a2                  ORA $a20d         ; ...
-5da6: ad 44 19                  LDA bad_1944      ; .D.
-5da9: ab                        .BYTE $ab         ; .
-5daa: 0d ff                     .BYTE $0d,$ff
+5d04: 00        dat_5d04        .BYTE $00            ; Used to temporarily store the X register in
+5d05: a6 00 02 a5 59 6f 75 72  str_ITMS_REPRD  .BYTE $a6,$00,$02,$a5,$59,$6f,$75,$72  ; Your
+5d0d: 20 69 6e 20 75 73 65 20   .BYTE $20,$69,$6e,$20,$75,$73,$65,$20  ;  in use
+5d15: 77 65 61 70 6f 6e 73 20   .BYTE $77,$65,$61,$70,$6f,$6e,$73,$20  ; weapons
+5d1d: 61 6e 64 20 61 72 6d 6f   .BYTE $61,$6e,$64,$20,$61,$72,$6d,$6f  ; and armo
+5d25: 72 0d a5 68 61 76 65 20   .BYTE $72,$0d,$a5,$68,$61,$76,$65,$20  ; r have
+5d2d: 62 65 65 6e 20 72 65 70   .BYTE $62,$65,$65,$6e,$20,$72,$65,$70  ; been rep
+5d35: 61 69 72 65 64 2e 0d ff   .BYTE $61,$69,$72,$65,$64,$2e,$0d,$ff  ; aired.
+5d3d: 31 32 33 34  dat_5d3d     .BYTE $31,$32,$33,$34  ; 1234
+5d41: a6 00 00 a2 b4 3a 19 28  str_4SEL_MENU1  .BYTE $a6,$00,$00,$a2,$b4,$3a,$19,$28
+5d49: ab 0d a3 b6 5d a6 03 02   .BYTE $ab,$0d,$a3,$b6,$5d,$a6,$03,$02
+5d51: 20 28 a1 31 a0 29 20 b4  dat_5d51  .BYTE $20,$28,$a1,$31,$a0,$29,$20,$b4
+5d59: 3c 19 1d 20 ad ac 5d ab   .BYTE $3c,$19,$1d,$20,$ad,$ac,$5d,$ab
+5d61: a6 03 03 a3 bb 5d 20 28   .BYTE $a6,$03,$03,$a3,$bb,$5d,$20,$28
+5d69: a1 32 a0 29 20 b4 3e 19   .BYTE $a1,$32,$a0,$29,$20,$b4,$3e,$19
+5d71: 1d 20 ad ac 5d ab a6 03   .BYTE $1d,$20,$ad,$ac,$5d,$ab,$a6,$03
+5d79: 04 a3 bb 5d 20 28 a1 33   .BYTE $04,$a3,$bb,$5d,$20,$28,$a1,$33
+5d81: a0 29 20 b4 40 19 1d 20   .BYTE $a0,$29,$20,$b4,$40,$19,$1d,$20
+5d89: ad ac 5d ab a6 03 05 a3   .BYTE $ad,$ac,$5d,$ab,$a6,$03,$05,$a3
+5d91: bb 5d 20 28 a1 34 a0 29   .BYTE $bb,$5d,$20,$28,$a1,$34,$a0,$29
+5d99: 20 b4 42 19 1d 20 ad ac   .BYTE $20,$b4,$42,$19,$1d,$20,$ad,$ac
+5da1: 5d ab 0d 0d a2 ad 44 19   .BYTE $5d,$ab,$0d,$0d,$a2,$ad,$44,$19
+5da9: ab 0d ff                  .BYTE $ab,$0d,$ff
 5dac: 00        dat_5dac_L      .BYTE $00
-5dad: 00        dat_5dac_H      .BYTE $00         ; .
-5dae: 00        dat_5dae        .BYTE $00         ; .
-5daf: 00        dat_5daf        .BYTE $00         ; .
-5db0: b2        dat_5db0        .BYTE $b2         ; .
+5dad: 00        dat_5dac_H      .BYTE $00
+5dae: 00        dat_5dae        .BYTE $00
+5daf: 00        dat_5daf        .BYTE $00
+5db0: b2        dat_5db0        .BYTE $b2
+
 5db1: ae 5d 02                  LDX LINBUF+22     ; .].
 5db4: 25 ae                     AND $ae           ; %.
 
@@ -8897,7 +9779,7 @@ abc xyz
 5f11: 7f 5e 93 5e a4 5e b4 5e   .BYTE $7f,$5e,$93,$5e,$a4,$5e,$b4,$5e  ; ^.^.^.^
 5f19: bf 5e ce 5e d9 5e e6 5e   .BYTE $bf,$5e,$ce,$5e,$d9,$5e,$e6,$5e  ; .^.^.^.^
 5f21: f3 5e 00 5f               .BYTE $f3,$5e,$00,$5f                  ; .^._
-5f25: 55 53 45 00  str_5f25     .BYTE $55,$53,$45,$00                  ; USE.
+5f25: 55 53 45 00  zts_USE      .BYTE $55,$53,$45,$00                  ; USE.
 5f29: 44 52 4f 50 00  zts_DROP  .BYTE $44,$52,$4f,$50,$00              ; DROP.
 5f2e: 43 41 53 54 00  zts_CAST  .BYTE $43,$41,$53,$54,$00              ; CAST.
 5f33: 47 45 54 00  zts_GET      .BYTE $47,$45,$54,$00                  ; GET.
@@ -9022,8 +9904,10 @@ abc xyz
 6272: 65 2e 0d ff               .BYTE $65,$2e,$0d,$ff                  ; e...
 6276: 00        dat_6276        .BYTE $00
 6277: 00        dat_6277        .BYTE $00
-6278: 00 00 00 00 00 00  dat_6278  .BYTE $00,$00,$00,$00,$00,$00       ; ......
-627e: 00 00 00 00 00            .BYTE $00,$00,$00,$00,$00
+6278: 00 00 00 00  dat_6278     .BYTE $00,$00,$00,$00
+627c  00 00     dat_627c        .BYTE $00,$00
+627e: 00                        .BYTE $00
+627f: 00 00 00 00  dat_627f     .BYTE $00,$00,$00,$00
 6283: 00        dat_6283        .BYTE $00
 6284: 00 00     dat_6284        .BYTE $00,$00
 6286: 00 00 00                  .BYTE $00,$00,$00
