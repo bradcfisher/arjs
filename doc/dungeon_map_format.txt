@@ -34,7 +34,7 @@ The $c000 location may be memory mapped I/O as data is copied from there to the 
 There is a 1024 byte header:
 ===
 
-The first byte appears to be a version or level number
+The first byte is the map number/ID
 
 	00 Level 1 (first quadrant - NW)
 	01 Level 1 (second quadrant - NE)
@@ -577,7 +577,7 @@ sub_$7eb1:
  | | | | | | |    Sub @ $: ORd with value at $6390 (01 if carrying lit torch) then compared with value at $77fb.
  | | | | | | |    If different, $77fb is updated to match and $1956 is decremented.
  | | | | | | |    Either way, $1956 is read and if it is 0
- | | | | | | +---
+ | | | | | | +--- also related to light level or perception?
  | | | | | +----- Sub @ $aa19: Used during encounters.
  | | | | |        If clear, loads the value $11 into $194c
  | | | | |        If value in $194c is $0E, stores $ff into $6320 (character status related)
@@ -656,7 +656,14 @@ D - Special Square Codes:
   80-9F=Encounter 0-31        A0-BF=Treasure 0-31
   C0-DF=Message 0-31          E0-FF=Teleport 0-31
 
-Varies depending on the map or the disk?  There appears to be something else used to determine the specific scenario, possibly the cell's description message number?
+The specific behavior of a scenario can vary based on game state (often the player's current
+location in the dungeon). Some examples include:
+  - The bank vault
+  - Stairwell
+  - Dungeon exit
+  - Troll/Goblin king
+  - Fountain
+  - Guild
 
 Special:
 ===========
@@ -681,17 +688,65 @@ Special:
 
 
 - Scenarios/Modules (01-1F) -
+
+Scenario module have a header structured as follows:
+  $7600 - Byte (Module number? or perhaps flags indicating entry points?)
+           - $13 - ( 3) Fountain       (4 entry points?)
+           - $04 - ( 4) Dungeon exit   (1 or 2 entry points?)
+           - $01 - ( 5) Stairway       (4 or 5 entry points?)
+           - $06 - ( 6) Bank Vault     (5 or 6 entry points?)
+           - $07 - ( 7) Goblin Troll   (5 or 6 entry points?)
+           - $08 - ( 8) Tomb           (5 or 6 entry points?)
+           - $1a - ( a) Chapel         (4 entry points?)
+           - $0b - ( b) Prison / Ozob  (5 or 6 entry points?)
+           - $0c - ( c) Guild          (4 or 5 entry points?)
+           - $0d - ( d) D & P Shop     (4 or 5 entry points?)
+           - $0e - ( e) Gargoyle       (6 entry points?)
+           - $0f - ( f) Inn            (5 or 6 entry points?)
+           - $10 - (10) Oracle         (4 or 5 entry points?)
+           - $11 - (11) Enchantress    (4 or 5 entry points?)
+           - $13 - (13) Ferryman       (4 or 5 entry points?)
+           - $14 - (14) Clothes Horse  (5 or 6 entry points?)
+           - $15 - (15) Dwarven Smithy (4 or 5 entry points?)
+           - $26 - (16) Brewery        (4 or 5 entry points?)
+           - $17 - (17) Crypt          (5 or 6 entry points?)
+           - $18 - (18) Dragon         (5 or 6 entry points?)
+           - $19 - (19) Death's Door   (5 or 6 entry points?)
+           - $1b - (1b) Machine Room   (5 or 6 entry points?)
+           - $1c - (1c) Elevator       (5 or 6 entry points?)
+           - $1d - (1d) Tavern         (4 or 5 entry points?)
+
+  $7601 - Entry point 1 (primary)
+  $7604 - Entry point 2
+  $7607 - Entry point 3
+  $760a - Entry point 4
+  $760d - Entry point 5
+  $7610 - Entry point 6
+
+  = Scenarios =
+
+  01-02 = Unused
+
   03 (  3) = Fountain (Hit points)
-    - Level 1.3 (14, 20)
-    - Level 1.3 (13, 21)
-    - Level 1.3 (15, 21)
-    - Level 1.3 (14, 22)
-  23 (  3) = Fountain (Cures Disease)
-    - Level 2 (25, 15)
-    - Level 2 (24, 16)
-    - The high nibble being non-zero is most-likely a mistake.
-  04 (  4) = Entrance to Palace / Entrance to Wilderness
-    - Level 1.2 (20, 22) - Entrance to the Palace
+    - Level 1.3 (14, 20) - Hit points
+    - Level 1.3 (13, 21) - Hit points
+    - Level 1.3 (15, 21) - Hit points
+    - Level 1.3 (14, 22) - Hit points
+    - Level 2   (25, 15) - Cures Disease   (special code is $23 in map = $03 + $20)
+    - Level 2   (24, 16) - Cures Disease   (special code is $23 in map = $03 + $20)
+    - Level 3   (14, 14) - ?Revitalized?/Fatigue
+    - Level 3   (15, 14) - ?Revitalized?/Fatigue
+    - Level 3   (14, 15) - ?Revitalized?/Fatigue
+    - Level 3   (15, 15) - ?Revitalized?/Fatigue
+
+  04 (  4) = Dungeon Exit
+    - Level 1.2 (20, 22) - Entrance to The Palace
+    - Level 2   ( 6,  0) - Entrance to The Arena  (special code is $64 in map = $04 + $60)
+    - Level 2   (11, 31) - Entrance to The Wilderness
+    - Level 4   ( 4,  0) - Gateway to Revelation
+
+    Please send disks for these scenarios to the author... I've somehow lost my copies.
+
   05 (  5) = Stairwell leading up / down
     // These are based on a table lookup of the player's current position
     // There are 2 tables of 4-byte entries.
@@ -734,16 +789,26 @@ Special:
     779D: 09 03 05 03   - Level 3    [ 9,  3, W]
     77A1: 0E 16 04 00   - Level 2    [14, 22, N]
     77A5: 10 0C 04 03   - Level 2    [16, 12, W]
+
   06 (  6) = Bank Vault
     - Level 1.1 ( 2,  2) - Gram's Gold Exchange
     - Level 1.3 (30, 25) - First City Bank
+
   07 (  7) = Goblin/Troll King's Palace
     - Level 1.1 ( 2, 14) - Goblin King's Palace
     - Level 1.4 (24, 25) - Troll King's Palace
+
+    Option 1: Defeat each king for ring halves, then bring them to the smithy to be reforged.
+    Option 2: Defeat one king and give ring half to the other, then defeat that king for the reforged ring.
+
   08 (  8) = Acrinimaril's Tomb
     - Level 1.1 (31,27)
 
-  0A ( 10) = Chapel
+    Offer staff pieces and receive PAC Card
+
+  09 = Unused
+
+  0a ( 10) = Chapel
     - Level 1.1 (27,  8)
     - Level 1.1 (28,  8)
     - Level 1.1 (31,  8)
@@ -762,57 +827,110 @@ Special:
       Entry 5: E1 7C 85   (CHR_ALIGN <= 225, 'Thou soul is\n\nbecoming purer daily.') (should be "Thy"...)
       Entry 6: FF 47 85   (CHR_ALIGN <= 255, 'Thou hast achieved\n\na level of great goodness.')
 
+  0b ( 11) = Palace Prison (Ozob)
+    - Level 1.2 (26, 27)-(28, 27)
 
-  0B ( 11) = Palace Prison
-    - Level 1.2 (26, 27)
-    - Level 1.2 (27, 27)
-    - Level 1.2 (28, 27)
-  0C ( 12) = Guild ( Wizards of Chaos Guild, Wizards of Law Guild, Wizards of Order Guild, Wizards of Light Guild, Wizards of Darkness Guild )
+    Receive spell of Temporal Fugue
+
+  0c ( 12) = Guild ( Wizards of Chaos Guild, Wizards of Law Guild, Wizards of Order Guild, Wizards of Light Guild, Wizards of Darkness Guild )
     - Level 1.2 (18,  4) - Guild of Chaos [evil]
     - Level 1.2 (26, 14) - Guild of Order
     - Level 1.2 (30, 14) - Wizards of Law Guild
     - Level 1.2 (12, 30) - Thieves' Guild [evil]
     - Level 1.3 ( 2, 27) - Light Wizards Guild
     - Level 1.4 ( 1, 10) - Dark Wizards Guild [evil]
-  2C ( 44/12) = Guild
-    - Level 2   ( 8, 19) - Mercenaries' Guild [evil]
-    - The high nibble being non-zero is most-likely a mistake.
-  4C ( 76/12) = Guild
-    - Level 2   ( 2 , 5) - Paladin's Guild
-    - The high nibble being non-zero is most-likely a mistake.
-  0D ( 13) = Damon & Pythias Shoppe
+    - Level 2   ( 8, 19) - Mercenaries' Guild [evil]   (special code is $2c in map = $0c + $20)
+    - Level 2   ( 2,  5) - Paladin's Guild             (special code is $4c in map = $0c + $40)
+
+  0d (13) = Damon & Pythias Shoppe
     - Level 1.2 (14,  4)
 
-  0F ( 15) = The Retreat
+  0e (14) = Gargoyle
+    - Level 3 ( 2, 10)
+
+    "Shipwreck" - a reference to The City of Xebec's Demise (a Xebec is a type of sailing ship)
+    "Oracle"
+    "Bloodstone"
+    "Shingor" - Not required for Dungeon. This is actually intended for a Wilderness quest
+
+  0f (15) = The Retreat
     - Level 1.2 (23,  3)
-  10 ( 16) = Oracle
+
+  10 (16) = Oracle
     - Level 1.4 ( 3,  4)
-  11 ( 17) = Enchantress
+
+    Offer at least 5 gold pieces -> next quest
+
+  11 (17) = Enchantress
     - Level 1.4 (13, 29)
-  12 ( 18) = (Level 1) Dungeon Entrance - to City
+
+  12 (18) = (Level 1) Dungeon Entrance - to City
     - Level 1.2 (18,  3)
     - Level 1.4 (27, 30)
-  13 ( 19) = (Level 2) The Ferryman
+
+  13 (19) = (Level 2) The Ferryman
     - Level 2 (28, 19)
-  14 ( 20) = (Level 2) Clothes Horse's Room
+
+    2 coppers @ midnight hour
+
+  14 (20) = (Level 2) Clothes Horse's Room
     - Level 2 (26,  8)
-  15 ( 21) = (Level 2) Dwarven Smmithy
+
+    Offer:
+      Morgana's Tiara
+      Heavy Leather Jacket
+      Flowing Purple Cape
+
+    Get:
+      Mirrored Shield
+
+  15 (21) = (Level 2) Dwarven Smmithy
     - Level 2 (16,  7)
     - Level 2 (18,  7)
-  16 ( 22) = (Level 2) Lucky's Potion Brewery
+
+  16 (22) = (Level 2) Lucky's Potion Brewery
     - Level 2 ( 7, 25)
-  57 ( 87/23) = (Level 2) Undead King's Palace
+
+  17 (23) = (Level 2) Undead King's Palace    (special code is $57 in map = $17 + $40)
     - Level 2 (13, 26)
     - Level 2 (14, 26)
     - Level 2 (14, 27)
-    - The high nibble being non-zero is most-likely a mistake.
-  18 ( 24) = (Level 3) Dragon's Lair
+
+    Receive staff piece
+
+  18 (24) = (Level 3) Dragon's Lair
     - Level 3 ( 0, 13)-( 3, 15)
 
-  1D ( 29) = Der Rathskeller's Bar and Grille
+    Offer bloodstone & receive staff piece
+    (or kill)
+
+  19 (25) = Death's Door
+    - Level 3 (7,7)-(8,8)
+
+    Option 1: Pass through: Teleports to Level 3 (6, 7)
+    Option 2: Use item
+      (use PAC card)
+
+  1a = Unused
+
+  1b (27) = Machine Room
+    - Level 4 ( 5,  2)-( 6,  3)
+
+    Better have a shield or you're toast
+
+  1c (28) = Elevator
+    - Level 4 ( 2,  2)
+
+    1. The red button   -> Level 2   (31,  9) - "small room"
+    2. The green button -> Level 3   ( 9, 12) - Iron palm salve
+    3. The blue button  -> Level 1.4 (13, 22) - Shrine of Monsters
+
+  1d (29) = Der Rathskeller's Bar and Grille
     - Level 1.2 (28,  2)
 
-- Effects (20-7F) -
+  1e-1f = Unused
+
+- Effects (20, 40, 60) -
 
   20 ( 32) =
     - Encounters: Phoenix
@@ -831,7 +949,7 @@ Special:
   84 (132) [Level 3   (17,25)] = Undead Knight
   85 (133) [Level 3   (15,25)] = Undead Knight
   86 (134) [Level 3   (13,25)] = Undead Knight
-  87 (135) [Level  (, )] =
+  87 (135) [Level 3   (14,13)] = Basilisk
   88 (136) [Level 1.2 (19, 4)] = Doppleganger
   89 (137) [Level 1.2 (15,25)] = Lich
   8A (138) [Level 1.2 (15,19)] = Valkyrie
@@ -853,17 +971,17 @@ Special:
   93 (147) [Level 2    (mult)] = Doppleganger
     - Level 2 (28, 5) - Hall of Mirrors
     - Level 2 (28,12) - Hall of Mirrors
-  94 (148) [Level  (, )] =
+  94 (148) [?Unused?]
   95 (149) [Level 1.2 (22, 5)] = 7 Homunculii of The Blue Wizards
   96 (150) [Level 1.2 (26, 7)] = 8 Skeletons
   97 (151) [Level 1.4 ( 4,25)] = Phoenix
   98 (152) [Level 1.2 (28, 5)] = Ghost
-  99 (153) [Level  (, )] =
-  9A (154) [Level  (, )] =
-  9B (155) [Level  (, )] =
-  9C (156) [Level  (, )] =
-  9D (157) [Level  (, )] =
-  9E (158) [Level  (, )] =
+  99 (153) [Level 3   (11, 7)] = 4 Flame demons
+  9A (154) [Level 3   (12, 8)] = Valkyrie
+  9B (155) [Level 3   (12,10)] = Horned devil
+  9C (156) [Level 3   (11, 9)] = Vampire
+  9D (157) [Level 3   (10, 9)] = Small dragon
+  9E (158) [Level 3   (10, 8)] = Doppleganger
   9F (159) [Level 1.2 ( 7, 9)] = Devourer
 
 
@@ -876,31 +994,31 @@ Special:
   A4 (164) [Level 1.2 ( 9,18)] = Helm of Light ('A helm glowing with runes floats\nin midair before you.')
   A5 (165) [Level 1.2 (10,25)] = Truesilver Coat ('A chain-mail coat gleems with an\nalmost magical lustre.')
   A6 (166) [Level 2   (19, 2)] = Cloak of Levitation ('A cloak dances to and fro before you.')
-  A7 (167) [Level ()] =
+  A7 (167) [Level 2   ( 8, 8)] = Crystal Breastplate ('There is a glistening breastplate that\nlooks as if it was made just for you.')
   A8 (168) [Level 1.2 (30, 7)] = Page of Cups (card) ('Sealed in an envelope is a trump card.')
-  A9 (169) [Level ()] =
+  A9 (169) [Level 3   ( 9,15)] = Junai's Sword [evil] ('A straight, single-edged, evil-looking\nsword of oriental design lies here.')
   AA (170) [Level 2   ( 0,17)] = Robin's Hood, Cheap Robe ('There is a dark cowl here.')
-  AB (171) [Level ()] =
-  AC (172) [Level ()] =
-  AD (173) [Level ()] =
+  AB (171) [Level 2   (19,26)] = Death (card) ('Sealed in an envelope is a trump card.')
+  AC (172) [Level 3   ( 9,12)] = Iron Palm Salve ('Directions on a small vial here read:\n\n1. Pour over hands.\n2. Rub hands firmly.')
+  AD (173) [Level 2   (15,26)] = Death (card) ('Sealed in an envelope is a trump card.')
   AE (174) [Level 1.3 ( 3, 8)] = Sword of the Adept ('A sword protrudes from a slab\nof black marble.')
   AF (175) [Level 1.4 (29, 8)] = Razor Ice ('A katana in a ribbed black laquered\nscabbard rests against a wall.\n\nA pattern of snowflakes has been honed along its single edge.')
   B0 (176) [Level 1.1 (31, 1)] = Whetstone ('There is a small rectangular sharpening stone here.')
   B1 (177) [Level 1.3 ( 9,23)] = Saurian Brandy ('Signs of a great battle between a\nsingle warrior and a dozen or more\nadversaries litter this room.\nClutched tightly to the warrior's\nis a bottle filled with\ngreen liquid.')
   B2 (178) [Level 1.4 (16, 6)] = Blue Pearl Dagger [evil] ('Inscribed on the blade of a dagger\nare the words:\n\n"Fear not The Reaper"')
   B3 (179) [Level 1.1 (17,15)] = Six Pack ('The decaying remains of an adventurer\nsporting a bush hat and a very nasty\nknife are here. Inscribed on the broken\nblade is the word "G'day".  Lying next\nto him are six tall metal cylinders.')
-  B4 (180) [Level ()] =
+  B4 (180) [Level 3   ( 5,16)] = Melvin's Helm ('There is a golden helm with\nthirteen jewels here.')
   B5 (181) [Level 1.1 ( 6, 1)] = Crossbow [3] ('A crossbow of incredibly fine\nmechanical workmanship lies here.')
   B6 (182) [Level 1.3 ( 3,16)] = Amethyst Rod ('A blue-violet quartz rod lies\non a purple dias.')
   B7 (183) [Level 1.4 (27, 3)] = Map Stone ('A note reads:\n{left}{name},\n\n{left}   Congratulations my good {man|woman} on\n{left}getting this far.\n\n{right}A friend')
-  B8 (184) [Level ()] =
+  B8 (184) [Level 3   ( 4, 5)] = Flame Quarrels [10] ('There are 10 quarrels in\na metallic clip here.')
   B9 (185) [Level 1.1 (11, 1)] = Thunder Quarrels [10] ('There are 10 quarrels in a magnetic clip here.')
   BA (186) [Level 1.1 (11,27)] = Staff of Amber ('There is a long electrum rod here.')
   BB (187) [Level 1.2 ( 6, 6)] = Loadstone ('A curious looking stone fastens itself around your neck.')
   BC (188) [Level 1.1 (31, 4)] = Golden Apple ('A golden apple rests on a golden\npillow.  Inscribed on the apple\nare the words:\n\n"For the pretty one."')
   BD (189) [Level 1.2 ( 1, 1)] = Gauss Rifle [95] ('There is evidence of small\nweapons fire here.')
   BE (190) [Level 1.2 ( 4, 1)] = Solar suit ('There are some disgusting stains\non the floor and an odd looking\nsilvery quilted vest.')
-  BF (191) [Level ()] =
+  BF (191) [Level 4   ( 2, 7)] = Beam Weapon [25] ('An energy pistol is hanging\non a wall rack.')
 
 - Messages (C0-DF) -
 
@@ -911,8 +1029,8 @@ Special:
     - Level 2 (15, 7)
     - Level 2 (19, 7)
   C4 (196) [Level 2   ( 7, 24)] = 'An arrow painted on the floor\n\npoints South.'
-  C5 (197) [Level ()] = ''
-  C6 (198) [Level ()] = ''
+  C5 (197) [Level 3   ( 1,  9)] = 'Writing on the wall says:\n"BEWARE OF THE DRAGON!"'
+  C6 (198) [Level 3   ( 9,  7)] = 'Writing carved into the door reads:\n\n"THE GAUNTLET\nDO NOT ENTER"'
   C7 (199) [Level 1.4 (13, 28)] = 'Glowing letters on the door proclaim:\n\n"Enchantress"'
   C8 (200) [Level 1.3 (11, 10)] = 'Writing scrawled on the ground reads:\n"GO BACK!"'
   C9 (201) [Level 1.3 ( 7,  0)] = 'Scratchings on the wall read:\n"THERE IS NO ESCAPE!"'
@@ -927,10 +1045,10 @@ Special:
     - Level 1.3 (14, 23)
   CF (207) [Level 1.3 ( 1, 31)] = 'Glowing letters float in midair:\n"SEEK THE LIGHT"'
   D0 (208) [Level 2   ( 5,  4)] = 'A note posted on the door reads:\n\n"BEWARE!  THE CAVERNS!"'
-  D1 (209) [Level ()] = ''
+  D1 (209) [Level 3   ( 7, 12)] = 'The stench is becoming unbearable.'
   D2 (210) [Level 1.1 (27,  7)] = 'A sign above the door says:\n"Welcome to the Chapel. Please come in!"'
   D3 (211) [Level 1.4 ( 1, 31)] = 'Black letters hovering slowly say:\n\n"THE SHADOW WILL HIDE THEE"'
-  D4 (212) [Level ()] = ''
+  D4 (212) [?Unused?] =
   D5 (213) [Level 2   (28, 14)] = 'On the wall is a painting of\n\na purple pyramid.'
   D6 (214) [Level 2   (28, 18)] = 'A skull hangs from the ceiling\n\nabove the door.'
   D7 (215) [Level 1.3  (multi)] = 'You hear the crackle of electricity.'
@@ -941,23 +1059,44 @@ Special:
     - Level 1.3 ( 1,22)
     - Level 1.3 ( 1,23)
   D8 (216) [Level 1.1 (26, 27)] = 'You stand before an elaborate door.'
-  D9 (217) [Level ()] = ''
-  DA (218) [Level ()] = ''
-  DB (219) [Level ()] = ''
-  DC (220) [Level ()] = ''
-  DD (221) [Level ()] = ''
-  DE (222) [Level ()] = ''
-  DF (223) [Level ()] = ''
+  D9 (217) [?Unused?] =
+  DA (218) [?Unused?] =
+  DB (219) [?Unused?] =
+  DC (220) [?Unused?] =
+  DD (221) [?Unused?] =
+  DE (222) [?Unused?] =
+  DF (223) [?Unused?] =
 
-    Some messages are found on Disk 3 Side 1 Sector 605. These messages are encoded such that:
-    - Each line appears to start with 0xa5 (0x80 + 0x25 '%'). Perhaps this is a positioning or color indicator?
-    - 0x0d likely indicates a carriage return similar to ASCII (probably also line feed)
-    - 0xff ends the entry
+    The above messages are found on Disk 3 Side 1 Sector 605.
+      - The game engine on Disk 1 Side 1 Sector 518 contains several messsages/strings in the same format.
+      - Messages related to special/unique items are on Disk 1 Side 1 Sector 115.
 
-    Messages related to special/unique items are on Disk 1 Side 1 Sector 115
-    - In general, these follow a similar format to the above.
-    - 0xa7 is used in one message (the note from "A friend" for the map stone). This is likely a formatting code.
-    - The same message also executes code to dynamically insert text (possibly the player name as well as their gender)
+    The format strings are encoded with embedded special character codes:
+    - 0x08         -> (BS) moves the output column one place to the left
+    - 0x0d         -> (CR) is rendered as CRLF
+    - 0xA0         -> Turn off blinking text mode
+    - 0xA1         -> Set blinking text mode
+    - 0xA2         -> Clear from start of line (must be set after center alignment mode ($A5))
+    - 0xA3         -> Invoke subroutine at address in next 2 bytes
+    - 0xA4         -> Reads address and outputs byte from that location as hex
+    - 0xA5         -> Start of center-aligned text
+    - 0xA6         -> Set output position to col/row in next two bytes
+    - 0xA7         -> Start of right-aligned text
+    - 0xA8         -> Clear all message display rows with NUL chars
+    - 0xA9         -> Clear current row with NUL chars
+    - 0xAA         -> Reset (blink off, standard left-aligned output)
+    - 0xAB         -> Clear to end of line (current position unchanged)
+    - 0xAC         -> Read address and continue processing from that location
+    - 0xAD         -> Read address at address and continue processing from that location (indirect)
+    - 0xAE         -> Return to previous template containing last $AC or $AD code executed.
+    - 0xAF         -> BRK & RTS (triggers break, then returns to caller)
+    - 0xB0         -> Read big endian uint32 at address and output as decimal string
+    - 0xB1         -> Read big endian uint16 at address and output as decimal string
+    - 0xB2         -> Read uint8 at address and output as decimal string
+    - 0xB3         -> Output NUL-terminated string at address
+    - 0xB4         -> Output NUL-terminated string at address from address (indirect)
+    - 0xB5 .. $FE  -> invalid/unsupported code, trigger BRK and return to caller
+    - 0xFF         -> End of string. Saves current state and returns to caller
 
 - Teleporters (E0-FF) -
 
@@ -1096,6 +1235,94 @@ Word 0: (AKA FileID)
 Word 1:
   Little-endian 16-bit integer
   File length in bytes
+
+Maps
+----
+Entry 1: Map 0 - Level 1 NW  [480a 0014] D2 S1: encrypted= true, sector= 10 [00a], length=5120
+Entry 2: Map 1 - Level 1 NE  [4833 0014] D2 S1: encrypted= true, sector= 51 [033], length=5120
+Entry 3: Map 2 - Level 1 SW  [485c 0014] D2 S1: encrypted= true, sector= 92 [05c], length=5120
+Entry 4: Map 4 - Level 1 SE  [4885 0014] D2 S1: encrypted= true, sector=133 [085], length=5120
+Entry 5: Map 5 - Level 2     [48ae 0014] D2 S1: encrypted= true, sector=174 [0ae], length=5120
+Entry 6: Map 6 - Level 3     [48d7 0014] D2 S1: encrypted= true, sector=215 [0d7], length=5120
+Entry 7: Map 7 - Level 4     [4900 0014] D2 S1: encrypted= true, sector=256 [100], length=5120
+
+Texture Sets
+------------
+Entry  8: Normal Walls       [4929 1015] D2 S1: encrypted= true, sector=297 [129], length=5392
+Entry  9: Mirror & Crystal   [4955 1015] D2 S1: encrypted= true, sector=341 [155], length=5392
+Entry 10: Dragon             [4981 1015] D2 S1: encrypted= true, sector=385 [181], length=5392
+Entry 11: Goblin             [49ad 1015] D2 S1: encrypted= true, sector=429 [1ad], length=5392
+Entry 12: Mausoleum          [49d9 1015] D2 S1: encrypted= true, sector=473 [1d9], length=5392
+Entry 13: Alien              [4a05 1015] D2 S1: encrypted= true, sector=517 [205], length=5392
+
+Data
+-----
+Entry 17: Combat             [5001 0038] D3 S1: encrypted= true, sector=  1 [001], length=14336
+Entry 18: Items              [5072 002a] D3 S1: encrypted= true, sector=114 [072], length=10752
+Entry 46: Encounters Data    [50ec 00b0] D3 S1: encrypted= true, sector=236 [0ec], length=45056 (Non-std encryption)
+Entry 58: Tavern Talk        [563f 0017] D3 S2: encrypted= true, sector=575 [23f], length=5888
+Entry 59: Blank Char Data    [41e0 0012] D1 S1: encrypted= true, sector=480 [1e0], length=4608
+Entry 63: Location Names     [525c f020] D3 S1: encrypted= true, sector=604 [25c], length=8432
+
+Scenarios
+---------
+Entry 19: Fountain           [4c01 0011] D2 S2: encrypted= true, sector=  1 [001], length=4352
+Entry 20: Dungeon Exit       [4a7f 0006] D2 S1: encrypted= true, sector=639 [27f], length=1536
+Entry 21: Stairway           [4a8c 0016] D2 S1: encrypted= true, sector=652 [28c], length=5632
+Entry 22: Bank Vault         [5401 0010] D3 S2: encrypted= true, sector=  1 [001], length=4096
+Entry 23: Goblin/Troll King  [5422 001c] D3 S2: encrypted= true, sector= 34 [022], length=7168
+Entry 24: Acrinimiril's Tomb [545b 0011] D3 S2: encrypted= true, sector= 91 [05b], length=4352
+Entry 26: Chapel             [4c24 001c] D2 S2: encrypted= true, sector= 36 [024], length=7168
+Entry 27: Ozob               [547e 001c] D3 S2: encrypted= true, sector=126 [07e], length=7168
+Entry 28: Guild              [54b7 0027] D3 S2: encrypted= true, sector=183 [0b7], length=9984
+Entry 29: D & P Shop         [5506 0020] D3 S2: encrypted= true, sector=262 [106], length=8192
+Entry 30: Gargoyle           [4c5d 0014] D2 S2: encrypted= true, sector= 93 [05d], length=5120
+Entry 31: Retreat Inn        [50c7 0012] D3 S1: encrypted= true, sector=199 [0c7], length=4608
+Entry 32: Oracle             [5547 001b] D3 S2: encrypted= true, sector=327 [147], length=6912
+Entry 33: Enchantress        [557e 0018] D3 S2: encrypted= true, sector=382 [17e], length=6144
+Entry 35: Ferryman           [4c86 0010] D2 S2: encrypted= true, sector=134 [086], length=4096
+Entry 36: Clothes Horse      [4ca7 000f] D2 S2: encrypted= true, sector=167 [0a7], length=3840
+Entry 37: Dwarven Smithy     [4cc6 0020] D2 S2: encrypted= true, sector=198 [0c6], length=8192
+Entry 38: Potion Brewery     [4d07 0022] D2 S2: encrypted= true, sector=263 [107], length=8704
+Entry 39: Crypt              [4d4c 0010] D2 S2: encrypted= true, sector=332 [14c], length=4096
+Entry 40: Dragon             [4d6d 0015] D2 S2: encrypted= true, sector=365 [16d], length=5376
+Entry 41: Death's Door       [4d98 000b] D2 S2: encrypted= true, sector=408 [198], length=2816
+Entry 43: Machine Room       [4daf 001f] D2 S2: encrypted= true, sector=431 [1af], length=7936
+Entry 44: Elevator           [4dee 0007] D2 S2: encrypted= true, sector=494 [1ee], length=1792
+Entry 45: Tavern             [55af 001f] D3 S2: encrypted= true, sector=431 [1af], length=7936
+
+Other
+-----
+Entry 25: Load Character     [4102 001a] D1 S1: encrypted= true, sector=258 [102], length=6656
+Entry 34: Xfer City Char     [4137 0020] D1 S1: encrypted= true, sector=311 [137], length=8192
+Entry 47: Character Death    [41c3 0007] D1 S1: encrypted= true, sector=451 [1c3], length=1792
+Entry 48: Unknown            [4dfd 0004] D2 S2: encrypted= true, sector=509 [1fd], length=1024
+Entry 49: Save Character     [41d2 0006] D1 S1: encrypted= true, sector=466 [1d2], length=1536
+Entry 54: Unknown/Unused?    [41df 0000] D1 S1: encrypted= true, sector=479 [1df], length=   0
+Entry 60: Game Kernel        [4205 004f] D1 S1: encrypted= true, sector=517 [205], length=20224
+Entry 61: Copy Prot. Check   [42a4 0001] D1 S1: encrypted= true, sector=676 [2a4], length= 256
+Entry 62: Copy Prot. Check 2 [42a7 0001] D1 S1: encrypted= true, sector=679 [2a7], length= 256
+Entry 66: Unknown            [4e18 0005] D2 S2: encrypted= true, sector=536 [218], length=1280
+Entry 67: Unknown            [529f 0005] D3 S1: encrypted= true, sector=671 [29f], length=1280
+Entry 68: Unknown            [56ac 0005] D3 S2: encrypted= true, sector=684 [2ac], length=1280
+
+Images
+------
+Entry 42: Char Creation Img  [4178 0025] D1 S1: encrypted= true, sector=376 [178], length=9472
+Entry 50: Unknown Img        [4e06 8008] D2 S2: encrypted= true, sector=518 [206], length=2176
+Entry 51: Unknown Img        [55ee 8007] D3 S2: encrypted= true, sector=494 [1ee], length=1920
+Entry 52: Unknown Img        [55fe 8007] D3 S2: encrypted= true, sector=510 [1fe], length=1920
+
+Songs
+-----
+Entry 53: Dead Song          [524d 0007] D3 S1: encrypted= true, sector=589 [24d], length=1792
+Entry 55: Tavrn Monster Song [560e 000d] D3 S2: encrypted= true, sector=526 [20e], length=3328
+Entry 56: Devourer Song      [5629 0006] D3 S2: encrypted= true, sector=553 [229], length=1536
+Entry 57: Unknown Song       [5636 0004] D3 S2: encrypted= true, sector=566 [236], length=1024
+Entry 64: Lost Song          [566e 0010] D3 S2: encrypted= true, sector=622 [26e], length=4096
+Entry 65: Blackheart Song    [568f 000e] D3 S2: encrypted= true, sector=655 [28f], length=3584
+
+
 
 --------------
 
