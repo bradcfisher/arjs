@@ -1076,10 +1076,10 @@ Scenario module have a header structured as follows:
     - 0x0d         -> (CR) is rendered as CRLF
     - 0xA0         -> Turn off blinking text mode
     - 0xA1         -> Set blinking text mode
-    - 0xA2         -> Clear from start of line (must be set after center alignment mode ($A5))
+    - 0xA2         -> Start center-aligned text (clears from start of line)
     - 0xA3         -> Invoke subroutine at address in next 2 bytes
     - 0xA4         -> Reads address and outputs byte from that location as hex
-    - 0xA5         -> Start of center-aligned text
+    - 0xA5         -> Start center-aligned text (does not clear from start of line)
     - 0xA6         -> Set output position to col/row in next two bytes
     - 0xA7         -> Start of right-aligned text
     - 0xA8         -> Clear all message display rows with NUL chars

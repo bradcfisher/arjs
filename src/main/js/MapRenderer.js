@@ -50,6 +50,8 @@ export class MapRenderer {
     #showEnclosedAreas = true;
     /** @type {boolean} */
     #showSpecialCode = true;
+    /** @type {number?} */
+    #specialCodeFilter;
     /** @type {boolean} */
     #showZones = true;
 
@@ -374,6 +376,23 @@ export class MapRenderer {
         this.invalidate();
     }
 
+    get specialCodeFilter() {
+        return (this.#specialCodeFilter == null)
+            ? () => true
+            : this.#specialCodeFilter;
+    }
+
+    set specialCodeFilter(value) {
+        if (value instanceof Function) {
+            this.#specialCodeFilter = value;
+        } else if (value == null) {
+            this.#specialCodeFilter = null;
+        } else {
+            throw new Error("specialCodeFilter value must be a function")
+        }
+        this.invalidate();
+    }
+
     get showZones() {
         return this.#showZones;
     }
@@ -686,7 +705,7 @@ export class MapRenderer {
         context.strokeRect(a, a, b, b);
 
         // Render the data (description code / special code)
-        if (this.#showSpecialCode && cell.special) {
+        if (this.#showSpecialCode && cell.special && this.specialCodeFilter(cell.special)) {
             context.fillStyle = this.#textColor;
             this.#fillCenteredText(0, 0, 1, 1, 0.6, this.#byteToHex(cell.special));
         } else if (this.#showZones && cell.zones && cell.zones.size > 0) {

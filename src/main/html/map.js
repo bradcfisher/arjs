@@ -157,14 +157,27 @@ let pageReady = false;
 
 /** @type {HTMLSelectElement} */
 const source = document.getElementById("Source");
+/** @type {HTMLInputElement} */
 const scaleInput = document.getElementById("Scale");
+/** @type {HTMLInputElement} */
 const positionXInput = document.getElementById("PositionX");
+/** @type {HTMLInputElement} */
 const positionYInput = document.getElementById("PositionY");
+/** @type {HTMLCanvasElement} */
 const canvasElement = document.getElementById("Display");
-
+/** @type {HTMLInputElement} */
 const showPointsOfInterestInput = document.getElementById("showPointsOfInterest");
+/** @type {HTMLInputElement} */
 const showSpecialCodeInput = document.getElementById("showSpecialCode");
+/** @type {HTMLInputElement} */
+const specialCodeAndInput = document.getElementById("specialCodeAnd");
+/** @type {HTMLInputElement} */
+const specialCodeXorInput = document.getElementById("specialCodeXor");
+/** @type {HTMLInputElement} */
+const specialCodeEqInput = document.getElementById("specialCodeEq");
+/** @type {HTMLInputElement} */
 const showEnclosedAreasInput = document.getElementById("showEnclosedAreas");
+/** @type {HTMLInputElement} */
 const showZonesInput = document.getElementById("showZones");
 
 (function() {
@@ -251,6 +264,26 @@ document.addEventListener('DOMContentLoaded', function () {
     showPointsOfInterestInput.addEventListener("change",
         (evt) => renderer.showPointsOfInterest = showPointsOfInterestInput.checked);
     showSpecialCodeInput.addEventListener("click", (evt) => renderer.showSpecialCode = showSpecialCodeInput.checked);
+    const specialCodeFilterEvt = (evt) => {
+            function getVal(value) {
+                return value.trim() == ""
+                    ? null
+                    : Number.parseInt(value);
+            }
+            const andVal = getVal(specialCodeAndInput.value);
+            const xorVal = getVal(specialCodeXorInput.value);
+            const eqVal = getVal(specialCodeEqInput.value);
+
+            console.log("specialCodeFilter: AND", andVal, "XOR", xorVal, "EQ", eqVal);
+
+            renderer.specialCodeFilter = function(specialCode) {
+                return ((specialCode & andVal) ^ xorVal) == eqVal;
+            }
+        };
+    specialCodeAndInput.addEventListener("change", specialCodeFilterEvt);
+    specialCodeXorInput.addEventListener("change", specialCodeFilterEvt);
+    specialCodeEqInput.addEventListener("change", specialCodeFilterEvt);
+
     showEnclosedAreasInput.addEventListener("click", (evt) => renderer.showEnclosedAreas = showEnclosedAreasInput.checked);
     showZonesInput.addEventListener("click", (evt) => renderer.showZones = showZonesInput.checked);
 

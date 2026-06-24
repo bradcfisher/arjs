@@ -1303,11 +1303,9 @@ export function disassemble(bytes, options) {
 
             const rawBytes = (segment.rawBytes || (labelEntry != null && ((labelEntry.flags & LabelEntry.FLAG_EXECUTE) == 0)));
 
-            if (rawBytes && !newSegment && op.rawBytes && !(labelEntry != null && labelEntry.offset == segmentOfs)
-                && (op.bytes.length < options.maxRawBytesPerGroup)) {
+            if (rawBytes && !newSegment && op.rawBytes && !(labelEntry != null && labelEntry.offset == segmentOfs)) {
                 // Was collecting raw bytes and we will still be collecting raw bytes
-                // Don't need a new operation if no label for the current offset and
-                // we haven't reached the max length yet.
+                // Don't need a new operation if no label for the current offset.
                 return;
             }
 
@@ -1494,6 +1492,9 @@ export function disassemble(bytes, options) {
     }
 
     let result = [];
+    const labelMaxBytes =
+        options.showRawBytes ? Math.max(1, Math.trunc((options.rawBytesWidth + 1) / 3)) : options.maxRawBytesPerGroup;
+
     for (let opEntry of ops) {
         const op = opEntry.op;
         if (op.offset != null) {
@@ -1502,10 +1503,16 @@ export function disassemble(bytes, options) {
             op.label = options.labels.labelForAddress(op.offset, labelFlags, true, true);
 
             if (op.rawBytes) {
+                const maxRawBytes = (op.label != null
+                        ? Math.min(labelMaxBytes, options.maxRawBytesPerGroup)
+                        : options.maxRawBytesPerGroup);
+
                 // Check remaining bytes for labels and split op if a label is found
+                // OR if the max bytes length is reached.
                 for (let i = 1; i < op.bytes.length; ++i) {
                     const label = options.labels.labelForAddress(op.offset + i, labelFlags, true, true);
-                    if (label != null) {
+
+                    if ((label != null) || (i >= maxRawBytes)) {
                         // Split the op
                         const newOp = new AsmOp();
                         newOp.bytes = op.bytes.slice(i);
