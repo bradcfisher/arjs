@@ -1073,28 +1073,54 @@ Scenario module have a header structured as follows:
 
     The format strings are encoded with embedded special character codes:
     - 0x08         -> (BS) moves the output column one place to the left
-    - 0x0d         -> (CR) is rendered as CRLF
+    - 0x0D         -> (CR) is rendered as CRLF
     - 0xA0         -> Turn off blinking text mode
     - 0xA1         -> Set blinking text mode
     - 0xA2         -> Start center-aligned text (clears from start of line)
     - 0xA3         -> Invoke subroutine at address in next 2 bytes
+                      Args:
+                        WORD - address of subroutine to execute
     - 0xA4         -> Reads address and outputs byte from that location as hex
+                      Args:
+                        WORD - address of byte
     - 0xA5         -> Start center-aligned text (does not clear from start of line)
     - 0xA6         -> Set output position to col/row in next two bytes
+                      Args:
+                        BYTE - new output column
+                        BYTE - new output row
     - 0xA7         -> Start of right-aligned text
     - 0xA8         -> Clear all message display rows with NUL chars
     - 0xA9         -> Clear current row with NUL chars
     - 0xAA         -> Reset (blink off, standard left-aligned output)
     - 0xAB         -> Clear to end of line (current position unchanged)
     - 0xAC         -> Read address and continue processing from that location
+                      Args:
+                        WORD - address of template substring
     - 0xAD         -> Read address at address and continue processing from that location (indirect)
+                      Args:
+                        WORD - address of template substring address
     - 0xAE         -> Return to previous template containing last $AC or $AD code executed.
     - 0xAF         -> BRK & RTS (triggers break, then returns to caller)
     - 0xB0         -> Read big endian uint32 at address and output as decimal string
+                      Args:
+                        WORD - address of uint32
+                        BYTE - max output width
     - 0xB1         -> Read big endian uint16 at address and output as decimal string
+                      Args:
+                        WORD - address of uint16
+                        BYTE - max output width
     - 0xB2         -> Read uint8 at address and output as decimal string
+                      Args:
+                        WORD - address of uint8
+                        BYTE - max output width
     - 0xB3         -> Output NUL-terminated string at address
+                      Args:
+                        WORD - address of string
+                        BYTE - max output width
     - 0xB4         -> Output NUL-terminated string at address from address (indirect)
+                      Args:
+                        WORD - address of string address
+                        BYTE - max output width
     - 0xB5 .. $FE  -> invalid/unsupported code, trigger BRK and return to caller
     - 0xFF         -> End of string. Saves current state and returns to caller
 
