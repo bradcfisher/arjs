@@ -7,7 +7,7 @@ Altirra symbol file
 rw  0000,1   SIO_POS_L              ; LSB of current serial IO buffer position (next byte to write/read).
 rw  0001,1   SIO_POS_H              ; MSB of current serial IO buffer position (next byte to write/read).
 ; Next 4 used for converting uint32 to string?
-; Also used for result/temp of MUL_8 / MUL_16
+; Also used for result/temp of multBytes / multInt16
 rw  0002,1   dat_0002               ; 1 byte related to the next 3
 rw  0003,1   dat_0003               ;
 rw  0004,1   dat_0004               ;
@@ -28,8 +28,8 @@ rw  0012,1   DescTbl_L              ; LSB of current map location description ta
 rw  0013,1   DescTbl_H              ; MSB of current map location description table address
 rw  0014,1   DescFrag_L             ; LSB of address in current map description fragment table
 rw  0015,1   DescFrag_H             ; MSB of address in current map description fragment table
-rw  0016,1   STR_TMPLT_L            ; LSB of address of string template to interpolate and output
-rw  0017,1   STR_TMPLT_H            ; MSB of address of string template to interpolate and output
+rw  0016,1   StrTmplate_L           ; LSB of address of string template to interpolate and output
+rw  0017,1   StrTmplate_H           ; MSB of address of string template to interpolate and output
 rw  0018,1   sub_add_0018_L         ; LSB of sub address
 rw  0019,1   sub_add_0018_H         ; MSB of sub address
              ; Values related to outputChar
@@ -44,21 +44,21 @@ rw  0021,1   OutBlink               ; Current output inverse/blink flag.  ORd wi
 
              ; Values related to printTop/Btm/Any
 rw  0023,1   dat_0023               ; 1 byte: mode?/nesting depth? (0, 1 or 2)
-                                    ;   An index into SavedOutCol, SavedOutRow, tbl_18c7, TOP_MSG_ROW, NUM_MSG_ROWS
+                                    ;   An index into SavedOutCol, SavedOutRow, tbl_18c7, ModeTopRow, ModeNumRows
 rw  0024,1   OutAlign               ; 1 byte: Only bits 6 and 7 are used, remaining bits are ignored
                                     ;    Bit 7-6: 00 - Left aligned output: Character in A is output if not $0d (13)
                                     ;             10 - Compute center alignment then outputs at computed location.
                                     ;             11 - Compute right alignment then outputs at computed location.
-                                    ; (printTop/BTM/ANY (set 0), a5_CNTR_ALGN (set $80), a7_RGHT_ALGN (set $c0), ab_CLR_2_EOL (use))
+                                    ; (printTop/BTM/ANY (set 0), a5_Center (set $80), a7_RightAlign (set $c0), ab_Clear2Eol (use))
 rw  0025,1   OutAlignLen            ; 1 byte: Length of line being output, used for alignment calcs
-rw  0026,1   dat_0026               ; 1 byte: 0, $0d, $80
-rw  0027,1   sub_add_0027_L         ; LSB of sub address
-rw  0028,1   sub_add_0027_H         ; MSB of sub address
+rw  0026,1   OutAlignEolFlg         ; 1 byte: End of line reached if bit 7 is set
+rw  0027,1   AlignStart_L           ; LSB of start of text being center or right aligned. Used to reset to beginning for output after length is computed.
+rw  0028,1   AlignStart_H           ; MSB of start of text being center or right aligned. Used to reset to beginning for output after length is computed.
 rw  0029,4   tmp_BE_UINT32          ; 4 bytes: Temp big-endian uint32 to convert to string
 
 rw  002d,1   OutWidth               ; 1 byte: Output width for value
 
-rw  002e,1   STK_STATUS             ; Port 1 Stick 0 direction and trigger button status
+rw  002e,1   StickStatus            ; Port 1 Stick 0 direction and trigger button status
                                     ;   Bit    7 - Button status (1 = pressed, 0 = not pressed)
                                     ;     $80 (10000000) - trigger pressed
                                     ;   Bits 3-0 - Direction (0 = centered, xxx)
@@ -66,14 +66,14 @@ rw  002e,1   STK_STATUS             ; Port 1 Stick 0 direction and trigger butto
                                     ;     $04 (00000100) - left
                                     ;     $02 (00000010) - back
                                     ;     $08 (00001000) - right
-rw  002f,1   STK_KBD_DIR            ; Key-based joystick direction and trigger button status
+rw  002f,1   StickKbdDir            ; Key-based joystick direction and trigger button status
                                     ;     I -> forward, J -> left, K -> back, L -> right, space -> trigger
-rw  0030,1   KBD_PEND_CHAR          ; ATASCII of most recent key read, but not yet processed/accepted
+rw  0030,1   KbdPendChar            ; ATASCII of most recent key read, but not yet processed/accepted
                                     ;   (Similar to std CH, negative if no key available)
                                     ;   $10 (16) = If SELECT key was released
                                     ;   $11 (17) = If START key was released
                                     ;   $12 (18) = If OPTION key was released
-rw  0031,1   KBD_CHAR               ; ATASCII of most recent key read by readKey
+rw  0031,1   KbdChar                ; ATASCII of most recent key read by readKey
 rw  0032,1   flg_PAUSED             ; If <0, then gamed is paused
 rw  0033,1   dat_0033               ;
 rw  0034,1   dat_0034               ; Counter around vvblki_BLINK   ?related to blinking text?
@@ -116,11 +116,11 @@ rw  0056,1   dat_0056               ; 1 byte
 rw  0057,1   dat_0057               ; 1 byte: used to temporarily store A
 rw  0058,1   dat_0058_L             ; LSB of address
 rw  0059,1   dat_0058_H             ; MSB of address
-
-rw  005a,1   dat_005a_L             ; LSB of address
-rw  005b,1   dat_005a_H             ; MSB of address
-rw  005c,1   dat_005c               ; Index into tbl_45e0_L/tbl_45e7_H/tbl_4595
-                                    ;     tbl_459c/tbl_45fc
+rw  005a,1   EffLvlStr_L            ; Temp: Holds LSB of effect level string description address. Only used in sub_42e7.
+rw  005b,1   EffLvlStr_H            ; Temp: Holds MSB of effect level string description address. Only used in sub_42e7.
+rw  005c,1   dat_005c               ; used as loop ctl var in sub_42e7, sub_41fc
+                                    ;  Index into EffLimitTbls_L/H, EffTimers
+                                    ;     EffApplyFreq, tbl_45fc
 
 rw  00a0,1   dat_00a0               ;
 
@@ -290,13 +290,13 @@ rwx 1830,1   j_sub_24c6             ; Alias for sub_24c6
 rwx 1833,1   j_sub_2494             ; Alias for sub_2494
 rwx 1836,1   j_setStatPgStr         ; Alias for setStatPgStr
 rwx 1839,1   j_readLine             ; Alias for readLine
-rwx 183c,1   j_sub_2bb0             ; Alias for sub_2bb0
+rwx 183c,1   j_pressAnyKey          ; Alias for pressAnyKey
 rwx 183f,1   j_charToUpper          ; Alias for charToUpper
 rwx 1842,1   j_sub_2cad             ; Alias for sub_2cad
 rwx 1845,1   j_dispStatPgIfEq       ; Alias for dispStatPgIfEq
 rwx 1848,1   j_dispStatusPg         ; Alias for dispStatusPg
-rwx 184b,1   j_sub_3ca5             ; Alias for sub_3ca5
-rwx 184e,1   j_sub_3cc2             ; Alias for sub_3cc2
+rwx 184b,1   j_addStatPage          ; Alias for addStatPage
+rwx 184e,1   j_remStatPage          ; Alias for remStatPage
 rwx 1851,1   j_setStatPgStr2        ; Alias for setStatPgStr2
 rwx 1854,1   j_initBytes            ; Alias for initBytes
 rwx 1857,1   j_sub_2c6f             ; Alias for sub_2c6f
@@ -324,7 +324,7 @@ rwx 1896,1   j_sub_4ec4             ; Alias for sub_4ec4
 rwx 1899,1   j_sub_RND_2b6b         ; Alias for sub_RND_2b6b
 rwx 189c,1   j_sub_5471             ; Alias for sub_5471
 rwx 189f,1   j_actionOffer          ; Alias for actionOffer
-rwx 18a2,1   j_sub_2b47             ; Alias for sub_2b47
+rwx 18a2,1   j_multInt16            ; Alias for multInt16
 rwx 18a5,1   j_sub_408b             ; Alias for sub_408b
 rwx 18a8,1   j_actionUse            ; Alias for actionUse
 rwx 18ab,1   j_loc_5bb8             ; Alias for loc_5bb8
@@ -345,11 +345,11 @@ rw  18be,1   COLBK_SET_18Be         ; Value assigned to COLBK during display ren
 rw  18bf,1   CUR_COLPF3             ; Value assigned to COLPF3 during display rendering
 
 rw  18c1,3   SavedOutCol            ; 3 bytes: Holds saved OutCol values
-rw  18c4,3   SavedOutRow            ; 3 bytes: Holds saved OutRow values (combined with TOP_MSG_ROW for final row)
+rw  18c4,3   SavedOutRow            ; 3 bytes: Holds saved OutRow values (combined with ModeTopRow for final row)
 rw  18c7,1   SavedOutBlink          ; 3 bytes: Holds saved OutBlink blink values
 rw  18ca,8   OUT_UBCD_BUF           ; 10 bytes (8 used): Used to hold unpacked BCD values for output
 rw  18d4,1   LBUF_LIMIT             ; 1 byte: Line buffer input length limit
-rw  18d5,2a  LINEBUF                ; 42? byte (40 used) string line buffer
+rw  18d5,2a  LineBuf                ; 42? byte (40 used) string line buffer
 
 rw  18fe,1   dat_18fe               ; 1 byte
 rw  18ff,1   dat_18ff               ; 1 byte: flag indicating whether a new key should be read or not
@@ -373,8 +373,8 @@ rw  190c,1   dat_190b_H             ; MSH of address. Related to $0a
 rw  190d,1   dat_190d               ; 1 byte. Only updated? Where is this read?
 rw  190e,1   dat_190e               ; 1 byte. Updated in sub_2799, Read in sub_28d7
 rw  190f,1   dat_190f               ; 1 byte. Updated in sub_275b
-rw  1910,1   FileDiskSide           ; Disk side (1 or 2) Referenced in str_PLS_INSRT
-rw  1911,1   FileDiskNumber         ; Disk number. Referenced in str_PLS_INSRT
+rw  1910,1   FileDiskSide           ; Disk side (1 or 2) Referenced in StrPleaseInsert
+rw  1911,1   FileDiskNumber         ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
 rw  1912,1   ZONE_ID                ; Zone ID value to apply in PROCESS_HOURLY_UPDATES
 rw  1913,10  tbl_1913_L             ; 16? bytes: LSB of status page string template address, MSB in tbl_1923_H
 rw  191a,1   dat_191a               ;
@@ -421,14 +421,27 @@ rw  195a,1   MapCellSpclCode        ; Holds special code index number parameter 
 
 rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff
 rw  195e,1   dat_195e               ; 1 byte: TODO: related to temperature? Only used in sub_41fc?
-rw  195f,1   UNK_BYTE_195F          ; 1 byte: TODO: a countdown of some sort? decremented in sub_4a01
-rw  1960,1   UNK_BYTE_1960          ;
+rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
+                                    ;     update should occur. 0 is false, and any non-0 value is seen as true.
+rw  1960,1   StatRecalcFlg          ; 1 byte: Checked in sub_41fc to determine whether a stat update calc should
+                                    ;     occur. 0 is false, and any non-0 value is seen as true.
 rw  1961,1   dat_1961               ;
 rw  1962,1   dat_1962               ;
+rw  1963,7   EffLevels              ; 7 bytes: Previous threshold index for an effect
+                                    ;    (Warmth, Hunger, Thirst, Energy, Burden, Drunk, Stomach)
+                                    ;    Used to determine whether a display update is needed for the effect labels on
+                                    ;    screen.
+rw  1963,1   EffWrmthLvl            ; EffLevels[0]: Warmth effect level [0..6]
+rw  1964,1   EffHungrLvl            ; EffLevels[1]: Hunger effect level [0..4]
+rw  1965,1   EffThrstLvl            ; EffLevels[2]: Thrist effect level [0..4]
+rw  1966,1   EffExhstLvl            ; EffLevels[3]: Exhaustion effect level [0..4]
+rw  1967,1   EffBurdnLvl            ; EffLevels[4]: Burden effect level [0..4]
+rw  1968,1   EffInebrLvl            ; EffLevels[5]: Inebriation effect level [0..4]
+rw  1969,1   EffFullnLvl            ; EffLevels[6]: Fullness effect level [0..4]
 
 rw  1968,1   UNK_BYTE_1968          ; Value compared to 1
-
 rw  196a,1   UNK_BYTE_196A          ; 1 byte
+
 rw  196b,4   dat_196b               ; 4 bytes: player position (ORIENT, X, Y, MAP)
 rw  196f,1   dat_196f               ; 1 byte
 rw  1970,1   dat_1970               ; 1 byte: Type of locked door: 0 (key), 1 (bolted), 2 (enchanted)
@@ -557,66 +570,84 @@ rwx 1c84,1   printTop               ; Output interpolated string (Mode 0: Top 6 
 rwx 1c88,1   printBtm               ; Output interpolated string (mode 1: Bottom 15 to 22 rows of screen)
 rwx 1c8c,1   printAny               ; Output interpolated string (mode 2: Anywhere on screen)
 
-rwx 1cab,1   out_NEXT_CHAR          ; Repeatedly reads the next byte from STR_TMPLT_L/H and calls sub_1f3c
+rwx 1cab,1   out_NextChar           ; Repeatedly reads the next byte from StrTmplate_L/H and calls sub_1f3c
                                     ;   until a byte is read with the sign bit set.
 
 ; Special character code handlers
 rwx 1ccf,1   af_BRK_RTS             ; ($af) BRK & RTS (triggers break, then returns to caller)
-rwx 1cd1,1   ff_SAVE_RTS            ; ($ff) End of string found: Save current output position and return to caller.
-rwx 1ce7,1   a0_BLINK_OFF           ; ($a0) Turn off blinking text mode
-rwx 1ced,1   a1_BLINK_ON            ; ($a1) Set blinking text mode
-rwx 1cf3,1   a4_BYTE2HEX            ; ($a4) Reads address and outputs byte from that location as hex
-rwx 1cfe,1   a3_CALL_SUB            ; ($a3) Invoke subroutine at address
-rwx 1d07,1   sub_1d07               ; Dynamically invokes the subroutine @ sub_add_0018_L/H
-rwx 1d0a,1   a5_CNTR_ALGN           ; ($a5) Start center-aligned text (does not clear from start of line)
-rwx 1d21,1   a2_CNTR_CLR            ; ($a2) Start center-aligned text (clearing from start of line)
-rwx 1d2a,1   a6_SET_POS             ; ($a6) Set output position to col/row
-rwx 1d3b,1   a7_RGHT_ALGN           ; ($a7) Start of right-aligned text
-rwx 1d50,1   a8_CLR_MESSGE          ; ($a8) Clear all message display rows with NUL chars
-rwx 1d74,1   a9_CLR_ROW             ; ($a9) Clear current row with NUL chars
+rwx 1cd1,1   ff_EndOfString         ; ($ff) End of string found: Save current output position and return to caller.
+rwx 1ce7,1   a0_BlinkOff            ; ($a0) Turn off blinking text mode
+rwx 1ced,1   a1_BlinkOn             ; ($a1) Set blinking text mode
+rwx 1cf3,1   a4_Byte2Hex            ; ($a4) Reads address and outputs byte from that location as hex
+rwx 1cfe,1   a3_CallSub             ; ($a3) Invoke subroutine at address
+rwx 1d07,1   callSub                ; Dynamically invokes the subroutine @ sub_add_0018_L/H
+rwx 1d0a,1   a5_Center              ; ($a5) Start center-aligned text (does not clear from start of line)
+rwx 1d21,1   a2_CenterClr           ; ($a2) Start center-aligned text (clearing from start of line)
+rwx 1d2a,1   a6_SetPos              ; ($a6) Set output position to col/row
+rwx 1d3b,1   a7_RightAlign          ; ($a7) Start of right-aligned text
+rwx 1d50,1   a8_ClearAll            ; ($a8) Clear all message display rows with NUL chars
+rwx 1d74,1   a9_ClearRow            ; ($a9) Clear current row with NUL chars
 rwx 1d7a,1   nulOutputRow           ; Writes NUL bytes to all positions of the current OutRow
 rwx 1d91,3   smc_1d91               ; The dest address of this STA abs,Y is dynamically modified
-rwx 1d9a,1   ab_CLR_2_EOL           ; ($ab) Clear to end of line (current position unchanged)
-rwx 1dc0,1   aa_RESET               ; ($aa) Reset (blink off, standard left-aligned output)
-rwx 1dc9,1   b0_UI32_2_DEC          ; ($b0) Read big endian uint32 at address and output as decimal string
-rwx 1dd9,1   b1_UI16_2_DEC          ; ($b1) Read big endian uint16 at address and output as decimal string
-rwx 1dec,1   b2_UI8_2_DEC           ; ($b2) Read uint8 at address and output as decimal string
-rwx 1df9,1   cont_UI32_2_DEC        ; b0_UI32_2_DEC, b1_UI16_2_DEC and b2_UI8_2_DEC all converge here to output the value
+rwx 1d9a,1   ab_Clear2Eol           ; ($ab) Clear to end of line (current position unchanged)
+rwx 1dc0,1   aa_Reset               ; ($aa) Reset (blink off, standard left-aligned output)
+rwx 1dc9,1   b0_UInt32ToDec         ; ($b0) Read big endian uint32 at address and output as decimal string
+rwx 1dd9,1   b1_UInt16ToDec         ; ($b1) Read big endian uint16 at address and output as decimal string
+rwx 1dec,1   b2_ByteToDec           ; ($b2) Read uint8 at address and output as decimal string
+rwx 1df9,1   out_UInt32ToDec        ; b0_UInt32ToDec, b1_UInt16ToDec and b2_ByteToDec all converge here to output the value
 rwx 1e8b,1   unpackBcdByte          ; Unpacks BCD byte: Splits the nibbles of dat_0002[X] into OUT_UBCD_BUF[Y] (lo) and OUT_UBCD_BUF[Y + 1] (hi)
 rwx 1e98,1   unpackBcdNibble        ; Place low nibble of A into OUT_UBCD_BUF[Y]
 rwx 1e9d,1   printByteAsHex         ; Output byte in A as 2 character hex representation
 rwx 1ea8,1   printNbblAsHex         ; Output low nibble of A as hex character
 
-rwx 1eb4,1   b3_STRZ                ; ($b3) Output NUL-terminated string
-rwx 1ebf,1   b4_STRZ_IND            ; ($b4) Output NUL-terminated string at address from address (indirect)
-rwx 1ee3,1   ac_FOLLOW              ; ($ac) Read address and continue processing from that location
-rwx 1efb,1   ad_FOLLOW_IND          ; ($ad) Read address at address and continue processing from that location (indirect)
-rwx 1f16,1   ae_RETURN              ; ($ae) Return to previous template with last $ac or $ad code executed.
+rwx 1eb4,1   b3_StrZ                ; ($b3) Output NUL-terminated string
+rwx 1ebf,1   b4_IndStrZ             ; ($b4) Output NUL-terminated string at address from address (indirect)
+rwx 1ed4,1   out_Strz               ; Outputs a NUL-terminated string stored @ sub_add_0018_L/H
+rwx 1ee3,1   ac_Follow              ; ($ac) Read address and continue processing from that location
+rwx 1efb,1   ad_IndFollow           ; ($ad) Read address at address and continue processing from that location (indirect)
+rwx 1f16,1   ae_Return              ; ($ae) Return to previous template with last $ac or $ad code executed.
 
 rw  1f23,1   OutClrLeftFlg          ; 1 byte: If bit 7 == 1, will clear left edge of screen when center-aligning output
-rw  1f24,1   dat_1f24               ; 1 byte
-rw  1f25,1   dat_1f25               ; 1 byte
-rwx 1f26,1   getNextWord            ; Reads a 16-bit word from STR_TMPLT_L/H into sub_add_0018_L/H
-rwx 1f31,1   getNextByte            ; Reads the byte at STR_TMPLT_L/H and increments STR_TMPLT_L/H
-rwx 1f3c,1   sub_1f3c               ;    handle a character?
+rw  1f24,1   OutRetnAdr_L           ; 1 byte: LSB of address return to when $ae code processed
+rw  1f25,1   OutRetnAdr_H           ; 1 byte: MSB of address return to when $ae code processed
+rwx 1f26,1   getNextWord            ; Reads a 16-bit word from StrTmplate_L/H into sub_add_0018_L/H
+rwx 1f31,1   getNextByte            ; Reads the byte at StrTmplate_L/H and increments StrTmplate_L/H
+rwx 1f3c,1   alignOutputChr         ; Outputs a character or computes output alignment for a character
 
 rwx 1f9a,2   smc_1f9a               ; The argument to this CMP is dynamically modified
 
-rw  1fa8,3   TOP_MSG_ROW            ; 3 bytes: ($00, $0f, $00) First message row for given output mode. Added when OutRow is assigned
-rw  1fab,3   NUM_MSG_ROWS           ; 3 bytes: ($05, $07, $18) Number of message rows for given output mode
-rw  1fae,9   dat_1fae               ; 9? bytes: Related to OutWidth
-                                    ;    $01, $01, $02,$03,$05,$06,$07,$09
-rw  1fb7,8   OUT_TS_DIGTS           ; 8 bytes: Number of digits to output before next ',' thousands separator
+rw  1fa8,3   ModeTopRow             ; 3 bytes: ($00, $0f, $00) First message row for given output mode. Added when OutRow is assigned
+rw  1fab,3   ModeNumRows            ; 3 bytes: ($05, $07, $18) Number of message rows for given output mode
+rw  1fae,9   OutDecWidth            ; 9 bytes: Number of columns required to output decimal X digits (including ','s)
+                                    ;    $01, $01, $02, $03, $05, $06, $07, $09, $0a
+rw  1fb7,8   OutTSDigits            ; 8 bytes: Number of digits to output before next ',' thousands separator
 
-rw  1fbf,15  tbl_1fbf_H             ; 21 byte lookup tbl LSB of address
-                                    ; Together with tbl_1fd4_L, refers to the following addresses
-                                    ; (after adding 1 to get final addr to execute)
-                                    ;     $1ce7,$1ced,$1d21,$1cfe,$1cf3,$1d0a,$1d2a,$1d3b
-                                    ;     $1d50,$1d74,$1dc0,$1d9a,$1ee3,$1efb,$1f16,$1ccf
-                                    ;     $1dc9,$1dd9,$1dec,$1eb4,$1ebf
-rw  1fd4,15  tbl_1fd4_L             ; 21 byte lookup tbl MSB of address
+rw  1fbf,15  OutFmtHndlr_L          ; 21 bytes: LSB of format character handler address
+rw  1fd4,15  OutFmtHndlr_H          ; 21 bytes: MSB of format character handler address
+                                    ; Refers to the following addresses (after adding 1 to get final addr to execute)
+                                    ;    0: $1ce7 [a0_BlinkOff]    - ($a0) Turn off blinking text mode
+                                    ;    1: $1ced [a1_BlinkOn]     - ($a1) Set blinking text mode
+                                    ;    2: $1d21 [a2_CenterClr]   - ($a2) Start center-aligned text (clears from start of line)
+                                    ;    3: $1cfe [a3_CallSub]     - ($a3) Invoke subroutine at address in next 2 bytes
+                                    ;    4: $1cf3 [a4_Byte2Hex]    - ($a4) Reads address and outputs byte from that location as hex
+                                    ;    5: $1d0a [a5_Center]      - ($a5) Start center-aligned text (does not clear from start of line)
+                                    ;    6: $1d2a [a6_SetPos]      - ($a6) Move output position to col/row in next two bytes
+                                    ;    7: $1d3b [a7_RightAlign]  - ($a7) Start of right-aligned text
+                                    ;    8: $1d50 [a8_ClearAll]    - ($a8) Clear all message display rows with NUL chars
+                                    ;    9: $1d74 [a9_ClearRow]    - ($a9) Clear current row with NUL chars
+                                    ;   10: $1dc0 [aa_Reset]       - ($aa) Reset (blink off, standard left-aligned output)
+                                    ;   11: $1d9a [ab_Clear2Eol]   - ($ab) Clear to end of line (current position unchanged)
+                                    ;   12: $1ee3 [ac_Follow]      - ($ac) Read address and continue processing from that location
+                                    ;   13: $1efb [ad_IndFollow]   - ($ad) Read address at address and continue processing from that location (indirect)
+                                    ;   14: $1f16 [ae_Return]      - ($ae) Return to previous template containing last $ac or $ad code executed.
+                                    ;   15: $1ccf [af_BRK_RTS]     - ($af) BRK & RTS (triggers break, then returns to caller)
+                                    ;   16: $1dc9 [b0_UInt32ToDec] - ($b0) Read big endian uint32 at address and output as decimal string
+                                    ;   17: $1dd9 [b1_UInt16ToDec] - ($b1) Read big endian uint16 at address and output as decimal string
+                                    ;   18: $1dec [b2_ByteToDec]   - ($b2) Read uint8 at address and output as decimal string
+                                    ;   19: $1eb4 [b3_StrZ]        - ($b3) Output NUL-terminated string at address
+                                    ;   20: $1ebf [b4_IndStrZ]     - ($b4) Output NUL-terminated string at address from address (indirect)
 
-rwx 1fe9,1   MUL_8                  ; Multiplies A by Y returning 16-bit result in dat_0002/dat_0003
+rwx 1fe9,1   multBytes              ; Multiplies A by Y returning 16-bit result in dat_0002/dat_0003
 
 rw  2007,2   StrClearAll            ; 2 bytes: Clears all message rows with NULs
 
@@ -757,13 +788,13 @@ rw  26d1,80  KbdCd2Atascii          ; 128 bytes: Mapping of keyboard code (offse
                                     ;   - Lower 64 bytes are mappings for lowercase (no shift key)
                                     ;   - Upper 64 bytes are mappings for uppercase (shift key down)
                                     ;   - Control key down codes are not mapped and are ignored by the VKEYBD handler.
-rw  2751,5   stk_KBCODE             ; 5 bytes: KBCODEs corresponding to next table of joystick direction values
+rw  2751,5   StickKbCode            ; 5 bytes: KBCODEs corresponding to next table of joystick direction values
                                     ;   0: $0d -> 'i' (forward)
                                     ;   1: $01 -> 'j' (left)
                                     ;   2: $05 -> 'k' (back)
                                     ;   3: $00 -> 'l' (right)
                                     ;   4: $21 -> ' ' (space key)
-rw  2755,5   stk_DIRCODE            ; 5 bytes: Joystick direction values corresponding to KBCODEs in prev table
+rw  2755,5   StickDirCde            ; 5 bytes: Joystick direction values corresponding to KBCODEs in prev table
                                     ; Note these are the inverse of the values reported by STICK0
                                     ;   0: $01 (00000001) - forward
                                     ;   1: $04 (00000100) - left
@@ -779,18 +810,20 @@ rwx 2799,1   sub_2799               ;
 
 rwx 28a1,1   getFileEntry           ; Reads a file segment directory entry
 
-rw  299f,68  str_PLS_INSRT          ; 104 bytes: "Please insert The Dungeon Disk ? Side ? into any drive. Press SPACEBAR to continue"
-rw  2a07,1d  str_PRESS_ESC          ; 29 bytes: "or press ESC to abort"
-rw  2a24,a   str_LOADING            ; 10 bytes: "Loading..."
-rw  2a2e,a   str_ENCOUNTR           ; 10 bytes: "Encounter!"
+rw  299f,68  StrPleaseInsert        ; 104 bytes: "Please insert The Dungeon Disk ? Side ? into any drive. Press SPACEBAR to continue"
+rw  2a07,1d  StrPressEsc            ; 29 bytes: "or press ESC to abort"
+rw  2a24,a   StrLoading             ; 10 bytes: "Loading..."
+rw  2a2e,a   StrEncounter           ; 10 bytes: "Encounter!"
 rw  2a38,9   dat_2a38_unk           ; 9 bytes - TODO: where is this used?
 
-rwx 2a41,1   readLine               ; Read a line of keyboard input into LINEBUF
+rwx 2a41,1   readLine               ; Read a line of keyboard input into LineBuf
 
 rw  2aa0,1   sub_2aa0               ;
 
-rwx 2b0f,1   TRIM_LBUF              ; Removes leading and trailing spaces from string in LINEBUF.
-rw  2b46,1   TLBUF_LEN              ; 1 byte: Length of LINEBUF after trimming by TRIM_LBUF
+rwx 2b0f,1   trimLineBuf            ; Removes leading and trailing spaces from string in LineBuf.
+rw  2b46,1   TLBUF_LEN              ; 1 byte: Length of LineBuf after trimming by trimLineBuf
+
+rwx 2b47,1   multInt16              ; Multiplies big-endian 16-bit values in dat_0002/3 and dat_0007/8
 
 rwx 2b6b,1   sub_RND_2b6b           ; Computes a random value within a specified range
 
@@ -798,7 +831,9 @@ rw  2b9d,8   tbl_2b9d               ; 8 byte table of bitmask bytes
 
 rwx 2ba5,1   charToUpper            ; Convert ATASCII character to upper case
 
-rw  2bd0,2a  str_PRS_ANY_KY         ; 42 bytes: "<<< Press any key to continue >>>"
+rwx 2bb0,1   pressAnyKey            ; Pause game and prompt user to "Press any key"
+
+rw  2bd0,2a  StrPressAnyKey         ; 42 bytes: "<<< Press any key to continue >>>"
 
 rwx 2bfc,1   waitSeconds            ; Waits for a specified number of seconds or the spacebar is pressed.
 rwx 2bfa,1   sub_2bfa               ;
@@ -821,6 +856,8 @@ rwx 2c9b,1   sub_2c9b               ;
 
 rwx 2cab,1   sub_2cab               ; Does nothing / debug BRK
 rwx 2cad,1   sub_2cad               ;
+
+rwx 2cc2,1   sub_2cc2               ;
 
 rw  2cf7,4   dat_2cf7               ; 4 bytes of data
 
@@ -882,6 +919,8 @@ rw  2f78,8   stdStatPgStr_H         ; MSB of standard status page template strin
                                     ;    6: $3f03 [StrCurses]
                                     ;    7: $0000 - unused
 
+rwx 307f,1   cont_307f              ;
+
 rwx 30d1,3   smc_30d1               ; The address for this JSR abs is dynamically modified
 
 rwx 30db,1   cont_30db              ; Continuation address. Sets A to a random byte, then JMP (cont_addr_1977_L)
@@ -910,7 +949,7 @@ rwx 32ab,1   chOutAndJmp326b        ;
 
 rwx 32b1,1   clrDescEolRts          ; Clears to description to end of line with spaces, then returns to caller
 
-rw  32be,c   str_YOU_ARE            ; 12 bytes: "You are "
+rw  32be,c   StrYouAre              ; 12 bytes: "You are "
 
 rwx 32ca,1   saveChrLoc             ; Saves the current player position to restore later
 
@@ -938,16 +977,20 @@ rw  3530,1   dat_3530               ; 1 byte
 rwx 3531,1   calcCellAddr           ; Computes the address of the character's current cell within the map data
 
 ; The following are from addr_3b9f_L/addr_3ba3_H
-rwx 3548,1   cont_3548              ;
-rwx 3564,1   cont_3564              ;
-rwx 3583,1   cont_3583              ;
-rwx 35c1,1   DO_TELEPORT_PLAYER     ; Teleports the player to the teleport at TELEPORT_INDEX*4 of TELEPORT_TBL
-rw  3630,5   TLPTMPBUF              ; 5 byte temporary storage buffer
+rwx 3548,1   cont_3548              ; Related to encounters?
+rwx 3564,1   cont_3564              ; Related to treasures?
+rwx 3583,1   cont_Message           ; Adds special message for the current map cell as a status page and displays it.
+rwx 3596,1   sub_3596               ; Adds special message for the current map cell as a status page and displays it.
+rwx 35c1,1   cont_Teleport          ; Teleports the player to the teleport destination at MapCellSpclCode*4 of TlpDest
+rw  3630,5   TlpColorBuf            ; 5 bytes: Holds previous color values while flashing the screen
 
 rw  3681,1   dat_3681_L             ; Used for preserving the value of cont_addr_1977_L
 rw  3682,1   dat_3681_H             ; Used for preserving the value of cont_addr_1977_H
 
 rwx 3683,1   actionExamine          ; Examine items or spells action
+
+rwx 36b1,1   contExmnItems          ; User selected "Examine Inventory"
+rwx 36c3,1   contExmnSpells         ; User selected "Examine Spells"
 
 rw  36ef,12  ZtsExmnItems           ; 18: "Examine Inventory"
 rw  3701,f   ZtsExmnSpells          ; 15: "Examine Spells"
@@ -961,45 +1004,45 @@ rwx 3771,1   actionUse              ; (U) Use action
 rwx 377a,1   actionCast             ; (C) Cast spell action
 rwx 3783,1   actionSave             ; (S) Save character action
 
-rw  37be,18  str_SAV_CHRCTR         ; 24? bytes: "Save character?"
+rw  37be,18  StrSaveChrctr          ; 24? bytes: "Save character?"
 
 rwx 37d6,1   actionQuit             ; (Q) Quit game action
 
-rw  3804,46  str_QT_WO_SAVE         ; 70 bytes: "Quit game without saving character? Are you sure (Y or N)"
+rw  3804,46  StrQuitNoSave          ; 70 bytes: "Quit game without saving character? " & flows into StrAreYouSure
+rw  382e,1c  StrAreYouSure          ; 28 bytes: "Are you sure (Y or N)"
 
 rwx 384a,1   actionPause            ; (P) Pause game action
 
-rw  3860,f   str_PAUSED             ; 15 bytes: "(Paused)"
+rw  3860,f   StrPaused              ; 15 bytes: "(Paused)"
 
 rw  38cf,1   dat_38cf               ; 1 byte
 rw  38d0,5   StrClrLocDesc2         ; 5 bytes: Clears the secondary location description line
-rw  38d5,24  str_THNGS_HERE         ; 36 bytes: "There are several things here."
-rw  38f9,1e  str_SOMTH_HRE          ; 30 bytes: "There is something here"
-rw  3917,70  str_3917               ; 112 bytes: Top status lines (Level, Stats, Exp, HP)
-rw  3969,42  str_3969               ; 66 bytes: Character stats template. Contains embedded addr refs to char stats.
+rw  38d5,24  StrThingsHere          ; 36 bytes: "There are several things here."
+rw  38f9,1e  StrSomthngHere         ; 30 bytes: "There is something here"
+rw  3917,70  StrStatLabels          ; 112 bytes: Top status lines (Level, Stats, Exp, HP)
+rw  3969,42  StrStatValues          ; 66 bytes: Character stats template. Contains embedded addr refs to char stats.
 rw  39ab,5   str_39ab               ; 5 bytes: ?? TODO: where is this used ??
-rw  39b0,98  str_DOOR_MENU          ; 152 bytes : Menu displayed for a locked/barred/enchanted door
-rw  3a48,1a  str_DOOR_APRS          ; 26 bytes : "The door appears to"
-rw  3a61,1   addr_3a61_L            ; LSB of address
-rw  3a62,1   addr_3a61_H            ; MSB of address
-rw  3a63,3   str_3a63               ; 3 bytes: ?? TODO: where is this used ??
-rw  3a66,2b  str_DOOR_UNKN          ; 53 bytes: "You can't discern what bars the door."
-rw  3a91,b   str_DOOR_WHAM          ; 11 bytes: "Wham!"
-rw  3a9c,15  str_DOOR_OPNS          ; 21 bytes: "The door opens!"
-rw  3ab1,1c  str_DOOR_FAIL          ; 28 bytes: "The door remains shut."
-rw  3acd,14  str_DOOR_EXMN          ; 20 bytes: "Examining..."
-rw  3ae1,18  str_DOOR_CONC          ; 24 bytes: "Concentrating..."
-rw  3af9,3   tbl_3af9_L             ; 3? byte table of LSB [ff 0b 16]
-                                    ;     0: $3aff [str_NEED_A_KEY]
-                                    ;     1: $3b0b [str_BE_BOLTED]
-                                    ;     2: $3b16 [str_BE_ENCHNTD]
-rw  3afc,3   tbl_3afc_H             ; 3? byte table of MSB [3a 3b 3b]
-rw  3aff,c   str_NEED_A_KEY         ; 12? bytes: "need a key"
-rw  3b0b,b   str_BE_BOLTED          ; 11? bytes: "be bolted"
-rw  3b16,e   str_BE_ENCHNTD         ; 14? bytes: "be enchanted"
+rw  39b0,98  StrDoorMenu            ; 152 bytes : Menu displayed for a locked/barred/enchanted door
+rw  3a48,1e  StrDoorAppears         ; 30 bytes : "The door appears to ?"
+rw  3a61,1   ZtsDoorDesc_L          ; LSB of ZTS address embedded in StrDoorAppears
+rw  3a62,1   ZtsDoorDesc_H          ; MSB of ZTS address embedded in StrDoorAppears
+rw  3a66,2b  StrDoorUnknown         ; 53 bytes: "You can't discern what bars the door."
+rw  3a91,b   StrDoorWham            ; 11 bytes: "Wham!"
+rw  3a9c,15  StrDoorOpens           ; 21 bytes: "The door opens!"
+rw  3ab1,1c  StrDoorFail            ; 28 bytes: "The door remains shut."
+rw  3acd,14  StrDoorExamine         ; 20 bytes: "Examining..."
+rw  3ae1,18  StrDoorConcnt          ; 24 bytes: "Concentrating..."
+rw  3af9,3   DoorDescs_L            ; 3 byte table of LSB [ff 0b 16]
+rw  3afc,3   DoorDescs_H            ; 3 byte table of MSB [3a 3b 3b]
+                                    ;     0: $3aff [ZtsNeedAKey]
+                                    ;     1: $3b0b [ZtsBeBolted]
+                                    ;     2: $3b16 [ZtsBeEnchanted]
+rw  3aff,c   ZtsNeedAKey            ; 12 bytes: "need a key\0"
+rw  3b0b,b   ZtsBeBolted            ; 11 bytes: "be bolted\0"
+rw  3b16,e   ZtsBeEnchanted         ; 14 bytes: "be enchanted\0"
 
-rw  3b24,10  MoveWallAct_L          ; 16 byte table: LSB of continuation address
-rw  3b34,10  MoveWallAct_H          ; 16 byte table: MSB of continuation address
+rw  3b24,10  MoveWallAct_L          ; 16 bytes: LSB of continuation address
+rw  3b34,10  MoveWallAct_H          ; 16 bytes: MSB of continuation address
                                     ;     0: $3321 [contMoveThru]
                                     ;     1: $3321 [contMoveThru]
                                     ;     2: $3321 [contMoveThru]
@@ -1038,7 +1081,17 @@ rw  3b4c,8   MovePropAmt            ; 8 bytes: Movement orientation to movement 
                                     ;      5: $24 ( 36) - (East)
                                     ;      6: $24 ( 36) - (South)
                                     ;      7: $dc (-36) - (West)
-rw  3b54,8   dat_3b54               ; 8 bytes:
+rw  3b54,8   MoveStepDir            ; 8 bytes: Direction step for orientation
+                                    ;   Forward movement
+                                    ;     0: $ff - -1 (North)
+                                    ;     1: $01 - +1 (East)
+                                    ;     2: $01 - +1 (South)
+                                    ;     3: $ff - -1 (West)
+                                    ;   Backward movement (player orientation + 4)
+                                    ;     4: $01 - +1 (North)
+                                    ;     5: $ff - -1 (East)
+                                    ;     6: $ff - -1 (South)
+                                    ;     7: $01 - +1 (West)
 
 rw  3b5c,8   dat_3b5c               ; 8 bytes:
 
@@ -1066,18 +1119,19 @@ rw  3b6c,8   MoveWallHigh           ; 8 bytes: Flag indicating nibble with wall 
                                     ;     5: $80 - High nibble (East)
                                     ;     6: $00 - Low nibble  (South)
                                     ;     7: $80 - High nibble (West)
-rw  3b74,1   stk_MASK_FWD           ; Contains $01: Joystick direction mask (Forward)
-rw  3b75,1   stk_MASK_BCK           ; Contains $02: Joystick direction mask (Back)
-rw  3b76,1   stk_MASK_LFT           ; Contains $04: Joystick direction mask (Left)
-rw  3b77,1   stk_MASK_RGT           ; Contains $08: Joystick direction mask (Right) (unused?)
+rw  3b74,1   StickMaskFwd           ; Contains $01: Joystick direction mask (Forward)
+rw  3b75,1   StickMaskBack          ; Contains $02: Joystick direction mask (Back)
+rw  3b76,1   StickMaskLeft          ; Contains $04: Joystick direction mask (Left)
+rw  3b77,1   StickMaskRight         ; Contains $08: Joystick direction mask (Right) (unused?)
 
-rw  3b78,d   tbl_3b78               ; 13 byte table of characters mapped to corresponding entries
-                                    ; in tbl_3b85_L/tbl_3b92_H:
+rw  3b78,d   ActionKeyBind          ; 13 bytes: table of key characters mapped to corresponding action entries
+                                    ; in ActionSubAdr_L/H:
                                     ;     0: "G", 1: "D", 2: "U", 3: "C",  4: "S",  5: "E"
                                     ;     6: "Q", 7: "P", 8: ",", 9: ".", 10: $10 (SELECT), 11: $11 (START)
-                                    ;    12: $13
+                                    ;    12: $13 (CR)
 
-rw  3b85,d   tbl_3b85_L             ; 13 byte table of LSB of subroutine address
+rw  3b85,d   ActionSubAdr_L         ; 13 byte table of LSB of subroutine address
+rw  3b92,d   ActionSubAdr_H         ; 13 byte table of MSB of subroutine address
                                     ;     0: $3756 [actionGet]      - (G) Get action
                                     ;     1: $3768 [actionDrop]     - (D) Drop action
                                     ;     2: $3771 [actionUse]      - (U) Use action
@@ -1090,21 +1144,20 @@ rw  3b85,d   tbl_3b85_L             ; 13 byte table of LSB of subroutine address
                                     ;     9: $3c71 [actionNextStat] - (.) Next status page action
                                     ;    10: $3c71 [actionNextStat] - (SELECT) Next status page action
                                     ;    11: $3c8c [actionPrevStat] - (START) Previous status page action
-                                    ;    12: $2cab [sub_2cab] - does nothing/debug BRK
-rw  3b92,d   tbl_3b92_H             ; 13? byte table of MSB of subroutine address
+                                    ;    12: $2cab [sub_2cab] - () Does nothing/debug BRK
 
 rw  3b9f,4   addr_3b9f_L            ; 4 byte table: LSB of address
 rw  3ba3,4   addr_3ba3_H            ; 4 byte table: MSB of address
-                                    ;    0: $3548 [cont_3548]
-                                    ;    1: $3564 [cont_3564]
-                                    ;    2: $3583 [cont_3583]
-                                    ;    3: $35c1 [DO_TELEPORT_PLAYER]
+                                    ;    0: $3548 [cont_3548]     - (Related to encounters?)
+                                    ;    1: $3564 [cont_3564]     - (Related to treasures?)
+                                    ;    2: $3583 [cont_Message]  - Display location message
+                                    ;    3: $35c1 [cont_Teleport] - Teleport player
 
-rw  3ba7,7e  TELEPORT_TBL           ; 126 bytes
-rw  3ba7,1   TELEPORT_TBL_X         ; X location to teleport player to
-rw  3ba8,1   TELEPORT_TBL_Y         ; Y location to teleport player to
-rw  3ba9,1   TELEPORT_TBL_MAP       ; Map to teleport player to (corresponds to MAP_NUMBER value)
-rw  3baa,1   TELEPORT_TBL_ORIENT    ; Orientation to assign to player (FF = no chg; <0 = random; 0 = N; 1 = E; 2 = S; 3 = W)
+rw  3ba7,7e  TlpDest                ; 126 bytes / 4 byte entries = 31 entries
+rw  3ba7,1   TlpDest_X              ; X location to teleport player to
+rw  3ba8,1   TlpDest_Y              ; Y location to teleport player to
+rw  3ba9,1   TlpDest_Map            ; Map to teleport player to (corresponds to MAP_NUMBER value)
+rw  3baa,1   TlpDest_Orient         ; Orientation to assign to player (FF = no chg; <0 = random; 0 = N; 1 = E; 2 = S; 3 = W)
 
 rwx 3c27,1   dispStatPgIfEq         ; Displays the currently selected status page if A equals CurStatusPage.
 
@@ -1120,9 +1173,9 @@ rwx 3c71,1   actionNextStat         ; (. or SELECT) Next status page action
 
 rwx 3c8c,1   actionPrevStat         ; (, or START) Previous status page action
 
-rwx 3ca5,1   sub_3ca5               ;
+rwx 3ca5,1   addStatPage            ; Add a new status page string template to the end of the list
 
-rwx 3cc2,1   sub_3cc2               ;
+rwx 3cc2,1   remStatPage            ; Remove the highest-numbered status page
 
 rw  3cde,a6  StrFdTrchFlsk          ; 166 bytes: Food Packets, Torches, Water Flasks, Dungeon level status screen
 rw  3d84,ad  StrGoldSilvCop         ; 173 bytes: Gold, Silver, Copper, Gems, Keys, Jewels, Compasses, Timepieces
@@ -1184,12 +1237,12 @@ rwx 41fc,1   sub_41fc               ;
 rw  42e5,1   dat_42e5_L             ; LSB of int16
 rw  42e6,1   dat_42e5_H             ; MSB of int16
 
-rwx 42e7,1   sub_42e7               ;
+rwx 42e7,1   sub_42e7               ; Updates the effect status strings on the display
 rwx 4377,1   sub_4377               ;
 
 rwx 43b1,3   smc_43b0               ; The address for this JSR is dynamically modified
 
-rw  43c5,1   dat_43c5               ;
+rw  43c5,1   TmpCHR_ENERGY          ; Used in sub_4377 to temporarily store value of CHR_ENERGY
 
 rwx 43c6,1   DO_HOURLY_UPDATES      ; Sub called at the start of each in-game hour
 
@@ -1202,86 +1255,105 @@ rw  445f,10  tbl_MOVE_SPEED         ; Table of 16 x 1 byte values indexed by CHR
 rwx 446f,1   rtsIfRndStaChk         ; Returns to caller of previous sub (unwinding stack)
                                     ;     if the player's STA / 2 >= random byte chosen amount.
 rwx 4479,1   smc_4479               ; Self-modifying code: The CMP value here is assigned a random value
-rwx 4481,1   sub_4481               ; Subtracts 1 from CHR_ENERGY and CHR_HUNGER
-rwx 448f,1   sub_448f               ; Subtracts 1 from CHR_ENERGY and CHR_THIRST
-rwx 449d,1   sub_449d               ; Calls rtsIfRndStaChk and if the check fails,
+rwx 4481,1   effFreezing            ; Warmth:Freezing - Subtracts 1 from CHR_ENERGY and CHR_HUNGER
+rwx 448f,1   effRoasting            ; Warmth:Roasting - Subtracts 1 from CHR_ENERGY and CHR_THIRST
+rwx 449d,1   effFamished            ; Hunger:Famished - Calls rtsIfRndStaChk and if the check fails,
                                     ;     adds 10 to STR penalty #2 and adds 1 to SPD penalty #2
-rwx 44ae,1   sub_44ae               ; Calls rtsIfRndStaChk and if the check fails,
+rwx 44ae,1   effStarving            ; Hunger:Starving - Calls rtsIfRndStaChk and if the check fails,
                                     ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_ENERGY,
                                     ;     adds 1 to penalty #2 for each of STR, SKL and SPD
-rwx 44d4,1   sub_44d4               ; Subtracts 1 from penalty #2 values for each of STR, SKL and SPD
-rwx 44e9,1   sub_44e9               ; Calls rtsIfRndStaChk and if the check fails,
+rwx 44d4,1   sub_44d4               ; Hunger:normal - Subtracts 1 from penalty #2 values for each of STR, SKL and SPD
+rwx 44e9,1   effParched             ; Thirst:Parched - Calls rtsIfRndStaChk and if the check fails,
                                     ;     adds 1 to penalty #3 for STR and SPD
-rwx 44fa,1   sub_44fa               ; Calls rtsIfRndStaChk and if the check fails,
+rwx 44fa,1   effDehydrated          ; Thirst:Dehydrated - Calls rtsIfRndStaChk and if the check fails,
                                     ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_ENERGY,
                                     ;     adds 1 to penalty #3 for STR and SPD
-rwx 4519,1   sub_4519               ; Subtracts 1 from penalty #3 of STR and SPD
-rwx 4527,1   sub_4527               ; Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
+rwx 4519,1   sub_4519               ; Thirst:normal - Subtracts 1 from penalty #3 of STR and SPD
+rwx 4527,1   effTired               ; Exhaustion:Tired - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
                                     ;     adds 1 to penalty #4 for SPD and STR
-rwx 453e,1   sub_453e               ; Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
+rwx 453e,1   effExhausted           ; Exhaustion:Exhausted - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
                                     ;     subtracts 1 from CHR_HP_CURRENT_HI/LO,
                                     ;     adds 1 to penalty #4 for each of SPD, STR and SKL
-rwx 4563,1   sub_4563               ; Subtracts 1 from penalty #4 for each of SPD, STR and SKL
-rwx 4578,1   sub_4578               ; Calls rtsIfRndStaChk and if the check fails,
+rwx 4563,1   sub_4563               ; Exhaustion:normal - Subtracts 1 from penalty #4 for each of SPD, STR and SKL
+rwx 4578,1   effEncumbered          ; Burden:Encumbered - Calls rtsIfRndStaChk and if the check fails,
                                     ;     subtract 1 from CHR_ENERGY
-rwx 4582,1   sub_4582               ; Calls rtsIfRndStaChk and if the check fails,
+rwx 4582,1   effImmobilized         ; Burden:Immobilized - Calls rtsIfRndStaChk and if the check fails,
                                     ;     subtract 1 from CHR_ENERGY
-rwx 458c,1   rts_458c               ; NOP: Simply returns to caller
-rwx 458d,1   rts_458d               ; NOP: Simply returns to caller
-rwx 458e,1   rts_458e               ; NOP: Simply returns to caller
-rwx 458f,1   rts_458f               ; NOP: Simply returns to caller
+rwx 458c,1   effDrunk               ; Inebriation:Drunk - NOP: Simply returns to caller
+rwx 458d,1   effVeryDrunk           ; Inebriation:Very Drunk - NOP: Simply returns to caller
+rwx 458e,1   effStuffed             ; Fullness:Stuffed - NOP: Simply returns to caller
+rwx 458f,1   effBloated             ; Fullness:Bloated - NOP: Simply returns to caller
 
 rw  4590,1   dat_4590               ; 1 byte
 rw  4591,1   dat_4591               ; 1 byte
 rw  4592,1   dat_4592               ; 1 byte
 rw  4593,1   dat_4593               ; 1 byte
 rw  4594,1   dat_4594               ; 1 byte
-rw  4595,7   tbl_4595               ; 7 byte table
-rw  459c,7   tbl_459c               ; 7 byte table
 
-rw  45a3,1   dat_45a3_L             ; LSB of address
-rw  45a4,1   dat_45a3_H             ; MSB of address
-rw  45a5,1   dat_45a5_L             ; LSB of address
-rw  45a6,1   dat_45a5_H             ; MSB of address
-rw  45a7,1   dat_45a7_L             ; LSB of address
-rw  45a8,1   dat_45a7_H             ; MSB of address
-rw  45a9,1   dat_45a9_L             ; LSB of address
-rw  45aa,1   dat_45a9_H             ; MSB of address
-rw  45ab,1   dat_45ab_L             ; LSB of address
-rw  45ac,1   dat_45ab_H             ; MSB of address
-rw  45ad,1   dat_45ad_L             ; LSB of address
-rw  45ae,1   dat_45ad_H             ; MSB of address
-rw  45af,1   dat_45af_L             ; LSB of address
-rw  45b0,1   dat_45af_H             ; MSB of address
-rw  45b1,1   addr_45b1_L            ; LSB of address
-rw  45b2,1   addr_45b1_H            ; MSB of address
-rw  45b3,1   addr_45b3_L            ; LSB of address
-rw  45b4,1   addr_45b3_H            ; MSB of address
-rw  45b5,1   addr_45b5_L            ; LSB of address
-rw  45b6,1   addr_45b6_H            ; MSB of address
+rw  4595,7   EffTimers              ; 7 bytes: Table of countdown counters for the various effect types. Each counter is
+                                    ;     decremented until 0, then reset to the corresponding value from EffApplyFreq.
+                                    ;   0: Warmth
+                                    ;   1: Hunger
+                                    ;   2: Thirst
+                                    :   3: Energy / Fatigue / Exhaustion     TODO: consistent naming
+                                    ;   4: Burden / Encumbrance
+                                    ;   5: Drunk / Inebriation
+                                    ;   6: Stomach / Fullness
 
-rw  45b7,22  tbl_45b7_L             ; 34 byte table: LSB of address
-rw  45b8,1   tbl_45b7_H             ; MSB of address
+rw  459c,7   EffApplyFreq           ; 7 bytes: Table of base values to reset EffTimers entries to after the individual
+                                    ;     timers elapse.
+                                    ; TODO: What is the frequency of updates? per in-game minute/hour/etc?
+                                    ;   0: $04 ( 4) -
+                                    ;   1: $21 (33) -
+                                    ;   2: $16 (22) -
+                                    ;   3: $0e (13) -
+                                    ;   4: $03 ( 3) -
+                                    ;   5: $02 ( 2) -
+                                    ;   6: $02 ( 2) -
+
+rw  45a3,1   EffWrmthStr_L          ; LSB of Warmth level description (default: $47e5 [Zts12Spaces])
+rw  45a4,1   EffWrmthStr_H          ; MSB of Warmth level description
+rw  45a5,1   EffHungrStr_L          ; LSB of Hunger level description (default: $47e5 [Zts12Spaces])
+rw  45a6,1   EffHungrStr_H          ; MSB of Hunger level description
+rw  45a7,1   EffThrstStr_L          ; LSB of Thirst level description (default: $47e5 [Zts12Spaces])
+rw  45a8,1   EffThrstStr_H          ; MSB of Thirst level description
+rw  45a9,1   EffExhstStr_L          ; LSB of Exhaustion level description (default: $47e5 [Zts12Spaces])
+rw  45aa,1   EffExhstStr_H          ; MSB of Exhaustion level description
+rw  45ab,1   EffBurdnStr_L          ; LSB of Burden level description (default: $47e5 [Zts12Spaces])
+rw  45ac,1   EffBurdnStr_H          ; MSB of Burden level description
+rw  45ad,1   EffInebrStr_L          ; LSB of Inebriation level description (default: $47e5 [Zts12Spaces])
+rw  45ae,1   EffInebrStr_H          ; MSB of Inebriation level description
+rw  45af,1   EffFullnStr_L          ; LSB of Fullness level description (default: $47e5 [Zts12Spaces])
+rw  45b0,1   EffFullnStr_H          ; MSB of Fullness level description
+rw  45b1,1   EffDiseasStr_L         ; LSB of Diseased description (default: $47e5 [Zts12Spaces])
+rw  45b2,1   EffDiseasStr_H         ; MSB of Diseased description
+rw  45b3,1   EffPoisnStr_L          ; LSB of Poisoned description (default: $47e5 [Zts12Spaces])
+rw  45b4,1   EffPoisnStr_H          ; MSB of Poisoned description
+rw  45b5,1   EffCurseStr_L          ; LSB of Cursed description (default: $47e5 [Zts12Spaces])
+rw  45b6,1   EffCurseStr_H          ; MSB of Cursed description
+
+rw  45b7,22  StatEffcts_L           ; 34 byte table: LSB of address
+rw  45b8,1   StatEffcts_H           ; MSB of address
                                     ; Subroutine addresses (1-based indexing of 2-byte entries)
-                                    ;    1: $4481 [sub_4481]
-                                    ;    2: $448f [sub_448f]
-                                    ;    3: $449d [sub_449d]
-                                    ;    4: $44ae [sub_44ae]
-                                    ;    5: $44e9 [sub_44e9]
-                                    ;    6: $44fa [sub_44fa]
-                                    ;    7: $4527 [sub_4527]
-                                    ;    8: $453e [sub_453e]
-                                    ;    9: $4578 [sub_4578]
-                                    ;   10: $4582 [sub_4582]
-                                    ;   11: $458c [rts_458c] - NOP: Simply returns to caller
-                                    ;   12: $458d [rts_458d] - NOP: Simply returns to caller
-                                    ;   13: $458e [rts_458e] - NOP: Simply returns to caller
-                                    ;   14: $458f [rts_458f] - NOP: Simply returns to caller
-                                    ;   15: $44d4 [sub_44d4]
-                                    ;   16: $4519 [sub_4519]
-                                    ;   17: $4563 [sub_4563]
+                                    ;    1: $4481 [effFreezing]   - Warmth: Freezing
+                                    ;    2: $448f [effRoasting]   - Warmth: Roasting
+                                    ;    3: $449d [effFamished]   - Hunger: Famished
+                                    ;    4: $44ae [effStarving]   - Hunger: Starving
+                                    ;    5: $44e9 [effParched]    - Thirst: Parched
+                                    ;    6: $44fa [effDehydrated] - Thirst: Dehydrated
+                                    ;    7: $4527 [effTired]      - Exhaustion: Tired
+                                    ;    8: $453e [effExhausted]  - Exhaustion: Exhausted
+                                    ;    9: $4578 [effEncumbered] - Burden: Encumbered
+                                    ;   10: $4582 [effImmobilized] - Burden: Immobilized
+                                    ;   11: $458c [effDrunk]      - Inebriation: Drunk - NOP
+                                    ;   12: $458d [effVeryDrunk]  - Inebriation: Very Drunk - NOP
+                                    ;   13: $458e [effStuffed]    - Fullness: Stuffed - NOP
+                                    ;   14: $458f [effBloated]    - Fullness: Bloated - NOP
+                                    ;   15: $44d4 [sub_44d4] - Hunger: normal
+                                    ;   16: $4519 [sub_4519] - Thirst: normal
+                                    ;   17: $4563 [sub_4563] - Exhaustion: normal
 
-rw  45d9,7   tbl_45d9               ; 7 byte table: Values used as an offset relative to $6300 []
+rw  45d9,7   EffAttrOfs             ; 7 bytes: Offsets of effect attributes relative to $6300 [CHR_STATE]
                                     ;   0: $95 -> $6395 [CHR_WARMTH]
                                     ;   1: $99 -> $6399 [CHR_HUNGER]
                                     ;   2: $9a -> $639a [CHR_THIRST]
@@ -1290,42 +1362,62 @@ rw  45d9,7   tbl_45d9               ; 7 byte table: Values used as an offset rel
                                     ;   5: $97 -> $6397 [CHR_DRUNK]
                                     ;   6: $98 -> $6398 [CHR_STOMACH]
 
-rw  45e0,7   tbl_45e0_L             ; 7 byte table: LSB of address
-rw  45e7,7   tbl_45e7_H             ; 7 byte table: MSB of address
-                                    ; Assigned to dat_0058_L/H
-                                    ;     0: $460a [dat_460a]
-                                    ;     1: $4626 [dat_4626]
-                                    ;     2: $4636 [dat_4636]
-                                    ;     3: $4646 [dat_4646]
-                                    ;     4: $4656 [dat_4656]
-                                    ;     5: $4666 [dat_4666]
-                                    ;     6: $4676 [dat_4676]
+rw  45e0,7   EffLimitTbls_L         ; 7 bytes: LSB of address to limit value tables for effects
+rw  45e7,7   EffLimitTbls_H         ; 7 bytes: MSB of address to limit value tables for effects
+                                    ;     0: $460a [EffWrmthLmts]
+                                    ;     1: $4626 [EffHungrLmts]
+                                    ;     2: $4636 [EffThrstLmts]
+                                    ;     3: $4646 [EffExhstLmts]
+                                    ;     4: $4656 [EffBurdnLmts]
+                                    ;     5: $4666 [EffInebrLmts]
+                                    ;     6: $4676 [EffFullnLmts]
 
-rw  45ee,7   tbl_45ee_L             ; 7 byte table: LSB of address
-rw  45f5,7   tbl_45f5_H             ; 7 byte table: MSB of address
-                                    ;   Each of these addresses point at
-                                    ;   a table of strings/descriptions.
-                                    ;     0: $4618 [tbl_4618] - Warmth
-                                    ;     1: $462e [tbl_462e] - Hunger
-                                    ;     2: $463e [tbl_463e] - Thirst
-                                    ;     3: $464e [tbl_464e] - Exhaustion
-                                    ;     4: $465e [tbl_465e] - Burden
-                                    ;     5: $466e [tbl_466e] - Inebriation
-                                    ;     6: $467e [tbl_467e] - Fullness
+rw  45ee,7   EffStrTbls_L           ; 7 bytes: LSB of address
+rw  45f5,7   EffStrTbls_H           ; 7 bytes: MSB of address
+                                    ;   Each of these addresses point at a table of
+                                    ;   level descriptions for the various effects.
+                                    ;     0: $4618 [EffHungrStrs] - Warmth
+                                    ;     1: $462e [EffHungrStrs] - Hunger
+                                    ;     2: $463e [EffThrstStrs] - Thirst
+                                    ;     3: $464e [EffExhstStrs] - Exhaustion
+                                    ;     4: $465e [EffBurdnStrs] - Burden
+                                    ;     5: $466e [EffInebrStrs] - Inebriation
+                                    ;     6: $467e [EffFullnStrs] - Fullness
 
-rw  45fc,7   tbl_45fc_L             ; 7 byte table: LSB of address
-rw  4603,7   tbl_4603_H             ; 7 byte table: MSB of address
-                                    ; Assigned to dat_0058_L/H
-                                    ;     0: $4611 [dat_4611]
-                                    ;     1: $462a [dat_462a]
-                                    ;     2: $463a [dat_463a]
-                                    ;     3: $464a [dat_464a]
-                                    ;     4: $465a [dat_465a]
-                                    ;     5: $466a [dat_466a]
-                                    ;     6: $467a [dat_467a]
-rw  460a,7   dat_460a               ; 7 bytes
-rw  4611,7   dat_4611               ; 7 bytes
-rw  4618,e   dat_4618               ; 14 bytes: string addresses
+rw  45fc,7   EffSubTbls_L           ; 7 bytes: LSB of address
+rw  4603,7   EffSubTbls_H           ; 7 bytes: MSB of address
+                                    ;   Each of these addresses point at a table of index values for
+                                    ;   subroutines to apply for the various effect levels.
+                                    ;     0: $4611 [EffWrmthSubs] - Warmth
+                                    ;     1: $462a [EffHungrSubs] - Hunger
+                                    ;     2: $463a [EffThrstSubs] - Thirst
+                                    ;     3: $464a [EffExhstSubs] - Exhaustion
+                                    ;     4: $465a [EffBurdnSubs] - Burden
+                                    ;     5: $466a [EffInebrSubs] - Inebriation
+                                    ;     6: $467a [EffFullnSubs] - Fullness
+
+rw  460a,7   EffWrmthLmts           ; 7 bytes: Table of upper-limit thresholds for the various warmth effect categories.
+                                    ;   The largest value greater than or equal to the effect attribute value is the one
+                                    ;   used.
+                                    ;     0: $20 ( 32) - [  0 ..  32] Freezing
+                                    ;     1: $40 ( 64) - [ 33 ..  64] Cold
+                                    ;     2: $60 ( 96) - [ 65 ..  96] Chilly
+                                    ;     3: $a0 (160) - [ 97 .. 160] (nothing displayed/comfortable)
+                                    ;     4: $c0 (192) - [161 .. 192] Warm
+                                    ;     5: $e0 (224) - [193 .. 224] Hot
+                                    ;     6: $ff (255) - [225 .. 255] Roasting
+
+rw  4611,7   EffWrmthSubs           ; 7 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Warmth level.
+                                    ;     0 [Freezing]: 1 - [effFreezing] - Subtracts 1 from CHR_ENERGY and CHR_HUNGER
+                                    ;     1 [Cold]:     0 - no effect
+                                    ;     2 [Chilly]:   0 - no effect
+                                    ;     3 []:         0 - no effect
+                                    ;     4 [Warm]:     0 - no effect
+                                    ;     5 [Hot]:      0 - no effect
+                                    ;     6 [Roasting]: 2 - [effRoasting] - Subtracts 1 from CHR_ENERGY and CHR_THIRST
+
+rw  4618,e   EffWrmthStrs           ; 14 bytes: Warmth effect level string addresses
                                     ;     0: $4686 [ZtsFreezing]
                                     ;     1: $4693 [ZtsCold]
                                     ;     2: $46a0 [ZtsChilly]
@@ -1333,44 +1425,142 @@ rw  4618,e   dat_4618               ; 14 bytes: string addresses
                                     ;     4: $46ad [ZtsWarm]
                                     ;     5: $46ba [ZtsHot]
                                     ;     6: $46c7 [ZtsRoasting]
-rw  4626,4   dat_4626               ; 4 bytes
-rw  462a,4   dat_462a               ; 4 bytes
-rw  462e,8   tbl_462e               ; 8 bytes: string addresses
+
+rw  4626,4   EffHungrLmts           ; 4 bytes: Table of upper-limit thresholds for the various hunger effect categories.
+                                    ;   The largest value greater than or equal to the effect attribute value is the one
+                                    ;   used.
+                                    ;     0: $30 ( 48) - [  0 ..  48] Starving
+                                    ;     1: $80 (128) - [ 49 .. 128] Famished
+                                    ;     2: $ec (236) - [129 .. 236] Hungry
+                                    ;     3: $ff (255) - [237 .. 160] (comfortable)
+
+rw  462a,4   EffHungrSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Hunger level.
+                                    ;     0 [Starving]: 4 [effStarving] - If rtsIfRndStaChk fails, subtracts 1 from
+                                    ;                                  CHR_HP_CURRENT_HI/LO and CHR_ENERGY, adds
+                                    ;                                  1 to penalty #2 for each of STR, SKL and SPD
+                                    ;     1 [Famished]: 3 [effFamished] - If rtsIfRndStaChk fails, adds 10 to STR
+                                    ;                                  penalty #2 and adds 1 to SPD penalty #2
+                                    ;     2 [Hungry]:   0 (no effect)
+                                    ;     3 []:        15 [sub_44d4] - Subtracts 1 from
+                                    ;                                  penalty #2 for each of SPD, STR and SKL
+
+rw  462e,8   EffHungrStrs           ; 8 bytes: Hunger effect level string addresses
                                     ;     0: $46ee [ZtsStarving]
                                     ;     1: $46e1 [ZtsFamished]
                                     ;     2: $46d4 [ZtsHungry]
                                     ;     3: $47e5 [Zts12Spaces]
-rw  4636,4   dat_4636               ; 4 bytes
-rw  463a,4   dat_463a               ; 4 bytes
-rw  463e,8   tbl_463e               ; 8 bytes: string addresses
+
+rw  4636,4   EffThrstLmts           ; 4 bytes: Table of upper-limit thresholds for the various thirst effect categories.
+                                    ; The largest value greater than or equal to the effect attribute value is the one
+                                    ; used.
+                                    ;     0: $40 ( 64) - [  0 ..  64] Dehydrated
+                                    ;     1: $80 (128) - [ 65 .. 128] Parched
+                                    ;     2: $d0 (208) - [129 .. 208] Thristy
+                                    ;     3: $ff (255) - [209 .. 160] (comfortable)
+
+rw  463a,4   EffThrstSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Thirst level.
+                                    ;     0 [Dehydrated]: 6 [effDehydrated] - If rtsIfRndStaChk fails, subtracts 1 from
+                                    ;                                    CHR_HP_CURRENT_HI/LO and CHR_ENERGY, adds 1 to
+                                    ;                                    penalty #3 for STR and SPD
+                                    ;     1 [Parched]:    5 [effParched] - If rtsIfRndStaChk fails, adds 1 to penalty #3
+                                    ;                                    for STR and SPD
+                                    ;     2 [Thristy]:    0 (no effect)
+                                    ;     3 []:          16 [sub_4519] - Subtracts 1 from penalty #3 of STR and SPD
+
+rw  463e,8   EffThrstStrs           ; 8 bytes: Thirst effect level string addresses
                                     ;     0: $4715 [ZtsDehydrated]
                                     ;     1: $4708 [ZtsParched]
                                     ;     2: $46fb [ZtsThirsty]
                                     ;     3: $47e5 [Zts12Spaces]
-rw  4646,4   dat_4646               ; 4 bytes
-rw  464a,4   dat_464a               ; 4 bytes
-rw  464e,8   tbl_464e               ; 8 bytes: string addresses
+
+rw  4646,4   EffExhstLmts           ; 4 bytes: Table of upper-limit thresholds for the various exhaustion effect
+                                    ; categories. The largest value greater than or equal to the effect attribute value
+                                    ; is the one used.
+                                    ;     0: $40 ( 64) - [  0 ..  64] Exhausted
+                                    ;     1: $a0 (160) - [ 65 .. 160] Tired
+                                    ;     2: $c0 (192) - [161 .. 192] Weary
+                                    ;     3: $ff (255) - [193 .. 255] (comfortable)
+
+rw  464a,4   EffExhstSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Exhaustion level.
+                                    ;     0 [Exhausted]: 8 [effExhausted] - If rtsIfRndStaChk fails and dat_1972
+                                    ;                                   is >= 0, subtracts 1 from CHR_HP_CURRENT_HI/LO,
+                                    ;                                   adds 1 to penalty #4 for each of SPD, STR and
+                                    ;                                   SKL
+                                    ;     1 [Tired]:     7 [effTired] - If rtsIfRndStaChk fails and dat_1972 is >= 0,
+                                    ;                                   adds 1 to penalty #4 for SPD and STR
+                                    ;     2 [Weary]:     0 (no effect)
+                                    ;     3 []:         17 [sub_4563] - Subtracts 1 from penalty #4 for each of
+                                    ;                                   SPD, STR and SKL
+
+rw  464e,8   EffExhstStrs           ; 8 bytes: Exhaustion effect level string addresses
                                     ;     0: $473c [ZtsExhausted]
                                     ;     1: $472f [ZtsTired]
                                     ;     2: $4722 [ZtsWeary]
                                     ;     3: $47e5 [Zts12Spaces]
-rw  4656,4   dat_4656               ; 4 bytes
-rw  465a,4   dat_465a               ; 4 bytes
-rw  465e,8   tbl_465e               ; 8 bytes: string addresses
+
+rw  4656,4   EffBurdnLmts           ; 4 bytes: Table of upper-limit thresholds for the various burden effect
+                                    ; categories. The largest value greater than or equal to the effect attribute value
+                                    ; is the one used.
+                                    ;     0: $80 (128) - [  0 .. 128] (normal)
+                                    ;     1: $c0 (192) - [129 .. 192] Burdened
+                                    ;     2: $f0 (240) - [193 .. 240] Encumbered
+                                    ;     3: $ff (255) - [241 .. 255] Immobilized
+
+rw  465a,4   EffBurdnSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Burden level.
+                                    ;     0 []:             0 (no effect)
+                                    ;     1 [Burdened]:     0 (no effect)
+                                    ;     2 [Encumbered]:   9 [effEncumbered] - If rtsIfRndStaChk fails, subtract 1
+                                    ;                                      from CHR_ENERGY
+                                    ;     3 [Immobilized]: 10 [effImmobilized] - If rtsIfRndStaChk fails, subtract 1
+                                    ;                                      from CHR_ENERGY
+
+rw  465e,8   EffBurdnStrs           ; 8 bytes: Burden effect level string addresses
                                     ;     0: $47e5 [Zts12Spaces]
                                     ;     1: $4749 [ZtsBurdened]
                                     ;     2: $4756 [ZtsEncumbered]
                                     ;     3: $4763 [ZtsImmobilized]
-rw  4666,4   dat_4666               ; 4 bytes
-rw  466a,4   dat_466a               ; 4 bytes
-rw  466e,8   tbl_466e               ; 8 bytes: string addresses
+
+rw  4666,4   EffInebrLmts           ; 4 bytes: Table of upper-limit thresholds for the various inebriation effect
+                                    ; categories. The largest value greater than or equal to the effect attribute value
+                                    ; is the one used.
+                                    ;     0: $08 (  8) - [  0 ..   8] (normal)
+                                    ;     1: $10 ( 16) - [  9 ..  16] Tipsy
+                                    ;     2: $20 ( 32) - [ 17 ..  32] Drunk
+                                    ;     3: $ff (255) - [ 33 .. 255] Very Drunk
+
+rw  466a,4   EffInebrSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Inebriation level.
+                                    ;     0 []:            0 (no effect)
+                                    ;     1 [Tipsy]:       0 (no effect)
+                                    ;     2 [Drunk]:      11 [effDrunk] - NOP: Simply returns to caller
+                                    ;     3 [Very Drunk]: 12 [effVeryDrunk] - NOP: Simply returns to caller
+
+rw  466e,8   EffInebrStrs           ; 8 bytes: Inebriation effect level string addresses
                                     ;     0: $47e5 [Zts12Spaces]
                                     ;     1: $4770 [ZtsTipsy]
                                     ;     2: $477d [ZtsDrunk]
                                     ;     3: $478a [ZtsVeryDrunk]
-rw  4676,4   dat_4676               ; 4 bytes
-rw  467a,4   dat_467a               ; 4 bytes
-rw  467e,8   tbl_467e               ; 8 bytes: string addresses
+
+rw  4676,4   EffFullnLmts           ; 4 bytes: Table of upper-limit thresholds for the various fullness effect
+                                    ; categories. The largest value greater than or equal to the effect attribute value
+                                    ; is the one used.
+                                    ;     0: $40 ( 64) - [  0 ..  64] (normal)
+                                    ;     1: $60 ( 96) - [ 65 ..  96] Full
+                                    ;     2: $80 (128) - [ 97 .. 128] Stuffed
+                                    ;     3: $ff (255) - [129 .. 255] Bloated
+
+rw  467a,4   EffFullnSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Fullness level.
+                                    ;     0 []:         0 (no effect)
+                                    ;     1 [Full]:     0 (no effect)
+                                    ;     2 [Stuffed]: 13 [effStuffed] - NOP: Simply returns to caller
+                                    ;     3 [Bloated]: 14 [effBloated] - NOP: Simply returns to caller
+
+rw  467e,8   EffFullnStrs           ; 8 bytes: Fullness effect level string addresses
                                     ;     0: $47e5 [Zts12Spaces]
                                     ;     1: $4797 [ZtsFull]
                                     ;     2: $47a4 [ZtsStuffed]
@@ -1527,7 +1717,7 @@ rw  502b,1   ZtsItemName_H          ; MSB of address of item name ZTS
 rw  502c,1   ZtsItemScrm_L          ; LSB of address of item scream ZTS
 rw  502d,1   ZtsItemScrm_H          ; MSB of address of item scream ZTS
 
-rwx 5049,1   sub_5049               ; Display 4-selection menu of options and handle user input
+rwx 5049,1   do4SelMenu             ; Display 4-selection menu of options and handle user input
 rwx 5077,1   rtn_5077               ; Dynamically specified return location stored in cont_addr_1977_L/H
 rwx 508c,1   sub_508c               ;
 rwx 50b2,1   sub_50b2               ; Sets dat_6277 to 0 then calls sub_50b7
@@ -1694,7 +1884,7 @@ rwx 5ab4,1   sub_5ab4               ;
 
 rwx 5acb,1   doDropMenu             ; Display the "DROP" menu and process user input
 
-rwx 5b0e,1   rts_5b0e               ; Decrements UNK_BYTE_195F and UNK_BYTE_1960 and returns to caller
+rwx 5b0e,1   rts_5b0e               ; Decrements StatUpdateFlg and StatRecalcFlg and returns to caller
 
 rw  5c53,17  StrOfferAmount         ; 23 bytes: "Offset how many?" ($ac: FOLLOW to StrEnterAmount)
 rw  5c6a,3a  StrDropAmount          ; 58 bytes: "Drop how many?" (flows into StrEnterAmount)
@@ -1724,7 +1914,7 @@ rw  5db0,6   SubstrPct              ; 6 bytes: Outputs SelCurrentPct followed by
 rwx 5db6,1   sub_5db6               ; Invoked from Str4SelItmMenu
 rwx 5dbb,1   sub_5dbb               ; Invoked from Str4SelItmMenu
 
-rw  5e09,4a  str_4SEL_MENU          ; 74 bytes: 4 selection menu
+rw  5e09,4a  Str4SelMenu            ; 74 bytes: 4 selection menu
 rw  5e53,1   ZtsBlank               ; 1 byte: Empty NUL-terminated string
 rw  5e54,1   SubstrEmpty            ; 1? byte
 rw  5e55,4   SelEquipIndOfs         ; 4 bytes: Offsets relative to Sel1EquipInd (equipped markers in Str4SelItmMenu)
