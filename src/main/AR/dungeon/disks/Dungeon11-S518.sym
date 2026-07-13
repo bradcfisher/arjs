@@ -100,12 +100,12 @@ rw  0047,1   dat_0047_L             ; LSB of address
 rw  0048,1   dat_0047_H             ; MSB of address
 rw  0049,1   dat_0049               ; 1 byte: temp, loop ctl var in sub_55b7
 rw  004a,1   dat_004a               ; 1 byte
-rw  004b,1   dat_004b               ; 1 byte
+rw  004b,1   dat_004b               ; 1 byte: holds an item index
 rw  004c,1   dat_004c               ; 1 byte
 rw  004d,1   dat_004d               ; 1 byte
 
 rw  004f,1   dat_004f               ; 1 byte
-
+rw  0050,1   dat_0050               ; 1 byte: a flag - 0 = false, any non-0 = true
 rw  0051,1   AttrAdjAmt             ; 1 byte: Amount to adjust an attr by
 
 rw  0052,1   dat_0052               ; 1 byte
@@ -114,11 +114,11 @@ rw  0054,1   AttrSize               ; 1 byte: Add 1 for size of attribute in byt
 rw  0055,1   dat_0055               ; 1 byte
 rw  0056,1   dat_0056               ; 1 byte
 rw  0057,1   dat_0057               ; 1 byte: used to temporarily store A
-rw  0058,1   dat_0058_L             ; LSB of address
+rw  0058,1   dat_0058_L             ; LSB of address: assigned to address of effect limit table/temp stat/effect attribute address
 rw  0059,1   dat_0058_H             ; MSB of address
-rw  005a,1   EffLvlStr_L            ; Temp: Holds LSB of effect level string description address. Only used in sub_42e7.
-rw  005b,1   EffLvlStr_H            ; Temp: Holds MSB of effect level string description address. Only used in sub_42e7.
-rw  005c,1   dat_005c               ; used as loop ctl var in sub_42e7, sub_41fc
+rw  005a,1   EffLvlStr_L            ; Temp: Holds LSB of effect level string description address. Only used in updEffectStrs.
+rw  005b,1   EffLvlStr_H            ; Temp: Holds MSB of effect level string description address. Only used in updEffectStrs.
+rw  005c,1   dat_005c               ; used as loop ctl var in updEffectStrs, sub_41fc
                                     ;  Index into EffLimitTbls_L/H, EffTimers
                                     ;     EffApplyFreq, tbl_45fc
 
@@ -132,7 +132,7 @@ rw  00f3,1   dat_00f2_H             ; MSB of address (audio related)
 ; $0100 to $01ff holds the stack
 ;-----
 rw  0100,1   dat_0100               ; 128 bytes of data. Related to dat_0180.
-                                    ;     Read in sub_2937, Updated in sub_248e, sub_27de
+                                    ;     Read in sub_2937, Updated in initReadSector, sub_27de
 rw  0103,1   rnd_0103
 rw  0180,a   dat_0180               ; 10 bytes of data. Related to dat_0100.
                                     ;     Read in sub_27de, Updated in sub_2937
@@ -181,7 +181,7 @@ rw  0243,1   dat_0243               ;
 
 rw  0245,1   dat_0245               ;  NOCHKSM (no checksum flag?) either $ff (reading?) or 0 (done?)
 rw  0246,1   dat_0246               ;
-rw  0247,1   dat_0247               ; Display related. Initially set to $03 in sub_248e. Updated in
+rw  0247,1   dat_0247               ; Display related. Initially set to $03 in initReadSector. Updated in
 rw  0248,1   CUR_VDSLSTL            ; LSB of current VDSLST (Display list interrupt vector)
 rw  0249,1   CUR_VDSLSTH            ; MSB of current VDSLST (Display list interrupt vector)
 ;rw  024a,1                          ; LSB of display list A
@@ -285,7 +285,7 @@ rwx 1821,1   j_readStick            ; Alias for readStick
 rwx 1824,1   j_sub_275b             ; Alias for sub_275b
 rwx 1827,1   j_sub_245d             ; Alias for sub_245d
 rwx 182a,1   j_getFileEntry         ; Alias for getFileEntry
-rwx 182d,1   j_sub_248e             ; Alias for sub_248e
+rwx 182d,1   j_initReadSector             ; Alias for initReadSector
 rwx 1830,1   j_sub_24c6             ; Alias for sub_24c6
 rwx 1833,1   j_sub_2494             ; Alias for sub_2494
 rwx 1836,1   j_setStatPgStr         ; Alias for setStatPgStr
@@ -399,7 +399,7 @@ rw  1942,1   ZtsAddr4_L             ; LSB: Address of NUL-terminated string #4 f
 rw  1943,1   ZtsAddr4_H             ; MSB: Address of NUL-terminated string #4 for formatted output
 rw  1944,1   MenuFootrAdr_L         ; LSB of menu footer format substring
 rw  1945,1   MenuFootrAdr_H         ; MSB of menu footer format substring
-rw  1946,4   dat_1946               ; 4 bytes: related to 4 item menu selections
+rw  1946,4   MenuItmIndices         ; 4 bytes: related to 4 item menu selections: holds item indexes
 rw  194a,1   dat_194a               ; Status page index to assign the menu template string to
 rw  194b,1   ZONE_TEXTURE_SET       ; The texture set to use. 01 = Typical; 02 = Mirror/Crystal; 03 = Dragon; 04 = Goblin; 05 = Mausoleum
 rw  194c,1   ZONE_B_BYTE            ; Byte value (not bitfield)
@@ -418,7 +418,8 @@ rw  1958,1   UNK_BYTE_1958          ; Assigned to $ff if $1959 == 2
 rw  1959,1   UNK_BYTE_1959          ; Compared to #$02, if it is 2, then $ff is loaded into $1958
 rw  195a,1   MapCellSpclCode        ; Holds special code index number parameter value for
                                     ;   treasure, encounter, message, and teleport special codes.
-
+rw  195b,1   dat_195b               ; assigned CHR_FRAC_LOC_X in
+rw  195c,1   dat_195c               ; assigned CHR_FRAC_LOC_Y in
 rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff
 rw  195e,1   dat_195e               ; 1 byte: TODO: related to temperature? Only used in sub_41fc?
 rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
@@ -456,7 +457,6 @@ rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at fr
 rw  1979,1   dat_1979               ;
 rw  197a,1   dat_197a               ; 1 byte
 rw  197b,1   dat_197b               ;
-
 rw  197c,20  dat_197c               ; 32 byte display buffer used by DLIST_40x1 & zeroed in sub_2cfb.
                                     ;   Related to loading encounters/scenarios
 
@@ -520,10 +520,14 @@ rw  1a0a,3   DLIST_BLANK            ; Display list assigned in HANDLE_VBLKI
                                     ; This display list renders a blank screen
                                     ;   $41 $0a $1a - JVB $1a0a - Jump on vblank to $1a0a [DLIST_BLANK], e.g. repeat
 
-rw  1a41,3   TBL_NXT_DSUBH          ; Table of 3 bytes (MSB of indirect jump address for VBLANK continuation vector)
-rw  1a44,3   TBL_NXT_DSUBL          ; Table of 3 bytes (LSB of indirect jump address for VBLANK continuation vector)
-
 rwx 1a0d,1   setDisplayMode         ; Initializes a display mode based on the input parameter (A)
+
+rw  1a41,3   DispInitSub_H          ; 3 bytes: MSB of address of display mode initialization sub
+rw  1a44,3   DispInitSub_L          ; 3 bytes: LSB of address of display mode initialization sub
+                                    ;    0: $1a46 + 1 = $1a47 (sdmInitPlainTxt)
+                                    ;    1: $1a64 + 1 = $1a65 (sdmInitGamePlay)
+                                    ;    2: $1b18 + 1 = $1b19 (sdmInitScenario)
+
 rwx 1a47,1   sdmInitPlainTxt        ; Invoked from setDisplayMode to initialize mode 0 (40x24 plain text)
 rwx 1a65,1   sdmInitGamePlay        ; Invoked from setDisplayMode to initialize mode 1 (Normal game play)
 rwx 1b19,1   sdmInitScenario        ; Invoked from setDisplayMode to initialize mode 2 (Scenario)
@@ -651,16 +655,18 @@ rwx 1fe9,1   multBytes              ; Multiplies A by Y returning 16-bit result 
 
 rw  2007,2   StrClearAll            ; 2 bytes: Clears all message rows with NULs
 
-rwx 2009,1   SIO_INIT_XMIT          ; Intitialize serial transmission
+rwx 2009,1   sioInitXmit            ; Intitialize serial transmission
 rwx 201d,1   rts_SIO_INIT           ; Jump point for completing SIO xmit/recv intialization
 
-rwx 2037,1   SIO_END_IO             ; Disables serial send and receive interrupts
+rwx 2037,1   sioEnd                 ; Disables serial send and receive interrupts
 
 rwx 204e,1   cont_204e              ; Jumped to from sub_2494
 
+rwx 2097,1   contRtn_2097           ;
+
 rwx 20f7,1   sub_20f7               ; Send buffer of data over the serial bus
 
-rwx 21b7,1   SIO_INIT_RECV          ; Intitialize serial receive
+rwx 21b7,1   sioInitRecv            ; Intitialize serial receive
 
 rwx 21d1,1   sub_21d1               ; Initializes an SIO buffer starting at $100 and dat_0234_L/H bytes in size.
 
@@ -715,7 +721,7 @@ rwx 24ef,1   smc_24ef               ; Self-modifying code: The value assigned by
 
 rw  24fb,8   tbl_TME_SPNR           ; 8 bytes: Characters to display for "time passing" spinner
 
-rwx 248e,1   sub_248e               ; This sub is an entry point for sub_2494 with
+rwx 248e,1   initReadSector         ; This sub is an entry point for sub_2494 with
                                     ; the following parameter values:
                                     ;   A = $52 (82)
                                     ;   X = $40 (64)
@@ -835,8 +841,8 @@ rwx 2bb0,1   pressAnyKey            ; Pause game and prompt user to "Press any k
 
 rw  2bd0,2a  StrPressAnyKey         ; 42 bytes: "<<< Press any key to continue >>>"
 
+rwx 2bfa,1   waitSixSeconds         ; Waits for 6 seconds or the spacebar is pressed.
 rwx 2bfc,1   waitSeconds            ; Waits for a specified number of seconds or the spacebar is pressed.
-rwx 2bfa,1   sub_2bfa               ;
 
 rwx 2c3f,1   rtn_2c3f               ; Dynamically specified return location stored in cont_addr_1977_L/H
 
@@ -875,7 +881,7 @@ rwx 2dd9,3   smc_2dd9               ; The address for this LDA is dynamically mo
 rwx 2ddc,3   smc_2ddc               ; The op here is dynamically switched between an ORA and an AND
 rwx 2ddf,3   smc_2ddf               ; The address for this STA is dynamically modified
 
-rwx 2de3,1   sub_2de3               ;
+rwx 2de3,1   sub_2de3               ; Params: A, X, Y?
 rwx 2df3,1   smc_2df3               ;
 
 rw  2dfd,8   tbl_2dfd               ; 8 bytes: dynamically selected in updateBit
@@ -925,7 +931,9 @@ rwx 30d1,3   smc_30d1               ; The address for this JSR abs is dynamicall
 
 rwx 30db,1   cont_30db              ; Continuation address. Sets A to a random byte, then JMP (cont_addr_1977_L)
 
-rw  30e1,2   dat_30e1               ; 2 byte table, randomly selected (0: $2c, 1: $2e)
+rw  30e1,2   DrunkInputs            ; 2 bytes: Key input values randomly selected from when Tipsy or above
+                                    ;   0: $2c (44 ',') - Prev status page
+                                    ;   1: $2e (46 '.') - Next status page
 
 rwx 317c,3   smc_317c               ; The address for this JMP is dynamically modified
 
@@ -1234,10 +1242,12 @@ rw  41f5,7   tbl_41f5               ; 7? bytes
 
 rwx 41fc,1   sub_41fc               ;
 
+rwx 42c8,1   smc_42c8               ; Self-modifying: The arg to this "SBC imm" is dynamically set to effective STR / 2
+
 rw  42e5,1   dat_42e5_L             ; LSB of int16
 rw  42e6,1   dat_42e5_H             ; MSB of int16
 
-rwx 42e7,1   sub_42e7               ; Updates the effect status strings on the display
+rwx 42e7,1   updEffectStrs          ; Updates the effect status strings on the display
 rwx 4377,1   sub_4377               ;
 
 rwx 43b1,3   smc_43b0               ; The address for this JSR is dynamically modified
@@ -1296,7 +1306,7 @@ rw  4595,7   EffTimers              ; 7 bytes: Table of countdown counters for t
                                     ;   1: Hunger
                                     ;   2: Thirst
                                     :   3: Energy / Fatigue / Exhaustion     TODO: consistent naming
-                                    ;   4: Burden / Encumbrance
+                                    ;   4: Burden
                                     ;   5: Drunk / Inebriation
                                     ;   6: Stomach / Fullness
 
@@ -1789,6 +1799,7 @@ rwx 5602,1   sub_5602               ;
 
 rwx 5632,1   cont_5632              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 
+rwx 564f,1   dat_564f               ; 1 byte table of values to match. Corresponds to address stored in tbl_5650_L/H.
 rw  5650,1   tbl_5650_L             ; 1 byte table of LSB of address (unused)
 rw  5651,1   tbl_5650_H             ; 1 byte table of MSB of address (unused)
 
@@ -2044,18 +2055,29 @@ rw  6494,10  dat_6494               ; 16? bytes
 rw  64a4,10  dat_64a4               ; 16? bytes
 rw  64b4,10  dat_64b4               ; 16? bytes
 rw  64c4,10  dat_64c4               ; 16? bytes
-rw  64d4,10  dat_64d4               ; 16? bytes
+rw  64d4,10  dat_64d4               ; 16? bytes: Holds item indexes
 
 rw  64e4,1   dat_64e4               ; 1 byte: LSB of address?
 rw  64e5,1   dat_64e5               ; 1 byte: MSB of address?
 
-rw  6500,1   dat_6500               ; 1024? bytes: Array of 64 x 16-byte elements. timer-based effects?
+rw  6500,400 CHR_Effects            ; Currently active effects applied to player
+                                    ;   1024 bytes: Array of 64 x 16-byte elements
+                                    ;    - Disease / Curse / Active magic descriptions
+                                    ;    - Timer based effects
+                                    ;    - ?
+
+rw  6900,?   CHR_Items              ; ? bytes: Items currently present in the game
+                                    ;   Contains variable length entries. Locations for each item are stored
+                                    ;   in InvItemAdr_L/H (max 64 entries)
 
 rw  7600,1   ModuleNumber           ; Currently loaded scenario or map number
 x   7601,3   ModuleEntry1           ; First entry point for scenario
 x   7604,3   ModuleEntry2           ; Second entry point for scenario
 x   7607,3   ModuleEntry3           ; Third entry point for scenario
+
 x   760a,3   ModuleEntry4           ; Fourth entry point for scenario
+r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table
+r   760b,1   Mod0DescTbl_H          ; Module 0: MSB of description table
 
 rw  ac00,1   MAP_Number             ; Number/ID of the loaded map
 rw  ac01,1   MAP_DescTbl_L          ; LSB of map description table (offset from $ac00 for std maps)

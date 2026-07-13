@@ -1464,10 +1464,124 @@ NOTE: Walls in the game are rendered twice as wide as they are tall, which impli
 
 
 
+--------------
+
+Items are stored starting at $6900 through $7600.
+Each item is represented by a variable length structure.
+The address of each item is stored in two lists of 64 elements.
+  - The LSB is stored in $640b to 644a
+  - The MSB is stored in $644b to 648a
+  - Items may be present in any slot, a slot is unassigned if the MSB value is 0
+
+Items are represented with the following structure:
+
+Header (6 bytes)
+  0: Flags & Type
+      ABCD E FFF
+      |||| |  +-- Item type: 0 (0000) - ?? Charged Magic Item (Card/Scroll/Wand) ??
+      |||| |                 1 (0001) - ? Spell
+      |||| |                 2 (0010) - ? Ammo
+      |||| |                 3 (0011) - ? Weapon
+      |||| |                 4 (0100) - ? Armor
+      |||| |                 5 (0101) - ? Apparel
+      |||| |                 6 (0110) - ? Potion
+      |||| |                 7 (0111) - ? Special items (Golden apple, Amethyst Rod, Loadstone, PAC Card, Staff piece, Silver Key, ... )
+      |||| +---- ?: 0 - ?? - Normal weapon / armor / ammo / spell / apparel / potion
+      ||||          1 - ?? - Lit Torch, ? Wand / ? Scroll (Renewal/Whetstone/Remove curse)
+      |||+------ unknown (related to items with effects?)
+      ||+------- unknown
+      |+-------- unknown
+      +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere)
+  1: Full object length, including the 6 byte header
+  2: unknown   (possibly MSB of size?)
+  3: Alignment requirement - Evil weapons have 0x7f or below, Good weapons have 0x80 or greater.
+     Neutral weapons typically have 0x00 here.
+  4: Item weight
+  5: Offset from the start of the object to the start of the effects/attributes data region
+     (e.g. offset of byte following item name's terminating NUL)
+
+Name (1..? bytes)
+  - The item name follows the header and is represented as a NUL-terminated string
+  - The length of the name (including the NUL) can be inferred from header byte 5 by subtracting 5 from the value
+
+Description:
+  0: Bitfield (non-zero)
+      AAAA BBBB
+       |    +-- Description type
+       |          0x1 - Disease       (TODO: is 9 also used? see $3ff6 [setDiseaseNms])
+       |          0xb - Curse         (see $3ff9 [setCurseNames])
+       |          0xc - Active magic  (see $3ffc [setMagicNames])
+       +------- Type
+                  0xe - Description
+                  0xf - Description
+  1:
+  2:
+  3..15: NUL-terminated string with description text (may be 13 bytes, in which case no NUL is present?)
+
+Effects: Each effect is 16 bytes long
+  1:
+  2: Effect triggers
+    0x1 = pickup
+    0x2 = drop
+    0x4 = use
+    0x8 = unuse
+    0x10 = ???
+    0x20 = alignment check
+    0x40 = drain charge
+    0x80 = set timer
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+  9:
+ 10:
+ 11:
+ 12:
+ 13:
+ 14:
+ 15:
+
+Attributes: Structure varies based on item type
 
 
 
-
+Lit Torch
+Header: 8B 24 00 00 02 10
+  0: H0:Type       - $8B - $80 (held) + $8 (??) + $3 (weapon)
+  1: H1:Obj Size   - $24 (36)
+  2: H2:Unkown     - $00    (is this an MSB for the size?)
+  3: H3:Alignment  - $00 (neutral)
+  4: H4:Weight     - $02 ()
+  5: H5:Data Ofs   - $10 (16)
+Name: 4C 69 74 20 54 6F 72 63 68 00
+  6-15: "Lit Torch\0"
+Data: 00 FF 00 13 00 00 00 13 00 00 00 00 00 00 04 01 16 16 82 03
+  (weapon attributes)
+  16: W0:  $00 (attributes follow?)
+  17: W1:  $ff (ammo type: $ff = melee)
+  18: W2:  $00 (remaining ammo: ignored for melee)
+  19: W3:  $13 (Blunt: 1d3)
+  20: W4:  $00 (Sharp: 0d0)
+  21: W5:  $00 (Earth: 0d0)
+  22: W6:  $00 (Air:   0d0)
+  23: W7:  $13 (Fire:  1d3)
+  24: W8:  $00 (Water: 0d0)
+  25: W9:  $00 (Power: 0d0)
+  26: W10: $00 (Magic: 0d0)
+  27: W11: $00 (Good:  0d0)
+  28: W12: $00 (Evil:  0d0)
+  29: W13: $00 (Cold:  0d0)
+  30: W14: $04 (Min STR required?)
+  31: W15: $01 (Min SKL required?)
+  32: W16: $16 (22 - Current durability)
+  33: W17: $16 (22 - Max durability)
+  34: W18: $82 (100 00 010 - bitfield)
+       - Bits 0..2: 010 - Message table num (2 = bash/wallop?)
+       - Bits 3..4: 00  - Bonus to hit?
+       - Bits 5..7: unknown?
+  35: W19: $03 (Parry value)
 
 
 
@@ -1492,5 +1606,8 @@ Each line of the image is:
 display list?
 
 CHBASE ($2F4) holds the character set address / 256 (e.g. the high byte of the character set address)?
+
+
+
 
 
