@@ -28,8 +28,11 @@ A note on zones: (from a post here http://www.crpgdev.com/2012/06/)
 The maps for the original Atari 8-bit version of AR: The Dungeon are stored in the following format:
 =====================
 
-Map appears to be loaded into memory at both $ac00 AND $c000
-The $c000 location may be memory mapped I/O as data is copied from there to the $ac00 location after an encounter.
+The map is loaded into memory at $ac00
+
+On systems with 64KB or more of memory, it is copied to $c000 before an encounter or module is loaded and back
+afterwards.
+
 
 There is a 1024 byte header:
 ===
@@ -1466,14 +1469,16 @@ NOTE: Walls in the game are rendered twice as wide as they are tall, which impli
 
 --------------
 
-Items are stored starting at $6900 through $7600.
+Up to 64 items may exist in the game at any point.
+Items are stored starting at $6900 through $75ff ($d00 / 3328 bytes, allowing for an average of 82 bytes per item).
 Each item is represented by a variable length structure.
 The address of each item is stored in two lists of 64 elements.
-  - The LSB is stored in $640b to 644a
-  - The MSB is stored in $644b to 648a
+  - The LSB is stored in $640b to $644a (64 bytes)
+  - The MSB is stored in $644b to $648a (64 bytes)
   - Items may be present in any slot, a slot is unassigned if the MSB value is 0
 
-Items are represented with the following structure:
+All types of Items follow the general structure of a 6 byte header, a name, 0 or more effects and finally
+type-specific attributes:
 
 Header (6 bytes)
   0: Flags & Type
@@ -1491,9 +1496,9 @@ Header (6 bytes)
       |||+------ unknown (related to items with effects?)
       ||+------- unknown
       |+-------- unknown
-      +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere)
+      +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere ... where is the location stored?)
   1: Full object length, including the 6 byte header
-  2: unknown   (possibly MSB of size?)
+  2: unknown
   3: Alignment requirement - Evil weapons have 0x7f or below, Good weapons have 0x80 or greater.
      Neutral weapons typically have 0x00 here.
   4: Item weight
@@ -1504,44 +1509,90 @@ Name (1..? bytes)
   - The item name follows the header and is represented as a NUL-terminated string
   - The length of the name (including the NUL) can be inferred from header byte 5 by subtracting 5 from the value
 
-Description:
-  0: Bitfield (non-zero)
-      AAAA BBBB
-       |    +-- Description type
-       |          0x1 - Disease       (TODO: is 9 also used? see $3ff6 [setDiseaseNms])
-       |          0xb - Curse         (see $3ff9 [setCurseNames])
-       |          0xc - Active magic  (see $3ffc [setMagicNames])
-       +------- Type
-                  0xe - Description
-                  0xf - Description
-  1:
-  2:
-  3..15: NUL-terminated string with description text (may be 13 bytes, in which case no NUL is present?)
+Effects (0..n*16 bytes)
+  - If an object has effects, they will preceed the attributes
+  - Effects are distinguished from attributes by their first byte.
+    - If the first byte is non-0, it is an Effect
+  - Each effect is exactly 16 bytes
+  - An item affect is applied to the player's list of active effects when a specific action is performed on the item.
 
-Effects: Each effect is 16 bytes long
-  1:
+Attributes (1..? bytes)
+  - Attributes are always last and their structure depends on the type of the item
+
+  Weapon
+  Armor
+  Spell
+
+
+
+Effect: Each effect is 16 bytes long
+
+  0: Bitfield (non-zero)
+      AAAA B CCC
+       |   |  +- Description type (when AAAA is 0xe or 0xf)
+       |   |       0  - ? Timer ?
+       |   |       1  - Disease
+       |   |       3  - Curse         (see $3ff9 [setCurseNames])
+       |   |       4  - Active magic  (see $3ffc [setMagicNames])
+       |   +---- Description visibility?
+       |           0   - hidden
+       |           1   - visible
+       +-------- Effect Type
+                   0x8 - ? Timer ?
+                   0xe - Description
+                   0xf - Description
+
+  1: ?   (perhaps item index?)
+
   2: Effect triggers
-    0x1 = pickup
-    0x2 = drop
-    0x4 = use
-    0x8 = unuse
+    0x01 = pickup
+    0x02 = drop
+    0x04 = use
+    0x08 = unuse
     0x10 = ???
     0x20 = alignment check
     0x40 = drain charge
     0x80 = set timer
-  3:
-  4:
-  5:
-  6:
-  7:
-  8:
-  9:
- 10:
- 11:
- 12:
- 13:
- 14:
- 15:
+
+  When Effect Type is 0xe or 0xf: (Description)
+    3..15: NUL-terminated string with description text (may be 13 bytes, in which case no NUL is present?)
+
+  When Effect Type is NOT 0xe or 0xf:
+    3: Number of repetitions (0 = infinite/forever)
+    4: Incubation Timer 1 LSB   (initial delay in game minutes before first execution)
+    5: Incubation Timer 1 MSB
+    6: Repetition Timer 2 LSB   (delay in game minutes between executions)
+    7: Repetition Timer 2 MSB
+    8: ?
+    9: Action
+        0x01 ? (lit torch effect... perhaps decrease item property?)
+        0x03 ?
+        0x81 Increase Player attribute
+        0x91 Decrease Player attribute
+   10: Offset
+        ? depends on action type ? (0x81/0x91 this is an attribute offset relative to $6300)
+   11: ? Maybe MSB of Offset ?
+   12: Number of Steps (number of attributes to apply action to)
+   13: Step Size (added to effective Offset after each step)
+   14: Amount to increase/decrease by (at least for Actions 0x81/0x91)
+   15: ?
+
+  Example: EffLitTorch
+  --------------------
+  8? ?? 04 01 f0 00 00 00 00 01 02 80 01 00 08 ??
+         |  | |   | |   |  |  |  |  |  |  |  |
+         |  | |   | |   |  |  |  |  |  |  |  +---- Delta amt: 8
+         |  | |   | |   |  |  |  |  |  |  +------- Step Size: 0
+         |  | |   | |   |  |  |  |  |  +---------- Steps: 1
+         |  | |   | |   |  |  |  |  +------------- ?
+         |  | |   | |   |  |  |  +---------------- Offset: 2 (?durability?)
+         |  | |   | |   |  |  +------------------- Action: 1 (?decrease item attribute?)
+         |  | |   | |   |  +---------------------- ?
+         |  | |   | +---+------------------------- Repetition delay:  0 (no repetitions)
+         |  | +---+------------------------------- Incubation period: 240 minutes (4 hours)
+         |  +------------------------------------- Repetitions: 1
+         +---------------------------------------- Trigger on "use"
+
 
 Attributes: Structure varies based on item type
 
@@ -1551,7 +1602,7 @@ Lit Torch
 Header: 8B 24 00 00 02 10
   0: H0:Type       - $8B - $80 (held) + $8 (??) + $3 (weapon)
   1: H1:Obj Size   - $24 (36)
-  2: H2:Unkown     - $00    (is this an MSB for the size?)
+  2: H2:Unkown     - $00
   3: H3:Alignment  - $00 (neutral)
   4: H4:Weight     - $02 ()
   5: H5:Data Ofs   - $10 (16)

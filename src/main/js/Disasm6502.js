@@ -1984,57 +1984,59 @@ rw  1329,1  DBUFAL
 rw  1331,1  DBUFAH
 
 ; GTIA
-w   D000,1  HPOSP0
-w   D001,1  HPOSP1
-w   D002,1  HPOSP2
-w   D003,1  HPOSP3
-w   D004,1  HPOSM0
-w   D005,1  HPOSM1
-w   D006,1  HPOSM2
-w   D007,1  HPOSM3
-w   D008,1  SIZEP0
-w   D009,1  SIZEP1
-w   D00A,1  SIZEP2
-w   D00B,1  SIZEP3
-w   D00C,1  SIZEM
-w   D00D,1  GRAFP0
-w   D00E,1  GRAFP1
-w   D00F,1  GRAFP2
-w   D010,1  GRAFP3
-w   D011,1  GRAFM
-w   D012,1  COLPM0
-w   D013,1  COLPM1
-w   D013,1  COLPM2
-w   D015,1  COLPM3
-w   D016,1  COLPF0
-w   D017,1  COLPF1
-w   D018,1  COLPF2
-w   D019,1  COLPF3
-w   D01A,1  COLBK
-w   D01B,1  PRIOR
-w   D01D,1  GRACTL
+w   D000,1  HPOSP0      ; Horiz. Pos. Player 0
+w   D001,1  HPOSP1      ; Horiz. Pos. Player 1
+w   D002,1  HPOSP2      ; Horiz. Pos. Player 2
+w   D003,1  HPOSP3      ; Horiz. Pos. Player 3
+w   D004,1  HPOSM0      ; Horiz. Pos. Missile 0
+w   D005,1  HPOSM1      ; Horiz. Pos. Missile 1
+w   D006,1  HPOSM2      ; Horiz. Pos. Missile 2
+w   D007,1  HPOSM3      ; Horiz. Pos. Missile 3
+w   D008,1  SIZEP0      ; Size Player 0
+w   D009,1  SIZEP1      ; Size Player 1
+w   D00A,1  SIZEP2      ; Size Player 2
+w   D00B,1  SIZEP3      ; Size Player 3
+w   D00C,1  SIZEM       ; Size All Missiles
+w   D00D,1  GRAFP0      ; Graphics Player 0
+w   D00E,1  GRAFP1      ; Graphics Player 1
+w   D00F,1  GRAFP2      ; Graphics Player 2
+w   D010,1  GRAFP3      ; Graphics Player 3
+w   D011,1  GRAFM       ; Graphics All Missiles
+w   D012,1  COLPM0      ; Color Player-Missile 0
+w   D013,1  COLPM1      ; Color Player-Missile 1
+w   D014,1  COLPM2      ; Color Player-Missile 2
+w   D015,1  COLPM3      ; Color Player-Missile 3
+w   D016,1  COLPF0      ; Color Playfield 0
+w   D017,1  COLPF1      ; Color Playfield 1
+w   D018,1  COLPF2      ; Color Playfield 2
+w   D019,1  COLPF3      ; Color Playfield 3
+w   D01A,1  COLBK       ; Color Background
+w   D01B,1  PRIOR       ; Priority Select
+w   D01C,1  VDELAY      ; Vertical Delay
+w   D01D,1  GRACTL      ; Graphic Control
+w   D01E,1  HITCLR      ; Collision Clear
 rw  D01F,1  CONSOL
-r   D000,1  M0PF
-r   D001,1  M1PF
-r   D002,1  M2PF
-r   D003,1  M3PF
-r   D004,1  P0PF
-r   D005,1  P1PF
-r   D006,1  P2PF
-r   D007,1  P3PF
-r   D008,1  M0PL
-r   D009,1  M1PL
-r   D00A,1  M2PL
-r   D00B,1  M3PL
-r   D00C,1  P0PL
-r   D00D,1  P1PL
-r   D00E,1  P2PL
-r   D00F,1  P3PL
-r   D010,1  TRIG0
-r   D011,1  TRIG1
-r   D012,1  TRIG2
-r   D013,1  TRIG3
-r   D013,1  PAL
+r   D000,1  M0PF        ; Missile-Playfield 0 collisions
+r   D001,1  M1PF        ; Missile-Playfield 1 collisions
+r   D002,1  M2PF        ; Missile-Playfield 2 collisions
+r   D003,1  M3PF        ; Missile-Playfield 3 collisions
+r   D004,1  P0PF        ; Player-Playfield 0 collisions
+r   D005,1  P1PF        ; Player-Playfield 1 collisions
+r   D006,1  P2PF        ; Player-Playfield 2 collisions
+r   D007,1  P3PF        ; Player-Playfield 3 collisions
+r   D008,1  M0PL        ; Missile-Player 0 collisions
+r   D009,1  M1PL        ; Missile-Player 1 collisions
+r   D00A,1  M2PL        ; Missile-Player 2 collisions
+r   D00B,1  M3PL        ; Missile-Player 3 collisions
+r   D00C,1  P0PL        ; Player-Player 0 collisions
+r   D00D,1  P1PL        ; Player-Player 1 collisions
+r   D00E,1  P2PL        ; Player-Player 2 collisions
+r   D00F,1  P3PL        ; Player-Player 3 collisions
+r   D010,1  TRIG0       ; Joystick triggers 0
+r   D011,1  TRIG1       ; Joystick triggers 1
+r   D012,1  TRIG2       ; Joystick triggers 2
+r   D013,1  TRIG3       ; Joystick triggers 3
+r   D014,1  PAL         ; PAL/NTSC bits
 
 ; POKEY
 w   D200,1  AUDF1

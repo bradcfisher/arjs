@@ -68,7 +68,7 @@ const files = {
                 { size: 0x4C00, start: 0x2000, name: "SEG_2000" }
              ]},
         { id: 0x00CD, description: "D1S1 S205 - Kernel Loader", startSector:205, length: 0xA00,
-            labels: "Dungeon11-S205.sym",
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: [
                 { size: 0x0A00, start: 0x8000, name: "SEG_8000" }
                 //{ size: 0x0223, start: 0x8000, name: "SEG_8000" },
@@ -76,27 +76,27 @@ const files = {
                 //{ size: 0x00DD, start: 0x8923, name: "SEG_8923" }
             ]},
         { id: 0x00E1, description: "D1S1 S225 - Unknown 2", startSector:225, length: 0x1080,
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x1E00 },
         { id: 0x4102, description: "D1S1 S259 - Load Character", segments: 0x7600 }, // length = 0x1A00 (6656)
         { id: 0x4137, description: "D1S1 S312 - Transfer City Character", segments: 0x7600 }, // length = 0x2000 (8192)
         { id: 0x4178, description: "D1S1 S377 - Character Creation Image", type: "charset-2bpp", segments: 0x9800 }, // length = 0x2500 (9472)
         { id: 0x41C3, description: "D1S1 S452 - Character Death",
-            labels: "Dungeon11-S518.sym",
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x7600 }, // length = 0x700 (1792)
         { id: 0x41D2, description: "D1S1 S467 - Save Character",
-            labels: "Dungeon11-S518.sym",
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x7600 }, // length = 0x600 (1536)
         { id: 0x01DF, description: "D1S1 S479 - Unknown 3", startSector: 479, length: 128, key: "41d50b120b41336d3a1f4ed4d453a87a" },
         { id: 0x41E0, description: "D1S1 S481 - Blank Character Data", segments: 0x6300 }, // length = 0x1200 (4608)
         { id: 0x4205, description: "D1S1 S518 - Game Kernel",
-            labels: "Dungeon11-S518.sym",
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x1400 }, // length = 0x4F00 (20224)
         { id: 0x42A4, description: "D1S1 S677 - Copy Protection Check",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x9000 }, // length = 0x100 (256)
         { id: 0x42A7, description: "D1S1 S680 - Copy Protection Check (char save)",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x9000 }, // length = 0x100 (256)
         { id: 0x02AA, description: "D1S1 S682 - Unused space", length: 0x1380 } // length = 0x1380 (4992)
 /*
@@ -140,14 +140,14 @@ Entry  62: [42a7 0001] D1 S1: sector=679 [2a7], length= 256
         { id: 0x4A05, description: "D2S1 S518 - Texture Set 6 (Alien)", type: "texture", segments: 0x96F0 }, // length = 0x1510 (5392) (incl 112 unused bytes 0x1580 (5504))
         // 112 bytes of the final sector of the texture are 0 and not part of the texture itself
         { id: 0x4A31, description: "D2S1 S562 - Unknown 1 (Executable loaded at $96F0)",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x96F0 },
         { id: 0x4A3C, description: "D2S1 S573 - Unknown 2 (compass and arrows character sets)" },
         { id: 0x4A7F, description: "D2S1 S640 - Dungeon Exit (Executable loaded at $7600)",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 },
         { id: 0x4A8C, description: "D2S1 S653 - Stairway (Executable loaded at $7600)",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 },
         { id: 0x02B9, description: "D2S1 S697 - Unused space", length: 0xC00 } // length = 0xc00 (3072)
 /*
@@ -172,40 +172,40 @@ Entry  21: [4a8c 0016] D2 S1: sector=652 [28c], length=5632
     ],
     "../AR/dungeon/disks/Dungeon22.xfd": [
         { id: 0x4C01, description: "D2S2 S002 - Fountain",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1100 (4352)
         { id: 0x4C24, description: "D2S2 S037 - Chapel",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1C00 (7168)
         { id: 0x4C5D, description: "D2S2 S094 - Gargoyle",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1400 (5120)
         { id: 0x4C86, description: "D2S2 S135 - Ferryman",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1000 (4096)
         { id: 0x4CA7, description: "D2S2 S168 - Clothes Horse",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0xF00 (3840)
         { id: 0x4CC6, description: "D2S2 S199 - Dwarven Smithy",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x2000 (8192)
         { id: 0x4D07, description: "D2S2 S264 - Brewery",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x2200 (8704)
         { id: 0x4D4C, description: "D2S2 S333 - Crypt",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1000 (4096)
         { id: 0x4D6D, description: "D2S2 S366 - Dragon",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1500 (5376)
         { id: 0x4D98, description: "D2S2 S409 - Death's Door",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0xB00 (2816)
         { id: 0x4DAF, description: "D2S2 S432 - Machine Room",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1F00 (7936)
         { id: 0x4DEE, description: "D2S2 S495 - Elevator",
-            labels: [ "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x700 (1792)
         { id: 0x4DFD, description: "D2S2 S510 - Unknown 1" }, // length = 0x400 (1024)
         { id: 0x4E06, description: "D2S2 S519 - Unknown 2 (charset image)", segments: 0x1000 }, // length = 0x880 (2176)
