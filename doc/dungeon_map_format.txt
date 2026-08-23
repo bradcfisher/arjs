@@ -1498,7 +1498,7 @@ Header (6 bytes)
       |+-------- unknown
       +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere ... where is the location stored?)
   1: Full object length, including the 6 byte header
-  2: unknown
+  2: unknown     (assigned to 8 in sub $5795)
   3: Alignment requirement - Evil weapons have 0x7f or below, Good weapons have 0x80 or greater.
      Neutral weapons typically have 0x00 here.
   4: Item weight
@@ -1528,19 +1528,33 @@ Attributes (1..? bytes)
 Effect: Each effect is 16 bytes long
 
   0: Bitfield (non-zero)
+      When the value is >= $e0, the entry is a description entry. In which case:
+      111 AAAAA
+       |    +--- Indicates the type of description
+       |            1 - hidden disease (does not show in list)
+       |            3 - hidden curse (does not show in list)
+       |            4 - hidden magic (does not show in list)
+       |            9 - visible disease
+       |           11 - visible curse
+       |           12 - visible magic
+       +-------- Indicates description entry
+
+      Otherwise,
       AAAA B CCC
        |   |  +- Description type (when AAAA is 0xe or 0xf)
        |   |       0  - ? Timer ?
        |   |       1  - Disease
+       |   |       2  - Poison
        |   |       3  - Curse         (see $3ff9 [setCurseNames])
        |   |       4  - Active magic  (see $3ffc [setMagicNames])
        |   +---- Description visibility?
        |           0   - hidden
        |           1   - visible
-       +-------- Effect Type
+       +-------- Effect Type?
                    0x8 - ? Timer ?
                    0xe - Description
                    0xf - Description
+              Bit 6 appears to have special meaning. When it is set, byte 1 is inspected
 
   1: ?   (perhaps item index?)
 
@@ -1565,17 +1579,39 @@ Effect: Each effect is 16 bytes long
     7: Repetition Timer 2 MSB
     8: ?
     9: Action
-        0x01 ? (lit torch effect... perhaps decrease item property?)
-        0x03 ?
-        0x81 Increase Player attribute
-        0x91 Decrease Player attribute
+        If bit 7 is not set (e.g. the value is 0..127) it specifies an assignment:
+          - This value is the number of bytes to assign
+          - The starting address to update is specified by
+          - The update is performed by contSetAttr which assigns the same byte to the specified number of
+            sequential bytes
+
+        If bit 7 is set:
+          - The low nibble contains the number of bytes to update (e.g. AttrSize)
+          - The lower three bits of the high nibble indicate the operation type
+
+          7 654 3210
+          1 BBB CCCC
+          |  |   +--- Attribute size in bytes
+          |  +------- Operation to perform
+          |             0 - Increase attribute value
+          |             1 - Decrease attribute value
+          |             2 - NOP
+          |             3 - NOP
+          |             4 - XOR bytes
+          |             5 - AND bytes
+          |             6 - OR bytes
+          |             7 - Appears to be unimplemented or a debugger trigger (executes BRK, RTS)
+          +---------- Must be 1, indicating an operation other than assignment
+
+        0x81 Increase 1 byte attribute
+        0x91 Decrease 1 byte attribute
    10: Offset
-        ? depends on action type ? (0x81/0x91 this is an attribute offset relative to $6300)
-   11: ? Maybe MSB of Offset ?
+        ? depends on action type ? (0x81/0x91 this is an attribute offset relative to $6300 - perhaps indicated by byte 11 = 0?)
+   11: ?    Appears to be MSB of Offset (ref: $48bb to $48c3)
    12: Number of Steps (number of attributes to apply action to)
    13: Step Size (added to effective Offset after each step)
    14: Amount to increase/decrease by (at least for Actions 0x81/0x91)
-   15: ?
+   15: ?    Appears to be an index of inventory item associated with the effect (ref: $48c7 to $48da which uses the value to retrieve an item address)
 
   Example: EffLitTorch
   --------------------
@@ -1602,9 +1638,9 @@ Lit Torch
 Header: 8B 24 00 00 02 10
   0: H0:Type       - $8B - $80 (held) + $8 (??) + $3 (weapon)
   1: H1:Obj Size   - $24 (36)
-  2: H2:Unkown     - $00
+  2: H2:Unknown    - $00
   3: H3:Alignment  - $00 (neutral)
-  4: H4:Weight     - $02 ()
+  4: H4:Weight     - $02 (2)
   5: H5:Data Ofs   - $10 (16)
 Name: 4C 69 74 20 54 6F 72 63 68 00
   6-15: "Lit Torch\0"

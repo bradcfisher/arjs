@@ -28,4 +28,4 @@ rwx 0695,1   DCRYPT_PAGE    ; Decrypt a memory page (256 bytes)
 
 rw  06b2,4E  UNUSED_BYTES
 
-rwx 807E,1   KERNEL_ENTRY   ; Game kernel entry vector
+rwx 807E,1   kernelEntry    ; Game kernel entry vector

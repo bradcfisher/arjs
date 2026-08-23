@@ -1,24 +1,64 @@
 Altirra symbol file
 
-; Symbols for Dungeon Disk 1 Side 1 sector 518
-; Game Kernel
+; Symbols for Dungeon Disk 1 Side 1 sector 518 - Game Kernel
+; Both this file and Dungeon11-S205.sym should be applied for full symbol mapping.
+;
 [symbols]
 
-rw  0000,1   SIO_POS_L              ; LSB of current serial IO buffer position (next byte to write/read).
-rw  0001,1   SIO_POS_H              ; MSB of current serial IO buffer position (next byte to write/read).
-; Next 4 used for converting uint32 to string?
-; Also used for result/temp of multBytes / multInt16
-rw  0002,1   dat_0002               ; 1 byte related to the next 3
-rw  0003,1   dat_0003               ;
-rw  0004,1   dat_0004               ;
-rw  0005,1   dat_0005               ; 1 byte related to the previous 3
-rw  0006,1   dat_0006               ;
-rw  0007,1   dat_0007_L             ; LSB of address / 16-bit int
+rw  0000,1   SioBufPos_L            ; LSB of current serial IO buffer position (next byte to write/read).
+rw  0001,1   SioBufPos_H            ; MSB of current serial IO buffer position (next byte to write/read).
+
+; Next 4 bytes are used for multiple purposes (converting int to string, multiplication, division, etc)
+rw  0002,4   BcdData                ; out_UInt32ToDec, unpackBcdByte: Holds BCD data to unpack/output
+
+rw  0002,4   BEResult               ; multBEInt16, readBEUInt16 output: Big endian unsigned 32 or 16-bit integer result
+rw  0002,2   BEParam1               ; multBEInt16 input: Big endian 16-bit unsigned integer input multiplicand 1
+
+rw  0002,2   LEResult               ; multBytes output: Little endian 16-bit unsigned integer result
+rw  0004,1   MBTemp1                ; multBytes temp: Holds initial value of A (multiplicand 1)
+                                    ;     Kernel loader: sub_819e: used for temp storage
+rw  0005,1   MBTemp2                ; multBytes temp: Holds bit-shifted values of Y (multiplicand 2)
+
+rw  0002,1   DivQuotient            ; divByteBy10, divUint16Uint8: Quotient of result
+rw  0003,1   DivRemainder           ; divByteBy10, divUint16Uint8: Remainder of result
+rw  0004,1   DivDivisor             ; divByteBy10, divUint16Uint8: Holds input X value
+
+rw  0006,1   dat_0006               ; 1 byte:
+                                    ;   used as:
+                                    ;     - readBEUInt16: loop ctl var
+                                    ;     - loop ctl var in KERNEL_LOADER sub_80d2
+                                    ;     -  in KERNEL_LOADER sub_f9f4
+rw  0007,2   BEParam2               ; multBEInt16 input: Big endian 16-bit unsigned integer input multiplicand 2
+rw  0007,1   dat_0007_L             ; LSB of address / 16-bit int    (SourceAddr?? / AddrParam1??)
+                                    ;    - sdmInitGamePlay   - (temp) LSB of DISP_GFX_TOP address
+                                    ;    - copyBytes         - (input) LSB of source address
+                                    ;    - getFileEntry      - (output) LSB of file entry
+                                    ;    - copyBytesNeg      - (input) LSB of source address
+                                    ;    - sub_4b4d          - (temp) Set to incoming Y param (LSB)
+                                    ;    - cont_540f         - (temp) Used to temporarily store source/dest address LSB
+                                    ;    - sub_5602          - (output) Assigned to LSB of address also assigned to ZtsAddr1_L
 rw  0008,1   dat_0007_H             ; MSB of address / 16-bit int
-rw  0009,1   dat_0009_L             ; LSB of address. Related to $190b. display list related
+                                    ;    - sdmInitGamePlay   - (temp) MSB of DISP_GFX_TOP address
+                                    ;    - copyBytes         - (input) MSB of source address
+                                    ;    - getFileEntry      - (output) MSB of file entry
+                                    ;    - copyBytesNeg      - (input) MSB of source address
+                                    ;    - sub_4b4d          - (temp) Set to incoming X param (MSB)
+                                    ;    - cont_540f         - (temp) Used to temporarily store source/dest address MSB
+                                    ;    - sub_5602          - (output) Assigned to MSB of address also assigned to ZtsAddr1_L
+rw  0009,1   dat_0009_L             ; LSB of address. Related to $190b. display list related     (DestAddr?? / AddrParam2??)
+                                    ;    - sdmInitGamePlay   - (temp) LSB of (DISP_GFX_TOP + $1d) address / gfx charset addrs
+                                    ;    - copyBytes         - (input) LSB of destination address
+                                    ;    - copyBytesNeg      - (input) LSB of destination address
+                                    ;    - sub_4b4d          - (temp) Set to destination addr LSB for copyBytes
 rw  000a,1   dat_0009_H             ; MSB of address. Related to $190c. display list related
+                                    ;    - sdmInitGamePlay   - (temp) MSB of (DISP_GFX_TOP + $1d) address / gfx charset addrs
+                                    ;    - copyBytes         - (input) MSB of destination address
+                                    ;    - copyBytesNeg      - (input) MSB of destination address
+                                    ;    - sub_4b4d          - (temp) Set to destination addr MSB for copyBytes
 rw  000b,1   dat_000b               ; LSB of int16
+                                    ;    - copyBytesNeg      - (input) LSB of negated 16-bit size
 rw  000c,1   dat_000c               ; ?LSB of address?  LSB of int16
+                                    ;    - copyBytesNeg      - (input) MSB of negated 16-bit size
 rw  000d,1   dat_000d_L             ; LSB of address
 rw  000e,1   dat_000d_H             ; MSB of address
 rw  000f,1   dat_000f               ; 1 byte
@@ -30,8 +70,8 @@ rw  0014,1   DescFrag_L             ; LSB of address in current map description 
 rw  0015,1   DescFrag_H             ; MSB of address in current map description fragment table
 rw  0016,1   StrTmplate_L           ; LSB of address of string template to interpolate and output
 rw  0017,1   StrTmplate_H           ; MSB of address of string template to interpolate and output
-rw  0018,1   sub_add_0018_L         ; LSB of sub address
-rw  0019,1   sub_add_0018_H         ; MSB of sub address
+rw  0018,1   OutGetWord_L           ; LSB of word read from template string by getNextWord
+rw  0019,1   OutGetWord_H           ; MSB of word read from template string by getNextWord
              ; Values related to outputChar
 rw  001a,1   OutTempA               ; 1 byte: Used in outputChar to preserve/restore A
 rw  001b,1   OutTempX               ; 1 byte: Used in outputChar to preserve/restore X
@@ -86,31 +126,48 @@ rw  003a,1   TimeYears_L            ; LSB of total game years played (uint16)
 rw  003b,1   TimeDays_L             ; LSB of total game days played (uint16)
 rw  003c,1   TimeDays_H             ; MSB of total game days played (uint16)
 
-rw  003d,1   dat_003d_L             ; LSB of address. Updated in sub_47f2,
+rw  003d,1   dat_003d_L             ; LSB of address
+                                    ;    setDiseaseNms, setCurseNames, setMagicNames - current effect address
+                                    ;    applyEffects - current effect address?
 rw  003e,1   dat_003d_H             ; MSB of address
 rw  003f,1   addr_003f_L            ; LSB of address
 rw  0040,1   addr_003f_H            ; MSB of address
-rw  0041,1   ItemAdr_L              ; LSB of inventory item address
-rw  0042,1   ItemAdr_H              ; MSB of inventory item address
+rw  0041,1   ItemAdr_L              ; LSB of an inventory item address
+rw  0042,1   ItemAdr_H              ; MSB of an inventory item address
 rw  0043,1   addr_0043_L            ; LSB of address
 rw  0044,1   addr_0043_H            ; MSB of address
-rw  0045,1   dat_0045_L             ; LSB of address
-rw  0046,1   dat_0045_H             ; MSB of address
+rw  0045,1   AttrAddr_L             ; LSB of an attribute address.
+                                    ;   Used in: incAttr, decAttr, applyEffects, incChrAttr, incChrAttr8,
+                                    ;   incChrAttr16, decChrAttr, decChrAttr8, decChrAttr16, setChrAttrAdr,
+                                    ;   applyEffects & continuations
+rw  0046,1   AttrAddr_H             ; MSB of an address
+                                    ;   Used in: incAttr, decAttr, applyEffects, incChrAttr, incChrAttr8,
+                                    ;   incChrAttr16, decChrAttr, decChrAttr8, decChrAttr16, setChrAttrAdr,
+                                    ;   applyEffects & continuations
 rw  0047,1   dat_0047_L             ; LSB of address
 rw  0048,1   dat_0047_H             ; MSB of address
 rw  0049,1   dat_0049               ; 1 byte: temp, loop ctl var in sub_55b7
+                                    ;    - setDiseaseNms, setCurseNames, setMagicNames - loop ctl var
+                                    ;    -
 rw  004a,1   dat_004a               ; 1 byte
 rw  004b,1   dat_004b               ; 1 byte: holds an item index
+                                    ;   - sub_41fc - param for setItemAdr call
+                                    ;   - sub_4a5f - item index (temp/loop or param for sub_4bb3)
+                                    ;   - allocItem - item index (slot new item is assigned into)
+                                    ;   -
 rw  004c,1   dat_004c               ; 1 byte
 rw  004d,1   dat_004d               ; 1 byte
 
-rw  004f,1   dat_004f               ; 1 byte
+rw  004f,1   dat_004f               ; 1 byte:
+                                    ;    - allocItem: Set to parameter A value (new item size)
+                                    ;    - sub_4ac9: Set to byte 1 of an item (item size)
+                                    ;    -
 rw  0050,1   dat_0050               ; 1 byte: a flag - 0 = false, any non-0 = true
 rw  0051,1   AttrAdjAmt             ; 1 byte: Amount to adjust an attr by
 
 rw  0052,1   dat_0052               ; 1 byte
 rw  0053,1   dat_0053               ; 1 byte
-rw  0054,1   AttrSize               ; 1 byte: Add 1 for size of attribute in bytes (incChrAttr/decChrAttr/sub_47f2)
+rw  0054,1   AttrSize               ; 1 byte: Add 1 for size of attribute in bytes (incChrAttr/decChrAttr/applyEffects)
 rw  0055,1   dat_0055               ; 1 byte
 rw  0056,1   dat_0056               ; 1 byte
 rw  0057,1   dat_0057               ; 1 byte: used to temporarily store A
@@ -131,13 +188,19 @@ rw  00f3,1   dat_00f2_H             ; MSB of address (audio related)
 
 ; $0100 to $01ff holds the stack
 ;-----
-rw  0100,1   dat_0100               ; 128 bytes of data. Related to dat_0180.
-                                    ;     Read in sub_2937, Updated in initReadSector, sub_27de
-rw  0103,1   rnd_0103
-rw  0180,a   dat_0180               ; 10 bytes of data. Related to dat_0100.
-                                    ;     Read in sub_27de, Updated in sub_2937
-rw  0184,1   dat_0184_L             ; LSB of 16-bit int. Related to $1901 [dat_1901_L]
-rw  0185,1   dat_0185_H             ; MSB of 16-bit int. Related to $1902 [dat_1902_H]
+rw  0100,80  SioBuf                 ; 128 bytes: Used for serial I/O data frame buffer (Note: Overlaps stack frame)
+
+rw  0103,1   rnd_0103               ; Used in randInRange as a reference to a value 3 bytes back on the
+                                    ;    stack (e.g. TSX, LDA rnd_0103,X).
+rw  0180,10  DecryptKeyBuf          ; 16 bytes: Used as decryption key data buffer
+rw  0180,1   DecryptFileId_L        ; 1 byte: LSB of File ID from file segment directory
+rw  0181,1   DecryptFileId_H        ; 1 byte: MSB of File ID from file segment directory
+rw  0182,1   DecryptFileLen_L       ; 1 byte: LSB of File length
+rw  0183,1   DecryptFileLen_H       ; 1 byte: MSB of File length
+rw  0184,1   DecryptChksum_L        ; 1 byte: LSB of File checksum
+rw  0185,1   DecryptChksum_H        ; 1 byte: MSB of File checksum
+rw  0186,a   DecryptData            ; 10 bytes: additional key bytes, presumably random data
+
 ;-----
 
 rw  0208,2   VKEYBD                 ; Standard keyboard interrupt vector
@@ -149,64 +212,108 @@ rw  0224,2   VVBLKD                 ; VBLANK deferred interrupt vector
 
 rw  022f,1   vblk_CRITIC            ; Critical region flag (prevents VVBLKD if <0)
 
+             ; The following 4 properties match the structure of the SioCmdBuf
 rw  0230,1   DiskNumber             ; Disk Number (ATASCII value between '1' and '4' inclusive)
 rw  0231,1   DiskCommand            ; Disk Command Code
 rw  0232,1   DiskSector_L           ; LSB of Disk sector number
 rw  0233,1   DiskSector_H           ; MSB of Disk sector number
 
-rw  0234,1   dat_0234_L             ; LSB of address
-rw  0235,1   dat_0234_H             ; MSB of address
+rw  0234,1   SioSize_L              ; LSB: uin16 of Serial I/O byte size (bytes read or bytes to write)
+rw  0235,1   SioSize_H              ; MSB: uin16 of Serial I/O byte size (bytes read or bytes to write)
 rw  0236,1   CUR_IRQEN              ; Current value to write to IRQEN
 rw  0237,1   CUR_SKCTL              ; Current value to write to SKCTL
-rw  0238,1   dat_0238               ;
-rw  0239,1   SIO_CNTDWN             ; Non-0 if SIO timeout countdown active (no timeout), 0 if SIO timeout occurred
-rw  023a,1   SIO_END_L              ; LSB of end of current serial IO buffer (first invalid byte of buffer)
-rw  023b,1   SIO_END_H              ; MSB of end of current serial IO buffer (first invalid byte of buffer)
-rw  023c,1   SIO_CHKSUM             ; Serial transmission checksum
-rw  023d,1   SIO_STATUS             ; Serial IO status
+rw  0238,1   SioReplyStatus         ; Assigned the SioStatus value after reading the ACK byte in sioReadReply.
+                                    ;   Can be assigned back into SioStatus in contRtn_2097 if SioErrReply is true.
+rw  0239,1   SioCntdwn              ; Non-0 if SIO timeout countdown active (no timeout yet), 0 if SIO timeout occurred
+rw  023a,1   SioBufEnd_L            ; LSB of end of current serial IO buffer (first byte after end of buffer)
+rw  023b,1   SioBufEnd_H            ; MSB of end of current serial IO buffer (first byte after end of buffer)
+rw  023c,1   SioChksum              ; Serial transmission checksum
+rw  023d,1   SioStatus              ; Serial IO status
                                     ; May be set to:
                                     ;     $01 (SUCCES - Successful operation)
                                     ;     $8a (TIMOUT - Device timeout)
                                     ;     $8b (DNACK  - Device doesn't acknowledge command)
                                     ;     $8c (FRMERR - Serial input frame error)
-                                    ;     $8e (OVRRUN - Keyboard overrun, key press lost)
+                                    ;     $8e (OVRRUN - Serial input overrun, data lost)
                                     ;     $8f (CHKERR - Serial bus checksum error)
                                     ;     $90 (DERROR - Device error)
-rw  023e,1   dat_023e               ;
-rw  023f,1   dat_023f               ;
-rw  0240,1   SIO_RCV_DONE           ; Serial buffer receieve complete flag (0 = in process; non-0 = completed)
-rw  0241,1   SIO_XMT_DONE           ; Serial buffer transmission complete flag (0 = in process; non-0 = completed)
-rw  0242,1   SIO_BUF_FULL           ; Buffer full flag (0 = space remaining)
-rw  0243,1   dat_0243               ;
-
-rw  0245,1   dat_0245               ;  NOCHKSM (no checksum flag?) either $ff (reading?) or 0 (done?)
-rw  0246,1   dat_0246               ;
-rw  0247,1   dat_0247               ; Display related. Initially set to $03 in initReadSector. Updated in
+rw  023e,1   SioCmdRetries          ; Number of serial I/O command frame send retries remaining
+rw  023f,1   SioRetries             ; Number of serial I/O complete operation retries remaining
+rw  0240,1   SioRecvDone            ; Serial buffer receieve complete flag (0 = in process; non-0 = completed)
+rw  0241,1   SioXmitDone            ; Serial buffer transmission complete flag (0 = in process; non-0 = completed)
+rw  0242,1   SioBufferFull          ; Serial receive buffer full flag (0 = space remaining, $ff = buffer full)
+rw  0243,1   SioChksumSent          ; Used during serial I/O transmission to indicates whether the checksum has been
+                                    ;   sent or not. (0 = checksum not sent, $ff = checksum was sent)
+rw  0245,1   SioNeedChksum          ; Whether a checksum byte is expected to follow incoming serial I/O data or not.
+                                    ;   (0 = checksum not expected, $ff = checksum expected)
+rw  0246,1   SioXferMode            ; Serial I/O transfer mode. Assigned before executing a serial I/O command.
+                                    ;   - $00             = command mode is immediate
+                                    ;   - $40 (bit 6 = 1) = command mode is data receive
+                                    ;   - $80 (bit 7 = 1) = command mode is data send
+rw  0247,1   SioTimeoutSecs         ; Approximate number of seconds to use for a timeout value while waiting for the
+                                    ;    COMPLETE response byte to be received. (multiply value by 64 for number of
+                                    ;    vblanks, or by 1.067 on NTSC or 1.28 on PAL for seconds)
 rw  0248,1   CUR_VDSLSTL            ; LSB of current VDSLST (Display list interrupt vector)
 rw  0249,1   CUR_VDSLSTH            ; MSB of current VDSLST (Display list interrupt vector)
 ;rw  024a,1                          ; LSB of display list A
 ;rw  024b,1                          ; MSB of display list A
 
-rw  024c,1   SIO_TMOUT_L            ; LSB of SIO timeout value in vblanks (e.g. 60/second)
-rw  024d,1   SIO_TMOUT_H            ; MSB of SIO timeout value in vblanks (e.g. 60/second)
-
-rw  0253,1   dat_0253               ; 1 byte - used in VVBLKI irq, sub_24c6
+rw  024c,1   SioTimeout_L           ; LSB of SIO timeout value in vblanks (e.g. 60/second)
+rw  024d,1   SioTimeout_H           ; MSB of SIO timeout value in vblanks (e.g. 60/second)
+rw  024e,4   dat_024e               ; 4 bytes:
+                                    ;    - related to a disk number (each byte maps to a disk)
+                                    ;    - byte for disk is initialized to $ff
+                                    ;    -
+                                    ;    - only used in kernel loader: sub_80d2
+rw  0253,1   dat_0253               ; 1 byte - used in sub_24c6  -   a countdown applied during display mode changes?
+                                    ;    - setDisplayMode sets dat_0253 to 0 for mode 0 and 3 for modes 1,2
+                                    ;    - sdmInitPlainTxt (mode 0) sets dat_0253 to 0
+                                    ;    - irq_VVBLKI
+                                    ;       - calls vblk_cont_230a when dat_0253 is < 0
+                                    ;       - decrements dat_0253 if it is greater than 0 and sets display list to blank screen
+                                    ;       - sets the display list and NMI handler (VDSLST) when dat_0253 = 0
+                                    ;    - sub_245d - sets dat_0253 = $80
+                                    ;    - sub_24c6 - sets dat_0253 = 1
+                                    ;    - kernelInit - sets dat_0253 = 2
 rw  0254,1   CurDList_L             ; LSB of current DLIST addr
 rw  0255,1   CurDList_H             ; MSB of current DLIST addr
-rw  0256,1   dat_0256               ;
-rw  0257,1   bool_0257              ; Boolean flag? Set to one of $00 or $ff
-rw  0258,1   dat_0258               ; 1 byte - only read?
+rw  0256,1   dat_0256               ; Related to blinking text?  Maybe enable/disable blinking text flag?
+                                    ;   - irq_VVBLKI
+                                    ;      - when dat_0253 = 0
+                                    ;        - reads and increments dat_0256 if it is 0 and returns to caller if not 0
+                                    ;      - decremented in (cont) vvblki_BLINK
+rw  0257,1   SioErrReply            ; Set to $ff if an error status was received while reading an ACK/COMPLETE response,
+                                    ;    otherwise 0. Note, will be 0 on timeout, since no response was received.
+rw  0258,1   SysMemorySize          ; 1 byte: Detected memory size (assigned by sub_819e in KERNEL_LOADER)
+                                    ;         0 = 48K, $80 = 64K, $c0 = 128K (and higher?)
 rw  0259,1   dat_0259               ; 1 byte
 rw  025a,1   dat_025a               ; 1 byte - only set to 0? ROR applied to it and used in BIT test...
 rw  025b,1   dat_025b               ; 1 byte - only set to 0?
 rw  025c,1   dat_025c               ; 1 byte - only written?
-
+rw  025d,1   dat_025d               ; 1 byte: only used by kernel loader?
+rw  025e,1   dat_025e               ; 1 byte: only used by kernel loader?
+rw  025f,1   dat_025f               ; 1 byte: only used by kernel loader?
+rw  0260,1   dat_0260               ; 1 byte: only used by kernel loader?
+rw  0261,1   dat_0261               ; 1 byte: only used by kernel loader?
+rw  0262,1   dat_0262               ; 1 byte: only used by kernel loader?
+rw  0263,1   dat_0263               ; 1 byte: only used by kernel loader?
 rw  0264,1   dat_0264               ;
-
 rw  0265,1   dat_0265               ; 1? byte
-rw  0266,4   SIO_CMD_BUF            ; 4 bytes: Used as SIO command frame buffer
-
-rw  0270,1   dat_0270               ; 1 byte?  Used as SIO buffer
+rw  0266,4   SioCmdBuf              ; 4 bytes: Used as SIO command frame buffer
+rw  0266,1   SioCmdDiskNumber       ; Disk Number (ATASCII value between '1' and '4' inclusive)
+rw  0267,1   SioCmdDiskCommand      ; Disk Command Code
+rw  0268,1   SioCmdDiskSector_L     ; LSB of Disk sector number
+rw  0269,1   SioCmdDiskSector_H     ; MSB of Disk sector number
+rw  0270,1   SioAck                 ; 1 byte: Assigned the serial I/O ACK or COMPLETE byte received
+                                    ; One of:
+                                    ;   $41 ('A') - ACK (Received in response to command or data frame)
+                                    ;                 - Command frame: Device accepted the command and aux args
+                                    ;                 - Data frame: Data received and checksum validated
+                                    ;   $4e ('N') - NAK (Received in response to command or data frame)
+                                    ;                 - Command frame: Device refused the command or aux args
+                                    ;                 - Data frame: Checksum error
+                                    ;   $43 ('C') - COMPLETE (device completed the command, data may follow)
+                                    ;   $45 ('E') - ERR (error occurred executing the command)
 
 ; Disk segment directory
 ; This table of 4-byte entries describes the various files stored on the game disks.
@@ -272,7 +379,7 @@ rw  1400,400 DungeonCharset         ; Dungeon character set font (1bpp)
 
 rwx 1800,1   j_sub_2979             ; Alias for sub_2979
 rwx 1803,1   j_loc_2f80             ; Alias for loc_2f80
-rwx 1806,1   j_loc_2ff3             ; Alias for loc_2ff3
+rwx 1806,1   j_sub_2ff3             ; Alias for sub_2ff3
 rwx 1809,1   j_loc_30e3             ; Alias for loc_30e3
 rwx 180c,1   j_loc_3183             ; Alias for loc_3183
 rwx 180f,1   j_setDisplayMode       ; Alias for setDisplayMode
@@ -285,9 +392,9 @@ rwx 1821,1   j_readStick            ; Alias for readStick
 rwx 1824,1   j_sub_275b             ; Alias for sub_275b
 rwx 1827,1   j_sub_245d             ; Alias for sub_245d
 rwx 182a,1   j_getFileEntry         ; Alias for getFileEntry
-rwx 182d,1   j_initReadSector             ; Alias for initReadSector
+rwx 182d,1   j_readDiskSector       ; Alias for readDiskSector
 rwx 1830,1   j_sub_24c6             ; Alias for sub_24c6
-rwx 1833,1   j_sub_2494             ; Alias for sub_2494
+rwx 1833,1   j_sioExchange          ; Alias for sioExchange
 rwx 1836,1   j_setStatPgStr         ; Alias for setStatPgStr
 rwx 1839,1   j_readLine             ; Alias for readLine
 rwx 183c,1   j_pressAnyKey          ; Alias for pressAnyKey
@@ -303,7 +410,7 @@ rwx 1857,1   j_sub_2c6f             ; Alias for sub_2c6f
 rwx 185a,1   j_waitSeconds          ; Alias for waitSeconds
 rwx 185d,1   j_sub_2c9b             ; Alias for sub_2c9b
 rwx 1860,1   j_updateBit            ; Alias for updateBit
-rwx 1863,1   j_sub_2de3             ; Alias for sub_2de3
+rwx 1863,1   j_bitTestBuf           ; Alias for bitTestBuf
 rwx 1866,1   j_copyBytes            ; Alias for copyBytes
 rwx 1869,1   j_sub_2e31             ; Alias for sub_2e31
 rwx 186c,1   j_decChrAttr           ; Alias for decChrAttr
@@ -312,29 +419,29 @@ rwx 1872,1   j_decChrAttr16         ; Alias for decChrAttr16
 rwx 1875,1   j_incChrAttr           ; Alias for incChrAttr
 rwx 1878,1   j_incChrAttr8          ; Alias for incChrAttr8
 rwx 187b,1   j_incChrAttr16         ; Alias for incChrAttr16
-rwx 187e,1   j_sub_2e9e             ; Alias for sub_2e9e
+rwx 187e,1   j_copyBytesNeg         ; Alias for copyBytesNeg
 rwx 1881,1   j_sub_2cc2             ; Alias for sub_2cc2
 rwx 1884,1   j_sub_4b4d             ; Alias for sub_4b4d
 rwx 1887,1   j_sub_4b74             ; Alias for sub_4b74
 rwx 188a,1   j_sub_4ac9             ; Alias for sub_4ac9
-rwx 188d,1   j_sub_4e06             ; Alias for sub_4e06
+rwx 188d,1   j_chkItemNAlign        ; Alias for chkItemNAlign
 rwx 1890,1   j_sub_49b0             ; Alias for sub_49b0
 rwx 1893,1   j_sub_55b7             ; Alias for sub_55b7
 rwx 1896,1   j_sub_4ec4             ; Alias for sub_4ec4
-rwx 1899,1   j_sub_RND_2b6b         ; Alias for sub_RND_2b6b
+rwx 1899,1   j_randInRange          ; Alias for randInRange
 rwx 189c,1   j_sub_5471             ; Alias for sub_5471
 rwx 189f,1   j_actionOffer          ; Alias for actionOffer
-rwx 18a2,1   j_multInt16            ; Alias for multInt16
+rwx 18a2,1   j_multBEInt16          ; Alias for multBEInt16
 rwx 18a5,1   j_sub_408b             ; Alias for sub_408b
 rwx 18a8,1   j_actionUse            ; Alias for actionUse
 rwx 18ab,1   j_loc_5bb8             ; Alias for loc_5bb8
-rwx 18ae,1   j_sub_2aa0             ; Alias for sub_2aa0
-rwx 18b1,1   j_loc_5492             ; Alias for loc_5492
+rwx 18ae,1   j_readBEUInt16         ; Alias for readBEUInt16
+rwx 18b1,1   j_divUint16Uint8       ; Alias for divUint16Uint8
 rwx 18b4,1   j_kernelInit           ; Alias for kernelInit
 
 rw  18b7,156 krnl_state             ; Kernel game state data block
 rw  18b7,1   dat_18b7               ; Updated in HANDLE_VBLKI, but not read?
-rw  18B8,1   CUR_COLPF2_NUM         ; Offset to values at $1c19 [tbl_COLPF2_1c19] (one of: $46, $68, $88)
+rw  18B8,1   CUR_COLPF2_NUM         ; Offset to values at $1c19 [tbl_COLPF2] (one of: $46, $68, $88)
 rw  18B9,1   CUR_DLIST_NUM          ; Currently active DLIST number
 
 rw  18ba,1   CUR_COLPF0             ; Value assigned to COLPF0 (playfield 0 color) during display rendering
@@ -348,15 +455,15 @@ rw  18c1,3   SavedOutCol            ; 3 bytes: Holds saved OutCol values
 rw  18c4,3   SavedOutRow            ; 3 bytes: Holds saved OutRow values (combined with ModeTopRow for final row)
 rw  18c7,1   SavedOutBlink          ; 3 bytes: Holds saved OutBlink blink values
 rw  18ca,8   OUT_UBCD_BUF           ; 10 bytes (8 used): Used to hold unpacked BCD values for output
-rw  18d4,1   LBUF_LIMIT             ; 1 byte: Line buffer input length limit
+rw  18d4,1   MaxInputLen            ; 1 byte: Line buffer input length limit
 rw  18d5,2a  LineBuf                ; 42? byte (40 used) string line buffer
 
 rw  18fe,1   dat_18fe               ; 1 byte
 rw  18ff,1   dat_18ff               ; 1 byte: flag indicating whether a new key should be read or not
 rw  1900,1   KBD_CONSOL             ; 1 byte: Status of console keys. Updated in vblank, same values as CONSOL
                                     ;
-rw  1901,1   dat_1901_L             ; LSB of 16-bit int. Related to $0184 on stack??
-rw  1902,1   dat_1902_H             ; MSB of 16-bit int. Related to $0185 on stack??
+rw  1901,1   CalcChksum_L           ; LSB of computed checksum for decrypted data. Only used in sub_27de
+rw  1902,1   CalcChksum_H           ; MSB of computed checksum for decrypted data. Only used in sub_27de
 rw  1903,1   dat_1903_L             ; LSB
 rw  1904,1   dat_1904_H             ; MSB
 rw  1905,1   dat_1905               ;
@@ -375,7 +482,7 @@ rw  190e,1   dat_190e               ; 1 byte. Updated in sub_2799, Read in sub_2
 rw  190f,1   dat_190f               ; 1 byte. Updated in sub_275b
 rw  1910,1   FileDiskSide           ; Disk side (1 or 2) Referenced in StrPleaseInsert
 rw  1911,1   FileDiskNumber         ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
-rw  1912,1   ZONE_ID                ; Zone ID value to apply in PROCESS_HOURLY_UPDATES
+rw  1912,1   ZONE_ID                ; Zone ID value to apply
 rw  1913,10  tbl_1913_L             ; 16? bytes: LSB of status page string template address, MSB in tbl_1923_H
 rw  191a,1   dat_191a               ;
 rw  1923,10  tbl_1923_H             ; 16? bytes: MSB of status page string template address, LSB in tbl_1913_L
@@ -421,7 +528,7 @@ rw  195a,1   MapCellSpclCode        ; Holds special code index number parameter 
 rw  195b,1   dat_195b               ; assigned CHR_FRAC_LOC_X in
 rw  195c,1   dat_195c               ; assigned CHR_FRAC_LOC_Y in
 rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff
-rw  195e,1   dat_195e               ; 1 byte: TODO: related to temperature? Only used in sub_41fc?
+rw  195e,1   dat_195e               ; 1 byte: ?? seems to hold warmth bonus provided by equipped apparel ??
 rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
                                     ;     update should occur. 0 is false, and any non-0 value is seen as true.
 rw  1960,1   StatRecalcFlg          ; 1 byte: Checked in sub_41fc to determine whether a stat update calc should
@@ -429,13 +536,13 @@ rw  1960,1   StatRecalcFlg          ; 1 byte: Checked in sub_41fc to determine w
 rw  1961,1   dat_1961               ;
 rw  1962,1   dat_1962               ;
 rw  1963,7   EffLevels              ; 7 bytes: Previous threshold index for an effect
-                                    ;    (Warmth, Hunger, Thirst, Energy, Burden, Drunk, Stomach)
+                                    ;    (Warmth, Hunger, Thirst, Stamina, Burden, Drunk, Stomach)
                                     ;    Used to determine whether a display update is needed for the effect labels on
                                     ;    screen.
 rw  1963,1   EffWrmthLvl            ; EffLevels[0]: Warmth effect level [0..6]
 rw  1964,1   EffHungrLvl            ; EffLevels[1]: Hunger effect level [0..4]
 rw  1965,1   EffThrstLvl            ; EffLevels[2]: Thrist effect level [0..4]
-rw  1966,1   EffExhstLvl            ; EffLevels[3]: Exhaustion effect level [0..4]
+rw  1966,1   EffStmnaLvl            ; EffLevels[3]: Stamina effect level [0..4]
 rw  1967,1   EffBurdnLvl            ; EffLevels[4]: Burden effect level [0..4]
 rw  1968,1   EffInebrLvl            ; EffLevels[5]: Inebriation effect level [0..4]
 rw  1969,1   EffFullnLvl            ; EffLevels[6]: Fullness effect level [0..4]
@@ -447,13 +554,14 @@ rw  196b,4   dat_196b               ; 4 bytes: player position (ORIENT, X, Y, MA
 rw  196f,1   dat_196f               ; 1 byte
 rw  1970,1   dat_1970               ; 1 byte: Type of locked door: 0 (key), 1 (bolted), 2 (enchanted)
 rw  1971,1   dat_1971               ; 1 byte
-rw  1972,1   dat_1972               ; 1 byte
+rw  1972,1   dat_1972               ; 1 byte:
+                                    ;    used in applyBiology: Flag which prevents stamina from decreasing (No decrease if >= 0)
 rw  1973,1   dat_1973               ; 1 byte
 rw  1974,1   MapCellDescNum         ; 1 byte: Current map cell description index
 rw  1975,1   UNK_BYTE_1975          ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
-rw  1976,1   dat_1976               ; 1 byte of storage
-rw  1977,1   cont_addr_1977_L       ; LSB of address to continue execution at from JMP loc_2ff3
-rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at from JMP loc_2ff3
+rw  1976,1   dat_1976               ; 1 byte: ?? updated based on equipped apparel - dapper? ??
+rw  1977,1   cont_addr_1977_L       ; LSB of address to continue execution at from JMP sub_2ff3
+rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at from JMP sub_2ff3
 rw  1979,1   dat_1979               ;
 rw  197a,1   dat_197a               ; 1 byte
 rw  197b,1   dat_197b               ;
@@ -547,14 +655,14 @@ rwx 1bd6,1   irq_VDSLST_1bd6        ; Interrupt handler for VDSLST
 
 rwx 1c09,1   initGfxArea            ; Initializes the 3 graphical area buffs (DISP_GFX_TOP/MDL/BTM)
 
-rw  1c19,4   tbl_COLPF2_1c19        ; 4 byte lookup table of row background (COLPF2) colors
+rw  1c19,4   tbl_COLPF2             ; 4 byte lookup table of row background (COLPF2) colors
                                     ;     0: $46 - Mid-intensity Red (reddish-orange, #9e4b4d)
                                     ;     1: $68 - Mid-intensity Cobalt Blue (lavendar-ish, #a75bed)
                                     ;     2: $88 - Mid-intensity Medium Blue (grayish-blue, #7570ff)
                                     ;     3: $b6 - Mid Olive-Green ( #2b8362 )
-                                    ;        (This value overlaps with tbl_COLPM3_1c1c below, but is part of tbl_COLPF2_1c19)
-rw  1c1c,6   tbl_COLPM3_1c1c        ; 5 byte lookup table (starts at index 1)
-                                    ;     0: not used (actually last entry of tbl_COLPF2_1c19 above)
+                                    ;        (This value overlaps with tbl_COLPM3 below, but is part of tbl_COLPF2)
+rw  1c1c,6   tbl_COLPM3             ; 5 byte lookup table (starts at index 1)
+                                    ;     0: not used (actually last entry of tbl_COLPF2 above)
                                     ;     1: $76 - COLPF0: Mid-intensity Ultramarine Blue (purplish, #7649f9)
                                     ;     2: $9e - COLPF1: Light-intensity dark blue (powder blue, #cbefff)
                                     ;     3: $34 - COLPF2: Dark Orange (brownish, #6e3200)
@@ -562,7 +670,7 @@ rw  1c1c,6   tbl_COLPM3_1c1c        ; 5 byte lookup table (starts at index 1)
                                     ;     5: $00 - COLBK: Black (black, #000000)
 rw  1c21,3   tbl_CLEAR_NUM          ; 3 bytes: Lookup for setDisplayMode
                                     ;   Number of 0's to fill starting at $04C8 [DISP_LINE6]
-                                    ;     0: $00 (0 = clear 1 byte) - ...same byte as tbl_COLPM3_1c1c[5] above...
+                                    ;     0: $00 (0 = clear 1 byte) - ...same byte as tbl_COLPM3[5] above...
                                     ;     1: $27 (39 = clear 40 bytes)
                                     ;     2: $13 (19 = clear 20 bytes)
 
@@ -584,7 +692,7 @@ rwx 1ce7,1   a0_BlinkOff            ; ($a0) Turn off blinking text mode
 rwx 1ced,1   a1_BlinkOn             ; ($a1) Set blinking text mode
 rwx 1cf3,1   a4_Byte2Hex            ; ($a4) Reads address and outputs byte from that location as hex
 rwx 1cfe,1   a3_CallSub             ; ($a3) Invoke subroutine at address
-rwx 1d07,1   callSub                ; Dynamically invokes the subroutine @ sub_add_0018_L/H
+rwx 1d07,1   callSub                ; Dynamically invokes the subroutine @ OutGetWord_L/H
 rwx 1d0a,1   a5_Center              ; ($a5) Start center-aligned text (does not clear from start of line)
 rwx 1d21,1   a2_CenterClr           ; ($a2) Start center-aligned text (clearing from start of line)
 rwx 1d2a,1   a6_SetPos              ; ($a6) Set output position to col/row
@@ -599,14 +707,15 @@ rwx 1dc9,1   b0_UInt32ToDec         ; ($b0) Read big endian uint32 at address an
 rwx 1dd9,1   b1_UInt16ToDec         ; ($b1) Read big endian uint16 at address and output as decimal string
 rwx 1dec,1   b2_ByteToDec           ; ($b2) Read uint8 at address and output as decimal string
 rwx 1df9,1   out_UInt32ToDec        ; b0_UInt32ToDec, b1_UInt16ToDec and b2_ByteToDec all converge here to output the value
-rwx 1e8b,1   unpackBcdByte          ; Unpacks BCD byte: Splits the nibbles of dat_0002[X] into OUT_UBCD_BUF[Y] (lo) and OUT_UBCD_BUF[Y + 1] (hi)
+rwx 1e8b,1   unpackBcdByte          ; Unpacks BCD byte: Splits the nibbles of BcdData[0..3] into
+                                    ;     OUT_UBCD_BUF[Y] (low) and OUT_UBCD_BUF[Y + 1] (high)
 rwx 1e98,1   unpackBcdNibble        ; Place low nibble of A into OUT_UBCD_BUF[Y]
 rwx 1e9d,1   printByteAsHex         ; Output byte in A as 2 character hex representation
 rwx 1ea8,1   printNbblAsHex         ; Output low nibble of A as hex character
 
 rwx 1eb4,1   b3_StrZ                ; ($b3) Output NUL-terminated string
 rwx 1ebf,1   b4_IndStrZ             ; ($b4) Output NUL-terminated string at address from address (indirect)
-rwx 1ed4,1   out_Strz               ; Outputs a NUL-terminated string stored @ sub_add_0018_L/H
+rwx 1ed4,1   out_Strz               ; Outputs a NUL-terminated string stored @ OutGetWord_L/H
 rwx 1ee3,1   ac_Follow              ; ($ac) Read address and continue processing from that location
 rwx 1efb,1   ad_IndFollow           ; ($ad) Read address at address and continue processing from that location (indirect)
 rwx 1f16,1   ae_Return              ; ($ae) Return to previous template with last $ac or $ad code executed.
@@ -614,7 +723,7 @@ rwx 1f16,1   ae_Return              ; ($ae) Return to previous template with las
 rw  1f23,1   OutClrLeftFlg          ; 1 byte: If bit 7 == 1, will clear left edge of screen when center-aligning output
 rw  1f24,1   OutRetnAdr_L           ; 1 byte: LSB of address return to when $ae code processed
 rw  1f25,1   OutRetnAdr_H           ; 1 byte: MSB of address return to when $ae code processed
-rwx 1f26,1   getNextWord            ; Reads a 16-bit word from StrTmplate_L/H into sub_add_0018_L/H
+rwx 1f26,1   getNextWord            ; Reads a 16-bit word from StrTmplate_L/H into OutGetWord_L/H
 rwx 1f31,1   getNextByte            ; Reads the byte at StrTmplate_L/H and increments StrTmplate_L/H
 rwx 1f3c,1   alignOutputChr         ; Outputs a character or computes output alignment for a character
 
@@ -651,29 +760,41 @@ rw  1fd4,15  OutFmtHndlr_H          ; 21 bytes: MSB of format character handler 
                                     ;   19: $1eb4 [b3_StrZ]        - ($b3) Output NUL-terminated string at address
                                     ;   20: $1ebf [b4_IndStrZ]     - ($b4) Output NUL-terminated string at address from address (indirect)
 
-rwx 1fe9,1   multBytes              ; Multiplies A by Y returning 16-bit result in dat_0002/dat_0003
+rwx 1fe9,1   multBytes              ; Multiplies A by Y returning little-endian 16-bit result in LEResult[0..1]
 
 rw  2007,2   StrClearAll            ; 2 bytes: Clears all message rows with NULs
 
 rwx 2009,1   sioInitXmit            ; Intitialize serial transmission
-rwx 201d,1   rts_SIO_INIT           ; Jump point for completing SIO xmit/recv intialization
+rwx 201d,1   rts_SioInit            ; Jump point for completing SIO xmit/recv intialization
 
 rwx 2037,1   sioEnd                 ; Disables serial send and receive interrupts
 
-rwx 204e,1   cont_204e              ; Jumped to from sub_2494
+rwx 2053,1   sioComplete            ; Jumps here if the current serial I/O operation failed and should be retried.
 
-rwx 2097,1   contRtn_2097           ;
+rwx 204e,1   sioSendCmd             ; Sends a serial I/O command, with retries. Jumped to from sioExchange
 
-rwx 20f7,1   sub_20f7               ; Send buffer of data over the serial bus
+rwx 2097,1   contRtn_2097           ; Read or write data frame when necessary and reads COMPLETE response byte.
+
+rwx 20e5,1   cont_sioError          ; Either retries the current serial I/O operation (if retries remain)
+                                    ;    or returns failure (no retries remaining)
+
+rwx 20ed,1   cont_sioRts            ; Stops serial I/O, updates transfer status and returns to caller
+
+rwx 20f7,1   sioSendBytes           ; Send buffer of data over the serial bus
+
+rwx 2126,1   sioReadReply           ; Reads a serial I/O device response, with timeout
+
+rwx 218e,1   sioReadBytes           ; Read data from the serial bus into a buffer
 
 rwx 21b7,1   sioInitRecv            ; Intitialize serial receive
 
-rwx 21d1,1   sub_21d1               ; Initializes an SIO buffer starting at $100 and dat_0234_L/H bytes in size.
+rwx 21d1,1   sioInitBuffer          ; Prepares to read/write SIO buffer starting at $100 [SioBuf] and SioSize_L/H
+                                    ;   bytes in size.
 
 rwx 21e7,1   irq_VSERIN_21e7        ; Assigned in the KERNEL_LOADER to handle
                                     ;     the VSERIN (POKEY serial I/O bus receive data ready) interrupt.
                                     ;     Invoked from irq_VIMIRQ_22ac.
-rwx 2248,1   loc_2216               ; Restore state and return from interrupt (irq_VSERIN_21e7)
+rwx 2248,1   rti_2216               ; Restore state and return from interrupt (irq_VSERIN_21e7)
 
 rwx 224f,1   irq_VSEROR_224f        ; Assigned in the KERNEL_LOADER to handle
                                     ;     the VSEROR (POKEY serial I/O transmit ready) interrupt.
@@ -715,19 +836,20 @@ rwx 2454,1   WAIT_FOR_VBLK_A        ; Sub which waits for the next vblank to occ
 
 rwx 245d,1   sub_245d               ;
 
-rwx 24a3,1   sub_24a3               ;
+rwx 24a3,1   readDiskStatus         ; Reads disk status
 
 rwx 24ef,1   smc_24ef               ; Self-modifying code: The value assigned by this LDA is incremented on each call
 
 rw  24fb,8   tbl_TME_SPNR           ; 8 bytes: Characters to display for "time passing" spinner
 
-rwx 248e,1   initReadSector         ; This sub is an entry point for sub_2494 with
-                                    ; the following parameter values:
-                                    ;   A = $52 (82)
+rwx 248e,1   readDiskSector         ; Reads a sector from disk
+                                    ; This sub is an entry point for sioExchange with the following parameter values:
+                                    ;   A = $52 (82 'R') - Disk Read DCB command
                                     ;   X = $40 (64)
                                     ;   Y = $03 (3)
+                                    ; Return: N = 0 on success, 1 on failure
 
-rwx 2494,1   sub_2494               ; Related to serial IO
+rwx 2494,1   sioExchange            ; Executes a serial I/O command/response exchange
 
 rwx 24c6,1   sub_24c6               ;
 
@@ -814,26 +936,43 @@ rwx 2785,1   nextDisk               ; Increments DiskNumber and sets to '1' ($31
 rwx 2788,1   normalizeDisk          ; Tests DiskNumber and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
 rwx 2799,1   sub_2799               ;
 
+rwx 27d8,1   sub_27d8               ; Called from sub_80d2 in KERNEL_LOADER
+
 rwx 28a1,1   getFileEntry           ; Reads a file segment directory entry
+
+rwx 292b,1   sub_292b               ;
 
 rw  299f,68  StrPleaseInsert        ; 104 bytes: "Please insert The Dungeon Disk ? Side ? into any drive. Press SPACEBAR to continue"
 rw  2a07,1d  StrPressEsc            ; 29 bytes: "or press ESC to abort"
 rw  2a24,a   StrLoading             ; 10 bytes: "Loading..."
 rw  2a2e,a   StrEncounter           ; 10 bytes: "Encounter!"
-rw  2a38,9   dat_2a38_unk           ; 9 bytes - TODO: where is this used?
+rw  2a38,9   dat_2a38_unk           ; 9 bytes/72 bits: Sequence of bits mapped to a source file number. If a bit
+                                    ; corresponding to a file number is set, then sub_2979 defers to sub_f9f4 to load
+                                    ; the file instead of the normal process.
+                                    ;   - Related to dat_025a which is assigned the value for a file number's corresponding bit (0 = 0, 1 = $80)
 
 rwx 2a41,1   readLine               ; Read a line of keyboard input into LineBuf
 
-rw  2aa0,1   sub_2aa0               ;
+rwx 2aa0,1   readBEUInt16           ; Reads up to 5 characters of keyboard input and converts them to a big endian
+                                    ;     unsigned 16-bit integer value.
 
 rwx 2b0f,1   trimLineBuf            ; Removes leading and trailing spaces from string in LineBuf.
-rw  2b46,1   TLBUF_LEN              ; 1 byte: Length of LineBuf after trimming by trimLineBuf
+rw  2b46,1   TrimmedLen             ; 1 byte: Length of LineBuf after trimming by trimLineBuf
 
-rwx 2b47,1   multInt16              ; Multiplies big-endian 16-bit values in dat_0002/3 and dat_0007/8
+rwx 2b47,1   multBEInt16            ; Multiplies big-endian 16-bit values in BEParam1[0..1] and BEParam2[0..1]
 
-rwx 2b6b,1   sub_RND_2b6b           ; Computes a random value within a specified range
+rwx 2b6b,1   randInRange            ; Computes a random byte value within a specified range
 
-rw  2b9d,8   tbl_2b9d               ; 8 byte table of bitmask bytes
+rw  2b9d,8   RndBitmask             ; 8 byte table of bitmask bytes used to mask bits in randInRange. Each entry
+                                    ; has all bits numbered less than or equal to the entry's index set to 1.
+                                    ;   0: $01 (0000_0001)
+                                    ;   1: $03 (0000_0011)
+                                    ;   2: $07 (0000_0111)
+                                    ;   3: $0f (0000_1111)
+                                    ;   4: $1f (0001_1111)
+                                    ;   5: $3f (0011_1111)
+                                    ;   6: $7f (0111_1111)
+                                    ;   7: $ff (1111_1111)
 
 rwx 2ba5,1   charToUpper            ; Convert ATASCII character to upper case
 
@@ -846,10 +985,9 @@ rwx 2bfc,1   waitSeconds            ; Waits for a specified number of seconds or
 
 rwx 2c3f,1   rtn_2c3f               ; Dynamically specified return location stored in cont_addr_1977_L/H
 
-rw  2c63,1   cnt_2c63               ; Loop counter (6 iterations : counts from 6 down to 0)
-rw  2c64,1   exe_cnt_2c64           ; Counts # of times a section of code is executed
-                                    ; Used to execute different code when exe_cnt_2c64 % 256 = 0
-rw  2c65,1   MinDelayCnt            ; Counter used to ensure at least 1/2 second elapses before returning from waitSeconds.
+rw  2c63,1   SixthsCnt              ; Used in waitSeconds to count sixths of a second (6..0)
+rw  2c64,1   SecsRemaining          ; Used in waitSeconds to hold number of seconds remainining
+rw  2c65,1   MinDelayCnt            ; Used in waitSeconds to ensure at least 1/3 second elapses before returning.
 
 rwx 2c66,1   WAIT_FOR_VBLK_B        ; Waits for a vertical blank to occur
 
@@ -858,8 +996,9 @@ rwx 2c88,1   rtn_2c88               ; Dynamically specified return location stor
 
 rw  2c99,1   tmp_2c99_L             ; Used for preserving the value of cont_addr_1977_L
 rw  2c9a,1   tmp_2c99_H             ; Used for preserving the value of cont_addr_1977_H
-rwx 2c9b,1   sub_2c9b               ;
-
+rwx 2c9b,1   sub_2c9b               ; Sets StrTmplate_L/H to the A-th address from the table @ Y/X
+                                    ;   e.g. StrTmplate_L = *(X * 256 + Y)[A * 2]
+                                    ;        StrTmplate_H = *(X * 256 + Y)[A * 2 + 1]
 rwx 2cab,1   sub_2cab               ; Does nothing / debug BRK
 rwx 2cad,1   sub_2cad               ;
 
@@ -876,12 +1015,17 @@ rw  2d8a,5   tbl_2d8a               ; 5 bytes of data
 
 rwx 2d8f,5   initBytes              ;
 
-rwx 2dab,1   updateBit              ; Sets or clears a bit
+rwx 2dab,1   updateBit              ; Sets or clears a bit:
+                                    ;   Y/X - LSB/MSB of byte to update
+                                    ;   A   - Bits 0,1,2 = Bit to update (7 = lsb, 0 = msb)
+                                    ;         Bits 3-7   = Offset relative to Y/X to update
+                                    ;   C   - 0 = clear bit, 1 = set bit
 rwx 2dd9,3   smc_2dd9               ; The address for this LDA is dynamically modified
 rwx 2ddc,3   smc_2ddc               ; The op here is dynamically switched between an ORA and an AND
 rwx 2ddf,3   smc_2ddf               ; The address for this STA is dynamically modified
 
-rwx 2de3,1   sub_2de3               ; Params: A, X, Y?
+rwx 2de3,1   bitTestBuf             ; Test whether a specific bit is set within a sequence of bytes.
+                                    ;   Params: A = bits 0-2 (8 - bit to test); bits 3-7 (offset), Y/X = buffer address
 rwx 2df3,1   smc_2df3               ;
 
 rw  2dfd,8   tbl_2dfd               ; 8 bytes: dynamically selected in updateBit
@@ -909,8 +1053,9 @@ rwx 2e69,1   decChrAttr8            ; Decrease a single-byte player attribute va
 rwx 2e6b,1   decChrAttr             ; Decrease a player attribute value
 rwx 2e6e,1   decAttr                ; Decrease a little-endian attribute value
 
-rxw 2e8d,1   setChrAttrAdr          ; Updates dat_0045_L/H to a player stat address
-rwx 2e9e,1   sub_2e9e               ;
+rxw 2e8d,1   setChrAttrAdr          ; Updates AttrAddr_L/H to a player stat address
+rwx 2e9e,1   copyBytesNeg           ; Copies -(dat_000c * 256 + dat_000b) bytes from the address in dat_0007_L/H to
+                                    ;     the address in dat_0009_L/H
 
 rwx 2ec6,1   kernelInit             ; Initialization code called from KERNEL_ENTRY after base initialization
 
@@ -924,6 +1069,8 @@ rw  2f78,8   stdStatPgStr_H         ; MSB of standard status page template strin
                                     ;    5: $3ee9 [StrDiseases]
                                     ;    6: $3f03 [StrCurses]
                                     ;    7: $0000 - unused
+
+rwx 2ff3,1   sub_2ff3               ;
 
 rwx 307f,1   cont_307f              ;
 
@@ -1194,8 +1341,8 @@ rw  3ee9,1a  StrDiseases            ; 26 bytes: Known Diseases status screen
 rw  3f03,12  StrCurses              ; 18 bytes: Curses status screen
 rw  3f15,2c  SubstrNames            ; 44 bytes: Substring template for displaying list of magic/disease/curse names
 
-rwx 3f41,1   sub_3f41               ;
-rwx 3f8d,1   sub_3f8d               ; ?Load apparel names into ZtsName1_L/etc?
+rwx 3f41,1   setWeapArmrNms         ; Populate weapon and armor names for the "Weapons & Armor" status page.
+rwx 3f8d,1   setApparelNms          ; Populates equipped apparel names for the "Apparel" status page.
 rwx 3ff6,1   setDiseaseNms          ; Populates known disease names for the "Known Diseases" status page.
 rw  3ff8,1   nop_3ff8               ; (Forms 'BIT $0ba9' with following LDA - essential NOP)
 rwx 3ff9,1   setCurseNames          ; Populates curse names for the "Curses" status page.
@@ -1206,8 +1353,11 @@ rwx 405f,1   rts_405f               ; RTS
 rw  4060,e   ZtsBdaySuit            ; 14 bytes: "Birthday suit"
 rw  406e,a   ZtsBareHand            ; 10 bytes: "Bare hand"
 rw  4078,5   ZtsNone                ; 5 bytes: "None"      ; TODO: Where is this string used?
-rw  407d,1   dat_407d               ; 1 byte: ?? counts number of matches so far or spaces remaining ??
-rw  407e,1   dat_407e               ; 1 byte: ?? perhaps a "type" of the "item" to match ??
+rw  407d,1   NameCount              ; 1 byte: ?? counts number of matches so far or spaces remaining ??
+                                    ;    - Used in setWeapArmrNms (5..0), setApparelNms (3..0), setDiseaseNms (0..5),
+                                    ;      setCurseNames (0..5), setMagicNames (0..5)
+rw  407e,1   NameType               ; 1 byte: holds a type of effect description to match
+                                    ;    - Used in setDiseaseNms, setCurseNames, setMagicNames
 rw  407f,1   ZtsName1_L             ; 1 byte: LSB of ZTS address for display on status pages
 rw  4080,1   ZtsName1_H             ; 1 byte: MSB of ZTS address for display on status pages
 rw  4081,1   ZtsName2_L             ; 1 byte: LSB of ZTS address for display on status pages
@@ -1228,17 +1378,31 @@ rw  413c,1   dat_413c               ; 1 byte
 rwx 413d,1   sub_413d               ;
 
 rw  4168,2   smc_4168               ; The value for this CMP is dynamically modified
-rwx 4176,1   sub_4176               ;
 
 rw  4172,4   tbl_4172               ; 4? byte table
 
-rwx 4176,1   sub_4176               ;
+rwx 4176,1   applyBiology           ; Applies standard time-based adjustments to character biological status (hunger,
+                                    ;     thirst, stamina, drunkenness, and stomach)
 
 rw  41d3,1   dat_41d3               ; 1 byte
 
-rw  41f0,5   tbl_41f0               ; 5? bytes
+rw  41f0,5   CrncyWgtDiv            ; 5 bytes: One byte indicating power of 2 weight divisor for each of the following
+                                    ;      currency types:
+                                    ;    0: gold    - divide by 16 (weight = 0.0625 * count)
+                                    ;    1: silver  - divide by 16 (weight = 0.0625 * count)
+                                    ;    2: copper  - divide by 16 (weight = 0.0625 * count)
+                                    ;    3: gems    - divide by 8  (weight = 0.125 * count)
+                                    ;    4: jewels  - divide by 8  (weight = 0.125 * count)
 
-rw  41f5,7   tbl_41f5               ; 7? bytes
+rw  41f5,7   StdItemWgtDiv          ; 7 bytes: One byte indicating power of 2 weight divisor for each of the following
+                                    ;      item types:
+                                    ;    0: food       - divide by 2 (weight = 0.5 * count)
+                                    ;    1: water      - no divide   (weight = 1.0 * count)
+                                    ;    2: torches    - no divide   (weight = 1.0 * count)
+                                    ;    3: crystals   - divide by 8 (weight = 0.125 * count)
+                                    ;    4: keys       - divide by 8 (weight = 0.125 * count)
+                                    ;    5: compasses  - divide by 4 (weight = 0.25 * count)
+                                    ;    6: timepieces - divide by 4 (weight = 0.25 * count)
 
 rwx 41fc,1   sub_41fc               ;
 
@@ -1248,13 +1412,14 @@ rw  42e5,1   dat_42e5_L             ; LSB of int16
 rw  42e6,1   dat_42e5_H             ; MSB of int16
 
 rwx 42e7,1   updEffectStrs          ; Updates the effect status strings on the display
-rwx 4377,1   sub_4377               ;
+rwx 4377,1   applyBioAdj            ; Applies standard biological status effects (stat adjustments/etc based on current
+                                    ;     Warmth, Hunger, Thirst, Stamina, Burden, Inebriation, Fullness)
 
 rwx 43b1,3   smc_43b0               ; The address for this JSR is dynamically modified
 
-rw  43c5,1   TmpCHR_ENERGY          ; Used in sub_4377 to temporarily store value of CHR_ENERGY
+rw  43c5,1   TmpCHR_STAMINA         ; Used in applyBioAdj to temporarily store value of CHR_STAMINA
 
-rwx 43c6,1   DO_HOURLY_UPDATES      ; Sub called at the start of each in-game hour
+rwx 43c6,1   minuteUpdates          ; Called each game minute (every 4 seconds)
 
 rw  445f,10  tbl_MOVE_SPEED         ; Table of 16 x 1 byte values indexed by CHR_SPD_EFFECTIVE/16
                                     ;   and assigned to CHR_MOVE_SPEED
@@ -1265,49 +1430,50 @@ rw  445f,10  tbl_MOVE_SPEED         ; Table of 16 x 1 byte values indexed by CHR
 rwx 446f,1   rtsIfRndStaChk         ; Returns to caller of previous sub (unwinding stack)
                                     ;     if the player's STA / 2 >= random byte chosen amount.
 rwx 4479,1   smc_4479               ; Self-modifying code: The CMP value here is assigned a random value
-rwx 4481,1   effFreezing            ; Warmth:Freezing - Subtracts 1 from CHR_ENERGY and CHR_HUNGER
-rwx 448f,1   effRoasting            ; Warmth:Roasting - Subtracts 1 from CHR_ENERGY and CHR_THIRST
+rwx 4481,1   effFreezing            ; Warmth:Freezing - Subtracts 1 from CHR_STAMINA and CHR_HUNGER
+rwx 448f,1   effRoasting            ; Warmth:Roasting - Subtracts 1 from CHR_STAMINA and CHR_THIRST
 rwx 449d,1   effFamished            ; Hunger:Famished - Calls rtsIfRndStaChk and if the check fails,
                                     ;     adds 10 to STR penalty #2 and adds 1 to SPD penalty #2
 rwx 44ae,1   effStarving            ; Hunger:Starving - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_ENERGY,
+                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_STAMINA,
                                     ;     adds 1 to penalty #2 for each of STR, SKL and SPD
-rwx 44d4,1   sub_44d4               ; Hunger:normal - Subtracts 1 from penalty #2 values for each of STR, SKL and SPD
+rwx 44d4,1   effSatiated            ; Hunger:normal - Subtracts 1 from penalty #2 values for each of STR, SKL and SPD
 rwx 44e9,1   effParched             ; Thirst:Parched - Calls rtsIfRndStaChk and if the check fails,
                                     ;     adds 1 to penalty #3 for STR and SPD
 rwx 44fa,1   effDehydrated          ; Thirst:Dehydrated - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_ENERGY,
+                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_STAMINA,
                                     ;     adds 1 to penalty #3 for STR and SPD
-rwx 4519,1   sub_4519               ; Thirst:normal - Subtracts 1 from penalty #3 of STR and SPD
-rwx 4527,1   effTired               ; Exhaustion:Tired - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
+rwx 4519,1   effHydrated            ; Thirst:normal - Subtracts 1 from penalty #3 of STR and SPD
+rwx 4527,1   effTired               ; Stamina:Tired - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
                                     ;     adds 1 to penalty #4 for SPD and STR
-rwx 453e,1   effExhausted           ; Exhaustion:Exhausted - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
+rwx 453e,1   effExhausted           ; Stamina:Exhausted - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
                                     ;     subtracts 1 from CHR_HP_CURRENT_HI/LO,
                                     ;     adds 1 to penalty #4 for each of SPD, STR and SKL
-rwx 4563,1   sub_4563               ; Exhaustion:normal - Subtracts 1 from penalty #4 for each of SPD, STR and SKL
+rwx 4563,1   effRested              ; Stamina:normal - Subtracts 1 from penalty #4 for each of SPD, STR and SKL
 rwx 4578,1   effEncumbered          ; Burden:Encumbered - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtract 1 from CHR_ENERGY
+                                    ;     subtract 1 from CHR_STAMINA
 rwx 4582,1   effImmobilized         ; Burden:Immobilized - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtract 1 from CHR_ENERGY
+                                    ;     subtract 1 from CHR_STAMINA
 rwx 458c,1   effDrunk               ; Inebriation:Drunk - NOP: Simply returns to caller
 rwx 458d,1   effVeryDrunk           ; Inebriation:Very Drunk - NOP: Simply returns to caller
 rwx 458e,1   effStuffed             ; Fullness:Stuffed - NOP: Simply returns to caller
 rwx 458f,1   effBloated             ; Fullness:Bloated - NOP: Simply returns to caller
 
-rw  4590,1   dat_4590               ; 1 byte
-rw  4591,1   dat_4591               ; 1 byte
-rw  4592,1   dat_4592               ; 1 byte
-rw  4593,1   dat_4593               ; 1 byte
-rw  4594,1   dat_4594               ; 1 byte
+rw  4590,1   hungerTimer            ; 1 byte: applyBiology: Number of calls before player hunger is decremented
+rw  4591,1   thirstTimer            ; 1 byte: applyBiology: Number of hunger decreases before player thirst is
+                                    ;     decremented
+rw  4592,1   staminaTimer           ; 1 byte: applyBiology: Number of calls before player stamina is decremented
+rw  4593,1   drunkTimer             ; 1 byte: applyBiology: Number of calls before player drunkenness is updated
+rw  4594,1   stomachTimer           ; 1 byte: applyBiology: Number of calls before player stomach is updated
 
 rw  4595,7   EffTimers              ; 7 bytes: Table of countdown counters for the various effect types. Each counter is
                                     ;     decremented until 0, then reset to the corresponding value from EffApplyFreq.
                                     ;   0: Warmth
                                     ;   1: Hunger
                                     ;   2: Thirst
-                                    :   3: Energy / Fatigue / Exhaustion     TODO: consistent naming
+                                    ;   3: Stamina
                                     ;   4: Burden
-                                    ;   5: Drunk / Inebriation
+                                    ;   5: Drunk / Inebriation / Intoxiation
                                     ;   6: Stomach / Fullness
 
 rw  459c,7   EffApplyFreq           ; 7 bytes: Table of base values to reset EffTimers entries to after the individual
@@ -1327,8 +1493,8 @@ rw  45a5,1   EffHungrStr_L          ; LSB of Hunger level description (default: 
 rw  45a6,1   EffHungrStr_H          ; MSB of Hunger level description
 rw  45a7,1   EffThrstStr_L          ; LSB of Thirst level description (default: $47e5 [Zts12Spaces])
 rw  45a8,1   EffThrstStr_H          ; MSB of Thirst level description
-rw  45a9,1   EffExhstStr_L          ; LSB of Exhaustion level description (default: $47e5 [Zts12Spaces])
-rw  45aa,1   EffExhstStr_H          ; MSB of Exhaustion level description
+rw  45a9,1   EffExhstStr_L          ; LSB of Stamina level description (default: $47e5 [Zts12Spaces])
+rw  45aa,1   EffExhstStr_H          ; MSB of Stamina level description
 rw  45ab,1   EffBurdnStr_L          ; LSB of Burden level description (default: $47e5 [Zts12Spaces])
 rw  45ac,1   EffBurdnStr_H          ; MSB of Burden level description
 rw  45ad,1   EffInebrStr_L          ; LSB of Inebriation level description (default: $47e5 [Zts12Spaces])
@@ -1345,29 +1511,29 @@ rw  45b6,1   EffCurseStr_H          ; MSB of Cursed description
 rw  45b7,22  StatEffcts_L           ; 34 byte table: LSB of address
 rw  45b8,1   StatEffcts_H           ; MSB of address
                                     ; Subroutine addresses (1-based indexing of 2-byte entries)
-                                    ;    1: $4481 [effFreezing]   - Warmth: Freezing
-                                    ;    2: $448f [effRoasting]   - Warmth: Roasting
-                                    ;    3: $449d [effFamished]   - Hunger: Famished
-                                    ;    4: $44ae [effStarving]   - Hunger: Starving
-                                    ;    5: $44e9 [effParched]    - Thirst: Parched
-                                    ;    6: $44fa [effDehydrated] - Thirst: Dehydrated
-                                    ;    7: $4527 [effTired]      - Exhaustion: Tired
-                                    ;    8: $453e [effExhausted]  - Exhaustion: Exhausted
-                                    ;    9: $4578 [effEncumbered] - Burden: Encumbered
+                                    ;    1: $4481 [effFreezing]    - Warmth: Freezing
+                                    ;    2: $448f [effRoasting]    - Warmth: Roasting
+                                    ;    3: $449d [effFamished]    - Hunger: Famished
+                                    ;    4: $44ae [effStarving]    - Hunger: Starving
+                                    ;    5: $44e9 [effParched]     - Thirst: Parched
+                                    ;    6: $44fa [effDehydrated]  - Thirst: Dehydrated
+                                    ;    7: $4527 [effTired]       - Stamina: Tired
+                                    ;    8: $453e [effExhausted]   - Stamina: Exhausted
+                                    ;    9: $4578 [effEncumbered]  - Burden: Encumbered
                                     ;   10: $4582 [effImmobilized] - Burden: Immobilized
-                                    ;   11: $458c [effDrunk]      - Inebriation: Drunk - NOP
-                                    ;   12: $458d [effVeryDrunk]  - Inebriation: Very Drunk - NOP
-                                    ;   13: $458e [effStuffed]    - Fullness: Stuffed - NOP
-                                    ;   14: $458f [effBloated]    - Fullness: Bloated - NOP
-                                    ;   15: $44d4 [sub_44d4] - Hunger: normal
-                                    ;   16: $4519 [sub_4519] - Thirst: normal
-                                    ;   17: $4563 [sub_4563] - Exhaustion: normal
+                                    ;   11: $458c [effDrunk]       - Inebriation: Drunk - NOP
+                                    ;   12: $458d [effVeryDrunk]   - Inebriation: Very Drunk - NOP
+                                    ;   13: $458e [effStuffed]     - Fullness: Stuffed - NOP
+                                    ;   14: $458f [effBloated]     - Fullness: Bloated - NOP
+                                    ;   15: $44d4 [effSatiated]    - Hunger: normal
+                                    ;   16: $4519 [effHydrated]    - Thirst: normal
+                                    ;   17: $4563 [effRested]      - Stamina: normal
 
 rw  45d9,7   EffAttrOfs             ; 7 bytes: Offsets of effect attributes relative to $6300 [CHR_STATE]
                                     ;   0: $95 -> $6395 [CHR_WARMTH]
                                     ;   1: $99 -> $6399 [CHR_HUNGER]
                                     ;   2: $9a -> $639a [CHR_THIRST]
-                                    ;   3: $9b -> $639b [CHR_ENERGY]
+                                    ;   3: $9b -> $639b [CHR_STAMINA]
                                     ;   4: $94 -> $6394 [CHR_BURDEN]
                                     ;   5: $97 -> $6397 [CHR_DRUNK]
                                     ;   6: $98 -> $6398 [CHR_STOMACH]
@@ -1377,7 +1543,7 @@ rw  45e7,7   EffLimitTbls_H         ; 7 bytes: MSB of address to limit value tab
                                     ;     0: $460a [EffWrmthLmts]
                                     ;     1: $4626 [EffHungrLmts]
                                     ;     2: $4636 [EffThrstLmts]
-                                    ;     3: $4646 [EffExhstLmts]
+                                    ;     3: $4646 [EffStmnaLmts]
                                     ;     4: $4656 [EffBurdnLmts]
                                     ;     5: $4666 [EffInebrLmts]
                                     ;     6: $4676 [EffFullnLmts]
@@ -1389,7 +1555,7 @@ rw  45f5,7   EffStrTbls_H           ; 7 bytes: MSB of address
                                     ;     0: $4618 [EffHungrStrs] - Warmth
                                     ;     1: $462e [EffHungrStrs] - Hunger
                                     ;     2: $463e [EffThrstStrs] - Thirst
-                                    ;     3: $464e [EffExhstStrs] - Exhaustion
+                                    ;     3: $464e [EffStmnaStrs] - Stamina
                                     ;     4: $465e [EffBurdnStrs] - Burden
                                     ;     5: $466e [EffInebrStrs] - Inebriation
                                     ;     6: $467e [EffFullnStrs] - Fullness
@@ -1401,7 +1567,7 @@ rw  4603,7   EffSubTbls_H           ; 7 bytes: MSB of address
                                     ;     0: $4611 [EffWrmthSubs] - Warmth
                                     ;     1: $462a [EffHungrSubs] - Hunger
                                     ;     2: $463a [EffThrstSubs] - Thirst
-                                    ;     3: $464a [EffExhstSubs] - Exhaustion
+                                    ;     3: $464a [EffStmnaSubs] - Stamina
                                     ;     4: $465a [EffBurdnSubs] - Burden
                                     ;     5: $466a [EffInebrSubs] - Inebriation
                                     ;     6: $467a [EffFullnSubs] - Fullness
@@ -1419,13 +1585,13 @@ rw  460a,7   EffWrmthLmts           ; 7 bytes: Table of upper-limit thresholds f
 
 rw  4611,7   EffWrmthSubs           ; 7 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Warmth level.
-                                    ;     0 [Freezing]: 1 - [effFreezing] - Subtracts 1 from CHR_ENERGY and CHR_HUNGER
+                                    ;     0 [Freezing]: 1 - [effFreezing] - Subtracts 1 from CHR_STAMINA and CHR_HUNGER
                                     ;     1 [Cold]:     0 - no effect
                                     ;     2 [Chilly]:   0 - no effect
                                     ;     3 []:         0 - no effect
                                     ;     4 [Warm]:     0 - no effect
                                     ;     5 [Hot]:      0 - no effect
-                                    ;     6 [Roasting]: 2 - [effRoasting] - Subtracts 1 from CHR_ENERGY and CHR_THIRST
+                                    ;     6 [Roasting]: 2 - [effRoasting] - Subtracts 1 from CHR_STAMINA and CHR_THIRST
 
 rw  4618,e   EffWrmthStrs           ; 14 bytes: Warmth effect level string addresses
                                     ;     0: $4686 [ZtsFreezing]
@@ -1447,12 +1613,12 @@ rw  4626,4   EffHungrLmts           ; 4 bytes: Table of upper-limit thresholds f
 rw  462a,4   EffHungrSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Hunger level.
                                     ;     0 [Starving]: 4 [effStarving] - If rtsIfRndStaChk fails, subtracts 1 from
-                                    ;                                  CHR_HP_CURRENT_HI/LO and CHR_ENERGY, adds
+                                    ;                                  CHR_HP_CURRENT_HI/LO and CHR_STAMINA, adds
                                     ;                                  1 to penalty #2 for each of STR, SKL and SPD
                                     ;     1 [Famished]: 3 [effFamished] - If rtsIfRndStaChk fails, adds 10 to STR
                                     ;                                  penalty #2 and adds 1 to SPD penalty #2
                                     ;     2 [Hungry]:   0 (no effect)
-                                    ;     3 []:        15 [sub_44d4] - Subtracts 1 from
+                                    ;     3 []:        15 [effSatiated] - Subtracts 1 from
                                     ;                                  penalty #2 for each of SPD, STR and SKL
 
 rw  462e,8   EffHungrStrs           ; 8 bytes: Hunger effect level string addresses
@@ -1472,12 +1638,12 @@ rw  4636,4   EffThrstLmts           ; 4 bytes: Table of upper-limit thresholds f
 rw  463a,4   EffThrstSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Thirst level.
                                     ;     0 [Dehydrated]: 6 [effDehydrated] - If rtsIfRndStaChk fails, subtracts 1 from
-                                    ;                                    CHR_HP_CURRENT_HI/LO and CHR_ENERGY, adds 1 to
+                                    ;                                    CHR_HP_CURRENT_HI/LO and CHR_STAMINA, adds 1 to
                                     ;                                    penalty #3 for STR and SPD
                                     ;     1 [Parched]:    5 [effParched] - If rtsIfRndStaChk fails, adds 1 to penalty #3
                                     ;                                    for STR and SPD
                                     ;     2 [Thristy]:    0 (no effect)
-                                    ;     3 []:          16 [sub_4519] - Subtracts 1 from penalty #3 of STR and SPD
+                                    ;     3 []:          16 [effHydrated] - Subtracts 1 from penalty #3 of STR and SPD
 
 rw  463e,8   EffThrstStrs           ; 8 bytes: Thirst effect level string addresses
                                     ;     0: $4715 [ZtsDehydrated]
@@ -1485,7 +1651,7 @@ rw  463e,8   EffThrstStrs           ; 8 bytes: Thirst effect level string addres
                                     ;     2: $46fb [ZtsThirsty]
                                     ;     3: $47e5 [Zts12Spaces]
 
-rw  4646,4   EffExhstLmts           ; 4 bytes: Table of upper-limit thresholds for the various exhaustion effect
+rw  4646,4   EffStmnaLmts           ; 4 bytes: Table of upper-limit thresholds for the various stamina effect
                                     ; categories. The largest value greater than or equal to the effect attribute value
                                     ; is the one used.
                                     ;     0: $40 ( 64) - [  0 ..  64] Exhausted
@@ -1493,8 +1659,8 @@ rw  4646,4   EffExhstLmts           ; 4 bytes: Table of upper-limit thresholds f
                                     ;     2: $c0 (192) - [161 .. 192] Weary
                                     ;     3: $ff (255) - [193 .. 255] (comfortable)
 
-rw  464a,4   EffExhstSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
-                                    ;   corresponding Exhaustion level.
+rw  464a,4   EffStmnaSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
+                                    ;   corresponding Stamina level.
                                     ;     0 [Exhausted]: 8 [effExhausted] - If rtsIfRndStaChk fails and dat_1972
                                     ;                                   is >= 0, subtracts 1 from CHR_HP_CURRENT_HI/LO,
                                     ;                                   adds 1 to penalty #4 for each of SPD, STR and
@@ -1502,10 +1668,10 @@ rw  464a,4   EffExhstSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H
                                     ;     1 [Tired]:     7 [effTired] - If rtsIfRndStaChk fails and dat_1972 is >= 0,
                                     ;                                   adds 1 to penalty #4 for SPD and STR
                                     ;     2 [Weary]:     0 (no effect)
-                                    ;     3 []:         17 [sub_4563] - Subtracts 1 from penalty #4 for each of
+                                    ;     3 []:         17 [effRested] - Subtracts 1 from penalty #4 for each of
                                     ;                                   SPD, STR and SKL
 
-rw  464e,8   EffExhstStrs           ; 8 bytes: Exhaustion effect level string addresses
+rw  464e,8   EffStmnaStrs           ; 8 bytes: Stamina effect level string addresses
                                     ;     0: $473c [ZtsExhausted]
                                     ;     1: $472f [ZtsTired]
                                     ;     2: $4722 [ZtsWeary]
@@ -1524,9 +1690,9 @@ rw  465a,4   EffBurdnSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H
                                     ;     0 []:             0 (no effect)
                                     ;     1 [Burdened]:     0 (no effect)
                                     ;     2 [Encumbered]:   9 [effEncumbered] - If rtsIfRndStaChk fails, subtract 1
-                                    ;                                      from CHR_ENERGY
+                                    ;                                      from CHR_STAMINA
                                     ;     3 [Immobilized]: 10 [effImmobilized] - If rtsIfRndStaChk fails, subtract 1
-                                    ;                                      from CHR_ENERGY
+                                    ;                                      from CHR_STAMINA
 
 rw  465e,8   EffBurdnStrs           ; 8 bytes: Burden effect level string addresses
                                     ;     0: $47e5 [Zts12Spaces]
@@ -1613,19 +1779,22 @@ rw  47d8,d   ZtsCursed              ; 13 bytes: "   Cursed!  "
 
 rw  47e5,d   Zts12Spaces            ; 13 bytes: "            "
 
-rwx 47f2,1   sub_47f2               ;
-
-rwx 4810,1   cont_4810              ;
-
+rwx 47f2,1   applyEffects           ; Iterates over each effect, applies countdowns, triggers actions and removes
+                                    ;     when necessary.
+rwx 4810,1   contEvalEffect         ; applyEffects entry point invoked after each effect is processed to process
+                                    ;     the next one
 rwx 4936,3   smc_4936               ; The address for this JMP is dynamically modified
-rwx 4939,1   cont_4939              ; Moves dat_0045_L/H forward dat_0053 bytes, sets Y = AttrSize & continues @ $4984 [cont_4984]
-rwx 494d,1   cont_incAttr           ; Increases attribute at dat_0045_L/H by amount in AttrAdjAmt & continues @ $4939 [cont_4939]
-rwx 4953,1   cont_decAttr           ; Decreases attribute at dat_0045_L/H by amount in AttrAdjAmt & continues @ $4939 [cont_4939]
-rwx 4959,1   cont_4959              ; Continuation address from tbl_4968_L/H
-
+rwx 4939,1   contNextAttr           ; Moves AttrAddr_L/H forward dat_0053 bytes, sets Y = AttrSize &
+                                    ;     continues @ $4984 [contIterEffect]
+rwx 494d,1   contIncAttr            ; Increases attribute at AttrAddr_L/H by amount in AttrAdjAmt &
+                                    ;     continues @ $4939 [contNextAttr]
+rwx 4953,1   contDecAttr            ; Decreases attribute at AttrAddr_L/H by amount in AttrAdjAmt &
+                                    ;     continues @ $4939 [contNextAttr]
+rwx 4959,1   contBitAttr            ; Applies a bitwise operation (XOR, AND, OR) assigned in applyEffects to Y bytes
+                                    ;     starting at AttrAddr_L.
 rwx 495b,1   smc_495b               ; Self-modifying code: Assigned one of $45 (EOR), $25 (AND) or $05 (ORA)
 
-rw  4965,3   dat_4965               ; Op assigned to smc_495b
+rw  4965,3   EffectBitOps           ; Op assigned to smc_495b
                                     ;   0: $45 = EOR zpg
                                     ;   1: $25 = AND zpg
                                     ;   2: $05 = ORA zpg
@@ -1633,21 +1802,21 @@ rw  4965,3   dat_4965               ; Op assigned to smc_495b
 rw  4968,10  tbl_4968_L             ; Table of addresses (LSB)
 rw  4969,f   tbl_4968_H             ; Table of addresses (MSB)
                                     ; Contains the following values:
-                                    ;    0: $494d [cont_incAttr] - Increases attr value
-                                    ;    1: $4953 [cont_decAttr] - Decreases attr value
-                                    ;    2: $4939 [cont_4939] - this is simply the next statement
-                                    ;    3: $4939 [cont_4939] - this is simply the next statement
-                                    ;    4: $4959 [cont_4959]
-                                    ;    5: $4959 [cont_4959]
-                                    ;    6: $4959 [cont_4959]
-                                    ;    7: $4982 [brk_rts_4982] - this sub is simply a BRK, RTS sequence
+                                    ;    0: $494d [contIncAttr]  - Increases attribute value
+                                    ;    1: $4953 [contDecAttr]  - Decreases attribute value
+                                    ;    2: $4939 [contNextAttr] - NOP/continues to next effect
+                                    ;    3: $4939 [contNextAttr] - NOP/continues to next effect
+                                    ;    4: $4959 [contBitAttr]  - XOR bytes
+                                    ;    5: $4959 [contBitAttr]  - AND bytes
+                                    ;    6: $4959 [contBitAttr]  - OR bytes
+                                    ;    7: $4982 [brk_rts_4982]  - this sub is simply a BRK, RTS sequence
 
-rwx 4978,1   cont_4978              ; Assigns Y bytes @ dat_0045_L/H to the value in AttrAdjAmt; continues @ $4939 [cont_4939]
+rwx 4978,1   contSetAttr            ; Assigns Y bytes @ AttrAddr_L/H to the value in AttrAdjAmt;
+                                    ;     Continues @ $4939 [contNextAttr]
 rwx 4982,1   brk_rts_4982           ; Continuation address from tbl_4968_L/H
-
-rwx 4984,1   cont_4984              ;
-
-rwx 4999,1   cont_4999              ;
+rwx 4984,1   contIterEffect         ; Decreases the repetition count for the current effect (removing effect if it
+                                    ;     reaches 0) and moves to the next effect.
+rwx 4999,1   contNextEffect         ; Moves to the next effect
 
 rwx 49b0,1   sub_49b0               ;
 
@@ -1657,7 +1826,7 @@ rwx 4a4a,1   sub_4a4a               ;
 
 rwx 4a5f,1   sub_4a5f               ;
 
-rwx 4a83,1   sub_4a83               ;
+rwx 4a83,1   allocItem              ; Reserves a space in the inventory for an item of the specified size.
 
 rwx 4ac9,1   sub_4ac9               ;
 
@@ -1686,6 +1855,7 @@ rwx 4bf5,1   sub_4bf5               ; Sub referenced in tbl_4cbf_L/H
 rwx 4c5a,1   sub_4c5a               ; Sub referenced in tbl_4cbf_L/H
 rwx 4c6b,1   sub_4c6b               ; Sub referenced in tbl_4cbf_L/H
 rwx 4c86,1   sub_4c86               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c95,1   cont_4c95              ;
 rwx 4c9c,1   rts_4c9c               ; NOP - Just an RTS. Sub referenced in tbl_4cbf_L/H
 rwx 4c9d,1   sub_4c9d               ; Sub referenced in tbl_4cbf_L/H
 
@@ -1711,9 +1881,25 @@ rwx 4dd4,1   sub_4dd4               ;
 rwx 4df7,1   cont_4df7              ;
 rwx 4e05,1   rts_4e05               ; Return to caller
 
-rwx 4e06,1   sub_4e06               ; Referenced by JMP_SUB_188D
-rwx 4e0f,1   sub_4e0f               ; Slightly truncated form of sub_4e06
+rwx 4e06,1   chkItemNAlign          ; Checks the alignment of item at inventory index against the player's
+                                    ;     current alignment.
+rwx 4e0f,1   chkItemAlign           ; Checks the alignment of item at ItemAdr_L/H against the player's
+                                    ;     current alignment.
 rwx 4e22,1   rts_4e22               ; Return to caller
+
+rwx 4ea2,1   unequipItem            ; Unequips any equipped weapon, armor or apparel with the specified item index
+                                    ;     from the player.
+rwx 4eb4,1   isEquipped             ; Searches equipped weapons, armor and apparel for an equipped item with the
+                                    ;     specified item index.
+                                    ;
+                                    ; Input
+                                    ;   CHR_PRI_WEAPON[0..9] - All equipped weapons, armor and apparel.
+                                    ;   A    - The item index value to search for. Never matches if bit 7 is set to 1.
+                                    ;
+                                    ; Output
+                                    ;   C    - Set to 1 (equipped) when bit 7 of A is 0 and an entry equal to A is found
+                                    ;          Set to 0 (not equipped) if no entry was found or bit 7 of A was 1
+                                    ;   Y    - Contains the index of the matching byte when C = 1
 
 rw  4f5d,20  ItemStick              ; 32 bytes: "stick" item
 
@@ -1740,15 +1926,23 @@ rwx 51b0,1   smc_51b0               ; Dynamically updated branch instruction
 
 rwx 51b6,1   doUseMenu              ; Display the "USE" menu and process user input
 
+rwx 51d8,1   cont_51d8              ;
+
 rwx 5209,1   cont_5209              ;
 
 rwx 5225,1   cont_5225              ;
 
-rw  5229,8   tbl_5229_H             ; 8 byte table with MSB of address
+rw  5229,8   tbl_5229_H             ; 8 bytes: MSB of address
+rw  5231,8   tbl_5231_L             ; 8 bytes: LSB of address
                                     ; Contains the following addresses (after adding 1 to get final addr to execute)
-                                    ;     $5239,$52c3,$540f,$54aa
-                                    ;     $54ee,$5505,$556b,$5632
-rw  5231,8   tbl_5231_L             ; 8 byte table with LSB of address
+                                    ;   0: $5239 [cont_5239]
+                                    ;   1: $52c3 [cont_52c3]
+                                    ;   2: $540f [cont_540f]
+                                    ;   3: $54aa [cont_54aa]
+                                    ;   4: $54ee [cont_54ee]
+                                    ;   5: $5505 [cont_5505]
+                                    ;   6: $556b [cont_556b]
+                                    ;   7: $5632 [cont_5632]
 
 rwx 5239,1   cont_5239              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 
@@ -1779,10 +1973,13 @@ rwx 540f,1   cont_540f              ; Indirectly called using lookup tables tbl_
 rw  5470,1   dat_5470               ; 1 byte of storage
 rwx 5471,1   sub_5471               ;
 
-rwx 548e,1   sub_548e               ;
+rwx 548e,1   divByteBy10            ; Divide unsigned byte in A by 10, setting DivQuotient and DivRemainder
+rwx 5492,1   divUint16Uint8         ; Perform unsigned integer division
 rwx 54aa,1   cont_54aa              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
+rwx 54af,1   cont_54af              ;
 rwx 54ee,1   cont_54ee              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 rwx 5505,1   cont_5505              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
+rwx 555a,1   cont_555a              ;
 rwx 556b,1   cont_556b              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 
 rw  559e,1   tbl_559e               ; 1 byte table of data [$08].
@@ -1814,25 +2011,30 @@ rwx 5667,1   useFoodPacket          ; Use Food Packet
 rwx 56a7,1   useWaterFlask          ; Use Water Flask
 rwx 56d7,1   sub_56d7               ;
 
+rwx 56e4,1   cont_56e4              ;
+
 rwx 56ea,1   useUnlitTorch          ; Use Unlit Torch
 rwx 5723,1   useTimepiece           ; Use Timepiece
+rwx 5774,1   contYouHaveNone        ;
 
 rwx 577e,1   doCastMenu             ; Display the CAST menu and process user input
 
 rwx 5795,1   sub_5795               ;
 
-rwx 57ab,1   sub_57ab               ;
+rwx 57ab,1   doAssignHand           ; Prompts user whether to use as primary (0) or secondary (1) weapon.
 
 rwx 57dc,1   sub_57dc               ;
 
 rwx 57ed,1   cont_57ed              ;
 
-rwx 5835,1   sub_5835               ;
+rwx 5835,1   equipItem              ; Assigns an item to an equipped item slot.
 
 rwx 5857,1   sub_5857               ;
 rw  58c1,1   dat_58c1               ;
 
 rwx 5921,1   rtn_5921               ; Dynamically specified return location stored in cont_addr_1977_L/H
+
+rwx 594b,1   cont_594b              ;
 
 rw  5955,1   addr_5955_L            ; LSB of address
 rw  5956,1   addr_5955_H            ; MSB of address
@@ -1974,7 +2176,8 @@ rw  6054,10  dat_6054               ; 16 bytes: Related to hunger stat / 32
 rw  6064,84  StrNoDrink             ; 132 bytes: "Your throat fails to allow anything more to enter your already full belly. The liquid slides down your face to the ground."
 rw  60e8,1a  StrYouDrink            ; 26 bytes: "You drink a ..."
 rw  6102,1a  StrNeedCrystal         ; 26 bytes: "You need a crystal."
-rw  611c,31  ItemLitTorch           ; 49 bytes: "Lit Torch" item
+rw  611c,d   EffLitTorch            ; 13 bytes: bytes 2..14 of Lit Torch effect. Byte 1 = , Byte 2 = , Byte 15 =
+rw  6129,24  ItemLitTorch           ; 36 bytes: "Lit Torch" item
 rw  614d,14  StrYouHaveNone         ; 20 bytes: "You have none."
 rw  6161,30  StrTimeReport          ; 48 bytes: "It is ? minutes past the ?th hour."
 rw  616e,1   NumMinuteChars         ; Number of characters needed to represent the minutes value (1 or 2)
@@ -2000,7 +2203,18 @@ rw  627f,1   dat_627f               ; 1 byte
 rw  6280,1   dat_6280               ; 1 byte:
 rw  6281,1   dat_6281               ; 1 byte:
 rw  6282,1   dat_6282               ; 1 byte:
-rw  6283,1   dat_6283               ; 1 byte:
+             EquipSlot
+rw  6283,1   dat_6283               ; 1 byte: equipItem param: equipment slot to assign (0..9)
+                                    ;     0: CHR_PRI_WEAPON
+                                    ;     1: CHR_SEC_WEAPON
+                                    ;     2: CHR_ARMOR_HEAD
+                                    ;     3: CHR_ARMOR_BODY
+                                    ;     4: CHR_ARMOR_ARMS
+                                    ;     5: CHR_ARMOR_LEGS
+                                    ;     6: CHR_APPAREL[0]
+                                    ;     7: CHR_APPAREL[1]
+                                    ;     8: CHR_APPAREL[2]
+                                    ;     9: CHR_APPAREL[3]
 rw  6284,1   dat_6284               ; 1 byte: Loop index variable
 rw  6285,1   dat_6285               ; 1 byte: possible LSB of address?
 rw  6286,1   dat_6286               ; 1 byte: possible MSB of address?
@@ -2016,40 +2230,103 @@ rw  62fa,6   dat_62fa               ; 6 bytes of data: TODO: Needs more analysis
 
 rw  6300,ff  CHR_STATE              ; Start of player state
 
-rw  6313,1   CHR_LOC_X              ; Player position X
-rw  6316,1   CHR_FRAC_LOC_X         ; Fractional X position: 0-35 ($23)
-rw  6318,1   CHR_SAV_LOC_X          ; Saved player position X
+rw  6309,1   TME_MINUTES            ; Current in-game time in minutes
+rw  630a,1   TME_HOURS              ; Current in-game time in hours
 
+rw  6312,1   CHR_LOC_ORIENT         ; Player orientation (0 = N, 1 = E, 2 = S, 3 = W)
+rw  6313,1   CHR_LOC_X              ; Player position X
+rw  6314,1   CHR_LOC_Y              ; Player position Y
+rw  6315,1   CHR_LOC_MAP            ; Player map number
+                                    ;    00 Level 1 (first quadrant - NW)
+                                    ;    01 Level 1 (second quadrant - NE)
+                                    ;    02 Level 1 (third quadrant - SW)
+                                    ;    03 Level 1 (fourth quadrant - SE)
+                                    ;    04 Level 2
+                                    ;    05 Level 3
+                                    ;    06 Level 4
+rw  6316,1   CHR_FRAC_LOC_X         ; Fractional X position: 0-35 ($23)
+rw  6317,1   CHR_FRAC_LOC_Y         ; Fractional Y position: 0-35 ($23)
+rw  6318,1   CHR_SAV_LOC_X          ; Saved player position X
+rw  6319,1   CHR_SAV_LOC_Y          ; Saved player position Y
+rw  631a,1   CHR_SAV_LOC_MAP        ; Saved player map number
+rw  631b,1   CHR_SAV_FRAC_LOC_X     ; Saved fractional X position
+rw  631c,1   CHR_SAV_FRAC_LOC_Y     ; Saved fractional Y position
 rw  631d,1   ChrDungeonLevel        ; Current dungeon level number
 rw  631e,1   dat_631e               ;
 rw  631f,1   dat_631f               ;
 rw  6320,1   dat_6320               ;
 rw  6321,19  CHR_NAME               ; Player name (25 characters)
 
+; TODO: What is $633a thru $6381? (47 bytes)
+
 rw  6382,1   Chr_Unk_6382           ;
 
 rw  6388,1   Chr_Unk_6388           ; Bit 1 related to movement thru door
                                     ; Bit 2 related to perception? (Part of "Something odd here" check)
 
-rw  638b,1   Chr_Unk_638b           ; Flag? Related to hourly updates? Interacts with UNK_BYTE_COUNTER ($1956)
+rw  638b,1   CHR_SEE_SECRET_DOORS   ; Flag indicating whether the player can see secret doors or not. Interacts with UNK_BYTE_COUNTER ($1956)
 
+rw  638d,1   CHR_DIFFICULT_TO_HIT   ;
+
+rw  6390,1   CHR_LIT_TORCH_FLAG     ; Used when rendering to determine light level
+rw  6391,1   CHR_DISEASE
+rw  6392,1   CHR_POISON
+rw  6393,1   CHR_CURSE
 rw  6394,1   CHR_BURDEN             ; Player encumberment
 rw  6395,1   CHR_WARMTH             ; Player warmth
 rw  6396,1   Chr_Unk_6396           ; TODO: Related to CHR_DRUNK (decreased when drunk increased... stomach alcohol level?)
 rw  6397,1   CHR_DRUNK              ; Player drunkeness level (blood alcohol level?)
-rw  6398,1   CHR_STOMACH            ; Player fullness
-rw  6399,1   CHR_HUNGER             ; Player hunger
-rw  639a,1   CHR_THIRST             ; Player thirst
-rw  639b,1   CHR_ENERGY             ; Player energy  (TODO: what is energy?)
-rw  639c,a   dat_639c               ; 10? bytes
+rw  6398,1   CHR_STOMACH            ; Player fullness/bloated?
+rw  6399,1   CHR_HUNGER             ; Player hunger      TODO: rename to satiation?
+rw  639a,1   CHR_THIRST             ; Player thirst      TODO: rename to hydration?
+rw  639b,1   CHR_STAMINA            ; Player stamina
+rw  639c,1   CHR_PRI_WEAPON         ; Item index of equipped primary weapon (bit 7 set if none)
+rw  639d,1   CHR_SEC_WEAPON         ; Item index of equipped secondary weapon (bit 7 set if none)
+rw  639e,1   CHR_ARMOR_HEAD         ; Item index of equipped head armor (bit 7 set if none)
+rw  639f,1   CHR_ARMOR_BODY         ; Item index of equipped body armor (bit 7 set if none)
+rw  63a0,1   CHR_ARMOR_ARMS         ; Item index of equipped arms armor (bit 7 set if none)
+rw  63a1,1   CHR_ARMOR_LEGS         ; Item index of equipped legs armor (bit 7 set if none)
+rw  63a2,4   CHR_APPAREL            ; 4 bytes: Item indexes for equipped apparel (bit 7 set if none)
+rw  63a6,1   CHR_BLUNT_PROT         ; Blunt protection
+rw  63a7,1   CHR_SHARP_PROT         ; Sharp protection
+rw  63a8,1   CHR_EARTH_PROT         ; Earth protection
+rw  63a9,1   CHR_AIR_PROT           ; Air protection
+rw  63aa,1   CHR_FIRE_PROT          ; Fire protection
+rw  63ab,1   CHR_WATER_PROT         ; Water protection
+rw  63ac,1   CHR_POWER_PROT         ; Power protection
+rw  63ad,1   CHR_MENTAL_PROT        ; Mental protection
+rw  63ae,1   CHR_GOOD_PROT          ; Good protection
+rw  63af,1   CHR_EVIL_PROT          ; Evil protection
+rw  63b0,1   CHR_COLD_PROT          ; Cold protection
+rw  63b1,1   INV_GOLD_U16_HI        ; High byte of Gold inventory (uint16)
+rw  63b2,1   INV_GOLD               ; Low byte of Gold inventory (uint16)
+rw  63b3,1   INV_SILVER_U16_HI      ; High byte of Silver inventory (uint16)
+rw  63b4,1   INV_SILVER             ; Low byte of Silver inventory (uint16)
+rw  63b5,1   INV_COPPER_U16_HI      ; High byte of Copper inventory (uint16)
+rw  63b6,1   INV_COPPER             ; Low byte of Copper inventory (uint16)
+rw  63b7,1   INV_GEMS_U16_HI        ; High byte of Gems inventory (uint16)
+rw  63b8,1   INV_GEMS               ; Low byte of Gems inventory (uint16)
+rw  63b9,1   INV_JEWELS_U16_HI      ; High byte of Jewels inventory (uint16)
+rw  63ba,1   INV_JEWELS             ; Low byte of Jewels inventory (uint16)
+rw  63bb,1   INV_FOOD               ; Number of food packets in inventory (uint8)
+rw  63bc,1   INV_WATER              ; Number of water flasks in inventory (uint8)
+rw  63bd,1   INV_TORCHES            ; Number of unlit torches in inventory (uint8)
+rw  63be,1   INV_CRYSTALS           ; Number of crystals in inventory (uint8)
+rw  63bf,1   INV_KEYS               ; Number of keys in inventory (uint8)
+rw  63c0,1   INV_COMPASSES          ; Number of compasses in inventory (uint16)
+rw  63c1,1   INV_TIMEPIECES         ; Number of timepieces in inventory (uint16)
 
-rw  63a2,4   dat_63a2               ; 4? bytes
+; What are 63c2 ... 63d1?
 
 rw  63d2,b   dat_63d2               ; 11? bytes
 
-rw  640b,40  InvItemAdr_L           ; 64 bytes: LSB of inventory item address
-rw  644b,40  InvItemAdr_H           ; 64 bytes: MSB of inventory item address
-
+rw  640b,40  InvItemAdr_L           ; 64 bytes: Holds LSBs of inventory item addresses
+rw  644b,40  InvItemAdr_H           ; 64 bytes: Holds MSBs of inventory item addresses
+rw  648b,8   InvSlotFree            ; 8 bytes: Bitfield with one bit per inventory slot. 1 = free, 0 = allocated
+                                    ;    addItem: clears bits
+                                    ;    sub_4c6b: tests bits
+                                    ;    sub_4c86: clears bits
+                                    ;    sub_4c5a: sets bits
 rw  6493,1   dat_6493               ; 1 byte
 rw  6494,10  dat_6494               ; 16? bytes
 rw  64a4,10  dat_64a4               ; 16? bytes
@@ -2057,8 +2334,8 @@ rw  64b4,10  dat_64b4               ; 16? bytes
 rw  64c4,10  dat_64c4               ; 16? bytes
 rw  64d4,10  dat_64d4               ; 16? bytes: Holds item indexes
 
-rw  64e4,1   dat_64e4               ; 1 byte: LSB of address?
-rw  64e5,1   dat_64e5               ; 1 byte: MSB of address?
+rw  64e4,1   CHR_ItemsEnd_L         ; 1 byte: LSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
+rw  64e5,1   CHR_ItemsEnd_H         ; 1 byte: MSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
 
 rw  6500,400 CHR_Effects            ; Currently active effects applied to player
                                     ;   1024 bytes: Array of 64 x 16-byte elements
@@ -2066,24 +2343,25 @@ rw  6500,400 CHR_Effects            ; Currently active effects applied to player
                                     ;    - Timer based effects
                                     ;    - ?
 
-rw  6900,?   CHR_Items              ; ? bytes: Items currently present in the game
+rw  6900,d00 CHR_Items              ; 3328 bytes: Items currently present in the game
                                     ;   Contains variable length entries. Locations for each item are stored
                                     ;   in InvItemAdr_L/H (max 64 entries)
 
 rw  7600,1   ModuleNumber           ; Currently loaded scenario or map number
-x   7601,3   ModuleEntry1           ; First entry point for scenario
-x   7604,3   ModuleEntry2           ; Second entry point for scenario
-x   7607,3   ModuleEntry3           ; Third entry point for scenario
+x   7601,3   moduleEntry1           ; First entry point for scenario
+x   7604,3   moduleEntry2           ; Second entry point for scenario
+x   7607,3   moduleEntry3           ; Third entry point for scenario
 
-x   760a,3   ModuleEntry4           ; Fourth entry point for scenario
+x   760a,3   moduleEntry4           ; Fourth entry point for scenario
 r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table
 r   760b,1   Mod0DescTbl_H          ; Module 0: MSB of description table
+
+rw  96f0,1   TEX_Headers            ; Location where textures are loaded into memory (5392 bytes)
 
 rw  ac00,1   MAP_Number             ; Number/ID of the loaded map
 rw  ac01,1   MAP_DescTbl_L          ; LSB of map description table (offset from $ac00 for std maps)
 rw  ac02,1   MAP_DescTbl_H          ; MSB of map description table (always $ac for std maps)
 rw  ac03,1   MAP_DESC_FRAG_TBL      ; Start of description fragment table
 
-;xxx
-;Low byte of a memory reference  (is assigned to $7641, $7648)
+rwx f9f4,1   sub_f9f4               ; Called from sub_2979. Defined in KERNEL_LOADER and only present on 64KB+ systems.
 

@@ -1,41 +1,72 @@
 Altirra symbol file
 
-; Symbols for Dungeon Disk 1 Side 1 sector 205
-; Kernel loader
+; Symbols for Dungeon Disk 1 Side 1 sector 205 - Kernel loader
+; Both this file and Dungeon11-S518.sym should be applied for full symbol mapping.
+;
 [symbols]
 
-rw  0007,2   dat_0007_L             ; LSB of source address
-rw  0009,2   dat_0009_L             ; LSB of destination address
+rw  4000,1   ExtRam130XE            ; Starting address of 16KB range for selected extended RAM bank on 130XE
+                                    ;   Used for detecting whether extended RAM is suppported or not.
 
-rw  0020,1   dat_0020               ; 1 byte of storage
-rw  0021,1   dat_0021               ; 1 byte of storage
+rwx 8000,1   initIrqs               ; Initializes IRQ handler vectors
+rwx 807e,1   kernelEntry            ; Game kernel entry vector
 
-rwx 0740,1   BRKKY_IRQ              ; Break key interrupt handler? Or something else?
+rwx 8158,1   copyMemSize            ; Copies a memory size string from MemSizeTbl into the last 4 bytes of SystemInit
 
-rwx 1400,400 DUNGEON_CHRSET         ; Dungeon character set font
-
-rw  18c1,3   tbl_18c1               ; 3 byte table
-rw  18c4,1   dat_18c4               ; 1 byte of data
-rw  18c7,1   dat_18c7               ; 1 byte of data
-
-rwx 199d,1   SUB_0254_VEC
-
-rwx 1a0d,1   SET_DISP_MODE          ;
-
-rwx 21e7,1   irq_VSERIN_21e7        ; POKEY serial I/O bus receive data ready interrupt handler
-rwx 224f,1   irq_VSEROR_224f        ; POKEY serial I/O transmit ready interrupt handler
-rwx 2297,1   irq_VSEROC_2297        ; POKEY serial bus transmit complete interrupt handler
-rwx 22ac,1   irq_VIMIRQ_22ac        ; The IRQ immediate handler
-rwx 2347,1   VVBLKI_IRQ             ; The VBLANK immediate interrupt handler
-
-rwx 8000,1   INIT_IRQS              ; Initializes IRQ handler vectors
-rwx 807e,1   KERNEL_ENTRY           ; Game kernel entry vector
-
-rw  816a,24  dat_816a               ; 36 bytes: "     System initialization      1234"
-rw  818e,10  dat_818e               ; 16 bytes: Table of memory size strings. 4 entries x 4 bytes
+rw  816a,24  SystemInit             ; 36 bytes: "     System initialization      1234"
+rw  818a,4   SysInitMem             ;   4 bytes: "1234" at end of SystemInit. Memory size string is written here.
+rw  818e,10  MemSizeTbl             ; 16 bytes: Table of memory size strings. 4 entries x 4 bytes
                                     ;    0: " 48K"
                                     ;    4: " ??K"
                                     ;    8: " 64K"
                                     ;   12: "128K"
 
-rw  899f,61  dat_899f               ; 97 bytes. Likely unused
+rwx 819e,1   sub_819e               ;
+rwx 8223,1   sub_8223               ;
+
+rw  82f0,2   dat_82f0               ; 2 bytes of data: Copied to $f9cd [dat_f9cd]
+
+rw  899f,61  dat_899f               ; 97 bytes: unused partial copy of StrPleaseInsert
+
+rw  c000,1000 MAP_Copy              ; 4KB: If the system has 64KB or more, map data is copied here when an
+                                    ;   encounter or module is loaded
+
+rw  d800,1   OsRomStart             ; Starting address of range containing OS ROM (10KB - $d800-$ffff)
+rw  dc00,1510 TEX_Copy              ; 5392 bytes: If the system has 64KB or more, texture data is copied here when an
+                                    ;   encounter or module is loaded
+
+rwx f900,1   sub_f900               ; (Copied from $8223)
+rwx f953,1   sub_f953               ; (Copied from $8276)
+rwx f9ac,1   irq_NMI_f9ac           ; (Copied from $82cf)
+
+rw  f9cd,1   SavedFileNum           ; (Copied from $82f0)
+rw  f9ce,1   SavedMapNum            ; (Copied from $82f1)
+
+rwx f9cf,1   sub_f9cf               ; (Copied from $82f2)
+rwx f9c9,1   irq_VIMIRQ_f9c9        ; (Copied from $82ec)
+rwx f9f4,1   sub_f9f4               ; (Copied from $8317)
+
+rwx fa33,1   cont_fa33              ; (Copied from $8356)
+
+rwx fa6c,1   smc_fa6c               ; (Copied from $838f)
+
+rwx fa78,1   cont_fa78              ; (Copied from $839b)
+
+rwx fad7,1   smc_fad7               ; (Copied from $83fa)
+
+rwx fb0c,1   cont_fb0c              ; (Copied from $842f)
+
+rwx fb46,1   smc_fb46               ; (Copied from $8469)
+
+rwx fb4c,1   cont_fb4c              ; (Copied from $846f)
+
+rwx fb62,1   sub_fb62               ; (Copied from $8485)
+rwx fb73,1   sub_fb73               ; (Copied from $8496)
+rwx fb88,1   sub_fb88               ; (Copied from $84ab)
+
+rw  fba5,100 dat_fba5               ; (equiv $84c8)
+rw  fca4,1   dat_fca4               ; (equiv $85c7)
+rw  fca5,100 dat_fca5               ; (equiv $)
+rw  fda4,1   dat_fda4               ; (equiv $84c8) 1 byte: Only read?
+rw  fda5,100 dat_fda5               ;
+rw  fea5,100 dat_fea5               ;

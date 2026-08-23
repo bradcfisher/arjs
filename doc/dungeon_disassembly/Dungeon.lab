@@ -303,7 +303,7 @@
 6398 CHR_STOMACH
 6399 CHR_HUNGER
 639A CHR_THIRST
-639B CHR_ENERGY
+639B CHR_STAMINA
 
 63B1 INV_GOLD_U16_HI        ; High byte of Gold inventory (uint16)
 63B2 INV_GOLD               ; Low byte of Gold inventory (uint16)
