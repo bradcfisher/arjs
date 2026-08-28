@@ -80,4 +80,4 @@ rw  0384,4   D32_655_BSNG       ; Blackheart Song
 rw  0388,4   D22_536_UNK        ; Unknown
 rw  038C,4   D31_671_UNK        ; Unknown
 rw  0390,4   D32_684_UNK        ; Unknown
-rw  0394,EC  UNUSED_BYTES
+rw  0394,EC  UnusedBytes

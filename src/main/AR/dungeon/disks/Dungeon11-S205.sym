@@ -5,6 +5,9 @@ Altirra symbol file
 ;
 [symbols]
 
+rw  0004,1   TempByte               ; Used to hold byte read from $4000 to test whether extended RAM is enabled or
+                                    ;     not (130XE)
+
 rw  4000,1   ExtRam130XE            ; Starting address of 16KB range for selected extended RAM bank on 130XE
                                     ;   Used for detecting whether extended RAM is suppported or not.
 
@@ -39,8 +42,8 @@ rwx f900,1   sub_f900               ; (Copied from $8223)
 rwx f953,1   sub_f953               ; (Copied from $8276)
 rwx f9ac,1   irq_NMI_f9ac           ; (Copied from $82cf)
 
-rw  f9cd,1   SavedFileNum           ; (Copied from $82f0)
-rw  f9ce,1   SavedMapNum            ; (Copied from $82f1)
+rw  f9cd,1   SavedFileNum           ; (Copied from $82f0) Holds the original value of FileNumber if >= 8
+rw  f9ce,1   SavedMapNum            ; (Copied from $82f1) Holds the original value of FileNumber if < 8
 
 rwx f9cf,1   sub_f9cf               ; (Copied from $82f2)
 rwx f9c9,1   irq_VIMIRQ_f9c9        ; (Copied from $82ec)

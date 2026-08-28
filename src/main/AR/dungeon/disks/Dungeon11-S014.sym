@@ -4,28 +4,33 @@ Altirra symbol file
 ; Secondary boot sequence / Kernel loader
 [symbols]
 
-rw  0080,1   NUM_SECTORS
+rw  0080,1    NumSectors     ; Number of sectors to load
 
-rw  0082,2   DCRYPT_ADDR    ; Address of buffer to decrypt
-rw  0085,1   NUM_DCRYPT
+rw  0082,2    DecryptAddr    ; LSB of address of buffer to decrypt
+rw  0083,1    DecryptAddr_H  ; MSB of address of buffer to decrypt
+rw  0085,1    DecryptPages   ; Number of 256 byte memory pages to decrypt
+rw  0086,1    dat_0086       ; unused? assigned to 0, but not read
+rw  0087,1    dat_0087       ; unused? assigned to 0, but not read
 
-rw  0100,80  KEY_SECTOR     ; Decryption key sector load address
-
-rw  0280,200 MSK_SEG_DIR    ; Mask file segment directory labels
+rw  0100,80   KeySectorBuf   ; Decryption key sector load address
 
 ; Standard system DIO locations
-rw  0302,1   DCOMND
-rw  0304,1   DBUFLO
-rw  0305,1   DBUFHI
-rw  030A,1   DAUX1
-rw  030B,1   DAUX2
+rw  0302,1    DCOMND         ; Disk operation/commmand
+rw  0304,1    DBUFLO         ; LSB of data buffer address for disk I/O
+rw  0305,1    DBUFHI         ; MSB of data buffer address for disk I/O
+rw  030a,1    DAUX1          ; LSB of disk sector number for disk I/O
+rw  030b,1    DAUX2          ; MSB of disk sector number for disk I/O
 
-rwx 0600,B2  LOAD_KERNEL    ; Load the game kernel into memory
-rwx 064E,1   READ_SECTORS   ; Read disk sectors into memory
-rwx 066F,1   PREPARE_KEY    ; Prepare decryption key
-rwx 0683,1   DCRYPT_KERNEL  ; Decrypt the game engine kernel
-rwx 0695,1   DCRYPT_PAGE    ; Decrypt a memory page (256 bytes)
+rwx 0600,b2   loadKernel     ; Load the game kernel into memory
+rwx 064e,1    readSectors    ; Read disk sectors into memory
+rwx 066f,1    prepareKey     ; Prepare decryption key for use
+rwx 0683,1    decryptKernel  ; Decrypt the game engine kernel
+rwx 0695,1    decryptPage    ; Decrypt a memory page (256 bytes)
 
-rw  06b2,4E  UNUSED_BYTES
+rw  06b2,4e   UnusedBytes    ;
 
-rwx 807E,1   kernelEntry    ; Game kernel entry vector
+rw  1400,4f00 GameKernel     ; The game kernel is loaded here
+
+rw  8000,a00  KernelLoader   ; The kernel loader is loaded here
+
+rwx 807e,1    kernelEntry    ; Game kernel entry vector

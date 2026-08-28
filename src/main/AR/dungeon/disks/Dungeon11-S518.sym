@@ -29,32 +29,23 @@ rw  0006,1   dat_0006               ; 1 byte:
                                     ;     - loop ctl var in KERNEL_LOADER sub_80d2
                                     ;     -  in KERNEL_LOADER sub_f9f4
 rw  0007,2   BEParam2               ; multBEInt16 input: Big endian 16-bit unsigned integer input multiplicand 2
-rw  0007,1   dat_0007_L             ; LSB of address / 16-bit int    (SourceAddr?? / AddrParam1??)
-                                    ;    - sdmInitGamePlay   - (temp) LSB of DISP_GFX_TOP address
-                                    ;    - copyBytes         - (input) LSB of source address
-                                    ;    - getFileEntry      - (output) LSB of file entry
-                                    ;    - copyBytesNeg      - (input) LSB of source address
-                                    ;    - sub_4b4d          - (temp) Set to incoming Y param (LSB)
-                                    ;    - cont_540f         - (temp) Used to temporarily store source/dest address LSB
-                                    ;    - sub_5602          - (output) Assigned to LSB of address also assigned to ZtsAddr1_L
-rw  0008,1   dat_0007_H             ; MSB of address / 16-bit int
-                                    ;    - sdmInitGamePlay   - (temp) MSB of DISP_GFX_TOP address
-                                    ;    - copyBytes         - (input) MSB of source address
-                                    ;    - getFileEntry      - (output) MSB of file entry
-                                    ;    - copyBytesNeg      - (input) MSB of source address
-                                    ;    - sub_4b4d          - (temp) Set to incoming X param (MSB)
-                                    ;    - cont_540f         - (temp) Used to temporarily store source/dest address MSB
-                                    ;    - sub_5602          - (output) Assigned to MSB of address also assigned to ZtsAddr1_L
+rw  0007,1   SourceAdr_L            ; LSB of address typically used as a source for copying or comparison
+rw  0008,1   SourceAdr_H            ; MSB of address typically used as a source for copying or comparison
 rw  0009,1   dat_0009_L             ; LSB of address. Related to $190b. display list related     (DestAddr?? / AddrParam2??)
                                     ;    - sdmInitGamePlay   - (temp) LSB of (DISP_GFX_TOP + $1d) address / gfx charset addrs
                                     ;    - copyBytes         - (input) LSB of destination address
                                     ;    - copyBytesNeg      - (input) LSB of destination address
-                                    ;    - sub_4b4d          - (temp) Set to destination addr LSB for copyBytes
+                                    ;    - removeItem        - (temp) addr of item, param to copyBytes
+                                    ;    - addItem           - (temp) Set to destination addr LSB for copyBytes
+                                    ;
 rw  000a,1   dat_0009_H             ; MSB of address. Related to $190c. display list related
                                     ;    - sdmInitGamePlay   - (temp) MSB of (DISP_GFX_TOP + $1d) address / gfx charset addrs
+                                    ;    - ab_Clear2Eol - used as dest addr for writing spaces to screen
                                     ;    - copyBytes         - (input) MSB of destination address
                                     ;    - copyBytesNeg      - (input) MSB of destination address
-                                    ;    - sub_4b4d          - (temp) Set to destination addr MSB for copyBytes
+                                    ;    - removeItem        - (temp) addr of item, param to copyBytes
+                                    ;    - addItem           - (temp) Set to destination addr MSB for copyBytes
+                                    ;
 rw  000b,1   dat_000b               ; LSB of int16
                                     ;    - copyBytesNeg      - (input) LSB of negated 16-bit size
 rw  000c,1   dat_000c               ; ?LSB of address?  LSB of int16
@@ -125,22 +116,16 @@ rw  0039,1   TimeYears_H            ; MSB of total game years played (uint16 - b
 rw  003a,1   TimeYears_L            ; LSB of total game years played (uint16)
 rw  003b,1   TimeDays_L             ; LSB of total game days played (uint16)
 rw  003c,1   TimeDays_H             ; MSB of total game days played (uint16)
-
-rw  003d,1   dat_003d_L             ; LSB of address
-                                    ;    setDiseaseNms, setCurseNames, setMagicNames - current effect address
-                                    ;    applyEffects - current effect address?
-rw  003e,1   dat_003d_H             ; MSB of address
+rw  003d,1   EffectAdr_L            ; LSB of effect address in CHR_Effects
+rw  003e,1   EffectAdr_H            ; MSB of effect address in CHR_Effects
 rw  003f,1   addr_003f_L            ; LSB of address
 rw  0040,1   addr_003f_H            ; MSB of address
 rw  0041,1   ItemAdr_L              ; LSB of an inventory item address
 rw  0042,1   ItemAdr_H              ; MSB of an inventory item address
-rw  0043,1   addr_0043_L            ; LSB of address
-rw  0044,1   addr_0043_H            ; MSB of address
+rw  0043,1   ItemAttrs_L            ; LSB of start of the effect/attributes section for an item
+rw  0044,1   ItemAttrs_H            ; MSB of start of the effect/attributes section for an item
 rw  0045,1   AttrAddr_L             ; LSB of an attribute address.
-                                    ;   Used in: incAttr, decAttr, applyEffects, incChrAttr, incChrAttr8,
-                                    ;   incChrAttr16, decChrAttr, decChrAttr8, decChrAttr16, setChrAttrAdr,
-                                    ;   applyEffects & continuations
-rw  0046,1   AttrAddr_H             ; MSB of an address
+rw  0046,1   AttrAddr_H             ; MSB of an attribute address
                                     ;   Used in: incAttr, decAttr, applyEffects, incChrAttr, incChrAttr8,
                                     ;   incChrAttr16, decChrAttr, decChrAttr8, decChrAttr16, setChrAttrAdr,
                                     ;   applyEffects & continuations
@@ -150,17 +135,13 @@ rw  0049,1   dat_0049               ; 1 byte: temp, loop ctl var in sub_55b7
                                     ;    - setDiseaseNms, setCurseNames, setMagicNames - loop ctl var
                                     ;    -
 rw  004a,1   dat_004a               ; 1 byte
-rw  004b,1   dat_004b               ; 1 byte: holds an item index
-                                    ;   - sub_41fc - param for setItemAdr call
-                                    ;   - sub_4a5f - item index (temp/loop or param for sub_4bb3)
-                                    ;   - allocItem - item index (slot new item is assigned into)
-                                    ;   -
+rw  004b,1   ItemIndex              ; 1 byte: item index parameter
 rw  004c,1   dat_004c               ; 1 byte
 rw  004d,1   dat_004d               ; 1 byte
 
 rw  004f,1   dat_004f               ; 1 byte:
                                     ;    - allocItem: Set to parameter A value (new item size)
-                                    ;    - sub_4ac9: Set to byte 1 of an item (item size)
+                                    ;    - removeItem: Set to byte 1 of an item (item size)
                                     ;    -
 rw  0050,1   dat_0050               ; 1 byte: a flag - 0 = false, any non-0 = true
 rw  0051,1   AttrAdjAmt             ; 1 byte: Amount to adjust an attr by
@@ -193,8 +174,8 @@ rw  0100,80  SioBuf                 ; 128 bytes: Used for serial I/O data frame 
 rw  0103,1   rnd_0103               ; Used in randInRange as a reference to a value 3 bytes back on the
                                     ;    stack (e.g. TSX, LDA rnd_0103,X).
 rw  0180,10  DecryptKeyBuf          ; 16 bytes: Used as decryption key data buffer
-rw  0180,1   DecryptFileId_L        ; 1 byte: LSB of File ID from file segment directory
-rw  0181,1   DecryptFileId_H        ; 1 byte: MSB of File ID from file segment directory
+rw  0180,1   DecryptFileId_B1       ; 1 byte: Byte 1 of File ID from file segment directory
+rw  0181,1   DecryptFileId_B2       ; 1 byte: Byte 2 of File ID from file segment directory
 rw  0182,1   DecryptFileLen_L       ; 1 byte: LSB of File length
 rw  0183,1   DecryptFileLen_H       ; 1 byte: MSB of File length
 rw  0184,1   DecryptChksum_L        ; 1 byte: LSB of File checksum
@@ -287,16 +268,20 @@ rw  0257,1   SioErrReply            ; Set to $ff if an error status was received
 rw  0258,1   SysMemorySize          ; 1 byte: Detected memory size (assigned by sub_819e in KERNEL_LOADER)
                                     ;         0 = 48K, $80 = 64K, $c0 = 128K (and higher?)
 rw  0259,1   dat_0259               ; 1 byte
-rw  025a,1   dat_025a               ; 1 byte - only set to 0? ROR applied to it and used in BIT test...
+rw  025a,1   dat_025a               ; 1 byte: flag indicating the value of the bit in dat_2a38_unk corresponding to
+                                    ;     a FileNumber.
+                                    ;     - sub_2979: Only matters for systems with 128KB or more of RAM. Perhaps
 rw  025b,1   dat_025b               ; 1 byte - only set to 0?
 rw  025c,1   dat_025c               ; 1 byte - only written?
 rw  025d,1   dat_025d               ; 1 byte: only used by kernel loader?
-rw  025e,1   dat_025e               ; 1 byte: only used by kernel loader?
-rw  025f,1   dat_025f               ; 1 byte: only used by kernel loader?
-rw  0260,1   dat_0260               ; 1 byte: only used by kernel loader?
-rw  0261,1   dat_0261               ; 1 byte: only used by kernel loader?
-rw  0262,1   dat_0262               ; 1 byte: only used by kernel loader?
-rw  0263,1   dat_0263               ; 1 byte: only used by kernel loader?
+                                    ;     - sub_f9f4: Set to $80 if the disk sector being read is even
+                                    ;                 Set to 0 if the disk sector being read is odd
+rw  025e,1   dat_025e               ; 1 byte: LSB of sector number
+rw  025f,1   dat_025f               ; 1 byte: MSB of sector number
+rw  0260,1   dat_0260               ; 1 byte: LSB of sector number
+rw  0261,1   dat_0261               ; 1 byte: MSB of sector number
+rw  0262,1   dat_0262_L             ; 1 byte: LSB of sector number (input file sector)
+rw  0263,1   dat_0262_H             ; 1 byte: MSB of sector number (input file sector)
 rw  0264,1   dat_0264               ;
 rw  0265,1   dat_0265               ; 1? byte
 rw  0266,4   SioCmdBuf              ; 4 bytes: Used as SIO command frame buffer
@@ -410,7 +395,7 @@ rwx 1857,1   j_sub_2c6f             ; Alias for sub_2c6f
 rwx 185a,1   j_waitSeconds          ; Alias for waitSeconds
 rwx 185d,1   j_sub_2c9b             ; Alias for sub_2c9b
 rwx 1860,1   j_updateBit            ; Alias for updateBit
-rwx 1863,1   j_bitTestBuf           ; Alias for bitTestBuf
+rwx 1863,1   j_testBit              ; Alias for testBit
 rwx 1866,1   j_copyBytes            ; Alias for copyBytes
 rwx 1869,1   j_sub_2e31             ; Alias for sub_2e31
 rwx 186c,1   j_decChrAttr           ; Alias for decChrAttr
@@ -421,13 +406,13 @@ rwx 1878,1   j_incChrAttr8          ; Alias for incChrAttr8
 rwx 187b,1   j_incChrAttr16         ; Alias for incChrAttr16
 rwx 187e,1   j_copyBytesNeg         ; Alias for copyBytesNeg
 rwx 1881,1   j_sub_2cc2             ; Alias for sub_2cc2
-rwx 1884,1   j_sub_4b4d             ; Alias for sub_4b4d
-rwx 1887,1   j_sub_4b74             ; Alias for sub_4b74
-rwx 188a,1   j_sub_4ac9             ; Alias for sub_4ac9
+rwx 1884,1   j_addItem              ; Alias for addItem
+rwx 1887,1   j_getItemAdr           ; Alias for getItemAdr
+rwx 188a,1   j_removeItem           ; Alias for removeItem
 rwx 188d,1   j_chkItemNAlign        ; Alias for chkItemNAlign
 rwx 1890,1   j_sub_49b0             ; Alias for sub_49b0
 rwx 1893,1   j_sub_55b7             ; Alias for sub_55b7
-rwx 1896,1   j_sub_4ec4             ; Alias for sub_4ec4
+rwx 1896,1   j_getItemAttrs         ; Alias for getItemAttrs
 rwx 1899,1   j_randInRange          ; Alias for randInRange
 rwx 189c,1   j_sub_5471             ; Alias for sub_5471
 rwx 189f,1   j_actionOffer          ; Alias for actionOffer
@@ -462,21 +447,21 @@ rw  18fe,1   dat_18fe               ; 1 byte
 rw  18ff,1   dat_18ff               ; 1 byte: flag indicating whether a new key should be read or not
 rw  1900,1   KBD_CONSOL             ; 1 byte: Status of console keys. Updated in vblank, same values as CONSOL
                                     ;
-rw  1901,1   CalcChksum_L           ; LSB of computed checksum for decrypted data. Only used in sub_27de
-rw  1902,1   CalcChksum_H           ; MSB of computed checksum for decrypted data. Only used in sub_27de
-rw  1903,1   dat_1903_L             ; LSB
-rw  1904,1   dat_1904_H             ; MSB
-rw  1905,1   dat_1905               ;
-rw  1906,1   dat_1906               ;
-rw  1907,1   dat_1907               ; 1 byte of data
-rw  1908,1   dat_1908               ; 1 byte. Only updated directly. Referenced indirectly via dat_1905
+rw  1901,1   CalcChksum_L           ; LSB of computed checksum for decrypted data. Only used in decryptBytes
+rw  1902,1   CalcChksum_H           ; MSB of computed checksum for decrypted data. Only used in decryptBytes
+rw  1903,1   FileSector_L           ; LSB of file sector
+rw  1904,1   FileSector_H           ; MSB of file sector
+rw  1905,1   FileId_B1              ; Byte 1 of file ID from file segment directory
+rw  1906,1   FileId_B2              ; Byte 2 of file ID from file segment directory
+rw  1907,1   FileLen_L              ; LSB of file size
+rw  1908,1   FileLen_H              ; MSB of file size
 rw  1909,1   FileNumber             ; 1 byte: Current file number / index into SEGDIR_HEADERS (0..$44 (68))
                                     ;     0 = ?
                                     ;     1..7     - Map ID + 1
                                     ;     8..13    - Texture sets
                                     ;     etc.
-rw  190b,1   dat_190b_L             ; LSB of address. Related to $09
-rw  190c,1   dat_190b_H             ; MSH of address. Related to $0a
+rw  190b,1   FileDestAdr_L          ; LSB: Address to read file to
+rw  190c,1   FileDestAdr_H          ; MSB: Address to read file to
 rw  190d,1   dat_190d               ; 1 byte. Only updated? Where is this read?
 rw  190e,1   dat_190e               ; 1 byte. Updated in sub_2799, Read in sub_28d7
 rw  190f,1   dat_190f               ; 1 byte. Updated in sub_275b
@@ -516,7 +501,7 @@ rw  194f,1   ZONE_WALL_CLR1         ; Wall color #2 (e.g. normal walls = 00 Blac
 rw  1950,1   ZONE_WALL_CLR2         ; Wall color #3 (e.g. normal walls = 0A Grey)
 rw  1951,1   ZONE_CEILING_CLR       ; Ceiling color
 rw  1952,1   ZONE_FLOOR_CLR         ; Floor color
-rw  1953,1   ZONE_I_BYTE            ; ?Zone base temperature?
+rw  1953,1   ZONE_WARMTH            ; Zone base temperature/warmth
 rw  1954,1   dat_1954               ;
 rw  1955,1   dat_1955               ; ?Possible flag indicating whether time is paused or not?
 rw  1956,1   UNK_BYTE_COUNTER       ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
@@ -938,6 +923,8 @@ rwx 2799,1   sub_2799               ;
 
 rwx 27d8,1   sub_27d8               ; Called from sub_80d2 in KERNEL_LOADER
 
+rwx 27de,1   decryptBytes           ; Decrypts a buffer of data using a 16-byte encryption key
+
 rwx 28a1,1   getFileEntry           ; Reads a file segment directory entry
 
 rwx 292b,1   sub_292b               ;
@@ -950,6 +937,8 @@ rw  2a38,9   dat_2a38_unk           ; 9 bytes/72 bits: Sequence of bits mapped t
                                     ; corresponding to a file number is set, then sub_2979 defers to sub_f9f4 to load
                                     ; the file instead of the normal process.
                                     ;   - Related to dat_025a which is assigned the value for a file number's corresponding bit (0 = 0, 1 = $80)
+                                    ;   - Perhaps indicates files which should be transferred to/from extended RAM
+                                    ;     instead of always reading from disk?
 
 rwx 2a41,1   readLine               ; Read a line of keyboard input into LineBuf
 
@@ -1024,7 +1013,7 @@ rwx 2dd9,3   smc_2dd9               ; The address for this LDA is dynamically mo
 rwx 2ddc,3   smc_2ddc               ; The op here is dynamically switched between an ORA and an AND
 rwx 2ddf,3   smc_2ddf               ; The address for this STA is dynamically modified
 
-rwx 2de3,1   bitTestBuf             ; Test whether a specific bit is set within a sequence of bytes.
+rwx 2de3,1   testBit                ; Test whether a specific bit is set within a sequence of bytes.
                                     ;   Params: A = bits 0-2 (8 - bit to test); bits 3-7 (offset), Y/X = buffer address
 rwx 2df3,1   smc_2df3               ;
 
@@ -1039,7 +1028,7 @@ rw  2e05,8   InvBitNMask            ; 8 bytes: Bitmasks for individual bits (Inv
                                     ;     6: $02 - 0000 0010
                                     ;     7: $01 - 0000 0001
 
-rwx 2e0d,1   copyBytes              ; Copies X * 256 + Y bytes from the address in dat_0007_L/H to the address in dat_0009_L/H
+rwx 2e0d,1   copyBytes              ; Copies X * 256 + Y bytes from the address in SourceAdr_L/H to the address in dat_0009_L/H
 rwx 2e31,1   sub_2e31               ;
 rwx 2e40,1   incChrAttr16           ; Increase a 16-bit player attribute value
 rw  2e42,1   nop_2e42               ; Forms 'BIT dat_00a0' with following LDA - essential NOP
@@ -1054,7 +1043,7 @@ rwx 2e6b,1   decChrAttr             ; Decrease a player attribute value
 rwx 2e6e,1   decAttr                ; Decrease a little-endian attribute value
 
 rxw 2e8d,1   setChrAttrAdr          ; Updates AttrAddr_L/H to a player stat address
-rwx 2e9e,1   copyBytesNeg           ; Copies -(dat_000c * 256 + dat_000b) bytes from the address in dat_0007_L/H to
+rwx 2e9e,1   copyBytesNeg           ; Copies -(dat_000c * 256 + dat_000b) bytes from the address in SourceAdr_L/H to
                                     ;     the address in dat_0009_L/H
 
 rwx 2ec6,1   kernelInit             ; Initialization code called from KERNEL_ENTRY after base initialization
@@ -1828,11 +1817,11 @@ rwx 4a5f,1   sub_4a5f               ;
 
 rwx 4a83,1   allocItem              ; Reserves a space in the inventory for an item of the specified size.
 
-rwx 4ac9,1   sub_4ac9               ;
+rwx 4ac9,1   removeItem             ; Removes an item from the game inventory.
 
-rwx 4b4d,1   sub_4b4d               ;
+rwx 4b4d,1   addItem                ; Adds an item to the game inventory.
 
-rwx 4b74,1   sub_4b74               ; Sets ItemAdr_L/H to the address of the item at index in A
+rwx 4b74,1   getItemAdr             ; Sets ItemAdr_L/H to the address of the item at index in A
 
 rwx 4b80,1   sub_4b80               ;
 rw  4b82,1   nop_4b82               ; Forms 'BIT $02a2' with following LDA - essential NOP
@@ -1900,6 +1889,13 @@ rwx 4eb4,1   isEquipped             ; Searches equipped weapons, armor and appar
                                     ;   C    - Set to 1 (equipped) when bit 7 of A is 0 and an entry equal to A is found
                                     ;          Set to 0 (not equipped) if no entry was found or bit 7 of A was 1
                                     ;   Y    - Contains the index of the matching byte when C = 1
+
+rwx 4ec4,1   getItemAttrs           ; Updates ItemAttrs_L/H to skip past item effects to the attribute section.
+
+rwx 4ee8,1   getItemEfcts           ; Sets ItemAdr_L/H to the address of the specified inventory item and ItemAttrs_L/H
+                                    ;     to the start of the effect section for that item.
+
+rwx 4efd,1   sub_4efd               ;
 
 rw  4f5d,20  ItemStick              ; 32 bytes: "stick" item
 
@@ -2163,7 +2159,7 @@ rw  5f0d,18  BasicItemStrs          ; 24 byte table of 12 addresses to the strin
                                     ;   10: $5ef3 [StrSilver]
                                     ;   11: $5f00 [StrCopper]
 rw  5f25,4   ZtsUse                 ; 4 bytes: "USE"
-rw  5f2e,5   ZtsDrop                ; 5 bytes: "DROP"
+rw  5f29,5   ZtsDrop                ; 5 bytes: "DROP"
 rw  5f2e,5   ZtsCast                ; 5 bytes: "CAST"
 rw  5f33,4   ZtsGet                 ; 4 bytes: "GET"
 rw  5f37,6   ZtsOffer               ; 6 bytes: "OFFER"
@@ -2203,8 +2199,7 @@ rw  627f,1   dat_627f               ; 1 byte
 rw  6280,1   dat_6280               ; 1 byte:
 rw  6281,1   dat_6281               ; 1 byte:
 rw  6282,1   dat_6282               ; 1 byte:
-             EquipSlot
-rw  6283,1   dat_6283               ; 1 byte: equipItem param: equipment slot to assign (0..9)
+rw  6283,1   EquipSlot              ; 1 byte: equipItem param: equipment slot to assign (0..9)
                                     ;     0: CHR_PRI_WEAPON
                                     ;     1: CHR_SEC_WEAPON
                                     ;     2: CHR_ARMOR_HEAD
@@ -2268,10 +2263,13 @@ rw  638b,1   CHR_SEE_SECRET_DOORS   ; Flag indicating whether the player can see
 
 rw  638d,1   CHR_DIFFICULT_TO_HIT   ;
 
-rw  6390,1   CHR_LIT_TORCH_FLAG     ; Used when rendering to determine light level
-rw  6391,1   CHR_DISEASE
-rw  6392,1   CHR_POISON
-rw  6393,1   CHR_CURSE
+rw  6390,1   CHR_NumLights          ; Number of active player light sources (torch, spell, item, etc).
+rw  6391,1   CHR_Diseased           ; Negative two's complement of the number of disease effects active on the player.
+                                    ;     Should be interpreted as a boolean flag: 0 = undiseased, <0 = diseased
+rw  6392,1   CHR_Poisoned           ; Negative two's complement of the number of poison effects active on the player.
+                                    ;     Should be interpreted as a boolean flag: 0 = no poison, <0 = poisoned
+rw  6393,1   CHR_CURSE              ; Negative two's complement of the number of curse effects active on the player.
+                                    ;     Should be interpreted as a boolean flag: 0 = no curse, <0 = cursed
 rw  6394,1   CHR_BURDEN             ; Player encumberment
 rw  6395,1   CHR_WARMTH             ; Player warmth
 rw  6396,1   Chr_Unk_6396           ; TODO: Related to CHR_DRUNK (decreased when drunk increased... stomach alcohol level?)
@@ -2328,11 +2326,12 @@ rw  648b,8   InvSlotFree            ; 8 bytes: Bitfield with one bit per invento
                                     ;    sub_4c86: clears bits
                                     ;    sub_4c5a: sets bits
 rw  6493,1   dat_6493               ; 1 byte
-rw  6494,10  dat_6494               ; 16? bytes
-rw  64a4,10  dat_64a4               ; 16? bytes
-rw  64b4,10  dat_64b4               ; 16? bytes
-rw  64c4,10  dat_64c4               ; 16? bytes
-rw  64d4,10  dat_64d4               ; 16? bytes: Holds item indexes
+rw  6494,10  dat_6494               ; 16? bytes: ... related to dropped items ...
+                                    ;    - sub_4efd: Set to 2
+rw  64a4,10  dat_64a4               ; 16? bytes: Holds item location X coordinate for dropped items
+rw  64b4,10  dat_64b4               ; 16? bytes: Holds item location Y coordinate for dropped items
+rw  64c4,10  dat_64c4               ; 16? bytes: Holds item location map number for dropped items
+rw  64d4,10  dat_64d4               ; 16? bytes: Holds item indexes for dropped items
 
 rw  64e4,1   CHR_ItemsEnd_L         ; 1 byte: LSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
 rw  64e5,1   CHR_ItemsEnd_H         ; 1 byte: MSB of current end of item data in the range $6900 [CHR_Items] to $75ff.

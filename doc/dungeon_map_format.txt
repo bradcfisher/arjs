@@ -188,7 +188,7 @@ Zone refs from Level 3 -
 ---
 
 Another table starts at 0x37e ($af7e in memory) and ends at 0x3ff (130 bytes):
-	- This table appears to contain zone definitions.
+	- This table contains zone definitions.
 	- Each entry in the table is 8 bytes, up to 16 entries (though with 2 extra bytes left over)
 	- The table extends through 0x3ff, and unused space is filled with [00] (level 1.1 to 1.4, 3, 4) or [AA] (level 2).
 
@@ -596,7 +596,7 @@ sub_$7eb1:
 5: $1950 = Wall color #3 (e.g. normal walls = 0A Grey)
 6: $1951 = Ceiling color
 7: $1952 = Floor color
-8: $1953 = ?
+8: $1953 = Base Temperature/Warmth ($80 neutral, <$80 colder, >$80 warmer)
 
 For color codes see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
 
@@ -1616,19 +1616,19 @@ Effect: Each effect is 16 bytes long
   Example: EffLitTorch
   --------------------
   8? ?? 04 01 f0 00 00 00 00 01 02 80 01 00 08 ??
-         |  | |   | |   |  |  |  |  |  |  |  |
-         |  | |   | |   |  |  |  |  |  |  |  +---- Delta amt: 8
-         |  | |   | |   |  |  |  |  |  |  +------- Step Size: 0
-         |  | |   | |   |  |  |  |  |  +---------- Steps: 1
-         |  | |   | |   |  |  |  |  +------------- ?
-         |  | |   | |   |  |  |  +---------------- Offset: 2 (?durability?)
-         |  | |   | |   |  |  +------------------- Action: 1 (?decrease item attribute?)
-         |  | |   | |   |  +---------------------- ?
-         |  | |   | +---+------------------------- Repetition delay:  0 (no repetitions)
-         |  | +---+------------------------------- Incubation period: 240 minutes (4 hours)
-         |  +------------------------------------- Repetitions: 1
-         +---------------------------------------- Trigger on "use"
-
+   |  |  |  | |   | |   |  |  |  |  |  |  |  |  +- 15:    Inventory item index for equipped torch
+   |  |  |  | |   | |   |  |  |  |  |  |  |  +---- 14:    Delta amt: 8 (decrease attribute by 8)
+   |  |  |  | |   | |   |  |  |  |  |  |  +------- 13:    Step Size: 0
+   |  |  |  | |   | |   |  |  |  |  |  +---------- 12:    Steps: 1
+   |  |  |  | |   | |   |  |  |  +--+------------- 10-11: Attribute Address: $8002 [??]
+   |  |  |  | |   | |   |  |  +------------------- 9:     Action: 1 (decrease item attribute)
+   |  |  |  | |   | |   |  +---------------------- 8:     ?
+   |  |  |  | |   | +---+------------------------- 6-7:   Repetition delay:  0 (no repetitions)
+   |  |  |  | +---+------------------------------- 4-5:   Incubation period: 240 minutes (4 hours)
+   |  |  |  +------------------------------------- 3:     Repetitions: 1
+   |  |  +---------------------------------------- 2:     Trigger on "use"
+   |  +------------------------------------------- 1:     ?
+   +---------------------------------------------- 0:     Effect/timer, not description
 
 Attributes: Structure varies based on item type
 
@@ -1646,29 +1646,29 @@ Name: 4C 69 74 20 54 6F 72 63 68 00
   6-15: "Lit Torch\0"
 Data: 00 FF 00 13 00 00 00 13 00 00 00 00 00 00 04 01 16 16 82 03
   (weapon attributes)
-  16: W0:  $00 (attributes follow?)
-  17: W1:  $ff (ammo type: $ff = melee)
-  18: W2:  $00 (remaining ammo: ignored for melee)
-  19: W3:  $13 (Blunt: 1d3)
-  20: W4:  $00 (Sharp: 0d0)
-  21: W5:  $00 (Earth: 0d0)
-  22: W6:  $00 (Air:   0d0)
-  23: W7:  $13 (Fire:  1d3)
-  24: W8:  $00 (Water: 0d0)
-  25: W9:  $00 (Power: 0d0)
-  26: W10: $00 (Magic: 0d0)
-  27: W11: $00 (Good:  0d0)
-  28: W12: $00 (Evil:  0d0)
-  29: W13: $00 (Cold:  0d0)
-  30: W14: $04 (Min STR required?)
-  31: W15: $01 (Min SKL required?)
-  32: W16: $16 (22 - Current durability)
-  33: W17: $16 (22 - Max durability)
-  34: W18: $82 (100 00 010 - bitfield)
+  16:      $00 (end of effects / attributes follow)
+  17: W0:  $ff (ammo type: $ff = melee)
+  18: W1:  $00 (remaining ammo: ignored for melee)
+  19: W2:  $13 (Blunt: 1d3)
+  20: W3:  $00 (Sharp: 0d0)
+  21: W4:  $00 (Earth: 0d0)
+  22: W5:  $00 (Air:   0d0)
+  23: W6:  $13 (Fire:  1d3)
+  24: W7:  $00 (Water: 0d0)
+  25: W8:  $00 (Power: 0d0)
+  26: W9:  $00 (Magic: 0d0)
+  27: W10: $00 (Good:  0d0)
+  28: W11: $00 (Evil:  0d0)
+  29: W12: $00 (Cold:  0d0)
+  30: W13: $04 (Min STR required?)
+  31: W14: $01 (Min SKL required?)
+  32: W15: $16 (22 - Current durability)
+  33: W16: $16 (22 - Max durability)
+  34: W17: $82 (100 00 010 - bitfield)
        - Bits 0..2: 010 - Message table num (2 = bash/wallop?)
        - Bits 3..4: 00  - Bonus to hit?
        - Bits 5..7: unknown?
-  35: W19: $03 (Parry value)
+  35: W18: $03 (Parry value)
 
 
 

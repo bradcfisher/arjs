@@ -128,6 +128,12 @@ export class LabelEntry {
 export class LabelCollection extends Array {
 
     /**
+     * Name used to identify to the collection in exceptions and logging.
+     * @type {String}
+     */
+    name;
+
+    /**
      * Collections to defer lookups to if no match is found in this collection.
      * This property allows defining a hierarchy of collections.
      * @type {LabelCollection[]}
@@ -136,22 +142,34 @@ export class LabelCollection extends Array {
 
     /**
      * Creates a new collection containing the specified LabelEntries
-     * @param  {...(LabelCollection|LabelEntry|object)} items list of LabelCollections to extend or LabelEntries
-     *         to include in this collection.
+     * @param {String} name used to identify to the collection in exceptions and logging.
+     * @param {LabelCollection[]} collections collections which the new collection extends. Collections earlier in
+     *        the list will have higher priority during lookups than later ones.
      */
-    constructor(...items) {
+    constructor(name, ...collections) {
         super();
-        if (items != null) {
-            for (var entry of items) {
-                if (entry instanceof LabelCollection) {
-                    this.extendedCollections.push(entry);
-                } else if (entry instanceof LabelEntry) {
-                    this.push(entry);
-                } else {
-                    this.push(new LabelEntry(entry.offset, entry.name, entry.size, entry.flags));
-                }
+        this.name = name;
+        this.extends(...collections);
+    }
+
+    /**
+     * Assigns collections to defer lookups to if no match is found in this collection.
+     *
+     * @param {LabelCollection[]} collections additional collections which the new collection extends. The new
+     *        collections will have lower priority during lookups than any previously assigned collections, and collections
+     *        earlier in the list will have higher priority than later ones.
+     *
+     * @returns {this}
+     */
+    extends(...collections) {
+        collections.forEach((collection, index) => {
+            if (collection instanceof LabelCollection) {
+                this.extendedCollections.push(collection);
+            } else {
+                throw Error(this.name + ": argument " + index + " is not a LabelCollection");
             }
-        }
+        });
+        return this;
     }
 
     /**
@@ -244,6 +262,20 @@ export class LabelCollection extends Array {
 
     optimize() {
         //this.sort();
+
+        // Check for duplicate entries
+        const usedNames = {};
+        this.forEach((entry, index) => {
+            const found = usedNames[entry.name];
+            if (found) {
+                console.warn("%s: Duplicate label name found: %o (index %i) and %o (index %i)",
+                    this.name, found[0], found[1], entry, index);
+            } else {
+                usedNames[entry.name] = [entry, index];
+            }
+        });
+
+        return this;
     }
 
     /**
@@ -555,23 +587,23 @@ function binarySearch(collection, startIncl, endExcl, value, matchFunction) {
             }
             */
 
-            //console.log("bs: " + collection.source + ": value=" + value + ": match=" + index + " ", entry);
+            //console.log("bs: " + collection.name + ": value=" + value + ": match=" + index + " ", entry);
 
             return [ index, index, 0 ];
         }
 
         if (cmp < 0) {
-            //console.log("bs: " + collection.source + ": value=" + value + ": check to left: index=" + index + " ", entry);
+            //console.log("bs: " + collection.name + ": value=" + value + ": check to left: index=" + index + " ", entry);
 
             min = index + 1;
         } else {
-            //console.log("bs: " + collection.source + ": value=" + value + ": check to right: index=" + index + " ", entry);
+            //console.log("bs: " + collection.name + ": value=" + value + ": check to right: index=" + index + " ", entry);
 
             endExcl = index;
         }
     }
 
-    //console.log("bs: " + collection.source + ": value=" + value + ": not found: closest=" + index + " cmp=" + cmp);
+    //console.log("bs: " + collection.name + ": value=" + value + ": not found: closest=" + index + " cmp=" + cmp);
 
     return [ -1, index, cmp ];
 }
@@ -773,7 +805,7 @@ export class DisasmOptions {
      * Default is unassigned.
      * @type {LabelCollection}
      */
-    labels = new LabelCollection();
+    labels = new LabelCollection("[default]");
 
     /**
      * Collection of segment entries.
@@ -1402,8 +1434,7 @@ export function disassemble(bytes, options) {
 
     const origLabels = options.labels;
     if (options.defineInferredLabels) {
-        options.labels = new LabelCollection(options.labels);
-        options.labels.source = "[Inferred labels]";
+        options.labels = new LabelCollection("[Inferred labels]", options.labels);
         const d = new Set();
 
         for (let opEntry of ops) {
@@ -1538,7 +1569,7 @@ export function disassemble(bytes, options) {
 }
 
 
-export const atari800Labels = new LabelCollection().parse(
+export const atari800Labels = new LabelCollection("[System]").parse(
 `Altirra symbol file
 
 [symbols]
@@ -1553,21 +1584,21 @@ rw  0006,1  TRAMSZ
 rw  0007,1  TSTDAT
 rw  0008,1  WARMST
 rw  0009,1  BOOT
-rw  000A,2  DOSVEC
-rw  000C,2  DOSINI
-rw  000E,2  APPMHI
+rw  0001,2  DOSVEC
+rw  000c,2  DOSINI
+rw  000e,2  APPMHI
 rw  0010,1  POKMSK
 rw  0011,1  BRKKEY
 rw  0012,3  RTCLOK
 rw  0015,2  BUFADR
 rw  0017,1  ICCOMT
 rw  0018,2  DSKFMS
-rw  001A,2  DSKUTL
-rw  001C,1  PTIMOT
-rw  001D,1  PBPNT
-rw  001E,1  PBUFSZ
-rw  001F,1  PTEMP
-; 0020 to 002F are the ZIOCB (Zero page IO control block)
+rw  0011,2  DSKUTL
+rw  001c,1  PTIMOT
+rw  001d,1  PBPNT
+rw  001e,1  PBUFSZ
+rw  001f,1  PTEMP
+; 0020 to 002f are the ZIOCB (Zero page IO control block)
 rw  0020,1  ICHIDZ
 rw  0021,1  ICDNOZ
 rw  0022,1  ICCOMZ
@@ -1578,12 +1609,13 @@ rw  0026,1  ICPTLZ
 rw  0027,1  ICPTHZ
 rw  0028,1  ICBLLZ
 rw  0029,1  ICBLHZ
-rw  002A,1  ICAX1Z
-rw  002B,1  ICAX2Z
-rw  002C,1  ICAX3Z
-rw  002D,1  ICAX4Z
-rw  002E,1  ICAX5Z
-rw  002F,1  CIOCHR      ; Also called ICAX6Z
+rw  002a,1  ICAX1Z
+rw  002b,1  ICAX2Z
+rw  002b,4  ICSPRZ      ; Alias: overlaps next 4 bytes
+rw  002c,1  ICAX3Z
+rw  002d,1  ICAX4Z
+rw  002e,1  ICAX5Z      ; Also called ICIDNO
+rw  002f,1  CIOCHR      ; Also called ICAX6Z
 rw  0030,1  STATUS
 rw  0031,1  CHKSUM
 rw  0032,1  BUFRLO
@@ -1594,12 +1626,12 @@ rw  0036,1  CRETRY
 rw  0037,1  DRETRY
 rw  0038,1  BUFRFL
 rw  0039,1  RECVDN
-rw  003A,1  XMTDON
-rw  003B,1  CHKSNT
-rw  003C,1  NOCKSM
-rw  003D,1  BPTR
-rw  003E,1  FTYPE
-rw  003F,1  FEOF
+rw  003a,1  XMTDON
+rw  003b,1  CHKSNT
+rw  003c,1  NOCKSM
+rw  003d,1  BPTR
+rw  003e,1  FTYPE
+rw  003f,1  FEOF
 rw  0040,1  FREQ
 rw  0041,1  SOUNDR
 rw  0042,1  CRITIC
@@ -1608,13 +1640,13 @@ rw  0043,2  ZBUFP
 rw  0045,2  ZDRVA
 rw  0047,2  ZSBA
 rw  0049,1  ERRNO
-rw  004A,1  CKEY
-rw  004B,1  CASSBT
-rw  004C,1  DSTAT
-rw  004D,1  ATRACT
-rw  004E,1  DRKMSK
-rw  004F,1  COLRSH
-rw  0050,1  TEMP
+rw  004a,1  CKEY
+rw  004b,1  CASSBT
+rw  004c,1  DSTAT
+rw  004d,1  ATRACT
+rw  004e,1  DRKMSK
+rw  004f,1  COLRSH
+rw  0050,1  TMPCHR
 rw  0051,1  HOLD1
 rw  0052,1  LMARGN
 rw  0053,1  RMARGN
@@ -1622,63 +1654,64 @@ rw  0054,1  ROWCRS
 rw  0055,2  COLCRS
 rw  0057,1  DINDEX
 rw  0058,2  SAVMSC
-rw  005A,1  OLDROW
-rw  005B,2  OLDCOL
-rw  005D,1  OLDCHR
-rw  005E,2  OLDADR
+rw  005a,1  OLDROW
+rw  005b,2  OLDCOL
+rw  005d,1  OLDCHR
+rw  005e,2  OLDADR
 rw  0060,1  NEWROW
 rw  0061,2  NEWCOL
 rw  0063,1  LOGCOL
 rw  0064,2  ADRESS
 rw  0066,2  MLTTMP
 rw  0068,2  SAVADR
-rw  006A,1  RAMTOP
-rw  006B,1  BUFCNT
-rw  006C,2  BUFSTR
-rw  006E,1  BITMSK
-rw  006F,1  SHFAMT
+rw  0061,1  RAMTOP
+rw  006b,1  BUFCNT
+rw  006c,2  BUFSTR
+rw  006e,1  BITMSK
+rw  006f,1  SHFAMT
 rw  0070,2  ROWAC       ; ANTIC_BLANK8?
 rw  0072,2  COLAC
 rw  0074,2  ENDPT
 rw  0076,1  DELTAR
 rw  0077,2  DELTAC
 rw  0079,1  ROWINC
-rw  007A,1  COLINC
-rw  007B,1  SWPFLG
-rw  007C,1  HOLDCH
-rw  007D,1  INSDAT
-rw  007E,2  COUNTR
+rw  007a,1  COLINC
+rw  007b,1  SWPFLG
+rw  007c,1  HOLDCH
+rw  007d,1  INSDAT
+rw  007e,2  COUNTR
 ; User memory/BASIC memory begins here at 0080
 rw  0080,2  LOMEM
 rw  0082,2  VNTP
 rw  0084,2  VNTD
 rw  0086,2  VVTP
 rw  0088,2  STMTAB
-rw  008A,2  STMCUR
-rw  008C,2  STARP
-rw  008E,2  RUNSTK
-rw  0090,2  MEMTOP
-rw  00BA,2  STOPLN
-rw  00C3,1  ERRSAVE
-rw  00C9,1  PTABW
-; FP work area is 00D4-00FF
-rw  00D4,6  FR0
-rw  00E0,6  FR1
-rw  00E6,6  FR2
-rw  00EC,6  FRX
-rw  00ED,1  EEXP
-rw  00EE,1  NSIGN
-rw  00EF,1  ESIGN
-rw  00F0,1  FCHRFLG
-rw  00F1,1  DIGRT
-rw  00F2,1  CIX
-rw  00F3,2  INBUFF
-rw  00F5,2  ZTEMP1
-rw  00F7,2  ZTEMP2
-rw  00F9,2  ZTEMP3
-rw  00FB,1  RADFLG  ; Also called DEGFLG (0 = radians, 6 = degrees)
-rw  00FC,2  FLPTR
-rw  00FE,2  FPTR2
+rw  008a,2  STMCUR
+rw  008c,2  STARP
+rw  008e,2  RUNSTK
+rw  0090,2  MEMTOP  ; nodup: BASIC MEMTOP is not the same as OS MEMTOP
+rw  00ba,2  STOPLN
+rw  00c3,1  ERRSAVE
+rw  00c9,1  PTABW
+; FP work area is 00d4-00ff
+rw  00d4,6  FR0
+rw  00da,6  FRE
+rw  00e0,6  FR1
+rw  00e6,6  FR2
+rw  00ec,1  FRX
+rw  00ed,1  EEXP
+rw  00ee,1  NSIGN
+rw  00ef,1  ESIGN
+rw  00f0,1  FCHRFLG
+rw  00f1,1  DIGRT   ; Also called DIORT
+rw  00f2,1  CIX
+rw  00f3,2  INBUFF
+rw  00f5,2  ZTEMP1
+rw  00f7,2  ZTEMP2
+rw  00f9,2  ZTEMP3
+rw  00fb,1  RADFLG  ; Also called DEGFLG (0 = radians, 6 = degrees)
+rw  00fc,2  FLPTR
+rw  00fe,2  FPTR2
 
 ; Page 2
 rw  0200,2  VDSLST
@@ -1686,28 +1719,28 @@ rw  0202,2  VPRCED
 rw  0204,2  VINTER
 rw  0206,2  VBREAK
 rw  0208,2  VKEYBD
-rw  020A,2  VSERIN
-rw  020C,2  VSEROR
-rw  020E,2  VSEROC
+rw  020a,2  VSERIN
+rw  020c,2  VSEROR
+rw  020e,2  VSEROC
 rw  0210,2  VTIMR1
 rw  0212,2  VTIMR2
 rw  0214,2  VTIMR4
 rw  0216,2  VIMIRQ
 rw  0218,2  CDTMV1
-rw  021A,2  CDTMV2
-rw  021C,2  CDTMV3
-rw  021E,2  CDTMV4
+rw  021a,2  CDTMV2
+rw  021c,2  CDTMV3
+rw  021e,2  CDTMV4
 rw  0220,2  CDTMV5
 rw  0222,2  VVBLKI
 rw  0224,2  VVBLKD
 rw  0226,2  CDTMA1
 rw  0228,2  CDTMA2
-rw  022A,1  CDTMF3
-rw  022B,1  SRTIMR
-rw  022C,1  CDTMF4
-rw  022D,1  INTEMP
-rw  022E,1  CDTMF5
-rw  022F,1  SDMCTL
+rw  022a,1  CDTMF3
+rw  022b,1  SRTIMR
+rw  022c,1  CDTMF4
+rw  022d,1  INTEMP
+rw  022e,1  CDTMF5
+rw  022f,1  SDMCTL
 rw  0230,2  SDLST
 rw  0232,1  SSKCTL
 ; 0233 is a spare byte
@@ -1715,12 +1748,12 @@ rw  0234,1  LPENH
 rw  0235,1  LPENV
 rw  0236,2  BRKKY
 ; 0238 and 0239 are spare bytes
-rw  023A,1  CDEVIC
-rw  023B,1  CCOMND
-rw  023C,1  CAUX1
-rw  023D,1  CAUX2
-rw  023E,1  TEMP
-rw  023F,1  ERRFLG
+rw  023a,1  CDEVIC
+rw  023b,1  CCOMND
+rw  023c,1  CAUX1
+rw  023d,1  CAUX2
+rw  023e,1  TEMP
+rw  023f,1  ERRFLG
 rw  0240,1  DFLAGS
 rw  0241,1  DBSECT
 rw  0242,2  BOOTAD
@@ -1728,7 +1761,7 @@ rw  0244,1  COLDST
 ; 0245 is a spare byte
 rw  0246,1  DSKTIM
 rw  0247,28 LINBUF      ; 40 byte temp line buffer
-rw  026F,1  GPRIOR
+rw  026f,1  GPRIOR
 rw  0270,1  PADDL0
 rw  0271,1  PADDL1
 rw  0272,1  PADDL2
@@ -1739,12 +1772,12 @@ rw  0276,1  PADDL6
 rw  0277,1  PADDL7
 rw  0278,1  STICK0
 rw  0279,1  STICK1
-rw  027A,1  STICK2
-rw  027B,1  STICK3
-rw  027C,1  PTRIG0
-rw  027D,1  PTRIG1
-rw  027E,1  PTRIG2
-rw  027F,1  PTRIG3
+rw  027a,1  STICK2
+rw  027b,1  STICK3
+rw  027c,1  PTRIG0
+rw  027d,1  PTRIG1
+rw  027e,1  PTRIG2
+rw  027f,1  PTRIG3
 rw  0280,1  PTRIG4
 rw  0281,1  PTRIG5
 rw  0282,1  PTRIG6
@@ -1755,62 +1788,62 @@ rw  0286,1  STRIG2
 rw  0287,1  STRIG3
 rw  0288,1  CSTAT
 rw  0289,1  WMODE
-rw  028A,1  BLIM
-; Bytes 28B to 28F are spare bytes
+rw  028a,1  BLIM
+; Bytes 28b to 28f are spare bytes
 rw  0290,1  TXTROW
 rw  0291,2  TXTCOL
 rw  0293,1  TINDEX
 rw  0294,2  TXTMSC
 rw  0296,6  TXTOLD
-rw  029C,1  TMPX1
-rw  029D,1  HOLD3
-rw  029E,1  SUBTMP
-rw  029F,1  HOLD2
-rw  02A0,1  DMASK
-rw  02A1,1  TMPLBT
-rw  02A2,1  ESCFLG
-rw  02A3,F  TABMAP
-rw  02B2,4  LOGMAP
-rw  02B6,1  INVFLG
-rw  02B7,1  FILFLG
-rw  02B8,1  TMPROW
-rw  02B9,2  TMPCOL
-rw  02BB,1  SCRFLG
-rw  02BC,1  HOLD4
-rw  02BD,1  HOLD5
-rw  02BE,1  SHFLOK
-rw  02BF,1  BOTSCR
-rw  02C0,1  PCOLR0
-rw  02C1,1  PCOLR1
-rw  02C2,1  PCOLR2
-rw  02C3,1  PCOLR3
-rw  02C4,1  COLOR0
-rw  02C5,1  COLOR1
-rw  02C6,1  COLOR2
-rw  02C7,1  COLOR3
-rw  02C8,1  COLOR4
-; 2C9-2DF are spare bytes
-rw  02E0,2  RUNAD
-rw  02E2,2  INITAD
-rw  02E4,1  RAMSIZ
-rw  02E5,2  MEMTOP
-rw  02E7,2  MEMLO
-; 2E9 is a spare byte
-rw  02EA,4  DVSTAT
-rw  02EE,1  CBAUDL
-rw  02EF,1  CBAUDH
-rw  02F0,1  CRSINH
-rw  02F1,1  KEYDEL
-rw  02F2,1  CH1
-rw  02F3,1  CHACT
-rw  02F4,1  CHBAS
-; 02F5 to 02F9 are unused bytes
-rw  02FA,1  CHAR
-rw  02FB,1  ATACHR
-rw  02FC,1  CH
-rw  02FD,1  FILDAT
-rw  02FE,1  DSPFLG
-rw  02FF,1  SSFLAG
+rw  029c,1  TMPX1
+rw  029d,1  HOLD3
+rw  029e,1  SUBTMP
+rw  029f,1  HOLD2
+rw  02a0,1  DMASK
+rw  02a1,1  TMPLBT
+rw  02a2,1  ESCFLG
+rw  02a3,F  TABMAP
+rw  02b2,4  LOGMAP
+rw  02b6,1  INVFLG
+rw  02b7,1  FILFLG
+rw  02b8,1  TMPROW
+rw  02b9,2  TMPCOL
+rw  02bb,1  SCRFLG
+rw  02bc,1  HOLD4
+rw  02bd,1  HOLD5
+rw  02be,1  SHFLOK
+rw  02bf,1  BOTSCR
+rw  02c0,1  PCOLR0
+rw  02c1,1  PCOLR1
+rw  02c2,1  PCOLR2
+rw  02c3,1  PCOLR3
+rw  02c4,1  COLOR0
+rw  02c5,1  COLOR1
+rw  02c6,1  COLOR2
+rw  02c7,1  COLOR3
+rw  02c8,1  COLOR4
+; 2c9-2df are spare bytes
+rw  02e0,2  RUNAD
+rw  02e2,2  INITAD
+rw  02e4,1  RAMSIZ
+rw  02e5,2  MEMTOP
+rw  02e7,2  MEMLO
+; 2e9 is a spare byte
+rw  02ea,4  DVSTAT
+rw  02ee,1  CBAUDL
+rw  02ef,1  CBAUDH
+rw  02f0,1  CRSINH
+rw  02f1,1  KEYDEL
+rw  02f2,1  CH1
+rw  02f3,1  CHACT
+rw  02f4,1  CHBAS
+; 02f5 to 02f9 are unused bytes
+rw  02fa,1  CHAR
+rw  02fb,1  ATACHR
+rw  02fc,1  CH
+rw  02fd,1  FILDAT
+rw  02fe,1  DSPFLG
+rw  02ff,1  SSFLAG
 
 ; Page 3
 rw  0300,1  DDEVIC
@@ -1823,11 +1856,11 @@ rw  0306,1  DTIMLO
 ; 0307 is unused
 rw  0308,1  DBYTLO
 rw  0309,1  DBYTHI
-rw  030A,1  DAUX1
-rw  030B,1  DAUX2
-rw  030C,2  TIMER1
-rw  030E,1  ADDCOR
-rw  030F,1  CASFLG
+rw  030a,1  DAUX1
+rw  030b,1  DAUX2
+rw  030c,2  TIMER1
+rw  030e,1  ADDCOR
+rw  030f,1  CASFLG
 rw  0310,2  TIMER2
 rw  0312,2  TEMP1
 rw  0314,1  TEMP2
@@ -1836,7 +1869,7 @@ rw  0316,1  SAVIO
 rw  0317,1  TIMFLG
 rw  0318,1  STACKP
 rw  0319,1  TSTAT
-rw  031A,26 HATABS      ; 38 byte table of 3 byte handler entries (1 byte device name char, 2 byte addr to handler)
+rw  031a,26 HATABS      ; 38 byte table of 3 byte handler entries (1 byte device name char, 2 byte addr to handler)
 ; IOCB0
 rw  0340,1  IC0HID
 rw  0341,1  IC0DNO
@@ -1848,12 +1881,12 @@ rw  0346,1  IC0PTL
 rw  0347,1  IC0PTH
 rw  0348,1  IC0BLL
 rw  0349,1  IC0BLH
-rw  034A,1  IC0AX1
-rw  034B,1  IC0AX2
-rw  034C,1  IC0AX3
-rw  034D,1  IC0AX4
-rw  034E,1  IC0AX5
-rw  034F,1  IC0AX6
+rw  034a,1  IC0AX1
+rw  034b,1  IC0AX2
+rw  034c,1  IC0AX3
+rw  034d,1  IC0AX4
+rw  034e,1  IC0AX5
+rw  034f,1  IC0AX6
 ; IOCB1
 rw  0350,1  IC1HID
 rw  0351,1  IC1DNO
@@ -1865,12 +1898,12 @@ rw  0356,1  IC1PTL
 rw  0357,1  IC1PTH
 rw  0358,1  IC1BLL
 rw  0359,1  IC1BLH
-rw  035A,1  IC1AX1
-rw  035B,1  IC1AX2
-rw  035C,1  IC1AX3
-rw  035D,1  IC1AX4
-rw  035E,1  IC1AX5
-rw  035F,1  IC1AX6
+rw  035a,1  IC1AX1
+rw  035b,1  IC1AX2
+rw  035c,1  IC1AX3
+rw  035d,1  IC1AX4
+rw  035e,1  IC1AX5
+rw  035f,1  IC1AX6
 ; IOCB2
 rw  0360,1  IC2HID
 rw  0361,1  IC2DNO
@@ -1882,12 +1915,12 @@ rw  0366,1  IC2PTL
 rw  0367,1  IC2PTH
 rw  0368,1  IC2BLL
 rw  0369,1  IC2BLH
-rw  036A,1  IC2AX1
-rw  036B,1  IC2AX2
-rw  036C,1  IC2AX3
-rw  036D,1  IC2AX4
-rw  036E,1  IC2AX5
-rw  036F,1  IC2AX6
+rw  036a,1  IC2AX1
+rw  036b,1  IC2AX2
+rw  036c,1  IC2AX3
+rw  036d,1  IC2AX4
+rw  036e,1  IC2AX5
+rw  036f,1  IC2AX6
 ; IOCB3
 rw  0370,1  IC3HID
 rw  0371,1  IC3DNO
@@ -1899,12 +1932,12 @@ rw  0376,1  IC3PTL
 rw  0377,1  IC3PTH
 rw  0378,1  IC3BLL
 rw  0379,1  IC3BLH
-rw  037A,1  IC3AX1
-rw  037B,1  IC3AX2
-rw  037C,1  IC3AX3
-rw  037D,1  IC3AX4
-rw  037E,1  IC3AX5
-rw  037F,1  IC3AX6
+rw  037a,1  IC3AX1
+rw  037b,1  IC3AX2
+rw  037c,1  IC3AX3
+rw  037d,1  IC3AX4
+rw  037e,1  IC3AX5
+rw  037f,1  IC3AX6
 ; IOCB4
 rw  0380,1  IC4HID
 rw  0381,1  IC4DNO
@@ -1916,12 +1949,12 @@ rw  0386,1  IC4PTL
 rw  0387,1  IC4PTH
 rw  0388,1  IC4BLL
 rw  0389,1  IC4BLH
-rw  038A,1  IC4AX1
-rw  038B,1  IC4AX2
-rw  038C,1  IC4AX3
-rw  038D,1  IC4AX4
-rw  038E,1  IC4AX5
-rw  038F,1  IC4AX6
+rw  038a,1  IC4AX1
+rw  038b,1  IC4AX2
+rw  038c,1  IC4AX3
+rw  038d,1  IC4AX4
+rw  038e,1  IC4AX5
+rw  038f,1  IC4AX6
 ; IOCB5
 rw  0390,1  IC5HID
 rw  0391,1  IC5DNO
@@ -1933,212 +1966,213 @@ rw  0396,1  IC5PTL
 rw  0397,1  IC5PTH
 rw  0398,1  IC5BLL
 rw  0399,1  IC5BLH
-rw  039A,1  IC5AX1
-rw  039B,1  IC5AX2
-rw  039C,1  IC5AX3
-rw  039D,1  IC5AX4
-rw  039E,1  IC5AX5
-rw  039F,1  IC5AX6
+rw  039a,1  IC5AX1
+rw  039b,1  IC5AX2
+rw  039c,1  IC5AX3
+rw  039d,1  IC5AX4
+rw  039e,1  IC5AX5
+rw  039f,1  IC5AX6
 ; IOCB6
-rw  03A0,1  IC6HID
-rw  03A1,1  IC6DNO
-rw  03A2,1  IC6CMD
-rw  03A3,1  IC6STA
-rw  03A4,1  IC6BAL
-rw  03A5,1  IC6BAH
-rw  03A6,1  IC6PTL
-rw  03A7,1  IC6PTH
-rw  03A8,1  IC6BLL
-rw  03A9,1  IC6BLH
-rw  03AA,1  IC6AX1
-rw  03AB,1  IC6AX2
-rw  03AC,1  IC6AX3
-rw  03AD,1  IC6AX4
-rw  03AE,1  IC6AX5
-rw  03AF,1  IC6AX6
+rw  03a0,1  IC6HID
+rw  03a1,1  IC6DNO
+rw  03a2,1  IC6CMD
+rw  03a3,1  IC6STA
+rw  03a4,1  IC6BAL
+rw  03a5,1  IC6BAH
+rw  03a6,1  IC6PTL
+rw  03a7,1  IC6PTH
+rw  03a8,1  IC6BLL
+rw  03a9,1  IC6BLH
+rw  03aa,1  IC6AX1
+rw  03ab,1  IC6AX2
+rw  03ac,1  IC6AX3
+rw  03ad,1  IC6AX4
+rw  03ae,1  IC6AX5
+rw  03af,1  IC6AX6
 ; IOCB7
-rw  03B0,1  IC7HID
-rw  03B1,1  IC7DNO
-rw  03B2,1  IC7CMD
-rw  03B3,1  IC7STA
-rw  03B4,1  IC7BAL
-rw  03B5,1  IC7BAH
-rw  03B6,1  IC7PTL
-rw  03B7,1  IC7PTH
-rw  03B8,1  IC7BLL
-rw  03B9,1  IC7BLH
-rw  03BA,1  IC7AX1
-rw  03BB,1  IC7AX2
-rw  03BC,1  IC7AX3
-rw  03BD,1  IC7AX4
-rw  03BE,1  IC7AX5
-rw  03BF,1  IC7AX6
-rw  03C0,28 PRNBUF      ; 40 byte buffer
-; 03E8 to 03FC are reserved spare buffer area
-rw  03FD,83 CASBUF      ; 131 byte buffer
-rw  057E,1  LBPR1
-rw  057F,1  LBPR2
+rw  03b0,1  IC7HID
+rw  03b1,1  IC7DNO
+rw  03b2,1  IC7CMD
+rw  03b3,1  IC7STA
+rw  03b4,1  IC7BAL
+rw  03b5,1  IC7BAH
+rw  03b6,1  IC7PTL
+rw  03b7,1  IC7PTH
+rw  03b8,1  IC7BLL
+rw  03b9,1  IC7BLH
+rw  03ba,1  IC7AX1
+rw  03bb,1  IC7AX2
+rw  03bc,1  IC7AX3
+rw  03bd,1  IC7AX4
+rw  03be,1  IC7AX5
+rw  03bf,1  IC7AX6
+rw  03c0,28 PRNBUF      ; 40 byte buffer
+; 03e8 to 03fc are reserved spare buffer area
+rw  03fd,83 CASBUF      ; 131 byte buffer
+
+rw  057e,1  LBPR1
+rw  057f,1  LBPR2
 rw  0580,80 LBUFF       ; 128 byte BASIC output line buffer
 
 rw  1329,1  DBUFAL
 rw  1331,1  DBUFAH
 
 ; GTIA
-w   D000,1  HPOSP0      ; Horiz. Pos. Player 0
-w   D001,1  HPOSP1      ; Horiz. Pos. Player 1
-w   D002,1  HPOSP2      ; Horiz. Pos. Player 2
-w   D003,1  HPOSP3      ; Horiz. Pos. Player 3
-w   D004,1  HPOSM0      ; Horiz. Pos. Missile 0
-w   D005,1  HPOSM1      ; Horiz. Pos. Missile 1
-w   D006,1  HPOSM2      ; Horiz. Pos. Missile 2
-w   D007,1  HPOSM3      ; Horiz. Pos. Missile 3
-w   D008,1  SIZEP0      ; Size Player 0
-w   D009,1  SIZEP1      ; Size Player 1
-w   D00A,1  SIZEP2      ; Size Player 2
-w   D00B,1  SIZEP3      ; Size Player 3
-w   D00C,1  SIZEM       ; Size All Missiles
-w   D00D,1  GRAFP0      ; Graphics Player 0
-w   D00E,1  GRAFP1      ; Graphics Player 1
-w   D00F,1  GRAFP2      ; Graphics Player 2
-w   D010,1  GRAFP3      ; Graphics Player 3
-w   D011,1  GRAFM       ; Graphics All Missiles
-w   D012,1  COLPM0      ; Color Player-Missile 0
-w   D013,1  COLPM1      ; Color Player-Missile 1
-w   D014,1  COLPM2      ; Color Player-Missile 2
-w   D015,1  COLPM3      ; Color Player-Missile 3
-w   D016,1  COLPF0      ; Color Playfield 0
-w   D017,1  COLPF1      ; Color Playfield 1
-w   D018,1  COLPF2      ; Color Playfield 2
-w   D019,1  COLPF3      ; Color Playfield 3
-w   D01A,1  COLBK       ; Color Background
-w   D01B,1  PRIOR       ; Priority Select
-w   D01C,1  VDELAY      ; Vertical Delay
-w   D01D,1  GRACTL      ; Graphic Control
-w   D01E,1  HITCLR      ; Collision Clear
-rw  D01F,1  CONSOL
-r   D000,1  M0PF        ; Missile-Playfield 0 collisions
-r   D001,1  M1PF        ; Missile-Playfield 1 collisions
-r   D002,1  M2PF        ; Missile-Playfield 2 collisions
-r   D003,1  M3PF        ; Missile-Playfield 3 collisions
-r   D004,1  P0PF        ; Player-Playfield 0 collisions
-r   D005,1  P1PF        ; Player-Playfield 1 collisions
-r   D006,1  P2PF        ; Player-Playfield 2 collisions
-r   D007,1  P3PF        ; Player-Playfield 3 collisions
-r   D008,1  M0PL        ; Missile-Player 0 collisions
-r   D009,1  M1PL        ; Missile-Player 1 collisions
-r   D00A,1  M2PL        ; Missile-Player 2 collisions
-r   D00B,1  M3PL        ; Missile-Player 3 collisions
-r   D00C,1  P0PL        ; Player-Player 0 collisions
-r   D00D,1  P1PL        ; Player-Player 1 collisions
-r   D00E,1  P2PL        ; Player-Player 2 collisions
-r   D00F,1  P3PL        ; Player-Player 3 collisions
-r   D010,1  TRIG0       ; Joystick triggers 0
-r   D011,1  TRIG1       ; Joystick triggers 1
-r   D012,1  TRIG2       ; Joystick triggers 2
-r   D013,1  TRIG3       ; Joystick triggers 3
-r   D014,1  PAL         ; PAL/NTSC bits
+w   d000,1  HPOSP0      ; Horiz. Pos. Player 0
+w   d001,1  HPOSP1      ; Horiz. Pos. Player 1
+w   d002,1  HPOSP2      ; Horiz. Pos. Player 2
+w   d003,1  HPOSP3      ; Horiz. Pos. Player 3
+w   d004,1  HPOSM0      ; Horiz. Pos. Missile 0
+w   d005,1  HPOSM1      ; Horiz. Pos. Missile 1
+w   d006,1  HPOSM2      ; Horiz. Pos. Missile 2
+w   d007,1  HPOSM3      ; Horiz. Pos. Missile 3
+w   d008,1  SIZEP0      ; Size Player 0
+w   d009,1  SIZEP1      ; Size Player 1
+w   d00a,1  SIZEP2      ; Size Player 2
+w   d00b,1  SIZEP3      ; Size Player 3
+w   d00c,1  SIZEM       ; Size All Missiles
+w   d00d,1  GRAFP0      ; Graphics Player 0
+w   d00e,1  GRAFP1      ; Graphics Player 1
+w   d00f,1  GRAFP2      ; Graphics Player 2
+w   d010,1  GRAFP3      ; Graphics Player 3
+w   d011,1  GRAFM       ; Graphics All Missiles
+w   d012,1  COLPM0      ; Color Player-Missile 0
+w   d013,1  COLPM1      ; Color Player-Missile 1
+w   d014,1  COLPM2      ; Color Player-Missile 2
+w   d015,1  COLPM3      ; Color Player-Missile 3
+w   d016,1  COLPF0      ; Color Playfield 0
+w   d017,1  COLPF1      ; Color Playfield 1
+w   d018,1  COLPF2      ; Color Playfield 2
+w   d019,1  COLPF3      ; Color Playfield 3
+w   d01a,1  COLBK       ; Color Background
+w   d01b,1  PRIOR       ; Priority Select
+w   d01c,1  VDELAY      ; Vertical Delay
+w   d01d,1  GRACTL      ; Graphic Control
+w   d01e,1  HITCLR      ; Collision Clear
+rw  d01f,1  CONSOL
+r   d000,1  M0PF        ; Missile-Playfield 0 collisions
+r   d001,1  M1PF        ; Missile-Playfield 1 collisions
+r   d002,1  M2PF        ; Missile-Playfield 2 collisions
+r   d003,1  M3PF        ; Missile-Playfield 3 collisions
+r   d004,1  P0PF        ; Player-Playfield 0 collisions
+r   d005,1  P1PF        ; Player-Playfield 1 collisions
+r   d006,1  P2PF        ; Player-Playfield 2 collisions
+r   d007,1  P3PF        ; Player-Playfield 3 collisions
+r   d008,1  M0PL        ; Missile-Player 0 collisions
+r   d009,1  M1PL        ; Missile-Player 1 collisions
+r   d00a,1  M2PL        ; Missile-Player 2 collisions
+r   d00b,1  M3PL        ; Missile-Player 3 collisions
+r   d00c,1  P0PL        ; Player-Player 0 collisions
+r   d00d,1  P1PL        ; Player-Player 1 collisions
+r   d00e,1  P2PL        ; Player-Player 2 collisions
+r   d00f,1  P3PL        ; Player-Player 3 collisions
+r   d010,1  TRIG0       ; Joystick triggers 0
+r   d011,1  TRIG1       ; Joystick triggers 1
+r   d012,1  TRIG2       ; Joystick triggers 2
+r   d013,1  TRIG3       ; Joystick triggers 3
+r   d014,1  PAL         ; PAL/NTSC bits
 
 ; POKEY
-w   D200,1  AUDF1
-w   D201,1  AUDC1
-w   D202,1  AUDF2
-w   D203,1  AUDC2
-w   D204,1  AUDF3
-w   D205,1  AUDC3
-w   D206,1  AUDF4
-w   D207,1  AUDC4
-w   D208,1  AUDCTL
-w   D209,1  STIMER
-w   D20A,1  SKRES
-w   D20B,1  POTGO
-w   D20D,1  SEROUT
-w   D20E,1  IRQEN
-w   D20F,1  SKCTL
-r   D200,1  POT0
-r   D201,1  POT1
-r   D202,1  POT2
-r   D203,1  POT3
-r   D204,1  POT4
-r   D205,1  POT5
-r   D206,1  POT6
-r   D207,1  POT7
-r   D208,1  ALLPOT
-r   D209,1  KBCODE
-r   D20A,1  RANDOM
-r   D20E,1  IRQST
-r   D20F,1  SKSTAT
+w   d200,1  AUDF1
+w   d201,1  AUDC1
+w   d202,1  AUDF2
+w   d203,1  AUDC2
+w   d204,1  AUDF3
+w   d205,1  AUDC3
+w   d206,1  AUDF4
+w   d207,1  AUDC4
+w   d208,1  AUDCTL
+w   d209,1  STIMER
+w   d20a,1  SKRES
+w   d20b,1  POTGO
+w   d20d,1  SEROUT
+w   d20e,1  IRQEN
+w   d20f,1  SKCTL
+r   d200,1  POT0
+r   d201,1  POT1
+r   d202,1  POT2
+r   d203,1  POT3
+r   d204,1  POT4
+r   d205,1  POT5
+r   d206,1  POT6
+r   d207,1  POT7
+r   d208,1  ALLPOT
+r   d209,1  KBCODE
+r   d20a,1  RANDOM
+r   d20e,1  IRQST
+r   d20f,1  SKSTAT
 
 ; PIA
-rw  D300,1  PORTA
-rw  D301,1  PORTB
-rw  D302,1  PACTL
-rw  D303,1  PBCTL
+rw  d300,1  PORTA
+rw  d301,1  PORTB
+rw  d302,1  PACTL
+rw  d303,1  PBCTL
 
 ; ANTIC
-w   D400,1  DMACTL
-w   D401,1  CHACTL
-w   D402,2  DLIST
-w   D407,1  PMBASE
-w   D409,1  CHBASE
-w   D40A,1  WSYNC
-r   D40B,1  VCOUNT
-r   D40C,1  PENH
-r   D40D,1  PENV
-w   D40E,1  NMIEN
-w   D40F,1  NMIRES
-r   D40F,1  NMIST
+w   d400,1  DMACTL
+w   d401,1  CHACTL
+w   d402,2  DLIST
+w   d407,1  PMBASE
+w   d409,1  CHBASE
+w   d40a,1  WSYNC
+r   d40b,1  VCOUNT
+r   d40c,1  PENH
+r   d40d,1  PENV
+w   d40e,1  NMIEN
+w   d40f,1  NMIRES
+r   d40f,1  NMIST
 
 ; Math Pack
-rwx D800,1  AFP
-rwx D8E6,1  FASC
-rwx D9AA,1  IPF
-rwx D9D2,1  FPI         ; __ftol
-rwx DA44,1  ZFR0
-rwx DA46,1  ZF1
-;rwx DA48,1  ZFL	     ; undocumented (used by Atari Basic) - zero Y bytes at (X)
-;rwx DA51,1  LDBUFA      ; undocumented (used by Atari Basic) - mwa #ldbuf inbuff
-rwx DA66,1  FADD
-rwx DA60,1  FSUB
-rwx DADB,1  FMUL
-rwx DB28,1  FDIV
-;rwx DBA1,1  SKPSPC      ; undocumented (used by Atari Basic) - skip spaces starting at INBUFF[CIX]
-;rwx DBAF,1  ISDIGT      ; undocumented (used by Atari Basic) - set carry if INBUFF[CIX] is not a digit
-;rwx DC00,1  NORMALIZE   ; undocumented (used by Atari Basic) - normalize mantissa/exponent in FR0
-rwx DD40,1  PLYEVL
-rwx DD89,1  FLD0R
-rwx DD8D,1  FLD0P
-rwx DD98,1  FLD1R
-rwx DD9C,1  FLD1P
-rwx DDA7,1  FST0R
-rwx DDAB,1  FST0P
-rwx DDB6,1  FMOVE
-rwx DDC0,1  EXP
-rwx DDCC,1  EXP10
-;rwx DE95,1  REDRNG     ; undocumented (used by Atari Basic) - reduce range via y = (x-1)/(x+1)
-rwx DECD,1  LOG
-rwx DED1,1  LOG10
+rwx d800,1  AFP
+rwx d8e6,1  FASC
+rwx d9aa,1  IPF
+rwx d9d2,1  FPI         ; __ftol
+rwx da44,1  ZFR0
+rwx da46,1  ZF1
+;rwx da48,1  ZFL	     ; undocumented (used by Atari Basic) - zero Y bytes at (X)
+;rwx da51,1  LDBUFA      ; undocumented (used by Atari Basic) - mwa #ldbuf inbuff
+rwx da66,1  FADD
+rwx da60,1  FSUB
+rwx dadb,1  FMUL
+rwx db28,1  FDIV
+;rwx dba1,1  SKPSPC      ; undocumented (used by Atari Basic) - skip spaces starting at INBUFF[CIX]
+;rwx dbaf,1  ISDIGT      ; undocumented (used by Atari Basic) - set carry if INBUFF[CIX] is not a digit
+;rwx dc00,1  NORMALIZE   ; undocumented (used by Atari Basic) - normalize mantissa/exponent in FR0
+rwx dd40,1  PLYEVL
+rwx dd89,1  FLD0R
+rwx dd8d,1  FLD0P
+rwx dd98,1  FLD1R
+rwx dd9c,1  FLD1P
+rwx dda7,1  FST0R
+rwx ddab,1  FST0P
+rwx ddb6,1  FMOVE
+rwx ddc0,1  EXP
+rwx ddcc,1  EXP10
+;rwx de95,1  REDRNG     ; undocumented (used by Atari Basic) - reduce range via y = (x-1)/(x+1)
+rwx decd,1  LOG
+rwx ded1,1  LOG10
 
 ; Kernel
-rwx E400,3  EDITRV
-rwx E410,3  SCRENV
-rwx E420,3  KEYBDV
-rwx E430,3  PRINTV
-rwx E440,3  CASETV
-rwx E450,3  DISKIV
-rwx E453,3  DSKINV
-rwx E456,3  CIOV
-rwx E459,3  SIOV
-rwx E45C,3  SETVBV
-rwx E45F,3  SYSVBV
-rwx E462,3  XITVBV
-rwx E465,3  SIOINV
-rwx E468,3  SENDEV
-rwx E46B,3  INTINV
-rwx E46E,3  CIOINV
-rwx E471,3  BLKBDV
-rwx E474,3  WARMSV
-rwx E477,3  COLDSV
-rwx E47A,3  RBLOKV
-rwx E47D,3  CSOPIV
-rwx E480,3  VCTABL
+rwx e400,3  EDITRV
+rwx e410,3  SCRENV
+rwx e420,3  KEYBDV
+rwx e430,3  PRINTV
+rwx e440,3  CASETV
+rwx e450,3  DISKIV
+rwx e453,3  DSKINV
+rwx e456,3  CIOV
+rwx e459,3  SIOV
+rwx e45c,3  SETVBV
+rwx e45f,3  SYSVBV
+rwx e462,3  XITVBV
+rwx e465,3  SIOINV
+rwx e468,3  SENDEV
+rwx e46b,3  INTINV
+rwx e46e,3  CIOINV
+rwx e471,3  BLKBDV
+rwx e474,3  WARMSV
+rwx e477,3  COLDSV
+rwx e47a,3  RBLOKV
+rwx e47d,3  CSOPIV
+rwx e480,3  VCTABL
 `);

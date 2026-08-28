@@ -408,7 +408,7 @@ Object.entries(files).forEach(([diskUrl, value]) => {
             fileDetails.labels = [ fileDetails.labels ];
         }
         Parse.withBaseUrl(diskUrl, () => {
-            fileDetails.labels.unshift("Dungeon.sym");
+            //fileDetails.labels.unshift("Dungeon.sym");
 
             fileDetails.labels =
                 fileDetails.labels.map((entry) => {
@@ -1194,9 +1194,8 @@ function handleExtractFile(diskName, fileDetails) {
 
         dungeonLabels = atari800Labels;
         for (let labels of fileDetails.labels) {
-            dungeonLabels = new LabelCollection(dungeonLabels);
-            dungeonLabels.source = String(labels.url);
-            dungeonLabels.parse(loaded[dungeonLabels.source].data);
+            dungeonLabels = new LabelCollection(String(labels.url), dungeonLabels);
+            dungeonLabels.parse(loaded[dungeonLabels.name].data);
         }
 
         // check file length for .xfd or .atr file
