@@ -63,10 +63,10 @@ compute the offset.
 
 ---
 
-Starting at 0x3 ($ac03 in memory) and ending at 0x2FF are two tables with variable length records:
+Starting at $3 ($ac03 in memory) and ending at $2ff are two tables with variable length records:
 
 A table of location description fragment strings (eg. dictionary for reducing data size)
-- Each fragment is terminated by a character with the high bit set (char ATASCII + 0x80)
+- Each fragment is terminated by a character with the high bit set (char ATASCII + $80)
 - Fragments are numbered starting at 0, based on their position in the file
 
 Example:
@@ -79,7 +79,7 @@ Parsing of the fragment table stops as soon as an entry terminated with a NUL by
 Location descriptions table:
 - Each location description is a NUL-terminated string
 - Descriptions are numbered starting at 0, based on their position in the file
-- If a character is encountered with the high bit set (char ATASCII + 0x80), the previously parsed description fragment corresponding to the character value with the high bit cleared is substituted for the character.
+- If a character is encountered with the high bit set (char ATASCII + $80), the previously parsed description fragment corresponding to the character value with the high bit cleared is substituted for the character.
 
 Example:
 	Given the following fragments parsed from the preceeding table:
@@ -87,11 +87,11 @@ Example:
 		5 "corridoor"
 	The byte sequence [81 6c 6f 6e 67 20 85 00], the 81 decodes to "in a ", the 85 decodes to "corridoor", and the 00 terminates the entry.  The remaining bytes indicate normal characters, so the entire sequence decodes to "in a long corridoor".
 
-The space allocated for the fragment/description tables ends at 0x2ff, however, the actual end of the entries is signalled when a 0xff character is encountered.  Any remaining space in the table is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
+The space allocated for the fragment/description tables ends at $2ff, however, the actual end of the entries is signalled when a $ff character is encountered.  Any remaining space in the table is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
 
 ---
 
-The zone ref table starts at 0x300 in the file ($af00 AND $c300 in memory) and extends through 0x37d (125 bytes / max. 25 entries):
+The zone ref table starts at $300 in the file ($af00 AND $c300 in memory) and extends through $37d (125 bytes / max. 25 entries):
 - The first byte in the table contains the number of entries in the table, minus one.
 - The zone ref entries follow.  Each entry is 5 bytes: [Y1 X2 Y2 X1 Ref]
   - The width of the zone is X2 - X1 (cells at X1 are included in the zone, cells at X2 are not)
@@ -99,7 +99,7 @@ The zone ref table starts at 0x300 in the file ($af00 AND $c300 in memory) and e
   - The Ref is the index of the zone to apply to cells within the specified map range.
     - Assigned values appear to start at 1. This may mean that 0 is used to indicate a null/default zone assignment.
     - The actual definitions of what the zones mean is in the next table.
-- The table extends through 0x37d, and any unused space is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
+- The table extends through $37d, and any unused space is filled with a repeating sequence of [00 FF] (with the 00 on even offsets).
 
 Zone refs from Level 1.1 (Dungeon NW corner) - 9 zone refs defined (max ref 6)
   - Size byte: 08 (8)
@@ -187,10 +187,10 @@ Zone refs from Level 3 -
 
 ---
 
-Another table starts at 0x37e ($af7e in memory) and ends at 0x3ff (130 bytes):
+Another table starts at $37e ($af7e in memory) and ends at $3ff (130 bytes):
 	- This table contains zone definitions.
 	- Each entry in the table is 8 bytes, up to 16 entries (though with 2 extra bytes left over)
-	- The table extends through 0x3ff, and unused space is filled with [00] (level 1.1 to 1.4, 3, 4) or [AA] (level 2).
+	- The table extends through $3ff, and unused space is filled with [00] (level 1.1 to 1.4, 3, 4) or [AA] (level 2).
 
 Level 1.1 (Dungeon NW corner) has the following 7 entries:
 
@@ -571,19 +571,20 @@ sub_$7eb1:
       04 = Goblin
       05 = Mausoleum/adept
       06 = Alien
+
 1: $194c - byte?
   - ??
 
 2: $194d - bitfield
- ? ? ? ? ? C ? A
+ ? ? ? ? ? C B A
  | | | | | | | +- Light level/blindness? Checked when display is updated. 0 = dark, 1 = light
  | | | | | | |    Sub @ $: ORd with value at $6390 (01 if carrying lit torch) then compared with value at $77fb.
  | | | | | | |    If different, $77fb is updated to match and $1956 is decremented.
  | | | | | | |    Either way, $1956 is read and if it is 0
- | | | | | | +--- also related to light level or perception?
+ | | | | | | +--- also related to light level or perception? Checked when displaying "Something is odd here" message
  | | | | | +----- Sub @ $aa19: Used during encounters.
- | | | | |        If clear, loads the value $11 into $194c
- | | | | |        If value in $194c is $0E, stores $ff into $6320 (character status related)
+ | | | | |        If clear, loads the value $11 into $194c [ZONE_B_BYTE]
+ | | | | |        If value in $194c [ZONE_B_BYTE] is $0e, stores $ff into $6320 [dat_6320] (character status related)
  | | | | |        If $633c (player experience lvl) = 0,
  | | | | +------- ?
  | | | +--------- ?
@@ -610,7 +611,7 @@ Some additional items which may be encoded in a zone definition:
 
 ---
 
-- The map cell data starts at offset 0x400 (1024)
+- The map cell data starts at offset $400 (1024)
 >> 4096 bytes
 >> 4 bytes per cell (ABCD)
 >> Always 32 cells (80 bytes) per row
@@ -627,21 +628,21 @@ Walls are encoded in the first 2 bytes (A & B)
 	There are 8 types of walls generally used (primary texture),
   and 8 others used infrequently or not at all (alternate textures):
 	 0 (0000) = No wall / open
-   1 (0001 / 0x1) = Archway
-   2 (0002 / 0x2) = Archway (alt) - Crystal Caverns
-   3 (0011 / 0x3) = Regular Door
-   4 (0100 / 0x4) = Regular Door (alt)
-   5 (0101 / 0x5) = Secret Door (~)
-   6 (0110 / 0x6) = Secret Door (~) (alt)
-   7 (0111 / 0x7) = Secret Door (~) (alt)
-   8 (1000 / 0x8) = Locked Door (L)
-   9 (1001 / 0x9) = Bolted Door (X)
-  10 (1010 / 0xa) = Enchanted Door (O)
-  11 (1011 / 0xb) = Wall (alt)
-  12 (1100 / 0xc) = Wall (alt)
-  13 (1101 / 0xd) = Wall
-  14 (1110 / 0xe) = Wall (alt)
-  15 (1111 / 0xf) = Wall (alt)
+   1 (0001 / $1) = Archway
+   2 (0002 / $2) = Archway (alt) - Crystal Caverns
+   3 (0011 / $3) = Regular Door
+   4 (0100 / $4) = Regular Door (alt)
+   5 (0101 / $5) = Secret Door (~)
+   6 (0110 / $6) = Secret Door (~) (alt)
+   7 (0111 / $7) = Secret Door (~) (alt / no sound - handled like none/arch)
+   8 (1000 / $8) = Locked Door (L)
+   9 (1001 / $9) = Bolted Door (X)
+  10 (1010 / $a) = Enchanted Door (O)
+  11 (1011 / $b) = Wall (alt)
+  12 (1100 / $c) = Wall (alt)
+  13 (1101 / $d) = Wall
+  14 (1110 / $e) = Wall (alt)
+  15 (1111 / $f) = Wall (alt)
 
 A - Types for East and North walls
 	high nibble - East
@@ -672,7 +673,7 @@ Special:
 ===========
 
 0BB 00000
- +--------- Danger level / Encounter frequency? (if Special & 10011111 ($9F) == 0)
+ +--------- Danger level / Encounter frequency? (if Special & 10011111 ($9f) == 0)
             ... below are guesses. each bit could also be interpreted separately ...
             000 00000 = (00) Normal?
             001 00000 = (20) Slightly increased?
@@ -888,7 +889,7 @@ Scenario module have a header structured as follows:
     Get:
       Mirrored Shield
 
-  15 (21) = (Level 2) Dwarven Smmithy
+  15 (21) = (Level 2) Dwarven Smithy
     - Level 2 (16,  7)
     - Level 2 (18,  7)
 
@@ -1076,57 +1077,57 @@ Scenario module have a header structured as follows:
       - Messages related to special/unique items are on Disk 1 Side 1 Sector 115.
 
     The format strings are encoded with embedded special character codes:
-    - 0x08         -> (BS) moves the output column one place to the left
-    - 0x0D         -> (CR) is rendered as CRLF
-    - 0xA0         -> Turn off blinking text mode
-    - 0xA1         -> Set blinking text mode
-    - 0xA2         -> Start center-aligned text (clears from start of line)
-    - 0xA3         -> Invoke subroutine at address in next 2 bytes
+    - $08         -> (BS) moves the output column one place to the left
+    - $0d         -> (CR) is rendered as CRLF
+    - $a0         -> Turn off blinking text mode
+    - $a1         -> Set blinking text mode
+    - $a2         -> Start center-aligned text (clears from start of line)
+    - $a3         -> Invoke subroutine at address in next 2 bytes
                       Args:
                         WORD - address of subroutine to execute
-    - 0xA4         -> Reads address and outputs byte from that location as hex
+    - $a4         -> Reads address and outputs byte from that location as hex
                       Args:
                         WORD - address of byte
-    - 0xA5         -> Start center-aligned text (does not clear from start of line)
-    - 0xA6         -> Set output position to col/row in next two bytes
+    - $a5         -> Start center-aligned text (does not clear from start of line)
+    - $a6         -> Set output position to col/row in next two bytes
                       Args:
                         BYTE - new output column
                         BYTE - new output row
-    - 0xA7         -> Start of right-aligned text
-    - 0xA8         -> Clear all message display rows with NUL chars
-    - 0xA9         -> Clear current row with NUL chars
-    - 0xAA         -> Reset (blink off, standard left-aligned output)
-    - 0xAB         -> Clear to end of line (current position unchanged)
-    - 0xAC         -> Read address and continue processing from that location
+    - $a7         -> Start of right-aligned text
+    - $a8         -> Clear all message display rows with NUL chars
+    - $a9         -> Clear current row with NUL chars
+    - $aa         -> Reset (blink off, standard left-aligned output)
+    - $ab         -> Clear to end of line (current position unchanged)
+    - $ac         -> Read address and continue processing from that location
                       Args:
                         WORD - address of template substring
-    - 0xAD         -> Read address at address and continue processing from that location (indirect)
+    - $ad         -> Read address at address and continue processing from that location (indirect)
                       Args:
                         WORD - address of template substring address
-    - 0xAE         -> Return to previous template containing last $AC or $AD code executed.
-    - 0xAF         -> BRK & RTS (triggers break, then returns to caller)
-    - 0xB0         -> Read big endian uint32 at address and output as decimal string
+    - $ae         -> Return to previous template containing last $AC or $AD code executed.
+    - $af         -> BRK & RTS (triggers break, then returns to caller)
+    - $b0         -> Read big endian uint32 at address and output as decimal string
                       Args:
                         WORD - address of uint32
                         BYTE - max output width
-    - 0xB1         -> Read big endian uint16 at address and output as decimal string
+    - $b1         -> Read big endian uint16 at address and output as decimal string
                       Args:
                         WORD - address of uint16
                         BYTE - max output width
-    - 0xB2         -> Read uint8 at address and output as decimal string
+    - $b2         -> Read uint8 at address and output as decimal string
                       Args:
                         WORD - address of uint8
                         BYTE - max output width
-    - 0xB3         -> Output NUL-terminated string at address
+    - $b3         -> Output NUL-terminated string at address
                       Args:
                         WORD - address of string
                         BYTE - max output width
-    - 0xB4         -> Output NUL-terminated string at address from address (indirect)
+    - $b4         -> Output NUL-terminated string at address from address (indirect)
                       Args:
                         WORD - address of string address
                         BYTE - max output width
-    - 0xB5 .. $FE  -> invalid/unsupported code, trigger BRK and return to caller
-    - 0xFF         -> End of string. Saves current state and returns to caller
+    - $b5 .. $fe  -> invalid/unsupported code, trigger BRK and return to caller
+    - $ff         -> End of string. Saves current state and returns to caller
 
 - Teleporters (E0-FF) -
 
@@ -1257,10 +1258,10 @@ The first 4 bytes appear to be a header of some sort
 
 Word 0: (AKA FileID)
   AA BBB C DDDDDDDDDD
-  |   |  |     +------ [10 bits] 0-based disk sector number (mask 0x03FF)
-  |   |  +------------ [1 bit]   Disk side (0 = side 1, 1 = side 2) (mask 0x0400 >> 10)
-  |   +--------------- [3 bits]  Disk number (0 = disk 1, 1 = disk 2, etc) (3 bits, mask 0x3800 >> 11)
-  +------------------- [2 bits]  Flags (00 = plain?, 01 = encrypted?) (mask 0xC000 >> 12)
+  |   |  |     +------ [10 bits] 0-based disk sector number (mask $03FF)
+  |   |  +------------ [1 bit]   Disk side (0 = side 1, 1 = side 2) (mask $0400 >> 10)
+  |   +--------------- [3 bits]  Disk number (0 = disk 1, 1 = disk 2, etc) (3 bits, mask $3800 >> 11)
+  +------------------- [2 bits]  Flags (00 = plain?, 01 = encrypted?) (mask $C000 >> 12)
 
 Word 1:
   Little-endian 16-bit integer
@@ -1434,7 +1435,7 @@ Texture set format:
     - 2 bits per pixel
     - Width is 36px [$24] (9 bytes [$9])
     - Height is 36px
-  Offset 1725 ($68D) [90 bytes] - First quarter size texture (20x18 / byte-aligned 18x18)
+  Offset 1725 ($68d) [90 bytes] - First quarter size texture (20x18 / byte-aligned 18x18)
     - 90 bytes of quarter-size image data (360 pixels, of which 324 are used)
     - 2 bits per pixel
     - Width is 20px (5 bytes) per row of which 18px are used and last 2 pixels in each row are unused/0
@@ -1444,19 +1445,19 @@ Texture set format:
     - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
   Offset 1887 ($75f) [1296 bytes] - Second full-size texture (72x72)
     - Same format as first full-size texture
-  Offset 3183 ($C6F) [324 bytes] - Second half-size texture (36x36)
+  Offset 3183 ($c6f) [324 bytes] - Second half-size texture (36x36)
     - Same format as first half-size texture
-  Offset 3507 ($DB3) [90 bytes] - Second quarter-size texture (20x18 / byte-aligned 18x18)
+  Offset 3507 ($db3) [90 bytes] - Second quarter-size texture (20x18 / byte-aligned 18x18)
     - Same format as first quarter-size texture
 
-  Offset 3597 ($E0D) [72 bytes]:
+  Offset 3597 ($e0d) [72 bytes]:
     - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
 
-  Offset 3669 ($E55) [1296 bytes] - Third full-size texture (72x72)
+  Offset 3669 ($e55) [1296 bytes] - Third full-size texture (72x72)
     - Same format as first full-size texture
   Offset 4965 ($1365) [324 bytes] - Third half-size texture (36x36)
     - Same format as first half-size texture
-  Offset 5289 ($14A9) [90 bytes] - Third quarter-size texture (20x18 / byte-aligned 18x18)
+  Offset 5289 ($14a9) [90 bytes] - Third quarter-size texture (20x18 / byte-aligned 18x18)
     - Same format as first quarter-size texture
   Offset 5379 ($1503) [13 bytes]
     - Potentially filler bytes to fill out the disk sector
@@ -1481,7 +1482,7 @@ All types of Items follow the general structure of a 6 byte header, a name, 0 or
 type-specific attributes:
 
 Header (6 bytes)
-  0: Flags & Type
+  I0: Flags & Type
       ABCD E FFF
       |||| |  +-- Item type: 0 (0000) - ?? Charged Magic Item (Card/Scroll/Wand) ??
       |||| |                 1 (0001) - ? Spell
@@ -1497,10 +1498,25 @@ Header (6 bytes)
       ||+------- unknown
       |+-------- unknown
       +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere ... where is the location stored?)
-  1: Full object length, including the 6 byte header
-  2: unknown     (assigned to 8 in sub $5795)
-  3: Alignment requirement - Evil weapons have 0x7f or below, Good weapons have 0x80 or greater.
-     Neutral weapons typically have 0x00 here.
+
+TODO: A special case appears to exist where all bits (except for bit 7) are zero. This seems to indicate a bundle of
+      mutliple items (perhaps used when multiple items are present in a single map cell?). In that case, the attributes
+      seem to have the number of items present in bytes 1 (LSB) & 2 (MSB) (see $58e2 to $5901)
+
+  I1: Full object length, including the 6 byte header
+  I2: Action triggers
+        $01 = get/pickup
+        $02 = drop
+        $04 = use
+        $08 = unuse
+        $10 = ??
+
+      - sub $5795 assigns to 8
+      - read @ $4bb5 and used to skip item if value is 0
+      - sub_4bb3 reads this byte and dynamically calls a routine determined based on the value
+
+  3: Alignment requirement - Evil weapons have $7f or below, Good weapons have $80 or greater.
+     Neutral weapons typically have $00 here.
   4: Item weight
   5: Offset from the start of the object to the start of the effects/attributes data region
      (e.g. offset of byte following item name's terminating NUL)
@@ -1518,121 +1534,231 @@ Effects (0..n*16 bytes)
 
 Attributes (1..? bytes)
   - Attributes are always last and their structure depends on the type of the item
-
-  Weapon
-  Armor
-  Spell
-
+      Spell
+      Weapon
+      Ammo
+      Armor
+      Apparel
+      Potion
+      Other - (e.g. ring halves, staff pieces, PAC card, etc)
 
 
 Effect: Each effect is 16 bytes long
 
-  0: Bitfield (non-zero)
+  E0: Bitfield (non-zero)
       When the value is >= $e0, the entry is a description entry. In which case:
-      111 AAAAA
-       |    +--- Indicates the type of description
-       |            1 - hidden disease (does not show in list)
-       |            3 - hidden curse (does not show in list)
-       |            4 - hidden magic (does not show in list)
-       |            9 - visible disease
-       |           11 - visible curse
-       |           12 - visible magic
-       +-------- Indicates description entry
 
-      Otherwise,
-      AAAA B CCC
-       |   |  +- Description type (when AAAA is 0xe or 0xf)
-       |   |       0  - ? Timer ?
-       |   |       1  - Disease
-       |   |       2  - Poison
-       |   |       3  - Curse         (see $3ff9 [setCurseNames])
-       |   |       4  - Active magic  (see $3ffc [setMagicNames])
-       |   +---- Description visibility?
-       |           0   - hidden
-       |           1   - visible
-       +-------- Effect Type?
-                   0x8 - ? Timer ?
-                   0xe - Description
-                   0xf - Description
-              Bit 6 appears to have special meaning. When it is set, byte 1 is inspected
+      765 4 3 210
+      111 A B BBB
+       |  | |  +-- Description Type
+       |  | |        1 - Disease
+       |  | |        3 - Curse
+       |  | |        4 - Magic
+       |  | +----- Description Visibility
+       |  |          0 - Does not show in list
+       |  |          1 - Shows in list
+       |  +------- Has Associated Effect
+       |             0 - (top nibble = $e) 16 byte description entry (this byte + 15 byte zts)
+       |             1 - (top nibble = $f) 16 byte description entry with associated effect
+       +---------- Indicates description entry
 
-  1: ?   (perhaps item index?)
+      Otherwise, may be any other value but $80 (which is used to indicate an unused entry in the active effect list):
 
-  2: Effect triggers
-    0x01 = pickup
-    0x02 = drop
-    0x04 = use
-    0x08 = unuse
+      7 6 54 3 210
+      A B CC D EEE
+      | | |  |  +-- Effect Type
+      | | |  |        0  - ? Timer ?     $80 won't process (it's an empty slot) so this may not be a valid option
+      | | |  |        1  - Disease
+      | | |  |        2  - Poison
+      | | |  |        3  - Curse
+      | | |  |        4  - Active magic
+      | | |  |        5  - ?
+      | | |  |        6  - ?
+      | | |  |        7  - ?
+      | | |  +----- Effect is linked?
+      | | |           0  - Standalone or parent effect
+      | | |           1  - Effect is linked to another (linked effect index in E1)
+      | | +-------- ?? unused / 0 ??
+      | +---------- Bit 6 appears to have special meaning (ref $4853) When it is set, sub_:
+      |               - The bit is cleared
+      |               - The value of E1 is read
+      |               - All effects following the current effect are searched for a description which has the same value in E1
+      |               - If a match is found, bit 3 (8) is set on that effect
+      +------------ Effect Type
+                      - Always 1?
+
+
+
+  E1: Parent effect index (this effect's index if it has no parent or is a parent)
+       -
+       - Read & compared @ $4a22 as an effect index
+       - Loop @ $4861 to $488c looks like it may indicate an effect that's linked to another effect? This byte seems to
+         hold the index of the effect the current effect is linked to. It also appears the "parent" effect must
+         preceed the "child"/linked effect in the effect list.
+       - Assigned to effect index at $49fb
+
+  E2: Effect triggers
+    $01 = get/pickup
+    $02 = drop
+    $04 = use
+    $08 = unuse
     0x10 = ???
-    0x20 = alignment check
-    0x40 = drain charge
-    0x80 = set timer
+    $20 = alignment check
+    $40 = drain charge
+    $80 = set timer
 
-  When Effect Type is 0xe or 0xf: (Description)
-    3..15: NUL-terminated string with description text (may be 13 bytes, in which case no NUL is present?)
+  When Effect Type is $e or $f: (Description)
+    E3..E15: NUL-terminated string with description text (may be 13 bytes, in which case no NUL is present?)
 
-  When Effect Type is NOT 0xe or 0xf:
-    3: Number of repetitions (0 = infinite/forever)
-    4: Incubation Timer 1 LSB   (initial delay in game minutes before first execution)
-    5: Incubation Timer 1 MSB
-    6: Repetition Timer 2 LSB   (delay in game minutes between executions)
-    7: Repetition Timer 2 MSB
-    8: ?
-    9: Action
+  When Effect Type is NOT $e or $f:
+    E3: Number of repetitions (0 = infinite/forever)
+    E4: Execution Timer LSB    (delay in game minutes before next execution)
+    E5: Execution Timer MSB
+    E6: Repetition Delay LSB   (delay in game minutes between executions)
+    E7: Repetition Delay MSB
+    E8: Chance to naturally cure/expire?? There is a 12.5% (32/256) chance that this byte is checked. When it is, and
+        the random value (0..31) is less than the value of this byte, then the effect will be removed.
+    E9: Action
         If bit 7 is not set (e.g. the value is 0..127) it specifies an assignment:
           - This value is the number of bytes to assign
-          - The starting address to update is specified by
           - The update is performed by contSetAttr which assigns the same byte to the specified number of
             sequential bytes
+          - The starting address to update is specified by E10 & E11
 
         If bit 7 is set:
           - The low nibble contains the number of bytes to update (e.g. AttrSize)
           - The lower three bits of the high nibble indicate the operation type
+          - The starting address to update is specified by E10 & E11
 
           7 654 3210
           1 BBB CCCC
           |  |   +--- Attribute size in bytes
           |  +------- Operation to perform
-          |             0 - Increase attribute value
-          |             1 - Decrease attribute value
+          |             0 - Increase attribute value by byte E14 (attribute adjustment value)
+          |             1 - Decrease attribute value by byte E14 (attribute adjustment value)
           |             2 - NOP
           |             3 - NOP
-          |             4 - XOR bytes
-          |             5 - AND bytes
-          |             6 - OR bytes
+          |             4 - XOR each attribute byte with byte E14 (attribute adjustment value)
+          |             5 - AND each attribute byte with byte E14 (attribute adjustment value)
+          |             6 - OR each attribute byte with byte E14 (attribute adjustment value)
           |             7 - Appears to be unimplemented or a debugger trigger (executes BRK, RTS)
           +---------- Must be 1, indicating an operation other than assignment
 
-        0x81 Increase 1 byte attribute
-        0x91 Decrease 1 byte attribute
-   10: Offset
-        ? depends on action type ? (0x81/0x91 this is an attribute offset relative to $6300 - perhaps indicated by byte 11 = 0?)
-   11: ?    Appears to be MSB of Offset (ref: $48bb to $48c3)
-   12: Number of Steps (number of attributes to apply action to)
-   13: Step Size (added to effective Offset after each step)
-   14: Amount to increase/decrease by (at least for Actions 0x81/0x91)
-   15: ?    Appears to be an index of inventory item associated with the effect (ref: $48c7 to $48da which uses the value to retrieve an item address)
+        Common Examples:
+          $81 (1000 0001) Increase 1 byte attribute
+          $91 (1001 0001) Decrease 1 byte attribute
+   E10: Attribute offset LSB          (ref: $48b9 to $48e8)
+   E11: Attribute offset MSB          (ref: $48b9 to $48e8)
+        - When byte E11 is <0 (bit 7 = 1), then the value is treated as an offset relative to an inventory item. In this
+          case, byte E15 contains the index of the associated item. The address of the item is retrieved and this offset
+          is added to it (after clearing bit 7 of the MSB)
+
+        - When byte E11 is >=0 (bit 7 = 0), then the value is treated as an offset from $6300. Typically, this means
+          that byte E11 is 0, though any MSB from 0 to 127 is supported.
+
+   E12: Number of Steps (number of attributes to apply action to)
+   E13: Step Size (added to effective offset after each step)
+   E14: Attribute adjustment value
+   E15: Index of associated inventory item. Only assigned when Byte E11 has bit 7 set.
 
   Example: EffLitTorch
   --------------------
   8? ?? 04 01 f0 00 00 00 00 01 02 80 01 00 08 ??
-   |  |  |  | |   | |   |  |  |  |  |  |  |  |  +- 15:    Inventory item index for equipped torch
+   |  |  |  | |   | |   |  |  |  |  |  |  |  |  +- 15:    Set to inventory item index for equipped torch
    |  |  |  | |   | |   |  |  |  |  |  |  |  +---- 14:    Delta amt: 8 (decrease attribute by 8)
    |  |  |  | |   | |   |  |  |  |  |  |  +------- 13:    Step Size: 0
    |  |  |  | |   | |   |  |  |  |  |  +---------- 12:    Steps: 1
-   |  |  |  | |   | |   |  |  |  +--+------------- 10-11: Attribute Address: $8002 [??]
+   |  |  |  | |   | |   |  |  |  +--+------------- 10-11: Attribute offset: $8002 [relative to item, 2 bytes, e.g. H2]
    |  |  |  | |   | |   |  |  +------------------- 9:     Action: 1 (decrease item attribute)
-   |  |  |  | |   | |   |  +---------------------- 8:     ?
+   |  |  |  | |   | |   |  +---------------------- 8:     Effect doesn't spontaneously "cure"/delete
    |  |  |  | |   | +---+------------------------- 6-7:   Repetition delay:  0 (no repetitions)
    |  |  |  | +---+------------------------------- 4-5:   Incubation period: 240 minutes (4 hours)
    |  |  |  +------------------------------------- 3:     Repetitions: 1
    |  |  +---------------------------------------- 2:     Trigger on "use"
-   |  +------------------------------------------- 1:     ?
+   |  +------------------------------------------- 1:     Set to this effect's index
    +---------------------------------------------- 0:     Effect/timer, not description
 
 Attributes: Structure varies based on item type
 
+Spell (Item type 1)
+  S0: Cast cost (stamina)
+  S1: Current skill (0..100%)
+  S2: Backfire penalty (HP)
+  S3: ? spell ID ?
 
+Ammo (Item type 2)
+  A0:  Ammo type
+  A1:  Quantity
+  A2:  Blunt damage (high nibble = number of dice, low nibble = number of sides per die)
+  A3:  Sharp damage
+  A4:  Earth damage
+  A5:  Air damage
+  A6:  Fire damage
+  A7:  Water damage
+  A8:  Power damage
+  A9:  Magic damage
+  A10: Good damage
+  A11: Evil damage
+  A12: Cold damage
+
+Weapon (Item type 3)
+  W0:  Ammo type ($ff = melee)
+  W1:  Remaining ammo (ignored for melee)
+  W2:  Blunt damage (high nibble = number of dice, low nibble = number of sides per die)
+  W3:  Sharp damage
+  W4:  Earth damage
+  W5:  Air damage
+  W6:  Fire damage
+  W7:  Water damage
+  W8:  Power damage
+  W9:  Magic damage
+  W10: Good damage
+  W11: Evil damage
+  W12: Cold damage
+  W13: ?Min STR required?
+  W14: ?Min SKL required?
+  W15: Current durability
+  W16: Max durability
+  W17: Flags / bitfield
+       - Bits 0..2: 010 - Message table num (2 = bash/wallop?)
+       - Bits 3..4: 00  - Bonus to hit?
+       - Bits 5..7: unknown?
+  W18: Parry value
+
+Armor / Defense (Item type 4)
+  D0:  Armor type (0 - head, 1 - body, 2 - arms, 3 - legs)
+  D1:  Blunt protection (high nibble = number of dice, low nibble = number of sides per die)
+  D2:  Sharp protection
+  D3:  Earth protection
+  D4:  Air protection
+  D5:  Fire protection
+  D6:  Water protection
+  D7:  Power protection
+  D8:  Magic protection
+  D9:  Good protection
+  D10: Evil protection
+  D11: Cold protection
+  D12: Current durability
+  D13: Max durability
+
+Apparel / Clothing (Item type 5)
+  C0: Dapper value
+  C1: Warmth value
+
+Potion (Item type 6)
+  P0:
+  P1:
+  P2:
+  P3:
+  P4:
+  P5:
+
+Other (Item type 7) - (e.g. ring halves, staff pieces, PAC card, etc)
+  O0: ??
+  O1: ?? Item ID ??
+
+
+-- Example --
 
 Lit Torch
 Header: 8B 24 00 00 02 10

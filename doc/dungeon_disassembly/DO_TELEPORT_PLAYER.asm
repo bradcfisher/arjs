@@ -35,13 +35,13 @@
 35FB: 9D BA 18 TLPCPYL2 STA $18BA,X
 35FE: CA                DEX                         ; Subtract 1 from X
 35FF: 10 FA             BPL TLPCPYL2                ; Loop while X >= 0 (5 iterations)
-3601: 20 66 2C          JSR WAIT_FOR_VBLK_B         ; Wait for next vertical blank period
+3601: 20 66 2C          JSR waitForVblankB          ; Wait for next vertical blank period
 3604: A9 00             LDA #$00                    ; Load 0 into A
 3606: A2 04             LDX #$04                    ; Load 4 into X (loop 5 times)
 3608: 9D BA 18 TLPCPYL3 STA $18BA,X
 360B: CA                DEX                         ; Subtract 1 from X
 360C: 10 FA             BPL TLPCPYL3                ; Loop while X >= 0 (5 iterations)
-360E: 20 66 2C          JSR WAIT_FOR_VBLK_B         ; Wait for next vertical blank period
+360E: 20 66 2C          JSR waitForVblankB          ; Wait for next vertical blank period
 3611: 88                DEY                         ; Subtract 1 from Y
 3612: D0 E3             BNE TLPFLSLP                ; Loop while Y > 0 (8 iterations)
                     ; Restore 5 bytes previously copied to temp storage

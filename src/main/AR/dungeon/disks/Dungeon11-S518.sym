@@ -25,31 +25,18 @@ rw  0004,1   DivDivisor             ; divByteBy10, divUint16Uint8: Holds input X
 
 rw  0006,1   dat_0006               ; 1 byte:
                                     ;   used as:
-                                    ;     - readBEUInt16: loop ctl var
-                                    ;     - loop ctl var in KERNEL_LOADER sub_80d2
-                                    ;     -  in KERNEL_LOADER sub_f9f4
+                                    ;     - readNextSector: number of retries remaining (loop ctl) [2..1]
+                                    ;     - readBEUInt16: loop ctl var: number of BCD digits processed
+                                    ;     - sub_508c: loop ctl: menu selection index [3..0]
+                                    ;     - sub_80d2 (kernel loader): loop ctl: disk drive number [3..0], Sector count [4..1]
+                                    ;     - sub_f9f4 (kernel loader): loop ctl: number of retries remaining
 rw  0007,2   BEParam2               ; multBEInt16 input: Big endian 16-bit unsigned integer input multiplicand 2
 rw  0007,1   SourceAdr_L            ; LSB of address typically used as a source for copying or comparison
 rw  0008,1   SourceAdr_H            ; MSB of address typically used as a source for copying or comparison
-rw  0009,1   dat_0009_L             ; LSB of address. Related to $190b. display list related     (DestAddr?? / AddrParam2??)
-                                    ;    - sdmInitGamePlay   - (temp) LSB of (DISP_GFX_TOP + $1d) address / gfx charset addrs
-                                    ;    - copyBytes         - (input) LSB of destination address
-                                    ;    - copyBytesNeg      - (input) LSB of destination address
-                                    ;    - removeItem        - (temp) addr of item, param to copyBytes
-                                    ;    - addItem           - (temp) Set to destination addr LSB for copyBytes
-                                    ;
-rw  000a,1   dat_0009_H             ; MSB of address. Related to $190c. display list related
-                                    ;    - sdmInitGamePlay   - (temp) MSB of (DISP_GFX_TOP + $1d) address / gfx charset addrs
-                                    ;    - ab_Clear2Eol - used as dest addr for writing spaces to screen
-                                    ;    - copyBytes         - (input) MSB of destination address
-                                    ;    - copyBytesNeg      - (input) MSB of destination address
-                                    ;    - removeItem        - (temp) addr of item, param to copyBytes
-                                    ;    - addItem           - (temp) Set to destination addr MSB for copyBytes
-                                    ;
-rw  000b,1   dat_000b               ; LSB of int16
-                                    ;    - copyBytesNeg      - (input) LSB of negated 16-bit size
-rw  000c,1   dat_000c               ; ?LSB of address?  LSB of int16
-                                    ;    - copyBytesNeg      - (input) MSB of negated 16-bit size
+rw  0009,1   DestAdr_L              ; LSB of address typically used as a destination for copying or comparison
+rw  000a,1   DestAdr_H              ; LSB of address typically used as a destination for copying or comparison
+rw  000b,1   NumBytes_L             ; LSB of int16 typically used as number of bytes to copy, read, write
+rw  000c,1   NumBytes_H             ; MSB of int16 typically used as number of bytes to copy, read, write
 rw  000d,1   dat_000d_L             ; LSB of address
 rw  000e,1   dat_000d_H             ; MSB of address
 rw  000f,1   dat_000f               ; 1 byte
@@ -118,8 +105,8 @@ rw  003b,1   TimeDays_L             ; LSB of total game days played (uint16)
 rw  003c,1   TimeDays_H             ; MSB of total game days played (uint16)
 rw  003d,1   EffectAdr_L            ; LSB of effect address in CHR_Effects
 rw  003e,1   EffectAdr_H            ; MSB of effect address in CHR_Effects
-rw  003f,1   addr_003f_L            ; LSB of address
-rw  0040,1   addr_003f_H            ; MSB of address
+rw  003f,1   CurEffAdr_L            ; LSB of effect address
+rw  0040,1   CurEffAdr_H            ; MSB of effect address
 rw  0041,1   ItemAdr_L              ; LSB of an inventory item address
 rw  0042,1   ItemAdr_H              ; MSB of an inventory item address
 rw  0043,1   ItemAttrs_L            ; LSB of start of the effect/attributes section for an item
@@ -162,10 +149,10 @@ rw  005c,1   dat_005c               ; used as loop ctl var in updEffectStrs, sub
 
 rw  00a0,1   dat_00a0               ;
 
-rw  00f0,1   dat_00f0_L             ; LSB of address (audio related)
-rw  00f1,1   dat_00f0_H             ; MSB of address (audio related)
-rw  00f2,1   dat_00f2_L             ; LSB of address (audio related)
-rw  00f3,1   dat_00f2_H             ; MSB of address (audio related)
+rw  00f0,1   SoundFreqs_L           ; LSB of address of audio frequency value table for currently playing sound
+rw  00f1,1   SoundFreqs_H           ; MSB of address of audio frequency value table for currently playing sound
+rw  00f2,1   SoundTimes_L           ; LSB of address of audio duration value table for currently playing sound
+rw  00f3,1   SoundTimes_H           ; MSB of address of audio duration value table for currently playing sound
 
 ; $0100 to $01ff holds the stack
 ;-----
@@ -241,11 +228,11 @@ rw  0249,1   CUR_VDSLSTH            ; MSB of current VDSLST (Display list interr
 
 rw  024c,1   SioTimeout_L           ; LSB of SIO timeout value in vblanks (e.g. 60/second)
 rw  024d,1   SioTimeout_H           ; MSB of SIO timeout value in vblanks (e.g. 60/second)
-rw  024e,4   dat_024e               ; 4 bytes:
-                                    ;    - related to a disk number (each byte maps to a disk)
-                                    ;    - byte for disk is initialized to $ff
-                                    ;    -
-                                    ;    - only used in kernel loader: sub_80d2
+rw  024e,4   DrivePresent           ; 4 bytes: Flags indicating which drives are detected by the kernel loader.
+                                    ;     Each position represents a corresponding drive (e.g. 0 = drive 1,
+                                    ;     1 = drive 2, etc). Value is 0 if a drive was found for that position
+                                    ;     and $ff if no drive was detected.
+rw  0252,1   VBlankCounter          ; Counter incremented on each VBLKI interrupt call
 rw  0253,1   dat_0253               ; 1 byte - used in sub_24c6  -   a countdown applied during display mode changes?
                                     ;    - setDisplayMode sets dat_0253 to 0 for mode 0 and 3 for modes 1,2
                                     ;    - sdmInitPlainTxt (mode 0) sets dat_0253 to 0
@@ -253,7 +240,7 @@ rw  0253,1   dat_0253               ; 1 byte - used in sub_24c6  -   a countdown
                                     ;       - calls vblk_cont_230a when dat_0253 is < 0
                                     ;       - decrements dat_0253 if it is greater than 0 and sets display list to blank screen
                                     ;       - sets the display list and NMI handler (VDSLST) when dat_0253 = 0
-                                    ;    - sub_245d - sets dat_0253 = $80
+                                    ;    - resetIO - sets dat_0253 = $80
                                     ;    - sub_24c6 - sets dat_0253 = 1
                                     ;    - kernelInit - sets dat_0253 = 2
 rw  0254,1   CurDList_L             ; LSB of current DLIST addr
@@ -270,9 +257,11 @@ rw  0258,1   SysMemorySize          ; 1 byte: Detected memory size (assigned by 
 rw  0259,1   dat_0259               ; 1 byte
 rw  025a,1   dat_025a               ; 1 byte: flag indicating the value of the bit in dat_2a38_unk corresponding to
                                     ;     a FileNumber.
-                                    ;     - sub_2979: Only matters for systems with 128KB or more of RAM. Perhaps
+                                    ;     - readNextSector: Only matters for systems with 128KB or more of RAM. Perhaps
+                                    ;            indicates a file which should be moved to/from extended ram?
 rw  025b,1   dat_025b               ; 1 byte - only set to 0?
-rw  025c,1   dat_025c               ; 1 byte - only written?
+rw  025c,1   dat_025c               ; 1 byte - assigned the flags for a file ID (byte 1 of file ID & $fc)
+                                    ;    Only assigned in kernel, read in kernel loader
 rw  025d,1   dat_025d               ; 1 byte: only used by kernel loader?
                                     ;     - sub_f9f4: Set to $80 if the disk sector being read is even
                                     ;                 Set to 0 if the disk sector being read is odd
@@ -304,8 +293,12 @@ rw  0270,1   SioAck                 ; 1 byte: Assigned the serial I/O ACK or COM
 ; This table of 4-byte entries describes the various files stored on the game disks.
 ; Data includes disk and side, length.
 ; Entries have the following 4 bytes
-;   0 - Bit 6 has an unknown meaning. Bits 3-5=disk #, Bit 2=disk side, Bits 0-1=bits 9-10 of sector
-;   1 - Bits 0-8 of 10 bit sector number (1-based). For most entries, this value refers to the key sector, data in next sector.
+;   0 - Bits 5-7 have an unknown meaning.
+;       Bits 3-4 = disk #
+;       Bit 2    = disk side (0 = side 1, 1 = side 2)
+;       Bits 0-1 = bits 9-10 of sector
+;   1 - Bits 0-8 of 10 bit sector number (1-based). For most entries, this value refers to the key sector,
+;       data in next sector.
 ;   2 - High byte of uint16 file size
 ;   3 - Low byte of uint16 file size
 rw  0280,113 FILE_SEG_DIR           ; Start of file segment directory
@@ -322,12 +315,16 @@ rw  0463,3   DISP_STR_VAL           ; Position in display buffer to write STR st
 rw  0468,3   DISP_INT_VAL           ; Position in display buffer to write INT stat (text - 3 chars, left justified)
 rw  046d,3   DISP_WIS_VAL           ; Position in display buffer to write WIS stat (text - 3 chars, left justified)
 rw  0472,3   DISP_SKL_VAL           ; Position in display buffer to write SKL stat (text - 3 chars, left justified)
-rw  0484,3   DISP_EXP_VAL           ; Position in display buffer to write player experience points (text- 10 chars, left justified)
-rw  0499,1   DISP_HP_SEP_CHAR       ; Position in display buffer to write ':' (HP < Max) or '=' (HP = Max) (text - 1 char)
+rw  0484,3   DISP_EXP_VAL           ; Position in display buffer to write player experience points
+                                    ;     (text- 10 chars, left justified)
+rw  0499,1   DISP_HP_SEP_CHAR       ; Position in display buffer to write ':' (HP < Max) or '=' (HP = Max)
+                                    ;     (text - 1 char)
 rw  049a,5   DISP_HP_VAL            ; Position in display buffer to write current HP (text - 5 chars, left justified)
 rw  04a0,28  DISP_YOU_ARE           ; 40 bytes: Start of 5th row of text (e.g. "You are in a well-lighted area.", etc.)
-rw  04a1,27  DISP_LOC_DESC          ; Position in display buffer to write location description (text - 39 chars, left justified, starting with "You are ")
-rw  04c9,27  DISP_SOMETHING_HERE    ; Position in display buffer to write "There is something here." (text - 39 chars, left justified)
+rw  04a1,27  DISP_LOC_DESC          ; Position in display buffer to write location description
+                                    ;     (text - 39 chars, left justified, starting with "You are ")
+rw  04c9,27  DISP_SOMETHING_HERE    ; Position in display buffer to write "There is something here."
+                                    ;     (text - 39 chars, left justified)
 
 rw  04c8,28  DISP_LINE6             ; 40 bytes: Start of 6th row of text (e.g. "There is something here" or similar)
 rw  04f0,78  DISP_GFX_TOP           ; 120 bytes: Position in display buffer containing top third of "graphical" area
@@ -362,7 +359,7 @@ rw  0c00,400 GfxMidCharset          ; Character set for middle third of the grap
 rw  1000,400 GfxBtmCharset          ; Character set for bottom third of the graphical area (2bpp - font 3)
 rw  1400,400 DungeonCharset         ; Dungeon character set font (1bpp)
 
-rwx 1800,1   j_sub_2979             ; Alias for sub_2979
+rwx 1800,1   j_readNextSector       ; Alias for readNextSector
 rwx 1803,1   j_loc_2f80             ; Alias for loc_2f80
 rwx 1806,1   j_sub_2ff3             ; Alias for sub_2ff3
 rwx 1809,1   j_loc_30e3             ; Alias for loc_30e3
@@ -374,8 +371,8 @@ rwx 1818,1   j_printAny             ; Alias for printAny
 rwx 181b,1   j_outputChar           ; Alias for outputChar
 rwx 181e,1   j_readKey              ; Alias for readKey
 rwx 1821,1   j_readStick            ; Alias for readStick
-rwx 1824,1   j_sub_275b             ; Alias for sub_275b
-rwx 1827,1   j_sub_245d             ; Alias for sub_245d
+rwx 1824,1   j_readFileScan         ; Alias for readFileScan
+rwx 1827,1   j_resetIO              ; Alias for resetIO
 rwx 182a,1   j_getFileEntry         ; Alias for getFileEntry
 rwx 182d,1   j_readDiskSector       ; Alias for readDiskSector
 rwx 1830,1   j_sub_24c6             ; Alias for sub_24c6
@@ -409,8 +406,8 @@ rwx 1881,1   j_sub_2cc2             ; Alias for sub_2cc2
 rwx 1884,1   j_addItem              ; Alias for addItem
 rwx 1887,1   j_getItemAdr           ; Alias for getItemAdr
 rwx 188a,1   j_removeItem           ; Alias for removeItem
-rwx 188d,1   j_chkItemNAlign        ; Alias for chkItemNAlign
-rwx 1890,1   j_sub_49b0             ; Alias for sub_49b0
+rwx 188d,1   j_chkItemAtAlign       ; Alias for chkItemAtAlign
+rwx 1890,1   j_allocEffect          ; Alias for allocEffect
 rwx 1893,1   j_sub_55b7             ; Alias for sub_55b7
 rwx 1896,1   j_getItemAttrs         ; Alias for getItemAttrs
 rwx 1899,1   j_randInRange          ; Alias for randInRange
@@ -419,7 +416,7 @@ rwx 189f,1   j_actionOffer          ; Alias for actionOffer
 rwx 18a2,1   j_multBEInt16          ; Alias for multBEInt16
 rwx 18a5,1   j_sub_408b             ; Alias for sub_408b
 rwx 18a8,1   j_actionUse            ; Alias for actionUse
-rwx 18ab,1   j_loc_5bb8             ; Alias for loc_5bb8
+rwx 18ab,1   j_sub_5bb8             ; Alias for sub_5bb8
 rwx 18ae,1   j_readBEUInt16         ; Alias for readBEUInt16
 rwx 18b1,1   j_divUint16Uint8       ; Alias for divUint16Uint8
 rwx 18b4,1   j_kernelInit           ; Alias for kernelInit
@@ -463,8 +460,10 @@ rw  1909,1   FileNumber             ; 1 byte: Current file number / index into S
 rw  190b,1   FileDestAdr_L          ; LSB: Address to read file to
 rw  190c,1   FileDestAdr_H          ; MSB: Address to read file to
 rw  190d,1   dat_190d               ; 1 byte. Only updated? Where is this read?
-rw  190e,1   dat_190e               ; 1 byte. Updated in sub_2799, Read in sub_28d7
-rw  190f,1   dat_190f               ; 1 byte. Updated in sub_275b
+rw  190e,1   MayCancelLoad          ; 1 byte: Whether a file load operation may be cancelled by the user or not
+                                    ;         0 = false (user cannot cancel),
+                                    ;         non-zero = true (user can cancel by pressing ESC when prompted for disk)
+rw  190f,1   dat_190f               ; 1 byte. Updated in readFileScan
 rw  1910,1   FileDiskSide           ; Disk side (1 or 2) Referenced in StrPleaseInsert
 rw  1911,1   FileDiskNumber         ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
 rw  1912,1   ZONE_ID                ; Zone ID value to apply
@@ -491,7 +490,7 @@ rw  1942,1   ZtsAddr4_L             ; LSB: Address of NUL-terminated string #4 f
 rw  1943,1   ZtsAddr4_H             ; MSB: Address of NUL-terminated string #4 for formatted output
 rw  1944,1   MenuFootrAdr_L         ; LSB of menu footer format substring
 rw  1945,1   MenuFootrAdr_H         ; MSB of menu footer format substring
-rw  1946,4   MenuItmIndices         ; 4 bytes: related to 4 item menu selections: holds item indexes
+rw  1946,4   MenuSelItems           ; 4 bytes: Holds inventory indexes of items associated with menu selections
 rw  194a,1   dat_194a               ; Status page index to assign the menu template string to
 rw  194b,1   ZONE_TEXTURE_SET       ; The texture set to use. 01 = Typical; 02 = Mirror/Crystal; 03 = Dragon; 04 = Goblin; 05 = Mausoleum
 rw  194c,1   ZONE_B_BYTE            ; Byte value (not bitfield)
@@ -502,18 +501,22 @@ rw  1950,1   ZONE_WALL_CLR2         ; Wall color #3 (e.g. normal walls = 0A Grey
 rw  1951,1   ZONE_CEILING_CLR       ; Ceiling color
 rw  1952,1   ZONE_FLOOR_CLR         ; Floor color
 rw  1953,1   ZONE_WARMTH            ; Zone base temperature/warmth
-rw  1954,1   dat_1954               ;
-rw  1955,1   dat_1955               ; ?Possible flag indicating whether time is paused or not?
+rw  1954,1   dat_1954               ; 1 byte: assigned, but not obviously read anywhere
+                                    ;   - contMoveWall: Assigns to $ff if the player's fractional position matches the wall boundary (perhaps to indicate collision)
+rw  1955,1   dat_1955               ; ?Possible flag indicating whether time is paused or not? Seems to only be read and not updated?
+                                    ;   - irq_VVBLKI: Reads value in two places related to updating the time spinner on the display
 rw  1956,1   UNK_BYTE_COUNTER       ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
 rw  1957,1   dat_1957               ;
 rw  1958,1   UNK_BYTE_1958          ; Assigned to $ff if $1959 == 2
 rw  1959,1   UNK_BYTE_1959          ; Compared to #$02, if it is 2, then $ff is loaded into $1958
 rw  195a,1   MapCellSpclCode        ; Holds special code index number parameter value for
                                     ;   treasure, encounter, message, and teleport special codes.
-rw  195b,1   dat_195b               ; assigned CHR_FRAC_LOC_X in
-rw  195c,1   dat_195c               ; assigned CHR_FRAC_LOC_Y in
-rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff
-rw  195e,1   dat_195e               ; 1 byte: ?? seems to hold warmth bonus provided by equipped apparel ??
+rw  195b,1   dat_195b               ; assigned CHR_FRAC_LOC_X in sub_2ff3... not read?
+rw  195c,1   dat_195c               ; assigned CHR_FRAC_LOC_Y in sub_2ff3... not read?
+rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff   Possibly related to encounters?
+                                    ;    - contMoveSecrt and contMoveDoor - randomly decrease this value when you pass through (approx 1/8 or 12.5% chance)
+                                    ;
+rw  195e,1   WarmthBonus            ; 1 byte: Holds warmth bonus provided by equipped apparel
 rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
                                     ;     update should occur. 0 is false, and any non-0 value is seen as true.
 rw  1960,1   StatRecalcFlg          ; 1 byte: Checked in sub_41fc to determine whether a stat update calc should
@@ -554,8 +557,23 @@ rw  197c,20  dat_197c               ; 32 byte display buffer used by DLIST_40x1 
                                     ;   Related to loading encounters/scenarios
 
 rw  1987,1   dat_1987               ; 10? bytes. Encounter/scenario related.
-
-rw  199c,1   dat_199c               ; 1 byte of data
+rw  199c,1   SoundState             ; Sound engine state value
+                                    ;   - (write) Used to assigning a sound to start playing. This is done by
+                                    ;     assigning a value with bit 7 set. The remaining bits identify the ID of the
+                                    ;     sound to play (0..5).
+                                    ;       $80 - Secret door
+                                    ;       $81 - Door
+                                    ;       $82 - Cast spell
+                                    ;       $83 - ??
+                                    ;       $84 - ??
+                                    ;       $85 - ??
+                                    ;   - (read - vvblkiAudio only) Indicates the current state of the sound engine and
+                                    ;     controls the action taken on each vertical blank:
+                                    ;       - When the value is less than (bit 7 is 1), the requested sound will
+                                    ;         be started.
+                                    ;       - When the value is 0, no sound is playing (NOP)
+                                    ;       - When the value is greater than 0 (bit 7 is 0), continue playing the
+                                    ;         current sound.
 rw  199d,21  DLIST_40x24            ; DLIST data (33 bytes)
                                     ; This display list seems to be a 40x25? 1bpp character display (20 + 25 * 8 = 220 scanlines?)
                                     ;   $70 $70 $30 - 8 + 8 + 4 [20] blank scanlines
@@ -817,9 +835,9 @@ rwx 242e,1   vvblki_BLINK           ; VVBLKI jump point: Toggles normal/inverse 
 rwx 244b,1   rts_VVBLKI             ; Restore register state and return from VVBLKI interrupt
 rwx 2451,1   call_VVBLKD            ; Indirectly invokes the sub referenced by VVBLKD
 
-rwx 2454,1   WAIT_FOR_VBLK_A        ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_B/C)
+rwx 2454,1   waitForVblankA         ; Waits for the next vblank to occur (identical to waitForVblankB)
 
-rwx 245d,1   sub_245d               ;
+rwx 245d,1   resetIO                ; Reset I/O: IRQs, keyboard, display colors, audio
 
 rwx 24a3,1   readDiskStatus         ; Reads disk status
 
@@ -836,56 +854,105 @@ rwx 248e,1   readDiskSector         ; Reads a sector from disk
 
 rwx 2494,1   sioExchange            ; Executes a serial I/O command/response exchange
 
-rwx 24c6,1   sub_24c6               ;
+rwx 24c6,1   sub_24c6               ; Enables keyboard interrupts, resets audio and waits for display list to reset.
 
-rwx 24e5,1   updTimeSpinner         ;  Updates the time spinner on the display to the next character in the sequence
+rwx 24e5,1   updTimeSpinner         ; Updates the time spinner on the display to the next character in the sequence
 
 rw  24ff,1   dat_24ff               ; 1 byte: Used in irq_VVBLKI as counter triggering calls to updTimeSpinner
 rw  2500,3   unk_2500               ; 3 unused bytes?
 
-rw  25be,1   dat_25be               ; ? bytes of data (audio related)
-rw  25bf,1   dat_25bf               ; 1 byte of data/storage (updated, but not read directly)
-rw  25c0,1   dat_25c0               ; ? bytes of data (audio related)
-rw  25c1,1   dat_25c1               ; 1 byte of data/storage
-rw  25c2,1   dat_25c2               ; 1 byte of data/storage
-rw  25c3,1   dat_25c3               ; 1 byte (used as offset from dat_25eb)
-rw  25c4,1   dat_25c4               ; 1 byte: Index into dat_25be, dat_25c0, dat_25eb
+rwx 2503,1   vvblkiAudio            ; Sound engine entry point called from VVBLKI
 
-rw  25c5,3   dat_25c5               ; 3? bytes (audio related)
-rw  25c8,4   dat_25c8               ; 4? bytes (audio related)
-rw  25cc,6   dat_25cc               ; 6? bytes (audio related)
-rw  25d2,5   dat_25d2               ; 5? bytes (audio related)
-rw  25d7,7   dat_25d7               ; 7? bytes (audio related)
-rw  25de,7   dat_25de               ; 7? bytes (audio related)
+rwx 256b,1   managePlayback         ; Manages starting or stopping notes for a logical sound channel based on the
+                                    ;     current sound and timing.
 
-rw  25e5,6   dat_25e5               ; 6? bytes of data (indexed table of bytes)
-rw  25eb,6   dat_25eb               ; 6? bytes of data
+rw  25be,1   SoundTimer             ; 2 bytes: Vblanks before starting next note for audio channel
+                                    ;    0: Channel 0 (AUDC1/AUDF1/AUDF2)
+                                    ;    1: Channel 1 (AUDC3/AUDF3/AUDF4)
+rw  25c0,1   SoundNote              ; 2 bytes: Offset plus one into frequency and duration tables for current sound
+                                    ;    0: Channel 0 (AUDC1/AUDF1/AUDF2)
+                                    ;    1: Channel 1 (AUDC3/AUDF3/AUDF4)
+rw  25c2,1   SoundFreq              ; Temporary storage for the current note frequency
+rw  25c3,1   SoundId                ; Current sound number [0..5]
+                                    ;   0: Secret door sound
+                                    ;   1: Door sound
+                                    ;   2: Cast spell sound
+                                    ;   3: ? sound
+                                    ;   4: ? sound
+                                    ;   5: ? sound
+rw  25c4,1   SoundChannel           ; Sound channel to update during vblank. Input param to managePlayback
+                                    ;   0 - Hardware audio channels 1+2 (AUDC1/AUDF1/AUDF2)
+                                    ;   1 - Hardware audio channels 3+4 (AUDC3/AUDF3/AUDF4)
+rw  25c5,3   Sound0Freqs            ; 3 bytes: Sound 0 frequency data (Secret door)
+rw  25c8,4   Sound1Freqs            ; 4 bytes: Sound 1 frequency data (Door)
+rw  25cc,6   Sound2Freqs            ; 6 bytes: Sound 2 frequency data (Cast spell)
+rw  25d2,5   Sound3Freqs            ; 5 bytes: Sound 3 frequency data (???)
+rw  25d7,7   Sound4Freqs            ; 7 bytes: Sound 4 frequency data (???)
+rw  25de,7   Sound5Freqs            ; 7 bytes: Sound 5 frequency data (???)
+rw  25e5,6   SoundAudCtl            ; 6 bytes: AUDCTL value to apply for corresponding sound ID
+                                    ;   0: $00 - 17-bit poly
+                                    ;            all 4 hardware channels use 64KHz clock
+                                    ;   1: $40 - 17-bit poly
+                                    ;            hardware channel 1 uses 1.79MHz clock
+                                    ;            channels 2, 3, 4 use 64KHz clock
+                                    ;   2: $04 - 17-bit poly
+                                    ;            all 4 hardware channels use 64KHz clock
+                                    ;            high-pass filter for channel 1 (clocked by channel 3)
+                                    ;   3: $07 - 17-bit poly
+                                    ;            all 4 hardware channels use 15KHz clock
+                                    ;            high-pass filter for channel 1 (clocked by channel 3)
+                                    ;            high-pass filter for channel 2 (clocked by channel 4)
+                                    ;   4: $07 - 17-bit poly
+                                    ;            all 4 hardware channels use 15KHz clock
+                                    ;            high-pass filter for channel 1 (clocked by channel 3)
+                                    ;            high-pass filter for channel 2 (clocked by channel 4)
+                                    ;   5: $06 - 17-bit poly
+                                    ;            all 4 hardware channels use 64KHz clock
+                                    ;            high-pass filter for channel 1 (clocked by channel 3)
+                                    ;            high-pass filter for channel 2 (clocked by channel 4)
 
-rw  25f1,3   dat_25f1               ; 3 bytes
-rw  25f4,4   dat_25f4               ; 4 bytes
-rw  25f8,6   dat_25f8               ; 6 bytes
-rw  25fe,5   dat_25fe               ; 5 bytes
-rw  2603,7   dat_2603               ; 7 bytes
-rw  260a,7   dat_260a               ; 7? bytes
-
-rw  2611,6   dat_2611               ; 6? bytes of data (indexed table of bytes)
-rw  2617,6   dat_2617_L             ; 6 bytes: LSB of address (with dat_261d_H)
-rw  261d,6   dat_261d_H             ; 6 bytes: MSB of address (with dat_2617_L)
-                                    ;    0: $25f1 [dat_25f1] (3 bytes)
-                                    ;    1: $25f4 [dat_25f4] (4 bytes)
-                                    ;    2: $25f8 [dat_25f8] (6 bytes)
-                                    ;    3: $25fe [dat_25fe] (5 bytes)
-                                    ;    4: $2603 [dat_2603] (7 bytes)
-                                    ;    5: $260a [dat_260a] (7? bytes)
-
-rw  2623,6   tbl_2623_L             ; 6 bytes: LSB of address (with tbl_2629_H)
-rw  2629,6   tbl_2629_H             ; 6 bytes: MSB of address (with tbl_2623_L)
-                                    ;    0: $25c5 [dat_25c5] (3 bytes)
-                                    ;    1: $25c8 [dat_25c8] (4 bytes)
-                                    ;    2: $25cc [dat_25cc] (6 bytes)
-                                    ;    3: $25d2 [dat_25d2] (5 bytes)
-                                    ;    4: $25d7 [dat_25d7] (7 bytes)
-                                    ;    5: $25de [dat_25de] (7 bytes)
+rw  25eb,6   SoundChnlCtl           ; 6 bytes: Audio channel control / frequency values for sound ID.
+                                    ;   Each value is processed separately for each note channel (0 or 1).
+                                    ;     SoundChannel is 0: Both AUDC1 and AUDF2 are assigned the value plus 3. For
+                                    ;         AUDC1, this increases the volume level. For AUDF2, it lowers the
+                                    ;         output frequency.
+                                    ;     SoundChannel is 1: Both AUDC3 and AUDF4 are assigned the value as-is.
+                                    ;   0: $a1 - No poly counters/noise; Volume 1 (Secret door)
+                                    ;   1: $01 - Apply 5-bit and 17-bit polys/noise; Volume 1 (Door)
+                                    ;   2: $a1 - No poly counters/noise; Volume 1 (Cast spell)
+                                    ;   3: $a1 - No poly counters/noise; Volume 1 (???)
+                                    ;   4: $a1 - No poly counters/noise; Volume 1 (???)
+                                    ;   5: $a1 - No poly counters/noise; Volume 1 (???)
+rw  25f1,3   Sound0Times            ; 3 bytes: Sound 0 note duration data (Secret door)
+rw  25f4,4   Sound1Times            ; 4 bytes: Sound 1 note duration data (Door)
+rw  25f8,6   Sound2Times            ; 6 bytes: Sound 2 note duration data (Cast spell)
+rw  25fe,5   Sound3Times            ; 5 bytes: Sound 3 note duration data (???)
+rw  2603,7   Sound4Times            ; 7 bytes: Sound 4 note duration data (???)
+rw  260a,7   Sound5Times            ; 7 bytes: Sound 5 note duration data (???)
+rw  2611,6   SoundLength            ; 6 bytes: Each entry holds 1 more than the length of sound data referenced by
+                                    ;     addresses in SoundTimeTbl_L/H and SoundFreqTbl_L/H.
+                                    ;    0: 4 (3 bytes - Secret door)
+                                    ;    1: 5 (4 bytes - Door)
+                                    ;    2: 7 (6 bytes - Cast spell)
+                                    ;    3: 6 (5 bytes - ???)
+                                    ;    4: 8 (7 bytes - ???)
+                                    ;    5: 8 (7 bytes - ???)
+rw  2617,6   SoundTimeTbl_L         ; 6 bytes: LSB of address of note duration data for a sound ID
+rw  261d,6   SoundTimeTbl_H         ; 6 bytes: MSB of address of note duration data for a sound ID
+                                    ;    0: $25f1 [Sound0Times] - Secret door
+                                    ;    1: $25f4 [Sound1Times] - Door
+                                    ;    2: $25f8 [Sound2Times] - Cast spell
+                                    ;    3: $25fe [Sound3Times] - ???
+                                    ;    4: $2603 [Sound4Times] - ???
+                                    ;    5: $260a [Sound5Times] - ???
+rw  2623,6   SoundFreqTbl_L         ; 6 bytes: LSB of address of note frequency data for a sound ID
+rw  2629,6   SoundFreqTbl_H         ; 6 bytes: MSB of address of note frequency data for a sound ID
+                                    ;    0: $25c5 [Sound0Freqs] - Secret door
+                                    ;    1: $25c8 [Sound1Freqs] - Door
+                                    ;    2: $25cc [Sound2Freqs] - Cast spell
+                                    ;    3: $25d2 [Sound3Freqs] - ???
+                                    ;    4: $25d7 [Sound4Freqs] - ???
+                                    ;    5: $25de [Sound5Freqs] - ???
 
 rwx 262f,1   readStick              ; Read joystick Jack 1 Stick 0 direction and trigger button status
 
@@ -895,7 +962,8 @@ rwx 2653,1   irq_VKEYBD_2653        ; Assigned in the KERNEL_LOADER to handle
                                     ;     the VSERIN (POKEY keyboard) interrupt.
                                     ;     Invoked from irq_VIMIRQ_22ac.
 
-rwx 267a,1   sub_267a               ;
+rwx 267a,1   vvblkiKeyInput         ; Processes a key press, including console keys and mapping movement keys to
+                                    ;     stick direction codes.
 
 rw  26d1,80  KbdCd2Atascii          ; 128 bytes: Mapping of keyboard code (offset) to ASCII code (value)
                                     ;   - Lower 64 bytes are mappings for lowercase (no shift key)
@@ -915,11 +983,14 @@ rw  2755,5   StickDirCde            ; 5 bytes: Joystick direction values corresp
                                     ;   3: $08 (00001000) - right
                                     ;   4: $80 (10000000) - trigger pressed
 
-rwx 275b,1   sub_275b               ;
+rwx 275b,1   readFileScan           ; Reads a file from disk, scanning all detected drives for the file.
 
-rwx 2785,1   nextDisk               ; Increments DiskNumber and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
-rwx 2788,1   normalizeDisk          ; Tests DiskNumber and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
-rwx 2799,1   sub_2799               ;
+rwx 2785,1   nextDisk               ; Increments DiskNumber and sets to '1' ($31) if not between '1' ($31)
+                                    ;     and '4' ($34) (inclusive)
+rwx 2788,1   normalizeDisk          ; Tests DiskNumber and sets to '1' ($31) if not between '1' ($31)
+                                    ;     and '4' ($34) (inclusive)
+rwx 2799,1   readFile               ; Reads a file and it's corresponding key sector from the specified disk and
+                                    ;     decrypts the result.
 
 rwx 27d8,1   sub_27d8               ; Called from sub_80d2 in KERNEL_LOADER
 
@@ -927,15 +998,20 @@ rwx 27de,1   decryptBytes           ; Decrypts a buffer of data using a 16-byte 
 
 rwx 28a1,1   getFileEntry           ; Reads a file segment directory entry
 
-rwx 292b,1   sub_292b               ;
+rwx 28d7,1   promptForDisk          ; Prompts user to insert the disk containing the requested File ID.
 
-rw  299f,68  StrPleaseInsert        ; 104 bytes: "Please insert The Dungeon Disk ? Side ? into any drive. Press SPACEBAR to continue"
+rwx 292b,1   clrBottomText          ; Clears the bottom message text
+
+rwx 2979,1   readNextSector         ; Reads a sector from disk into SioBuf and adds 1 to DiskSector_L/H
+
+rw  299f,68  StrPleaseInsert        ; 104 bytes: "Please insert The Dungeon Disk ? Side ? into any drive.
+                                    ;     Press SPACEBAR to continue"
 rw  2a07,1d  StrPressEsc            ; 29 bytes: "or press ESC to abort"
 rw  2a24,a   StrLoading             ; 10 bytes: "Loading..."
 rw  2a2e,a   StrEncounter           ; 10 bytes: "Encounter!"
 rw  2a38,9   dat_2a38_unk           ; 9 bytes/72 bits: Sequence of bits mapped to a source file number. If a bit
-                                    ; corresponding to a file number is set, then sub_2979 defers to sub_f9f4 to load
-                                    ; the file instead of the normal process.
+                                    ; corresponding to a file number is set, then readNextSector defers to sub_f9f4 to
+                                    ; load the file instead of the normal process.
                                     ;   - Related to dat_025a which is assigned the value for a file number's corresponding bit (0 = 0, 1 = $80)
                                     ;   - Perhaps indicates files which should be transferred to/from extended RAM
                                     ;     instead of always reading from disk?
@@ -978,29 +1054,40 @@ rw  2c63,1   SixthsCnt              ; Used in waitSeconds to count sixths of a s
 rw  2c64,1   SecsRemaining          ; Used in waitSeconds to hold number of seconds remainining
 rw  2c65,1   MinDelayCnt            ; Used in waitSeconds to ensure at least 1/3 second elapses before returning.
 
-rwx 2c66,1   WAIT_FOR_VBLK_B        ; Waits for a vertical blank to occur
+rwx 2c66,1   waitForVblankB         ; Waits for the next vertical blank to occur (identical to waitForVblankA)
 
-rwx 2c6f,1   sub_2c6f               ;
+rwx 2c6f,1   sub_2c6f               ; Repeatedly executes sub_2ff3 while KbdChar is < 0
 rwx 2c88,1   rtn_2c88               ; Dynamically specified return location stored in cont_addr_1977_L/H
 
-rw  2c99,1   tmp_2c99_L             ; Used for preserving the value of cont_addr_1977_L
-rw  2c9a,1   tmp_2c99_H             ; Used for preserving the value of cont_addr_1977_H
+rw  2c99,1   TempContAdr_L          ; Used for preserving the value of cont_addr_1977_L in
+rw  2c9a,1   TempContAdr_H          ; Used for preserving the value of cont_addr_1977_H
 rwx 2c9b,1   sub_2c9b               ; Sets StrTmplate_L/H to the A-th address from the table @ Y/X
                                     ;   e.g. StrTmplate_L = *(X * 256 + Y)[A * 2]
                                     ;        StrTmplate_H = *(X * 256 + Y)[A * 2 + 1]
 rwx 2cab,1   sub_2cab               ; Does nothing / debug BRK
 rwx 2cad,1   sub_2cad               ;
+                                    ;   - Used to load map @ $ac00
 
 rwx 2cc2,1   sub_2cc2               ;
 
-rw  2cf7,4   dat_2cf7               ; 4 bytes of data
-
+rw  2cf7,4   ForcedFileIds          ; 4 bytes: Contains file segment entry indexes/file numbers (not IDs) which
+                                    ; the user is not permitted to cancel loading.
+                                    ;   0: $10 (16) = Unknown / Compass and arrow character sets
+                                    ;   1: $11 (17) = Combat Data
+                                    ;   2: $12 (18) = Item Data
+                                    ;   3: $3f (63) = Location Names
 rwx 2cfb,1   sub_2cfb               ;
 rwx 2d61,1   rts_C_SET_2d61         ; Return to caller with C = 1
 rwx 2d62,1   rts_C_CLR_2d62         ; Return to caller with C = 0
 
-rw  2d85,5   tbl_2d85               ; 5 bytes of data
-rw  2d8a,5   tbl_2d8a               ; 5 bytes of data
+rw  2d85,5   tbl_2d85               ; 5 bytes: File numbers to map from
+rw  2d8a,5   tbl_2d8a               ; 5 bytes: File numbers to map to
+                                    ;        From File Number    -> To File Number
+                                    ;     0: $35 (53 Dead Song)  -> $2f (47 Character Death)
+                                    ;     1: $0f (15 Unknown?)   -> $44 (68 Unknown?)
+                                    ;     2: $44 (68 Unknown?)   -> $43 (67 Unknown?)
+                                    ;     3: $43 (67 Unknown?)   -> $42 (66 Unknown?)
+                                    ;     4: $10 (16 Compass CS) -> $3f (63 Location Names)
 
 rwx 2d8f,5   initBytes              ;
 
@@ -1028,7 +1115,7 @@ rw  2e05,8   InvBitNMask            ; 8 bytes: Bitmasks for individual bits (Inv
                                     ;     6: $02 - 0000 0010
                                     ;     7: $01 - 0000 0001
 
-rwx 2e0d,1   copyBytes              ; Copies X * 256 + Y bytes from the address in SourceAdr_L/H to the address in dat_0009_L/H
+rwx 2e0d,1   copyBytes              ; Copies X * 256 + Y bytes from the address in SourceAdr_L/H to the address in DestAdr_L/H
 rwx 2e31,1   sub_2e31               ;
 rwx 2e40,1   incChrAttr16           ; Increase a 16-bit player attribute value
 rw  2e42,1   nop_2e42               ; Forms 'BIT dat_00a0' with following LDA - essential NOP
@@ -1043,8 +1130,8 @@ rwx 2e6b,1   decChrAttr             ; Decrease a player attribute value
 rwx 2e6e,1   decAttr                ; Decrease a little-endian attribute value
 
 rxw 2e8d,1   setChrAttrAdr          ; Updates AttrAddr_L/H to a player stat address
-rwx 2e9e,1   copyBytesNeg           ; Copies -(dat_000c * 256 + dat_000b) bytes from the address in SourceAdr_L/H to
-                                    ;     the address in dat_0009_L/H
+rwx 2e9e,1   copyBytesNeg           ; Copies -(NumBytes_H * 256 + NumBytes_L) bytes from the address in SourceAdr_L/H
+                                    ;     to the address in DestAdr_L/H
 
 rwx 2ec6,1   kernelInit             ; Initialization code called from KERNEL_ENTRY after base initialization
 
@@ -1085,6 +1172,8 @@ rwx 31f5,3   smc_31f5               ; The address for this JMP is dynamically mo
 
 rw  3225,7   MapNum2Level           ; 7 bytes: Table for translating a map number to corresponding dungeon level
                                     ;    [01 01 01 01 02 03 04]
+
+rwx 322c,1   updateLocDesc          ; Updates the location description text displayed on the screen (e.g. "You are ...")
 
 rwx 326b,1   cont_326b              ;
 rwx 3296,1   rts_3296               ; NOP: Simply returns to caller
@@ -1158,6 +1247,8 @@ rw  382e,1c  StrAreYouSure          ; 28 bytes: "Are you sure (Y or N)"
 rwx 384a,1   actionPause            ; (P) Pause game action
 
 rw  3860,f   StrPaused              ; 15 bytes: "(Paused)"
+
+rwx 386f,1   sub_386f               ;
 
 rw  38cf,1   dat_38cf               ; 1 byte
 rw  38d0,5   StrClrLocDesc2         ; 5 bytes: Clears the secondary location description line
@@ -1236,9 +1327,17 @@ rw  3b54,8   MoveStepDir            ; 8 bytes: Direction step for orientation
                                     ;     5: $ff - -1 (East)
                                     ;     6: $ff - -1 (South)
                                     ;     7: $01 - +1 (West)
-
-rw  3b5c,8   dat_3b5c               ; 8 bytes:
-
+rw  3b5c,8   MoveBounds             ; 8 bytes: Minimum/maximum bounds for fractional position within a map.
+                                    ;   Forward movement
+                                    ;     0: $00 - North-facing minimum bound
+                                    ;     1: $23 - East-facing maximum bound
+                                    ;     2: $23 - South-facing maximum bound
+                                    ;     3: $00 - West-facing minimum bound
+                                    ;   Backward movement (player orientation + 4)
+                                    ;     4: $23 - North-facing maximum bound
+                                    ;     5: $00 - East-facing minimum bound
+                                    ;     6: $00 - South-facing minimum bound
+                                    ;     7: $23 - West-facing maximum bound
 rw  3b64,8   MoveWallOfs            ; 8 bytes: Offset in map cell data of wall code for direction
                                     ;   Forward movement
                                     ;     0: $00 - MAP_WALL_E_N (North)
@@ -1455,8 +1554,9 @@ rw  4592,1   staminaTimer           ; 1 byte: applyBiology: Number of calls befo
 rw  4593,1   drunkTimer             ; 1 byte: applyBiology: Number of calls before player drunkenness is updated
 rw  4594,1   stomachTimer           ; 1 byte: applyBiology: Number of calls before player stomach is updated
 
-rw  4595,7   EffTimers              ; 7 bytes: Table of countdown counters for the various effect types. Each counter is
-                                    ;     decremented until 0, then reset to the corresponding value from EffApplyFreq.
+rw  4595,7   EffTimers              ; 7 bytes: Table of countdown counters for the various biological and environmental
+                                    ;     effect types. Each counter is decremented until 0, then reset to the
+                                    ;     corresponding value from EffApplyFreq.
                                     ;   0: Warmth
                                     ;   1: Hunger
                                     ;   2: Thirst
@@ -1807,11 +1907,10 @@ rwx 4984,1   contIterEffect         ; Decreases the repetition count for the cur
                                     ;     reaches 0) and moves to the next effect.
 rwx 4999,1   contNextEffect         ; Moves to the next effect
 
-rwx 49b0,1   sub_49b0               ;
+rwx 49af,1   rts_49af               ; RTS
 
-rwx 4a01,1   sub_4a01               ;
-
-rwx 4a4a,1   sub_4a4a               ;
+rwx 49b0,1   allocEffect            ; Reserves a space in the table at $6500 [CHR_Effects] for an effect of the
+                                    ;     specified type.
 
 rwx 4a5f,1   sub_4a5f               ;
 
@@ -1836,14 +1935,14 @@ rwx 4b89,1   sub_4b89               ;
 rwx 4b8b,1   nop_4b8b               ; Forms 'BIT $10a2' with following LDA - essential NOP
 
 rwx 4b8c,1   sub_4b8c               ;
-rwx 4baa,1   sub_4baa               ;
+rwx 4baa,1   sub_4baa               ; Calls sub_4bb3 for the item in the specified inventory index, if one is assigned.
 rwx 4bb3,1   sub_4bb3               ;
 
-rwx 4be2,1   sub_4be2               ; Sub referenced in tbl_4cbf_L/H
-rwx 4bf5,1   sub_4bf5               ; Sub referenced in tbl_4cbf_L/H
-rwx 4c5a,1   sub_4c5a               ; Sub referenced in tbl_4cbf_L/H
+rwx 4be2,1   sub_4be2               ; Mark item as in player inventory
+rwx 4bf5,1   sub_4bf5               ; Drops an item held by the player
+rwx 4c5a,1   sub_4c5a               ; Mark the inventory slot at ItemIndex "available"
 rwx 4c6b,1   sub_4c6b               ; Sub referenced in tbl_4cbf_L/H
-rwx 4c86,1   sub_4c86               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c86,1   sub_4c86               ; Mark the inventory slot at ItemIndex "occupied"
 rwx 4c95,1   cont_4c95              ;
 rwx 4c9c,1   rts_4c9c               ; NOP - Just an RTS. Sub referenced in tbl_4cbf_L/H
 rwx 4c9d,1   sub_4c9d               ; Sub referenced in tbl_4cbf_L/H
@@ -1864,17 +1963,21 @@ rw  4cc0,1   tbl_4cbf_H             ; MSB of continuation addr
 rwx 4ccf,1   sub_4ccf               ;
 rwx 4d92,1   rts_4d92               ; Return to caller
 
-rwx 4d93,1   sub_4d93               ;
+rwx 4d93,1   sub_4d93               ; Searches active effects for effects linked to an inventory item and calls
+                                    ;     sub_4a01 for each match.
 
-rwx 4dd4,1   sub_4dd4               ;
+rwx 4dd4,1   sub_4dd4               ; Searches $6500 [CHR_Effects] for an effect matching an effect associated with
+                                    ;     an item.
 rwx 4df7,1   cont_4df7              ;
 rwx 4e05,1   rts_4e05               ; Return to caller
 
-rwx 4e06,1   chkItemNAlign          ; Checks the alignment of item at inventory index against the player's
+rwx 4e06,1   chkItemAtAlign         ; Checks the alignment of item at inventory index against the player's
                                     ;     current alignment.
 rwx 4e0f,1   chkItemAlign           ; Checks the alignment of item at ItemAdr_L/H against the player's
                                     ;     current alignment.
 rwx 4e22,1   rts_4e22               ; Return to caller
+
+rwx 4e90,1   sub_4e90               ; Removes an item from the dropped item list.
 
 rwx 4ea2,1   unequipItem            ; Unequips any equipped weapon, armor or apparel with the specified item index
                                     ;     from the player.
@@ -1895,7 +1998,7 @@ rwx 4ec4,1   getItemAttrs           ; Updates ItemAttrs_L/H to skip past item ef
 rwx 4ee8,1   getItemEfcts           ; Sets ItemAdr_L/H to the address of the specified inventory item and ItemAttrs_L/H
                                     ;     to the start of the effect section for that item.
 
-rwx 4efd,1   sub_4efd               ;
+rwx 4efd,1   sub_4efd               ; ?Perhaps torch burning out?
 
 rw  4f5d,20  ItemStick              ; 32 bytes: "stick" item
 
@@ -1904,16 +2007,21 @@ rw  4f9d,25  ZtsBtrThanYou          ; 37 bytes: "I was meant for better than you
 rw  4fc0,24  ZtsEvilThanYou         ; 36 bytes: "Your evil cannot compare to mine!"
 rw  4fe4,21  ZtsReleaseMe           ; 33 bytes: "Release me foul mortal or pay!"
 rw  5005,25  ZtsDoGooder            ; 37 bytes: "Miseable do-gooder you shall pay!"
-rw  502a,1   ZtsItemName_L          ; LSB of address of item name ZTS
-rw  502b,1   ZtsItemName_H          ; MSB of address of item name ZTS
-rw  502c,1   ZtsItemScrm_L          ; LSB of address of item scream ZTS
-rw  502d,1   ZtsItemScrm_H          ; MSB of address of item scream ZTS
+rw  502a,1   ZtsAlgnName_L          ; LSB of address of item name ZTS referenced in StrItemScreams
+rw  502b,1   ZtsAlgnName_H          ; MSB of address of item name ZTS referenced in StrItemScreams
+rw  502c,1   ZtsAlgnScrm_L          ; LSB of address of item scream ZTS referenced in StrItemScreams
+rw  502d,1   ZtsAlgnScrm_H          ; MSB of address of item scream ZTS referenced in StrItemScreams
+
+rwx 502e,1   init4SelMenu           ; Initialization for 4 selection menu: Sets all MenuSelItems entries to $ff and
+                                    ;     associated names to blanks.
 
 rwx 5049,1   do4SelMenu             ; Display 4-selection menu of options and handle user input
 rwx 5077,1   rtn_5077               ; Dynamically specified return location stored in cont_addr_1977_L/H
-rwx 508c,1   sub_508c               ;
+rwx 508c,1   sub_508c               ; Loads item names into 4-selection menu option labels
 rwx 50b2,1   sub_50b2               ; Sets dat_6277 to 0 then calls sub_50b7
 rwx 50b7,1   sub_50b7               ;
+
+rwx 5198,1   nextMenuSel            ; Increments MenuSelIdx and compares result to 4
 
 rwx 51a1,1   sub_51a1               ;
 
@@ -2032,16 +2140,16 @@ rwx 5921,1   rtn_5921               ; Dynamically specified return location stor
 
 rwx 594b,1   cont_594b              ;
 
-rw  5955,1   addr_5955_L            ; LSB of address
-rw  5956,1   addr_5955_H            ; MSB of address
+rw  5955,1   StrGetAdr_L            ; (temp) Assigned LSB of template string address (StrGetOne or StrGetMultiple)
+rw  5956,1   StrGetAdr_H            ; (temp) Assigned MSB of template string address (StrGetOne or StrGetMultiple)
 
 rwx 5957,1   sub_5957               ;
 
 rw  599b,10  StrGetOne              ; 16 bytes: "GET?"
 rw  59ab,38  StrGetMultiple         ; 56 bytes: "GET? # ??? Yes, No or ESC" (overlaps StrYesNoEsc)
 rw  59c0,23  StrYesNoEsc            ; 35 bytes: "??? Yes, No or ESC"
-rw  59c1,1   dat_59c1_L             ; LSB of address
-rw  59c2,1   dat_59c2_H             ; MSB of address
+rw  59c1,1   ZtsGetName_L           ; LSB of address of item name to display for StrGetOne / StrGetMultiple templates
+rw  59c2,1   ZtsGetName_H           ; MSB of address of item name to display for StrGetOne / StrGetMultiple templates
 
 rw  59e3,1   GetNum_H               ; 1 byte: MSB of number of items (uint16)
 rw  59e4,1   GetNum_L               ; 1 byte: LSB of number of items (uint16)
@@ -2094,6 +2202,8 @@ rwx 5ab4,1   sub_5ab4               ;
 rwx 5acb,1   doDropMenu             ; Display the "DROP" menu and process user input
 
 rwx 5b0e,1   rts_5b0e               ; Decrements StatUpdateFlg and StatRecalcFlg and returns to caller
+
+rwx 5bb8,1   sub_5bb8               ;
 
 rw  5c53,17  StrOfferAmount         ; 23 bytes: "Offset how many?" ($ac: FOLLOW to StrEnterAmount)
 rw  5c6a,3a  StrDropAmount          ; 58 bytes: "Drop how many?" (flows into StrEnterAmount)
@@ -2188,7 +2298,7 @@ rw  6224,36  StrSpellBckfre         ; 54 bytes: "The spell failed and backfired 
 rw  625a,1c  StrSomethngOdd         ; 28 bytes: "Something is odd here."
 rw  6276,1   dat_6276               ; 1 byte
 rw  6277,1   dat_6277               ; 1 byte
-rw  6278,21  dat_6278               ; 33? bytes of data: TODO: Needs more analysis
+rw  6278,1   MenuSelIdx             ; 1 byte: a menu selection index (e.g. 0..3 for 4 item menu)
 rw  6279,1   dat_6279               ; 1 byte
 rw  627a,1   dat_627a               ; 1 byte
 rw  627b,1   dat_627b               ; 1 byte (Related to cont_52c3)
@@ -2220,7 +2330,7 @@ rw  628a,1   dat_628a               ; 1 byte: Player X position relative to full
 rw  628b,7   MapNum2XOfs            ; 7 bytes: Map number to level X offset for tiled maps (add to map X for level X)
 rw  6292,7   MapNum2YBase           ; 7 bytes: Map number to level Y base for tiled maps (subtract map Y for level Y)
 
-rw  6299,61  str_MAP_POS            ; 97 bytes: "You are ? squares North and ? squares East from the Southwest corner of level ?."
+rw  6299,61  StrMapPos              ; 97 bytes: "You are ? squares North and ? squares East from the Southwest corner of level ?."
 rw  62fa,6   dat_62fa               ; 6 bytes of data: TODO: Needs more analysis
 
 rw  6300,ff  CHR_STATE              ; Start of player state
@@ -2247,16 +2357,101 @@ rw  631a,1   CHR_SAV_LOC_MAP        ; Saved player map number
 rw  631b,1   CHR_SAV_FRAC_LOC_X     ; Saved fractional X position
 rw  631c,1   CHR_SAV_FRAC_LOC_Y     ; Saved fractional Y position
 rw  631d,1   ChrDungeonLevel        ; Current dungeon level number
-rw  631e,1   dat_631e               ;
-rw  631f,1   dat_631f               ;
+rw  631e,1   dat_631e               ; TODO: Holds a module number (perhaps new module to load?)
+                                    ;    - loc_2f80 - seems to be input, new module to load
+                                    ;    - sub_2ff3 - puts current value into dat_631f before reassigning dat_631e and calling loc_2f80
+                                    ;    - loc_30e3 - puts current value into dat_631f before calling
+                                    ;                   cont_318c (basically sub_3183)
+                                    ;    - sub_3183 - puts current value into dat_631f before loading new map (dat_631e does not seem to be reassigned here)
+                                    ;    -
+rw  631f,1   dat_631f               ; TODO: Holds a module number (currently loaded module?)
+                                    ;    - sub_2ff3 - sets to current value of dat_631e before reassigning dat_631e and calling loc_2f80
+                                    ;    - loc_30e3 - sets to current value of dat_631e before reassigning dat_631e and calling
+                                    ;                   cont_318c (basically sub_3183),
+                                    ;                   contMoveLockd, contMoveBoltd, contMoveEnchd, contMoveWall
+                                    ;    - sub_3183 - sets to current value of dat_631e before loading new map
+                                    ;
 rw  6320,1   dat_6320               ;
 rw  6321,19  CHR_NAME               ; Player name (25 characters)
 
-; TODO: What is $633a thru $6381? (47 bytes)
+; TODO: What is $633a & $633b
+
+rw  633c,1   CHR_EXPLVL             ; Player level
+rw  633d,1   CHR_EXP_U32_B3         ; Character experience points (MSB of uint32)
+rw  633e,1   CHR_EXP_U32_B2         ; Character experience points (third byte of uint32)
+rw  633f,1   CHR_EXP_U32_B1         ; Character experience points (second byte of uint32)
+rw  6340,1   CHR_EXP_U32_B0         ; Character experience points (LSB of uint32)
+rw  6341,1   CHR_LUP_EXP_U32_B3     ; Character experience points needed to level up (MSB of uint32)
+rw  6342,1   CHR_LUP_EXP_U32_B2     ; Character experience points needed to level up (third byte of uint32)
+rw  6343,1   CHR_LUP_EXP_U32_B1     ; Character experience points needed to level up (second byte of uint32)
+rw  6344,1   CHR_LUP_EXP_U32_B0     ; Character experience points needed to level up (LSB of uint32)
+rw  6345,1   CHR_HP_CURRENT_HI      ; Character HP (MSB of uint16)
+rw  6346,1   CHR_HP_CURRENT_LO      ; Character HP (LSB of uint16)
+rw  6347,1   CHR_HP_MAX_HI          ; Not fully convinced these two are accurate...
+rw  6348,1   CHR_HP_MAX_LO
+rw  6349,1   CHR_STA_EFFECTIVE      ; Effective STA value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  634a,1   CHR_STA_BASE           ; Base STA value
+rw  634b,1   CHR_STA_BONUS          ; Bonus to STA value
+rw  634c,1   CHR_STA_PENALTY1       ; First penalty to STA value
+rw  634d,1   CHR_STA_PENALTY2       ; Second penalty to STA value
+rw  634e,1   CHR_STA_PENALTY3       ; Third penalty to STA value
+rw  634f,1   CHR_STA_PENALTY4       ; Fourth penalty to STA value
+rw  6350,1   CHR_STA_UNKNOWN
+rw  6351,1   CHR_CHR_EFFECTIVE      ; Effective CHR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6352,1   CHR_CHR_BASE           ; Base CHR value
+rw  6353,1   CHR_CHR_BONUS          ; Bonus to CHR value
+rw  6354,1   CHR_CHR_PENALTY1       ; First penalty to CHR value
+rw  6355,1   CHR_CHR_PENALTY2       ; Second penalty to CHR value
+rw  6356,1   CHR_CHR_PENALTY3       ; Third penalty to CHR value
+rw  6357,1   CHR_CHR_PENALTY4       ; Fourth penalty to CHR value
+rw  6358,1   CHR_CHR_UNKNOWN
+rw  6359,1   CHR_STR_EFFECTIVE      ; Effective STR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  635a,1   CHR_STR_BASE           ; Base STR value
+rw  635b,1   CHR_STR_BONUS          ; Bonus to STR value
+rw  635c,1   CHR_STR_PENALTY1       ; First penalty to STR value
+rw  635d,1   CHR_STR_PENALTY2       ; Second penalty to STR value
+rw  635e,1   CHR_STR_PENALTY3       ; Third penalty to STR value
+rw  635f,1   CHR_STR_PENALTY4       ; Fourth penalty to STR value
+rw  6360,1   CHR_STR_UNKNOWN
+rw  6361,1   CHR_INT_EFFECTIVE      ; Effective INT value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6362,1   CHR_INT_BASE           ; Base INT value
+rw  6363,1   CHR_INT_BONUS          ; Bonus to INT value
+rw  6364,1   CHR_INT_PENALTY1       ; First penalty to INT value
+rw  6365,1   CHR_INT_PENALTY2       ; Second penalty to INT value
+rw  6366,1   CHR_INT_PENALTY3       ; Third penalty to INT value
+rw  6367,1   CHR_INT_PENALTY4       ; Fourth penalty to INT value
+rw  6368,1   CHR_INT_UNKNOWN
+rw  6369,1   CHR_WIS_EFFECTIVE      ; Effective WIS value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  636a,1   CHR_WIS_BASE           ; Base WIS value
+rw  636b,1   CHR_WIS_BONUS          ; Bonus to WIS value
+rw  636c,1   CHR_WIS_PENALTY1       ; First penalty to WIS value
+rw  636d,1   CHR_WIS_PENALTY2       ; Second penalty to WIS value
+rw  636e,1   CHR_WIS_PENALTY3       ; Third penalty to WIS value
+rw  636f,1   CHR_WIS_PENALTY4       ; Fourth penalty to WIS value
+rw  6370,1   CHR_WIS_UNKNOWN
+rw  6371,1   CHR_SKL_EFFECTIVE      ; Effective SKL value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6372,1   CHR_SKL_BASE           ; Base SKL value
+rw  6373,1   CHR_SKL_BONUS          ; Bonus to SKL value
+rw  6374,1   CHR_SKL_PENALTY1       ; First penalty to SKL value
+rw  6375,1   CHR_SKL_PENALTY2       ; Second penalty to SKL value
+rw  6376,1   CHR_SKL_PENALTY3       ; Third penalty to SKL value
+rw  6377,1   CHR_SKL_PENALTY4       ; Fourth penalty to SKL value
+rw  6378,1   CHR_SKL_UNKNOWN
+rw  6379,1   CHR_SPD_EFFECTIVE      ; Effective SPD value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  637a,1   CHR_SPD_BASE           ; Base SPD value
+rw  637b,1   CHR_SPD_BONUS          ; Bonus to SPD value
+rw  637c,1   CHR_SPD_PENALTY1       ; First penalty to SPD value
+rw  637d,1   CHR_SPD_PENALTY2       ; Second penalty to SPD value
+rw  637e,1   CHR_SPD_PENALTY3       ; Third penalty to SPD value
+rw  637f,1   CHR_SPD_PENALTY4       ; Fourth penalty to SPD value
+; The following 128 bytes ($6380-$63FF) are copied to $100-$17F on return from a scenario module
+rw  6380,1   CHR_SPD_UNKNOWN
+
+rw  6381,1   CHR_NOTICEABILITY      ; ?Noticeability? / ?Stealth?  Related to stealth suit
 
 rw  6382,1   Chr_Unk_6382           ;
 
-rw  6388,1   Chr_Unk_6388           ; Bit 1 related to movement thru door
+rw  6388,1   Chr_Unk_6388           ; Bit 1 related to movement thru door - When a locked/barred/enchanted door is encountered, the player moves through if this bit is 1.
                                     ; Bit 2 related to perception? (Part of "Something odd here" check)
 
 rw  638b,1   CHR_SEE_SECRET_DOORS   ; Flag indicating whether the player can see secret doors or not. Interacts with UNK_BYTE_COUNTER ($1956)
@@ -2268,7 +2463,7 @@ rw  6391,1   CHR_Diseased           ; Negative two's complement of the number of
                                     ;     Should be interpreted as a boolean flag: 0 = undiseased, <0 = diseased
 rw  6392,1   CHR_Poisoned           ; Negative two's complement of the number of poison effects active on the player.
                                     ;     Should be interpreted as a boolean flag: 0 = no poison, <0 = poisoned
-rw  6393,1   CHR_CURSE              ; Negative two's complement of the number of curse effects active on the player.
+rw  6393,1   CHR_Cursed             ; Negative two's complement of the number of curse effects active on the player.
                                     ;     Should be interpreted as a boolean flag: 0 = no curse, <0 = cursed
 rw  6394,1   CHR_BURDEN             ; Player encumberment
 rw  6395,1   CHR_WARMTH             ; Player warmth
@@ -2325,14 +2520,19 @@ rw  648b,8   InvSlotFree            ; 8 bytes: Bitfield with one bit per invento
                                     ;    sub_4c6b: tests bits
                                     ;    sub_4c86: clears bits
                                     ;    sub_4c5a: sets bits
-rw  6493,1   dat_6493               ; 1 byte
-rw  6494,10  dat_6494               ; 16? bytes: ... related to dropped items ...
-                                    ;    - sub_4efd: Set to 2
-rw  64a4,10  dat_64a4               ; 16? bytes: Holds item location X coordinate for dropped items
-rw  64b4,10  dat_64b4               ; 16? bytes: Holds item location Y coordinate for dropped items
-rw  64c4,10  dat_64c4               ; 16? bytes: Holds item location map number for dropped items
-rw  64d4,10  dat_64d4               ; 16? bytes: Holds item indexes for dropped items
-
+rw  6493,1   NextDropped            ; 1 byte: Index where next droppped item will be placed
+rw  6494,10  DroppedGame            ; 16 bytes: Likely a value indicating the game (City, Dungeon, etc.) the item
+                                    ;    was dropped in. (1 = City, 2 = Dungeon, etc.) All items dropped in the dungeon
+                                    ;    assign a value of 2 and only entries with a value of 2 are considerer when
+                                    ;    determining whether an item is present in the current dungeon player location.
+                                    ;    The value is also used to determine is a dropped item is present in a given
+                                    ;    slot. If the value is non-zero, the slot is occupied and the corresponding
+                                    ;    items in DroppedX, DroppedY, DroppedMap, DroppedIndex contain the rest of the
+                                    ;    item location and inventory slot position of the dropped item.
+rw  64a4,10  DroppedX               ; 16 bytes: Holds item location X coordinate for dropped items
+rw  64b4,10  DroppedY               ; 16 bytes: Holds item location Y coordinate for dropped items
+rw  64c4,10  DroppedMap             ; 16 bytes: Holds item location map number for dropped items
+rw  64d4,10  DroppedIndex           ; 16 bytes: Holds item indexes for dropped items
 rw  64e4,1   CHR_ItemsEnd_L         ; 1 byte: LSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
 rw  64e5,1   CHR_ItemsEnd_H         ; 1 byte: MSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
 
@@ -2346,10 +2546,15 @@ rw  6900,d00 CHR_Items              ; 3328 bytes: Items currently present in the
                                     ;   Contains variable length entries. Locations for each item are stored
                                     ;   in InvItemAdr_L/H (max 64 entries)
 
+rwx 7600,3800 ModuleStart           ;  14336 bytes (possibly 16384?): Starting address where modules are loaded
+                                    ;   - Combat data is 14336 bytes [$3800] - Minimum limit... Maybe $4000 was intent?
+                                    ;   - $7600 + $3800 = $ae00
+                                    ;   - $7600 = module start
+                                    ;   - $ac00 = map start
 rw  7600,1   ModuleNumber           ; Currently loaded scenario or map number
-x   7601,3   moduleEntry1           ; First entry point for scenario
+x   7601,3   moduleEntry1           ; First entry point for scenario  (TODO: is this a module intialization vector? Seems to be called only after loading a new module)
 x   7604,3   moduleEntry2           ; Second entry point for scenario
-x   7607,3   moduleEntry3           ; Third entry point for scenario
+x   7607,3   moduleEntry3           ; Third entry point for scenario    (TODO: is this a module unloading vector? Seems to be called before loading a new module)
 
 x   760a,3   moduleEntry4           ; Fourth entry point for scenario
 r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table
@@ -2360,7 +2565,7 @@ rw  96f0,1   TEX_Headers            ; Location where textures are loaded into me
 rw  ac00,1   MAP_Number             ; Number/ID of the loaded map
 rw  ac01,1   MAP_DescTbl_L          ; LSB of map description table (offset from $ac00 for std maps)
 rw  ac02,1   MAP_DescTbl_H          ; MSB of map description table (always $ac for std maps)
-rw  ac03,1   MAP_DESC_FRAG_TBL      ; Start of description fragment table
+rw  ac03,1   MAP_DescFragTbl        ; Start of description fragment table
 
-rwx f9f4,1   sub_f9f4               ; Called from sub_2979. Defined in KERNEL_LOADER and only present on 64KB+ systems.
+rwx f9f4,1   sub_f9f4               ; Called from readNextSector. Defined in KERNEL_LOADER and only present on 64KB+ systems.
 

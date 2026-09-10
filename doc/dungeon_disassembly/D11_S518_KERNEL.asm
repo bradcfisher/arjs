@@ -131,7 +131,7 @@
 17f0: 30 30 1b 3f fc d8 0c 0c   .BYTE $30,$30,$1b,$3f,$fc,$d8,$0c,$0c  ; 00.?....
 17f8: 08 18 30 7c 18 30 60 40   .BYTE $08,$18,$30,$7c,$18,$30,$60,$40  ; ..0|.0`@
 
-1800: 4c 79 29  j_sub_2979      JMP sub_2979         ;
+1800: 4c 79 29  j_readNextSector  JMP readNextSector ; Reads a sector from disk into SioBuf and adds 1 to DiskSector_L/H
 1803: 4c 80 2f  j_loc_2f80      JMP loc_2f80         ;
 1806: 4c f3 2f  j_sub_2ff3      JMP sub_2ff3         ;
 1809: 4c e3 30  j_loc_30e3      JMP loc_30e3         ;
@@ -143,8 +143,8 @@
 181b: 4c 2c 1c  j_outputChar    JMP outputChar       ; Output a character to the screen
 181e: 4c 43 26  j_readKey       JMP readKey          ; Read a key from the keyboard, if one is available
 1821: 4c 2f 26  j_readStick     JMP readStick        ; Read joystick Jack 1 Stick 0 direction and trigger button status
-1824: 4c 5b 27  j_sub_275b      JMP sub_275b         ;
-1827: 4c 5d 24  j_sub_245d      JMP sub_245d         ;
+1824: 4c 5b 27  j_readFileScan  JMP readFileScan     ; Reads a file from disk, scanning all detected drives for the file.
+1827: 4c 5d 24  j_resetIO       JMP resetIO          ; Reset I/O: IRQs, keyboard, display colors, audio
 182a: 4c a1 28  j_getFileEntry  JMP getFileEntry     ; Reads a file segment directory entry
 182d: 4c 8e 24  j_readDiskSector  JMP readDiskSector ; Reads a sector from disk over serial I/O.
 1830: 4c c6 24  j_sub_24c6      JMP sub_24c6         ;
@@ -170,7 +170,7 @@
 1860: 4c ab 2d  j_updateBit     JMP updateBit        ; Sets or clears a bit
 1863: 4c e3 2d  j_testBit       JMP testBit          ; Test whether a specific bit is set within a sequence of bytes.
 1866: 4c 0d 2e  j_copyBytes     JMP copyBytes        ; Copies X * 256 + Y bytes from the address in SourceAdr_L/H to
-                                                     ;     the address in dat_0009_L/H
+                                                     ;     the address in DestAdr_L/H
 1869: 4c 31 2e  j_sub_2e31      JMP sub_2e31         ;
 186c: 4c 6b 2e  j_decChrAttr    JMP decChrAttr       ; Decrease a player attribute value
 186f: 4c 69 2e  j_decChrAttr8   JMP decChrAttr8      ; Decrease a single-byte player attribute value
@@ -178,15 +178,16 @@
 1875: 4c 45 2e  j_incChrAttr    JMP incChrAttr       ; Increase a player attribute value
 1878: 4c 43 2e  j_incChrAttr8   JMP incChrAttr8      ; Increase a single-byte player attribute value
 187b: 4c 40 2e  j_incChrAttr16  JMP incChrAttr16     ; Increase a 16-bit player attribute value
-187e: 4c 9e 2e  j_copyBytesNeg  JMP copyBytesNeg     ; Copies -(dat_000c * 256 + dat_000b) bytes from the address in
-                                                     ;     SourceAdr_L/H to the address in dat_0009_L/H
+187e: 4c 9e 2e  j_copyBytesNeg  JMP copyBytesNeg     ; Copies -(NumBytes_H * 256 + NumBytes_L) bytes from the address
+                                                     ;     in SourceAdr_L/H to the address in DestAdr_L/H
 1881: 4c c2 2c  j_sub_2cc2      JMP sub_2cc2         ;
 1884: 4c 4d 4b  j_addItem       JMP addItem          ; Adds an item to the game inventory.
 1887: 4c 74 4b  j_getItemAdr    JMP getItemAdr       ; Sets ItemAdr_L/H to the address of the item at index in A
 188a: 4c c9 4a  j_removeItem    JMP removeItem       ; Removes an item from the game inventory.
-188d: 4c 06 4e  j_chkItemNAlign  JMP chkItemNAlign   ; Checks the alignment of item at inventory index against the
+188d: 4c 06 4e  j_chkItemAtAlign  JMP chkItemAtAlign ; Checks the alignment of item at inventory index against the
                                                      ;     player's current alignment.
-1890: 4c b0 49  j_sub_49b0      JMP sub_49b0         ;
+1890: 4c b0 49  j_allocEffect   JMP allocEffect      ; Reserves a space in the table at $6500 [CHR_Effects] for an
+                                                     ;     effect of the specified type.
 1893: 4c b7 55  j_sub_55b7      JMP sub_55b7         ;
 1896: 4c c4 4e  j_getItemAttrs  JMP getItemAttrs     ; Updates ItemAttrs_L/H to skip past item effects to the
                                                      ;     attribute section.
@@ -196,7 +197,7 @@
 18a2: 4c 47 2b  j_multBEInt16   JMP multBEInt16      ; Multiplies big-endian 16-bit values in BEParam1 and BEParam2
 18a5: 4c 8b 40  j_sub_408b      JMP sub_408b         ;
 18a8: 4c 71 37  j_actionUse     JMP actionUse        ; (U) Use action
-18ab: 4c b8 5b  j_loc_5bb8      JMP loc_5bb8         ;
+18ab: 4c b8 5b  j_sub_5bb8      JMP sub_5bb8         ;
 18ae: 4c a0 2a  j_readBEUInt16  JMP readBEUInt16     ; Reads up to 5 characters of keyboard input and converts them
                                                      ;     to a big endian unsigned 16-bit integer value.
 18b1: 4c 92 54  j_divUint16Uint8  JMP divUint16Uint8 ; Perform unsigned integer division
@@ -239,7 +240,10 @@
 190b: 00        FileDestAdr_L   .BYTE $00            ; LSB: Address to read file to
 190c: 00        FileDestAdr_H   .BYTE $00            ; MSB: Address to read file to
 190d: 00        dat_190d        .BYTE $00            ;
-190e: 00        dat_190e        .BYTE $00            ;
+190e: 00        MayCancelLoad   .BYTE $00            ; Whether a file load operation may be cancelled by the user or not
+                                                     ;         0 = false (user cannot cancel),
+                                                     ;         non-zero = true (user can cancel by pressing ESC when
+                                                     ;                          prompted for disk)
 190f: 00        dat_190f        .BYTE $00            ;
 1910: 00        FileDiskSide    .BYTE $00            ; Disk side (1 or 2) Referenced in StrPleaseInsert
 1911: 00        FileDiskNumber  .BYTE $00            ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
@@ -271,8 +275,8 @@
 1943: ff        ZtsAddr4_H      .BYTE $ff              ; MSB: Address of NUL-terminated string #4 for formatted output
 1944: ff        MenuFootrAdr_L  .BYTE $ff              ; LSB of menu footer format substring
 1945: ff        MenuFootrAdr_H  .BYTE $ff              ; MSB of menu footer format substring
-1946: 00 00 00  MenuItmIndices  .BYTE $00,$00,$00      ; 4 bytes: related to 4 item menu selections
-1949: 00                        .BYTE $00
+1946: 00 00 00  MenuSelItems    .BYTE $00,$00,$00      ; 4 bytes: Holds inventory indexes of items associated with
+1949: 00                        .BYTE $00              ;    menu selections
 194a: 00        dat_194a        .BYTE $00              ; Status page index to assign a template string to
 194b: 00        ZONE_TEXTURE_SET  .BYTE $00            ; The texture set to use for the zone
                                                        ;   1: Typical
@@ -298,7 +302,7 @@
                                                        ;   treasure, encounter, message, and teleport special codes.
 195b: 00 00                     .BYTE $00,$00          ;
 195d: 00        dat_195d        .BYTE $00              ;
-195e: 00        dat_195e        .BYTE $00              ;
+195e: 00        WarmthBonus     .BYTE $00              ; Holds warmth bonus provided by equipped apparel
 195f: 00        StatDisplayFlg  .BYTE $00              ; Checked in sub_408b to determine whether a general stat and
                                                        ;     display update should occur. 0 is false, and any non-0 value
                                                        ;     is seen as true.
@@ -337,7 +341,24 @@
 1987: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ;     & zeroed in sub_2cfb.
 198f: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ;     Related to loading encounters/scenarios
 1997: 80 80 80 80 80            .BYTE $80,$80,$80,$80,$80
-199c: 00        dat_199c        .BYTE $00              ;
+199c: 00        SoundState      .BYTE $00              ; Sound engine state value
+                                                       ;   - (write) Used to assigning a sound to start playing. This
+                                                       ;     is done by assigning a value with bit 7 set. The remaining
+                                                       ;     bits identify the ID of the sound to play (0..5).
+                                                       ;       $80 - Secret door
+                                                       ;       $81 - Door
+                                                       ;       $82 - Cast spell
+                                                       ;       $83 - ??
+                                                       ;       $84 - ??
+                                                       ;       $85 - ??
+                                                       ;   - (read - vvblkiAudio only) Indicates the current state of
+                                                       ;     the sound engine and controls the action taken on each
+                                                       ;     vertical blank:
+                                                       ;       - When the value is less than (bit 7 is 1), the
+                                                       ;         requested sound will be started.
+                                                       ;       - When the value is 0, no sound is playing (NOP)
+                                                       ;       - When the value is greater than 0 (bit 7 is 0),
+                                                       ;         continue playing the current sound.
 
                 ; This display list seems to be a 40x25? 1bpp character display (20 + 25 * 8 = 220 scanlines?)
 199d: 70 70 30  DLIST_40x24     .BYTE $70,$70,$30                      ; 8 + 8 + 4 [20] blank scanlines
@@ -431,7 +452,7 @@
                                                      ;     Set HPOSP0[Y] = 0           of the HPOSP0/1/2/3
 1a1b: 88                        DEY                  ;     Subtract 1 from Y           registers)
 1a1c: 10 fa                     BPL loc_1a18         ; Repeat while (Y >= 0)
-1a1e: 20 54 24                  JSR WAIT_FOR_VBLK_A  ; Call $2454 [WAIT_FOR_VBLK_A]   (Wait for next VBLANK)
+1a1e: 20 54 24                  JSR waitForVblankA   ; Call $2454 [waitForVblankA]    (Wait for next VBLANK)
 1a21: bd ef 19                  LDA DList4Mode_H,X   ; Set
 1a24: 8d 55 02                  STA CurDList_H       ;     CurDList_L/H               (one of: $199d [DLIST_40x24],
 1a27: bd f2 19                  LDA DList4Mode_L,X   ;     to                                  $19be [DLIST_40x6_9_8],
@@ -507,7 +528,7 @@
                 ;
                 ; Temp
                 ;   SourceAdr_L/H - Used while updating display buffer chars
-                ;   dat_0009_L/H  - Used while updating display buffer chars and graphics charsets
+                ;   DestAdr_L/H   - Used while updating display buffer chars and graphics charsets
                 ;
 1a65: a9 2f     sdmInitGamePlay  LDA #$2f            ; Set VDSLST
 1a67: 8d 00 02                  STA VDSLST           ;     (display list interrupt vector)
@@ -557,10 +578,10 @@
 1ac6: 85 07                     STA SourceAdr_L      ;     address
 1ac8: a9 04                     LDA #$04             ;     to
 1aca: 85 08                     STA SourceAdr_H      ;     $04f0 [DISP_GFX_TOP]
-1acc: a9 0d                     LDA #$0d             ; Set dat_0009_L/H
-1ace: 85 09                     STA dat_0009_L       ;     address
+1acc: a9 0d                     LDA #$0d             ; Set DestAdr_L/H
+1ace: 85 09                     STA DestAdr_L        ;     address
 1ad0: a9 05                     LDA #$05             ;     to
-1ad2: 85 0a                     STA dat_0009_H       ;     $050d [DISP_GFX_TOP + $1d (29)]
+1ad2: 85 0a                     STA DestAdr_H        ;     $050d [DISP_GFX_TOP + $1d (29)]
 1ad4: a2 09                     LDX #$09             ; Set X = 9 (9 iterations)
 1ad6: a0 0a     loc_1ad6        LDY #$0a             ; Loop
                                                      ;     Set Y = $a (10 columns wide)
@@ -568,9 +589,9 @@
                                                      ;         Set sign bit for each byte in
 1ada: 09 80                     ORA #$80             ;             the Gfx area of the display buffer
 1adc: 91 07                     STA (SourceAdr_L),Y  ;             for the region [0,0]-[10,8] (left side - compass)
-1ade: b1 09                     LDA (dat_0009_L),Y   ;         Set sign bit for each byte in
+1ade: b1 09                     LDA (DestAdr_L),Y    ;         Set sign bit for each byte in
 1ae0: 09 80                     ORA #$80             ;             the Gfx area of the display buffer
-1ae2: 91 09                     STA (dat_0009_L),Y   ;             for the region [29,0]-[39,8] (right side - arrows)
+1ae2: 91 09                     STA (DestAdr_L),Y    ;             for the region [29,0]-[39,8] (right side - arrows)
 1ae4: 88                        DEY                  ;         Subtract one from Y
 1ae5: 10 f1                     BPL loc_1ad8         ;     Repeat while (Y >= 0)
 1ae7: a5 07                     LDA SourceAdr_L      ;     Move the SourceAdr_L/H    (move left addr down one text line)
@@ -579,26 +600,26 @@
 1aec: 85 07                     STA SourceAdr_L      ;         by
 1aee: 90 02                     BCC loc_1af2         ;         $28 (40)
 1af0: e6 08                     INC SourceAdr_H      ;         bytes
-1af2: a5 09     loc_1af2        LDA dat_0009_L       ;     Move the dat_0009_L/H    (move right addr down one text line)
+1af2: a5 09     loc_1af2        LDA DestAdr_L        ;     Move the DestAdr_L/H     (move right addr down one text line)
 1af4: 18                        CLC                  ;         address
 1af5: 69 28                     ADC #$28             ;         forward
-1af7: 85 09                     STA dat_0009_L       ;         by
+1af7: 85 09                     STA DestAdr_L        ;         by
 1af9: 90 02                     BCC loc_1afd         ;         $28 (40)
-1afb: e6 0a                     INC dat_0009_H       ;         bytes
+1afb: e6 0a                     INC DestAdr_H        ;         bytes
 1afd: ca        loc_1afd        DEX                  ;     Subtract one from X
 1afe: d0 d6                     BNE loc_1ad6         ; Repeat while (X > 0)
                 ; This section sets all 3072 bytes (12 * 256) in GfxTopCharset, GfxMidCharset and GfxBtmCharset to $ff
 1b00: a9 00                     LDA #$00             ; Set
-1b02: 85 09                     STA dat_0009_L       ;     dat_0009_L/H
+1b02: 85 09                     STA DestAdr_L        ;     DestAdr_L/H
 1b04: a9 08                     LDA #$08             ;     to
-1b06: 85 0a                     STA dat_0009_H       ;     $0800 (GfxTopCharset)
+1b06: 85 0a                     STA DestAdr_H        ;     $0800 (GfxTopCharset)
 1b08: a2 0c                     LDX #$0c             ; Set X = $c (12 iterations - 4 iterations per character set)
 1b0a: a0 00                     LDY #$00             ; Set Y = 0 (256 iterations)
 1b0c: a9 ff                     LDA #$ff             ;
-1b0e: 91 09     loc_1b0e        STA (dat_0009_L),Y   ; Set the byte @ the address in dat_0009_L to $ff (255)
+1b0e: 91 09     loc_1b0e        STA (DestAdr_L),Y    ; Set the byte @ the address in DestAdr_L to $ff (255)
 1b10: c8                        INY                  ; Add one to Y
 1b11: d0 fb                     BNE loc_1b0e         ;     and repeat while Y >= 0 (256 iterations / full page)
-1b13: e6 0a                     INC dat_0009_H       ; Add one to dat_0009_H (move forward one page)
+1b13: e6 0a                     INC DestAdr_H        ; Add one to DestAdr_H (move forward one page)
 1b15: ca                        DEX                  ; Subtract one from X
 1b16: d0 f6                     BNE loc_1b0e         ;     and repeat while X > 0 (12 iterations)
 1b18: 60                        RTS                  ; Return to caller
@@ -1255,7 +1276,7 @@
                 ;
                 ; Temp
                 ;   LEResult[0..1] - little-endian int16 result of OutRow * 40
-                ;   dat_0009_L/H   - Used to store address to write spaces to
+                ;   DestAdr_L/H    - Used to store address to write spaces to
                 ;
                 ; Indirectly called using lookup tables OutFmtHndlr_L/H
                 ; Jumps back to $1cab [out_NextChar] to continue execution
@@ -1265,19 +1286,19 @@
 1d9e: a9 28                     LDA #$28             ;     Set A = $28 (40)
 1da0: a4 20                     LDY OutRow           ;     Set Y = OutRow
 1da2: 20 e9 1f                  JSR multBytes        ;     Call $1fe9 [multBytes] with params A & Y
-               ; Compute dat_0009_L/H = $400 + LEResult[0..1]
+               ; Compute DestAdr_L/H = $400 + LEResult[0..1]
 1da5: 18                        CLC                  ;     Set
-1da6: a5 02                     LDA LEResult         ;         dat_0009_L
+1da6: a5 02                     LDA LEResult         ;         DestAdr_L
 1da8: 69 00                     ADC #$00             ;           =
-1daa: 85 09                     STA dat_0009_L       ;             LEResult[0]
+1daa: 85 09                     STA DestAdr_L        ;             LEResult[0]
 1dac: a5 03                     LDA LEResult+1       ;     Set
-1dae: 69 04                     ADC #$04             ;         dat_0009_H             (dat_0009_L/H =
-1db0: 85 0a                     STA dat_0009_H       ;           = LEResult[1] + 4         $400 [DISP_START] + LEResult)
+1dae: 69 04                     ADC #$04             ;         DestAdr_H             (DestAdr_L/H =
+1db0: 85 0a                     STA DestAdr_H        ;           = LEResult[1] + 4         $400 [DISP_START] + LEResult)
                 ; Write spaces from current position to end of line
 1db2: a4 1f                     LDY OutCol           ;     Set Y = OutCol
 1db4: a9 20                     LDA #$20             ;     Set A = $20 (32 ' ')
-1db6: 91 09     loc_1db6        STA (dat_0009_L),Y   ;     Loop
-                                                     ;         Set dat_0009_L[Y] = $20 (32 ' ')
+1db6: 91 09     loc_1db6        STA (DestAdr_L),Y    ;     Loop
+                                                     ;         Set DestAdr_L[Y] = $20 (32 ' ')
 1db8: c8                        INY                  ;         Add 1 to Y
 1db9: c0 28                     CPY #$28             ;     Repeat
 1dbb: 90 f9                     BCC loc_1db6         ;          while (Y < $28 (40))
@@ -1945,10 +1966,10 @@
                 ;               Set bit 4 (Enable VSEROR [$10 - data needed])
                 ;   IRQEN     - Same value as CUR_IRQEN
                 ;   AUDCTL    - $28  ($20 = Clock channel three with 1.79 MHz, $8 = Join channels 3 & 4 (16 bit))
-                ;   AUDC1     - Set to $a0
-                ;   AUDC2     - Set to $a0
-                ;   AUDC3     - Set to $a0
-                ;   AUDC4[X]  - Set to $a0
+                ;   AUDC1     - Set to $a0 (pure tone, no volume)
+                ;   AUDC2     - Set to $a0 (pure tone, no volume)
+                ;   AUDC3     - Set to $a0 (pure tone, no volume)
+                ;   AUDC4[X]  - Set to $a0 (pure tone, no volume)
                 ;
 2009: a9 07     sioInitXmit     LDA #$07             ; Set
 200b: 2d 37 02                  AND CUR_SKCTL        ;     CUR_SKCTL
@@ -1969,10 +1990,10 @@
 2023: a9 28                     LDA #$28             ; Set AUDCTL = $28  ($20 = Clock channel three with 1.79 MHz,
 2025: 8d 08 d2                  STA AUDCTL           ;                     $8 = Join channels four and three (16 bit))
 2028: a9 a0                     LDA #$a0             ; Set
-202a: 9d 07 d2                  STA AUDC4,X          ;     AUDC4[X] = $a0
-202d: 8d 05 d2                  STA AUDC3            ; Set AUDC3 = $a0          (17 bit polynomial)
-2030: 8d 03 d2                  STA AUDC2            ; Set AUDC2 = $a0          (17 bit polynomial)
-2033: 8d 01 d2                  STA AUDC1            ; Set AUDC1 = $a0          (17 bit polynomial)
+202a: 9d 07 d2                  STA AUDC4,X          ;     AUDC4[X] = $a0       (pure tone, no volume - why indexed?)
+202d: 8d 05 d2                  STA AUDC3            ; Set AUDC3 = $a0          (pure tone, no volume)
+2030: 8d 03 d2                  STA AUDC2            ; Set AUDC2 = $a0          (pure tone, no volume)
+2033: 8d 01 d2                  STA AUDC1            ; Set AUDC1 = $a0          (pure tone, no volume)
 2036: 60                        RTS                  ; Return to caller
 
                 ; Disables serial transmit complete and receive interrupts.
@@ -2047,7 +2068,7 @@
 2055: 8d 3e 02                  STA SioCmdRetries    ;     SioCmdRetries = $0d (13: 14 iterations)
 2058: a2 03     loc_2058        LDX #$03             ; Loop
                 ; Initialize the SioCmdBuf with DiskNumber, DiskCommand, DiskSector_L, and DiskSector_H
-                                                     ;     Set X = 3         (4 iterations)
+                                                     ;     Set X = 3         (4 iterations: [3..0])
 205a: bd 30 02  loc_205a        LDA DiskNumber,X     ;     Loop
                                                      ;         Set
 205d: 9d 66 02                  STA SioCmdBuf,X      ;             SioCmdBuf[X] = DiskNumber[X]
@@ -2319,18 +2340,24 @@
                 ; Read data from the serial bus into a buffer
                 ;
                 ; Input
-                ;   TODO
+                ;   X         - Offset from AUDC4 used by sioInitRecv
+                ;               (Buggy? The calls to this sub don't appear to be assigning an intentional value to X.
+                ;                  The value of X would appear to be the MSB of the timeout value used, which doesn't
+                ;                  seem to be relevant)
                 ;
                 ; Output
-                ;   SioChksum    - Checksum of bytes received
-                ;   SioStatus    - One of the following values:
+                ;   SioChksum     - Checksum of bytes received
+                ;   SioStatus     - One of the following values:
                 ;                     1 = SUCCES Operation complete
                 ;                   $8a = TIMOUT Device timeout
                 ;                   $8c - FRMERR Serial bus framing error
                 ;                   $8e - OVRRUN Serial bus data overrun (data lost)
                 ;                   $8f - CHKERR Serial bus checksum error (data corrupted)
-                ;   SioRecvDone  - Set to non-0 when transmission is complete
-                ;   Z            -
+                ;   SioRecvDone   - Set to non-0 when transmission is complete
+                ;
+                ; Temp
+                ;   SioCntdwn     - Will be 0 if a timeout occurred, otherwise non-0
+                ;   SioBufferFull - Flag indicating whether the IO buffer is full or not
                 ;
 218e: a9 00     sioReadBytes    LDA #$00             ; Set
 2190: 8d 3c 02                  STA SioChksum        ;     SioChksum = 0
@@ -2360,7 +2387,7 @@
                 ; - Configures POKEY registers for serial transmission
                 ;
                 ; Input
-                ;   X         - Offset from AUDC4 (TODO: document common/expected values)
+                ;   X         - Offset from AUDC4 used in rts_SioInit (TODO: document common/expected values)
                 ;
                 ; Output
                 ;   CUR_SKCTL - Bits 0, 1, 2 unaffected
@@ -2724,7 +2751,7 @@
                 ; Assigned to VVBLKI in KERNEL_LOADER
                 ;
 2347: d8        irq_VVBLKI      CLD                  ; Clear the decimal flag
-2348: ee 52 02                  INC VBLK_COUNTER     ; Add one to VBLK_COUNTER
+2348: ee 52 02                  INC VBlankCounter    ; Add one to VBlankCounter
 234b: ae b9 18                  LDX CUR_DLIST_NUM    ; Set
 234e: bd 07 23                  LDA tbl_DMACTL,X     ;    DMACTL = tbl_DMACTL[CUR_DLIST_NUM]
 2351: 8d 00 d4                  STA DMACTL           ;     (one of $22, $22, or $2e)
@@ -2780,7 +2807,7 @@
 23b5: d0 03                     BNE loc_23ba         ; Then
 23b7: 8e 18 d0                  STX COLPF2           ;     Set COLPF2 = 0
                                                      ; End If
-23ba: 20 7a 26  loc_23ba        JSR sub_267a         ; Call $267a [sub_267a]
+23ba: 20 7a 26  loc_23ba        JSR vvblkiKeyInput   ; Call $267a [vvblkiKeyInput]
 23bd: a6 32                     LDX flg_PAUSED       ; If (flg_PAUSED < 0) Then     (Game paused, skip time updates)
 23bf: 30 6d                     BMI vvblki_BLINK     ;     Continue @ $242e [vvblki_BLINK]
                                                      ; End If
@@ -2849,8 +2876,8 @@
                 ; Displays inverse characters for 8/64 vertical blank periods (approx. 0.125 seconds)
                 ;     and normal characters for 56/64 vertical blanks (approx. 0.875 seconds)
 242e: a2 00     vvblki_BLINK    LDX #$00             ; Set X = 0
-2430: ad 52 02                  LDA VBLK_COUNTER     ; Set
-2433: 29 3f                     AND #$3f             ;     A = VBLK_COUNTER & $3f (63)
+2430: ad 52 02                  LDA VBlankCounter    ; Set
+2433: 29 3f                     AND #$3f             ;     A = VBlankCounter & $3f (63)
 2435: c9 08                     CMP #$08             ; If (A < 8)
 2437: b0 01                     BCS loc_243a         ; Then
 2439: e8                        INX                  ;     Set X = 1
@@ -2861,7 +2888,7 @@
 2440: 10 03                     BPL loc_2445         ; Then
 2442: 20 51 24                  JSR call_VVBLKD      ;     Call call_VVBLKD
                                                      ; End If
-2445: 20 03 25  loc_2445        JSR sub_2503         ; Call sub_2503
+2445: 20 03 25  loc_2445        JSR vvblkiAudio      ; Call $2503 [vvblkiAudio]
 2448: ce 56 02                  DEC dat_0256         ; Subtract 1 from $0256 [dat_0256]
                 ; Restore register state and return from VVBLKI interrupt
 244b: 68        rts_VVBLKI      PLA                  ; Restore the original
@@ -2876,17 +2903,22 @@
                 ;
 2451: 6c 24 02  call_VVBLKD     JMP (VVBLKD)         ; Continue @ the sub referenced by VVBLKD
 
+                ; Waits for a vertical blank to occur
                 ;
-                ; Waits for the VBLK_COUNTER value to change, indicating a vblank occurred
+                ; Input
+                ;   VBlankCounter - Repeatedly inspects this value until it changes (updated in VVBLKI)
                 ;
-2454: ad 52 02  WAIT_FOR_VBLK_A  LDA VBLK_COUNTER    ; Set A = VBLK_COUNTER
-2457: cd 52 02  loc_2457        CMP VBLK_COUNTER     ; Loop until the
-245a: f0 fb                     BEQ loc_2457         ;     VBLK_COUNTER changes
+                ; Note: X & Y registers are untouched by this sub
+                ; Note: This sub is identical to waitForVblankB
+                ;
+2454: ad 52 02  waitForVblankA  LDA VBlankCounter    ; Set A = VBlankCounter
+2457: cd 52 02  loc_2457        CMP VBlankCounter    ; Loop until the
+245a: f0 fb                     BEQ loc_2457         ;     VBlankCounter changes
 245c: 60                        RTS                  ; Return to caller
 
-                ; Reset IRQs, keyboard, display colors, audio
+                ; Reset I/O: IRQs, keyboard, display colors, audio
                 ;
-                ; Called from sub_275b & sub_80d2 in KERNEL_LOADER
+                ; Called from readFileScan & sub_80d2 in KERNEL_LOADER
                 ;
                 ; - Enable keyboard input
                 ; - Disable IRQs
@@ -2895,18 +2927,18 @@
                 ; - Set player field 2 color to $ff (yellow)
                 ; - Set all of GRAFP0/1/2/3, AUDF1/2/3/4 and AUDC1/2/3/4 to 0
                 ;
-245d: a9 07     sub_245d        LDA #$07             ; Set                              (1=kbd debounce, 2=kbd scanning,
+245d: a9 07     resetIO         LDA #$07             ; Set                              (1=kbd debounce, 2=kbd scanning,
 245f: 8d 37 02                  STA CUR_SKCTL        ;     CUR_SKCTL = 7                 4=Fast pot scan)
 2462: a9 80                     LDA #$80             ; Set
 2464: 8d 53 02                  STA dat_0253         ;     dat_0253 = $80 (128)
 2467: a2 00                     LDX #$00             ; Set X = 0
 2469: 8e 36 02                  STX CUR_IRQEN        ; Set CUR_IRQEN = 0                    (Disable IRQs)
 246c: 8e 0e d2                  STX IRQEN            ; Set IRQEN = 0                        (Disable IRQs)
-246f: 20 54 24                  JSR WAIT_FOR_VBLK_A  ; Call $2454 [WAIT_FOR_VBLK_A]         (Wait for the next vblank)
+246f: 20 54 24                  JSR waitForVblankA   ; Call $2454 [waitForVblankA]          (Wait for the next vblank)
 2472: 8e 1a d0                  STX COLBK            ; Set COLBK = 0                        (Background color black)
 2475: 8e 18 d0                  STX COLPF2           ; Set COLPF2 = 0                       (Player field 2 black)
 2478: 8a                        TXA                  ; Set A = 0
-2479: 8d 9c 19                  STA dat_199c         ; Set dat_199c = 0
+2479: 8d 9c 19                  STA SoundState       ; Set SoundState = 0                   (No sound playing)
 247c: a2 03                     LDX #$03             ; Set X = 3                            (4 iterations: 3..0)
 247e: 9d 0d d0  loc_247e        STA GRAFP0,X         ; Loop
                                                      ;     Set GRAFP0/1/2/3 = 0             (Hide Player 0-3)
@@ -3115,214 +3147,277 @@
 24ff: 02        dat_24ff     .BYTE $02
 2500: 00 00 00  unk_2500     .BYTE  $00,$00,$00
 
-                ; Audio related
-                ; Called from VVBLKI
+                ; Sound engine entry point called from VVBLKI
+                ;
+                ; Responsible for coordinating audio control and frequency values to play sound sequences.
                 ;
                 ; Input
-                ;   dat_199c   - Controls action taken
-                ;                If =0, the sub returns without any updates
-                ;                If <0 ($80 (-128) to $85 (-123)), the sign bit is cleared from the value
-                ;                and the result (0..5) is used as an index to:
-                ;                  - Retrieve an address from tbl_2623_L/tbl_2629_H
-                ;                  - Retrieve an address from dat_2617_L/dat_261d_H
-                ;                  - Retrieve a byte from dat_2611
-                ;                If >0, ...
-                ;
-                ;   tbl_2623_L - Table containing LSB of address
-                ;   tbl_2629_H - Table containing MSB of address
+                ;   SoundState       - Controls action taken
+                ;                        If =0, the sub returns without any updates
+                ;                        If <0, the sign bit is cleared and the result is the ID of the sound to play.
+                ;                           Must be one of the following values:
+                ;                            - $80: (Sound 0) Secret door
+                ;                            - $81: (Sound 1) Door
+                ;                            - $82: (Sound 2) Cast spell
+                ;                            - $83: (Sound 3) ???
+                ;                            - $84: (Sound 4) ???
+                ;                            - $85: (Sound 5) ???
+                ;                        If >0, the currently playing sound continues
+                ;   SoundFreqTbl_L/H - Tables containing address of note frequency values
+                ;   SoundTimeTbl_L/H - Tables containing address of note duration values
                 ;
                 ; Output
-                ;   If (dat_199c < 0):
-                ;     dat_25c3      - Set to dat_199c & $7f
-                ;     dat_00f0_L/H  - Set to tbl_2623_L[dat_25c3]/tbl_2629_H[dat_25c3]
-                ;     dat_00f2_L/H  - Set to dat_2617_L[dat_25c3]/dat_261d_H[dat_25c3]
-                ;     dat_25be      - Set to 1
-                ;     dat_25bf      - Set to 4
-                ;     dat_25c0      - Set to dat_2611[dat_25c3]
-                ;     dat_25c1      - Set to dat_2611[dat_25c3]
-                ;     dat_199c      - Set to dat_2611[dat_25c3]
-                ;     AUDCTL        - Set to dat_25e5[dat_25c3]
-                ;   If (dat_199c > 0):
-                ;     dat_199c      - Set to dat_25c0 | dat_25c1
+                ;   If (SoundState < 0):
+                ;     SoundId        - Set to SoundState & $7f (current sound number [0..5])
+                ;     SoundFreqs_L/H - Set to SoundFreqTbl_L/H[SoundId] (note frequency values for specified sound)
+                ;     SoundTimes_L/H - Set to SoundTimeTbl_L/H[SoundId] (note duration values for specified sound)
+                ;     SoundTimer[0]  - Set to 1 (start playing channel 0 sound immediately)
+                ;     SoundTimer[1]  - Set to 4 (start playing channel 1 sound after 3 vblanks)
+                ;     SoundNote[0]   - Set to SoundLength[SoundId]
+                ;     SoundNote[1]   - Set to SoundLength[SoundId]
+                ;     SoundState     - Set to SoundLength[SoundId] (Non-0 positive value; specific value not important)
+                ;     AUDCTL         - Set to SoundAudCtl[SoundId]
+                ;   If (SoundState > 0):
+                ;     SoundState     - Set to SoundNote[0] | SoundNote[1]
                 ;
-2503: ad 9c 19  sub_2503        LDA dat_199c         ; If
-2506: 30 03                     BMI loc_250b         ;    (dat_199c < 0)
+2503: ad 9c 19  vvblkiAudio     LDA SoundState       ; If
+2506: 30 03                     BMI loc_250b         ;    (SoundState < 0)                     (Start playing new sound)
 2508: 4c 4f 25                  JMP loc_254f         ; Then
-                ; Extract offset by clearing sign bit
-250b: 29 7f     loc_250b        AND #$7f             ;     Set
-250d: aa                        TAX                  ;         X = dat_199c & $7f
-                ; Silence audio by setting the following to 0:
-                ;   dat_199c, AUDF1/2/3/4, AUDC1/2/3/4, AUDCTL
+250b: 29 7f     loc_250b        AND #$7f             ;     Set                   (Extract sound ID by clearing sign bit)
+250d: aa                        TAX                  ;         X = SoundState & $7f
 250e: a9 00                     LDA #$00             ;     Set A = 0
-2510: a0 08                     LDY #$08             ;     Set Y = 8 (9 iterations)
-2512: 8d 9c 19                  STA dat_199c         ;     Set dat_199c = 0   (Set NOP mode for reentrant IRQ calls or unecessary?)
-2515: 99 00 d2  loc_2515        STA AUDF1,Y          ;     Loop
+2510: a0 08                     LDY #$08             ;     Set Y = 8 (9 iterations [8..0])   (Reset all audio registers)
+2512: 8d 9c 19                  STA SoundState       ;     Set SoundState = 0   (Reassigned later, so likely unecessary)
+2515: 99 00 d2  loc_2515        STA AUDF1,Y          ;     Loop                 (Reset AUDF1/2/3/4, AUDC1/2/3/4, AUDCTL)
                                                      ;         Set AUDF1[Y] = 0
 2518: 88                        DEY                  ;         Subtract 1 from Y
 2519: 10 fa                     BPL loc_2515         ;     Repeat while (Y >= 0)
-                ; The following lookups require X = [0..5] (extracted from dat_199c earlier)
-251b: bd 23 26                  LDA tbl_2623_L,X     ;     Set dat_00f0_L/H
-251e: 85 f0                     STA dat_00f0_L       ;         address
-2520: bd 29 26                  LDA tbl_2629_H,X     ;         to
-2523: 85 f1                     STA dat_00f0_H       ;         tbl_2623_L[X]/tbl_2629_H[X]
-2525: bd 17 26                  LDA dat_2617_L,X     ;     Set dat_00f2_L/H
-2528: 85 f2                     STA dat_00f2_L       ;         address
-252a: bd 1d 26                  LDA dat_261d_H,X     ;         to
-252d: 85 f3                     STA dat_00f2_H       ;         dat_2617_L[X]/dat_261d_H[X]
+                ; The following lookups require X = [0..5] (extracted from SoundState earlier)
+251b: bd 23 26                  LDA SoundFreqTbl_L,X ;     Set SoundFreqs_L/H
+251e: 85 f0                     STA SoundFreqs_L     ;         address
+2520: bd 29 26                  LDA SoundFreqTbl_H,X ;         to
+2523: 85 f1                     STA SoundFreqs_H     ;         SoundFreqTbl_L/H[X]
+2525: bd 17 26                  LDA SoundTimeTbl_L,X ;     Set SoundTimes_L/H
+2528: 85 f2                     STA SoundTimes_L       ;         address
+252a: bd 1d 26                  LDA SoundTimeTbl_H,X ;         to
+252d: 85 f3                     STA SoundTimes_H       ;         SoundTimeTbl_L/H[X]
 252f: a9 01                     LDA #$01             ;     Set
-2531: 8d be 25                  STA dat_25be         ;         dat_25be = 1
+2531: 8d be 25                  STA SoundTimer       ;         SoundTimer[0] = 1        (start channel 0 on next vblank)
 2534: a9 04                     LDA #$04             ;     Set
-2536: 8d bf 25                  STA dat_25bf         ;         dat_25bf = 4
-2539: bd 11 26                  LDA dat_2611,X       ;     Set
-253c: 8d c0 25                  STA dat_25c0         ;         dat_25c0 = dat_2611[X]
-253f: 8d c1 25                  STA dat_25c1         ;     Set dat_25c1 = dat_2611[X]
-2542: 8e c3 25                  STX dat_25c3         ;     Set dat_25c3 = X
-2545: bc e5 25                  LDY dat_25e5,X       ;     Set
-2548: 8c 08 d2                  STY AUDCTL           ;         AUDCTL = dat_25e5[X]
-254b: 8d 9c 19                  STA dat_199c         ;     Set dat_199c = dat_2611[X]
+2536: 8d bf 25                  STA SoundTimer+1     ;         SoundTimer[1] = 4       (start channel 1 after 3 vblanks)
+2539: bd 11 26                  LDA SoundLength,X    ;     Set
+253c: 8d c0 25                  STA SoundNote        ;         SoundNote[0] = SoundLength[X]
+253f: 8d c1 25                  STA SoundNote+1      ;     Set SoundNote[1] = SoundLength[X]
+2542: 8e c3 25                  STX SoundId          ;     Set SoundId = X
+2545: bc e5 25                  LDY SoundAudCtl,X    ;     Set
+2548: 8c 08 d2                  STY AUDCTL           ;         AUDCTL = SoundAudCtl[X]
+254b: 8d 9c 19                  STA SoundState       ;     Set SoundState = SoundLength[X]
 254e: 60                        RTS                  ;     Return to caller
-254f: d0 01     loc_254f        BNE loc_2552         ; Else If (dat_199c == 0) Then  (NOP)
+254f: d0 01     loc_254f        BNE loc_2552         ; Else If (SoundState == 0) Then  (NOP)
 2551: 60        loc_2551        RTS                  ;     Return to caller
                                                      ; End If
-2552: ad c0 25  loc_2552        LDA dat_25c0         ; Set
-2555: 0d c1 25                  ORA dat_25c1         ;     dat_199c
-2558: 8d 9c 19                  STA dat_199c         ;        = dat_25c0 | dat_25c1
-255b: f0 f4                     BEQ loc_2551         ; If (dat_199c == 0) Then
-                                                     ;     Return to caller
+                ; Execution reaches here when SoundState > 0
+2552: ad c0 25  loc_2552        LDA SoundNote        ; Set
+2555: 0d c1 25                  ORA SoundNote+1      ;     SoundState
+2558: 8d 9c 19                  STA SoundState       ;        = SoundNote[0] | SoundNote[1]
+255b: f0 f4                     BEQ loc_2551         ; If (SoundState == 0) Then
+                                                     ;     Return to caller              (no more notes to play/silence)
                                                      ; End If
 255d: a9 01                     LDA #$01             ; Set
-255f: 8d c4 25                  STA dat_25c4         ;     dat_25c4 = 1 (2 iterations)
-2562: 20 6b 25  loc_2562        JSR sub_256b         ; Loop
-                                                     ;     Call $256b [sub_256b]
-2565: ce c4 25                  DEC dat_25c4         ;     Subtract 1 from dat_25c4
-2568: 10 f8                     BPL loc_2562         ; Repeat while (dat_25c4 >= 0)
+255f: 8d c4 25                  STA SoundChannel     ;     SoundChannel = 1 (2 iterations)
+2562: 20 6b 25  loc_2562        JSR managePlayback   ; Loop                  (Update audio channels 3+4 [1] and 1+2 [0])
+                                                     ;     Call $256b [managePlayback]
+2565: ce c4 25                  DEC SoundChannel     ;     Subtract 1 from SoundChannel
+2568: 10 f8                     BPL loc_2562         ; Repeat while (SoundChannel >= 0)
 256a: 60                        RTS                  ; Return to caller
 
-                ; Audio related.
-                ; Called from sub_2503
-                ; Seems to implement a couple modes, updating either channel or frequency
-                ; Also controls timing based on number of invocations (e.g. vblank periods)
+                ; Manages starting or stopping notes for a logical sound channel based on the current sound and timing.
+                ; Called from vvblkiAudio
                 ;
                 ; Input
-                ;   dat_00f2_L/H -
-                ;   dat_00f0_L/H -
-                ;   dat_25c4     - Value [0..1] indicating the source parms to use
-                ;                   0 - Audio channel   (updates AUDC1/AUDC2)
-                ;                   1 - Audio frequency (updates AUDF1/AUDF2)
-                ;   When dat_25c4 is 0:
-                ;     dat_25be  - Remaining initial time in vblanks? Counts down on each call.
-                ;                 Updated to value at (*dat_00f2_L)[dat_25c0 - 1] when 0 and dat_25c0 >= 1
-                ;     dat_25c0  - Offset plus one relative to dat_00f2_L/H. Counts down when dat_25be reaches 0.
-                ;     dat_25c2  - Audio frequency? Set to value at (*dat_00f0_L)[dat_25c0 - 1]
-                ;     dat_25c3  - Index to dat_25eb
-                ;     dat_25eb  -
-                ;   When dat_25c4 is 1:
-                ;     dat_25bf  - Remaining initial time in vblanks? Counts down on each call.
-                ;                 Updated to value at (*dat_00f2_L)[dat_25c1 - 1] when 0 and dat_25c1 >= 1
-                ;     dat_25c1  - Offset plus one relative to dat_00f2_L/H. Counts down when dat_25be reaches 0.
-                ;     dat_25ec  - Set to value at (*dat_00f2_L)[dat_25c1 - 1]
-                ;     dat_25c2  - Audio frequency? Set to value at (*dat_00f0_L)[dat_25c1 - 1]
+                ;   SoundTimes_L/H - Address of table containing audio duration values
+                ;   SoundFreqs_L/H - Address of table containing audio frequency values
+                ;   SoundId        - Current sound number [0..5]
+                ;   SoundChnlCtl   - Table of audio channel control values/secondary frequencies for sound.
+                ;   SoundChannel   - Value [0..1] indicating the source parms to use and audio channels to update
+                ;                     0 - Hardware audio channels 1+2 (AUDC1/AUDF1/AUDF2)
+                ;                     1 - Hardware audio channels 3+4 (AUDC3/AUDF3/AUDF4)
+                ;   SoundTimer[SoundChannel] - Remaining time in vblanks to continue playing current frequency.
+                ;   SoundNote[SoundChannel]  - Number of notes remaining for current sound, plus one.
                 ;
                 ; Output
-                ;   dat_25c2    - Set to
+                ;   SoundTimer[SoundChannel] - Decremented on each call. Updated to value at
+                ;                   (*SoundTimes_L)[SoundNote[SoundChannel] - 1] when it reaches 0 and
+                ;                   SoundNote[SoundChannel] >= 1
+                ;   When SoundChannel is 0 (hardware channels 1+2):
+                ;     If SoundTimer[0] is 0
+                ;       SoundNote[0]  - Decremented each time SoundTimer[0] reaches 0 (e.g. it moves to the next note
+                ;                       in the sequence).
+                ;       AUDC1         - Set to SoundChnlCtl + 3
+                ;       AUDF1         - Set to
+                ;       AUDF2         - Set to SoundChnlCtl + 3
+                ;     If SoundTimer[0] is 1
+                ;       AUDC1         - Set to 0 (silences hardware channel 1)
+                ;       AUDC2         - Set to 0 (silences hardware channel 2)  (bug? seems like it should be channel 3)
+                ;   When SoundChannel is 1 (hardware channels 3+4):
+                ;     If SoundTimer[1] is 0
+                ;       SoundNote[1]  - Decremented each time SoundTimer[1] reaches 0 (e.g. it moves to the next note
+                ;                       in the sequence).
+                ;       AUDC3         - Set to SoundChnlCtl
+                ;       AUDF3         - Set to
+                ;       AUDF4         - Set to SoundChnlCtl
+                ;     If SoundTimer[1] is 1
+                ;       AUDC2         - Set to 0 (silences hardware channel 2)
+                ;       AUDC3         - Set to 0 (silences hardware channel 3) (bug? seems like it should be channel 4)
                 ;
-256b: ae c4 25  sub_256b        LDX dat_25c4         ; Set X = dat_25c4
-256e: de be 25                  DEC dat_25be,X       ; Subtract 1 from dat_25be[X]
-2571: d0 38                     BNE loc_25ab         ; If (dat_25be[X] == 0) Then
-2573: de c0 25                  DEC dat_25c0,X       ;     Subtract 1 from dat_25c0[X]
-2576: f0 32                     BEQ loc_25aa         ;     If (dat_25c0[X] != 0) Then
-2578: bc c0 25                  LDY dat_25c0,X       ;         Set
-257b: 88                        DEY                  ;             Y = dat_25c0[X] - 1
-257c: b1 f2                     LDA (dat_00f2_L),Y   ;         Set
-257e: 9d be 25                  STA dat_25be,X       ;             dat_25be[X] = (*dat_00f2_L)[Y]
-2581: b1 f0                     LDA (dat_00f0_L),Y   ;         Set
-2583: 8d c2 25                  STA dat_25c2         ;             dat_25c2 = (*dat_00f0_L)[Y]
+                ; Temp
+                ;     SoundFreq     - (temp) Temporary storage for the current note frequency value
+                ;                     from (*SoundFreqs_L)[SoundNote[0] - 1]
+                ;
+256b: ae c4 25  managePlayback  LDX SoundChannel     ; Set X = SoundChannel
+256e: de be 25                  DEC SoundTimer,X     ; Subtract 1 from SoundTimer[X]
+2571: d0 38                     BNE loc_25ab         ; If (SoundTimer[X] == 0) Then     (start playing next note)
+2573: de c0 25                  DEC SoundNote,X      ;     Subtract 1 from SoundNote[X]
+2576: f0 32                     BEQ loc_25aa         ;     If (SoundNote[X] != 0) Then
+2578: bc c0 25                  LDY SoundNote,X      ;         Set
+257b: 88                        DEY                  ;             Y = SoundNote[X] - 1
+257c: b1 f2                     LDA (SoundTimes_L),Y ;         Set
+257e: 9d be 25                  STA SoundTimer,X     ;             SoundTimer[X] = (*SoundTimes_L)[Y]
+2581: b1 f0                     LDA (SoundFreqs_L),Y ;         Set
+2583: 8d c2 25                  STA SoundFreq        ;             SoundFreq = (*SoundFreqs_L)[Y]
 2586: 8a                        TXA                  ;         Set A
 2587: 0a                        ASL                  ;               =
-2588: 0a                        ASL                  ;                 X * 4
-2589: a8                        TAY                  ;         Set Y = A
-258a: 4a                        LSR                  ;         Set A /= 1, C = old bit 0 of A
-258b: 6d c2 25                  ADC dat_25c2         ;         Set A += dat_25c2 + C
-258e: 99 00 d2                  STA AUDF1,Y          ;         Set AUDF1[Y] = A
+2588: 0a                        ASL                  ;                 SoundChannel * 4
+2589: a8                        TAY                  ;         Set Y = A                (Y = 0 or 4)
+258a: 4a                        LSR                  ;         Set A = A / 2            (A = 0 or 2, C = 0)
+258b: 6d c2 25                  ADC SoundFreq        ;         Set A = A + SoundFreq
+258e: 99 00 d2                  STA AUDF1,Y          ;         Set AUDF1[Y] = A         (Updates AUDF1 or AUDF3)
 2591: 18                        CLC                  ;         Set
-2592: 69 01                     ADC #$01             ;             A += 1, C = 1 on overflow else 0
-2594: 99 02 d2                  STA AUDF2,Y          ;         Set AUDF2[Y] = A
-2597: ae c3 25                  LDX dat_25c3         ;         Set X = dat_25c3
-259a: bd eb 25                  LDA dat_25eb,X       ;         If
-259d: c0 00                     CPY #$00             ;            (dat_25eb[X] == 0)
+2592: 69 01                     ADC #$01             ;             A = A + 1
+2594: 99 02 d2                  STA AUDF2,Y          ;         Set AUDF2[Y] = A         (overwritten below...)
+2597: ae c3 25                  LDX SoundId          ;         Set
+259a: bd eb 25                  LDA SoundChnlCtl,X   ;             A = SoundChnlCtl[SoundId]
+259d: c0 00                     CPY #$00             ;         If (Y == 0)
 259f: d0 03                     BNE loc_25a4         ;         Then
 25a1: 18                        CLC                  ;             Set
-25a2: 69 03                     ADC #$03             ;                 A += 3
+25a2: 69 03                     ADC #$03             ;                 A = A + 3        (Increase volume / freq divisor)
                                                      ;         End If
-25a4: 99 01 d2  loc_25a4        STA AUDC1,Y          ;         Set AUDC1[Y] = A
-25a7: 99 02 d2                  STA AUDF2,Y          ;         Set AUDF2[Y] = A
+25a4: 99 01 d2  loc_25a4        STA AUDC1,Y          ;         Set AUDC1[Y] = A         (Updates AUDC1 or AUDC3)
+25a7: 99 02 d2                  STA AUDF2,Y          ;         Set AUDF2[Y] = A         (Updates AUDF2 or AUDF4)
                                                      ;     End If
 25aa: 60        loc_25aa        RTS                  ;     Return to caller
-25ab: bd be 25  loc_25ab        LDA dat_25be,X       ; Else If
-25ae: c9 01                     CMP #$01             ;    (dat_25be[X] == 1)
-25b0: d0 0b                     BNE loc_25bd         ; Then
+25ab: bd be 25  loc_25ab        LDA SoundTimer,X     ; Else If
+25ae: c9 01                     CMP #$01             ;    (SoundTimer[SoundChannel] == 1)
+25b0: d0 0b                     BNE loc_25bd         ; Then                          (Silence note when timer reaches 1)
 25b2: 8a                        TXA                  ;     Set X
 25b3: 0a                        ASL                  ;           =
-25b4: aa                        TAX                  ;             X * 2
+25b4: aa                        TAX                  ;             SoundChannel * 2     (why not 4 like above? - bug?)
 25b5: a9 00                     LDA #$00             ;     Set A = 0
-25b7: 9d 01 d2                  STA AUDC1,X          ;     Set AUDC1[X] = 0
-25ba: 9d 03 d2                  STA AUDC2,X          ;     Set AUDC2[X] = 0
+25b7: 9d 01 d2                  STA AUDC1,X          ;     Set AUDC1[X] = 0             (silence AUDC1 or AUDC2 - bug?)
+25ba: 9d 03 d2                  STA AUDC2,X          ;     Set AUDC2[X] = 0             (silence AUDC2 or AUDC3 - bug?)
                                                      ; End If
 25bd: 60        loc_25bd        RTS                  ; Return to caller
 
-25be: 00        dat_25be        .BYTE $00            ; 2 bytes: table indexed by dat_25c4
-25bf: 00        dat_25bf        .BYTE $00            ;
-25c0: 00        dat_25c0        .BYTE $00            ; 2 bytes: table indexed by dat_25c4
-25c1: 00        dat_25c1        .BYTE $00            ;
-25c2: 00        dat_25c2        .BYTE $00            ; 1 byte
-25c3: 00        dat_25c3        .BYTE $00            ;
-25c4: 00        dat_25c4        .BYTE $00            ;
-25c5: cc b6 ad  dat_25c5        .BYTE $cc,$b6,$ad    ;
-25c8: f0 ff ee  dat_25c8        .BYTE $f0,$ff,$ee    ;
+25be: 00 00     SoundTimer      .BYTE $00 $00        ; 2 bytes: Vblanks before starting next note for audio channel
+                                                     ;    0: Channel 0 (AUDC1/AUDF1/AUDF2)
+                                                     ;    1: Channel 1 (AUDC3/AUDF3/AUDF4)
+25c0: 00 00     SoundNote       .BYTE $00 $00        ; 2 bytes: Offset plus one into frequency and duration tables
+                                                     ;     for current sound
+                                                     ;    0: Channel 0 (AUDC1/AUDF1/AUDF2)
+                                                     ;    1: Channel 1 (AUDC3/AUDF3/AUDF4)
+25c2: 00        SoundFreq       .BYTE $00            ; Temporary storage for the current note frequency
+25c3: 00        SoundId         .BYTE $00            ; Current sound number [0..5]
+                                                     ;   0: Secret door sound
+                                                     ;   1: Door sound
+                                                     ;   2: Cast spell sound
+                                                     ;   3: ? sound
+                                                     ;   4: ? sound
+                                                     ;   5: ? sound
+25c4: 00        SoundChannel    .BYTE $00            ; Sound channel to update during vblank. Input param
+                                                     ;     to managePlayback
+25c5: cc b6 ad  Sound0Freqs     .BYTE $cc,$b6,$ad    ; 3 bytes: Sound 0 frequency data (Secret door)
+25c8: f0 ff ee  Sound1Freqs     .BYTE $f0,$ff,$ee    ; 4 bytes: Sound 1 frequency data (Door)
 25cb: f8                        .BYTE $f8
-25cc: 88 88 72  dat_25cc        .BYTE $88,$88,$72    ;
+25cc: 88 88 72  Sound2Freqs     .BYTE $88,$88,$72    ; 6 bytes: Sound 2 frequency data (Cast spell)
 25cf: 99 88 66                  .BYTE $99,$88,$66
-25d2: fc ad a2  dat_25d2        .BYTE $fc,$ad,$a2    ;
+25d2: fc ad a2  Sound3Freqs     .BYTE $fc,$ad,$a2    ; 5 bytes: Sound 3 frequency data (???)
 25d5: 99 f3                     .BYTE $99,$f3
-25d7: 66 4c 4c  dat_25d7        .BYTE $66,$4c,$4c    ;
+25d7: 66 4c 4c  Sound4Freqs     .BYTE $66,$4c,$4c    ; 7 bytes: Sound 4 frequency data (???)
 25da: 5b 5b 5b 5b               .BYTE $5b,$5b,$5b,$5b
-25de: 79 90 80  dat_25de        .BYTE $79,$90,$80    ;
+25de: 79 90 80  Sound5Freqs     .BYTE $79,$90,$80    ; 7 bytes: Sound 5 frequency data (???)
 25e1: 79 60 55 60               .BYTE $79,$60,$55,$60
-25e5: 00 40 04  dat_25e5        .BYTE $00,$40,$04    ;
-25e8: 07 07 06                  .BYTE $07,$07,$06
-25eb: a1 01 a1  dat_25eb        .BYTE $a1,$01,$a1    ;
-25ee: a1 a1 a1                  .BYTE $a1,$a1,$a1
-25f1: 40 08 08  dat_25f1        .BYTE $40,$08,$08    ;
-25f4: 04 01 03  dat_25f4        .BYTE $04,$01,$03    ;
+25e5: 00 40 04  SoundAudCtl     .BYTE $00,$40,$04    ; 6 bytes: AUDCTL value to apply for corresponding sound ID
+25e8: 07 07 06                  .BYTE $07,$07,$06    ;   0: $00 - 17-bit poly
+                                                     ;            all 4 hardware channels use 64KHz clock
+                                                     ;   1: $40 - 17-bit poly
+                                                     ;            hardware channel 1 uses 1.79MHz clock
+                                                     ;            channels 2, 3, 4 use 64KHz clock
+                                                     ;   2: $04 - 17-bit poly
+                                                     ;            all 4 hardware channels use 64KHz clock
+                                                     ;            high-pass filter for channel 1 (clocked by channel 3)
+                                                     ;   3: $07 - 17-bit poly
+                                                     ;            all 4 hardware channels use 15KHz clock
+                                                     ;            high-pass filter for channel 1 (clocked by channel 3)
+                                                     ;            high-pass filter for channel 2 (clocked by channel 4)
+                                                     ;   4: $07 - 17-bit poly
+                                                     ;            all 4 hardware channels use 15KHz clock
+                                                     ;            high-pass filter for channel 1 (clocked by channel 3)
+                                                     ;            high-pass filter for channel 2 (clocked by channel 4)
+                                                     ;   5: $06 - 17-bit poly
+                                                     ;            all 4 hardware channels use 64KHz clock
+                                                     ;            high-pass filter for channel 1 (clocked by channel 3)
+                                                     ;            high-pass filter for channel 2 (clocked by channel 4)
+25eb: a1 01 a1  SoundChnlCtl    .BYTE $a1,$01,$a1    ; 6 bytes: Audio channel control / frequency values for sound ID.
+25ee: a1 a1 a1                  .BYTE $a1,$a1,$a1    ;   Each value is processed separately for each note channel
+                                                     ;   (0 or 1).
+                                                     ;     SoundChannel is 0: Both AUDC1 and AUDF2 are assigned the
+                                                     ;         value plus 3. For AUDC1, this increases the volume level.
+                                                     ;         For AUDF2, it lowers the output frequency.
+                                                     ;     SoundChannel is 1: Both AUDC3 and AUDF4 are assigned the
+                                                     ;         value as-is.
+                                                     ;   0: $a1 - No poly counters/noise; Volume 1 (Secret door)
+                                                     ;   1: $01 - Apply 5-bit and 17-bit polys/noise; Volume 1 (Door)
+                                                     ;   2: $a1 - No poly counters/noise; Volume 1 (Cast spell)
+                                                     ;   3: $a1 - No poly counters/noise; Volume 1 (???)
+                                                     ;   4: $a1 - No poly counters/noise; Volume 1 (???)
+                                                     ;   5: $a1 - No poly counters/noise; Volume 1 (???)
+25f1: 40 08 08  Sound0Times     .BYTE $40,$08,$08    ; 3 bytes: Sound 0 note duration data (Secret door)
+25f4: 04 01 03  Sound1Times     .BYTE $04,$01,$03    ; 4 bytes: Sound 1 note duration data (Door)
 25f7: 03                        .BYTE $03
-25f8: 10 08 08  dat_25f8        .BYTE $10,$08,$08    ;
+25f8: 10 08 08  Sound2Times     .BYTE $10,$08,$08    ; 6 bytes: Sound 2 note duration data (Cast spell)
 25fb: 06 05 05                  .BYTE $06,$05,$05
-25fe: 50 2f 08  dat_25fe        .BYTE $50,$2f,$08    ;
+25fe: 50 2f 08  Sound3Times     .BYTE $50,$2f,$08    ; 5 bytes: Sound 3 note duration data (???)
 2501: 26 2f                     .BYTE $26,$2f
-2603: 61 0c 0c  dat_2603        .BYTE $61,$0c,$0c    ;
+2603: 61 0c 0c  Sound4Times     .BYTE $61,$0c,$0c    ; 7 bytes: Sound 4 note duration data (???)
 2606: 17 0c 17 0c               .BYTE $17,$0c,$17,$0c
-260a: 20 40 08  dat_260a        .BYTE $20,$40,$08    ;
+260a: 20 40 08  Sound5Times     .BYTE $20,$40,$08    ; 7 bytes: Sound 5 note duration data (???)
 260d: 08 08 08 08               .BYTE $08,$08,$08,$08
-2611: 04 05 07  dat_2611        .BYTE $04,$05,$07    ;
-2614: 06 08 08                  .BYTE $06,$08,$08
-2617: f1 f4 f8  dat_2617_L      .BYTE $f1,$f4,$f8    ; 6 bytes: LSB of address (with dat_261d_H)
+2611: 04 05 07  SoundLength     .BYTE $04,$05,$07    ; 6 bytes: Each entry holds 1 more than the length of sound data
+2614: 06 08 08                  .BYTE $06,$08,$08    ;  referenced by addresses in SoundTimeTbl_L/H and SoundFreqTbl_L/H
+                                                     ;    0: 4 (3 bytes - Secret door)
+                                                     ;    1: 5 (4 bytes - Door)
+                                                     ;    2: 7 (6 bytes - Cast spell)
+                                                     ;    3: 6 (5 bytes - ???)
+                                                     ;    4: 8 (7 bytes - ???)
+                                                     ;    5: 8 (7 bytes - ???)
+2617: f1 f4 f8  SoundTimeTbl_L  .BYTE $f1,$f4,$f8    ; 6 bytes: LSB of address of note duration data for a sound ID
 261a: fe 03 0a                  .BYTE $fe,$03,$0a
-261d: 25 25 25  dat_261d_H      .BYTE $25,$25,$25    ; 6 bytes: MSB of address (with dat_2617_L)
-2620: 25 26 26                  .BYTE $25,$26,$26    ;    0: $25f1 [dat_25f1] (3 bytes)
-                                                     ;    1: $25f4 [dat_25f4] (4 bytes)
-                                                     ;    2: $25f8 [dat_25f8] (6 bytes)
-                                                     ;    3: $25fe [dat_25fe] (5 bytes)
-                                                     ;    4: $2603 [dat_2603] (7 bytes)
-                                                     ;    5: $260a [dat_260a] (7? bytes)
-2623: c5 c8 cc  tbl_2623_L      .BYTE $c5,$c8,$cc    ; 6 bytes: LSB of address (with tbl_2629_H)
+261d: 25 25 25  SoundTimeTbl_H  .BYTE $25,$25,$25    ; 6 bytes: MSB of address of note duration data for a sound ID
+2620: 25 26 26                  .BYTE $25,$26,$26    ;    0: $25f1 [Sound0Times] - Secret door
+                                                     ;    1: $25f4 [Sound1Times] - Door
+                                                     ;    2: $25f8 [Sound2Times] - Cast spell
+                                                     ;    3: $25fe [Sound3Times] - ???
+                                                     ;    4: $2603 [Sound4Times] - ???
+                                                     ;    5: $260a [Sound5Times] - ???
+2623: c5 c8 cc  SoundFreqTbl_L  .BYTE $c5,$c8,$cc    ; 6 bytes: LSB of address of note frequency data for a sound ID
 2626: d2 d7 de                  .BYTE $d2,$d7,$de
-2629: 25 25 25  tbl_2629_H      .BYTE $25,$25,$25    ; 6 bytes: MSB of address (with tbl_2623_L)
-262c: 25 25 25                  .BYTE $25,$25,$25    ;    0: $25c5 [dat_25c5] (3 bytes)
-                                                     ;    1: $25c8 [dat_25c8] (4 bytes)
-                                                     ;    2: $25cc [dat_25cc] (6 bytes)
-                                                     ;    3: $25d2 [dat_25d2] (5 bytes)
-                                                     ;    4: $25d7 [dat_25d7] (7 bytes)
-                                                     ;    5: $25de [dat_25de] (7 bytes)
+2629: 25 25 25  SoundFreqTbl_H  .BYTE $25,$25,$25    ; 6 bytes: MSB of address of note frequency data for a sound ID
+262c: 25 25 25                  .BYTE $25,$25,$25    ;    0: $25c5 [Sound0Freqs] - Secret door
+                                                     ;    1: $25c8 [Sound1Freqs] - Door
+                                                     ;    2: $25cc [Sound2Freqs] - Cast spell
+                                                     ;    3: $25d2 [Sound3Freqs] - ???
+                                                     ;    4: $25d7 [Sound4Freqs] - ???
+                                                     ;    5: $25de [Sound5Freqs] - ???
 
                 ; Read joystick Jack 1 Stick 0 direction and trigger button status
                 ;
@@ -3417,7 +3512,7 @@
 2678: 68                        PLA                  ; Restore original value of A
 2679: 40                        RTI                  ; Return from interrupt handler
 
-                ; Processes a key press.
+                ; Processes a key press, including console keys and mapping movement keys to stick direction codes.
                 ; called from irq_VVBLKI
                 ;
                 ; Input
@@ -3432,53 +3527,52 @@
                 ;   StickKbdDir  - Current keyboard-based stick status (from movement keys i,j,k,l, spacebar = trigger)
                 ;   dat_18ff     - Set to 0 if non-0 on input
                 ;
-267a: a9 08     sub_267a        LDA #$08             ; Set
-267c: 8d 1f d0                  STA CONSOL           ;     CONSOL = 8     (Reset register to default)
-267f: a5 30                     LDA KbdPendChar      ; If (KbdPendChar < 0)       (No key yet, check console keys)
+267a: a9 08     vvblkiKeyInput  LDA #$08             ; Set
+267c: 8d 1f d0                  STA CONSOL           ;     CONSOL = 8                        (Reset register to default)
+267f: a5 30                     LDA KbdPendChar      ; If (KbdPendChar < 0)             (No key yet, check console keys)
 2681: 10 1f                     BPL loc_26a2         ; Then
 2683: ad 1f d0                  LDA CONSOL           ;     Set A = CONSOL
-2686: c9 07                     CMP #$07             ;     If (A == 7)    (None of OPTION/SELECT/START keys pressed)
+2686: c9 07                     CMP #$07             ;     If (A == 7)        (None of OPTION/SELECT/START keys pressed)
 2688: d0 15                     BNE loc_269f         ;     Then
 268a: ad 00 19                  LDA KBD_CONSOL       ;         Set A = KBD_CONSOL
-268d: c9 07                     CMP #$07             ;         If (A == 7) Then      (No change from previous state)
+268d: c9 07                     CMP #$07             ;         If (A == 7) Then          (No change from previous state)
 268f: f0 0e                     BEQ loc_269f         ;             Continue @ $269f [loc_269f]
                                                      ;         End If
-2691: a2 10                     LDX #$10             ;         Set X = $10 (16)       (X = $10 START key was released)
-2693: 4a                        LSR                  ;         Set A /= 2, C = old Bit 0 of A (START key: 0 = pressed)
-2694: 90 05                     BCC loc_269b         ;         If (C == 1) Then          (START key was _not_ pressed)
-2696: e8                        INX                  ;             Add 1 to X         (X = $11 SELECT key was relesed)
-2697: 4a                        LSR                  ;             Set A /= 2, C = old Bit 0 of A   (SELECT key state)
-2698: 90 01                     BCC loc_269b         ;             If (C == 1) Then         (SELECT key _not_ pressed)
-269a: e8                        INX                  ;                 Add 1 to X    (X = $12 OPTION key was released)
+2691: a2 10                     LDX #$10             ;         Set X = $10 (16)         (X = $10 START key was released)
+2693: 4a                        LSR                  ;         Set A /= 2, C = old Bit 0 of A   (START key: 0 = pressed)
+2694: 90 05                     BCC loc_269b         ;         If (C == 1) Then            (START key was _not_ pressed)
+2696: e8                        INX                  ;             Add 1 to X           (X = $11 SELECT key was relesed)
+2697: 4a                        LSR                  ;             Set A /= 2, C = old Bit 0 of A     (SELECT key state)
+2698: 90 01                     BCC loc_269b         ;             If (C == 1) Then           (SELECT key _not_ pressed)
+269a: e8                        INX                  ;                 Add 1 to X      (X = $12 OPTION key was released)
                                                      ;             End If
                                                      ;         End If
 269b: 86 30     loc_269b        STX KbdPendChar      ;         Set KbdPendChar = X
-269d: a9 07                     LDA #$07             ;         Set A = 7    (None of OPTION/SELECT/START keys pressed)
+269d: a9 07                     LDA #$07             ;         Set A = 7      (None of OPTION/SELECT/START keys pressed)
                                                      ;     End If
 269f: 8d 00 19  loc_269f        STA KBD_CONSOL       ;     Set KBD_CONSOL = A
                                                      ; End If
 26a2: a0 00     loc_26a2        LDY #$00             ; Set Y = 0
-26a4: ad 0f d2                  LDA SKSTAT           ; If (SKSTAT & 4 != 0) Then   (The shift key is pressed)
-26a7: 29 04                     AND #$04             ;    Continue @ $26bd [loc_26bd]
-26a9: d0 12                     BNE loc_26bd         ; End If
-                ; Test if KBCODE matches a character assigned a movement direction (IJKL)
-26ab: a2 04                     LDX #$04             ; Set X = 4  (max 5 iterations)
-26ad: ad 09 d2                  LDA KBCODE           ; Set A = KBCODE
-26b0: dd 51 27  loc_26b0        CMP StickKbCode,X    ; Loop
-                                                     ;     If (A == StickKbCode[X]) Then   (User pressed a movement key)
-26b3: f0 05                     BEQ loc_26ba         ;         Continue @ $26ba [loc_26ba]
+26a4: ad 0f d2                  LDA SKSTAT           ; If
+26a7: 29 04                     AND #$04             ;    (SKSTAT & 4 == 0) Then          (The shift key is not pressed)
+26a9: d0 12                     BNE loc_26bd         ; Then
+26ab: a2 04                     LDX #$04             ;     Set X = 4  (max 5 iterations [4..0])
+26ad: ad 09 d2                  LDA KBCODE           ;     Set A = KBCODE            (Test if KBCODE matches a character
+26b0: dd 51 27  loc_26b0        CMP StickKbCode,X    ;     Loop                    assigned a movement direction (IJKL))
+                                                     ;         If (A == StickKbCode[X]) Then
+26b3: f0 05                     BEQ loc_26ba         ;             Exit Loop                 (User pressed movement key)
+                                                     ;         End If
+26b5: ca                        DEX                  ;         Subtract 1 from X
+26b6: 10 f8                     BPL loc_26b0         ;     Repeat while (X >= 0)
+26b8: 30 03                     BMI loc_26bd         ;     If (X >= 0) Then             (loop exited early, map movement
+26ba: bc 56 27  loc_26ba        LDY StickDirCde,X    ;         Set Y = StickDirCde[X]    key to joystick direction code)
                                                      ;     End If
-26b5: ca                        DEX                  ;     Subtract 1 from X
-26b6: 10 f8                     BPL loc_26b0         ; Repeat while (X >= 0)
-26b8: 30 03                     BMI loc_26bd         ; Continue @ $26bd [loc_26bd]
-                ; The following instruction is only executed if the loop above exits early
-                ; In that case, lookup the joystick direction code
-26ba: bc 56 27  loc_26ba        LDY StickDirCde,X    ; Set Y = StickDirCde[X]
-26bd: 84 2f     loc_26bd        STY StickKbdDir      ; Set StickKbdDir = Y    (0 if non-movement key, else stick direction)
+                                                     ; End If
+26bd: 84 2f     loc_26bd        STY StickKbdDir      ; Set StickKbdDir = Y (0 if non-movement key, else stick direction)
 26bf: ad ff 18                  LDA dat_18ff         ; If (dat_18ff != 0)
 26c2: f0 0c                     BEQ loc_26d0         ; Then
                                                      ;     (Click the speaker when a new key is pressed)
-26c4: a0 01                     LDY #$01             ;     Set    (Writing 0-8 to CONSOL produces a speaker click)
+26c4: a0 01                     LDY #$01             ;     Set          (Writing 0-8 to CONSOL produces a speaker click)
 26c6: 8c 1f d0                  STY CONSOL           ;         CONSOL = 1
 26c9: 88                        DEY                  ;     Set
 26ca: 8c 1f d0                  STY CONSOL           ;         CONSOL = 0
@@ -3508,14 +3602,14 @@
 2739: 52 ff 45 59 ff 54 57 51   .BYTE $52,$ff,$45,$59,$ff,$54,$57,$51  ; R.EY.TWQ
 2741: 28 ff 29 27 ff 40 3c 3e   .BYTE $28,$ff,$29,$27,$ff,$40,$3c,$3e  ; (.)'.@<>
 2749: 46 48 44 ff ff 47 53 41   .BYTE $46,$48,$44,$ff,$ff,$47,$53,$41  ; FHD..GSA
-2751: 0d 01 05   StickKbCode    .BYTE $0d,$01,$05                      ; KBCODEs for corresponding values in StickDirCde
-                                                                       ;   0: $0d -> 'i' (forward)
+2751: 0d 01 05  StickKbCode     .BYTE $0d,$01,$05                      ; KBCODEs for corresponding values in StickDirCde
+2754: 00 21                     .BYTE $00,$21                          ;   0: $0d -> 'i' (forward)
                                                                        ;   1: $01 -> 'j' (left)
                                                                        ;   2: $05 -> 'k' (back)
                                                                        ;   3: $00 -> 'l' (right)
                                                                        ;   4: $21 -> ' ' (space key)
-2756: 01 04 02 08  StickDirCde  .BYTE $01,$04,$02,$08                  ; Joystick direction values corresponding to
-2759: 80                        .BYTE $80                              ; KBCODEs in prev table StickKbCode.
+2756: 01 04 02  StickDirCde     .BYTE $01,$04,$02                      ; Joystick direction values corresponding to
+2759: 08 80                     .BYTE $08,$80                          ; KBCODEs in prev table StickKbCode.
                                                                        ; Note these are the inverse of the values
                                                                        ; reported by STICK0.
                                                                        ;   0: $01 (00000001) - forward
@@ -3524,30 +3618,37 @@
                                                                        ;   3: $08 (00001000) - right
                                                                        ;   4: $80 (10000000) - trigger
 
+                ; Reads a file from disk, scanning all detected drives for the file.
                 ;
                 ; Input
-                ;    DiskNumber - Disk
+                ;   DiskNumber      - First disk drive to read from (1..4)
+                ;   FileNumber      - The file number to load the entry for (0 .. 68)
+                ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
                 ;
                 ; Output
-                ;   C - Set to 1 if file not present in any loaded disk
+                ;   C           - Set to 0 on success, 1 if file not present in any loaded disk
+                ;   DiskNumber  - When C = 0, set to the drive the file was eventually loaded from
                 ;
-275b: 20 88 27  sub_275b        JSR normalizeDisk    ; Call $2788 [normalizeDisk]
-275e: 20 5d 24                  JSR sub_245d         ; Call $245d [sub_245d]
-2761: 20 a1 28                  JSR getFileEntry     ; Call $28a1 [getFileEntry]
+                ; Temp
+                ;   dat_190f - Loop control var
+                ;
+275b: 20 88 27  readFileScan    JSR normalizeDisk    ; Call $2788 [normalizeDisk]    (Ensure DiskNumber between 1 and 4)
+275e: 20 5d 24                  JSR resetIO          ; Call $245d [resetIO]
+2761: 20 a1 28                  JSR getFileEntry     ; Call $28a1 [getFileEntry]     (Read directory entry for file)
 2764: a9 04                     LDA #$04             ; Set
-2766: 8d 0f 19                  STA dat_190f         ;     dat_190f = 4
+2766: 8d 0f 19                  STA dat_190f         ;     dat_190f = 4   (4 iterations [4..1])
 2769: ad 30 02  loc_2769        LDA DiskNumber       ; Loop
                                                      ;     Set
 276c: 29 0f                     AND #$0f             ;         X
 276e: aa                        TAX                  ;           = DiskNumber & $0f   (convert ATASCII digit to base 10)
-276f: bd 4d 02                  LDA SioTimeout_H,X   ;     Set A = SioTimeout_H[X]
-2772: 30 05                     BMI loc_2779         ;     If (A >= 0) Then
-2774: 20 99 27                  JSR sub_2799         ;         Call sub_2799
+276f: bd 4d 02                  LDA DrivePresent-1,X ;     If (DrivePresent[X - 1] >= 0)
+2772: 30 05                     BMI loc_2779         ;     Then                   (drive was detected, try loading file)
+2774: 20 99 27                  JSR readFile         ;         Call $2799 [readFile]
 2777: 90 09                     BCC loc_2782         ;         If (C == 0) Then
                                                      ;             Continue @ $2782 [loc_2782] -> $24c6 [sub_24c6]
                                                      ;         End If
                                                      ;     End If
-2779: 20 85 27  loc_2779        JSR nextDisk         ;     Call $2785 [nextDisk]    (Try next disk)
+2779: 20 85 27  loc_2779        JSR nextDisk         ;     Call $2785 [nextDisk]      (Try again with next disk)
 277c: ce 0f 19                  DEC dat_190f         ;     Subtract 1 from dat_190f
 277f: d0 e8                     BNE loc_2769         ; Repeat while (dat_190f != 0)
 2781: 38                        SEC                  ; Set C = 1               (Not found)
@@ -3584,7 +3685,7 @@
                                                      ; End If
 2798: 60        loc_2798        RTS                  ; Return to caller
 
-                ; Appears to be related to reading data from disk.
+                ; Reads a file and it's corresponding key sector from the specified disk and decrypts the result.
                 ;
                 ; Input
                 ;   DiskNumber      - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
@@ -3592,48 +3693,53 @@
                 ;   FileSector_L/H  - Starting disk sector
                 ;   FileId_B1/B2    - File ID from file segment directory
                 ;   FileLen_L/H     - File size
+                ;   MayCancelLoad   - Flag indicating whether ESC can be used to cancel
+                ;                     (0 = user cannot cancel, non-zero = user may cancel if prompted for disk)
                 ;
                 ; Output
-                ;   C       - 0 on success, 1 on error
+                ;   C               - 0 on success, 1 on error
+                ;   MayCancelLoad   - Set to 0 if the key sector read matches the file signature (that is, the file
+                ;                     was found on the disk).
                 ;
                 ; ????
-                ;   dat_0009_L/H       - address receiving bytes from SioBuf
-                ;   dat_000b/dat_000c  - (temp?) size/number of bytes to copy into dat_0009_L/H. Set to the file length by sub_2937
+                ;   DestAdr_L/H     - address receiving bytes from SioBuf
+                ;   NumBytes_L/H    - (temp?) size/number of bytes to copy into DestAdr_L/H. Set to the file
+                ;                     length by readKeySector
                 ;
                 ;
-2799: 20 37 29  sub_2799        JSR sub_2937         ; Call $2937 [sub_2937]
+2799: 20 37 29  readFile        JSR readKeySector    ; Call $2937 [readKeySector]
 279c: 30 38                     BMI loc_27d6         ; If (N == 1) Then           (unsuccessful)
                                                      ;     Continue @ $27d6 [loc_27d6]
                                                      ; End If
-279e: 20 79 29  loc_279e        JSR sub_2979         ; Loop
-                                                     ;     Call $2979 [sub_2979]  (perhaps read next sector??)
+279e: 20 79 29  loc_279e        JSR readNextSector   ; Loop
+                                                     ;     Call $2979 [readNextSector]
 27a1: 30 33                     BMI loc_27d6         ;     If (N == 1) Then       (unsuccessful)
                                                      ;         Continue @ $27d6 [loc_27d6]
                                                      ;     End If
 27a3: a9 00                     LDA #$00             ;     Set
-27a5: 8d 0e 19                  STA dat_190e         ;         dat_190e = 0
-27a8: a8                        TAY                  ;     Set Y = 0              (128 iterations)
+27a5: 8d 0e 19                  STA MayCancelLoad    ;         MayCancelLoad = 0
+27a8: a8                        TAY                  ;     Set Y = 0              (128 iterations/bytes per sector)
 27a9: b9 00 01  loc_27a9        LDA SioBuf,Y         ;     Loop
                                                      ;         Set
-27ac: 91 09                     STA (dat_0009_L),Y   ;             (*dat_0009_L)[Y] = SioBuf[Y]
+27ac: 91 09                     STA (DestAdr_L),Y    ;             (*DestAdr_L)[Y] = SioBuf[Y]
 27ae: 38                        SEC                  ;         Set
-27af: a5 0b                     LDA dat_000b         ;             dat_000b
+27af: a5 0b                     LDA NumBytes_L       ;             NumBytes_L
 27b1: e9 01                     SBC #$01             ;                =
-27b3: 85 0b                     STA dat_000b         ;                  dat_000b - 1
-27b5: b0 02                     BCS loc_27b9         ;         If (C == 1) Then   (underflow occurred, subtract 1 from high byte)
-27b7: c6 0c                     DEC dat_000c         ;             Subtract 1 from dat_000c
+27b3: 85 0b                     STA NumBytes_L       ;                  NumBytes_L - 1
+27b5: b0 02                     BCS loc_27b9         ;         If (C == 1) Then                     (underflow occurred)
+27b7: c6 0c                     DEC NumBytes_H       ;             Subtract 1 from NumBytes_H
                                                      ;         End If
-27b9: 05 0c     loc_27b9        ORA dat_000c         ;         If (dat_000b | dat_000c == 0) Then
-27bb: f0 10                     BEQ loc_27cd         ;             Continue @ $27cd [loc_27cd]  (Break from both loops)
+27b9: 05 0c     loc_27b9        ORA NumBytes_H       ;         If (NumBytes_L | NumBytes_H == 0) Then   (all bytes read)
+27bb: f0 10                     BEQ loc_27cd         ;             Continue @ $27cd [loc_27cd]   (Break from both loops)
                                                      ;         End If
 27bd: c8                        INY                  ;         Add 1 to Y
 27be: 10 e9                     BPL loc_27a9         ;     Repeat while (Y >= 0)            (Y = $80 at end of loop)
 27c0: 98                        TYA                  ;     Set
-27c1: 18                        CLC                  ;         dat_0009_L
-27c2: 65 09                     ADC dat_0009_L       ;            =
-27c4: 85 09                     STA dat_0009_L       ;              dat_0009_L + $80 (128)  (Y = $80 at end of loop)
+27c1: 18                        CLC                  ;         DestAdr_L
+27c2: 65 09                     ADC DestAdr_L        ;            =
+27c4: 85 09                     STA DestAdr_L        ;              DestAdr_L + $80 (128)   (Y = $80 at end of loop)
 27c6: 90 02                     BCC loc_27ca         ;     If (C = 1) Then   (overflow occurred, add 1 to high byte)
-27c8: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H
+27c8: e6 0a                     INC DestAdr_H        ;         Add 1 to DestAdr_H
                                                      ;     End If
 27ca: 4c 9e 27  loc_27ca        JMP loc_279e         ; Repeat Loop
 27cd: a9 00     loc_27cd        LDA #$00             ; Set
@@ -3646,7 +3752,8 @@
 
 
                 ;
-                ; Called from KERNEL_LOADER
+                ;
+                ; Called from KERNEL_LOADER [initStorage]
                 ;
 27d8: 18        sub_27d8        CLC                  ; Set C = 0
 27d9: 24 38                     BIT TimeMonth        ; hmm... updates Z, N=0, V=0?...
@@ -3665,8 +3772,8 @@
                 ;   dat_0264     - Decremented on checksum error (e.g. when C = 1)
                 ;
                 ; Temp
-                ;   dat_000c     - Loop control var
-                ;   dat_0009_L/H - (temp) Used for current decryption/checksum location within buffer
+                ;   NumBytes_H   - Copy loop control var initially set to FileLen_H
+                ;   DestAdr_L/H  - (temp) Used for current decryption/checksum location within buffer
                 ;   SioBuf       - Decryption key buffer (updated with repeated copies of decryption key)
                 ;
 27de: a0 00     decryptBytes    LDY #$00             ; Set Y = 0        (index to data buffer: 0..127)
@@ -3686,42 +3793,42 @@
 27f4: 8c 01 19                  STY CalcChksum_L     ;     CalcChksum_L = 0
 27f7: 8c 02 19                  STY CalcChksum_H     ; Set CalcChksum_H = 0
 27fa: ad 0b 19                  LDA FileDestAdr_L    ; Set
-27fd: 85 09                     STA dat_0009_L       ;     dat_0009_L = FileDestAdr_L
+27fd: 85 09                     STA DestAdr_L        ;     DestAdr_L = FileDestAdr_L
 27ff: ad 0c 19                  LDA FileDestAdr_H    ; Set
-2802: 85 0a                     STA dat_0009_H       ;     dat_0009_H = FileDestAdr_H
+2802: 85 0a                     STA DestAdr_H        ;     DestAdr_H = FileDestAdr_H
 2804: ae 08 19                  LDX FileLen_H        ; If (FileLen_H != 0)
 2807: f0 1e                     BEQ loc_2827         ; Then
-2809: 86 0c                     STX dat_000c         ;     Set dat_000c = FileLen_H
+2809: 86 0c                     STX NumBytes_H       ;     Set NumBytes_H = FileLen_H
 280b: a2 00                     LDX #$00             ;     Set X = 0
-280d: b1 09     loc_280d        LDA (dat_0009_L),Y   ;     Loop
-280f: 4a                        LSR                  ;         Set A = (*dat_0009_L)[Y] >> 1
+280d: b1 09     loc_280d        LDA (DestAdr_L),Y    ;     Loop
+280f: 4a                        LSR                  ;         Set A = (*DestAdr_L)[Y] >> 1
 2810: 90 02                     BCC loc_2814         ;         If (C = 1) Then
 2812: 09 80                     ORA #$80             ;             Set A |= $80  (apply old Bit 0 as Bit 6)
                                                      ;         End If
 2814: 5d 00 01  loc_2814        EOR SioBuf,X         ;         Set
-2817: 91 09                     STA (dat_0009_L),Y   ;             (*dat_0009_L)[Y] = A xor SioBuf[X]
+2817: 91 09                     STA (DestAdr_L),Y    ;             (*DestAdr_L)[Y] = A xor SioBuf[X]
 2819: e8                        INX                  ;         Add 1 to X
 281a: 10 02                     BPL loc_281e         ;         If (X < 0) Then   (aka X > 127)
 281c: a2 00                     LDX #$00             ;             Set X = 0
                                                      ;         End If
 281e: c8        loc_281e        INY                  ;         Add 1 to Y
 281f: d0 ec                     BNE loc_280d         ;         If (Y != 0) Then  (no overflow, Y<=$ff)
-2821: e6 0a                     INC dat_0009_H       ;             Add 1 to dat_0009_H
-2823: c6 0c                     DEC dat_000c         ;             Subtract 1 from dat_000c
+2821: e6 0a                     INC DestAdr_H        ;             Add 1 to DestAdr_H
+2823: c6 0c                     DEC NumBytes_H       ;             Subtract 1 from NumBytes_H
                                                      ;         End If
-2825: d0 e6                     BNE loc_280d         ;     Repeat while (dat_000c != 0)
+2825: d0 e6                     BNE loc_280d         ;     Repeat while (NumBytes_H != 0)
                                                      ; End If
 2827: a2 00     loc_2827        LDX #$00             ; Set X = 0
 2829: ad 07 19                  LDA FileLen_L        ; If (FileLen_L != 0)
 282c: f0 17                     BEQ loc_2845         ; Then
-282e: b1 09     loc_282e        LDA (dat_0009_L),Y   ;     Loop
+282e: b1 09     loc_282e        LDA (DestAdr_L),Y    ;     Loop
                                                      ;         Set
-2830: 4a                        LSR                  ;             A = (*dat_0009_L)[Y] / 2
-2831: 90 02                     BCC loc_2835         ;         If (C == 1) Then      (C = bit 0 of (*dat_0009_L)[Y])
+2830: 4a                        LSR                  ;             A = (*DestAdr_L)[Y] / 2
+2831: 90 02                     BCC loc_2835         ;         If (C == 1) Then      (C = bit 0 of (*DestAdr_L)[Y])
 2833: 09 80                     ORA #$80             ;             Set A |= $80
                                                      ;         End If
 2835: 5d 00 01  loc_2835        EOR SioBuf,X         ;         Set
-2838: 91 09                     STA (dat_0009_L),Y   ;             (dat_0009_L)[Y] = A xor SioBuf[X]
+2838: 91 09                     STA (DestAdr_L),Y    ;             (DestAdr_L)[Y] = A xor SioBuf[X]
 283a: e8                        INX                  ;         Add 1 to X
 283b: 10 02                     BPL loc_283f         ;         If (X < 0) Then
 283d: a2 00                     LDX #$00             ;             Set X = 0
@@ -3731,32 +3838,32 @@
 2843: 90 e9                     BCC loc_282e         ;       while (Y < FileLen_L)
                                                      ; End If
 2845: ad 0b 19  loc_2845        LDA FileDestAdr_L    ; Set
-2848: 85 09                     STA dat_0009_L       ;     dat_0009_L = FileDestAdr_L
+2848: 85 09                     STA DestAdr_L        ;     DestAdr_L = FileDestAdr_L
 284a: ad 0c 19                  LDA FileDestAdr_H    ; Set
-284d: 85 0a                     STA dat_0009_H       ;     dat_0009_H = FileDestAdr_H
+284d: 85 0a                     STA DestAdr_H        ;     DestAdr_H = FileDestAdr_H
 284f: a0 00                     LDY #$00             ; Set Y = 0
 2851: ae 08 19                  LDX FileLen_H        ; If (FileLen_H != 0)
 2854: f0 16                     BEQ loc_286c         ; Then                         (Compute checksum of decrypted data)
-2856: b1 09     loc_2856        LDA (dat_0009_L),Y   ;     Loop
+2856: b1 09     loc_2856        LDA (DestAdr_L),Y    ;     Loop
                                                      ;         Loop
 2858: 18                        CLC                  ;             Set CalcChksum_L
 2859: 6d 01 19                  ADC CalcChksum_L     ;                    =
-285c: 8d 01 19                  STA CalcChksum_L     ;                      CalcChksum_L + (*dat_0009_L)[Y]
+285c: 8d 01 19                  STA CalcChksum_L     ;                      CalcChksum_L + (*DestAdr_L)[Y]
 285f: 90 03                     BCC loc_2864         ;             If (C == 1) Then
 2861: ee 02 19                  INC CalcChksum_H     ;                 Add 1 to CalcChksum_H
                                                      ;             End If
 2864: c8        loc_2864        INY                  ;             Add 1 to Y
 2865: d0 ef                     BNE loc_2856         ;         Repeat while (Y != 0)
-2867: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H
+2867: e6 0a                     INC DestAdr_H        ;         Add 1 to DestAdr_H
 2869: ca                        DEX                  ;         Subtract 1 from X
 286a: d0 ea                     BNE loc_2856         ;     Repeat while (X != 0)
                                                      ; End If                       (Y = 0 at this point)
 286c: ae 07 19  loc_286c        LDX FileLen_L        ; If (FileLen_L != 0)
-286f: f0 14                     BEQ loc_2885         ; Then
-2871: b1 09     loc_2871        LDA (dat_0009_L),Y   ;     Loop
+286f: f0 14                     BEQ loc_2885         ; Then                         (Y = 0 here)
+2871: b1 09     loc_2871        LDA (DestAdr_L),Y    ;     Loop
 2873: 18                        CLC                  ;         Set CalcChksum_L
 2874: 6d 01 19                  ADC CalcChksum_L     ;                =
-2877: 8d 01 19                  STA CalcChksum_L     ;                  CalcChksum_L + (*dat_0009_L)[Y]
+2877: 8d 01 19                  STA CalcChksum_L     ;                  CalcChksum_L + (*DestAdr_L)[Y]
 287a: 90 03                     BCC loc_287f         ;         If (C == 1) Then
 287c: ee 02 19                  INC CalcChksum_H     ;             Add 1 to CalcChksum_H
                                                      ;         End If
@@ -3782,7 +3889,7 @@
                 ; Reads a file segment directory entry
                 ;
                 ; Input
-                ;   FileNumber   - The file number to load the entry for (0 .. 44)
+                ;   FileNumber   - The file number to load the entry for (0 .. 68)
                 ;
                 ; Output
                 ;   SourceAdr_L/H  - $280 [FILE_SEG_DIR] + (FileNumber * 4) + (FileNumber >> 7) & 1
@@ -3823,31 +3930,40 @@
 28d3: 8d 03 19                  STA FileSector_L     ;     FileSector_L = FileId_B2
 28d6: 60                        RTS                  ; Return to caller
 
-                ; Decode a File ID and ensure the correct disk is inserted into a drive.
+                ; Prompts user to insert the disk containing the requested File ID.
+                ;
+                ; - Displays prompt "Please insert The Dungeon Disk ? Side ? into any drive"
+                ; - Waits for the user to press the spacebar, click the trigger button or press SELECT.
+                ; - If MayCancelLoad is non-zero, ESC may be used to cancel.
                 ;
                 ; Input
-                ;   FileId_B1   - Byte 1 of the file ID
-                ;   dat_190e    - Flag indicating whether ESC can be used to cancel (0 = false, non-0 = true)
+                ;   FileId_B1     - Byte 1 of the file ID
+                ;   MayCancelLoad - Flag indicating whether ESC can be used to cancel
+                ;                   (0 = user cannot cancel, non-zero = user may cancel if prompted for disk)
                 ;
-28d7: ad 05 19  sub_28d7        LDA FileId_B1        ; Set A = FileId_B1
-28da: a2 01                     LDX #$01             ; Set X = 1
+                ; Output
+                ;   C           - 0 if user pressed spacebar, SELECT or clicked the trigger button
+                ;                 1 if user pressed ESC (only when MayCancelLoad is not 0)
+                ;
+28d7: ad 05 19  promptForDisk   LDA FileId_B1        ; Set A = FileId_B1
+28da: a2 01                     LDX #$01             ; Set X = 1                 (Assume disk side 1, X=1 -> Side 1)
 28dc: 4a                        LSR                  ; Divide
 28dd: 4a                        LSR                  ;    A
 28de: 4a                        LSR                  ;      by 8
-28df: 90 01                     BCC loc_28e2         ; If (C = 1) Then   (FileId_B1 bit 2 set)
-28e1: e8                        INX                  ;      Add 1 to X
+28df: 90 01                     BCC loc_28e2         ; If (C = 1) Then
+28e1: e8                        INX                  ;      Add 1 to X           (FileId_B1 bit 2 set, X=2 -> Side 2)
                                                      ; End If
 28e2: 29 03     loc_28e2        AND #$03             ; Set
 28e4: 18                        CLC                  ;     A
 28e5: 69 01                     ADC #$01             ;       = (A & 3) + 1
-28e7: 8d 11 19                  STA FileDiskNumber   ; Set FileDiskNumber = A    (A = (FileId_B1 >> 3) & 3 + 1)
+28e7: 8d 11 19                  STA FileDiskNumber   ; Set FileDiskNumber = A    (A=(FileId_B1 >> 3) & 3 + 1 -> Disk #)
 28ea: 8e 10 19                  STX FileDiskSide     ; Set FileDiskSide = X
 28ed: a9 9f                     LDA #$9f             ; Set the StrTmplate_L/H
 28ef: 85 16                     STA StrTmplate_L     ;     address
 28f1: a9 29                     LDA #$29             ;     to
 28f3: 85 17                     STA StrTmplate_H     ;     $299f [StrPleaseInsert] "Please insert The Dungeon Disk ? Side ? into any drive"
 28f5: 20 88 1c                  JSR printBtm         ; Call $1c88 [printBtm]
-28f8: ad 0e 19                  LDA dat_190e         ; If (dat_190e != 0)
+28f8: ad 0e 19                  LDA MayCancelLoad    ; If (MayCancelLoad != 0)
 28fb: f0 0b                     BEQ loc_2908         ; Then
 28fd: a9 07                     LDA #$07             ;     Set the StrTmplate_L/H
 28ff: 85 16                     STA StrTmplate_L     ;         address
@@ -3868,54 +3984,55 @@
                                                      ;     End If
 2918: c9 1b                     CMP #$1b             ; Repeat
 291a: d0 ec                     BNE loc_2908         ;   while (A != $1b (27 ESC))
-291c: ad 0e 19                  LDA dat_190e         ;      Or
-291f: f0 e7                     BEQ loc_2908         ;      (dat_190e == 0)
-                ;
-2921: 20 2b 29                  JSR sub_292b         ; Call $292b [sub_292b]
+291c: ad 0e 19                  LDA MayCancelLoad    ;      Or
+291f: f0 e7                     BEQ loc_2908         ;      (MayCancelLoad == 0)
+                ; Cancelled: User pressed ESC
+2921: 20 2b 29                  JSR clrBottomText    ; Call $292b [clrBottomText]
 2924: 38                        SEC                  ; Set C = 1
 2925: 60                        RTS                  ; Return to caller
-                ;
-2926: 20 2b 29  loc_2926        JSR sub_292b         ; Call $292b [sub_292b]
+                ; Success: User pressed spacebar, SELECT or clicked trigger.
+2926: 20 2b 29  loc_2926        JSR clrBottomText    ; Call $292b [clrBottomText]
 2929: 18                        CLC                  ; Set C = 0
 292a: 60                        RTS                  ; Return to caller
 
                 ; Clears the bottom message text
                 ;
-292b: a9 07     sub_292b        LDA #$07             ; Set the StrTmplate_L/H
+292b: a9 07     clrBottomText   LDA #$07             ; Set the StrTmplate_L/H
 292d: 85 16                     STA StrTmplate_L     ;     address
 292f: a9 20                     LDA #$20             ;     to
 2931: 85 17                     STA StrTmplate_H     ;     $2007 [StrClearAll]  (clear all message rows)
 2933: 20 88 1c                  JSR printBtm         ; Call $1c88 [printBtm]
 2936: 60                        RTS                  ; Return to caller
 
-                ; Disk related - reads encryption key sector? or an entire file?
+                ; Reads an encryption key sector and verifies it matches the requested file.
                 ;
                 ; Input
                 ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
-                ;   FileSector_L/H  - File key sector
+                ;   FileSector_L/H  - File key sector to read
                 ;   FileId_B1/B2    - File ID from file segment directory
                 ;   FileLen_L/H     - File size
                 ;
                 ; Output
-                ;   N            - 0 on success, 1 on failure
-
-                ;   dat_000b/dat_000c - Set to FileLen_L/H
-                ;   dat_0009_L/H   - set to FileDestAdr_L/H
-                ;   DiskSector_L/H - FileSector_L/H + 1
+                ;   N               - 0 on success, 1 on failure (unable to read disk or file ID or size mismatch)
+                ;   DiskSector_L/H  - FileSector_L/H + 1
                 ;
-2937: ad 0b 19  sub_2937        LDA FileDestAdr_L    ; Set
-293a: 85 09                     STA dat_0009_L       ;     dat_0009_L = FileDestAdr_L
+                ; ???
+                ;   NumBytes_L/H    - Set to FileLen_L/H
+                ;   DestAdr_L/H     - set to FileDestAdr_L/H
+                ;
+2937: ad 0b 19  readKeySector   LDA FileDestAdr_L    ; Set
+293a: 85 09                     STA DestAdr_L        ;     DestAdr_L = FileDestAdr_L
 293c: ad 0c 19                  LDA FileDestAdr_H    ; Set
-293f: 85 0a                     STA dat_0009_H       ;     dat_0009_H = FileDestAdr_H
+293f: 85 0a                     STA DestAdr_H        ;     DestAdr_H = FileDestAdr_H
 2941: ad 03 19                  LDA FileSector_L     ; Set
 2944: 8d 32 02                  STA DiskSector_L     ;     DiskSector_L = FileSector_L
 2947: ad 04 19                  LDA FileSector_H     ; Set
 294a: 8d 33 02                  STA DiskSector_H     ;     DiskSector_H = FileSector_H
 294d: ad 07 19                  LDA FileLen_L        ; Set
-2950: 85 0b                     STA dat_000b         ;     dat_000b = FileLen_L
+2950: 85 0b                     STA NumBytes_L       ;     NumBytes_L = FileLen_L
 2952: ad 08 19                  LDA FileLen_H        ; Set
-2955: 85 0c                     STA dat_000c         ;     dat_000c = FileLen_H
-2957: 20 79 29                  JSR sub_2979         ; Call $2979 [sub_2979]
+2955: 85 0c                     STA NumBytes_H       ;     NumBytes_H = FileLen_H
+2957: 20 79 29                  JSR readNextSector   ; Call $2979 [readNextSector]
 295a: 30 1a                     BMI loc_2976         ; If (N == 0) Then
 295c: a2 0f                     LDX #$0f             ;     Set X = $f   (16 iterations [15..0])
 295e: bd 00 01  loc_295e        LDA SioBuf,X         ;     Loop
@@ -3930,13 +4047,12 @@
 2971: ca                        DEX                  ;         Subtract 1 from X
 2972: 10 f5                     BPL loc_2969         ;     While (X >= 0)
 2974: e8                        INX                  ;     Add 1 to X               (Set X = 0 -> N = 0)
-2975: 60                        RTS                  ;     Return to caller         (N = 0)
+2975: 60                        RTS                  ;     Return to caller         (success, N = 0)
                                                      ; End If
-                ;
 2976: a9 ff     loc_2976        LDA #$ff             ; Set A = $ff                  (Set A = $ff -> N = 1)
-2978: 60                        RTS                  ; Return to caller             (N = 1)
+2978: 60                        RTS                  ; Return to caller             (failure, N = 1)
 
-                ; Reads a sector from disk and adds 1 to DiskSector_L/H
+                ; Reads a sector from disk into SioBuf and adds 1 to DiskSector_L/H
                 ;
                 ; Systems with 128K or more of RAM:
                 ;   Certain files are flagged for special processing when RAM permits.
@@ -3950,19 +4066,20 @@
                 ;   DiskSector_L/H - Disk sector to read
                 ;
                 ; Output
-                ;   N       - 0 on success, 1 on error
+                ;   N              - 0 on success, 1 on error
+                ;   SioBuf[0..7f]  - Holds sector data received from device on success
                 ;
                 ; Temp
-                ;   dat_0006    - Holds number of retries remaining
+                ;   dat_0006    - Holds number of retries remaining. Loop control var.
                 ;
-2979: 2c 58 02  sub_2979        BIT SysMemorySize    ; If (bit 6 of SysMemorySize == 1)          (128K system RAM)
+2979: 2c 58 02  readNextSector  BIT SysMemorySize    ; If (bit 6 of SysMemorySize == 1)          (128K system RAM)
 297c: 50 08                     BVC loc_2986         ;    And
 297e: 2c 5a 02                  BIT dat_025a         ;    (bit 7 of dat_025a == 1)   (set in sub_2cfb to file's bit in dat_2a38_unk)
 2981: 10 03                     BPL loc_2986         ; Then
 2983: 4c f4 f9                  JMP sub_f9f4         ;      Continue @ $f9f4 [sub_f9f4]
                                                      ; End If
 2986: a9 02     loc_2986        LDA #$02             ; Set
-2988: 85 06                     STA dat_0006         ;     dat_0006 = 2   (2 retries)
+2988: 85 06                     STA dat_0006         ;     dat_0006 = 2   (2 retries: [2..1])
 298a: 20 8e 24  loc_298a        JSR readDiskSector   ; Loop
                                                      ;     Call $248e [readDiskSector]
 298d: 10 06                     BPL loc_2995         ;     If (N == 0) Then                 (success)
@@ -4127,7 +4244,7 @@
                 ; Temp
                 ;   BEParam2[0..1] - Holds multiplicand for computing the value of the digits entered
                 ;   BEResult[2..3] - Updated while computing the value of the digits entered
-                ;   dat_0006 - Holds number of digits processed, loop control var
+                ;   dat_0006       - Holds number of digits processed, loop control var
                 ;
 2aa0: a9 00     readBEUInt16    LDA #$00             ; Set
 2aa2: 85 02                     STA BEParam1         ;     BEParam1[0] = 0
@@ -4356,8 +4473,8 @@
                 ;
 2bb0: c6 32     pressAnyKey     DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED ()
 2bb2: a2 1e                     LDX #$1e             ; Set X = $1e (30 iterations/vblanks = 1/2 second)
-2bb4: 20 66 2c  loc_2bb4        JSR WAIT_FOR_VBLK_B  ; Loop
-                                                     ;     Call $2c66 [WAIT_FOR_VBLK_B]
+2bb4: 20 66 2c  loc_2bb4        JSR waitForVblankB   ; Loop
+                                                     ;     Call $2c66 [waitForVblankB]
 2bb7: ca                        DEX                  ;     Subtract 1 from X
 2bb8: d0 fa                     BNE loc_2bb4         ; Repeat while (X != 0)
 2bba: 20 43 26                  JSR readKey          ; Call $2643 [readKey]        (clear any pending key)
@@ -4416,8 +4533,8 @@
 2c10: 8d 63 2c                  STA SixthsCnt        ;     Set SixthsCnt = 6         (6 iterations, approx 1 second)
 2c13: a2 0a     loc_2c13        LDX #$0a             ;     Loop
                                                      ;         Set X = $a      (10 iterations, approx 1/6th second)
-2c15: 20 66 2c  loc_2c15        JSR WAIT_FOR_VBLK_B  ;         Loop
-                                                     ;             Call $2c66 [WAIT_FOR_VBLK_B]
+2c15: 20 66 2c  loc_2c15        JSR waitForVblankB   ;         Loop
+                                                     ;             Call $2c66 [waitForVblankB]
 2c18: ca                        DEX                  ;             Subtract 1 from X
 2c19: d0 fa                     BNE loc_2c15         ;         Repeat while (X != 0)
 2c1b: ad 65 2c                  LDA MinDelayCnt      ;         If (MinDelayCnt >= 0)
@@ -4426,17 +4543,17 @@
 2c23: 4c 0e 2c                  JMP loc_2c0e         ;             Continue Outer Loop @ $2c0e [loc_2c0e]
                                                      ;         End If
 2c26: ad 77 19  loc_2c26        LDA cont_addr_1977_L ;         Save previous
-2c29: 8d 99 2c                  STA tmp_2c99_L       ;             return
+2c29: 8d 99 2c                  STA TempContAdr_L    ;             return
 2c2c: ad 78 19                  LDA cont_addr_1977_H ;             address
-2c2f: 8d 9a 2c                  STA tmp_2c99_H       ;             in tmp_2c99_L/tmp_2c99_H
+2c2f: 8d 9a 2c                  STA TempContAdr_H    ;             in TempContAdr_L/H
 2c32: a9 3f                     LDA #$3f             ;         Set return address
 2c34: 8d 77 19                  STA cont_addr_1977_L ;             cont_addr_1977_L/H
 2c37: a9 2c                     LDA #$2c             ;             to
 2c39: 8d 78 19                  STA cont_addr_1977_H ;             $2c3f [rtn_2c3f]
 2c3c: 4c f3 2f                  JMP sub_2ff3         ;         Continue @ $2ff3 [sub_2ff3] (returns to next instruction)
-2c3f: ad 99 2c  rtn_2c3f        LDA tmp_2c99_L       ;         Restore the
+2c3f: ad 99 2c  rtn_2c3f        LDA TempContAdr_L    ;         Restore the
 2c42: 8d 77 19                  STA cont_addr_1977_L ;             previous
-2c45: ad 9a 2c                  LDA tmp_2c99_H       ;             return
+2c45: ad 9a 2c                  LDA TempContAdr_H    ;             continuation
 2c48: 8d 78 19                  STA cont_addr_1977_H ;             address
 2c4b: a5 31                     LDA KbdChar          ;         If (KbdChar == $20 (32 space)) Then
 2c4d: c9 20                     CMP #$20             ;             Continue @ $2c5b [loc_2c5b]     (space pressed, exit)
@@ -4458,13 +4575,14 @@
                 ; Waits for a vertical blank to occur
                 ;
                 ; Input
-                ;   VBLK_COUNTER - Repeatedly inspects this value until it changes (updated in VVBLKI)
+                ;   VBlankCounter - Repeatedly inspects this value until it changes (updated in VVBLKI)
                 ;
                 ; Note: X & Y registers are untouched by this sub
+                ; Note: This sub is identical to waitForVblankA
                 ;
-2c66: ad 52 02  WAIT_FOR_VBLK_B  LDA VBLK_COUNTER    ; Continually read
-2c69: cd 52 02  loc_2c69        CMP VBLK_COUNTER     ;     the vblank counter
-2c6c: f0 fb                     BEQ loc_2c69         ;     until it updates
+2c66: ad 52 02  waitForVblankB  LDA VBlankCounter    ; Set A = VBlankCounter
+2c69: cd 52 02  loc_2c69        CMP VBlankCounter    ; Loop until the
+2c6c: f0 fb                     BEQ loc_2c69         ;     VBlankCounter changes
 2c6e: 60                        RTS                  ; Return to caller
 
                 ; Repeatedly executes sub_2ff3 while KbdChar is < 0
@@ -4474,28 +4592,28 @@
                 ;   cont_addr_1977_L/H - The cu
                 ;
                 ; Temp
-                ;   tmp_2c99_L/H - Assigned to the current value of cont_addr_1977_L/H before executing sub_2ff3.
-                ;                  The stored value is restored after the called sub returns.
+                ;   TempContAdr_L/H - Assigned to the current value of cont_addr_1977_L/H before executing sub_2ff3.
+                ;                     The stored value is restored after the called sub returns.
                 ;
 2c6f: ad 77 19  sub_2c6f        LDA cont_addr_1977_L ; Loop
-2c72: 8d 99 2c                  STA tmp_2c99_L       ;     Set tmp_2c99_L = cont_addr_1977_L
-2c75: ad 78 19                  LDA cont_addr_1977_H ;     Set
-2c78: 8d 9a 2c                  STA tmp_2c99_H       ;         tmp_2c99_H = cont_addr_1977_H
-2c7b: a9 88                     LDA #$88             ;     Set return address
+2c72: 8d 99 2c                  STA TempContAdr_L    ;     Set TempContAdr_L/H
+2c75: ad 78 19                  LDA cont_addr_1977_H ;            =
+2c78: 8d 9a 2c                  STA TempContAdr_H    ;              cont_addr_1977_L/H
+2c7b: a9 88                     LDA #$88             ;     Set
 2c7d: 8d 77 19                  STA cont_addr_1977_L ;         cont_addr_1977_L/H
-2c80: a9 2c                     LDA #$2c             ;         to
-2c82: 8d 78 19                  STA cont_addr_1977_H ;         $2c88 [rtn_2c88]
+2c80: a9 2c                     LDA #$2c             ;            =
+2c82: 8d 78 19                  STA cont_addr_1977_H ;              $2c88 [rtn_2c88]
 2c85: 4c f3 2f                  JMP sub_2ff3         ;     Continue @ $2ff3 [sub_2ff3] (returns to next instruction)
-2c88: ad 99 2c  rtn_2c88        LDA tmp_2c99_L       ;     Set
-2c8b: 8d 77 19                  STA cont_addr_1977_L ;         cont_addr_1977_L = tmp_2c99_L
-2c8e: ad 9a 2c                  LDA tmp_2c99_H       ;     Set
-2c91: 8d 78 19                  STA cont_addr_1977_H ;         cont_addr_1977_H = tmp_2c99_H
+2c88: ad 99 2c  rtn_2c88        LDA TempContAdr_L    ;     Set
+2c8b: 8d 77 19                  STA cont_addr_1977_L ;         cont_addr_1977_L/H
+2c8e: ad 9a 2c                  LDA TempContAdr_H    ;            =
+2c91: 8d 78 19                  STA cont_addr_1977_H ;              TempContAdr_L/H
 2c94: a5 31                     LDA KbdChar          ; Repeat
 2c96: 30 d7                     BMI sub_2c6f         ;   while (KbdChar < 0)
 2c98: 60                        RTS                  ; Return to caller
 
-2c99: ff        tmp_2c99_L      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_L
-2c9a: ff        tmp_2c99_H      .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_H
+2c99: ff        TempContAdr_L   .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_L
+2c9a: ff        TempContAdr_H   .BYTE $ff            ; Temp storage for preserving the value of cont_addr_1977_H
 
                 ; Sets StrTmplate_L/H to the A-th address from the table @ Y/X
                 ;
@@ -4533,97 +4651,134 @@
 2cab: 00        sub_2cab        BRK                  ;
 2cac: 60                        RTS                  ; Return to caller
 
+                ; Pauses the game and loads a module.
                 ;
-                ;  ?? SEGLOAD ??
+                ; Input
+                ;   FileNumber      - The index of the file to load
+                ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
+                ;
+                ; Temp
+                ;   flg_PAUSED    - Decremented before the load and incremented after.
+                ;   MayCancelLoad - Set to 0 before the load (user can not cancel the operation)
                 ;
 2cad: c6 32     sub_2cad        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
 2caf: a9 00                     LDA #$00             ; Set
-2cb1: 8d 0e 19                  STA dat_190e         ;     dat_190e = 0
+2cb1: 8d 0e 19                  STA MayCancelLoad    ;     MayCancelLoad = 0
 2cb4: 20 fb 2c  loc_2cb4        JSR sub_2cfb         ; Loop
                                                      ;     Call $2cfb [sub_2cfb]
 2cb7: 90 06                     BCC loc_2cbf         ;     If (C == 0) Then
                                                      ;         Exit loop
                                                      ;     End If
-2cb9: 20 d7 28                  JSR sub_28d7         ;     Call $28d7 [sub_28d7]
+2cb9: 20 d7 28                  JSR promptForDisk    ;     Call $28d7 [promptForDisk]
 2cbc: 4c b4 2c                  JMP loc_2cb4         ; Repeat loop
 2cbf: e6 32     loc_2cbf        INC flg_PAUSED       ; Add 1 to flg_PAUSED
 2cc1: 60                        RTS                  ; Return to caller
 
+                ; Pauses the game and loads a module.
+                ;
+                ; -
+                ; - Restores player location if the load fails.
                 ;
                 ; Input
-                ;   FileNumber -
-                ;   dat_2cf7   -
+                ;   FileNumber      - The index of the file to load
+                ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
+                ;   MayCancelLoad   - Whether the user may cancel the load operation or not
+                ;                     (0 = cannot cancel, non-zero = user may cancel when prompted for disk)
                 ;
                 ; Output
-                ;   dat_190e - set to 0 if FileNumber is found in dat_2cf7[0..3]
-                ;   CHR_LOC_X[0..5] -
+                ;   C               - 0 if successful, 1 if user cancelled load by pressing ESC
+                ;   MayCancelLoad   - Set to 0 if FileNumber is one of the following, otherwise unchanged:
+                ;                       $10 (16) = Unknown / Compass and arrow character sets
+                ;                       $11 (17) = Combat Data
+                ;                       $12 (18) = Item Data
+                ;                       $3f (63) = Location Names
+                ;   CHR_LOC_X[0..5] - Updated to CHR_SAV_LOC_X[0..5] when C = 1
                 ;
 2cc2: c6 32     sub_2cc2        DEC flg_PAUSED       ; Subtract 1 from flg_PAUSED
 2cc4: ad 09 19                  LDA FileNumber       ; Set A = FileNumber
-2cc7: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations)
-2cc9: dd f7 2c  loc_2cc9        CMP dat_2cf7,X       ; Loop
-2ccc: f0 05                     BEQ loc_2cd3         ;     If (dat_2cf7[X] == FileNumber) Then
+2cc7: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations [3..0])
+2cc9: dd f7 2c  loc_2cc9        CMP ForcedFileIds,X  ; Loop
+2ccc: f0 05                     BEQ loc_2cd3         ;     If (ForcedFileIds[X] == FileNumber) Then
                                                      ;         Exit loop
                                                      ;     End If
 2cce: ca                        DEX                  ;     Subtract 1 from X
 2ccf: 10 f8                     BPL loc_2cc9         ; Repeat while (X >= 0)
-2cd1: 30 05                     BMI loc_2cd8         ; If (X >= 0)  - e.g. exited the loop early
+2cd1: 30 05                     BMI loc_2cd8         ; If (X >= 0)       (e.g. exited the loop early (value is 0,1,2,3))
 2cd3: a9 00     loc_2cd3        LDA #$00             ; Then
-2cd5: 8d 0e 19                  STA dat_190e         ;     Set dat_190e = 0
+2cd5: 8d 0e 19                  STA MayCancelLoad    ;     Set MayCancelLoad = 0            (user cannot cancel)
                                                      ; End If
 2cd8: 20 fb 2c  loc_2cd8        JSR sub_2cfb         ; Loop
                                                      ;     Call $2cfb [sub_2cfb]
-2cdb: 90 17                     BCC loc_2cf4         ;     If (Carry flag is clear) Then
-                                                     ;         Continue @ $2cf4 [loc_2cf4] (cleanup and return)
-2cdd: 20 d7 28                  JSR sub_28d7         ;     Call $28d7 [sub_28d7]
-2ce0: 90 f6                     BCC loc_2cd8         ; Repeat while (Carry flag is clear)
+2cdb: 90 17                     BCC loc_2cf4         ;     If (C == 0) Then
+                                                     ;         Continue @ $2cf4 [loc_2cf4] (cleanup and return, success)
+                                                     ;     End If
+2cdd: 20 d7 28                  JSR promptForDisk    ;     Call $28d7 [promptForDisk]
+2ce0: 90 f6                     BCC loc_2cd8         ; Repeat while (C == 0)
+                ;
+                ; Loading was cancelled by user
+                ;
                 ; Restore saved character position: Copies 5 bytes from CHR_SAV_LOC_X to CHR_LOC_X
                 ;     CHR_SAV_LOC_X      -> CHR_LOC_X
                 ;     CHR_SAV_LOC_Y      -> CHR_LOC_Y
                 ;     CHR_SAV_LOC_MAP    -> CHR_LOC_MAP
                 ;     CHR_SAV_FRAC_LOC_X -> CHR_FRAC_LOC_X
                 ;     CHR_SAV_FRAC_LOC_Y -> CHR_FRAC_LOC_Y
-2ce2: a2 04                     LDX #$04             ; Set X = 4 (5 iterations)
+                ;
+                ; Restores original player position, original module value, unpauses game and returns C = 1 (cancelled)
+                ;
+2ce2: a2 04                     LDX #$04             ; Set X = 4 (5 iterations [4..0])
 2ce4: bd 18 63  loc_2ce4        LDA CHR_SAV_LOC_X,X  ; Loop
-2ce7: 9d 13 63                  STA CHR_LOC_X,X      ;     Set CHR_LOC_X,X = CHR_SAV_LOC_X,X
+2ce7: 9d 13 63                  STA CHR_LOC_X,X      ;     Set CHR_LOC_X[X] = CHR_SAV_LOC_X[X]
 2cea: ca                        DEX                  ;     Subtract 1 from X
 2ceb: 10 f7                     BPL loc_2ce4         ; Repeat while (X >= 0)
 2ced: ad 1f 63                  LDA dat_631f         ; Set
 2cf0: 8d 1e 63                  STA dat_631e         ;     dat_631e = dat_631f
-2cf3: 38                        SEC                  ; Set the Carry Flag
+2cf3: 38                        SEC                  ; Set C = 1                               (failure??)
 2cf4: e6 32     loc_2cf4        INC flg_PAUSED       ; Add 1 to flg_PAUSED
 2cf6: 60                        RTS                  ; Return to caller
 
-2cf7: 10 11 12  dat_2cf7        .BYTE $10,$11,$12    ;
-2cfa: 3f                        .BYTE $3f
+2cf7: 10 11 12  ForcedFileIds   .BYTE $10,$11,$12    ; Contains file segment entry indexes/file numbers (not IDs)
+2cfa: 3f                        .BYTE $3f            ; which the user is not permitted to cancel loading.
+                                                     ;   0: $10 (16) = Unknown / Compass and arrow character sets
+                                                     ;   1: $11 (17) = Combat Data
+                                                     ;   2: $12 (18) = Item Data
+                                                     ;   3: $3f (63) = Location Names
 
                 ; Related to encounters or loading new scenarios
                 ;
-                ; - Displays "Encounter!" if FileNumber is $11 (Combat data) or "Loading..." otherwise
+                ; - Displays "Encounter!" if FileNumber is $11 (17) (Combat data) or "Loading..." otherwise
                 ; -
                 ;
                 ; Input
-                ;   FileNumber - The index of the file to load
+                ;   FileNumber      - The index of the file to load
+                ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
+                ;   dat_2a38_unk    - Bits associated with each file
                 ;
                 ; Output
-                ;   DispBuf40x1 -
+                ;   DispBuf40x1[0..31] - Assigned "Encounter!" (FileNumber = $11) or "Loading..." (any other file)
                 ;   C           - ?
+                ;
+                ; ???
+                ;   dat_0264    - Initialized to 0
+                ;   dat_0259    - Initialized to 0
+                ;   dat_025a    - Initialized to 0, set to the value of the file number's bit from dat_2a38_unk
+                ;   dat_025b    - Initialized to 0
                 ;
 2cfb: ad 09 19  sub_2cfb        LDA FileNumber       ; Preserve the current
 2cfe: 48                        PHA                  ;     value of FileNumber
                 ; Set 32 bytes to zero starting @ $197c [DispBuf40x1]
-2cff: a2 1f     loc_2cff        LDX #$1f             ; Set X = $1f (32 iterations)
+2cff: a2 1f     loc_2cff        LDX #$1f             ; Set X = $1f (32 iterations [31..0])
 2d01: a9 00                     LDA #$00             ; Set A = 0
 2d03: 9d 7c 19  loc_2d03        STA DispBuf40x1,X    ; Loop
                                                      ;     Set DispBuf40x1[X] = 0
 2d06: ca                        DEX                  ;     Subtract 1 from X
 2d07: 10 fa                     BPL loc_2d03         ; Repeat while (X >= 0)
                 ; Display "Encounter!" if FileNumber = $11 (17 Combat) or "Loading..." otherwise
-2d09: a2 09                     LDX #$09             ; Set X = 9 (10 iterations)
+2d09: a2 09                     LDX #$09             ; Set X = 9 (10 iterations [9..0])
 2d0b: ac 09 19                  LDY FileNumber       ; Set Y = FileNumber
 2d0e: bd 2e 2a  loc_2d0e        LDA StrEncounter,X   ; Loop
                                                      ;     Set A = StrEncounter[X] ("Encounter!")
-2d11: c0 11                     CPY #$11             ;     If (Y <> $11 (17))
+2d11: c0 11                     CPY #$11             ;     If (Y <> $11 (17))         (Use "Loading" if not combat data)
 2d13: f0 03                     BEQ loc_2d18         ;     Then
 2d15: bd 24 2a                  LDA StrLoading,X     ;         Then set A = StrLoading[X] ("Loading...")
                                                      ;     End If
@@ -4652,12 +4807,12 @@
 2d45: a0 38                     LDY #$38             ;     Y/X = $2a38 [dat_2a38_unk]            (bit array source addr)
 2d47: 20 e3 2d                  JSR testBit          ; Call $2de3 [testBit]           (C = 1 if bit is set, 0 otherwise)
 2d4a: 6e 5a 02                  ROR dat_025a         ; Set dat_025a = C * 128    (dat_025a = 0, so just sets bit 7 to C)
-2d4d: 20 5b 27                  JSR sub_275b         ; Call $275b [sub_275b]
+2d4d: 20 5b 27                  JSR readFileScan     ; Call $275b [readFileScan]
 2d50: b0 0a                     BCS loc_2d5c         ; If (C == 0) Then
-2d52: 2c 59 02                  BIT dat_0259         ;     If (dat_0259 >= 0) Then
-2d55: 10 0b                     BPL rts_C_CLR_2d62   ;         If the result doesn't have the sign bit set, jump to return code (carry clear)
+2d52: 2c 59 02                  BIT dat_0259         ;     If (dat_0259 >= 0) Then            (result sign bit not set,
+2d55: 10 0b                     BPL rts_C_CLR_2d62   ;         Continue @ $2d62 [rts_C_CLR_2d62]  return w/ carry clear)
                                                      ;     End If
-2d57: 20 00 f9                  JSR $f900            ;     Call $f900 [TODO: label?]
+2d57: 20 00 f9                  JSR sub_f900         ;     Call $f900 [sub_f900]
 2d5a: 90 06                     BCC rts_C_CLR_2d62   ;     If (C == 0) Then
                                                      ;       carry bit is NOT set, jump to return code (carry clear)
                                                      ;     End If
@@ -4674,10 +4829,10 @@
                 ; Checks if the file number is one of values in tbl_2d85.
                 ; If it is, then uses the corresponding value in tbl_2d8a as the file number instead.
 2d67: ad 09 19  loc_2d67        LDA FileNumber       ; Set A = FileNumber
-2d6a: a2 05                     LDX #$05             ; Set X = 5
+2d6a: a2 05                     LDX #$05             ; Set X = 5 (6 iterations: [5..0] when RAM <= 64KB)
 2d6c: 2c 58 02                  BIT SysMemorySize    ; If (SysMemorySize bit 6 == 1)     (128K system RAM)
 2d6f: 50 01                     BVC loc_2d72         ; Then
-2d71: ca                        DEX                  ;     Subtract 1 from X
+2d71: ca                        DEX                  ;     Subtract 1 from X (5 iterations [4..0] when RAM >= 128KB)
                                                      ; End If
 2d72: dd 85 2d  loc_2d72        CMP tbl_2d85,X       ; Loop
                                                      ;     If (A = tbl_2d85[X]) Then     (A = FileNumber)
@@ -4690,40 +4845,49 @@
 2d7f: 8d 09 19                  STA FileNumber       ;     Set FileNumber = tbl_2d8a[X] (where X is in 0..4)
 2d82: 4c ff 2c                  JMP loc_2cff         ; Jump back up to the start of the sub
 
-2d85: 35 0f 44  tbl_2d85        .BYTE $35,$0f,$44    ;
+2d85: 35 0f 44  tbl_2d85        .BYTE $35,$0f,$44    ; 5 bytes: File numbers to map from
 2d88: 43 10                     .BYTE $43,$10
-2d8a: 2f 44 43  tbl_2d8a        .BYTE $2f,$44,$43    ;
-2d8d: 42 3f                     .BYTE $42,$3f
+2d8a: 2f 44 43  tbl_2d8a        .BYTE $2f,$44,$43    ; 5 bytes: File numbers to map to
+2d8d: 42 3f                     .BYTE $42,$3f        ;        From File Number    -> To File Number
+                                                     ;     0: $35 (53 Dead Song)  -> $2f (47 Character Death)
+                                                     ;     1: $0f (15 Unknown?)   -> $44 (68 Unknown?)
+                                                     ;     2: $44 (68 Unknown?)   -> $43 (67 Unknown?)
+                                                     ;     3: $43 (67 Unknown?)   -> $42 (66 Unknown?)
+                                                     ;     4: $10 (16 Compass CS) -> $3f (63 Location Names)
 
                 ; Initializes bytes to a specified value
                 ;
-                ; Parameters
-                ;   A = value to initialize bytes to
-                ;   dat_0009_L/H = Address to write bytes to
-                ;   dat_000c/dat_000d = Number of bytes to write (uint16)
+                ; Input
+                ;   A            - value to initialize bytes to
+                ;   DestAdr_L/H  - Address to write bytes to
+                ;   NumBytes_L/H - Number of bytes to write (uint16)
                 ;
-                ; Return
-                ;   dat_0009_H is incremented
+                ; Output
+                ;   DestAdr_H    - increased by the value of NumBytes_H
                 ;
 2d8f: a0 00     initBytes       LDY #$00             ; Set Y = 0
-                ; Initialize dat_000c pages
-2d91: a6 0c                     LDX dat_000c         ; Set X = dat_000c
-2d93: f0 0a                     BEQ loc_2d9f         ; If (dat_000c != 0) Then
-2d95: 91 09     loc_2d95        STA (dat_0009_L),Y   ;     Loop
-                                                     ;         Set (dat_0009_L),Y = A
+                ; Initialize NumBytes_H pages
+2d91: a6 0c                     LDX NumBytes_H       ; Set X = NumBytes_H
+2d93: f0 0a                     BEQ loc_2d9f         ; If (NumBytes_H != 0) Then
+2d95: 91 09     loc_2d95        STA (DestAdr_L),Y    ;     Loop
+                                                     ;         Set (*DestAdr_L)[Y] = A
 2d97: c8                        INY                  ;         Add 1 to Y
-2d98: d0 fb                     BNE loc_2d95         ;         If (Y = 0) Then
-2d9a: e6 0a                     INC dat_0009_H       ;             Add 1 to dat_0009_H
-2d9c: ca                        DEX                  ;             Subtract 1 from X
+2d98: d0 fb                     BNE loc_2d95         ;         If (Y != 0) Then
+                                                     ;             Continue Loop
+                                                     ;         End If
+2d9a: e6 0a                     INC DestAdr_H        ;         Add 1 to DestAdr_H
+2d9c: ca                        DEX                  ;         Subtract 1 from X
 2d9d: d0 f6                     BNE loc_2d95         ;     Repeat while (X != 0)
-2d9f: a6 0b     loc_2d9f        LDX dat_000b         ; Set X = dat_000b
+                                                     ; End If
+2d9f: a6 0b     loc_2d9f        LDX NumBytes_L       ; Set X = NumBytes_L
                 ; Initialize remaining dat_000d bytes
-2da1: f0 07                     BEQ loc_2daa         ; If (dat_000b != 0) Then
-2da3: 91 09     loc_2da3        STA (dat_0009_L),Y   ;     Loop
-                                                     ;         Set (dat_0009_L),Y = A
+2da1: f0 07                     BEQ loc_2daa         ; If (NumBytes_L != 0) Then
+2da3: 91 09     loc_2da3        STA (DestAdr_L),Y    ;     Loop
+                                                     ;         Set (*DestAdr_L)[Y] = A
 2da5: c8                        INY                  ;         Add 1 to Y
-2da6: c4 0b                     CPY dat_000b         ;     Repeat
-2da8: d0 f9                     BNE loc_2da3         ;       while (Y != dat_000b)
+2da6: c4 0b                     CPY NumBytes_L       ;     Repeat
+2da8: d0 f9                     BNE loc_2da3         ;       while (Y != NumBytes_L)
+                                                     ; End If
 2daa: 60        loc_2daa        RTS                  ; Return to caller
 
                 ; Sets or clears a bit
@@ -4805,35 +4969,37 @@
 2e05: 80 40 20  InvBitNMask     .BYTE $80,$40,$20    ; Bitmasks for individual bits (Inverted: bit is 7 - index)
 2e08: 10 08 04 02 01            .BYTE $10,$08,$04,$02,$01
 
-                ; Copies X * 256 + Y bytes from the address in SourceAdr_L to the address in dat_0009_L
+                ; Copies X * 256 + Y bytes from the address in SourceAdr_L/H to the address in DestAdr_L/H
                 ;
                 ; Input
                 ;   X             - MSB of number of bytes to copy (16-bit int)
                 ;   Y             - LSB of number of bytes to copy (16-bit int)
                 ;   SourceAdr_L/H - source address (SourceAdr_H is modified [incremented by X] on return)
-                ;   dat_0009_L/H  - destination address (dat_0009_H is modified [incremented by X] on return)
+                ;   DestAdr_L/H   - destination address (DestAdr_H is modified [incremented by X] on return)
                 ;
-2e0d: 84 0b     copyBytes       STY dat_000b         ; Set dat_000b = Y
+2e0d: 84 0b     copyBytes       STY NumBytes_L       ; Set NumBytes_L = Y
 2e0f: a0 00                     LDY #$00             ; Set Y = 0
-                ; Copy X pages from the address in SourceAdr_L to the address in dat_0009_L
+                ; Copy X pages from the address in SourceAdr_L to the address in DestAdr_L
 2e11: e0 00                     CPX #$00             ; If (X != 0)
-2e13: f0 0e                     BEQ loc_2e23         ;   Then
-2e15: b1 07     loc_2e15        LDA (SourceAdr_L),Y  ;     Loop
-2e17: 91 09                     STA (dat_0009_L),Y   ;         Set (dat_0009_L),Y = (SourceAdr_L),Y
-2e19: c8                        INY                  ;         Add 1 to Y
-2e1a: d0 f9                     BNE loc_2e15         ;             and repeat while (Y != 0) [256 repetitions]
-2e1c: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H (next page)
+2e13: f0 0e                     BEQ loc_2e23         ; Then
+2e15: b1 07     loc_2e15        LDA (SourceAdr_L),Y  ;     Loop                  (Y = 0 at start of each loop iteration)
+                                                     ;         Loop
+2e17: 91 09                     STA (DestAdr_L),Y    ;             Set (*DestAdr_L)[Y] = (*SourceAdr_L)[Y]
+2e19: c8                        INY                  ;             Add 1 to Y
+2e1a: d0 f9                     BNE loc_2e15         ;         Repeat while (Y != 0)    (256 repetitions)
+2e1c: e6 0a                     INC DestAdr_H        ;         Add 1 to DestAdr_H (next page)
 2e1e: e6 08                     INC SourceAdr_H      ;         Add 1 to SourceAdr_H (next page)
 2e20: ca                        DEX                  ;         Subtract 1 from X
-2e21: d0 f2                     BNE loc_2e15         ;             and repeat while (X != 0)
-                ; Copy Y bytes from the address in SourceAdr_L to the address in dat_0009_L
-2e23: a5 0b     loc_2e23        LDA dat_000b         ; If (dat_000b != 0)
-2e25: f0 09                     BEQ loc_2e30         ;   Then
+2e21: d0 f2                     BNE loc_2e15         ;     Repeat while (X != 0)
+                                                     ; End If
+                ; Copy Y bytes from the address in SourceAdr_L to the address in DestAdr_L
+2e23: a5 0b     loc_2e23        LDA NumBytes_L       ; If (NumBytes_L != 0)
+2e25: f0 09                     BEQ loc_2e30         ; Then                      (Y = 0 at this point)
 2e27: b1 07     loc_2e27        LDA (SourceAdr_L),Y  ;     Loop
-2e29: 91 09                     STA (dat_0009_L),Y   ;         Set (dat_0009_L),Y = (SourceAdr_L),Y
+2e29: 91 09                     STA (DestAdr_L),Y    ;         Set (*DestAdr_L)[Y] = (*SourceAdr_L)[Y]
 2e2b: c8                        INY                  ;         Add 1 to Y
-2e2c: c4 0b                     CPY dat_000b         ;             and
-2e2e: d0 f7                     BNE loc_2e27         ;             repeat while (Y != dat_000b)
+2e2c: c4 0b                     CPY NumBytes_L       ;     Repeat
+2e2e: d0 f7                     BNE loc_2e27         ;       while (Y != NumBytes_L)
 2e30: 60        loc_2e30        RTS                  ; Return to caller
 
                 ;
@@ -5038,44 +5204,43 @@
 2e9b: 85 46                     STA AttrAddr_H       ; Set AttrAddr_H = $63 (Could have just skipped the ADC [5 cycles instead of 7 = 29% faster])
 2e9d: 60                        RTS                  ; Return to caller
 
-                ; Copies -(dat_000c * 256 + dat_000b) bytes from the address in SourceAdr_L/H to the address
-                ; in dat_0009_L/H
+                ; Copies -(NumBytes_H * 256 + NumBytes_L) bytes from the address in SourceAdr_L/H to the address
+                ; in DestAdr_L/H
                 ;
                 ; Input
-                ;   dat_000b      - LSB of 2s complement negative of the number of bytes to copy
-                ;   dat_000c      - MSB of 2s complement negative of the number of bytes to copy
+                ;   NumBytes_L/H  - 2s complement negative of the number of bytes to copy
                 ;   SourceAdr_L/H - Source address
-                ;   dat_0009_L/H  - Destination address
+                ;   DestAdr_L/H   - Destination address
                 ;
                 ; Output
-                ;   SourceAdr_L/H - Moved forward by -(dat_000c * 256 + dat_000b) bytes
-                ;   dat_0009_L/H  - Moved forward by -(dat_000c * 256 + dat_000b) bytes
+                ;   SourceAdr_L/H - Moved forward by -(NumBytes_H * 256 + NumBytes_L) bytes
+                ;   DestAdr_L/H   - Moved forward by -(NumBytes_H * 256 + NumBytes_L) bytes
                 ;
-2e9e: a5 0b     copyBytesNeg    LDA dat_000b         ; Set                    (2s complement 16-bit negation...)
-2ea0: 49 ff                     EOR #$ff             ;     dat_000b
-2ea2: 85 0b                     STA dat_000b         ;        = ~dat_000b     (invert bits of dat_000b)
-2ea4: a5 0c                     LDA dat_000c         ; Set
-2ea6: 49 ff                     EOR #$ff             ;     dat_000c
-2ea8: 85 0c                     STA dat_000c         ;        = ~dat_000c     (invert bits of dat_000c)
-2eaa: e6 0b                     INC dat_000b         ; Add 1 to dat_000b
-2eac: d0 02                     BNE loc_2eb0         ; If (dat_000b == 0) Then
-2eae: e6 0c                     INC dat_000c         ;     Add 1 to dat_000c
+2e9e: a5 0b     copyBytesNeg    LDA NumBytes_L       ; Set                    (2s complement 16-bit negation...)
+2ea0: 49 ff                     EOR #$ff             ;     NumBytes_L
+2ea2: 85 0b                     STA NumBytes_L       ;        = ~NumBytes_L   (invert bits of NumBytes_L)
+2ea4: a5 0c                     LDA NumBytes_H       ; Set
+2ea6: 49 ff                     EOR #$ff             ;     NumBytes_H
+2ea8: 85 0c                     STA NumBytes_H       ;        = ~NumBytes_H   (invert bits of NumBytes_H)
+2eaa: e6 0b                     INC NumBytes_L       ; Add 1 to NumBytes_L
+2eac: d0 02                     BNE loc_2eb0         ; If (NumBytes_L == 0) Then
+2eae: e6 0c                     INC NumBytes_H       ;     Add 1 to NumBytes_H
                                                      ; End If
 2eb0: a0 00     loc_2eb0        LDY #$00             ; Set Y = 0
 2eb2: b1 07     loc_2eb2        LDA (SourceAdr_L),Y  ; Loop
                                                      ;     Set
-2eb4: 91 09                     STA (dat_0009_L),Y   ;         (*dat_0009_L)[Y] = (*SourceAdr_L)[Y]
+2eb4: 91 09                     STA (DestAdr_L),Y    ;         (*DestAdr_L)[Y] = (*SourceAdr_L)[Y]
 2eb6: c8                        INY                  ;     Add 1 to Y
 2eb7: d0 04                     BNE loc_2ebd         ;     If (Y == 0) Then              (Move to next page of mem)
 2eb9: e6 08                     INC SourceAdr_H      ;         Add 1 to SourceAdr_H
-2ebb: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H
+2ebb: e6 0a                     INC DestAdr_H        ;         Add 1 to DestAdr_H
                                                      ;     End If
-2ebd: e6 0b     loc_2ebd        INC dat_000b         ;     Add 1 to dat_000b
-2ebf: d0 f1                     BNE loc_2eb2         ;     If (dat_000b != 0) Then
+2ebd: e6 0b     loc_2ebd        INC NumBytes_L       ;     Add 1 to NumBytes_L
+2ebf: d0 f1                     BNE loc_2eb2         ;     If (NumBytes_L != 0) Then
                                                      ;         Repeat Loop
                                                      ;     End If
-2ec1: e6 0c                     INC dat_000c         ;     Add 1 to dat_000c
-2ec3: d0 ed                     BNE loc_2eb2         ; Repeat While (dat_000c != 0)
+2ec1: e6 0c                     INC NumBytes_H       ;     Add 1 to NumBytes_H
+2ec3: d0 ed                     BNE loc_2eb2         ; Repeat While (NumBytes_H != 0)
 2ec5: 60                        RTS                  ; Return to caller
 
                 ; Initialization code called from kernelEntry after base initialization
@@ -5102,13 +5267,13 @@
 2eeb: a9 20                     LDA #$20             ;     to
 2eed: 8d 23 19                  STA tbl_1923_H       ;     $2007 [StrClearAll]           (clear all message rows)
 2ef0: a9 19                     LDA #$19             ; Set
-2ef2: 8d 09 19                  STA FileNumber       ;     FileNumber = $19 (25 Load Character)
+2ef2: 8d 09 19                  STA FileNumber       ;     FileNumber = $19              (25: Load Character Module)
 2ef5: a9 00                     LDA #$00             ; Set FileDestAdr_L/H
-2ef7: 8d 0b 19                  STA FileDestAdr_L    ;    address
-2efa: a9 76                     LDA #$76             ;    to
-2efc: 8d 0c 19                  STA FileDestAdr_H    ;    $7600 [TODO: EXE Label? - ModuleNumber probably not appropriate here]
+2ef7: 8d 0b 19                  STA FileDestAdr_L    ;     address
+2efa: a9 76                     LDA #$76             ;     to
+2efc: 8d 0c 19                  STA FileDestAdr_H    ;     $7600 [ModuleStart]
 2eff: 20 ad 2c                  JSR sub_2cad         ; Call $2cad [sub_2cad]
-2f02: 20 00 76                  JSR $7600            ; Call $7600 [TODO: EXE Label? - ModuleNumber probably not appropriate here]
+2f02: 20 00 76                  JSR $7600            ; Call $7600 [ModuleStart]
 2f05: a9 02                     LDA #$02             ; Set
 2f07: 8d 53 02                  STA dat_0253         ;     dat_0253 = 2
 2f0a: a9 ff                     LDA #$ff             ; Set
@@ -5176,7 +5341,15 @@
 
                 ; Loads a scenario module
                 ;
-2f80: 20 2c 32  loc_2f80        JSR sub_322c         ; Call $322c [sub_322c]
+                ; Input
+                ;   dat_631e     - The module number to load (file number is module number + 16)
+                ;   dat_631f     - Holds a module number (possibly previous module?)
+                ;   ModuleNumber - Currently loaded scenario or map number
+                ;
+                ; Temp
+                ;   FileNumber   - File segment index of module file load
+                ;
+2f80: 20 2c 32  loc_2f80        JSR updateLocDesc    ; Call $322c [updateLocDesc]
 2f83: ad 00 76                  LDA ModuleNumber     ; If
 2f86: cd 1e 63                  CMP dat_631e         ;    (dat_631e != ModuleNumber)
 2f89: f0 5a                     BEQ loc_2fe5         ; Then
@@ -5188,28 +5361,28 @@
 2f99: 8d 5f 19                  STA StatDisplayFlg   ;     Set StatDisplayFlg = $ff   (update needed)
 2f9c: 8d 60 19                  STA StatRecalcFlg    ;     Set StatRecalcFlg = $ff    (update needed)
 2f9f: ad 1e 63                  LDA dat_631e         ;     If
-2fa2: c9 01                     CMP #$01             ;        (dat_631e != 1)
+2fa2: c9 01                     CMP #$01             ;        (dat_631e != 1)         (1 = combat data)
 2fa4: f0 14                     BEQ loc_2fba         ;
 2fa6: c9 02                     CMP #$02             ;        And
-2fa8: f0 10                     BEQ loc_2fba         ;        (dat_631e != 2)
+2fa8: f0 10                     BEQ loc_2fba         ;        (dat_631e != 2)         (2 = item data)
 2faa: ad 1f 63                  LDA dat_631f         ;        And
-2fad: c9 01                     CMP #$01             ;        (dat_631f != 1)
+2fad: c9 01                     CMP #$01             ;        (dat_631f != 1)         (1 = combat data)
 2faf: f0 09                     BEQ loc_2fba         ;        And
-2fb1: c9 02                     CMP #$02             ;        (dat_631f != 2)
+2fb1: c9 02                     CMP #$02             ;        (dat_631f != 2)         (2 = item data)
 2fb3: f0 05                     BEQ loc_2fba         ;     Then
 2fb5: a9 01                     LDA #$01             ;         Set display mode to 1
 2fb7: 20 0d 1a                  JSR setDisplayMode   ;             (normal gameplay)
                                                      ;     End If
 2fba: a9 00     loc_2fba        LDA #$00             ;     Set
-2fbc: 8d 0b 19                  STA FileDestAdr_L    ;       FileDestAdr_L/H
-2fbf: a9 76                     LDA #$76             ;       address
-2fc1: 8d 0c 19                  STA FileDestAdr_H    ;       to $7600 [ModuleNumber]
-2fc4: ad 1e 63                  LDA dat_631e         ;    Set
+2fbc: 8d 0b 19                  STA FileDestAdr_L    ;         FileDestAdr_L/H
+2fbf: a9 76                     LDA #$76             ;         address
+2fc1: 8d 0c 19                  STA FileDestAdr_H    ;         to $7600 [ModuleStart]
+2fc4: ad 1e 63                  LDA dat_631e         ;     Set
 2fc7: 18                        CLC                  ;         FileNumber
 2fc8: 69 10                     ADC #$10             ;            =
 2fca: 8d 09 19                  STA FileNumber       ;              dat_631e + $10 (16)
 2fcd: a9 ff                     LDA #$ff             ;     Set
-2fcf: 8d 0e 19                  STA dat_190e         ;         dat_190e = $ff (255)
+2fcf: 8d 0e 19                  STA MayCancelLoad    ;         MayCancelLoad = $ff (255)       (cancellation is allowed)
 2fd2: 20 c2 2c                  JSR sub_2cc2         ;     Call $2cc2 [sub_2cc2]
 2fd5: 90 03                     BCC loc_2fda         ;     If (C = 1) Then     (TODO: meaning?)
 2fd7: 4c 83 31                  JMP sub_3183         ;         Continue execution @ $3183 [sub_3183]
@@ -5225,7 +5398,7 @@
 2fe5: ad 1f 63  loc_2fe5        LDA dat_631f         ; If
 2fe8: cd 1e 63                  CMP dat_631e         ;    (dat_631f != dat_631e)
 2feb: f0 03                     BEQ loc_2ff0         ; Then
-2fed: 20 01 76                  JSR moduleEntry1     ;     Continue @ $7601 [moduleEntry1]
+2fed: 20 01 76                  JSR moduleEntry1     ;     Continue @ $7601 [moduleEntry1]   (initialize module vector?)
                                                      ; End If
 2ff0: 6c 77 19  loc_2ff0        JMP (cont_addr_1977_L) ; Continue @ address in cont_addr_1977_L/H
 
@@ -5256,8 +5429,8 @@
 3021: ad 1e 63                  LDA dat_631e         ;     Set
 3024: 8d 1f 63                  STA dat_631f         ;         dat_631f = dat_631e
 3027: a9 02                     LDA #$02             ;     Set
-3029: 8d 1e 63                  STA dat_631e         ;         dat_631e = 2
-302c: 20 07 76                  JSR moduleEntry3     ;     Call $7607 [moduleEntry3]
+3029: 8d 1e 63                  STA dat_631e         ;         dat_631e = 2                     (Item Data module)
+302c: 20 07 76                  JSR moduleEntry3     ;     Call $7607 [moduleEntry3]            (TODO: is this a module unloading vector?)
 302f: 4c 80 2f                  JMP loc_2f80         ;     Continue execution @ $2f80 [loc_2f80]
                                                      ; End If
 3032: ad 7b 19  loc_3032        LDA dat_197b         ; If (dat_197b != 0)
@@ -5282,8 +5455,8 @@
 3059: ad 1e 63                  LDA dat_631e         ;     Set
 305c: 8d 1f 63                  STA dat_631f         ;         dat_631f = dat_631e
 305f: a9 01                     LDA #$01             ;     Set
-3061: 8d 1e 63                  STA dat_631e         ;         dat_631e = 1
-3064: 20 07 76                  JSR moduleEntry3     ;     Call $7607 [moduleEntry3]
+3061: 8d 1e 63                  STA dat_631e         ;         dat_631e = 1                     (Combat Data module)
+3064: 20 07 76                  JSR moduleEntry3     ;     Call $7607 [moduleEntry3]            (TODO: is this a module unloading vector?)
 3067: 4c 80 2f                  JMP loc_2f80         ;     Continue execution @ $2f80 [loc_2f80]
                                                      ; End If
                 ;
@@ -5293,12 +5466,12 @@
                 ; Set CHR_FRAC_LOC_X = $12 (18)
                 ; Set CHR_FRAC_LOC_Y = $12 (18)
 306a: ce 56 19  loc_306a        DEC UNK_BYTE_COUNTER ; Subtract 1 from UNK_BYTE_COUNTER
-306d: a2 01                     LDX #$01             ; Set X = 1 (2 iterations)
+306d: a2 01                     LDX #$01             ; Set X = 1 (2 iterations [1..0])
 306f: bd 16 63  loc_306f        LDA CHR_FRAC_LOC_X,X ; Loop
                                                      ;     Set
-3072: 9d 5b 19                  STA dat_195b,X       ;         dat_195b,X = CHR_FRAC_LOC_X,X
+3072: 9d 5b 19                  STA dat_195b,X       ;         dat_195b[X] = CHR_FRAC_LOC_X[X]
 3075: a9 12                     LDA #$12             ;     Set
-3077: 9d 16 63                  STA CHR_FRAC_LOC_X,X ;         CHR_FRAC_LOC_X,X = $12 (18)
+3077: 9d 16 63                  STA CHR_FRAC_LOC_X,X ;         CHR_FRAC_LOC_X[X] = $12 (18)
 307a: ca                        DEX                  ;     Subtract 1 from X
 307b: 10 f2                     BPL loc_306f         ; Repeat while (X >= 0)
 307d: 30 5c                     BMI cont_30db        ; Continue @ $30db [cont_30db]
@@ -5408,7 +5581,7 @@
 3124: ae 12 63  loc_3124        LDX CHR_LOC_ORIENT   ;     Set X = CHR_LOC_ORIENT
                                                      ; End If
 3127: 8e 7f 31  loc_3127        STX MoveOrient       ; Set MoveOrient = X
-312a: 20 ca 32                  JSR saveChrLoc       ; Call $32ca [saveChrLoc] Save current player location
+312a: 20 ca 32                  JSR saveChrLoc       ; Call $32ca [saveChrLoc]         (Save current player location)
 312d: bd 44 3b                  LDA MovePropOfs,X    ; Set Y
 3130: 49 01                     EOR #$01             ;       =
 3132: a8                        TAY                  ;         MovePropOfs[MoveOrient] xor 1
@@ -5478,12 +5651,12 @@
                 ;
                 ;
                 ;
-318c: ad 15 63  cont_318c       LDA CHR_LOC_MAP      ; If the character's current map #
-318f: cd 00 ac                  CMP MAP_Number       ;     is NOT equal to the loaded map #
+318c: ad 15 63  cont_318c       LDA CHR_LOC_MAP      ; If
+318f: cd 00 ac                  CMP MAP_Number       ;    (CHR_LOC_MAP != MAP_Number)  (map != the loaded map #)
 3192: f0 25                     BEQ loc_31b9         ; Then
-3194: aa                        TAX                  ;     Set X = CHR_LOC_MAP (map number to load)
-3195: bd 25 32                  LDA MapNum2Level,X   ;     Set
-3198: 8d 1d 63                  STA CHR_DUNGEON_LEVEL ;         CHR_DUNGEON_LEVEL = the Dungeon level number for the new map number
+3194: aa                        TAX                  ;     Set X = CHR_LOC_MAP         (new map number to load)
+3195: bd 25 32                  LDA MapNum2Level,X   ;     Set                         (dungeon level number for map)
+3198: 8d 1d 63                  STA CHR_DUNGEON_LEVEL ;         CHR_DUNGEON_LEVEL = MapNum2Level[X]
 319b: 8a                        TXA                  ;     Set
 319c: 18                        CLC                  ;         FileNumber
 319d: 69 01                     ADC #$01             ;            =
@@ -5491,9 +5664,9 @@
 31a2: a9 01                     LDA #$01             ;     Set display mode to 1
 31a4: 20 0d 1a                  JSR setDisplayMode   ;         (normal gameplay)
 31a7: a9 00                     LDA #$00             ;     Set
-31a9: 8d 0b 19                  STA FileDestAdr_L    ;        FileDestAdr_L/H
-31ac: a9 ac                     LDA #$ac             ;        address
-31ae: 8d 0c 19                  STA FileDestAdr_H    ;        to $ac00 [MAP_Number]
+31a9: 8d 0b 19                  STA FileDestAdr_L    ;         FileDestAdr_L/H
+31ac: a9 ac                     LDA #$ac             ;         address
+31ae: 8d 0c 19                  STA FileDestAdr_H    ;         to $ac00 [MAP_Number]
 31b1: 20 ad 2c                  JSR sub_2cad         ;     Call $2cad [sub_2cad]
 31b4: a9 ff                     LDA #$ff             ;     Set
 31b6: 8d 12 19                  STA ZONE_ID          ;         ZONE_ID = $ff
@@ -5565,15 +5738,26 @@
 3225: 01 01 01  MapNum2Level    .BYTE $01,$01,$01    ; Map number (index + 1) to corresponding dungeon level
 3228: 01 02 03 04               .BYTE $01,$02,$03,$04
 
+                ; Updates the location description text displayed on the screen (e.g. "You are ...")
                 ;
+                ; Globals
+                ;   MAP_Number      - Loaded map number
+                ;   CHR_LOC_MAP     - Player's current map number
+                ;   MapCellDescNum  - Current map cell description number
+                ;   CurDescNum      - Currently displayed map cell description number
+                ;   MAP_DescTbl_L/H - Starting address of the loaded map's description table
                 ;
+                ; Temp
+                ;   StrTmplate_L/H  - Assigned to template string to output
+                ;   DescTbl_L/H     - Index into map description table
+                ;   DescFrag_L/H    - Index into map description fragment table
                 ;
-322c: ad 00 ac  sub_322c        LDA MAP_Number       ; If
+322c: ad 00 ac  updateLocDesc   LDA MAP_Number       ; If
 322f: cd 15 63                  CMP CHR_LOC_MAP      ;    (MAP_Number == CHR_LOC_MAP)
 3232: d0 62                     BNE rts_3296         ;    And
 3234: ad 74 19                  LDA MapCellDescNum   ;
 3237: cd 39 19                  CMP CurDescNum       ;    (MapCellDescNum != CurDescNum)
-323a: f0 5a                     BEQ rts_3296         ; Then
+323a: f0 5a                     BEQ rts_3296         ; Then                           (update location description text)
 323c: 8d 39 19                  STA CurDescNum       ;     Set CurDescNum = MapCellDescNum
 323f: a9 be                     LDA #$be             ;     Set StrTmplate_L/H
 3241: 85 16                     STA StrTmplate_L     ;         address
@@ -5585,36 +5769,43 @@
 324d: 85 12                     STA DescTbl_L        ;         DescTbl_L = MAP_DescTbl_L
 324f: ad 02 ac                  LDA MAP_DescTbl_H    ;    Set
 3252: 85 13                     STA DescTbl_H        ;         DescTbl_H = MAP_DescTbl_H
-                ; Move address in DescTbl_L/H forward at most Max(MapCellDescNum, 1) bytes
-                ;   until it points at a non-0 byte
-                ; Note: No change occurs for any of the maps shipped with the game
+                ; Finds the position of the MapCellDescNum description within the map's description table.
+                ; Starting at the beginning of the table, repeat while not at the requested description index:
+                ;  - Move address in DescTbl_L/H forward until a NUL byte is found
+                ;  - Update the current description index
 3254: a0 00                     LDY #$00             ;     Set Y = 0
-3256: ae 74 19                  LDX MapCellDescNum   ;     Set X = MapCellDescNum
-3259: ca        loc_3259        DEX                  ;     Loop                   (Search table for Xth item)
+3256: ae 74 19                  LDX MapCellDescNum   ;     Set X = MapCellDescNum  (MapCellDescNum..0 : 0-based index)
+3259: ca        loc_3259        DEX                  ;     Loop                    (Search table for Xth item)
                                                      ;         Subtract 1 from X
-325a: 30 0f                     BMI cont_326b        ;         If (X < 0) Then    (Found position of Xth item)
+325a: 30 0f                     BMI cont_326b        ;         If (X < 0) Then     (Found position of Xth item)
                                                      ;             Exit loop
                                                      ;         End If
-325c: b1 12     loc_325c        LDA (DescTbl_L),Y    ;         Loop       (Move DescTbl_L/H to char past next NUL byte)
+325c: b1 12     loc_325c        LDA (DescTbl_L),Y    ;         Loop       (Move DescTbl_L/H to char after next NUL byte)
                                                      ;             Set A = (*DescTbl_L)[0]
 325e: e6 12                     INC DescTbl_L        ;             Add 1 to DescTbl_L       (increment uint16)
 3260: d0 02                     BNE loc_3264         ;             If (DescTbl_L == 0) Then (next page on overflow)
 3262: e6 13                     INC DescTbl_H        ;                 Add 1 to DescTbl_H
                                                      ;             End If
 3264: 09 00     loc_3264        ORA #$00             ;         Repeat
-3266: f0 f1                     BEQ loc_3259         ;             while (A != 0)
+3266: f0 f1                     BEQ loc_3259         ;             while (A != 0)           (keep going if non-NUL byte)
 3268: 4c 5c 32                  JMP loc_325c         ;     Repeat loop
-                ;
-326b: b1 12     cont_326b       LDA (DescTbl_L),Y    ;     Set A = (*DescTbl_L)[0]
+                ; Repeats the following until NUL:
+                ; - Read byte at current position
+                ; - Move source address forward one byte
+                ; - If byte read was:
+                ;   -  0 -> Clear to EOL and return to caller
+                ;   - >0 -> Output the character
+                ;   - <- -> Render description fragment
+326b: b1 12     cont_326b       LDA (DescTbl_L),Y    ;     Set A = (*DescTbl_L)[Y]
 326d: e6 12                     INC DescTbl_L        ;     Add 1 to DescTbl_L        (increment uint16)
 326f: d0 02                     BNE loc_3273         ;     If (DescTbl_L == 0) Then  (next page on overflow)
 3271: e6 13                     INC DescTbl_H        ;         Add 1 to DescTbl_H
                                                      ;     End If
 3273: 09 00     loc_3273        ORA #$00             ;     If (A == 0) Then          (End of string found)
-3275: f0 3a                     BEQ clrDescEolRts    ;         Continue @ $32b1 [clrDescEolRts]  (Clear to EOL, RTS)
+3275: f0 3a                     BEQ clrDescEolRts    ;         Continue @ $32b1 [clrDescEolRts]   (Clear to EOL, RTS)
                                                      ;     End If
 3277: 10 32                     BPL chOutAndJmp326b  ;     If (A > 0) Then
-                                                     ;         Continue @ $32ab [chOutAndJmp326b]
+                                                     ;         Continue @ $32ab [chOutAndJmp326b] (output char & repeat)
                                                      ;     End If
                 ; If A < 0, then the byte is a fragment reference
                 ; In this case, lookup the fragment in the map description fragment table and output it
@@ -5623,7 +5814,7 @@
 327c: a9 03                     LDA #$03             ;     Set DescFrag_L/H
 327e: 85 14                     STA DescFrag_L       ;         address
 3280: a9 ac                     LDA #$ac             ;         to
-3282: 85 15                     STA DESC_FRAG_H      ;         $ac03 [MAP_DESC_FRAG_TBL]
+3282: 85 15                     STA DescFrag_H       ;         $ac03 [MAP_DescFragTbl]
 3284: ca        loc_3284        DEX                  ;     Loop   (Search table for Xth item)
                                                      ;         Subtract 1 from X
 3285: 30 10                     BMI outputDescFrag   ;         If (X < 0) Then  (found start of Xth fragment, output it)
@@ -5633,7 +5824,7 @@
                                                      ;             Set A = (*DescFrag_L)[0]
 3289: e6 14                     INC DescFrag_L       ;             Add 1 to DescFrag_L
 328b: d0 02                     BNE loc_328f         ;             If (DescFrag_L == 0) Then   (overflow)
-328d: e6 15                     INC DESC_FRAG_H      ;                 Add 1 to DESC_FRAG_H
+328d: e6 15                     INC DescFrag_H       ;                 Add 1 to DescFrag_H
                                                      ;             End If
 328f: 09 00     loc_328f        ORA #$00             ;         Repeat
 3291: 30 f1                     BMI loc_3284         ;           while (A >= 0)
@@ -5643,6 +5834,7 @@
                 ; Main exit point for the sub
                 ;
 3296: 60        rts_3296        RTS                  ; Return to caller
+
                 ;
                 ; Outputs string at DescFrag_L/H until a character with bit 7 set is encountered.
                 ;
@@ -5660,7 +5852,7 @@
 3299: 08                        PHP                  ;     Preserve processor status on stack (uses N later)
 329a: e6 14                     INC DescFrag_L       ;     Add 1 to DescFrag_L
 329c: d0 02                     BNE loc_32a0         ;     If (DescFrag_L == 0) Then  (overflow)
-329e: e6 15                     INC DESC_FRAG_H      ;         Add 1 to DESC_FRAG_H
+329e: e6 15                     INC DescFrag_H       ;         Add 1 to DescFrag_H
                                                      ;     End If
 32a0: 29 7f     loc_32a0        AND #$7f             ;     Set A = A & $7f   (clear bit 7)
 32a2: 20 2c 1c                  JSR outputChar       ;     Call $1c2c [outputChar]
@@ -5715,36 +5907,46 @@
 32d7: 68                        PLA                  ; Restore the
 32d8: aa                        TAX                  ;     original value of X
 32d9: 60                        RTS                  ; Return to caller
+                ; Clamps player movement to a wall boundary and plays collision sound.
                 ;
-                ; Handle movement for wall codes:
+                ; Handles movement for wall codes:
                 ;   11, 12, 13, 14, 15 [wall]
                 ;
                 ; Prevents movement through the wall.
                 ;
                 ; Input
-                ;     X = movement orientation (0..3 forward, 4..7 backward)
+                ;   X                - movement orientation (0..3 forward, 4..7 backward)
+                ;   MoveBounds[0..7] -
+                ;
+                ; Output
+                ;   dat_1954       - Set to $ff if MoveBounds[X] == CHR_SAV_FRAC_LOC_X[MovePropOfs[X]]
+                ;   CHR_FRAC_LOC_X
+                ;   CHR_FRAC_LOC_Y
+                ;
+                ; Continues @ $3180 [cont_3180] -> $318c [cont_318c]
                 ;
 32da: bc 44 3b  contMoveWall    LDY MovePropOfs,X    ; Set Y = MovePropOfs[X]
-32dd: bd 5c 3b                  LDA dat_3b5c,X       ; Set A = dat_3b5c[X]
+32dd: bd 5c 3b                  LDA MoveBounds,X     ; Set A = MoveBounds[X]
 32e0: d9 1b 63                  CMP CHR_SAV_FRAC_LOC_X,Y ; If (A == CHR_SAV_FRAC_LOC_X[Y])
 32e3: d0 08                     BNE loc_32ed         ; Then
 32e5: a9 ff                     LDA #$ff             ;     Set
 32e7: 8d 54 19                  STA dat_1954         ;         dat_1954 = $ff
-32ea: bd 5c 3b                  LDA dat_3b5c,X       ;     Set A = dat_3b5c[X]
+32ea: bd 5c 3b                  LDA MoveBounds,X     ;     Set A = MoveBounds[X]
                                                      ; End If
 32ed: 99 16 63  loc_32ed        STA CHR_FRAC_LOC_X,Y ; Set CHR_FRAC_LOC_X[Y] = A
 32f0: 4c 80 31                  JMP cont_3180        ; Continue @ $3180 [cont_3180] -> $318c [cont_318c]
 
+                ; Clamps player movement to a wall boundary.
                 ;
                 ; Input
                 ;   X = movement orientation (0..3 forward, 4..7 backward)
                 ;
 32f3: bc 44 3b  cont_32f3       LDY MovePropOfs,X    ; Set Y = MovePropOfs[X]
-32f6: bd 5c 3b                  LDA dat_3b5c,X       ; Set A = dat_3b5c[X]
-32f9: d9 1b 63                  CMP CHR_SAV_FRAC_LOC_X,Y ; If (A == CHR_SAV_FRAC_LOC_X[Y])
-32fc: d0 03                     BNE loc_3301         ; Then
-32fe: bd 5c 3b                  LDA dat_3b5c,X       ;     Set A = dat_3b5c[X]    (Bug? There seems to be no point to this assignment)
-                                                     ; End If
+32f6: bd 5c 3b                  LDA MoveBounds,X     ; Set A = MoveBounds[X]
+32f9: d9 1b 63                  CMP CHR_SAV_FRAC_LOC_X,Y ; If (A == CHR_SAV_FRAC_LOC_X[Y])  (Note: this test and
+32fc: d0 03                     BNE loc_3301         ; Then                                 assignment really do nothing
+32fe: bd 5c 3b                  LDA MoveBounds,X     ;     Set A = MoveBounds[X]              here and could be removed
+                                                     ; End If                               to regain a few cycles)
 3301: 99 16 63  loc_3301        STA CHR_FRAC_LOC_X,Y ; Set CHR_FRAC_LOC_X[Y] = A
 3304: 4c 80 31                  JMP cont_3180        ; Continue @ $3180 [cont_3180] -> $318c [cont_318c]
                 ;
@@ -5752,16 +5954,46 @@
                 ;   5 [secret door]
                 ;   6 [secret door-alt]
                 ;
+                ; Input
+                ;   MoveOrient - Current movement orientation
+                ;
+                ; Output
+                ;   CHR_LOC_X     - updated based on movement orientation (E/W) and movement speed
+                ;   CHR_LOC_Y     - updated based on movement orientation (N/S) and movement speed
+                ;   UNK_BYTE_1975 - Set to $ff
+                ;   UNK_BYTE_1958 - Set to 0
+                ;   dat_191a      - Set to 0
+                ;   dat_191a      - Set to 0
+                ;   SoundState    - set to $80 (128) - Request "Secret door" sound be played
+                ;   dat_195d      - randomly decreased by one (approx 12.5% chance)
+                ;
+                ; Continues @ $3314 [loc_3314] -> $3321 [contMoveThru] -> $3180 [cont_3180] -> $318c [cont_318c]
+                ;
 3307: a9 80     contMoveSecrt   LDA #$80             ; Set
-3309: 8d 9c 19                  STA dat_199c         ;     dat_199c = $80 (128)
+3309: 8d 9c 19                  STA SoundState       ;     SoundState = $80 (128 - Request "Secret Door" sound)
 330c: 4c 14 33                  JMP loc_3314         ; Continue @ $3314 [loc_3314]
                 ;
                 ; Handle movement for wall codes:
                 ;   3 [door]
                 ;   4 [door-alt]
                 ;
+                ; Input
+                ;   MoveOrient - Current movement orientation
+                ;
+                ; Output
+                ;   CHR_LOC_X     - updated based on movement orientation (E/W) and movement speed
+                ;   CHR_LOC_Y     - updated based on movement orientation (N/S) and movement speed
+                ;   UNK_BYTE_1975 - Set to $ff
+                ;   UNK_BYTE_1958 - Set to 0
+                ;   dat_191a      - Set to 0
+                ;   dat_191a      - Set to 0
+                ;   SoundState    - Set to $81 (129) - Request "Door" sound be played
+                ;   dat_195d      - Randomly decreased by one (approx 12.5% chance)
+                ;
+                ; Continues @ $3321 [contMoveThru] -> $3180 [cont_3180] -> $318c [cont_318c]
+                ;
 330f: a9 81     contMoveDoor    LDA #$81             ; Set
-3311: 8d 9c 19                  STA dat_199c         ;     dat_199c = $81 (129)
+3311: 8d 9c 19                  STA SoundState       ;     SoundState = $81 (129 - Request "Door" sound)
 3314: ad 0a d2  loc_3314        LDA RANDOM           ; Set
 3317: 29 51                     AND #$51             ;     A = random byte & $51
 3319: d0 03                     BNE loc_331e         ; If (A == 0) Then
@@ -5775,7 +6007,18 @@
                 ;   2 [arch-alt]
                 ;   7 [??]
                 ;
-                ; X = movement orientation (0..3 forward, 4..7 backward)
+                ; Input
+                ;   X    - movement orientation (0..3 forward, 4..7 backward)
+                ;
+                ; Output
+                ;   CHR_LOC_X     - updated based on movement orientation (E/W) and movement speed
+                ;   CHR_LOC_Y     - updated based on movement orientation (N/S) and movement speed
+                ;   UNK_BYTE_1975 - Set to $ff
+                ;   UNK_BYTE_1958 - Set to 0
+                ;   dat_191a      - Set to 0
+                ;   dat_191a      - Set to 0
+                ;
+                ; Continues @ $3180 [cont_3180] -> $318c [cont_318c]
                 ;
 3321: bc 44 3b  contMoveThru    LDY MovePropOfs,X    ; Set Y = MovePropOfs[X]
 3324: 18                        CLC                  ; Set
@@ -5794,25 +6037,68 @@
                 ; Handle movement for wall codes:
                 ;   8 [locked door]
                 ;
+                ; Output
+                ;   A    - Set to 0 to indicate locked door
+                ;
+                ; Continues @ @ $334e [loc_334e]
+                ;
 3344: a9 00     contMoveLockd   LDA #$00             ; Set A = 0
 3346: f0 06                     BEQ loc_334e         ; Continue @ $334e [loc_334e]   (condition always true)
 
+                ;
+                ; Handle movement for wall codes:
+                ;   9 [bolted door]
+                ;
+                ; Output
+                ;   A    - Set to 1 to indicate bolted door
+                ;
+                ; Continues @ @ $334e [loc_334e]
+                ;
 3348: a9 01     contMoveBoltd   LDA #$01             ; Set A = 1
 334a: d0 02                     BNE loc_334e         ; Continue @ $334e [loc_334e]   (condition always true)
                 ;
                 ; Handle movement for wall codes:
                 ;    10 [enchanted door]
                 ;
+                ; Output
+                ;   A    - Set to 2 to indicate bolted door
+                ;
+                ; Continues @ @ $334e [loc_334e]
+                ;
 334c: a9 02     contMoveEnchd   LDA #$02             ; Set A = 2
 
                 ; contMoveLockd and contMoveBoltd also end up here
+                ;
+                ; Input
+                ;   Chr_Unk_6388 - If bit 1 is set, the bit is cleared and the player is permitted to pass through
+                ;                  the door.
+                ;   dat_196b[0..3] - Compared to current player position (ORIENT, X, Y, MAP)
+                ;
+                ; ???
+                ;   dat_1970   - (temp/output?) Set to input value of A (0 = locked, 1 = bolted, 2 = enchanted)
+                ;   The below are only updated when Chr_Unk_6388 bit 1 is clear
+                ;     dat_1937   - (input/output?) Always decremented, conditionally incremented
+                ;     dat_1971   - (input/output?) Always decremented, conditionally incremented
+                ;     StrTmplate_L/H - (temp) Updated to message template strings to display
+                ;     dat_352e   - (temp) Set to current status page after calling addStatPage, later used for param to setStatPgStr2
+                ;     dat_196f   - (input) Set to 0 if current position doesn't match position in dat_196b
+                ;     dat_352f/dat_3530 - (temp?) Used to preserve the value of cont_addr_1977_L/H
+                ;     dat_195d   - Used as a flag for whether to increment dat_1937, dat_1971
+                ;
+                ; May continue at one of the following:
+                ;   -> $330f [contMoveDoor] -> $3321 [contMoveThru] -> $3180 [cont_3180] -> $318c [cont_318c]
+                ;   -> $347e [loc_347e] (successfully opened) -> $330f [contMoveDoor] -> $3321 [contMoveThru] -> $3180 [cont_3180] -> $318c [cont_318c]
+                ;   -> $32f3 [cont_32f3] -> $3180 [cont_3180] -> $318c [cont_318c]
+                ;   -> $339f [contDoorMenu] (bad input) - repeats menu
+                ;   -> $3449 [loc_3449] (examine failed) -> $343b [contDoorRetry] -> $339f [contDoorMenu] - repeats menu
+                ;
 334e: 8d 70 19  loc_334e        STA dat_1970         ; Set dat_1970 = A  (0 = locked, 1 = bolted, 2 = enchanted)
 3351: ad 88 63                  LDA Chr_Unk_6388     ; If
 3354: 29 02                     AND #$02             ;    (Chr_Unk_6388 & 2 != 0)
-3356: f0 09                     BEQ loc_3361         ; Then
-3358: 4d 88 63                  EOR Chr_Unk_6388     ;    Clear
-335b: 8d 88 63                  STA Chr_Unk_6388     ;        bit 2 of Chr_Unk_6388    (Chr_Unk_6388 = Chr_Unk_6388 xor (Chr_Unk_6388 & 2))
-335e: 4c 0f 33                  JMP contMoveDoor     ;    Continue @ $330f [contMoveDoor]
+3356: f0 09                     BEQ loc_3361         ; Then                            (When bit 1 of Chr_Unk_6388 == 1)
+3358: 4d 88 63                  EOR Chr_Unk_6388     ;    Set                              (Clear bit 1 of Chr_Unk_6388)
+335b: 8d 88 63                  STA Chr_Unk_6388     ;        Chr_Unk_6388 = (Chr_Unk_6388 & 2) ^ Chr_Unk_6388
+335e: 4c 0f 33                  JMP contMoveDoor     ;    Continue @ $330f [contMoveDoor]    (Allow player to pass thru)
                                                      ; End If
 3361: ce 37 19  loc_3361        DEC dat_1937         ; Subtract 1 from dat_1937
 3364: ce 71 19                  DEC dat_1971         ; Subtract 1 from dat_1971
@@ -5823,23 +6109,22 @@
 336f: 20 a5 3c                  JSR addStatPage      ; Call $3ca5 [addStatPage]
 3372: ad 33 19                  LDA CurStatusPage    ; Set
 3375: 8d 2e 35                  STA dat_352e         ;     dat_352e = CurStatusPage
-3378: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations)
+3378: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations [3..0])
 337a: bd 6b 19  loc_337a        LDA dat_196b,X       ; Loop
                                                      ;     If (dat_196b[X] != CHR_LOC_ORIENT[X]) Then
-337d: dd 12 63                  CMP CHR_LOC_ORIENT,X ;         Continue @ $3387 [loc_3387]
+337d: dd 12 63                  CMP CHR_LOC_ORIENT,X ;         Exit Loop
 3380: d0 05                     BNE loc_3387         ;     End If
 3382: ca                        DEX                  ;     Subtract 1 from X
 3383: 10 f5                     BPL loc_337a         ; Repeat while (X >= 0)
-3385: 30 10                     BMI loc_3397         ; If (X < 0) Then
-                                                     ;     Continue @ $3397 [loc_3397]
+3385: 30 10                     BMI loc_3397         ; If (X >= 0) Then         (exited loop early, found mismatch)
+3387: a9 00     loc_3387        LDA #$00             ;     Set
+3389: 8d 6f 19                  STA dat_196f         ;         dat_196f = 0
+338c: a2 03                     LDX #$03             ;     Set X = 3  (4 iterations: [3..0])
+338e: bd 12 63  loc_338e        LDA CHR_LOC_ORIENT,X ;     Loop
+3391: 9d 6b 19                  STA dat_196b,X       ;         Set dat_196b[X] = CHR_LOC_ORIENT[X]
+3394: ca                        DEX                  ;         Subtract 1 from X
+3395: 10 f7                     BPL loc_338e         ;     Repeat while (X >= 0)
                                                      ; End If
-3387: a9 00     loc_3387        LDA #$00             ; Set
-3389: 8d 6f 19                  STA dat_196f         ;     dat_196f = 0
-338c: a2 03                     LDX #$03             ; Set X = 3
-338e: bd 12 63  loc_338e        LDA CHR_LOC_ORIENT,X ; Loop
-3391: 9d 6b 19                  STA dat_196b,X       ;     Set dat_196b[X] = CHR_LOC_ORIENT[X]
-3394: ca                        DEX                  ;     Subtract 1 from X
-3395: 10 f7                     BPL loc_338e         ; Repeat while (X >= 0)
 3397: ad 6f 19  loc_3397        LDA dat_196f         ; If (dat_196f < 0) Then
 339a: 10 03                     BPL contDoorMenu     ;     Continue @ $347e [loc_347e]
 339c: 4c 7e 34                  JMP loc_347e         ; End If
@@ -5891,8 +6176,8 @@
 33fd: ae 2e 35                  LDX dat_352e         ;     Set X = dat_352e
 3400: 20 5c 3c                  JSR setStatPgStr2    ;     Call $3c5c [setStatPgStr2]
 3403: a2 f0                     LDX #$f0             ;     Set X = $f0  (240 iterations / 6 seconds)
-3405: 20 66 2c  loc_3405        JSR WAIT_FOR_VBLK_B  ;     Loop
-                                                     ;         Call $2c66 [WAIT_FOR_VBLK_B]
+3405: 20 66 2c  loc_3405        JSR waitForVblankB   ;     Loop
+                                                     ;         Call $2c66 [waitForVblankB]
 3408: ca                        DEX                  ;         Subtract 1 from X
 3409: d0 fa                     BNE loc_3405         ;     Repeat while (X != 0)
 340b: ad 6f 19                  LDA dat_196f         ;     If
@@ -5924,7 +6209,7 @@
 343e: 20 5c 3c                  JSR setStatPgStr2    ;     Call $3c5c [setStatPgStr2]   (display message)
 3441: a9 04                     LDA #$04             ;     Set A = 4
 3443: 20 fc 2b                  JSR waitSeconds      ;     Call $2bfc [waitSeconds]     (wait up to 4 seconds)
-3446: 4c 9f 33                  JMP contDoorMenu     ;     Continue @ contDoorMenu
+3446: 4c 9f 33                  JMP contDoorMenu     ;     Continue @ $339f [contDoorMenu]
                 ;
                 ; Unable to to determine what obstructs the door
                 ;
@@ -6011,8 +6296,8 @@
 34e5: ae 2e 35                  LDX dat_352e         ;     Set X = dat_352e
 34e8: 20 5c 3c                  JSR setStatPgStr2    ;     Call $3c5c [setStatPgStr2]
 34eb: a2 78                     LDX #$78             ;     Sec X = $78 (120 repetitions / 2 seconds)
-34ed: 20 66 2c  loc_34ed        JSR WAIT_FOR_VBLK_B  ;     Loop
-                                                     ;         Call $2c66 [WAIT_FOR_VBLK_B]
+34ed: 20 66 2c  loc_34ed        JSR waitForVblankB   ;     Loop
+                                                     ;         Call $2c66 [waitForVblankB]
 34f0: ca                        DEX                  ;         Subtract 1 from X
 34f1: d0 fa                     BNE loc_34ed         ;     Repeat while (X != 0)
 34f3: a9 01                     LDA #$01             ;     Set A = 1            (subtract 1)
@@ -6051,8 +6336,12 @@
 
                 ; Computes the address of the character's current cell within the map data
                 ;
-                ; Return
-                ;   MapCell_L/H = 0xb000 | (CHR_LOC_Y << 7) | (CHR_LOC_X << 2)
+                ; Input
+                ;   CHR_LOC_X    - Player position X
+                ;   CHR_LOC_Y    - Player position Y
+                ;
+                ; Output
+                ;   MapCell_L/H  - 0xb000 | (CHR_LOC_Y << 7) | (CHR_LOC_X << 2)
                 ;
 3531: ad 14 63  calcCellAddr    LDA CHR_LOC_Y        ; Set
 3534: 4a                        LSR                  ;     MapCell_H
@@ -6220,14 +6509,14 @@
                                                      ;         CUR_COLPF0[X] = $1a (26 / %00011010)
 35fe: ca                        DEX                  ;         Subtract 1 from X
 35ff: 10 fa                     BPL loc_35fb         ;     Repeat while X >= 0 (5 iterations)
-3601: 20 66 2c                  JSR WAIT_FOR_VBLK_B  ;     Call $2c66 [WAIT_FOR_VBLK_B] (Wait for next vertical blank period)
+3601: 20 66 2c                  JSR waitForVblankB   ;     Call $2c66 [waitForVblankB]    (Wait for next vertical blank)
 3604: a9 00                     LDA #$00             ;     Set A = 0
 3606: a2 04                     LDX #$04             ;     Set X = 4 (loop 5 times)
 3608: 9d ba 18  loc_3608        STA CUR_COLPF0,X     ;     Loop
                                                      ;         Set CUR_COLPF0[X] = 0
 360b: ca                        DEX                  ;         Subtract 1 from X
 360c: 10 fa                     BPL loc_3608         ;     Repeat while X >= 0 (5 iterations)
-360e: 20 66 2c                  JSR WAIT_FOR_VBLK_B  ;     Call $2c66 [WAIT_FOR_VBLK_B] (Wait for next vertical blank period)
+360e: 20 66 2c                  JSR waitForVblankB   ;     Call $2c66 [waitForVblankB]    (Wait for next vertical blank)
 3611: 88                        DEY                  ;     Subtract 1 from Y
 3612: d0 e3                     BNE loc_35f7         ; Repeat while (Y != 0) (8 iterations)
 3614: a2 04                     LDX #$04             ; Set X = 4  (5 iterations)
@@ -6406,7 +6695,7 @@
                 ;
                 ; Executed via address from ActionSubAdr_L/H
                 ;
-3768: 20 35 36  actionDrop        JSR sub_3635         ; Call $3635 [sub_3635]
+3768: 20 35 36  actionDrop      JSR sub_3635         ; Call $3635 [sub_3635]
 376b: 20 cb 5a                  JSR doDropMenu       ; Call $5acb [doDropMenu]
 376e: 4c 62 36                  JMP loc_3662         ; Continue @ $3662 [loc_3662]
 
@@ -6540,6 +6829,40 @@
 386d: 0d                        .BYTE $0d                              ; "\n"
 386e: ff                        .BYTE $ff                              ; {End of string}
 
+                ;
+                ; - If dat_631e is not 0, returns with no action taken.
+                ; - Otherwise,
+                ;   - Computes the number of dropped items in the current location and stores it in dat_38cf
+                ;   - If dat_38cf is not equal to UNK_BYTE_1938 then
+                ;     - Set UNK_BYTE_1938 = dat_38cf
+                ;     - Update the 2nd message line at the top of the display based on the number of items found:
+                ;         - 0: Blank string
+                ;         - 1: "There is something here"
+                ;         - 2: "There are several things here"
+                ;
+                ; Input
+                ;   dat_631e          - When this is non-zero, the sub returns without making any updates
+                ;
+                ; Output
+                ;   UNK_BYTE_1938     - Assigned the number of dropped items at the current player position
+                ;
+                ; Temp
+                ;   dat_38cf          - Holds the number of dropped items at the player's current location.
+                ;   StrTmplate_L/H    - Address of template string to display based on the number of dropped items
+                ;                       in the current location.
+                ;                           0 - $38d0 [StrClrLocDesc2] "" (blank string)
+                ;                           1 - $38f9 [StrSomthngHere] "There is something here"
+                ;                          >1 - $38d5 [StrThingsHere] "There are several things here."
+                ;
+                ; Global
+                ;   CHR_LOC_X
+                ;   CHR_LOC_Y
+                ;   CHR_LOC_MAP
+                ;   DroppedGame[0..15] - must equal 2
+                ;   DroppedX[0..15]    - must equal current player location X [CHR_LOC_X]
+                ;   DroppedY[0..15]    - must equal current player location Y [CHR_LOC_Y]
+                ;   DroppedMap[0..15]  - must equal current player location map [CHR_LOC_MAP]
+                ;
 386f: a9 00     sub_386f        LDA #$00             ; Set
 3871: 8d cf 38                  STA dat_38cf         ;     dat_38cf = 0
 3874: a9 d0                     LDA #$d0             ; Set StrTmplate_L/H
@@ -6549,25 +6872,25 @@
 387c: ad 1e 63                  LDA dat_631e         ; If (dat_631e != 0) Then
 387f: f0 01                     BEQ loc_3882         ;     Return to caller
 3881: 60                        RTS                  ; End If
-3882: a2 0f     loc_3882        LDX #$0f             ; Set X = $0f (16 iterations)
-3884: bd 94 64  loc_3884        LDA dat_6494,X       ; Loop
+3882: a2 0f     loc_3882        LDX #$0f             ; Set X = $0f (15)   (16 iterations [15..0])
+3884: bd 94 64  loc_3884        LDA DroppedGame,X    ; Loop
                                                      ;     If (
-3887: c9 02                     CMP #$02             ;         (dat_6494[X] == 2)
+3887: c9 02                     CMP #$02             ;         (DroppedGame[X] == 2)            (2 = Dungeon)
 3889: d0 1b                     BNE loc_38a6         ;
-388b: bd a4 64                  LDA dat_64a4,X       ;         AND
-388e: cd 13 63                  CMP CHR_LOC_X        ;         (dat_64a4[X] == CHR_LOC_X)
+388b: bd a4 64                  LDA DroppedX,X       ;         AND
+388e: cd 13 63                  CMP CHR_LOC_X        ;         (DroppedX[X] == CHR_LOC_X)
 3891: d0 13                     BNE loc_38a6         ;
-3893: bd b4 64                  LDA dat_64b4,X       ;         AND
-3896: cd 14 63                  CMP CHR_LOC_Y        ;         (dat_64b4[X] == CHR_LOC_Y)
+3893: bd b4 64                  LDA DroppedY,X       ;         AND
+3896: cd 14 63                  CMP CHR_LOC_Y        ;         (DroppedY[X] == CHR_LOC_Y)
 3899: d0 0b                     BNE loc_38a6         ;
-389b: bd c4 64                  LDA dat_64c4,X       ;         AND
-389e: cd 15 63                  CMP CHR_LOC_MAP      ;         (dat_64c4[X] == CHR_LOC_MAP)
+389b: bd c4 64                  LDA DroppedMap,X     ;         AND
+389e: cd 15 63                  CMP CHR_LOC_MAP      ;         (DroppedMap[X] == CHR_LOC_MAP)
 38a1: d0 03                     BNE loc_38a6         ;     Then
 38a3: ee cf 38                  INC dat_38cf         ;       Add 1 to dat_38cf
                                                      ;     End If
 38a6: ca        loc_38a6        DEX                  ;     Subtract 1 from X
 38a7: 10 db                     BPL loc_3884         ; Repeat while (X >= 0)
-38a9: ae cf 38                  LDX dat_38cf         ; Set X = dat_38cf
+38a9: ae cf 38                  LDX dat_38cf         ; Set X = dat_38cf         (# of dropped items at current location)
 38ac: ec 38 19                  CPX UNK_BYTE_1938    ; If (X != UNK_BYTE_1938)
 38af: f0 1d                     BEQ loc_38ce         ; Then
 38b1: 8e 38 19                  STX UNK_BYTE_1938    ;     Set UNK_BYTE_1938 = X
@@ -6799,63 +7122,73 @@
 
 3b44: 01 00 01 00  MovePropOfs  .BYTE $01,$00,$01,$00   ; Movement orientation to position property offset
 3b48: 01 00 01 00               .BYTE $01,$00,$01,$00   ;     Forward movement
-                                                        ;      0: $01 - Y (North)
-                                                        ;      1: $00 - X (East)
-                                                        ;      2: $01 - Y (South)
-                                                        ;      3: $00 - X (West)
+                                                        ;      0: $01 - Y (Facing North)
+                                                        ;      1: $00 - X (Facing East)
+                                                        ;      2: $01 - Y (Facing South)
+                                                        ;      3: $00 - X (Facing West)
                                                         ;     Backward movement (player orientation + 4)
-                                                        ;      4: $01 - Y (North)
-                                                        ;      5: $00 - X (East)
-                                                        ;      6: $01 - Y (South)
-                                                        ;      7: $00 - X (West)
+                                                        ;      4: $01 - Y (Facing North)
+                                                        ;      5: $00 - X (Facing East)
+                                                        ;      6: $01 - Y (Facing South)
+                                                        ;      7: $00 - X (Facing West)
 3b4c: 24 dc dc 24  MovePropAmt  .BYTE $24,$dc,$dc,$24   ; Movement orientation to movement amount
 3b50: dc 24 24 dc               .BYTE $dc,$24,$24,$dc   ;     Forward movement
-                                                        ;      0: $24 ( 36) - (North)
-                                                        ;      1: $dc (-36) - (East)
-                                                        ;      2: $dc (-36) - (South)
-                                                        ;      3: $24 ( 36) - (West)
+                                                        ;      0: $24 ( 36) - (Facing North)
+                                                        ;      1: $dc (-36) - (Facing East)
+                                                        ;      2: $dc (-36) - (Facing South)
+                                                        ;      3: $24 ( 36) - (Facing West)
                                                         ;     Backward movement (player orientation + 4)
-                                                        ;      4: $dc (-36) - (North)
-                                                        ;      5: $24 ( 36) - (East)
-                                                        ;      6: $24 ( 36) - (South)
-                                                        ;      7: $dc (-36) - (West)
+                                                        ;      4: $dc (-36) - (Facing North)
+                                                        ;      5: $24 ( 36) - (Facing East)
+                                                        ;      6: $24 ( 36) - (Facing South)
+                                                        ;      7: $dc (-36) - (Facing West)
 3b54: ff 01 01 ff  MoveStepDir  .BYTE $ff,$01,$01,$ff   ; Direction step for orientation
 3b58: 01 ff ff 01               .BYTE $01,$ff,$ff,$01   ;   Forward movement
-                                                        ;     0: $ff - -1 (North)
-                                                        ;     1: $01 - +1 (East)
-                                                        ;     2: $01 - +1 (South)
-                                                        ;     3: $ff - -1 (West)
+                                                        ;     0: $ff - -1 (Facing North)
+                                                        ;     1: $01 - +1 (Facing East)
+                                                        ;     2: $01 - +1 (Facing South)
+                                                        ;     3: $ff - -1 (Facing West)
                                                         ;   Backward movement (player orientation + 4)
-                                                        ;     4: $01 - +1 (North)
-                                                        ;     5: $ff - -1 (East)
-                                                        ;     6: $ff - -1 (South)
-                                                        ;     7: $01 - +1 (West)
-3b5c: 00 23 23 00  dat_3b5c     .BYTE $00,$23,$23,$00   ;
-3b60: 23 00 00 23               .BYTE $23,$00,$00,$23   ;
+                                                        ;     4: $01 - +1 (Facing North)
+                                                        ;     5: $ff - -1 (Facing East)
+                                                        ;     6: $ff - -1 (Facing South)
+                                                        ;     7: $01 - +1 (Facing West)
+3b5c: 00 23 23 00  MoveBounds   .BYTE $00,$23,$23,$00   ; Minimum/maximum bounds for fractional position within a map
+3b60: 23 00 00 23               .BYTE $23,$00,$00,$23   ; cell.
+                                                        ;   Forward movement
+                                                        ;     0: $00 - North-facing minimum bound
+                                                        ;     1: $23 - East-facing maximum bound
+                                                        ;     2: $23 - South-facing maximum bound
+                                                        ;     3: $00 - West-facing minimum bound
+                                                        ;   Backward movement (player orientation + 4)
+                                                        ;     4: $23 - North-facing maximum bound
+                                                        ;     5: $00 - East-facing minimum bound
+                                                        ;     6: $00 - South-facing minimum bound
+                                                        ;     7: $23 - West-facing maximum bound
 3b64: 00 00 01 01  MoveWallOfs  .BYTE $00,$00,$01,$01   ; Offset in map cell data of wall code for direction
 3b68: 01 01 00 00               .BYTE $01,$01,$00,$00   ;   Forward movement
-                                                        ;     0: $00 - MAP_WALL_E_N (North)
-                                                        ;     1: $00 - MAP_WALL_E_N (East)
-                                                        ;     2: $01 - MAP_WALL_W_S (South)
-                                                        ;     3: $01 - MAP_WALL_W_S (West)
+                                                        ;     0: $00 - MAP_WALL_E_N (Facing North)
+                                                        ;     1: $00 - MAP_WALL_E_N (Facing East)
+                                                        ;     2: $01 - MAP_WALL_W_S (Facing South)
+                                                        ;     3: $01 - MAP_WALL_W_S (Facing West)
                                                         ;   Backward movement (player orientation + 4)
-                                                        ;     4: $01 - MAP_WALL_W_S (North)
-                                                        ;     5: $01 - MAP_WALL_W_S (East)
-                                                        ;     6: $00 - MAP_WALL_E_N (South)
-                                                        ;     7: $00 - MAP_WALL_E_N (West)
+                                                        ;     4: $01 - MAP_WALL_W_S (Facing North)
+                                                        ;     5: $01 - MAP_WALL_W_S (Facing East)
+                                                        ;     6: $00 - MAP_WALL_E_N (Facing South)
+                                                        ;     7: $00 - MAP_WALL_E_N (Facing West)
 3b6c: 00 80 00 80  MoveWallHigh  .BYTE $00,$80,$00,$80  ; Flag indicating nibble with wall code for a movement direction
 3b70: 00 80 00 80               .BYTE $00,$80,$00,$80   ;     Bit 7 = 0: Wall code in lower nibbles
                                                         ;     Bit 7 = 1: Wall code in upper nibble
                                                         ;   Forward movement
-                                                        ;     0: $00 - Low nibble  (North)
-                                                        ;     1: $80 - High nibble (East)
-                                                        ;     2: $00 - Low nibble  (South)
-                                                        ;     3: $80 - High nibble (West)
+                                                        ;     0: $00 - Low nibble  (Facing North)
+                                                        ;     1: $80 - High nibble (Facing East)
+                                                        ;     2: $00 - Low nibble  (Facing South)
+                                                        ;     3: $80 - High nibble (Facing West)
                                                         ;   Backward movement (player orientation + 4)
-                                                        ;     4: $00 - Low nibble  (North)
-                                                        ;     5: $80 - High nibble (East)
-                                                        ;     6: $00 - Low nibble  (South)
-                                                        ;     7: $80 - High nibble (West)
+                                                        ;     4: $00 - Low nibble  (Facing North)
+                                                        ;     5: $80 - High nibble (Facing East)
+                                                        ;     6: $00 - Low nibble  (Facing South)
+                                                        ;     7: $80 - High nibble (Facing West)
 3b74: 01        StickMaskFwd    .BYTE $01            ; Joystick direction mask (Forward)
 3b75: 02        StickMaskBack   .BYTE $02            ; Joystick direction mask (Back)
 3b76: 04        StickMaskLeft   .BYTE $04            ; Joystick direction mask (Left)
@@ -7426,7 +7759,7 @@
                 ;   EffectAdr_L/H - Used to hold addresses relative to $6500 [CHR_Effects]
                 ;   NameCount     - Used to count number of matches so far and stop scanning after 6 are found.
                 ;   NameType      - Set to 9 (8 (visible) + 1 (disease))
-                ;   dat_0049      - Used as loop control variable (0..63 - index into CHR_Effects with 16 byte entries)
+                ;   EffectIndex   - Used as loop control variable (0..63 - index into CHR_Effects with 16 byte entries)
                 ;
 3ff6: a9 09     setDiseaseNms   LDA #$09             ; Set A = 9
 3ff8: 2c        nop_3ff8        .BYTE $2c            ; (Forms 'BIT $0ba9' with following LDA - essential NOP)
@@ -7450,7 +7783,7 @@
                 ;   EffectAdr_L/H - Used to hold addresses relative to $6500 [CHR_Effects]
                 ;   NameCount     - Used to count number of matches so far and stop scanning after 6 are found.
                 ;   NameType      - Set to $0b (8 (visible) + 3 (curse))
-                ;   dat_0049      - Used as loop control variable (0..63 - index into CHR_Effects with 16 byte entries)
+                ;   EffectIndex   - Used as loop control variable (0..63 - index into CHR_Effects with 16 byte entries)
                 ;
 3ff9: a9 0b     setCurseNames   LDA #$0b             ; Set A = $0b (11)     (offset from $ [])
 3ffb: 2c        nop_3ffb        .BYTE $2c            ; (Forms 'BIT $0ca9' with following LDA - essential NOP)
@@ -7474,7 +7807,7 @@
                 ;   EffectAdr_L/H - Used to hold addresses relative to $6500 [CHR_Effects]
                 ;   NameCount     - Used to count number of matches so far and stop scanning after 6 are found.
                 ;   NameType      - Set to $0c (8 (visible) + 4 (magic))
-                ;   dat_0049      - Used as loop control variable (0..63 - index into CHR_Effects with 16 byte entries)
+                ;   EffectIndex   - Used as loop control variable (0..63 - index into CHR_Effects with 16 byte entries)
                 ;
 3ffc: a9 0c     setMagicNames   LDA #$0c             ; Set A = $0c (12)
 
@@ -7495,7 +7828,7 @@
 4015: a9 65                     LDA #$65             ;        =
 4017: 85 3e                     STA EffectAdr_H      ;          $6500 [CHR_Effects]
 4019: a9 00                     LDA #$00             ; Set
-401b: 85 49                     STA dat_0049         ;     dat_0049 = 0
+401b: 85 49                     STA EffectIndex      ;     EffectIndex = 0
 401d: 8d 7d 40                  STA NameCount        ; Set NameCount = 0
 4020: a0 00     loc_4020        LDY #$00             ; Loop
                                                      ;     Set Y = 0
@@ -7526,10 +7859,10 @@
 4053: 90 02                     BCC loc_4057         ;     If (C == 1) Then  (overflow)
 4055: e6 3e                     INC EffectAdr_H      ;         Add 1 to EffectAdr_H
                                                      ;     End If
-4057: e6 49     loc_4057        INC dat_0049         ;     Add 1 to dat_0049
-4059: a5 49                     LDA dat_0049         ; Repeat
+4057: e6 49     loc_4057        INC EffectIndex      ;     Add 1 to EffectIndex
+4059: a5 49                     LDA EffectIndex      ; Repeat
 405b: c9 40                     CMP #$40             ;   while
-405d: 90 c1                     BCC loc_4020         ;     (dat_0049 < $40 (64))
+405d: 90 c1                     BCC loc_4020         ;     (EffectIndex < $40 (64))
 405f: 60        rts_405f        RTS                  ; Return to caller
 
 4060: 42 69 72  ZtsBdaySuit     .BYTE $42,$69,$72                      ; "Bir"
@@ -7630,8 +7963,8 @@
 411a: c6 32                     DEC flg_PAUSED       ;     Subtract 1 from flg_PAUSED
 411c: c6 0f                     DEC dat_000f         ;     Subtract 1 from dat_000f
 411e: a9 f0                     LDA #$f0             ;     Set A = $f0 (240)
-4120: 20 66 2c  loc_4120        JSR WAIT_FOR_VBLK_B  ;     Loop
-                                                     ;         Call $2c66 [WAIT_FOR_VBLK_B]   (X not modified)
+4120: 20 66 2c  loc_4120        JSR waitForVblankB   ;     Loop
+                                                     ;         Call $2c66 [waitForVblankB]    (X not modified)
 4123: ca                        DEX                  ;         Subtract 1 from X
 4124: d0 fa                     BNE loc_4120         ;     Repeat while (X != 0)
 4126: a9 35                     LDA #$35             ;     Set
@@ -7639,7 +7972,7 @@
 412b: a9 00                     LDA #$00             ;     Set
 412d: 8d 0b 19                  STA FileDestAdr_L    ;         FileDestAdr_L/H
 4130: a9 76                     LDA #$76             ;         address
-4132: 8d 0c 19                  STA FileDestAdr_H    ;         to $7600 [TODO: Label]
+4132: 8d 0c 19                  STA FileDestAdr_H    ;         to $7600 [ModuleStart]
 4135: 20 ad 2c                  JSR sub_2cad         ;     Call 2cad [sub_2cad]
 4138: 4c 00 76                  JMP $7600            ;     Continue @ $7600 [TODO: Label]
                                                      ; End If
@@ -7809,7 +8142,7 @@
                 ;   StatRecalcFlg - Set to 0 (no update needed) on return.
                 ;   A             - indeterminate
                 ;   dat_1976      - ?? updated based on equipped apparel - dapper? ??
-                ;   dat_195e      - ?? holds warmth bonus provided by equipped apparel ??
+                ;   WarmthBonus   - Holds warmth bonus provided by equipped apparel
                 ;   CHR_BURDEN    - Set to total held item weight minus (effective strength / 2). Capped at 255 if
                 ;                   calculated value is over 255.
                 ;   CHR_WARMTH    - set to zone warmth + apparel warmth bonus
@@ -7826,7 +8159,7 @@
 4202: a9 00     loc_4202        LDA #$00             ; Set
 4204: 8d 60 19                  STA StatRecalcFlg    ;     StatRecalcFlg = 0
 4207: 8d 76 19                  STA dat_1976         ; Set dat_1976 = 0
-420a: 8d 5e 19                  STA dat_195e         ; Set dat_195e = 0
+420a: 8d 5e 19                  STA WarmthBonus      ; Set WarmthBonus = 0
 420d: 8d 94 63                  STA CHR_BURDEN       ; Set CHR_BURDEN = 0
 4210: 8d e5 42                  STA dat_42e5_L       ; Set dat_42e5_L = 0
 4213: 8d e6 42                  STA dat_42e5_H       ; Set dat_42e5_H = 0
@@ -7844,17 +8177,17 @@
 422e: 71 43                     ADC (ItemAttrs_L),Y  ;               =
 4230: 8d 76 19                  STA dat_1976         ;                 dat_1976 + (*ItemAttrs_L)[0] + C   (TODO: value of C here? bug?)
 4233: c8                        INY                  ;         Add 1 to Y
-4234: ad 5e 19                  LDA dat_195e         ;         Set
-4237: 18                        CLC                  ;             dat_195e
+4234: ad 5e 19                  LDA WarmthBonus      ;         Set
+4237: 18                        CLC                  ;             WarmthBonus
 4238: 71 43                     ADC (ItemAttrs_L),Y  ;               =
-423a: 8d 5e 19                  STA dat_195e         ;                 dat_195e + (*ItemAttrs_L)[1]
+423a: 8d 5e 19                  STA WarmthBonus      ;                 WarmthBonus + (*ItemAttrs_L)[1]
                                                      ;     End If
 423d: c6 5c     loc_423d        DEC dat_005c         ;     Subtract 1 from dat_005c
 423f: 10 d9                     BPL loc_421a         ; Repeat while (dat_005c >= 0)
-4241: ad 5e 19                  LDA dat_195e         ; Set
+4241: ad 5e 19                  LDA WarmthBonus      ; Set
 4244: 18                        CLC                  ;     CHR_WARMTH
 4245: 6d 53 19                  ADC ZONE_WARMTH      ;        =
-4248: 8d 95 63                  STA CHR_WARMTH       ;          dat_195e + ZONE_WARMTH
+4248: 8d 95 63                  STA CHR_WARMTH       ;          WarmthBonus + ZONE_WARMTH
 424b: a9 3f                     LDA #$3f             ; Set
 424d: 85 4b                     STA ItemIndex        ;     ItemIndex = $3f (64 iterations [63..0])
 424f: a5 4b     loc_424f        LDA ItemIndex        ; Loop
@@ -7960,7 +8293,7 @@
 4316: a9 47                     LDA #$47             ;         to
 4318: 8d b4 45                  STA EffPoisnStr_H    ;         $47be [ZtsPoisoned]
                                                      ; End If
-431b: 2c 93 63  loc_431b        BIT CHR_CURSE        ; If (CHR_CURSE < 0)
+431b: 2c 93 63  loc_431b        BIT CHR_Cursed       ; If (CHR_Cursed < 0)
 431e: 10 0a                     BPL loc_432a         ; Then
 4320: a9 d8     loc_4320        LDA #$d8             ;     Set EffCurseStr_L/H
 4322: 8d b5 45                  STA EffCurseStr_L    ;         address
@@ -8455,9 +8788,10 @@
                                                        ;     updated
 4594: 03        stomachTimer    .BYTE $03              ; applyBiology: Number of calls before player stomach is updated
 
-4595: 04 21 16  EffTimers       .BYTE $04,$21,$16      ; 7 bytes: Table of countdown counters for the various effect
-4598: 0e 03 02 02               .BYTE $0e,$03,$02,$02  ;     types. Each counter is decremented until 0, then reset to
-                                                       ;     the corresponding value from EffApplyFreq.
+4595: 04 21 16  EffTimers       .BYTE $04,$21,$16      ; 7 bytes: Table of countdown counters for the various biological
+4598: 0e 03 02 02               .BYTE $0e,$03,$02,$02  ;     and environmental effect types. Each counter is decremented
+                                                       ;     until 0, then reset to the corresponding value from
+                                                       ;     EffApplyFreq.
                                                        ;   0: Warmth
                                                        ;   1: Hunger
                                                        ;   2: Thirst
@@ -8872,71 +9206,84 @@
                 ; Iterates over each effect, applies countdowns, triggers actions and removes when necessary.
                 ;
                 ; Input
-                ;   dat_000f     - ?? possible effects disabled/paused flag ??
+                ;   dat_000f     - ?? possible effects disabled/paused flag ?? No action taken if the value is not 0.
                 ;
                 ;   InvItemAdr_L/H - used to retrieve linked inventory addresses by index
                 ;
                 ; Output
                 ;   CHR_Diseased - Updated based on whether there are any active disease effects
                 ;   CHR_Poisoned - Updated based on whether there are any active poison effects
-                ;   CHR_CURSE    - Updated based on whether there are any active curse effects
+                ;   CHR_Cursed   - Updated based on whether there are any active curse effects
                 ;
                 ; ??? temp/output ???
                 ;   dat_004a     -
                 ;   dat_0050     -
-                ;   dat_0052     -
-                ;   dat_0053     -
+                ;   dat_0052     - Set to number of steps for current effect
+                ;   dat_0053     - Set to step amount for current effect
                 ;
                 ; Temp
-                ;   dat_0049      - Index of current effect (0..63)
+                ;   EffectIndex   - Index of current effect (0..63)
                 ;   AttrAddr_L/H  - Address of the attribute to update - used by continuations
                 ;   EffectAdr_L/H - Current effect address
-                ;   addr_003f_L/H - Holds effect address while iterating list
-                ;   AttrAdjAmt    -
-                ;   AttrSize      -
+                ;   CurEffAdr_L/H - Holds effect address while iterating list
+                ;   AttrAdjAmt    - Holds attribute adjustment amount/value
+                ;   AttrSize      - Holds size of attribute to update in bytes
                 ;
 47f2: a5 0f     applyEffects    LDA dat_000f         ; If (dat_000f != 0)
 47f4: f0 03                     BEQ loc_47f9         ; Then
-47f6: 4c af 49                  JMP loc_49af         ;     Continue @ $49af [loc_49af]
+47f6: 4c af 49                  JMP rts_49af         ;     Continue @ $49af [rts_49af]                (Return to caller)
                                                      ; End If
                 ; At this point, both A and dat_000f = 0
-47f9: 85 49     loc_47f9        STA dat_0049         ; Set dat_0049 = 0
+47f9: 85 49     loc_47f9        STA EffectIndex      ; Set EffectIndex = 0
 47fb: 8d 91 63                  STA CHR_Diseased     ; Set CHR_Diseased = 0      (updated later if disease effect found)
 47fe: 8d 92 63                  STA CHR_Poisoned     ; Set CHR_Poisoned = 0   (will be set later if poison effect found)
-4801: 8d 93 63                  STA CHR_CURSE        ; Set CHR_CURSE = 0       (will be set later if curse effect found)
+4801: 8d 93 63                  STA CHR_Cursed       ; Set CHR_Cursed = 0      (will be set later if curse effect found)
 4804: a9 f0                     LDA #$f0             ; Set
 4806: 85 50                     STA dat_0050         ;     dat_0050 = $f0
 4808: a9 00                     LDA #$00             ; Set
 480a: 85 3d                     STA EffectAdr_L      ;     EffectAdr_L/H
 480c: a9 65                     LDA #$65             ;     to
 480e: 85 3e                     STA EffectAdr_H      ;     $6500 [CHR_Effects]
-                ; Will jump back here after each effect is processed to process the next one
+                ;
+                ; Jumps back here after each effect is processed to process the next one
+                ;
+                ; - Only processes effects with type byte (E0) between $81 and $df.
+                ; - If bits 0..2 of byte E0 are:
+                ;     1 - Sets the Diseased flag
+                ;     2 - Sets the Poisoned flag
+                ;     3 - Sets the Cursed flag
+                ; - If the execution timer is 0, no further action is taken and moves to next effect
+                ;   (perhaps incubating disease/curse/etc?)
+                ; - Otherwise, decrements the execution timer
+                ; - If execution timer is not 0 after decreasing, no further action is taken and moves to next effect
+                ; - Otherwise, proceeds to next step
+                ;
 4810: a0 00     contEvalEffect  LDY #$00             ; Set Y = 0
 4812: b1 3d                     LDA (EffectAdr_L),Y  ; Set A = (*EffectAdr_L)[0]          (A = effect type)
 4814: c9 81                     CMP #$81             ; If
-4816: b0 03                     BCS loc_481b         ;    (A < $81 (129 / 1000_0001))
+4816: b0 03                     BCS loc_481b         ;    (A < $81 (129 / 1000_0001))     (only processes $81 to $df)
 4818: 4c 99 49                  JMP contNextEffect   ;    Or
 481b: c9 e0     loc_481b        CMP #$e0             ;    (A >= $e0 (224 / 1110_0000))    ($e0 or above is description)
 481d: 90 03                     BCC loc_4822         ; Then
-481f: 4c 99 49                  JMP contNextEffect   ;     Continue @ $4999 [contNextEffect]
+481f: 4c 99 49                  JMP contNextEffect   ;     Continue @ $4999 [contNextEffect]     (Skip this type)
                                                      ; End If
 4822: 29 07     loc_4822        AND #$07             ; If (A & 7 != 0)
 4824: f0 08                     BEQ loc_482e         ;    And
 4826: c9 04                     CMP #$04             ;    (A & 7 < 4)
 4828: b0 04                     BCS loc_482e         ; Then            (Set character diseased, poisoned or cursed flag)
-482a: aa                        TAX                  ;     Set X = A & 7 ([1..3] CHR_Diseased, CHR_Poisoned, CHR_CURSE)
+482a: aa                        TAX                  ;     Set X = A & 7 ([1..3] CHR_Diseased, CHR_Poisoned, CHR_Cursed)
 482b: de 90 63                  DEC CHR_NumLights,X  ;     Subtract 1 from CHR_NumLights[X]
                                                      ; End If
 482e: a0 04     loc_482e        LDY #$04             ; Set Y = 4
 4830: b1 3d                     LDA (EffectAdr_L),Y  ; Set A
-4832: c8                        INY                  ;       =
+4832: c8                        INY                  ;       =                            (Is execution timer non-zero?)
 4833: 11 3d                     ORA (EffectAdr_L),Y  ;         (*EffectAdr_L)[4] | (*EffectAdr_L)[5]   (Y = 5)
-4835: d0 03                     BNE loc_483a         ; If (A == 0) Then
-4837: 4c 99 49                  JMP contNextEffect   ;     Continue @ $4999 [contNextEffect]  (?? TODO: initial delay = 0 skips the effect? why not jump to loc_4851 instead when 0 ??)
+4835: d0 03                     BNE loc_483a         ; If (A == 0) Then                         (Execution timer is 0)
+4837: 4c 99 49                  JMP contNextEffect   ;     Continue @ $4999 [contNextEffect]    (Skip, timer is expired)
                                                      ; End If
 483a: 88        loc_483a        DEY                  ; Subtract 1 from Y               (Y = 4)
 483b: 38                        SEC                  ; Set
-483c: b1 3d                     LDA (EffectAdr_L),Y  ;     (*EffectAdr_L)[4]           (decrement ?? initial delay ??)
+483c: b1 3d                     LDA (EffectAdr_L),Y  ;     (*EffectAdr_L)[4]           (Decrement execution timer)
 483e: e9 01                     SBC #$01             ;        =
 4840: 91 3d                     STA (EffectAdr_L),Y  ;          (*EffectAdr_L)[4] - 1  (C = 0 on underflow else 1)
 4842: c8                        INY                  ; Add 1 to Y                      (Y = 5)
@@ -8945,57 +9292,69 @@
 4847: 91 3d                     STA (EffectAdr_L),Y  ;            (*EffectAdr_L)[5] - ~C
 4849: 88                        DEY                  ; Subtract 1 from Y               (Y = 4)
 484a: 11 3d                     ORA (EffectAdr_L),Y  ; If ((*EffectAdr_L)[4] | (*EffectAdr_L)[5] != 0)
-484c: f0 03                     BEQ loc_4851         ; Then
+484c: f0 03                     BEQ loc_4851         ; Then                            (Execution timer not zero yet)
 484e: 4c 99 49                  JMP contNextEffect   ;     Continue @ $4999 [contNextEffect]
                                                      ; End If
+                ;
+                ; At this point, the effect's execution timer has elapsed. Next steps:
+                ;
+                ; - If bit 6 of the effect's type byte is set, it is cleared, a matching description entry is found
+                ;   and bit 3 of that entry's type bit is set.
+                ; - The execution timer is reset to the repetition delay.
+                ; - A 12.5% (32/256) chance to check natural cure. Effect is removed if E8 < random chance (0..31).
+                ;
 4851: a0 00     loc_4851        LDY #$00             ; Set Y = 0
 4853: b1 3d                     LDA (EffectAdr_L),Y  ; If
 4855: 29 bf                     AND #$bf             ;    ((*EffectAdr_L)[0] & $bf != (*EffectAdr_L)[0])     (bit 6 = 1)
 4857: d1 3d                     CMP (EffectAdr_L),Y  ;
 4859: f0 38                     BEQ loc_4893         ; Then
-485b: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[0] &= $bf         (clear bit 6)
-485d: a6 49                     LDX dat_0049         ;     Set X = 0                        (dat_0049 = 0 here)
+485b: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[0] &= $bf                        (clear bit 6)
+485d: a6 49                     LDX EffectIndex      ;     Set X = EffectIndex      (Start at current [EffectIndex..63])
 485f: a0 01                     LDY #$01             ;     Set Y = 1
 4861: b1 3d                     LDA (EffectAdr_L),Y  ;     Set
-4863: 85 4a                     STA dat_004a         ;         dat_004a = (*EffectAdr_L)[1]
+4863: 85 4a                     STA dat_004a         ;         dat_004a = (*EffectAdr_L)[1]    (associated effect index)
 4865: a5 3d                     LDA EffectAdr_L      ;     Set
-4867: 85 3f                     STA addr_003f_L      ;         addr_003f_L/H
+4867: 85 3f                     STA CurEffAdr_L      ;         CurEffAdr_L/H
 4869: a5 3e                     LDA EffectAdr_H      ;            =
-486b: 85 40                     STA addr_003f_H      ;              EffectAdr_L/H
+486b: 85 40                     STA CurEffAdr_H      ;              EffectAdr_L/H
 486d: e8        loc_486d        INX                  ;     Loop
                                                      ;         Add 1 to X
 486e: e0 40                     CPX #$40             ;         If (X >= $40 (64)) Then
-4870: b0 21                     BCS loc_4893         ;             Continue @ $4893 [loc_4893]   (not found)
+4870: b0 21                     BCS loc_4893         ;             Exit Loop                            (no match found)
                                                      ;         End If
-4872: a5 3f                     LDA addr_003f_L      ;         Set
-4874: 18                        CLC                  ;             addr_003f_L              (move to next effect)
+4872: a5 3f                     LDA CurEffAdr_L      ;         Set
+4874: 18                        CLC                  ;             CurEffAdr_L                     (move to next effect)
 4875: 69 10                     ADC #$10             ;                =
-4877: 85 3f                     STA addr_003f_L      ;                  addr_003f_L + $10   (C = 1 on overflow else 0)
+4877: 85 3f                     STA CurEffAdr_L      ;                  CurEffAdr_L + $10     (C = 1 on overflow else 0)
 4879: 90 02                     BCC loc_487d         ;         If (C == 1) Then
-487b: e6 40                     INC addr_003f_H      ;             Add 1 to addr_003f_H
+487b: e6 40                     INC CurEffAdr_H      ;             Add 1 to CurEffAdr_H
                                                      ;         End If
 487d: a0 00     loc_487d        LDY #$00             ;         Set Y = 0
-487f: b1 3f                     LDA (addr_003f_L),Y  ;         If ((*addr_003f_L)[0] < $e0) Then
-4881: c9 e0                     CMP #$e0             ;            Repeat Loop               (not a description entry?)
-4883: 90 e8                     BCC loc_486d         ;         End If
-4885: c8                        INY                  ;         Add 1 to Y      (Y = 1)
-4886: b1 3f                     LDA (addr_003f_L),Y  ;     Repeat
-4888: c5 4a                     CMP dat_004a         ;        while
-488a: d0 e1                     BNE loc_486d         ;          ((*addr_003f_L)[Y] != dat_004a)
-488c: 88                        DEY                  ;     Subtract 1 from Y   (Y = 0)
-488d: b1 3f                     LDA (addr_003f_L),Y  ;     Set (*addr_003f_L)[0]
-488f: 09 08                     ORA #$08             ;             =
-4891: 91 3f                     STA (addr_003f_L),Y  ;               (*addr_003f_L)[0] | 8
+487f: b1 3f                     LDA (CurEffAdr_L),Y  ;         If
+4881: c9 e0                     CMP #$e0             ;            ((*CurEffAdr_L)[0] >= $e0)         (description entry)
+4883: 90 e8                     BCC loc_486d         ;         Then
+4885: c8                        INY                  ;             Add 1 to Y      (Y = 1)
+4886: b1 3f                     LDA (CurEffAdr_L),Y  ;             If
+4888: c5 4a                     CMP dat_004a         ;                ((*CurEffAdr_L)[1] == dat_004a)
+488a: d0 e1                     BNE loc_486d         ;             Then
+488c: 88                        DEY                  ;                 Subtract 1 from Y   (Y = 0)
+488d: b1 3f                     LDA (CurEffAdr_L),Y  ;                 Set (*CurEffAdr_L)[0]
+488f: 09 08                     ORA #$08             ;                       =
+4891: 91 3f                     STA (CurEffAdr_L),Y  ;                         (*CurEffAdr_L)[0] | 8         (Set bit 3)
+                                                     ;                 Exit Loop      (found matching description entry)
+                                                     ;             End If
+                                                     ;         End If
+                                                     ;     Repeat Loop
                                                      ; End If
 4893: a0 06     loc_4893        LDY #$06             ; Set Y = 6
-4895: b1 3d                     LDA (EffectAdr_L),Y  ; Set
+4895: b1 3d                     LDA (EffectAdr_L),Y  ; Set             (reset execution timer to repetition delay value)
 4897: aa                        TAX                  ;     X = (*EffectAdr_L)[6]
 4898: c8                        INY                  ; Add 1 to Y          (Y = 7)
-4899: b1 3d                     LDA (EffectAdr_L),Y  ; Set (*EffectAdr_L)[5]
+4899: b1 3d                     LDA (EffectAdr_L),Y  ; Set (*EffectAdr_L)[5]              (reset MSB of execution timer)
 489b: a0 05                     LDY #$05             ;         =
 489d: 91 3d                     STA (EffectAdr_L),Y  ;           (*EffectAdr_L)[7]
 489f: 88                        DEY                  ; Subtract 1 from Y   (Y = 4)
-48a0: 8a                        TXA                  ; Set
+48a0: 8a                        TXA                  ; Set                                (reset LSB of execution timer)
 48a1: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[4] = X     (X = (*EffectAdr_L)[6])
 48a3: ad 0a d2                  LDA RANDOM           ; If
 48a6: c9 20                     CMP #$20             ;    (random byte < $20)        (32/256 = 12.5% chance)
@@ -9004,49 +9363,72 @@
 48ad: a0 08                     LDY #$08             ;
 48af: d1 3d                     CMP (EffectAdr_L),Y  ;    (random byte < (*EffectAdr_L)[8])
 48b1: b0 06                     BCS loc_48b9         ; Then
-48b3: 20 01 4a                  JSR sub_4a01         ;     Call $4a01 [sub_4a01]
+48b3: 20 01 4a                  JSR sub_4a01         ;     Call $4a01 [sub_4a01]        (remove effect; cured naturally)
 48b6: 4c 99 49                  JMP contNextEffect   ;     Continue @ $4999 [contNextEffect]
                                                      ; End If
+                ;
+                ; - Set AttrAddr_L/H to address of attribute to modify
+                ;     If bit 7 of E11 is set:  (offset relative to linked item)
+                ;         AttrAddr_L/H = ((E11 & $7f) + InvItemAdr_H[E15]) * 256 + E10 + InvItemAdr_L[E15]
+                ;     Otherwise:  (offset relative to player state)
+                ;         AttrAddr_L/H = $6300 + E11 * 256 + E10
+                ; - Set AttrAdjAmt to E14
+                ; - Set dat_0052 to E12   (# steps)
+                ; - Set dat_0053 to E13   (step size)
+                ; - Checks the action code (E9) and
+                ;     If E9 >= 0:
+                ;        - AttrSize is set to the value of E9, minus one
+                ;        - The attribute bytes are assigned
+                ;     Otherwise, when the action code (E9) < 0:
+                ;        - AttrSize is set to the lower 4 bits, minus one
+                ;        - The value of bits 6, 5 & 4 (0..7) is used to select the implementation to invoke:
+                ;           0 - Adds to the attribute
+                ;           1 - Subtracts from the attribute
+                ;           2 - No change to the attribute
+                ;           4 - No change to the attribute
+                ;           4 - XOR bytes
+                ;           5 - OR bytes
+                ;           6 - AND bytes
+                ;           7 - BRK and RTS
+                ;
 48b9: a0 0a     loc_48b9        LDY #$0a             ; Set Y = 10
 48bb: b1 3d                     LDA (EffectAdr_L),Y  ; Set AttrAddr_L
-48bd: 85 45                     STA AttrAddr_L       ;        = (*EffectAdr_L)[10]
+48bd: 85 45                     STA AttrAddr_L       ;        = (*EffectAdr_L)[10]             (LSB of attribute offset)
 48bf: c8                        INY                  ; Add 1 to Y        (Y = 11)
 48c0: 18                        CLC                  ; Set C = 0
 48c1: b1 3d                     LDA (EffectAdr_L),Y  ; Set AttrAddr_H
-48c3: 85 46                     STA AttrAddr_H       ;        = (*EffectAdr_L)[11]
-48c5: 10 17                     BPL loc_48de         ; If (AttrAddr_H < 0) Then
+48c3: 85 46                     STA AttrAddr_H       ;        = (*EffectAdr_L)[11]             (MSB of attribute offset)
+48c5: 10 17                     BPL loc_48de         ; If (AttrAddr_H < 0) Then         (Offset relative to linked item)
 48c7: a0 0f                     LDY #$0f             ;     Set Y = $f (15)
 48c9: b1 3d                     LDA (EffectAdr_L),Y  ;     Set
 48cb: aa                        TAX                  ;         X = (*EffectAdr_L)[15]
 48cc: a5 45                     LDA AttrAddr_L       ;     Set
-48ce: 7d 0b 64                  ADC InvItemAdr_L,X   ;         AttrAddr_L
-48d1: 85 45                     STA AttrAddr_L       ;            = AttrAddr_L + InvItemAdr_L[X]  (C = 1 on overflow else 0)
+48ce: 7d 0b 64                  ADC InvItemAdr_L,X   ;         AttrAddr_L     (in: C = 0, out: C = 1 on overflow else 0)
+48d1: 85 45                     STA AttrAddr_L       ;            = AttrAddr_L + InvItemAdr_L[X]
 48d3: a5 46                     LDA AttrAddr_H       ;     Set
 48d5: 29 7f                     AND #$7f             ;         AttrAddr_H
 48d7: 7d 4b 64                  ADC InvItemAdr_H,X   ;            =
-48da: 85 46                     STA AttrAddr_H       ;              (AttrAddr_H & $7f) + InvItemAdr_H[X] + C  (C = 1 on overflow else 0)
-48dc: d0 0c                     BNE loc_48ea         ;     If (AttrAddr_H != 0) Then
-                                                     ;         Continue @ $48ea [loc_48ea]
-                                                     ;     End If
+48da: 85 46                     STA AttrAddr_H       ;              (AttrAddr_H & $7f) + InvItemAdr_H[X] + C
+48dc: d0 0c                     BNE loc_48ea         ; Else      (Presumably, the MSB is never 0 here & always branches)
+48de: a5 45     loc_48de        LDA AttrAddr_L       ;     Set
+48e0: 69 00                     ADC #$00             ;         AttrAddr_L                        (in: C = 0, out: C = 0)
+48e2: 85 45                     STA AttrAddr_L       ;            = AttrAddr_L         (Unnecessary, likely from macro?)
+48e4: a5 46                     LDA AttrAddr_H       ;     Set
+48e6: 69 63                     ADC #$63             ;         AttrAddr_H
+48e8: 85 46                     STA AttrAddr_H       ;            = AttrAddr_H + $63     (Relative to $6300 [CHR_STATE])
                                                      ; End If
-48de: a5 45     loc_48de        LDA AttrAddr_L       ; Set
-48e0: 69 00                     ADC #$00             ;     AttrAddr_L
-48e2: 85 45                     STA AttrAddr_L       ;        = AttrAddr_L + C        (C = 1 on overflow else 0)
-48e4: a5 46                     LDA AttrAddr_H       ; Set
-48e6: 69 63                     ADC #$63             ;     AttrAddr_H
-48e8: 85 46                     STA AttrAddr_H       ;        = AttrAddr_H + $63 + C
 48ea: a0 0e     loc_48ea        LDY #$0e             ; Set Y = $e (14)
 48ec: b1 3d                     LDA (EffectAdr_L),Y  ; Set
-48ee: 85 51                     STA AttrAdjAmt       ;     AttrAdjAmt = (*EffectAdr_L)[14]
+48ee: 85 51                     STA AttrAdjAmt       ;     AttrAdjAmt = (*EffectAdr_L)[14]          (adjustment amount)
 48f0: a0 0c                     LDY #$0c             ; Set Y = $c (12)
 48f2: b1 3d                     LDA (EffectAdr_L),Y  ; Set
-48f4: 85 52                     STA dat_0052         ;     dat_0052 = (*EffectAdr_L)[12]
+48f4: 85 52                     STA dat_0052         ;     dat_0052 = (*EffectAdr_L)[12]            (number of steps)
 48f6: a0 0d                     LDY #$0d             ; Set Y = $d (13)
 48f8: b1 3d                     LDA (EffectAdr_L),Y  ; Set
-48fa: 85 53                     STA dat_0053         ;     dat_0053 = (*EffectAdr_L)[13]
+48fa: 85 53                     STA dat_0053         ;     dat_0053 = (*EffectAdr_L)[13]            (step size)
 48fc: a0 09                     LDY #$09             ; Set Y = 9
-48fe: b1 3d                     LDA (EffectAdr_L),Y  ; Set A = (*EffectAdr_L)[9]
-4900: 30 11                     BMI loc_4913         ; If (A >= 0) Then
+48fe: b1 3d                     LDA (EffectAdr_L),Y  ; Set A = (*EffectAdr_L)[9]                    (action code)
+4900: 30 11                     BMI loc_4913         ; If (A >= 0) Then          (all positive values map to assignment)
 4902: a8                        TAY                  ;   Set Y = A
 4903: 88                        DEY                  ;   Subtract 1 from Y
 4904: 84 54                     STY AttrSize         ;   Set AttrSize = Y
@@ -9223,26 +9605,26 @@
                 ; If the current effect is not infinitely repeating, its repetition count will be decremented and
                 ; the effect will be removed if the count reaches 0.
                 ;
-                ; Continues @ $4810 [contEvalEffect] if dat_0049 is less than 64 (the max number of effects).
-                ; If dat_0049 is >= 64, this returns to the caller.
+                ; Continues @ $4810 [contEvalEffect] if EffectIndex is less than 64 (the max number of effects).
+                ; If EffectIndex is >= 64, this returns to the caller.
                 ;
                 ; Input
                 ;   EffectAdr_L/H  - Address of current effect
-                ;   dat_0049       - Index of current effect
+                ;   EffectIndex    - Index of current effect
                 ;
                 ; Output
                 ;   EffectAdr_L/H  - Moved forward by 16 bytes to the address of next effect
-                ;   dat_0049       - Increased by one
+                ;   EffectIndex    - Increased by one
                 ;   StatDisplayFlg - Set to $80 (update needed)
                 ;
 4984: a0 03     contIterEffect  LDY #$03             ; Set Y = 3
-4986: b1 3d                     LDA (EffectAdr_L),Y  ; If ((*EffectAdr_L)[3] != 0)      (0 = infinite repetitions)
+4986: b1 3d                     LDA (EffectAdr_L),Y  ; If ((*EffectAdr_L)[3] != 0)       (0 = infinite repetitions)
 4988: f0 0a                     BEQ loc_4994         ; Then
 498a: 38                        SEC                  ;     Set (*EffectAdr_L)[3]
-498b: e9 01                     SBC #$01             ;            =
+498b: e9 01                     SBC #$01             ;            =                      (decrease remaining iterations)
 498d: 91 3d                     STA (EffectAdr_L),Y  ;              (*EffectAdr_L)[3] - 1
 498f: d0 03                     BNE loc_4994         ;     If ((*EffectAdr_L)[3] == 0) Then
-4991: 20 01 4a                  JSR sub_4a01         ;         Call $4a01 [sub_4a01]    (reached last iteration, remove effect?)
+4991: 20 01 4a                  JSR sub_4a01         ;         Call $4a01 [sub_4a01]     (last iteration, remove effect)
                                                      ;     End If
                                                      ; End If
 4994: a9 80     loc_4994        LDA #$80             ; Set
@@ -9250,16 +9632,16 @@
 
                 ; Moves to the next effect.
                 ;
-                ; Continues @ $4810 [contEvalEffect] if dat_0049 is less than 64 (the max number of effects).
-                ; If dat_0049 is >= 64, this returns to the caller.
+                ; Continues @ $4810 [contEvalEffect] if EffectIndex is less than 64 (the max number of effects).
+                ; If EffectIndex is >= 64, this returns to the caller.
                 ;
                 ; Input
                 ;   EffectAdr_L/H  - Address of current effect
-                ;   dat_0049       - Index of current effect
+                ;   EffectIndex    - Index of current effect
                 ;
                 ; Output
                 ;   EffectAdr_L/H  - Moved forward by 16 bytes to the address of next effect
-                ;   dat_0049       - Increased by one
+                ;   EffectIndex    - Increased by one
                 ;
 4999: a5 3d     contNextEffect  LDA EffectAdr_L      ; Set
 499b: 18                        CLC                  ;     EffectAdr_L                  (move to next effect)
@@ -9268,23 +9650,23 @@
 49a0: 90 02                     BCC loc_49a4         ; If (C == 1) Then   (overflow)
 49a2: e6 3e                     INC EffectAdr_H      ;     Add 1 to EffectAdr_H
                                                      ; End If
-49a4: e6 49     loc_49a4        INC dat_0049         ; Add 1 to dat_0049
-49a6: a5 49                     LDA dat_0049         ; If
-49a8: c9 40                     CMP #$40             ;    (dat_0049 < $40 (64))
-49aa: b0 03                     BCS loc_49af         ; Then
+49a4: e6 49     loc_49a4        INC EffectIndex      ; Add 1 to EffectIndex
+49a6: a5 49                     LDA EffectIndex      ; If
+49a8: c9 40                     CMP #$40             ;    (EffectIndex < $40 (64))
+49aa: b0 03                     BCS rts_49af         ; Then
 49ac: 4c 10 48                  JMP contEvalEffect   ;     Continue @ $4810 [contEvalEffect]
                                                      ; End If
-49af: 60        loc_49af        RTS                  ; Return to caller
+49af: 60        rts_49af        RTS                  ; Return to caller
 
-                ; Adds a new entry to the table at $6500 [CHR_Effects].
+                ; Reserves a space in the table at $6500 [CHR_Effects] for an effect of the specified type.
                 ;
                 ; Input
-                ;   A             - Value to assign to byte 0 of the entry
+                ;   A             - Value to assign to byte 0 of the entry (effect type & flags)
                 ;
                 ; Output
                 ;   X             - Index of the entry added (0..63) or $ff if no available space (failed)
                 ;   A             - same as X
-                ;   dat_0049      - same as X
+                ;   EffectIndex   - same as X
                 ;   N             - 0 if entry was added (success), 1 if no available space (failed)
                 ;   EffectAdr_L/H - When N == 0, set to address of entry inserted which has the following values assigned:
                 ;                     Byte 0: Value of input param A
@@ -9293,16 +9675,16 @@
                 ; Temp
                 ;   dat_0055     - Number of entries: $40 (64) if input param A < $f0 otherwise $39 (63)
                 ;   dat_0056     - Offset from EffectAdr_L/H: 0 if input param A < $f0 otherwise $10
-                ;   dat_0057     - Set to value of input param A
+                ;   dat_0057     - Set to value of input param A (effect type & flags)
                 ;
-49b0: a2 40     sub_49b0        LDX #$40             ; Set
+49b0: a2 40     allocEffect     LDX #$40             ; Set
 49b2: 86 55                     STX dat_0055         ;     dat_0055 = $40 (64)
-49b4: a2 00                     LDX #$00             ; Set X = 0
+49b4: a2 00                     LDX #$00             ; Set X = 0                 (inspect current entry)
 49b6: 85 57                     STA dat_0057         ; Set dat_0057 = A
 49b8: c9 f0                     CMP #$f0             ; If (A >= $f0)
-49ba: 90 04                     BCC loc_49c0         ; Then
-49bc: a2 10                     LDX #$10             ;     Set X = $10 (16)
-49be: c6 55                     DEC dat_0055         ;     Subtract 1 from dat_0055
+49ba: 90 04                     BCC loc_49c0         ; Then                      ($f0 is description with linked effect)
+49bc: a2 10                     LDX #$10             ;     Set X = $10 (16)      (look ahead one entry)
+49be: c6 55                     DEC dat_0055         ;     Subtract 1 from dat_0055 (Only first 63 entries)
                                                      ; End If
 49c0: 86 56     loc_49c0        STX dat_0056         ; Set dat_0056 = X
 49c2: a9 00                     LDA #$00             ; Set
@@ -9336,106 +9718,124 @@
 49ee: a2 00                     LDX #$00             ; Set X = 0
 49f0: 86 3e                     STX EffectAdr_H      ; Set EffectAdr_H = 0
 49f2: ca                        DEX                  ; Subtract 1 from X  (e.g. Set X = $ff (-1))
-49f3: 30 08                     BMI loc_49fd         ; Continue @ $49fd [loc_49fd]  (Return A = $ff, X = $ff, dat_0049 = $ff)
+49f3: 30 08                     BMI loc_49fd         ; Continue @ $49fd [loc_49fd]  (Return A = $ff, X = $ff, EffectIndex = $ff)
                 ; Jumps here if an insertion position is found
                 ;   - Sets byte 0 of the entry to the input param A value
                 ;   - Sets byte 1 of the entry to the input param X value
+                ;
+                ; When this code is executed:
+                ;   Y = 0
+                ;   X = effect index identified in the loop above
+                ;
 49f5: a5 57     loc_49f5        LDA dat_0057         ; Set
-49f7: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[Y] = dat_0057   (original param A value)
+49f7: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[0] = dat_0057   (original param A value)
 49f9: c8                        INY                  ; Add 1 to Y
 49fa: 8a                        TXA                  ; Set
-49fb: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[Y] = X
-49fd: 86 49     loc_49fd        STX dat_0049         ; Set dat_0049 = X
-49ff: 8a                        TXA                  ; Set A = X    (Sets N to match sign)
+49fb: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[1] = X        (insertion position found above)
+49fd: 86 49     loc_49fd        STX EffectIndex      ; Set EffectIndex = X
+49ff: 8a                        TXA                  ; Set A = X                        (also sets N to match sign of X)
 4a00: 60                        RTS                  ; Return to caller
 
+                ; ? Removes an effect and all associated effects by effect index ?
+                ;
+                ; - Computes the address of the EffectIndex-th entry of the CHR_Effects array.
+                ; - If byte 1 of the entry found does not equal EffectIndex
+                ;   - Returns without performing any updates
+                ; - If byte 1 of the entry found does equal EffectIndex
+                ;   - Scans all entries from the EffectIndex-th entry onward
+                ;   - For each item found with byte 0 >= $81 and byte 1 equal to EffectIndex
+                ;     - Calls sub_4a4a
                 ;
                 ; Input
-                ;   dat_0049      - Index into array @ $6500 [CHR_Effects] containing 16-byte elements
-                ;   CHR_Effects   -
+                ;   EffectIndex   - Index of the effect to remove
+                ;   CHR_Effects   - Effects array @ $6500 containing 16-byte effect elements
                 ;
-                ; Output
-                ;   addr_003f_L/H - Set to the address of the entry (CHR_Effects[dat_0049 * 16])
+                ; Temp
+                ;   CurEffAdr_L/H - Holds addresses of entries inspected.
                 ;
 4a01: ce 5f 19  sub_4a01        DEC StatDisplayFlg   ; Subtract 1 from StatDisplayFlg   (update needed)
-                ; Rotate high nibble of dat_0049 into low nibble of addr_003f_H,
-                ;   low nibble of addr_003f_H into high nibble of addr_003f_H
-4a04: a5 49                     LDA dat_0049         ; Set A = dat_0049
+                ; 16-bit multiply by 16:
+                ;   - Rotate high nibble of EffectIndex into low nibble of CurEffAdr_H,
+                ;     low nibble of CurEffAdr_H into high nibble of CurEffAdr_H
+4a04: a5 49                     LDA EffectIndex      ; Set A = EffectIndex
 4a06: a2 04                     LDX #$04             ; Set X = 4  (4 iterations)
 4a08: 0a        loc_4a08        ASL                  ; Loop
-                                                     ;     Set A *= 2   (C = old bit 7 of A)
-4a09: 26 40                     ROL addr_003f_H      ;     Set addr_003f_H = addr_003f_H * 2 + C
+                                                     ;     Set A = A * 2   (C = old bit 7 of A)
+4a09: 26 40                     ROL CurEffAdr_H      ;     Set CurEffAdr_H = CurEffAdr_H * 2 + C
 4a0b: ca                        DEX                  ;     Subtract 1 from X
 4a0c: d0 fa                     BNE loc_4a08         ; Repeat while (X != 0)
-4a0e: 18                        CLC                  ; (Note: A = (dat_0049 & $0f) << 4)
+4a0e: 18                        CLC                  ; (Note: A = (EffectIndex & $0f) << 4)
 4a0f: 69 00                     ADC #$00             ; Set
-4a11: 85 3f                     STA addr_003f_L      ;     addr_003f_L = (dat_0049 & $0f) << 4
-4a13: a5 40                     LDA addr_003f_H      ; Set
-4a15: 29 0f                     AND #$0f             ;     addr_003f_H
-4a17: 69 65                     ADC #$65             ;        = (addr_003f_H & $0f) + $65
-4a19: 85 40                     STA addr_003f_H      ; (At this point: addr_003f_L/H = $6500 + dat_0049 * 16)
+4a11: 85 3f                     STA CurEffAdr_L      ;     CurEffAdr_L = (EffectIndex & $0f) << 4
+4a13: a5 40                     LDA CurEffAdr_H      ; Set
+4a15: 29 0f                     AND #$0f             ;     CurEffAdr_H
+4a17: 69 65                     ADC #$65             ;        = (CurEffAdr_H & $0f) + $65
+4a19: 85 40                     STA CurEffAdr_H      ; (At this point: CurEffAdr_L/H = $6500 [CHR_Effects] + EffectIndex * 16)
 4a1b: 20 4a 4a                  JSR sub_4a4a         ; Call $4a4a [sub_4a4a]    (Y = 0 on return)
-4a1e: a5 49                     LDA dat_0049         ; Set
-4a20: aa                        TAX                  ;     X = dat_0049
+4a1e: a5 49                     LDA EffectIndex      ; Set
+4a20: aa                        TAX                  ;     X = EffectIndex
 4a21: c8                        INY                  ; Add 1 to Y               (Y = 1)
-4a22: d1 3f                     CMP (addr_003f_L),Y  ; If (dat_0049 == (*addr_003f_L)[1]) Then
+4a22: d1 3f                     CMP (CurEffAdr_L),Y  ; If (EffectIndex == (*CurEffAdr_L)[1]) Then
 4a24: f0 13                     BEQ loc_4a39         ;     Continue @ loc_4a39  (entry was match, starts inside loop below)
                                                      ; End If
 4a26: 60                        RTS                  ; Return to caller         (entry did not match)
                 ;
-                ; X = dat_0049 when execution reaches here
+                ; X = EffectIndex when execution reaches here
                 ;
-                ; The loop below iterates from dat_0049 to 63,
+                ; The loop below iterates from EffectIndex to 63,
                 ;    calling sub_4a4a for each entry where
-                ;    byte 0 >= $81 and byte 1 equals dat_0049
+                ;    byte 0 >= $81 and byte 1 equals EffectIndex
                 ;
 4a27: a0 00     loc_4a27        LDY #$00             ; Loop
                                                      ;     Set Y = 0
-4a29: b1 3f                     LDA (addr_003f_L),Y  ;     If
-4a2b: c9 81                     CMP #$81             ;        ((*addr_003f_L)[0] >= $81 (129))
+4a29: b1 3f                     LDA (CurEffAdr_L),Y  ;     If
+4a2b: c9 81                     CMP #$81             ;        ((*CurEffAdr_L)[0] >= $81 (129))
 4a2d: 90 0a                     BCC loc_4a39         ;     Then
 4a2f: c8                        INY                  ;         Add 1 to Y       (Y = 1)
-4a30: b1 3f                     LDA (addr_003f_L),Y  ;         If
-4a32: c5 49                     CMP dat_0049         ;            ((*addr_003f_L)[1] == dat_0049)
+4a30: b1 3f                     LDA (CurEffAdr_L),Y  ;         If
+4a32: c5 49                     CMP EffectIndex      ;            ((*CurEffAdr_L)[1] == EffectIndex)
 4a34: d0 03                     BNE loc_4a39         ;         Then
 4a36: 20 4a 4a                  JSR sub_4a4a         ;             Call $4a4a [sub_4a4a]      (X not modified by sub)
                                                      ;         End If
                                                      ;     End If
                 ; Move to next entry.
-4a39: a5 3f     loc_4a39        LDA addr_003f_L      ;     Set
-4a3b: 18                        CLC                  ;         addr_003f_L
+4a39: a5 3f     loc_4a39        LDA CurEffAdr_L      ;     Set
+4a3b: 18                        CLC                  ;         CurEffAdr_L
 4a3c: 69 10                     ADC #$10             ;            =
-4a3e: 85 3f                     STA addr_003f_L      ;              addr_003f_L + $10 (16)    (C = 1 on overflow else 0)
+4a3e: 85 3f                     STA CurEffAdr_L      ;              CurEffAdr_L + $10 (16)    (C = 1 on overflow else 0)
 4a40: 90 02                     BCC loc_4a44         ;     If (C == 1) Then  (overflow)
-4a42: e6 40                     INC addr_003f_H      ;        Add 1 to addr_003f_H
+4a42: e6 40                     INC CurEffAdr_H      ;        Add 1 to CurEffAdr_H
                                                      ;     End If
 4a44: e8        loc_4a44        INX                  ;     Add 1 to X
 4a45: e0 40                     CPX #$40             ; Repeat
 4a47: 90 de                     BCC loc_4a27         ;   while (X < $40 (64))
 4a49: 60                        RTS                  ; Return to caller
 
-                ; ?Invalidates (sets byte 0 to $80) the current entry (and the next entry if the current entry byte 0 >= $f0)?
+                ; Invalidates/removes (sets byte 0 to $80) the current effect, including the next entry if the current
+                ; effect's type code is >= $f0.
                 ;
                 ; Input
-                ;   addr_003f_L/H - Address of entry
+                ;   CurEffAdr_L/H - Address of effect entry to invalidate
                 ;
                 ; Output
                 ;   Y    - 0
                 ;   X    - unmodified by this sub
                 ;
 4a4a: a0 00     sub_4a4a        LDY #$00             ; Set Y = 0
-4a4c: b1 3f                     LDA (addr_003f_L),Y  ; If
-4a4e: c9 f0                     CMP #$f0             ;    ((*addr_003f_L)[0] >= $f0 (240))
+4a4c: b1 3f                     LDA (CurEffAdr_L),Y  ; If
+4a4e: c9 f0                     CMP #$f0             ;    ((*CurEffAdr_L)[0] >= $f0 (240))       (desc w/ linked effect)
 4a50: 90 08                     BCC loc_4a5a         ; Then
-4a52: a0 10                     LDY #$10             ;     Set (*addr_003f_L)[$10 (16)]
+4a52: a0 10                     LDY #$10             ;     Set (*CurEffAdr_L)[16]
 4a54: a9 80                     LDA #$80             ;            =
-4a56: 91 3f                     STA (addr_003f_L),Y  ;              $80 (128)
+4a56: 91 3f                     STA (CurEffAdr_L),Y  ;              $80 (128)    (invalidates type byte 0 of next entry)
 4a58: a0 00                     LDY #$00             ;     Set Y = 0
                                                      ; End If
 4a5a: a9 80     loc_4a5a        LDA #$80             ; Set
-4a5c: 91 3f                     STA (addr_003f_L),Y  ;     (*addr_003f_L)[0] = $80 (128)
+4a5c: 91 3f                     STA (CurEffAdr_L),Y  ;     (*CurEffAdr_L)[0] = $80 (128)      (invalidate current entry)
 4a5e: 60                        RTS                  ; Return to caller
 
+                ;
+                ; Calls sub_4bb3 for each item in the game inventory.
                 ;
                 ; Input
                 ;   dat_000f       - flag to prevent recursive re-entry
@@ -9450,11 +9850,11 @@
                 ;
 4a5f: a5 0f     sub_4a5f        LDA dat_000f         ; If (dat_000f == 0)
 4a61: d0 1f                     BNE loc_4a82         ; Then
-4a63: c6 0f                     DEC dat_000f         ;     Subtract 1 from dat_000f              (To prevent re-entry?)
+4a63: c6 0f                     DEC dat_000f         ;     Subtract 1 from dat_000f               (To prevent re-entry?)
 4a65: a2 00                     LDX #$00             ;     Set X = 0
 4a67: 86 4b                     STX ItemIndex        ;     Set ItemIndex = 0
 4a69: bd 4b 64  loc_4a69        LDA InvItemAdr_H,X   ;     Loop
-4a6c: f0 0a                     BEQ loc_4a78         ;         If (InvItemAdr_H[ItemIndex] != 0) Then  (slot is occupied)
+4a6c: f0 0a                     BEQ loc_4a78         ;         If (InvItemAdr_H[ItemIndex] != 0) Then    (slot occupied)
 4a6e: 85 42                     STA ItemAdr_H        ;             Set ItemAdr_H = InvItemAdr_H[ItemIndex]
 4a70: bd 0b 64                  LDA InvItemAdr_L,X   ;             Set
 4a73: 85 41                     STA ItemAdr_L        ;                 ItemAdr_L = InvItemAdr_L[ItemIndex]
@@ -9572,8 +9972,8 @@
                 ;
                 ; Temp
                 ;   InvItemAdr_L/H        - Updated to the address of the removed item.
-                ;   SourceAdr_L           - Address following item (ItemAdr_L/H + item size). Param to copyBytes
-                ;   dat_0009_L            - Item addresss (ItemAdr_L/H). Param to copyBytes
+                ;   SourceAdr_L/H         - Address following item (ItemAdr_L/H + item size). Param to copyBytes
+                ;   DestAdr_L/H           - Item addresss (ItemAdr_L/H). Param to copyBytes
                 ;   ItemIndex             - Assigned the index of the removed item (input value of A)
                 ;   dat_004c              - input value saved/restored on stack so $ff can be passed into sub_4d93
                 ;   dat_004f              - Assigned to the size/length of the item
@@ -9600,12 +10000,12 @@
 4af2: b1 41                     LDA (ItemAdr_L),Y    ; Set
 4af4: 85 4f                     STA dat_004f         ;     dat_004f = (*ItemAdr_L)[1]       (item size in bytes)
 4af6: a5 41                     LDA ItemAdr_L        ; Set
-4af8: 85 09                     STA dat_0009_L       ;     dat_0009_L = ItemAdr_L
+4af8: 85 09                     STA DestAdr_L        ;     DestAdr_L = ItemAdr_L
 4afa: 18                        CLC                  ; Set
 4afb: 65 4f                     ADC dat_004f         ;     SourceAdr_L
 4afd: 85 07                     STA SourceAdr_L      ;        = ItemAdr_L + dat_004f        (C = 1 on overflow else 0)
 4aff: a5 42                     LDA ItemAdr_H        ; Set
-4b01: 85 0a                     STA dat_0009_H       ;     dat_0009_H = ItemAdr_H
+4b01: 85 0a                     STA DestAdr_H        ;     DestAdr_H = ItemAdr_H
 4b03: 69 00                     ADC #$00             ; Set
 4b05: 85 08                     STA SourceAdr_H      ;     SourceAdr_H = ItemAdr_H + C
 4b07: 38                        SEC                  ; Set
@@ -9663,7 +10063,7 @@
                 ;
                 ; Temp
                 ;   SourceAdr_L/H - updated to source address of item to add (input Y/X)
-                ;   dat_0009_L/H  - allocated item destination address for copyBytes call
+                ;   DestAdr_L/H   - allocated item destination address for copyBytes call
                 ;
 4b4d: 84 07     addItem         STY SourceAdr_L      ; Set SourceAdr_L = Y
 4b4f: 86 08                     STX SourceAdr_H      ; Set SourceAdr_H = X
@@ -9677,10 +10077,10 @@
 4b5f: 20 ab 2d                  JSR updateBit        ;     Call $2dab [updateBit]
 4b62: a4 4f                     LDY dat_004f         ;     Set Y = dat_004f
 4b64: a2 00                     LDX #$00             ;     Set X = 0
-4b66: a5 41                     LDA ItemAdr_L        ;     Set dat_0009_L/H
-4b68: 85 09                     STA dat_0009_L       ;         address
+4b66: a5 41                     LDA ItemAdr_L        ;     Set DestAdr_L/H
+4b68: 85 09                     STA DestAdr_L        ;         address
 4b6a: a5 42                     LDA ItemAdr_H        ;         to
-4b6c: 85 0a                     STA dat_0009_H       ;         ItemAdr_L/H
+4b6c: 85 0a                     STA DestAdr_H        ;         ItemAdr_L/H
 4b6e: 20 0d 2e                  JSR copyBytes        ;     Call $2e0d [copyBytes]
 4b71: a5 4b                     LDA ItemIndex        ;     Set A = ItemIndex
                                                      ; End If
@@ -9707,40 +10107,104 @@
 
                 ;
                 ;
+                ; Input
+                ;   A - item index
                 ;
-4b80: a2 01     sub_4b80        LDX #$01             ; Set X = 1
+                ; Output
+                ;   ItemIndex - set to input value of A
+                ;   dat_004d  - set to the input value of X
+                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
+                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   Z         - 1 if A is 0, otherwise 0
+                ;   N         - 0 if A is 0, otherwise 1
+                ;
+4b80: a2 01     sub_4b80        LDX #$01             ; Set X = 1  (get)
 4b82: 2c        nop_4b82        .BYTE $2c            ; Forms NOP with next 2 bytes: "BIT $02a2"
 
                 ;
                 ;
+                ; Input
+                ;   A - item index
                 ;
-4b83: a2 02     sub_4b83        LDX #$02             ; Set X = 2
+                ; Output
+                ;   ItemIndex - set to input value of A
+                ;   dat_004d  - set to the input value of X
+                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
+                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   Z         - 1 if A is 0, otherwise 0
+                ;   N         - 0 if A is 0, otherwise 1
+                ;
+4b83: a2 02     sub_4b83        LDX #$02             ; Set X = 2  (drop)
 4b85: 2c        nop_4b85        .BYTE $2c            ; Forms NOP with next 2 bytes: "BIT $04a2"
 
                 ;
                 ;
+                ; Input
+                ;   A - item index
                 ;
-4b86: a2 04     sub_4b86        LDX #$04             ; Set X = 4
+                ; Output
+                ;   ItemIndex - set to input value of A
+                ;   dat_004d  - set to the input value of X
+                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
+                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   Z         - 1 if A is 0, otherwise 0
+                ;   N         - 0 if A is 0, otherwise 1
+                ;
+4b86: a2 04     sub_4b86        LDX #$04             ; Set X = 4  (use)
 4b88: 2c        nop_4b88        .BYTE $2c            ; Forms NOP with next 2 bytes: "BIT $08a2"
 
                 ;
                 ;
+                ; Input
+                ;   A - item index
                 ;
-4b89: a2 08     sub_4b89        LDX #$08             ; Set X = 8
+                ; Output
+                ;   ItemIndex - set to input value of A
+                ;   dat_004d  - set to the input value of X
+                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
+                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   Z         - 1 if A is 0, otherwise 0
+                ;   N         - 0 if A is 0, otherwise 1
+                ;
+4b89: a2 08     sub_4b89        LDX #$08             ; Set X = 8  (unuse)
 4b8b: 2c        nop_4b8b        .BYTE $2c            ; Forms NOP with next 2 bytes: "BIT $10a2"
 
                 ;
                 ;
-                ;
-4b8c: a2 10     sub_4b8c        LDX #$10             ; Set X = $10 (16)
-
                 ; Input
                 ;   A - item index
-                ;   X - One of 1, 2, 4, 8, 16 (from sub entry point above)
                 ;
                 ; Output
-                ;   ItemIndex - value of A parameter
+                ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
+                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
+                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   Z         - 1 if A is 0, otherwise 0
+                ;   N         - 0 if A is 0, otherwise 1
+                ;
+4b8c: a2 10     sub_4b8c        LDX #$10             ; Set X = $10 (? which action is this ?)
+
+                ; Reached from one of: sub_4b80, sub_4b83, sub_4b86, sub_4b89, sub_4b8c
+                ;
+                ; - Invokes sub_4baa for the item specified by A
+                ;    - Calls sub_4bb3 for the item if an item is at the specified index
+                ; - If an item is still present
+                ;    - Sets byte 2 of the item to the input value of X
+                ;    - Calls sub_4bb3 for the item
+                ;    - Sets A = $ff, N = 1, Z = 0
+                ;
+                ; Input
+                ;   A - item index
+                ;   X - From sub entry point above: One of 1 (get), 2 (drop), 4 (use), 8 (unuse), 16 (??)
+                ;       Bitmask to AND with byte H2 of the item data for matching.
+                ;
+                ; Output
+                ;   ItemIndex - set to input value of A
+                ;   dat_004d  - set to the input value of X
+                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
+                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   Z         - 1 if A is 0, otherwise 0
+                ;   N         - 0 if A is 0, otherwise 1
                 ;
 4b8e: 85 4b                     STA ItemIndex        ; Set ItemIndex = A
 4b90: 86 4d                     STX dat_004d         ; Set dat_004d = X
@@ -9751,12 +10215,13 @@
 4b9c: a0 02                     LDY #$02             ;     Set Y = 2
 4b9e: a5 4d                     LDA dat_004d         ;     Set
 4ba0: 85 4c                     STA dat_004c         ;         dat_004c = dat_004d (saved X parm)
-4ba2: 91 41                     STA (ItemAdr_L),Y    ;     Set (*ItemAdr_L)[Y] = dat_004d (saved X parm)
+4ba2: 91 41                     STA (ItemAdr_L),Y    ;     Set (*ItemAdr_L)[2] = dat_004d (saved X parm)
 4ba4: 20 b3 4b                  JSR sub_4bb3         ;     Call $4bb3 [sub_4bb3]
 4ba7: a9 ff                     LDA #$ff             ;     Set A = $ff
                                                      ; End If
 4ba9: 60        loc_4ba9        RTS                  ; Return to caller
 
+                ; Calls sub_4bb3 for the item in the specified inventory index, if one is assigned.
                 ;
                 ; Input
                 ;   A            - Inventory item number (offset relative to InvItemAdr_L and InvItemAdr_H)
@@ -9777,7 +10242,7 @@
                 ;   dat_004c       - (temp?) Set to (*ItemAdr_L)[2] if it's not equal to 0
                 ;
 4bb3: a0 02     sub_4bb3        LDY #$02             ; Set Y = 2
-4bb5: b1 41                     LDA (ItemAdr_L),Y    ; Set A = (*ItemAdr_L)[Y]
+4bb5: b1 41                     LDA (ItemAdr_L),Y    ; Set A = (*ItemAdr_L)[2]
 4bb7: d0 01                     BNE loc_4bba         ; If (A == 0) Then
 4bb9: 60                        RTS                  ;     Return to caller
                                                      ; End If
@@ -9785,22 +10250,22 @@
 4bbc: ce 60 19                  DEC StatRecalcFlg    ; Subtract 1 from StatRecalcFlg    (update needed)
 4bbf: ce 5f 19                  DEC StatDisplayFlg   ; Subtract 1 from StatDisplayFlg   (update needed)
 4bc2: a9 00                     LDA #$00             ; Set
-4bc4: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[Y] = 0
+4bc4: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[2] = 0
 4bc6: 20 0f 4e                  JSR chkItemAlign     ; Call $4e0f [chkItemAlign]
-                ; Find position of first 0 bit in dat_004c (0..7)
+                ; Find position of first 1 bit in dat_004c (0..7)
 4bc9: a5 4c                     LDA dat_004c         ; Set A = dat_004c
-4bcb: a0 07                     LDY #$07             ; Set Y = 7    (7 iterations)
+4bcb: a0 07                     LDY #$07             ; Set Y = 7    (7 iterations [7..1])
 4bcd: a2 00                     LDX #$00             ; Set X = 0    (current bit position)
 4bcf: 4a        loc_4bcf        LSR                  ; Loop
                                                      ;     Set A = A / 2,  C = old bit 0 of A
-4bd0: b0 04                     BCS loc_4bd6         ;     If (C == 0) Then   (bit 0 == 0, X = position of 0 bit in dat_004c)
-                                                     ;        Exit loop
+4bd0: b0 04                     BCS loc_4bd6         ;     If (C == 1) Then
+                                                     ;        Exit loop         (X = position 0..6 of 1 bit in dat_004c)
                                                      ;     End If
 4bd2: e8                        INX                  ;     Add 1 to X
 4bd3: 88                        DEY                  ;     Subtract 1 from Y
-4bd4: d0 f9                     BNE loc_4bcf         ; Repeat while (Y != 0)  (max 7 iterations)
+4bd4: d0 f9                     BNE loc_4bcf         ; Repeat while (Y != 0)     (max 7 iterations, in which case X = 7)
                 ; The following indirectly jumps to the address (+1) stored @ tbl_4cbf_H[X * 2]
-4bd6: 8a        loc_4bd6        TXA                  ; Set X          (position of lowest 0 bit in dat_004c)
+4bd6: 8a        loc_4bd6        TXA                  ; Set X          (position of lowest 1 bit in dat_004c)
 4bd7: 0a                        ASL                  ;       =
 4bd8: aa                        TAX                  ;         X * 2
 4bd9: bd c0 4c                  LDA tbl_4cbf_H,X     ; Read the corresponding entry from
@@ -9808,12 +10273,30 @@
 4bdd: bd bf 4c                  LDA tbl_4cbf_L,X     ;    and push it
 4be0: 48                        PHA                  ;    onto the stack
 4be1: 60                        RTS                  ; Indirectly jump to the address on the stack + 1
+                                                     ; One of the following:
+                                                     ;     0: $4be2 [sub_4be2] - (dat_004c: xxxxxxx1) - (get) Mark item as in player inventory
+                                                     ;     1: $4bf5 [sub_4bf5] - (dat_004c: xxxxxx10) - (drop) Drops an item held by the player
+                                                     ;     2: $4c5a [sub_4c5a] - (dat_004c: xxxxx100) - (use) Mark the inventory slot at ItemIndex "available"
+                                                     ;     3: $4c6b [sub_4c6b] - (dat_004c: xxxx1000) - (unuse)
+                                                     ;     4: $4c9d [sub_4c9d] - (dat_004c: xxx10000) - ?
+                                                     ;     5: $4c9c [rts_4c9c] - (dat_004c: xx100000) - NOP
+                                                     ;     6: $4c9c [rts_4c9c] - (dat_004c: x1000000) - NOP
+                                                     ;     7: $4c9c [rts_4c9c] - (dat_004c: 10000000) - NOP
+                                                     ;     8: $4c86 [sub_4c86] - (dat_004c: 00000000) - Unreachable? Mark the inventory slot at ItemIndex "occupied"
 
+                ; Mark item as in player inventory
+                ;
+                ; - Set bit 7 of the item's byte 0 to indicate it is held in the player's inventory
+                ; - Calls sub_4e90
+                ; - Pushes 1 to the stack (get)
+                ; - Sets A = 2 (drop)
+                ; - Continues @ $4c95 [cont_4c95]
                 ;
                 ; Input
                 ;   ItemAdr_L/H   - The byte at this address will have bit 7 set to 1
                 ;
                 ; Referenced in tbl_4cbf_L/H
+                ;
 4be2: a9 80     sub_4be2        LDA #$80             ; Set A = $80
 4be4: a0 00                     LDY #$00             ; Set Y = 0
 4be6: 11 41                     ORA (ItemAdr_L),Y    ; Set
@@ -9824,13 +10307,23 @@
 4bf0: a9 02                     LDA #$02             ; Set A = 2
 4bf2: 4c 95 4c                  JMP cont_4c95        ; Continue @ $4c95 [cont_4c95]
 
+                ; Drops an item held by the player
                 ;
-                ;
-                ; Referenced in tbl_4cbf_L/H
+                ; - Returns to caller with no changes if the item isn't held by the player
+                ; - Clears the "held" bit for the item
+                ; - If the item is a torch, calls sub_4efd
+                ; - Unequips the item if it was equipped
+                ; - Adds the item to the list of dropped items, removing the oldest dropped item if all 16 slots are
+                ;   already occupied.
+                ; - Pushes 2 to the stack (drop)
+                ; - Sets A = 1 (get)
+                ; - Continues @ $4c95 [cont_4c95]
                 ;
                 ; Input
-                ;   ItemAdr_L/H  - Address of item
+                ;   ItemAdr_L/H  - Address of item to drop
                 ;   ItemIndex    - Index of item in inventory
+                ;
+                ; Referenced in tbl_4cbf_L/H
                 ;
 4bf5: a0 00     sub_4bf5        LDY #$00             ; Set Y = 0
 4bf7: b1 41                     LDA (ItemAdr_L),Y    ; Set A = (*ItemAdr_L)[0]
@@ -9844,34 +10337,34 @@
 4c06: 20 fd 4e                  JSR sub_4efd         ;     Call $4efd [sub_4efd]
                                                      ; End If
 4c09: 20 a2 4e  loc_4c09        JSR unequipItem      ; Call $4ea2 [unequipItem]
-4c0c: ae 93 64                  LDX dat_6493         ; Set X = dat_6493
-4c0f: bd 94 64                  LDA dat_6494,X       ; If
-4c12: 29 7f                     AND #$7f             ;    (dat_6494[X] & $7f != 0)
+4c0c: ae 93 64                  LDX NextDropped      ; Set X = NextDropped
+4c0f: bd 94 64                  LDA DroppedGame,X    ; If
+4c12: 29 7f                     AND #$7f             ;    (DroppedGame[X] & $7f != 0)     (dropped item present in slot)
 4c14: f0 11                     BEQ loc_4c27         ; Then
 4c16: a5 4b                     LDA ItemIndex        ;     Push value of ItemIndex
 4c18: 48                        PHA                  ;         to the stack
-4c19: bd d4 64                  LDA dat_64d4,X       ;     Set
-4c1c: 85 4b                     STA ItemIndex        ;         ItemIndex = dat_64d4[X]
+4c19: bd d4 64                  LDA DroppedIndex,X   ;     Set
+4c1c: 85 4b                     STA ItemIndex        ;         ItemIndex = DroppedIndex[X]
 4c1e: 20 c9 4a                  JSR removeItem       ;     Call $4ac9 [removeItem]
 4c21: 68                        PLA                  ;     Restore value of ItemIndex
 4c22: 85 4b                     STA ItemIndex        ;         from the stack
 4c24: 20 74 4b                  JSR getItemAdr       ;     Call $4b74 [getItemAdr]
                                                      ; End If
-4c27: ae 93 64  loc_4c27        LDX dat_6493         ; Set X = dat_6493
+4c27: ae 93 64  loc_4c27        LDX NextDropped      ; Set X = NextDropped
 4c2a: ad 13 63                  LDA CHR_LOC_X        ; Set
-4c2d: 9d a4 64                  STA dat_64a4,X       ;     dat_64a4[X] = CHR_LOC_X
+4c2d: 9d a4 64                  STA DroppedX,X       ;     DroppedX[X] = CHR_LOC_X
 4c30: ad 14 63                  LDA CHR_LOC_Y        ; Set
-4c33: 9d b4 64                  STA dat_64b4,X       ;     dat_64b4[X] = CHR_LOC_Y
+4c33: 9d b4 64                  STA DroppedY,X       ;     DroppedY[X] = CHR_LOC_Y
 4c36: ad 15 63                  LDA CHR_LOC_MAP      ; Set
-4c39: 9d c4 64                  STA dat_64c4,X       ;     dat_64c4[X] = CHR_LOC_MAP
+4c39: 9d c4 64                  STA DroppedMap,X     ;     DroppedMap[X] = CHR_LOC_MAP
 4c3c: a9 02                     LDA #$02             ; Set
-4c3e: 9d 94 64                  STA dat_6494,X       ;     dat_6494[X] = 2
+4c3e: 9d 94 64                  STA DroppedGame,X    ;     DroppedGame[X] = 2   (2 = Dungeon)
 4c41: a5 4b                     LDA ItemIndex        ; Set
-4c43: 9d d4 64                  STA dat_64d4,X       ;     dat_64d4[X] = ItemIndex
+4c43: 9d d4 64                  STA DroppedIndex,X   ;     DroppedIndex[X] = ItemIndex
 4c46: e8                        INX                  ; Add 1 to X
-4c47: 8a                        TXA                  ; Set dat_6493
+4c47: 8a                        TXA                  ; Set NextDropped
 4c48: 29 0f                     AND #$0f             ;       =
-4c4a: 8d 93 64                  STA dat_6493         ;         X & $f
+4c4a: 8d 93 64                  STA NextDropped      ;         X & $f
 4c4d: a0 02                     LDY #$02             ; Set Y = 2
 4c4f: a9 08                     LDA #$08             ; Set
 4c51: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[2] = 8
@@ -9880,11 +10373,17 @@
 4c56: a9 01                     LDA #$01             ; Set A = 1
 4c58: d0 3b                     BNE cont_4c95        ; Continue @ $4c95 [cont_4c95]
 
+                ; Mark the inventory slot at ItemIndex "available"
                 ;
-                ; Referenced in tbl_4cbf_L/H
+                ; - Sets the bit in InvSlotFree corresponding to ItemIndex to 1
+                ; - Pushes 4 to the stack (use)
+                ; - Sets A = 8 (unuse)
+                ; - Continues @ $4c95 [cont_4c95]
                 ;
                 ; Input
                 ;   ItemIndex  - Index of item in inventory
+                ;
+                ; Referenced in tbl_4cbf_L/H
                 ;
 4c5a: a2 64     sub_4c5a        LDX #$64             ; Set
 4c5c: a0 8b                     LDY #$8b             ;     Y/X = $648b [InvSlotFree]    (bits for open inventory slots)
@@ -9897,18 +10396,22 @@
 4c69: d0 2a                     BNE cont_4c95        ; Continue @ $4c95 [cont_4c95]
 
                 ;
-                ; Referenced in tbl_4cbf_L/H
+                ; - Pushes 8 to the stack (unuse)
+                ; - Sets A = 4 (use)
+                ; - Calls sub_4d93
                 ;
                 ; Input
                 ;   ItemAdr_L/H  - Address of item
                 ;   ItemIndex    - Index of item in inventory
                 ;
+                ; Referenced in tbl_4cbf_L/H
+                ;
 4c6b: a0 00     sub_4c6b        LDY #$00             ; Set Y = 0
 4c6d: b1 41                     LDA (ItemAdr_L),Y    ; Set
 4c6f: 29 7f                     AND #$7f             ;     A = (*ItemAdr_L)[0] & $7f    (item type with held flag clear)
-4c71: c9 0b                     CMP #$0b             ; If (A == $b (1011 - weapon plus bit 3 == 1??))
+4c71: c9 0b                     CMP #$0b             ; If (A == $0b (x000_1011 - weapon plus bit 3 set? torch?))
 4c73: d0 03                     BNE loc_4c78         ; Then
-4c75: 20 fd 4e                  JSR sub_4efd         ;     Call $4efd [sub_4efd]
+4c75: 20 fd 4e                  JSR sub_4efd         ;     Call $4efd [sub_4efd]        (torch burns out)
                                                      ; End If
 4c78: a2 64     loc_4c78        LDX #$64             ; Set
 4c7a: a0 8b                     LDY #$8b             ;     Y/X = $648b [InvSlotFree]    (bits for open inventory slots)
@@ -9919,20 +10422,40 @@
                                                      ; End If
                                                      ; (continues to next sub if inventory slot is open)
 
+                ; Mark the inventory slot at ItemIndex "occupied"
                 ;
-                ; Referenced in tbl_4cbf_L/H
+                ; - Pushes 8 to the stack (unuse)
+                ; - Sets A = 4 (use)
+                ; - Calls sub_4d93
                 ;
                 ; Input
                 ;   ItemIndex   - item index
                 ;
+                ; Output
+                ;   A    - Set to 8
+                ;
+                ; Referenced in tbl_4cbf_L/H
+                ;
 4c86: a2 64     sub_4c86        LDX #$64             ; Set
 4c88: a0 8b                     LDY #$8b             ;     Y/X = $648b [InvSlotFree]    (bits for open inventory slots)
 4c8a: a5 4b                     LDA ItemIndex        ; Set A = ItemIndex                (bit # = inventory slot #)
-4c8c: 18                        CLC                  ; Set C = 0                        (clear the bit)
+4c8c: 18                        CLC                  ; Set C = 0                        (clear the bit - slot occupied)
 4c8d: 20 ab 2d                  JSR updateBit        ; Call $2dab [updateBit]
 4c90: a9 08                     LDA #$08             ; Push the value
 4c92: 48                        PHA                  ;     8 onto the stack
-4c93: a9 04                     LDA #$04             ; Set A = 4
+4c93: a9 04                     LDA #$04             ; Set A = 4                        (4 = match "use" effects?)
+                ;
+                ; Invoked from sub_4be2, sub_4bf5, sub_4c5a, sub_4c86
+                ;
+                ; - Calls sub_4d93 (A = param)
+                ; - Pulls a byte from the stack and places it in A
+                ; - Calls sub_4ccf
+                ; - Returns to caller
+                ;
+                ; Input
+                ;   A   - sub_4d93 param: Bitmask to AND with the effect triggers for matching effects
+                ;   Byte on stack - sub_4ccf param: Bitmask to AND with the effect triggers for matching effects
+                ;
 4c95: 20 93 4d  cont_4c95       JSR sub_4d93         ; Call $4d93 [sub_4d93]
 4c98: 68                        PLA                  ; Set A = value pulled from stack
 4c99: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]
@@ -9969,25 +10492,24 @@
 4cc0: 4b f4 4b 59 4c 6a 4c  tbl_4cbf_H  .BYTE $4b,$f4,$4b,$59,$4c,$6a,$4c  ; K.KYLjL
 4cc7: 9c 4c 9b 4c 9b 4c 9b 4c   .BYTE $9c,$4c,$9b,$4c,$9b,$4c,$9b,$4c  ; .L.L.L.L
                                     ; Add 1 to the addresses in this table for the sub start:
-                                    ;     0: $4be2 [sub_4be2]
-                                    ;     1: $4bf5 [sub_4bf5]
-                                    ;     2: $4c5a [sub_4c5a]
-                                    ;     3: $4c6b [sub_4c6b]
-                                    ;     4: $4c9d [sub_4c9d]
+                                    ;     0: $4be2 [sub_4be2] - (get) Mark item as in player inventory
+                                    ;     1: $4bf5 [sub_4bf5] - (drop) Drops an item held by the player
+                                    ;     2: $4c5a [sub_4c5a] - (use) Mark the inventory slot at ItemIndex "available"
+                                    ;     3: $4c6b [sub_4c6b] - (unuse)
+                                    ;     4: $4c9d [sub_4c9d] - ?
                                     ;     5: $4c9c [rts_4c9c] - NOP
                                     ;     6: $4c9c [rts_4c9c] - NOP
                                     ;     7: $4c9c [rts_4c9c] - NOP
-                                    ;     8: $4c86 [sub_4c86]
+                                    ;     8: $4c86 [sub_4c86] - Mark the inventory slot at ItemIndex "occupied"
 
                 ;
                 ; Input
-                ;   A         -
+                ;   ItemIndex     - Inventory item index (offset relative to InvItemAdr_L and InvItemAdr_H)
                 ;
                 ; ???
-                ;   dat_0049      - (input?)
-                ;   ItemIndex     - (input?) item index
+                ;   EffectIndex   - (input?)
                 ;   dat_004a      - (temp?) Appears to be used as a boolean flag ($ff or 0)
-                ;   dat_004c      - (temp?) Assigned input value of A (an item index)
+                ;   dat_004c      - (temp?) Assigned input value of A
                 ;   ItemAttrs_L/H - Holds address of item effects
                 ;   EffectAdr_L/H - (input?) ?current effect address?
                 ;
@@ -9996,7 +10518,7 @@
 4cd1: 20 e8 4e                  JSR getItemEfcts     ; Call $4ee8 [getItemEfcts]
 4cd4: a9 ff                     LDA #$ff             ; Set
 4cd6: 85 4a                     STA dat_004a         ;     dat_004a = $ff
-4cd8: a0 00     loc_4cd8        LDY #$00             ; Loop
+4cd8: a0 00     loc_4cd8        LDY #$00             ; Loop                  (Note: ItemAttrs here is the effect attrs)
                                                      ;     If ((*ItemAttrs_L)[0] == 0)      (item has no effects)
 4cda: b1 43                     LDA (ItemAttrs_L),Y  ;     Then
 4cdc: d0 03                     BNE loc_4ce1         ;         Continue @ $4d92 [rts_4d92]  (Return to caller)
@@ -10008,36 +10530,36 @@
                                                      ;     End If
 4ce9: a0 02     loc_4ce9        LDY #$02             ;     Set Y = 2
 4ceb: b1 43                     LDA (ItemAttrs_L),Y  ;     If (
-4ced: 29 20                     AND #$20             ;          ((*ItemAttrs_L)[2] & $20 (32) == 0)
+4ced: 29 20                     AND #$20             ;          ((*ItemAttrs_L)[2] & $20 == 0)    (not alignment check?)
 4cef: f0 06                     BEQ loc_4cf7         ;
 4cf1: 25 4c                     AND dat_004c         ;          And
 4cf3: d0 08                     BNE loc_4cfd         ;          (dat_004c & $20 != 0)
 4cf5: f0 0e                     BEQ loc_4d05         ;        )
 4cf7: a5 4c     loc_4cf7        LDA dat_004c         ;        Or
-4cf9: 29 20                     AND #$20             ;        ((*ItemAttrs_L)[2] & $20 & dat_004c == 0)
+4cf9: 29 20                     AND #$20             ;        ((*ItemAttrs_L)[2] & $20 & dat_004c == 0)   (no match?)
 4cfb: d0 08                     BNE loc_4d05         ;        Or
 4cfd: b1 43     loc_4cfd        LDA (ItemAttrs_L),Y  ;
-4cff: 25 4c                     AND dat_004c         ;        ((*ItemAttrs_L)[2] & dat_004c != dat_004c)
+4cff: 25 4c                     AND dat_004c         ;        ((*ItemAttrs_L)[2] & dat_004c != dat_004c)  (mismatch?)
 4d01: c5 4c                     CMP dat_004c         ;
 4d03: f0 03                     BEQ loc_4d08         ;     Then
 4d05: 4c 79 4d  loc_4d05        JMP loc_4d79         ;         Continue @ $4d79 [loc_4d79]
                                                      ;     End If
 4d08: b1 43     loc_4d08        LDA (ItemAttrs_L),Y  ;     If ((*ItemAttrs_L)[2] < 0)
 4d0a: 10 05                     BPL loc_4d11         ;     Then
-4d0c: 20 d4 4d                  JSR sub_4dd4         ;         Call $4dd4 [sub_4dd4]
-4d0f: 30 09                     BMI loc_4d1a         ;         If (N == 1) Then
+4d0c: 20 d4 4d                  JSR sub_4dd4         ;         Call $4dd4 [sub_4dd4]    (check if effect already active)
+4d0f: 30 09                     BMI loc_4d1a         ;         If (N == 1) Then         (found existing match)
                                                      ;             Continue @ $4d1a [loc_4d1a]
                                                      ;         End If
                                                      ;     End If
 4d11: a0 00     loc_4d11        LDY #$00             ;     Set Y = 0
 4d13: b1 43                     LDA (ItemAttrs_L),Y  ;     Set A = (ItemAttrs_L)[0]
-4d15: 20 b0 49                  JSR sub_49b0         ;     Call $49b0 [sub_49b0]
+4d15: 20 b0 49                  JSR allocEffect      ;     Call $49b0 [allocEffect]
 4d18: 10 0f                     BPL loc_4d29         ;     If (N == 1) Then   (unable to add entry)
 4d1a: a5 4a     loc_4d1a        LDA dat_004a         ;         If (dat_004a < 0)
 4d1c: 10 03                     BPL loc_4d21         ;         Then
 4d1e: 4c 92 4d                  JMP rts_4d92         ;             Continue @ $4d92 [rts_4d92]  (Exit loop & Return to caller)
                                                      ;         End If
-4d21: 85 49     loc_4d21        STA dat_0049         ;         Set dat_0049 = dat_004a
+4d21: 85 49     loc_4d21        STA EffectIndex      ;         Set EffectIndex = dat_004a
 4d23: 20 01 4a                  JSR sub_4a01         ;         Call $4a01 [sub_4a01]
 4d26: 4c 92 4d                  JMP rts_4d92         ;         Continue @ $4d92 [rts_4d92]  (Exit loop & Return to caller)
                                                      ;     End If
@@ -10046,8 +10568,8 @@
 4d2d: 30 04                     BMI loc_4d33         ;        Or
 4d2f: b1 43                     LDA (ItemAttrs_L),Y  ;        ((*ItemAttrs_L)[1] < 0)
 4d31: 10 04                     BPL loc_4d37         ;     Then
-4d33: a5 49     loc_4d33        LDA dat_0049         ;         Set
-4d35: 85 4a                     STA dat_004a         ;             dat_004a = dat_0049
+4d33: a5 49     loc_4d33        LDA EffectIndex      ;         Set
+4d35: 85 4a                     STA dat_004a         ;             dat_004a = EffectIndex
                                                      ;     End If
 4d37: a5 4a     loc_4d37        LDA dat_004a         ;     Set
 4d39: 91 3d                     STA (EffectAdr_L),Y  ;         (*EffectAdr_L)[1] = dat_004a
@@ -10105,14 +10627,16 @@
 4d8f: 4c d8 4c  loc_4d8f        JMP loc_4cd8         ; Repeat Loop
 4d92: 60        rts_4d92        RTS                  ; Return to caller
 
+                ; Searches active effects for effects linked to an inventory item and calls sub_4a01 for each match.
                 ;
                 ; Input
-                ;   ItemIndex     - A bitmask to AND with the effect type for matching.
+                ;   A             - A bitmask to AND with the effect triggers for matching.
                 ;                     $ff = match anything, 0 = match nothing
+                ;   ItemIndex     - Inventory item index to match
                 ;
                 ; Temp
                 ;   dat_004c      - Assigned input value of A
-                ;   dat_0049      - Loop control var
+                ;   EffectIndex   - Loop control var
                 ;   EffectAdr_L/H - Current effect address for iteration
                 ;
 4d93: 85 4c     sub_4d93        STA dat_004c         ; Set dat_004c = A
@@ -10121,11 +10645,11 @@
 4d99: a9 65                     LDA #$65             ;     address
 4d9b: 85 3e                     STA EffectAdr_H      ;     to $6500 [CHR_Effects]
 4d9d: a2 00                     LDX #$00             ; Set
-4d9f: 86 49                     STX dat_0049         ;     dat_0049 = 0
+4d9f: 86 49                     STX EffectIndex      ;     EffectIndex = 0
 4da1: a0 00     loc_4da1        LDY #$00             ; Loop
                                                      ;     Set Y = 0
 4da3: b1 3d                     LDA (EffectAdr_L),Y  ;     If
-4da5: c9 81                     CMP #$81             ;        ((*EffectAdr_L)[0] >= $81 (129))
+4da5: c9 81                     CMP #$81             ;        ((*EffectAdr_L)[0] >= $81 (129))       (active entry)
 4da7: 90 17                     BCC loc_4dc0         ;
 4da9: c9 e0                     CMP #$e0             ;        And
 4dab: b0 13                     BCS loc_4dc0         ;        ((*EffectAdr_L)[0] < $e0 (224))        (not a description)
@@ -10146,58 +10670,58 @@
 4dc7: 90 02                     BCC loc_4dcb         ;     If (C == 1) Then
 4dc9: e6 3e                     INC EffectAdr_H      ;         Add 1 to EffectAdr_H
                                                      ;     End If
-4dcb: e6 49     loc_4dcb        INC dat_0049         ;     Add 1 to dat_0049
-4dcd: a6 49                     LDX dat_0049         ; Repeat
+4dcb: e6 49     loc_4dcb        INC EffectIndex      ;     Add 1 to EffectIndex
+4dcd: a6 49                     LDX EffectIndex      ; Repeat
 4dcf: e0 40                     CPX #$40             ;   while
-4dd1: 90 ce                     BCC loc_4da1         ;     (dat_0049 < $40 (64))
+4dd1: 90 ce                     BCC loc_4da1         ;     (EffectIndex < $40 (64))
 4dd3: 60                        RTS                  ; Return to caller
 
+                ; Searches $6500 [CHR_Effects] for an effect matching an effect associated with an item.
                 ;
-                ; Searches the table of 64 x 16-byte entries at $6500 [CHR_Effects]
+                ; If the first byte of an entry is greater than or equal to $81, then bytes [6..e] are
+                ; compared to the corresponding 9 bytes @ ItemAttrs_L/H. If all the bytes match, the sub exits
+                ; with N = 1 and CurEffAdr_L/H pointing to the entry.
                 ;
-                ; If the first byte of an entry is greater than or equal to $81, then bytes [6..f] are
-                ; compared to the 9 bytes @ ItemAttrs_L/H. If the bytes do NOT match, the sub exits
-                ; with N = 0 and addr_003f_L/H pointing to the entry.
-                ;
-                ; If none of the entries match the conditions above, the sub returns with N = 1.
+                ; If none of the entries match the conditions above, the sub returns with N = 0.
                 ;
                 ; Input
-                ;   ItemAttrs_L/H - Address of item attributes containing 9 byte value to find
+                ;   ItemAttrs_L/H - Address of item effect to compare to
                 ;
                 ; Output
-                ;   N             - 0 if an entry matching the conditions is found, otherwise 1
-                ;   addr_003f_L/H - Points at the effect entry when N is 0
+                ;   N             - 1 if an entry matching the conditions is found, otherwise 0
+                ;   Z             - 0 if an entry matching the conditions is found, otherwise 1
+                ;   CurEffAdr_L/H - Points at the matching effect entry when N is 1
                 ;
-4dd4: a9 00     sub_4dd4        LDA #$00             ; Set addr_003f_L/H
-4dd6: 85 3f                     STA addr_003f_L      ;     address
+4dd4: a9 00     sub_4dd4        LDA #$00             ; Set CurEffAdr_L/H
+4dd6: 85 3f                     STA CurEffAdr_L      ;     address
 4dd8: a9 65                     LDA #$65             ;     to
-4dda: 85 40                     STA addr_003f_H      ;     $6500 [CHR_Effects]
+4dda: 85 40                     STA CurEffAdr_H      ;     $6500 [CHR_Effects]
 4ddc: a2 40                     LDX #$40             ; Set X = $40 (64)
 4dde: a0 00     loc_4dde        LDY #$00             ; Loop
                                                      ;     Set Y = 0
-4de0: b1 3f                     LDA (addr_003f_L),Y  ;     If
-4de2: c9 81                     CMP #$81             ;        ((*addr_003f_L)[Y] >= $81 (129))
+4de0: b1 3f                     LDA (CurEffAdr_L),Y  ;     If
+4de2: c9 81                     CMP #$81             ;        ((*CurEffAdr_L)[0] >= $81 (129))
 4de4: 90 11                     BCC cont_4df7        ;     Then
-4de6: a0 06                     LDY #$06             ;         Set Y = 6 (9 iterations: 6..f)
+4de6: a0 06                     LDY #$06             ;         Set Y = 6 (9 iterations: 6..e)
 4de8: b1 43     loc_4de8        LDA (ItemAttrs_L),Y  ;         Loop
-4dea: d1 3f                     CMP (addr_003f_L),Y  ;             If ((*ItemAttrs_L)[Y] != (*addr_003f_L)[Y]) Then
-4dec: d0 09                     BNE cont_4df7        ;                 Continue @ $4df7 [cont_4df7]  (exit loop and enclosing if)
+4dea: d1 3f                     CMP (CurEffAdr_L),Y  ;             If ((*ItemAttrs_L)[Y] != (*CurEffAdr_L)[Y]) Then
+4dec: d0 09                     BNE cont_4df7        ;                 Continue @ $4df7 [cont_4df7]     (exit loop & if)
                                                      ;             End If
 4dee: c8                        INY                  ;             Add 1 to Y
 4def: c0 0f                     CPY #$0f             ;         Repeat
 4df1: 90 f5                     BCC loc_4de8         ;            while (Y < $0f)
-4df3: a9 ff                     LDA #$ff             ;         Set A = $ff  (Return N = 1 if no match found)
-4df5: 30 0e                     BMI rts_4e05         ;         Continue @ $4e05 [rts_4e05]  (Return to caller, N = 1)
+4df3: a9 ff                     LDA #$ff             ;         Set A = $ff          (Return Z = 0, N = 1 if match found)
+4df5: 30 0e                     BMI rts_4e05         ;         Continue @ $4e05 [rts_4e05]  (Return to caller, Z=0, N=1)
                                                      ;     End If
-4df7: a5 3f     cont_4df7       LDA addr_003f_L      ;     (Move to next entry)
-4df9: 18                        CLC                  ;     Set addr_003f_L
+4df7: a5 3f     cont_4df7       LDA CurEffAdr_L      ;     (Move to next entry)
+4df9: 18                        CLC                  ;     Set CurEffAdr_L
 4dfa: 69 10                     ADC #$10             ;           =
-4dfc: 85 3f                     STA addr_003f_L      ;             addr_003f_L + $10 (16)
+4dfc: 85 3f                     STA CurEffAdr_L      ;             CurEffAdr_L + $10 (16)
 4dfe: 90 02                     BCC loc_4e02         ;     If (C == 1) Then  (overflow)
-4e00: e6 40                     INC addr_003f_H      ;         Add 1 to addr_003f_H
+4e00: e6 40                     INC CurEffAdr_H      ;         Add 1 to CurEffAdr_H
                                                      ;     End If
 4e02: ca        loc_4e02        DEX                  ;     Subtract 1 from X
-4e03: d0 d9                     BNE loc_4dde         ; Repeat while (X != 0)    (N = 0 if loop completes)
+4e03: d0 d9                     BNE loc_4dde         ; Repeat while (X != 0)   (Z=1, N=0 if loop completes, since X = 0)
 4e05: 60        rts_4e05        RTS                  ; Return to caller
 
                 ; Checks the alignment of item at inventory index against the player's current alignment.
@@ -10207,7 +10731,7 @@
                 ; Input
                 ;   A            - Inventory item number (offset relative to InvItemAdr_L and InvItemAdr_H)
                 ;
-4e06: 20 74 4b  chkItemNAlign   JSR getItemAdr       ; Call $4b74 [getItemAdr]
+4e06: 20 74 4b  chkItemAtAlign  JSR getItemAdr       ; Call $4b74 [getItemAdr]
 4e09: f0 17                     BEQ rts_4e22         ; If (ItemAdr_H == 0) Then         (slot unassigned)
                                                      ;     Continue @ $4e22 [rts_4e22]  (return to caller)
                                                      ; End If
@@ -10225,8 +10749,8 @@
                 ;   CHR_ALIGN    -
                 ;
                 ; Temp
-                ;   ZtsItemName_L/H - set to address of item name if message is displayed
-                ;   ZtsItemScrm_L/H - set to address of item scream if message is displayed
+                ;   ZtsAlgnName_L/H - set to address of item name if message is displayed
+                ;   ZtsAlgnScrm_L/H - set to address of item scream if message is displayed
                 ;   StrTmplate_L/H  - set to $4f7d [StrItemScreams]
                 ;
 4e0f: a5 4c     chkItemAlign    LDA dat_004c         ; If ((dat_004c & 5) == 0) Then
@@ -10247,35 +10771,35 @@
 4e2c: ad 85 63                  LDA CHR_ALIGN        ;     If (CHR_ALIGN < 0)
 4e2f: 10 0c                     BPL loc_4e3d         ;     Then
 4e31: a9 9d                     LDA #$9d             ;         Set
-4e33: 8d 2c 50                  STA ZtsItemScrm_L    ;             ZtsItemScrm_L/H
+4e33: 8d 2c 50                  STA ZtsAlgnScrm_L    ;             ZtsAlgnScrm_L/H
 4e36: a9 4f                     LDA #$4f             ;                =
-4e38: 8d 2d 50                  STA ZtsItemScrm_H    ;                  $4f9d [ZtsBtrThanYou]
+4e38: 8d 2d 50                  STA ZtsAlgnScrm_H    ;                  $4f9d [ZtsBtrThanYou]
 4e3b: d0 27                     BNE loc_4e64         ;     Else
 4e3d: a9 e4     loc_4e3d        LDA #$e4             ;         Set
-4e3f: 8d 2c 50                  STA ZtsItemScrm_L    ;             ZtsItemScrm_L/H
+4e3f: 8d 2c 50                  STA ZtsAlgnScrm_L    ;             ZtsAlgnScrm_L/H
 4e42: a9 4f                     LDA #$4f             ;                =
-4e44: 8d 2d 50                  STA ZtsItemScrm_H    ;                  $4fe4 [ZtsReleaseMe]
+4e44: 8d 2d 50                  STA ZtsAlgnScrm_H    ;                  $4fe4 [ZtsReleaseMe]
                                                      ;     End If
 4e47: d0 1b                     BNE loc_4e64         ; Else If
 4e49: ad 85 63  loc_4e49        LDA CHR_ALIGN        ;         (CHR_ALIGN >= 0)
 4e4c: 30 0c                     BMI loc_4e5a         ; Then
 4e4e: a9 c0                     LDA #$c0             ;     Set
-4e50: 8d 2c 50                  STA ZtsItemScrm_L    ;         ZtsItemScrm_L/H
+4e50: 8d 2c 50                  STA ZtsAlgnScrm_L    ;         ZtsAlgnScrm_L/H
 4e53: a9 4f                     LDA #$4f             ;            =
-4e55: 8d 2d 50                  STA ZtsItemScrm_H    ;              $4fc0 [ZtsEvilThanYou]
+4e55: 8d 2d 50                  STA ZtsAlgnScrm_H    ;              $4fc0 [ZtsEvilThanYou]
 4e58: d0 0a                     BNE loc_4e64         ; Else
 4e5a: a9 05     loc_4e5a        LDA #$05             ;     Set
-4e5c: 8d 2c 50                  STA ZtsItemScrm_L    ;         ZtsItemScrm_L/H
+4e5c: 8d 2c 50                  STA ZtsAlgnScrm_L    ;         ZtsAlgnScrm_L/H
 4e5f: a9 50                     LDA #$50             ;            =
-4e61: 8d 2d 50                  STA ZtsItemScrm_H    ;              $5005 [ZtsDoGooder]
+4e61: 8d 2d 50                  STA ZtsAlgnScrm_H    ;              $5005 [ZtsDoGooder]
                                                      ; End If
 4e64: 18        loc_4e64        CLC                  ; Set
-4e65: a9 06                     LDA #$06             ;     ZtsItemName_L
+4e65: a9 06                     LDA #$06             ;     ZtsAlgnName_L
 4e67: 65 41                     ADC ItemAdr_L        ;       =
-4e69: 8d 2a 50                  STA ZtsItemName_L    ;         ItemAdr_L + 6   (C = 1 on overflow otherwise 0)
-4e6c: a5 42                     LDA ItemAdr_H        ; Set ZtsItemName_H
+4e69: 8d 2a 50                  STA ZtsAlgnName_L    ;         ItemAdr_L + 6   (C = 1 on overflow otherwise 0)
+4e6c: a5 42                     LDA ItemAdr_H        ; Set ZtsAlgnName_H
 4e6e: 69 00                     ADC #$00             ;       =
-4e70: 8d 2b 50                  STA ZtsItemName_H    ;         ItemAdr_H + C
+4e70: 8d 2b 50                  STA ZtsAlgnName_H    ;         ItemAdr_H + C
 4e73: a9 7d                     LDA #$7d             ; Set StrTmplate_L/H
 4e75: 85 16                     STA StrTmplate_L     ;     address
 4e77: a9 4f                     LDA #$4f             ;     to
@@ -10292,21 +10816,21 @@
 4e8f: 60                        RTS                  ; Return to caller
 
                 ; Removes an item from the dropped item list.
-                ; Sets dat_6494[X] to 0 for each index where dat_64d4[X] equals ItemIndex
+                ; Sets DroppedGame[X] to 0 for each index where DroppedIndex[X] equals ItemIndex
                 ;
                 ; Input
-                ;   ItemIndex - Item index to search for in dat_64d4
-                ;   dat_64d4  - The values to search
+                ;   ItemIndex    - Item index to search for in DroppedIndex
+                ;   DroppedIndex - The values to search
                 ;
                 ; Output
-                ;   dat_6494  - All positions corresponding to matches in dat_64d4 are set to 0
+                ;   DroppedGame  - All positions corresponding to matches in DroppedIndex are set to 0
                 ;
 4e90: a2 0f     sub_4e90        LDX #$0f             ; Set X = $f    (16 iterations)
 4e92: a5 4b     loc_4e92        LDA ItemIndex        ; Loop
-4e94: dd d4 64                  CMP dat_64d4,X       ;     If (ItemIndex == dat_64d4[X])
+4e94: dd d4 64                  CMP DroppedIndex,X   ;     If (ItemIndex == DroppedIndex[X])
 4e97: d0 05                     BNE loc_4e9e         ;     Then
 4e99: a9 00                     LDA #$00             ;         Set
-4e9b: 9d 94 64                  STA dat_6494,X       ;             dat_6494[X] = 0
+4e9b: 9d 94 64                  STA DroppedGame,X    ;             DroppedGame[X] = 0
                                                      ;     End If
 4e9e: ca        loc_4e9e        DEX                  ;     Subtract 1 from X
 4e9f: 10 f1                     BPL loc_4e92         ; Repeat while (X >= 0)
@@ -10421,16 +10945,20 @@
 4efa: 85 44                     STA ItemAttrs_H      ;         ItemAdr_H + C
 4efc: 60                        RTS                  ; Return to caller
 
-                ; ?Perhaps torch burning out?
-                ;
-                ; - Decreases player light source count by one
-                ; -
+                ; ?Seems to be torch burning out?
                 ;
                 ; Input
                 ;   CHR_NumLights - Number of active player light sources (torch, spell, etc).
-                ;   ItemAdr_L/H   - address of item
-                ;   ItemIndex     - the item index
+                ;   ItemAdr_L/H   - address of item (presumably of the torch?)
+                ;   ItemIndex     - the item index (presumably for the torch?)
                 ;
+                ; Output
+                ;   - Decreases player light source count [CHR_NumLights] by one
+                ;   - The original item is removed from the game
+                ;   - The item is replaced with a "stick". If the original item was held my the player, the "stick"
+                ;     is also held by the player.
+                ;   - If the item was equipped, the equipped slot is updated to the new "stick" item
+                ;   - If the item was dropped, the dropped item slot is updated to the new "stick" item
                 ;
 4efd: ad 90 63  sub_4efd        LDA CHR_NumLights    ; If (CHR_NumLights != 0)
 4f00: f0 03                     BEQ loc_4f05         ; Then
@@ -10444,43 +10972,43 @@
 4f0e: a2 09                     LDX #$09             ; Set X = 9 (max 10 iterations)
 4f10: dd 9c 63  loc_4f10        CMP CHR_PRI_WEAPON,X ; Loop
                                                      ;     If (ItemIndex == CHR_PRI_WEAPON[X]) Then
-4f13: f0 03                     BEQ loc_4f18         ;         Exit Loop    (X = index of matching value)
+4f13: f0 03                     BEQ loc_4f18         ;         Exit Loop    (X = index of equipped item slot)
                                                      ;     End If
 4f15: ca                        DEX                  ;     Subtract 1 from X
 4f16: 10 f8                     BPL loc_4f10         ; Repeat while (X >= 0)
 4f18: a0 0f     loc_4f18        LDY #$0f             ; Set Y = $f  (16 iterations [15..0])
-4f1a: d9 d4 64  loc_4f1a        CMP dat_64d4,Y       ; Loop
-                                                     ;     If (ItemIndex == dat_64d4[Y]) Then
-4f1d: f0 03                     BEQ loc_4f22         ;         Exit Loop    (Y = index of matching value)
+4f1a: d9 d4 64  loc_4f1a        CMP DroppedIndex,Y   ; Loop
+                                                     ;     If (ItemIndex == DroppedIndex[Y]) Then
+4f1d: f0 03                     BEQ loc_4f22         ;         Exit Loop    (Y = index of dropped item slot)
                                                      ;     End If
 4f1f: 88                        DEY                  ;     Subtract 1 from Y
 4f20: 10 f8                     BPL loc_4f1a         ; Repeat while (Y >= 0)
 4f22: 8a        loc_4f22        TXA                  ; Push value of
 4f23: 48                        PHA                  ;     X onto stack      (equipped slot 0..9 or $ff if not equipped)
 4f24: 98                        TYA                  ; Push value of
-4f25: 48                        PHA                  ;     Y onto stack        (dropped item slot or $ff if not dropped)
+4f25: 48                        PHA                  ;     Y onto stack  (dropped item slot 0..15 or $ff if not dropped)
 4f26: a5 4b                     LDA ItemIndex        ; Set A = ItemIndex
 4f28: 20 c9 4a                  JSR removeItem       ; Call $4ac9 [removeItem]
 4f2b: a2 4f                     LDX #$4f             ; Set
 4f2d: a0 5d                     LDY #$5d             ;     Y/X = $4f5d [ItemStick]
 4f2f: 20 4d 4b                  JSR addItem          ; Call $4b4d [addItem]
 4f32: 68                        PLA                  ; Pull value from
-4f33: aa                        TAX                  ;     stack into X        (dropped item slot or $ff if not dropped)
+4f33: aa                        TAX                  ;     stack into X  (dropped item slot 0..15 or $ff if not dropped)
 4f34: 30 16                     BMI loc_4f4c         ; If (X >= 0) Then
 4f36: a5 4b                     LDA ItemIndex        ;     Set
-4f38: 9d d4 64                  STA dat_64d4,X       ;         dat_64d4[X] = ItemIndex
+4f38: 9d d4 64                  STA DroppedIndex,X   ;         DroppedIndex[X] = ItemIndex
 4f3b: ad 13 63                  LDA CHR_LOC_X        ;     Set
-4f3e: 9d a4 64                  STA dat_64a4,X       ;         dat_64a4[X] = CHR_LOC_X
+4f3e: 9d a4 64                  STA DroppedX,X       ;         DroppedX[X] = CHR_LOC_X
 4f41: ad 14 63                  LDA CHR_LOC_Y        ;     Set
-4f44: 9d b4 64                  STA dat_64b4,X       ;         dat_64b4[X] = CHR_LOC_Y
+4f44: 9d b4 64                  STA DroppedY,X       ;         DroppedY[X] = CHR_LOC_Y
 4f47: a9 02                     LDA #$02             ;     Set
-4f49: 9d 94 64                  STA dat_6494,X       ;         dat_6494[X] = 2
+4f49: 9d 94 64                  STA DroppedGame,X    ;         DroppedGame[X] = 2   (2 = Dungeon)
                                                      ; End If
 4f4c: 68        loc_4f4c        PLA                  ; Pull X
 4f4d: aa                        TAX                  ;     from stack        (equipped slot 0..9 or $ff if not equipped)
 4f4e: 30 05                     BMI loc_4f55         ; If (X >= 0) Then
 4f50: a5 4b                     LDA ItemIndex        ;     Set
-4f52: 9d 9c 63                  STA CHR_PRI_WEAPON,X ;         CHR_PRI_WEAPON[X] = ItemIndex (update equipped slot value)
+4f52: 9d 9c 63                  STA CHR_PRI_WEAPON,X ;         CHR_PRI_WEAPON[X] = ItemIndex  (update equipped slot idx)
                                                      ; End If
 4f55: 68        loc_4f55        PLA                  ; Pull A from stack                       (is item held by player?)
 4f56: a0 00                     LDY #$00             ; Set (*ItemAdr_L)[0]
@@ -10498,13 +11026,13 @@
 4f80: a5                        .BYTE $a5                              ; {Center}
 4f81: 54 68 65 0d               .BYTE $54,$68,$65,$0d                  ; "The\n"
 4f85: a5                        .BYTE $a5                              ; {Center}
-4f86: b4 2a 50 27               .BYTE $b4,$2a,$50,$27                  ; {Print ZTS @ addr in $502a [ZtsItemName_L/H] width 39}
+4f86: b4 2a 50 27               .BYTE $b4,$2a,$50,$27                  ; {Print ZTS @ addr in $502a [ZtsAlgnName_L/H] width 39}
 4f8a: 0d                        .BYTE $0d                              ; "\n"
 4f8b: a5                        .BYTE $a5                              ; {Center}
 4f8c: 73 63 72 65 61 6d 73 3a   .BYTE $73,$63,$72,$65,$61,$6d,$73,$3a  ; "screams:"
 4f94: 0d 0d                     .BYTE $0d,$0d                          ; "\n\n"
 4f96: a5                        .BYTE $a5                              ; {Center}
-4f97: b4 2c 50 28               .BYTE $b4,$2c,$50,$28                  ; {Print ZTS @ addr in $502c [ZtsItemScrm_L/H] width 40}
+4f97: b4 2c 50 28               .BYTE $b4,$2c,$50,$28                  ; {Print ZTS @ addr in $502c [ZtsAlgnScrm_L/H] width 40}
 4f9b: 0d                        .BYTE $0d                              ; "\n"
 4f9c: ff                        .BYTE $ff                              ; {End of string}
 
@@ -10534,21 +11062,24 @@
 5020: 61 6c 6c 20 70 61 79 21   .BYTE $61,$6c,$6c,$20,$70,$61,$79,$21
 5028: 22 00                     .BYTE $22,$00
 
-502a: 00        ZtsItemName_L   .BYTE $00            ; LSB of address of item name ZTS
-502b: 00        ZtsItemName_H   .BYTE $00            ; MSB of address of item name ZTS
-502c: 00        ZtsItemScrm_L   .BYTE $00            ; LSB of address of item scream ZTS
-502d: 00        ZtsItemScrm_H   .BYTE $00            ; MSB of address of item scream ZTS
+502a: 00        ZtsAlgnName_L   .BYTE $00            ; LSB of address of item name ZTS referenced in StrItemScreams
+502b: 00        ZtsAlgnName_H   .BYTE $00            ; MSB of address of item name ZTS referenced in StrItemScreams
+502c: 00        ZtsAlgnScrm_L   .BYTE $00            ; LSB of address of alignment-based item scream ZTS referenced
+                                                     ;     in StrItemScreams
+502d: 00        ZtsAlgnScrm_H   .BYTE $00            ; MSB of address of alignment-based item scream ZTS referenced
+                                                     ;     in StrItemScreams
 
-                ; ? Initialization of 4 selection menu ?
+                ; Initialization for 4 selection menu: Sets all MenuSelItems entries to $ff and associated names to
+                ; blanks.
                 ;
                 ; Output
-                ;   MenuItmIndices - All four entries of MenuItmIndices are set to $ff
-                ;   ZtsAddr1_L/H   - Four addresses starting at ZtsAddr1_L are set to $5e53 [ZtsBlank]
+                ;   MenuSelItems  - All four entries of MenuSelItems are set to $ff
+                ;   ZtsAddr1_L/H  - Four addresses starting at ZtsAddr1_L are set to $5e53 [ZtsBlank]
                 ;
-502e: a2 03     sub_502e        LDX #$03             ; Set X = 3    (4 iterations)
+502e: a2 03     init4SelMenu    LDX #$03             ; Set X = 3    (4 iterations)
 5030: a9 ff                     LDA #$ff             ; Set A = $ff
-5032: 9d 46 19  loc_5032        STA MenuItmIndices,X ; Loop
-                                                     ;     Set MenuItmIndices[X] = A ($ff)
+5032: 9d 46 19  loc_5032        STA MenuSelItems,X   ; Loop
+                                                     ;     Set MenuSelItems[X] = A ($ff)
 5035: ca                        DEX                  ;     Subtract 1 from X
 5036: 10 fa                     BPL loc_5032         ; Repeat while (X >= 0)
                                                      ; (Update four addresses starting at ZtsAddr1_L to $5e53 [ZtsBlank])
@@ -10612,13 +11143,22 @@
 508a: 38                        SEC                  ; Set C = 1
 508b: 60                        RTS                  ; Return to caller
 
+                ; Loads item names into 4-selection menu option labels
                 ;
+                ; Input
+                ;   MenuSelItems[0..3] - The inventory item indexes for each menu item (<0 if unassigned)
                 ;
+                ; Output
+                ;   ZtsAddr1_L[0..3] - Set to the LSB of the item name addr for the item at the corresponding index
+                ;   ZtsAddr1_H[0..3] - Set to the MSB of the item name addr for the item at the corresponding index
+                ;
+                ; Temp
+                ;   dat_0006  - Holds menu selection index [3..0]. Loop control var.
                 ;
 508c: a9 03     sub_508c        LDA #$03             ; Set
-508e: 85 06                     STA dat_0006         ;     dat_0006 = 3  (4 iterations)
+508e: 85 06                     STA dat_0006         ;     dat_0006 = 3  (4 iterations [3..0])
 5090: a6 06     loc_5090        LDX dat_0006         ; Loop
-5092: bd 46 19                  LDA MenuItmIndices,X ;     If (MenuItmIndices[dat_0006] >= 0)
+5092: bd 46 19                  LDA MenuSelItems,X   ;     If ((A = MenuSelItems[dat_0006]) >= 0)
 5095: 30 16                     BMI loc_50ad         ;     Then
 5097: 20 74 4b                  JSR getItemAdr       ;         Call $4b74 [getItemAdr]
 509a: a5 06                     LDA dat_0006         ;         Set
@@ -10636,21 +11176,22 @@
 50af: 10 df                     BPL loc_5090         ; Repeat while (dat_0006 >= 0)
 50b1: 60                        RTS                  ; Return to caller
 
-                ; Sets dat_6277 to 0 then calls sub_50b7
+                ; Display 4-selection inventory menu with first page of inventory (Food Packets, Water Flasks,
+                ;     Unlit Torches, Timepieces)
                 ;
 50b2: a9 00     sub_50b2        LDA #$00             ; Set
 50b4: 8d 77 62                  STA dat_6277         ;     dat_6277 = 0
+
+                ; Display 4-selection inventory menu, starting with the specified offset.
                 ;
                 ; Input
-                ;   dat_6277   -
-                ;
-50b7: 20 2e 50  sub_50b7        JSR sub_502e         ; Call $502e [sub_502e]
+50b7: 20 2e 50  sub_50b7        JSR init4SelMenu     ; Call $502e [init4SelMenu]
 50ba: a9 00                     LDA #$00             ; Set
-50bc: 8d 78 62                  STA dat_6278         ;     dat_6278 = 0
+50bc: 8d 78 62                  STA MenuSelIdx       ;     MenuSelIdx = 0
 50bf: ad 77 62                  LDA dat_6277         ; Set
 50c2: 8d 7d 62                  STA dat_627d         ;     dat_627d = dat_6277
 50c5: cd 76 62                  CMP dat_6276         ; If (dat_6277 < dat_6276)
-50c8: b0 25                     BCS loc_50ef         ; Then
+50c8: b0 25                     BCS loc_50ef         ; Then     (Load basic items [Food, Water, Torches, etc] into menu)
 50ca: ad 7d 62  loc_50ca        LDA dat_627d         ;     Loop
                                                      ;         Set Y
 50cd: 0a                        ASL                  ;               =
@@ -10661,76 +11202,76 @@
 50d5: 9d 3c 19                  STA ZtsAddr1_L,X     ;             ZtsAddr1_L[X] = BasicItmStrs[Y]
 50d8: b9 0e 5f                  LDA BasicItmStrs+1,Y ;         Set
 50db: 9d 3d 19                  STA ZtsAddr1_H,X     ;             ZtsAddr1_H[X] = BasicItmStrs[Y + 1]
-50de: ae 78 62                  LDX dat_6278         ;         Set X = dat_6278
-50e1: 8a                        TXA                  ;         Set
-50e2: 9d 46 19                  STA MenuItmIndices,X ;             MenuItmIndices[X] = X
+50de: ae 78 62                  LDX MenuSelIdx       ;         Set MenuSelItems[MenuSelIdx]
+50e1: 8a                        TXA                  ;                =
+50e2: 9d 46 19                  STA MenuSelItems,X   ;                  MenuSelIdx
 50e5: ee 7d 62                  INC dat_627d         ;         Add 1 to dat_627d
-50e8: 20 98 51                  JSR sub_5198         ;         Call $5198 [sub_5198]
+50e8: 20 98 51                  JSR nextMenuSel      ;         Call $5198 [nextMenuSel]
 50eb: 90 dd                     BCC loc_50ca         ;     Repeat while (C == 0)
-50ed: b0 6d                     BCS loc_515c         ;     Continue @ $515c [loc_515c]    (TODO: Replace with Else?)
-                                                     ; End If
+50ed: b0 6d                     BCS loc_515c         ; Else
                 ;
                 ; At this point:
                 ;   - A equals the value of dat_6277 and should be >= dat_6276
                 ;   - C is 1 (we reached here via BCS)
                 ;
-50ef: a2 3f     loc_50ef        LDX #$3f             ; Set X = $3f
-50f1: 8e 7a 62                  STX dat_627a         ; Set dat_627a = X
-50f4: ed 76 62                  SBC dat_6276         ; Set A = dat_6277 - dat_6276   (result should be <= 0)
-50f7: f0 2c                     BEQ loc_5125         ; If (A != 0) Then
-50f9: 8d 79 62                  STA dat_6279         ;     Set dat_6279 = A
-50fc: ad 7a 62  loc_50fc        LDA dat_627a         ;     Set A = dat_627a
-50ff: 20 a1 51                  JSR sub_51a1         ;     Call $51a1 [sub_51a1]
-5102: b0 0b                     BCS loc_510f         ;     If (C == 0) Then
-5104: ce 79 62                  DEC dat_6279         ;         Subtract 1 from dat_6279
-5107: d0 06                     BNE loc_510f         ;         If (dat_6279 == 0) Then
-5109: ce 7a 62                  DEC dat_627a         ;             Subtract 1 from dat_627a
-510c: 4c 25 51                  JMP loc_5125         ;         Else
-510f: ce 7a 62  loc_510f        DEC dat_627a         ;             Subtract 1 from dat_627a
-5112: 10 e8                     BPL loc_50fc         ;             If (dat_627a < 0) Then
-                                                     ;                 Loop @ $50fc [loc_50fc]
+50ef: a2 3f     loc_50ef        LDX #$3f             ;     Set X = $3f
+50f1: 8e 7a 62                  STX dat_627a         ;     Set dat_627a = X
+50f4: ed 76 62                  SBC dat_6276         ;     Set A = dat_6277 - dat_6276   (result should be <= 0)
+50f7: f0 2c                     BEQ loc_5125         ;     If (A != 0) Then
+50f9: 8d 79 62                  STA dat_6279         ;         Set dat_6279 = A
+50fc: ad 7a 62  loc_50fc        LDA dat_627a         ;         Set A = dat_627a
+50ff: 20 a1 51                  JSR sub_51a1         ;         Call $51a1 [sub_51a1]
+5102: b0 0b                     BCS loc_510f         ;         If (C == 0) Then
+5104: ce 79 62                  DEC dat_6279         ;             Subtract 1 from dat_6279
+5107: d0 06                     BNE loc_510f         ;             If (dat_6279 == 0) Then
+5109: ce 7a 62                  DEC dat_627a         ;                 Subtract 1 from dat_627a
+510c: 4c 25 51                  JMP loc_5125         ;             Else
+510f: ce 7a 62  loc_510f        DEC dat_627a         ;                 Subtract 1 from dat_627a
+5112: 10 e8                     BPL loc_50fc         ;                 If (dat_627a < 0) Then
+                                                     ;                     Loop @ $50fc [loc_50fc]
+                                                     ;                 End If
+5114: ad 77 62  loc_5114        LDA dat_6277         ;                 If (dat_6277 | dat_6276 == 0) Then
+5117: 0d 76 62                  ORA dat_6276         ;                     Continue @ $515c [loc_515c]
+511a: f0 40                     BEQ loc_515c         ;                 End If
+511c: ad 70 54  loc_511c        LDA dat_5470         ;                 Set
+511f: 8d 77 62                  STA dat_6277         ;                     dat_6277 = dat_5470
+5122: 4c b7 50                  JMP sub_50b7         ;                 Continue @ $50b7 [sub_50b7]
                                                      ;             End If
-5114: ad 77 62  loc_5114        LDA dat_6277         ;             If (dat_6277 | dat_6276 == 0) Then
-5117: 0d 76 62                  ORA dat_6276         ;                 Continue @ $515c [loc_515c]
-511a: f0 40                     BEQ loc_515c         ;             End If
-511c: ad 70 54  loc_511c        LDA dat_5470         ;             Set
-511f: 8d 77 62                  STA dat_6277         ;                 dat_6277 = dat_5470
-5122: 4c b7 50                  JMP sub_50b7         ;             Continue @ $50b7 [sub_50b7]
                                                      ;         End If
                                                      ;     End If
+5125: ad 7a 62  loc_5125        LDA dat_627a         ;     Loop
+                                                     ;         If (dat_627a < 0) Then
+5128: 30 ea                     BMI loc_5114         ;             Continue @ $5114 [loc_5114]
+                                                     ;         End If
+512a: 20 a1 51                  JSR sub_51a1         ;         Call $51a1 [sub_51a1]
+512d: 90 12                     BCC loc_5141         ;         If (C == 1) Then
+512f: ce 7a 62                  DEC dat_627a         ;             Subtract 1 from dat_627a
+5132: 10 f1                     BPL loc_5125         ;             If (dat_627a >= 0) Then
+                                                     ;                 Continue Loop
+5134: ad 46 19                  LDA MenuSelItems     ;             Else If (MenuSelItems[0] >= 0)
+5137: 10 20                     BPL loc_5159         ;                Or (dat_6276 == 0)
+5139: ad 76 62                  LDA dat_6276         ;             Then
+513c: f0 1b                     BEQ loc_5159         ;                Exit Loop
+                                                     ;             End If
+513e: 4c 1c 51                  JMP loc_511c         ;             Continue @ $511c [loc_511c]
+                                                     ;         End If
+5141: ad 7a 62  loc_5141        LDA dat_627a         ;         Set MenuSelItems[MenuSelIdx]
+5144: ac 78 62                  LDY MenuSelIdx       ;               =
+5147: 99 46 19                  STA MenuSelItems,Y   ;                 dat_627a
+514a: ce 7a 62                  DEC dat_627a         ;         Subtract 1 from dat_627a
+514d: 30 0a                     BMI loc_5159         ;         If (dat_627a < 0) Then
+                                                     ;             Exit Loop
+                                                     ;         End If
+514f: ee 78 62                  INC MenuSelIdx       ;         Add 1 to MenuSelIdx
+5152: ad 78 62                  LDA MenuSelIdx       ;     Repeat
+5155: c9 04                     CMP #$04             ;        while
+5157: 90 cc                     BCC loc_5125         ;           (MenuSelIdx < 4)
+5159: 20 8c 50  loc_5159        JSR sub_508c         ;     Call $508c [sub_508c]
                                                      ; End If
-5125: ad 7a 62  loc_5125        LDA dat_627a         ; Loop
-                                                     ;     If (dat_627a < 0) Then
-5128: 30 ea                     BMI loc_5114         ;         Continue @ $5114 [loc_5114]
-                                                     ;     End If
-512a: 20 a1 51                  JSR sub_51a1         ;     Call $51a1 [sub_51a1]
-512d: 90 12                     BCC loc_5141         ;     If (C == 1) Then
-512f: ce 7a 62                  DEC dat_627a         ;         Subtract 1 from dat_627a
-5132: 10 f1                     BPL loc_5125         ;         If (dat_627a >= 0) Then
-                                                     ;             Continue Loop
-5134: ad 46 19                  LDA MenuItmIndices   ;         Else If (MenuItmIndices >= 0)
-5137: 10 20                     BPL loc_5159         ;            Or (dat_6276 == 0)
-5139: ad 76 62                  LDA dat_6276         ;         Then
-513c: f0 1b                     BEQ loc_5159         ;            Exit Loop
-                                                     ;         End If
-513e: 4c 1c 51                  JMP loc_511c         ;         Continue @ $511c [loc_511c]
-                                                     ;     End If
-5141: ad 7a 62  loc_5141        LDA dat_627a         ;     Set MenuItmIndices[dat_6278]
-5144: ac 78 62                  LDY dat_6278         ;           =
-5147: 99 46 19                  STA MenuItmIndices,Y ;             dat_627a
-514a: ce 7a 62                  DEC dat_627a         ;     Subtract 1 from dat_627a
-514d: 30 0a                     BMI loc_5159         ;     If (dat_627a < 0) Then
-                                                     ;         Exit Loop
-                                                     ;     End If
-514f: ee 78 62                  INC dat_6278         ;     Add 1 to dat_6278
-5152: ad 78 62                  LDA dat_6278         ; Repeat
-5155: c9 04                     CMP #$04             ;    while
-5157: 90 cc                     BCC loc_5125         ;       (dat_6278 < 4)
-5159: 20 8c 50  loc_5159        JSR sub_508c         ; Call $508c [sub_508c]
-515c: 20 49 50  loc_515c        JSR do4SelMenu         ; Loop
+515c: 20 49 50  loc_515c        JSR do4SelMenu       ; Loop
                                                      ;     Call $5049 [do4SelMenu]
-515f: 90 0d                     BCC loc_516e         ;     If (C == 1) Then
-                                                     ;         Continue @ $516e [loc_516e]
+515f: 90 0d                     BCC loc_516e         ;     If (C == 0) Then
+                                                     ;         Continue @ $516e [loc_516e]    (item selected)
 5161: c9 46                     CMP #$46             ;     Else If (A == $46 (70 'F')) Then
 5163: f0 1b                     BEQ loc_5180         ;         Continue @ $5180 [loc_5180]    (Forward to next page)
 5165: c9 42                     CMP #$42             ;     Else If (A == $42 (66 'B')) Then
@@ -10739,10 +11280,13 @@
 5169: c9 1b                     CMP #$1b             ; Repeat
 516b: d0 ef                     BNE loc_515c         ;    while (A != $1b (27 ESC))
 516d: 60                        RTS                  ; Return to caller
-
-516e: aa        loc_516e        TAX                  ; Set X = A      (TODO: what is A here?)
-516f: bd 46 19                  LDA MenuItmIndices,X ; If (MenuItmIndices[X] < 0) Then
-5172: 30 e8                     BMI loc_515c         ;     Continue @ $515c [loc_515c]
+                ;
+                ; User selected an item from the menu.
+                ; A = selected item index (0..3)
+                ;
+516e: aa        loc_516e        TAX                  ; Set X = A                      (X = A = selected menu item index)
+516f: bd 46 19                  LDA MenuSelItems,X   ; If (MenuSelItems[X] < 0) Then
+5172: 30 e8                     BMI loc_515c         ;     Continue @ $515c [loc_515c]     (no item assigned, try again)
                                                      ; End If
 5174: ae 77 62                  LDX dat_6277         ; If
 5177: ec 76 62                  CPX dat_6276         ;    (dat_6277 < dat_6276)
@@ -10765,12 +11309,20 @@
                                                      ; End If
 5195: 4c b2 50                  JMP sub_50b2         ; Continue @ $50b2 [sub_50b2]
 
+                ; Increments MenuSelIdx and compares result to 4
                 ;
+                ; Input
+                ;   MenuSelIdx - Current menu selection index (0..3 for 4 item menu)
                 ;
+                ; Output
+                ;   MenuSelIdx - Incremented by one
+                ;   C          - Set to 0 if output MenuSelIdx < 4 and 1 if MenuSelIdx >= 4 (e.g. exceeded menu size)
+                ;   Z          - Set to 1 if output MenuSelIdx == 4, otherwise 0
+                ;   N          - Set to 1 if MenuSelIdx < 4 otherwise 0
                 ;
-5198: ee 78 62  sub_5198        INC dat_6278         ; Add 1 to dat_6278
-519b: ad 78 62                  LDA dat_6278         ;
-519e: c9 04                     CMP #$04             ;            TODO: Sets C, Z, N before return... meaning?
+5198: ee 78 62  nextMenuSel     INC MenuSelIdx       ; Add 1 to MenuSelIdx
+519b: ad 78 62                  LDA MenuSelIdx       ; Set A = MenuSelIdx
+519e: c9 04                     CMP #$04             ; Set C, Z and N
 51a0: 60                        RTS                  ; Return to caller
 
                 ;
@@ -10856,6 +11408,7 @@
                                                      ;   6: $556b [cont_556b]
                                                      ;   7: $5632 [cont_5632]
 
+                ; ? Related to using an item ?
                 ;
                 ; Input
                 ;   ItemIndex   - Inventory item number (offset relative to InvItemAdr_L and InvItemAdr_H)
@@ -11107,7 +11660,7 @@
 53af: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
 53b2: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
 53b5: a9 82                     LDA #$82             ; Set
-53b7: 8d 9c 19                  STA dat_199c         ;     dat_199c = $82
+53b7: 8d 9c 19                  STA SoundState       ;     SoundState = $82 (130 - Request "Cast spell" sound)
 53ba: a9 01                     LDA #$01             ; Set A = 1
 53bc: 20 fc 2b                  JSR waitSeconds      ; Call $2bfc [waitSeconds]
 53bf: a0 00                     LDY #$00             ; Set Y = 0
@@ -11329,38 +11882,39 @@
 54aa: 20 ab 57  cont_54aa       JSR doAssignHand     ; Call $57ab [doAssignHand]
 54ad: b0 3c                     BCS loc_54eb         ; If (C == 0) Then    (weapon was assigned / user didn't press ESC)
                 ;
-54af: a2 0a     cont_54af       LDX #$0a             ;     Set X = $a (11 iterations)
+54af: a2 0a     cont_54af       LDX #$0a             ;     Set X = $a (11 iterations [10..0])
 54b1: a9 00                     LDA #$00             ;     Set A = 0
 54b3: 9d d2 63  loc_54b3        STA dat_63d2,X       ;     Loop
                                                      ;         Set dat_63d2[X] = 0
 54b6: ca                        DEX                  ;         Subtract 1 from X
 54b7: 10 fa                     BPL loc_54b3         ;     Repeat while (X >= 0)
 54b9: a9 00                     LDA #$00             ;     Set
-54bb: 85 49                     STA dat_0049         ;         dat_0049 = 0
+54bb: 85 49                     STA EffectIndex      ;         EffectIndex = 0
 54bd: a9 00                     LDA #$00             ;     Set
 54bf: 85 3d                     STA EffectAdr_L      ;         EffectAdr_L/H
 54c1: a9 65                     LDA #$65             ;         to
 54c3: 85 3e                     STA EffectAdr_H      ;         $6500 [CHR_Effects]
-54c5: a0 00     loc_54c5        LDY #$00             ;     Set Y = 0
-54c7: b1 3d                     LDA (EffectAdr_L),Y  ;     Set A = (*EffectAdr_L)[0]
-54c9: c9 87                     CMP #$87             ;     If (A == 0)
-54cb: d0 03                     BNE loc_54d0         ;     Then
-54cd: 20 01 4a                  JSR sub_4a01         ;         Call $4a01 [sub_4a01]
-                                                     ;     End If
-54d0: e6 49     loc_54d0        INC dat_0049         ;     Add 1 to dat_0049
-54d2: a5 3d                     LDA EffectAdr_L      ;     Set
-54d4: 18                        CLC                  ;         EffectAdr_L
-54d5: 69 10                     ADC #$10             ;            =
-54d7: 85 3d                     STA EffectAdr_L      ;              EffectAdr_L + $10 (16)   (C = 1 on overflow else 0)
-54d9: 90 02                     BCC loc_54dd         ;     If (C == 1) Then  (overflow occurred)
-54db: e6 3e                     INC EffectAdr_H      ;         Add 1 to EffectAdr_H
-                                                     ;     End If
-54dd: a5 49     loc_54dd        LDA dat_0049         ;     If (dat_0049 < $40 (64)) Then
-54df: c9 40                     CMP #$40             ;         Continue @ $54c5 [loc_54c5]
-54e1: 90 e2                     BCC loc_54c5         ;     End If
+54c5: a0 00     loc_54c5        LDY #$00             ;     Loop
+                                                     ;         Set Y = 0
+54c7: b1 3d                     LDA (EffectAdr_L),Y  ;         If
+54c9: c9 87                     CMP #$87             ;            ((*EffectAdr_L)[0] == $87)            (TODO: meaning?)
+54cb: d0 03                     BNE loc_54d0         ;         Then
+54cd: 20 01 4a                  JSR sub_4a01         ;             Call $4a01 [sub_4a01]
+                                                     ;         End If
+54d0: e6 49     loc_54d0        INC EffectIndex      ;         Add 1 to EffectIndex
+54d2: a5 3d                     LDA EffectAdr_L      ;         Set
+54d4: 18                        CLC                  ;             EffectAdr_L
+54d5: 69 10                     ADC #$10             ;                =
+54d7: 85 3d                     STA EffectAdr_L      ;                  EffectAdr_L + $10 (16)  (C=1 on overflow else 0)
+54d9: 90 02                     BCC loc_54dd         ;         If (C == 1) Then  (overflow occurred)
+54db: e6 3e                     INC EffectAdr_H      ;             Add 1 to EffectAdr_H
+                                                     ;         End If
+54dd: a5 49     loc_54dd        LDA EffectIndex      ;     Repeat
+54df: c9 40                     CMP #$40             ;       while
+54e1: 90 e2                     BCC loc_54c5         ;         (EffectIndex < $40 (64))
 54e3: 20 35 58                  JSR equipItem        ;     Call $5835 [equipItem]
 54e6: b0 03                     BCS loc_54eb         ;     If (C == 0) Then
-54e8: 4c 09 52                  JMP cont_5209        ;         Continue @ $5209 [cont_5209]
+54e8: 4c 09 52                  JMP cont_5209        ;         Continue @ $5209 [cont_5209] (wasn't previously equipped)
                                                      ;     End If
                                                      ; End If
 54eb: 4c 25 52  loc_54eb        JMP cont_5225        ; Continue @ $5225 [cont_5225]
@@ -11387,7 +11941,7 @@
 54f7: 8d 83 62                  STA EquipSlot        ; Set EquipSlot = A
 54fa: 20 35 58                  JSR equipItem        ; Call $5835 [equipItem]
 54fd: b0 03                     BCS loc_5502         ; If (C == 0) Then
-54ff: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]
+54ff: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]   (wasn't previously equipped)
                                                      ; End If
 5502: 4c 25 52  loc_5502        JMP cont_5225        ; Continue @ $5225 [cont_5225]
 
@@ -11416,7 +11970,7 @@
 5523: 8e 7d 5d                  STX Sel3EquipInd     ;     Sel3EquipInd = $33 (51 '3')
 5526: e8                        INX                  ; Set
 5527: 8e 93 5d                  STX Sel4EquipInd     ;     Sel4EquipInd = $34 (52 '4')
-552a: 20 2e 50                  JSR sub_502e         ; Call $502e [sub_502e]
+552a: 20 2e 50                  JSR init4SelMenu     ; Call $502e [init4SelMenu]
 552d: a9 85                     LDA #$85             ; Set MenuTitleAdr_L/H
 552f: 8d 3a 19                  STA MenuTitleAdr_L   ;     address
 5532: a9 5f                     LDA #$5f             ;     to
@@ -11427,7 +11981,7 @@
 553e: 8d 45 19                  STA MenuFootrAdr_H   ;     $5f3d [StrItemNum] "Item # or ESC to exit"
 5541: a2 03                     LDX #$03             ; Set X = 3    (4 iterations)
 5543: bd a2 63  loc_5543        LDA CHR_APPAREL,X    ; Loop
-5546: 9d 46 19                  STA MenuItmIndices,X ;     Set MenuItmIndices[X] = CHR_APPAREL[X]
+5546: 9d 46 19                  STA MenuSelItems,X   ;     Set MenuSelItems[X] = CHR_APPAREL[X]
 5549: ca                        DEX                  ;     Subtract 1 from X
 554a: 10 f7                     BPL loc_5543         ; Repeat while (X >= 0)
 554c: 20 8c 50                  JSR sub_508c         ; Call $508c [sub_508c]
@@ -11448,9 +12002,9 @@
 555d: 8d 83 62                  STA EquipSlot        ;     EquipSlot = A + 6             (CHR_APPAREL[0..3])
 5560: 20 35 58  loc_5560        JSR equipItem        ; Call $5835 [equipItem]
 5563: b0 03                     BCS loc_5568         ; If (C == 0) Then
-5565: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]  (wasn't previously assigned)
+5565: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]  (wasn't previously equipped)
                                                      ; End If
-5568: 4c 25 52  loc_5568        JMP cont_5225        ; Continue @ $5225 [cont_5225]      (item was previously assigned)
+5568: 4c 25 52  loc_5568        JMP cont_5225        ; Continue @ $5225 [cont_5225]      (item was previously equipped)
 
                 ;
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
@@ -11522,7 +12076,7 @@
                 ;   AttrAdjAmt  -
                 ;
                 ; Temp
-                ;   dat_0049      - Used as loop control var (0..63)
+                ;   EffectIndex   - Used as loop control var for effect index (0..63)
                 ;   EffectAdr_L/H - Current effect address in CHR_Effects during iteration
                 ;   A, X, Y       - not preserved/guaranteed on return
                 ;
@@ -11531,7 +12085,7 @@
 55bb: a9 65                     LDA #$65             ;     to
 55bd: 85 3e                     STA EffectAdr_H      ;     $6500 [CHR_Effects]
 55bf: a9 00                     LDA #$00             ; Set
-55c1: 85 49                     STA dat_0049         ;     dat_0049 = 0
+55c1: 85 49                     STA EffectIndex      ;     EffectIndex = 0
 55c3: a0 00     loc_55c3        LDY #$00             ; Loop
                                                      ;     Set Y = 0
 55c5: b1 3d                     LDA (EffectAdr_L),Y  ;     Set
@@ -11547,17 +12101,17 @@
 55d7: 90 02                     BCC loc_55db         ;     If (C == 1) Then   (overflow)
 55d9: e6 3e                     INC EffectAdr_H      ;         Add 1 to EffectAdr_H
                                                      ;     End If
-55db: e6 49     loc_55db        INC dat_0049         ;     Add 1 to dat_0049
-55dd: a5 49                     LDA dat_0049         ; Repeat
+55db: e6 49     loc_55db        INC EffectIndex      ;     Add 1 to EffectIndex
+55dd: a5 49                     LDA EffectIndex      ; Repeat
 55df: c9 40                     CMP #$40             ;    while
-55e1: 90 e0                     BCC loc_55c3         ;       (dat_0049 < $40 (64))
+55e1: 90 e0                     BCC loc_55c3         ;       (EffectIndex < $40 (64))
 55e3: a5 51                     LDA AttrAdjAmt       ; Set
 55e5: 29 03                     AND #$03             ;     A = AttrAdjAmt & 3
 55e7: c9 03                     CMP #$03             ; If (A == 3)
 55e9: d0 16                     BNE loc_5601         ; Then
-55eb: aa                        TAX                  ;     Set X = A   (0..3)
+55eb: aa                        TAX                  ;     Set X = 3         (A == 3 per comparison above)
 55ec: a9 00                     LDA #$00             ;     Set
-55ee: 9d 90 63                  STA CHR_NumLights,X  ;         CHR_NumLights[X] = 0
+55ee: 9d 90 63                  STA CHR_NumLights,X  ;         CHR_NumLights[3] = 0        (CHR_Cursed = 0)
 55f1: a2 00                     LDX #$00             ;     Set X = 0   (7 iterations w/ step 8 (56/8 = 7))
 55f3: a9 00     loc_55f3        LDA #$00             ;     Loop
                                                      ;         Set
@@ -11748,7 +12302,7 @@
                                                      ;     Continue @ $56e4 [cont_56e4]
                                                      ; End If
 5703: a9 88                     LDA #$88             ; Set A = $88
-5705: 20 b0 49                  JSR sub_49b0         ; Call $49b0 [sub_49b0]
+5705: 20 b0 49                  JSR allocEffect      ; Call $49b0 [allocEffect]
 5708: 30 da                     BMI cont_56e4        ; If (N == 1) Then   (TODO: meaning?)
                                                      ;     Continue @ $56e4 [cont_56e4]
                                                      ; End If
@@ -11847,26 +12401,26 @@
 578f: 8d 3b 19                  STA MenuTitleAdr_H   ;     $5f2e [ZtsCast] ("CAST")
 5792: 4c d8 51                  JMP cont_51d8        ; Continue @ $51d8 [cont_51d8]
 
-                ; Updates ?? byte 2 ?? for an inventory item to 8.
+                ; Updates ?? byte 2 ?? for an inventory item to 8 (unuse).
                 ; Called from equipItem if the item is equipped and is being replaced by a different item.
                 ;
                 ; Input
                 ;   A     - Inventory item index (should be 0..63, values with bit 7 == 1 are ignored)
                 ;
                 ; Temp
-                ;   dat_0009_L/H     - Updated to address of item at specified index.
-                ;   (*dat_0009_L)[2] - Set to 8
+                ;   DestAdr_L/H     - Updated to the address of the item at specified index.
+                ;   (*DestAdr_L)[2] - Set to 8
                 ;
 5795: c9 80     sub_5795        CMP #$80             ; If (A < $80)                   (bit 7 == 0 indicates valid index)
 5797: b0 11                     BCS loc_57aa         ; Then
 5799: a8                        TAY                  ;     Set Y = A
 579a: b9 4b 64                  LDA InvItemAdr_H,Y   ;     Set
-579d: 85 0a                     STA dat_0009_H       ;         dat_0009_L/H           (get item address for index)
+579d: 85 0a                     STA DestAdr_H        ;         DestAdr_L/H            (get item address for index)
 579f: b9 0b 64                  LDA InvItemAdr_L,Y   ;            =
-57a2: 85 09                     STA dat_0009_L       ;              InvItemAdr_L/H[Y]
+57a2: 85 09                     STA DestAdr_L        ;              InvItemAdr_L/H[Y]
 57a4: a0 02                     LDY #$02             ;     Set Y = 2
 57a6: a9 08                     LDA #$08             ;     Set
-57a8: 91 09                     STA (dat_0009_L),Y   ;         (*dat_0009_L)[2] = 8
+57a8: 91 09                     STA (DestAdr_L),Y    ;         (*DestAdr_L)[2] = 8   (8 = "unuse" action flag)
                                                      ; End If
 57aa: 60        loc_57aa        RTS                  ; Return to caller
 
@@ -11936,7 +12490,7 @@
 580b: a9 99     loc_580b        LDA #$99             ; Set StrTmplate_L/H
 580d: 85 16                     STA StrTmplate_L     ;     address
 580f: a9 62                     LDA #$62             ;     to
-5811: 85 17                     STA StrTmplate_H     ;     $6299 [str_MAP_POS] ("You are ?? squares North...)
+5811: 85 17                     STA StrTmplate_H     ;     $6299 [StrMapPos] ("You are ?? squares North...)
 5813: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
 5816: ce fe 18                  DEC dat_18fe         ; Subtract 1 from dat_18fe
 5819: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
@@ -12010,40 +12564,46 @@
 5855: 28                        PLP                  ; Restore processor status    (Restore C)
 5856: 60                        RTS                  ; Return to caller
 
+                ; ...related to get action...
                 ;
+                ; ???
+                ;   dat_197b  - Set to 0
+                ;   dat_6284  - (temp?) Loop control var used for iterating over dropped items
+                ;   dat_58c1  - (temp?) Indicates whether an item is in the current player location or not. $ff = nothing here.
+                ;   ItemIndex - (input? or buggy temp?)
                 ;
                 ;
 5857: a2 00     sub_5857        LDX #$00             ; Set
 5859: 8e 7b 19                  STX dat_197b         ;     dat_197b = 0
-585c: ca                        DEX                  ; Subtract 1 from X
-585d: 8e c1 58                  STX dat_58c1         ; Set dat_58c1 = X
+585c: ca                        DEX                  ; Set
+585d: 8e c1 58                  STX dat_58c1         ;     dat_58c1 = $ff
 5860: a9 0f                     LDA #$0f             ; Set
-5862: 8d 84 62                  STA dat_6284         ;     dat_6284 = $f
+5862: 8d 84 62                  STA dat_6284         ;     dat_6284 = $f  (16 iterations [15..0])
 5865: ae 84 62  loc_5865        LDX dat_6284         ; Loop
                                                      ;     Set X = dat_6284
-5868: bd 94 64                  LDA dat_6494,X       ;     If
+5868: bd 94 64                  LDA DroppedGame,X       ;     If
 586b: c9 02                     CMP #$02             ;
-586d: d0 36                     BNE loc_58a5         ;        (dat_6494[X] == 2)
-586f: bd c4 64                  LDA dat_64c4,X       ;
+586d: d0 36                     BNE loc_58a5         ;        (DroppedGame[X] == 2)                  (2 = Dungeon)
+586f: bd c4 64                  LDA DroppedMap,X     ;
 5872: cd 15 63                  CMP CHR_LOC_MAP      ;        And
-5875: d0 2e                     BNE loc_58a5         ;        (dat_64c4[X] == CHR_LOC_MAP)
-5877: bd a4 64                  LDA dat_64a4,X       ;
+5875: d0 2e                     BNE loc_58a5         ;        (DroppedMap[X] == CHR_LOC_MAP)
+5877: bd a4 64                  LDA DroppedX,X       ;
 587a: cd 13 63                  CMP CHR_LOC_X        ;        And
-587d: d0 26                     BNE loc_58a5         ;        (dat_64a4[X] == CHR_LOC_X)
-587f: bd b4 64                  LDA dat_64b4,X       ;        And
-5882: cd 14 63                  CMP CHR_LOC_Y        ;        (dat_64b4[X] == CHR_LOC_Y)
+587d: d0 26                     BNE loc_58a5         ;        (DroppedX[X] == CHR_LOC_X)
+587f: bd b4 64                  LDA DroppedY,X       ;        And
+5882: cd 14 63                  CMP CHR_LOC_Y        ;        (DroppedY[X] == CHR_LOC_Y)
 5885: d0 1e                     BNE loc_58a5         ;     Then
-5887: 24 4b                     BIT ItemIndex        ;         If (dat_64b4[X] & ItemIndex >= 0)
-5889: 10 0a                     BPL loc_5895         ;         Then                 (one or both assigned/valid indexes)
-588b: a9 53                     LDA #$53             ;             Set dat_59c1_L/dat_59c1_H
-588d: 8d c1 59                  STA dat_59c1_L       ;                 address
-5890: a9 5e                     LDA #$5e             ;                 to
-5892: 8d c2 59                  STA dat_59c1_H       ;                 $5e53 [ZtsBlank]
-                                                     ;         End If
-5895: ae 84 62  loc_5895        LDX dat_6284         ;         Set X = dat_6284
-5898: bd d4 64                  LDA dat_64d4,X       ;         Set
-589b: 85 4b                     STA ItemIndex        ;             ItemIndex = dat_64d4[X]
-589d: 8d c1 58                  STA dat_58c1         ;         Set dat_58c1 = dat_64d4[X]
+5887: 24 4b                     BIT ItemIndex        ;         If (DroppedY[X] & ItemIndex < 0)  (one/both has bit 7==1)
+5889: 10 0a                     BPL loc_5895         ;         Then                     (Note: This seems buggy, since
+588b: a9 53                     LDA #$53             ;             Set ZtsGetName_L/H    ItemIndex isn't updated in the
+588d: 8d c1 59                  STA ZtsGetName_L     ;                 address           sub before it's checked & value
+5890: a9 5e                     LDA #$5e             ;                 to                appears unused by later code.
+5892: 8d c2 59                  STA ZtsGetName_H     ;                 $5e53 [ZtsBlank]  Perhaps intent was to give
+                                                     ;         End If                    richer messages (e.g. "There
+5895: ae 84 62  loc_5895        LDX dat_6284         ;         Set X = dat_6284          is a dagger here."?))
+5898: bd d4 64                  LDA DroppedIndex,X   ;         Set
+589b: 85 4b                     STA ItemIndex        ;             ItemIndex = DroppedIndex[X]
+589d: 8d c1 58                  STA dat_58c1         ;         Set dat_58c1 = DroppedIndex[X]
 58a0: 20 c2 58                  JSR sub_58c2         ;         Call $58c2 [sub_58c2]
 58a3: b0 1b                     BCS loc_58c0         ;         If (C == 1) Then
                                                      ;             Continue @ $58c0 [loc_58c0] (Return to caller)
@@ -12073,19 +12633,19 @@
 58c2: a5 4b     sub_58c2        LDA ItemIndex        ; Set A = ItemIndex
 58c4: 20 74 4b                  JSR getItemAdr       ; Call $4b74 [getItemAdr]
 58c7: a9 06                     LDA #$06             ; Set
-58c9: 18                        CLC                  ;     dat_59c1_L/H
+58c9: 18                        CLC                  ;     ZtsGetName_L/H
 58ca: 65 41                     ADC ItemAdr_L        ;     address
-58cc: 8d c1 59                  STA dat_59c1_L       ;     to
+58cc: 8d c1 59                  STA ZtsGetName_L     ;     to
 58cf: a5 42                     LDA ItemAdr_H        ;     ItemAdr_L/H
 58d1: 69 00                     ADC #$00             ;     plus
-58d3: 8d c2 59                  STA dat_59c1_H       ;     4
-58d6: a9 9b                     LDA #$9b             ; Set addr_5955_L/H
-58d8: 8d 55 59                  STA addr_5955_L      ;     address
+58d3: 8d c2 59                  STA ZtsGetName_H     ;     6                    (Address of Item name)
+58d6: a9 9b                     LDA #$9b             ; Set StrGetAdr_L/H
+58d8: 8d 55 59                  STA StrGetAdr_L      ;     address
 58db: a9 59                     LDA #$59             ;     to
-58dd: 8d 56 59                  STA addr_5955_H      ;     $599b [StrGetOne]    ("GET? ??? Yes, No or ESC")
+58dd: 8d 56 59                  STA StrGetAdr_H      ;     $599b [StrGetOne]    ("GET? ??? Yes, No or ESC")
 58e0: a0 00                     LDY #$00             ; Set Y = 0
 58e2: b1 41                     LDA (ItemAdr_L),Y    ; If
-58e4: 29 7f                     AND #$7f             ;    ((*ItemAdr_L)[0] & $7f == 0)
+58e4: 29 7f                     AND #$7f             ;    ((*ItemAdr_L)[0] & $7f == 0)      (All type bits clear? Seems to indicate multiple items/group of items?)
 58e6: d0 1c                     BNE loc_5904         ; Then
 58e8: a5 4b                     LDA ItemIndex        ;     Set A = ItemIndex
 58ea: 20 c4 4e                  JSR getItemAttrs     ;     Call $4ec4 [getItemAttrs]
@@ -12095,15 +12655,15 @@
 58f4: c8                        INY                  ;     Add 1 to Y   (Y = 2)
 58f5: b1 43                     LDA (ItemAttrs_L),Y  ;     Set
 58f7: 8d e4 59                  STA GetNum_L         ;         GetNum_L = (*ItemAttrs_L)[2]
-58fa: a9 ab                     LDA #$ab             ;     Set addr_5955_L/h
-58fc: 8d 55 59                  STA addr_5955_L      ;         address
+58fa: a9 ab                     LDA #$ab             ;     Set StrGetAdr_L/H
+58fc: 8d 55 59                  STA StrGetAdr_L      ;         address
 58ff: a9 59                     LDA #$59             ;         to
-5901: 8d 56 59                  STA addr_5955_H      ;         $59ab [StrGetMultiple] "GET? # ??? Yes, No or ESC"
+5901: 8d 56 59                  STA StrGetAdr_H      ;         $59ab [StrGetMultiple] "GET? # ??? Yes, No or ESC"
                                                      ; End If
-5904: ad 55 59  loc_5904        LDA addr_5955_L      ; Set StrTmplate_L/h
+5904: ad 55 59  loc_5904        LDA StrGetAdr_L      ; Set StrTmplate_L/H
 5907: 85 16                     STA StrTmplate_L     ;     address
-5909: ad 56 59                  LDA addr_5955_H      ;     to
-590c: 85 17                     STA StrTmplate_H     ;     $59ab [StrGetMultiple] "GET? ??? # Yes, No or ESC"
+5909: ad 56 59                  LDA StrGetAdr_H      ;     to
+590c: 85 17                     STA StrTmplate_H     ;     StrGetAdr_L/H
 590e: ae 4a 19                  LDX dat_194a         ; Set X = dat_194a
 5911: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
 5914: a9 21     loc_5914        LDA #$21             ; Loop
@@ -12115,7 +12675,7 @@
 5921: a5 31     rtn_5921        LDA KbdChar          ;     Set A = KbdChar
 5923: 30 ef                     BMI loc_5914         ; Repeat while (A < 0)
 5925: c9 1b                     CMP #$1b             ; If (A != $1b (27 ESC))
-5927: f0 24                     BEQ loc_594d         ; Then       (TODO: $594d falls in middle of instruction)
+5927: f0 24                     BEQ loc_594d         ; Then  (Note: $594d is middle of BIT inst, but forms SEC for else)
 5929: 20 a5 2b                  JSR charToUpper      ;     Call $2ba5 [charToUpper]
 592c: c9 4e                     CMP #$4e             ;     If (A != $4e (78 'N'))
 592e: f0 1b                     BEQ cont_594b        ;     Then
@@ -12142,8 +12702,10 @@
 5951: ce 60 19                  DEC StatRecalcFlg    ; Subtract 1 from StatRecalcFlg    (update needed)
 5954: 60                        RTS                  ; Return to caller
 
-5955: 9b        addr_5955_L     .BYTE $9b            ;
-5956: 59        addr_5955_H     .BYTE $59            ;
+5955: 9b        StrGetAdr_L     .BYTE $9b            ; (temp) Assigned LSB of template string address (either StrGetOne
+                                                     ;     or StrGetMultiple) Defaults to $599b [StrGetOne]
+5956: 59        StrGetAdr_H     .BYTE $59            ; (temp) Assigned MSB of template string address (either StrGetOne
+                                                     ;     or StrGetMultiple)
 
                 ;
                 ; Input
@@ -12203,8 +12765,8 @@
 59bf: 20                        .BYTE $20                              ; " "        (Flows into StrYesNoEsc)
 
 59c0: b3        StrYesNoEsc     .BYTE $b3                              ; {Print ZTS @ $5e53 [ZtsBlank]}
-59c1: 53        dat_59c1_L      .BYTE $53                              ;     (address of ZTS is
-59c2: 5e        dat_59c1_H      .BYTE $5e                              ;      dynamically updated)
+59c1: 53        ZtsGetName_L    .BYTE $53                              ;     (address of ZTS is
+59c2: 5e        ZtsGetName_H    .BYTE $5e                              ;      dynamically updated)
 59c3: 26 0d                     .BYTE $26,$0d                          ; "&\n"
 59c5: a3 e5 59                  .BYTE $a3,$e5,$59                      ; {Call $59e5 [sub_59e5] - Sets dat_18fe to 0}
 59c8: a6 00 07                  .BYTE $a6,$00,$07                      ; {Col 0 Row 7}
@@ -12310,8 +12872,9 @@
                                                                        ;  10: $5a82 [ZtsSilver]      - "Silver"
                                                                        ;  11: $5a89 [ZtsCopper]      - "Copper"
 
-5aa8: bb bc bd c1 c0 bf  dat_5aa8  .BYTE $bb,$bc,$bd,$c1,$c0,$bf  ; ZZ......
-5aae: be b7 b9 b1 b3 b5         .BYTE $be,$b7,$b9,$b1,$b3,$b5  ; ......
+5aa8: bb bc bd  dat_5aa8        .BYTE $bb,$bc,$bd                      ;
+5aae: c1 c0 bf be b7 b9 b1 b3   .BYTE $c1,$c0,$bf,$be,$b7,$b9,$b1,$b3  ;
+5ab3: b5                        .BYTE $b5                              ;
 
                 ; Display the "OFFER" menu and process user input
                 ;
@@ -12334,7 +12897,7 @@
                 ; - Sets MenuTitleAdr_L/H to "DROP"
                 ; - Sets addr_5cc3_L/H to "Drop how many? Enter amount or press ESC"
                 ; - Sets MenuFootrAdr_L/H to "Item #, Forward, Backward, or ESC to exit"
-                ; - Sets dat_6276 to $0c (12)
+                ; - Sets dat_6276 to $0c (12 standard item types)
                 ; -
                 ;
 5acb: a9 29     doDropMenu      LDA #$29             ; Set MenuTitleAdr_L/H
@@ -12377,11 +12940,11 @@
 5b14: 60                        RTS                  ; Return to caller
 
                 ; At this point, A >= $80
-5b15: 29 03     loc_5b15        AND #$03             ; Set A &= 3
+5b15: 29 03     loc_5b15        AND #$03             ; Set A = A & 3                    (A = 0..7)
 5b17: 18                        CLC                  ; Set
 5b18: 6d 77 62                  ADC dat_6277         ;     dat_5a17
 5b1b: 8d 17 5a                  STA dat_5a17         ;        = dat_6277 + A
-5b1e: aa                        TAX                  ; Set X = A
+5b1e: aa                        TAX                  ; Set X = A                        (X = 0..7)
 5b1f: a9 00                     LDA #$00             ; Set
 5b21: 8d 85 62                  STA dat_6285         ;     dat_6285 = 0
 5b24: 8d 86 62                  STA dat_6286         ; Set dat_6286 = 0
@@ -12450,7 +13013,15 @@
                                                      ; End If
 5bb2: ad 88 62  loc_5bb2        LDA dat_6288         ; Set
 5bb5: 99 00 63                  STA CHR_STATE,Y      ;     CHR_STATE[Y] = dat_6288
-5bb8: 8e 17 5a  loc_5bb8        STX dat_5a17         ; Set dat_5a17 = X
+
+                ;
+                ; Input
+                ;   X           -
+                ;   LEResult[0] -
+                ;   LEResult[1] -
+                ;   dat_5a90_L/dat_5a9c_H[X] -
+                ;
+5bb8: 8e 17 5a  sub_5bb8        STX dat_5a17         ; Set dat_5a17 = X
 5bbb: a5 02                     LDA LEResult         ; Set
 5bbd: 8d 18 5a                  STA dat_5a18         ;     dat_5a18 = LEResult[0]
 5bc0: a5 03                     LDA LEResult+1       ; Set
@@ -12480,19 +13051,19 @@
 5be7: 8d 84 62                  STA dat_6284         ;     dat_6284 = $f (15 - max 16 iterations)
 5bea: ae 84 62  loc_5bea        LDX dat_6284         ; Loop
                                                      ;     Set X = dat_6284
-5bed: bd 94 64                  LDA dat_6494,X       ;     If
-5bf0: c9 02                     CMP #$02             ;        (dat_6494[X] == 2)
+5bed: bd 94 64                  LDA DroppedGame,X       ;     If
+5bf0: c9 02                     CMP #$02             ;        (DroppedGame[X] == 2)
 5bf2: d0 50                     BNE loc_5c44         ;
-5bf4: bd a4 64                  LDA dat_64a4,X       ;        And
-5bf7: cd 13 63                  CMP CHR_LOC_X        ;        (dat_64a4[X] == CHR_LOC_X)
+5bf4: bd a4 64                  LDA DroppedX,X       ;        And
+5bf7: cd 13 63                  CMP CHR_LOC_X        ;        (DroppedX[X] == CHR_LOC_X)
 5bfa: d0 48                     BNE loc_5c44         ;
-5bfc: bd b4 64                  LDA dat_64b4,X       ;        And
-5bff: cd 14 63                  CMP CHR_LOC_Y        ;        (dat_64b4[X] == CHR_LOC_Y)
+5bfc: bd b4 64                  LDA DroppedY,X       ;        And
+5bff: cd 14 63                  CMP CHR_LOC_Y        ;        (DroppedY[X] == CHR_LOC_Y)
 5c02: d0 40                     BNE loc_5c44         ;
-5c04: bd c4 64                  LDA dat_64c4,X       ;        And
-5c07: cd 15 63                  CMP CHR_LOC_MAP      ;        (dat_64c4[X] == CHR_LOC_MAP)
+5c04: bd c4 64                  LDA DroppedMap,X     ;        And
+5c07: cd 15 63                  CMP CHR_LOC_MAP      ;        (DroppedMap[X] == CHR_LOC_MAP)
 5c0a: d0 38                     BNE loc_5c44         ;     Then
-5c0c: bd d4 64                  LDA dat_64d4,X       ;         Set A = dat_64d4[X]          (A = item index)
+5c0c: bd d4 64                  LDA DroppedIndex,X   ;         Set A = DroppedIndex[X]          (A = item index)
 5c0f: 85 4b                     STA ItemIndex        ;         Set ItemIndex = A
 5c11: 20 74 4b                  JSR getItemAdr       ;         Call $4b74 [getItemAdr]
 5c14: f0 2e                     BEQ loc_5c44         ;         If (ItemAdr_H != 0)
@@ -12698,10 +13269,10 @@
                 ; Updates the current selected item indicator ...as well as other actions...
                 ;
                 ; Input
-                ;   SelCurrentIdx        - index of the menu selection currently being output (0..3)
-                ;   MenuItmIndices[0..3] - contains item numbers associated with each menu selection
-                ;   Sel1EquipInd[0..3]   - indicators for whether the corresponding menu item is
-                ;                          equipped ("*") or not (" ")
+                ;   SelCurrentIdx       - index of the menu selection currently being output (0..3)
+                ;   MenuSelItems[0..3]  - contains inventory item indexes associated with each menu selection
+                ;   Sel1EquipInd[0..3]  - indicators for whether the corresponding menu item is
+                ;                         equipped ("*") or not (" ")
                 ;
                 ; Output
                 ;   SelCurrentIdx   - incremented by 1
@@ -12714,7 +13285,7 @@
 5dbe: bc 55 5e                  LDY SelEquipIndOfs,X ; Set Y = SelEquipIndOfs[X]
 5dc1: a9 20                     LDA #$20             ; Set
 5dc3: 99 51 5d                  STA Sel1EquipInd,Y   ;     Sel1EquipInd[Y] = $20 (32) ' '          (assume not equipped)
-5dc6: bd 46 19                  LDA MenuItmIndices,X ; Set A = MenuItmIndices[X]
+5dc6: bd 46 19                  LDA MenuSelItems,X   ; Set A = MenuSelItems[X]
 5dc9: 20 b4 4e                  JSR isEquipped       ; Call $4eb4 [isEquipped]
 5dcc: 90 08                     BCC loc_5dd6         ; If (C == 1) Then                               (item is equipped)
 5dce: bc 55 5e                  LDY SelEquipIndOfs,X ;     Set Y = SelEquipIndOfs[X]
@@ -12727,9 +13298,9 @@
 5de0: ad b0 51                  LDA smc_51b0         ; If
 5de3: c9 d0                     CMP #$d0             ;     (smc_51b0 == $d0)         (BNE opcode -> rendering CAST menu)
 5de5: d0 1e                     BNE loc_5e05         ;     And
-5de7: bd 46 19                  LDA MenuItmIndices,X ;     ( (A = MenuItmIndices[X]) >= 0)   (selection row is assigned)
+5de7: bd 46 19                  LDA MenuSelItems,X   ;     ( (A = MenuSelItems[X]) >= 0)     (selection row is assigned)
 5dea: 30 19                     BMI loc_5e05         ; Then
-5dec: 85 4b                     STA ItemIndex        ;     Set ItemIndex = MenuItmIndices[X]            (A = item index)
+5dec: 85 4b                     STA ItemIndex        ;     Set ItemIndex = MenuSelItems[X]              (A = item index)
 5dee: 20 74 4b                  JSR getItemAdr       ;     Call $4b74 [getItemAdr]
 5df1: 20 c4 4e                  JSR getItemAttrs     ;     Call $4ec4 [getItemAttrs]
 5df4: a0 01                     LDY #$01             ;     Set Y = 1
@@ -13108,7 +13679,7 @@
 
 6276: 00        dat_6276        .BYTE $00
 6277: 00        dat_6277        .BYTE $00
-6278: 00        dat_6278        .BYTE $00
+6278: 00        MenuSelIdx      .BYTE $00                              ; Menu selection index (e.g. 0..3 for 4 sel menu)
 6279: 00        dat_6279        .BYTE $00
 627a: 00        dat_627a        .BYTE $00
 627b: 00        dat_627b        .BYTE $00
@@ -13144,7 +13715,7 @@
 6292: 3f 3f 1f  MapNum2YBase    .BYTE $3f,$3f,$1f    ; Map number to level Y base for tiled maps (subtract map Y for level Y)
 6295: 1f 1f 0f 07               .BYTE $1f,$1f,$0f,$07
 
-6299: a6 00 02  str_MAP_POS     .BYTE $a6,$00,$02                      ; {Col 0 Row 2}
+6299: a6 00 02  StrMapPos       .BYTE $a6,$00,$02                      ; {Col 0 Row 2}
 629c: a5                        .BYTE $a5                              ; {Center}
 629d: 59 6f 75 20 61 72 65 20   .BYTE $59,$6f,$75,$20,$61,$72,$65,$20  ; "You are "
 62a5: b2 8a 62 02               .BYTE $b2,$8a,$62,$02                  ; {Print uint8 @ $628a [dat_628a] width 2}

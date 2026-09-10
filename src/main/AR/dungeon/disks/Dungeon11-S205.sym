@@ -13,6 +13,8 @@ rw  4000,1   ExtRam130XE            ; Starting address of 16KB range for selecte
 
 rwx 8000,1   initIrqs               ; Initializes IRQ handler vectors
 rwx 807e,1   kernelEntry            ; Game kernel entry vector
+rwx 80bc,1   initInput              ; Initializes keyboard and stick input registers
+rwx 80d2,1   initStorage            ; Detects system RAM and disk drives, loads file segment directory.
 
 rwx 8158,1   copyMemSize            ; Copies a memory size string from MemSizeTbl into the last 4 bytes of SystemInit
 
@@ -67,9 +69,9 @@ rwx fb62,1   sub_fb62               ; (Copied from $8485)
 rwx fb73,1   sub_fb73               ; (Copied from $8496)
 rwx fb88,1   sub_fb88               ; (Copied from $84ab)
 
-rw  fba5,100 dat_fba5               ; (equiv $84c8)
+rw  fba5,ff  dat_fba5               ; (equiv $84c8 to $85c6)
 rw  fca4,1   dat_fca4               ; (equiv $85c7)
-rw  fca5,100 dat_fca5               ; (equiv $)
-rw  fda4,1   dat_fda4               ; (equiv $84c8) 1 byte: Only read?
-rw  fda5,100 dat_fda5               ;
-rw  fea5,100 dat_fea5               ;
+rw  fca5,100 dat_fca5               ; (equiv $85c8 to $86c7)
+rw  fda4,1   dat_fda4               ; (equiv $86c7) 1 byte: Only read?
+rw  fda5,100 dat_fda5               ; (equiv $86c8 to $87c7)
+rw  fea5,100 dat_fea5               ; (equiv $87c8 to $88c7)

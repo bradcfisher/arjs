@@ -130,7 +130,7 @@
 1950 ZONE_WALL_CLR2         ; Wall color #3 (e.g. normal walls = 0A Grey)
 1951 ZONE_CEILING_CLR       ; Ceiling color
 1952 ZONE_FLOOR_CLR         ; Floor color
-1953 ZONE_I_BYTE
+1953 ZONE_WARMTH            ; Zone base temperature/warmth
 
 1956 UNK_BYTE_COUNTER       ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
                             ; Decremented
@@ -169,12 +169,9 @@
 
 2347 HANDLE_VBLKI           ; Interrupt handler for VBLKI
 
-2454 WAIT_FOR_VBLK_A        ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_B/C)
-2457 VBLK_WAIT_LOOP_A
+2454 waitForVblankA         ; Sub which waits for the next vblank to occur (identical to waitForVblankB/C)
 
-
-2C66 WAIT_FOR_VBLK_B        ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/C)
-2C69 VBLK_WAIT_LOOP_B
+2C66 waitForVblankB         ; Sub which waits for the next vblank to occur (identical to waitForVblankA/C)
 
 314A DO_MOVE_FORWARD        ; Sub which moves the player forward (e.g. when the 'I' key is pressed)
 
@@ -293,9 +290,9 @@
 6385 CHR_ALIGN
 6386 CHR_MOOD
 638E CHR_BYTE_638E
-6390 CHR_LIT_TORCH_FLAG     ; Used when rendering to determine light level
-6391 CHR_DISEASE
-6392 CHR_POISON
+6390 CHR_NumLights          ; Used when rendering to determine light level
+6391 CHR_Diseased
+6392 CHR_Poisoned
 6393 CHR_CURSE
 6394 CHR_BURDEN
 6395 CHR_TEMPER
@@ -371,8 +368,7 @@ AA19 BEGIN_ENCOUNTER        ; Sub called at the beginning of an encounter
 
 9124 ENCOUNTER_GRANT_EXP    ; Sub called after defeating a foe in an encounter
 
-9280 WAIT_FOR_VBLK_C        ; Sub which waits for the next vblank to occur (identical to WAIT_FOR_VBLK_A/B)
-9283 VBLK_WAIT_LOOP_C
+9280 WAIT_FOR_VBLK_C        ; Sub which waits for the next vblank to occur (identical to waitForVblankA/B)
 
 ; Location where textures are loaded into memory (5392 bytes [$1510])
 96F0 TEX_HEADERS            ; [$0000] Texture set headers (33 bytes)
@@ -395,7 +391,7 @@ ABF3 TEX_FILLER             ; [$1503] Possible filler (13 bytes)
 ac00 MAP_NUMBER             ; Number/ID of the loaded map
 ac01 MAP_HEADER_RTCLOK0     ; Value assigned to RTCLOK0 when loading the map
 ac02 MAP_HEADER_RTCLOK1     ; Value assigned to RTCLOK1 when loading the map
-ac03 MAP_MESSAGE_TBL        ; Start of message table
+ac03 MAP_DescFragTbl        ; Start of message table
 af00 MAP_ZONERGN_TBL_SIZE   ; Number of zone regions
 ; Table of zone region definitions (5 bytes per entry)
 af01 MAP_ZONERGN_Y1         ; Y1 coordinate of zone region

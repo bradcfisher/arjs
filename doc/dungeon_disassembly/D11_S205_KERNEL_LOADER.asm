@@ -15,6 +15,7 @@
                 ;   - dat_0256 = 0
                 ;   - CUR_SKCTL = 7
                 ;   - CUR_IRQEN = $40 (64) [VKEYBD enabled]
+                ;   - IRQEN = $40 (64) [VKEYBD enabled]
                 ;   - CurDList_L/H = $199d [DLIST_40x24] (40x25? 1bpp character display)
                 ; - Enables VVBLKI (vertical blank) interrupts
                 ; - Enables VKEYBD (keyboard) interrupts
@@ -67,10 +68,10 @@
 806c: 2a                        ROL                  ;    ...
 806d: 29 03                     AND #$03             ;    ...
 806f: 20 58 81                  JSR copyMemSize      ; Call $8158 [copyMemSize]
-8072: a9 40                     LDA #$40             ; Enable Non-Maskable
-8074: 8d 0e d4                  STA NMIEN            ;     VBI Interrupts
-8077: ad 36 02                  LDA CUR_IRQEN        ; ?? Still $40 at this point or is it modified by the sub call ??
-807a: 8d 0e d2                  STA IRQEN            ; ?? If so, it would enable VKEYBD interrupts ??
+8072: a9 40                     LDA #$40             ; Set
+8074: 8d 0e d4                  STA NMIEN            ;     NMIEN = $40         (Enable Non-Maskable VBI Interrupts)
+8077: ad 36 02                  LDA CUR_IRQEN        ; Set
+807a: 8d 0e d2                  STA IRQEN            ;     IRQEN = CUR_IRQEN   ($40 - enable VKEYBD interrupts)
 807d: 60                        RTS                  ; Return to caller
 
                 ; Entry point for system initialization
@@ -78,21 +79,21 @@
                 ; - Sets character set to DungeonCharset
                 ; - Sets display mode to 0 (plain 40x25 character display)
                 ; - Enables VKEYBD interrupts
-                ; - Calls sub_80d2
+                ; - Calls initStorage
                 ; - Transfers execution to kernelInit
                 ;
 807e: 20 00 80  kernelEntry     JSR initIrqs         ; Call $8000 [initIrqs] - Invoke IRQ initialization
 8081: a9 14                     LDA #$14             ; Set CHBASE (character set font)
 8083: 8d 09 d4                  STA CHBASE           ;     to $14 (20) (e.g. font is at $1400 [DungeonCharset])
-8086: 20 bc 80                  JSR sub_80bc         ; Call $80bc [sub_80bc]
+8086: 20 bc 80                  JSR initInput        ; Call $80bc [initInput]
 8089: 20 9f 80                  JSR sub_809f         ; Call $809f [sub_809f]
 808c: a9 00                     LDA #$00             ; Set display mode to 0
 808e: 20 0d 1a                  JSR setDisplayMode   ;     (plain 40x25 character display)
 8091: a9 40                     LDA #$40             ; Set
 8093: 8d 36 02                  STA CUR_IRQEN        ;     CUR_IRQEN = $40 (64) [VKEYBD enabled]
 8096: 8d 0e d2                  STA IRQEN            ; Set IRQEN = $40 (64) [VKEYBD enabled]
-8099: 20 d2 80                  JSR sub_80d2         ; Call $80d2 [sub_80d2]
-809c: 4c c6 2e                  JMP $2ec6            ; Continue @ $2ec6 [KERNEL_INIT]
+8099: 20 d2 80                  JSR initStorage      ; Call $80d2 [initStorage]
+809c: 4c c6 2e                  JMP $2ec6            ; Continue @ $2ec6 [kernelInit]
 
 809f: a2 02     sub_809f        LDX #$02             ; Set X = 2
 80a1: a9 00                     LDA #$00             ; Set A = 0
@@ -120,7 +121,7 @@
                 ;   $18ff       = 0
                 ;   KbdPendChar = $ff (no key available)
                 ;
-80bc: a9 07     sub_80bc        LDA #$07             ; Set
+80bc: a9 07     initInput       LDA #$07             ; Set
 80be: 8d 00 19                  STA KBD_CONSOL       ;     KBD_CONSOL = 7 (no console keys pressed)
 80c1: a9 00                     LDA #$00             ; Set
 80c3: 8d 65 02                  STA dat_0265         ;     $0265 [dat_0265] = 0
@@ -131,39 +132,58 @@
 80cf: 85 30                     STA KbdPendChar      ;     KbdPendChar = $ff (no key available)
 80d1: 60                        RTS                  ; Return to caller
 
+                ; Detects system RAM and disk drives, loads file segment directory.
                 ;
-                ; - Displays the "System Initialization" text, included detected usable RAM size
-                ; - For disks 1 through 4
-                ;   -
+                ; - Displays the "System Initialization" text, including detected usable RAM size and disks.
+                ; - Checks the status of disks 1 through 4 to determine how many and which drives are present.
+                ; - Reads the file segment directory to $0280 [FILE_SEG_DIR]
                 ;
-80d2: a2 1f     sub_80d2        LDX #$1f             ; Set X = $1f (31)
+                ; Output
+                ;   DrivePresent[0..3] - Flags indicating which drives are detected. Each position represents a
+                ;                    corresponding drive (e.g. 0 = drive 1, 1 = drive 2, etc).
+                ;                    Value is 0 if a drive was found for that position and $ff if no drive was
+                ;                    detected.
+                ;
+                ; Temp
+                ;   dat_0006       - Loop control var, disk drive number [3..0], Sector count [4..1]
+                ;   dat_2501_L/H   - Current disk sector while reading file segment directory
+                ;   DestAdr_L/H    - Destination address to load file segment directory to
+                ;   DiskSector_L/H - readDiskSector parameters
+                ;
+80d2: a2 1f     initStorage     LDX #$1f             ; Set X = $1f (31)
 80d4: bd 6a 81  loc_80d4        LDA SystemInit,X     ; Loop                  (Copy SystemInit message to display buffer)
 80d7: 9d 7c 19                  STA DispBuf40x1,X    ;     Set DispBuf40x1[X] = SystemInit[X]
 80da: ca                        DEX                  ;     Subtract 1 from X
 80db: 10 f7                     BPL loc_80d4         ; Repeat while (X >= 0)
-80dd: 20 5d 24                  JSR sub_245d         ; Call $245d [sub_245d]  (Reset IRQs, keyboard, display colors, audio)
-80e0: a2 03     loc_80e0        LDX #$03             ; Loop
-80e2: 86 06                     STX dat_0006         ;     Set dat_0006 = 3  (4 iterations - disk # 3..0)
+80dd: 20 5d 24                  JSR resetIO          ; Call $245d [resetIO]   (Reset IRQs, keyboard, display, audio)
+80e0: a2 03     loc_80e0        LDX #$03             ; Loop                   (Check which drives report readiness)
+80e2: 86 06                     STX dat_0006         ;     Set dat_0006 = 3   (4 iterations - disk # 3..0)
 80e4: a6 06     loc_80e4        LDX dat_0006         ;     Loop
                                                      ;         Set X = dat_0006
 80e6: a9 ff                     LDA #$ff             ;         Set
-80e8: 9d 4e 02                  STA dat_024e,X       ;             dat_024e[X] = $ff
+80e8: 9d 4e 02                  STA DrivePresent,X   ;             DrivePresent[X] = $ff  (assume not present)
 80eb: e8                        INX                  ;         Add 1 to X
 80ec: 8a                        TXA                  ;         Set A
 80ed: 29 0f                     AND #$0f             ;               =
 80ef: 09 30                     ORA #$30             ;                 (X & $f) | $30
-80f1: 8d 30 02                  STA DiskNumber       ;         Set DiskNumber = A        (A = [$34 "4".. $31 "1"])
+80f1: 8d 30 02                  STA DiskNumber       ;         Set DiskNumber = A         (A = [$34 "4".. $31 "1"])
 80f4: 20 a3 24                  JSR readDiskStatus   ;         Call $24a3 [readDiskStatus]
-80f7: 30 0b                     BMI loc_8104         ;         If (N = 0) Then
+80f7: 30 0b                     BMI loc_8104         ;         If (N = 0) Then            (success, drive present)
 80f9: a6 06                     LDX dat_0006         ;             Set X = dat_0006
 80fb: bd 8a 81                  LDA SysInitMem,X     ;             Set
 80fe: 9d 98 19                  STA DispBuf40x1+28,X ;                 DispBuf40x1[28 + X] = SysInitMem[X]  (X = 3..0)
-8101: fe 4e 02                  INC dat_024e,X       ;             Add 1 to dat_024e[X]
+8101: fe 4e 02                  INC DrivePresent,X   ;             Add 1 to DrivePresent[X]  (0 = drive was detected)
                                                      ;         End If
 8104: c6 06     loc_8104        DEC dat_0006         ;         Subtract 1 from dat_0006
 8106: 10 dc                     BPL loc_80e4         ;     Repeat while (dat_0006 >= 0)
-8108: bd 4e 02                  LDA dat_024e,X       ; Repeat
-810b: 30 d3                     BMI loc_80e0         ;   while (dat_024e[X] < 0)
+8108: bd 4e 02                  LDA DrivePresent,X   ; Repeat                      (Bug: The value of X here when
+810b: 30 d3                     BMI loc_80e0         ;   while (DrivePresent[X] < 0)    readDiskStatus fails (N=1) and
+                                                     ;                              dat_0006 reaches 0 is NOT valid for
+                                                     ;                              this lookup since readDiskStatus
+                                                     ;                              overwrites X... It should probably
+                                                     ;                              have "STX #$00" before the LDA so
+                                                     ;                              it always checks whether drive 1
+                                                     ;                              was successfully found or not.)
                 ;
                 ; Read the file segment directory to $0280 [FILE_SEG_DIR]
                 ;
@@ -175,9 +195,9 @@
 8112: a9 04                     LDA #$04             ; Set
 8114: 85 06                     STA dat_0006         ;     dat_0006 = 4               (4 iterations/sectors - 4..1)
 8116: a9 80                     LDA #$80             ; Set
-8118: 85 09                     STA dat_0009_L       ;     dat_0009_L/H               (set destination address)
+8118: 85 09                     STA DestAdr_L        ;     DestAdr_L/H               (set destination address)
 811a: a9 02                     LDA #$02             ;     to
-811c: 85 0a                     STA dat_0009_H       ;     $0280 [FILE_SEG_DIR]
+811c: 85 0a                     STA DestAdr_H        ;     $0280 [FILE_SEG_DIR]
 811e: a9 02                     LDA #$02             ; Set
 8120: 8d 01 25                  STA dat_2501_L       ;     dat_2501_L/H               (set starting sector)
 8123: a9 00                     LDA #$00             ;     to
@@ -189,17 +209,17 @@
 8134: 20 8e 24  loc_8134        JSR readDiskSector   ;     Loop
                                                      ;         Call $248e [readDiskSector]
 8137: 30 fb                     BMI loc_8134         ;     Repeat while (N = 1)       (don't take "no"/err as an answer)
-8139: a0 00                     LDY #$00             ;     Set Y = 0                  (copies 256 bytes? sector is 128)
+8139: a0 00                     LDY #$00             ;     Set Y = 0                  (copies 128 bytes [0..127])
 813b: b9 00 01  loc_813b        LDA SioBuf,Y         ;     Loop                       (copy sector to destination)
-813e: 91 09                     STA (dat_0009_L),Y   ;         Set (*dat_0009_L)[Y] = SioBuf[Y]
-8140: c8                        INY                  ;         Subtract 1 from Y
-8141: 10 f8                     BPL loc_813b         ;     Repeat while (Y >= 0)
-8143: a5 09                     LDA dat_0009_L       ;     Set                        (move destination address forward
-8145: 18                        CLC                  ;         dat_0009_L              by 128 bytes)
+813e: 91 09                     STA (DestAdr_L),Y    ;         Set (*DestAdr_L)[Y] = SioBuf[Y]
+8140: c8                        INY                  ;         Add 1 to Y
+8141: 10 f8                     BPL loc_813b         ;     Repeat while (Y >= 0)      (ends when Y = $80 (128))
+8143: a5 09                     LDA DestAdr_L        ;     Set                        (move destination address forward
+8145: 18                        CLC                  ;         DestAdr_L              by 128 bytes)
 8146: 69 80                     ADC #$80             ;            =
-8148: 85 09                     STA dat_0009_L       ;              dat_0009_L + $80  (C = 1 on overflow, 0 otherwise)
+8148: 85 09                     STA DestAdr_L        ;              DestAdr_L + $80  (C = 1 on overflow, 0 otherwise)
 814a: 90 02                     BCC loc_814e         ;     If (C = 1) Then
-814c: e6 0a                     INC dat_0009_H       ;         Add 1 to dat_0009_H
+814c: e6 0a                     INC DestAdr_H        ;         Add 1 to DestAdr_H
                                                      ;     End If
 814e: ee 01 25  loc_814e        INC dat_2501_L       ;     Add 1 to dat_2501_L        (select next sector)
 8151: c6 06                     DEC dat_0006         ;     Subtract 1 from dat_0006
@@ -241,13 +261,18 @@
 
                 ; Detects the system memory size and ??
                 ;
-                ; Pressing the SELECT console button by itself will skip the initialization completely.
-                ; Pressing the OPTION console button by itself will skip only a portion of the intialization.
+                ; Pressing the SELECT console button by itself will skip the initialization completely, causing the
+                ; game to assume a 48KB system.
+                ;
+                ; Pressing the OPTION console button by itself will skip only a portion of the intialization, causing
+                ; the game to assume no more than a 64KB system.
                 ;
                 ; Output
                 ;   SysMemorySize -   0 ( 48K) if no RAM over 48K or the SELECT button was pressed by itself
                 ;                   $80 ( 64K) if ?? ROM is not disabled ?? and the OPTION button is pressed by itself
                 ;                   $c0 (128K) if ??
+                ;   If >= 64KB: Copies $700 (1792) bytes from $8223 [sub_8223] to $f900 [sub_f900]
+                ;   If 128KB:   Calls sub_f9cf
                 ;
                 ; PORTB (XL/130XE)
                 ; ----------
@@ -281,17 +306,17 @@
 81b5: 8e 00 d8                  STX OsRomStart       ;     Set OsRomStart = X
 81b8: ec 00 d8                  CPX OsRomStart       ;     If
 81bb: d0 5f                     BNE loc_821c         ;        (X == OsRomStart)      (OsRomStart was updated)
-81bd: ca                        DEX                  ;        AND                    (X not used after decrementing?)
-81be: cd 00 d8                  CMP OsRomStart       ;        (A != OsRomStart)      (OsRomStart was updated - why do this?)
+81bd: ca                        DEX                  ;        AND                    (X not used after decrementing...)
+81be: cd 00 d8                  CMP OsRomStart       ;        (A != OsRomStart)      (OsRomStart was updated, dup check)
 81c1: f0 59                     BEQ loc_821c         ;     Then
 81c3: a9 23                     LDA #$23             ;         Set copy source address
 81c5: 85 07                     STA SourceAdr_L      ;             SourceAdr_L/H
 81c7: a9 82                     LDA #$82             ;             to
 81c9: 85 08                     STA SourceAdr_H      ;             $8223 [sub_8223]
 81cb: a9 00                     LDA #$00             ;         Set copy destination address
-81cd: 85 09                     STA dat_0009_L       ;             dat_0009_L/H
+81cd: 85 09                     STA DestAdr_L        ;             DestAdr_L/H
 81cf: a9 f9                     LDA #$f9             ;             to
-81d1: 85 0a                     STA dat_0009_H       ;             $f900 [sub_f900]
+81d1: 85 0a                     STA DestAdr_H        ;             $f900 [sub_f900]
 81d3: a2 07                     LDX #$07             ;         Set X = 7
 81d5: a0 00                     LDY #$00             ;         Set Y = 0              (copy $700 (1792) bytes)
 81d7: 20 0d 2e                  JSR copyBytes        ;         Call $2e0d [copyBytes]
@@ -364,6 +389,10 @@
                 ;   SavedMapNum  - Assigned the value in FileNumber when FileNumber < 8  (Map file)
                 ;   C            - cleared on return
                 ;
+                ; Temp
+                ;   SourceAdr_L/H - copyBytes parameter
+                ;   DestAdr_L/H   - copyBytes parameter
+                ;
 8223: ad 09 19  sub_8223        LDA FileNumber       ; If
 8226: c9 08                     CMP #$08             ;    (FileNumber < 8)
 8228: b0 30                     BCS loc_825a         ; Then                   (file is a map)
@@ -373,9 +402,9 @@
 8231: a9 ac                     LDA #$ac             ;         to
 8233: 85 08                     STA SourceAdr_H      ;         $ac00 [MAP_Number]
 8235: a9 00                     LDA #$00             ;     Set copy destination address
-8237: 85 09                     STA dat_0009_L       ;         dat_0009_L/H
+8237: 85 09                     STA DestAdr_L        ;         DestAdr_L/H
 8239: a9 c0                     LDA #$c0             ;         to
-823b: 85 0a                     STA dat_0009_H       ;         $c000 [MAP_Copy]
+823b: 85 0a                     STA DestAdr_H        ;         $c000 [MAP_Copy]
 823d: a2 10                     LDX #$10             ;     Set X = $10
 823f: a0 00                     LDY #$00             ;     Set Y = 0          (bytes to copy = $1000 (4096))
 8241: 20 0d 2e                  JSR copyBytes        ;     Call $2e0d [copyBytes]
@@ -384,9 +413,9 @@
 8248: a9 bc                     LDA #$bc             ;         to
 824a: 85 08                     STA SourceAdr_H      ;         $bc00 [TODO: label]
 824c: a9 00                     LDA #$00             ;     Set copy destination address
-824e: 85 09                     STA dat_0009_L       ;         dat_0009_L/H
+824e: 85 09                     STA DestAdr_L        ;         DestAdr_L/H
 8250: a9 d8                     LDA #$d8             ;         to
-8252: 85 0a                     STA dat_0009_H       ;         $d800 [TODO: label]
+8252: 85 0a                     STA DestAdr_H        ;         $d800 [TODO: label]
 8254: a2 04                     LDX #$04             ;     Set X = 4
 8256: a0 00                     LDY #$00             ;     Set Y = 0          (bytes to copy = $0400 (1024))
 8258: f0 17                     BEQ loc_8271         ; Else                   (File is not a map)
@@ -396,9 +425,9 @@
 8261: a9 96                     LDA #$96             ;         to
 8263: 85 08                     STA SourceAdr_H      ;         $96f0 [TEX_Headers]
 8265: a9 00                     LDA #$00             ;     Set copy destination address
-8267: 85 09                     STA dat_0009_L       ;         dat_0009_L/H
+8267: 85 09                     STA DestAdr_L        ;         DestAdr_L/H
 8269: a9 dc                     LDA #$dc             ;         to
-826b: 85 0a                     STA dat_0009_H       ;         $dc00 [TEX_Copy]
+826b: 85 0a                     STA DestAdr_H        ;         $dc00 [TEX_Copy]
 826d: a2 15                     LDX #$15             ;     Set X = $15
 826f: a0 10                     LDY #$10             ;     Set Y = $10        (bytes to copy = $1510 (5392))
                                                      ; End If
@@ -428,6 +457,10 @@
                 ;   C            - 0 if the preconditions were met and the copy occurred,
                 ;                  1 if the preconditions were NOT met and no copy was performed.
                 ;
+                ; Temp
+                ;   SourceAdr_L/H - copyBytes parameter
+                ;   DestAdr_L/H   - copyBytes parameter
+                ;
 8276: ad 09 19                  LDA FileNumber       ; If
 8279: c9 08                     CMP #$08             ;    (FileNumber < 8)
 827b: b0 32                     BCS loc_82af         ; Then
@@ -438,9 +471,9 @@
 8286: a9 c0                     LDA #$c0             ;             to
 8288: 85 08                     STA SourceAdr_H      ;             $c000 [MAP_Copy]
 828a: a9 00                     LDA #$00             ;         Set copy destination address
-828c: 85 09                     STA dat_0009_L       ;             dat_0009_L/H
+828c: 85 09                     STA DestAdr_L        ;             DestAdr_L/H
 828e: a9 ac                     LDA #$ac             ;             to
-8290: 85 0a                     STA dat_0009_H       ;             $ac00 [MAP_Number]
+8290: 85 0a                     STA DestAdr_H        ;             $ac00 [MAP_Number]
 8292: a2 10                     LDX #$10             ;         Set X = $10
 8294: a0 00                     LDY #$00             ;         Set Y = 0      (bytes to copy = $1000 (4096))
 8296: 20 0d 2e                  JSR copyBytes        ;         Call $2e0d [copyBytes]
@@ -449,9 +482,9 @@
 829d: a9 d8                     LDA #$d8             ;             to
 829f: 85 08                     STA SourceAdr_H      ;             $d800 [TODO: label]
 82a1: a9 00                     LDA #$00             ;         Set copy destination address
-82a3: 85 09                     STA dat_0009_L       ;             dat_0009_L/H
+82a3: 85 09                     STA DestAdr_L        ;             DestAdr_L/H
 82a5: a9 bc                     LDA #$bc             ;             to
-82a7: 85 0a                     STA dat_0009_H       ;             $bc00 [TODO: label]
+82a7: 85 0a                     STA DestAdr_H        ;             $bc00 [TODO: label]
 82a9: a2 04                     LDX #$04             ;         Set X = 4
 82ab: a0 00                     LDY #$00             ;         Set Y = 0      (bytes to copy = $0400 (1024))
 82ad: f0 19                     BEQ loc_82c8         ;         Continue @ $82c8 [loc_82c8] (execute copyBytes & success)
@@ -463,9 +496,9 @@
 82b8: a9 dc                     LDA #$dc             ;         to
 82ba: 85 08                     STA SourceAdr_H      ;         $dc00 [TEX_Copy]
 82bc: a9 f0                     LDA #$f0             ;     Set copy destination address
-82be: 85 09                     STA dat_0009_L       ;         dat_0009_L/H
+82be: 85 09                     STA DestAdr_L        ;         DestAdr_L/H
 82c0: a9 96                     LDA #$96             ;         to
-82c2: 85 0a                     STA dat_0009_H       ;         $96f0 [TEX_Headers]
+82c2: 85 0a                     STA DestAdr_H        ;         $96f0 [TEX_Headers]
 82c4: a2 15                     LDX #$15             ;     Set X = $15
 82c6: a0 10                     LDY #$10             ;     Set Y = $10        (bytes to copy = $1510 (5392))
 82c8: 20 0d 2e  loc_82c8        JSR copyBytes        ;     Call $2e0d [copyBytes]
@@ -520,14 +553,14 @@
                 ;
                 ; Copied to $f9cf [sub_f9cf] (add $76dd to addrs)
                 ;
-82f2: a2 ff                     LDX #$ff             ; Set X = $ff (255 iterations)
+82f2: a2 ff                     LDX #$ff             ; Set X = $ff (255 iterations [254..0])
 82f4: 8a        loc_82f4        TXA                  ; Loop
                                                      ;    Set A = X
 82f5: ca                        DEX                  ;    Subtract 1 from X
 82f6: 9d a5 fb                  STA dat_fba5,X       ;    Set dat_fba5[X] = A       (dat_fba5[0..254] = 1..255)
 82f9: d0 f9                     BNE loc_82f4         ; Repeat while (X != 0)
 82fb: 8e a4 fc                  STX dat_fca4         ; Set dat_fca4 = X             (X = 0, dat_fca4 = 0)
-82fe: a2 00                     LDX #$00             ; Set X = 0 (255 iterations)
+82fe: a2 00                     LDX #$00             ; Set X = 0 (255 iterations  [0..254])
 8300: 8a        loc_8300        TXA                  ; Loop
                                                      ;     Set A = X
 8301: e8                        INX                  ;     Add 1 to X
@@ -543,6 +576,7 @@
 8314: d0 f7                     BNE loc_830d         ; Repeat while (X != 0)
 8316: 60                        RTS                  ; Return to caller
 
+                ; Reads sector from disk
                 ;
                 ; - If the selected disk sector is even, sets:
                 ;      dat_025d = $80
@@ -555,6 +589,20 @@
                 ;
                 ; Copied to $f9f4 [sub_f9f4] (add $76dd to addrs)
                 ;
+                ; Input
+                ;   DiskNumber     - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
+                ;   DiskSector_L/H - Disk sector to read
+                ;
+                ; ???
+                ;   dat_025c          - assigned the flags for a file ID (byte 1 of file ID & $fc)
+                ;   dat_025d          - Set to $ff if sector is even,
+                ;                                0 if disk sector is odd
+                ;   dat_0262_H/L      - Set to input DiskSector_L/H
+                ;   dat_025e/dat_025f - Set to input (DiskSector_L/H - 1) if disk sector is even,
+                ;
+                ;   dat_0260/dat_0261 - Set to input (DiskSector_L/H - 1) if disk sector is even,
+                ;
+                ;
                 ; Output
                 ;   Y   - 1 = Success
                 ;         $ff = Failure
@@ -563,6 +611,7 @@
                 ;
                 ; Temp
                 ;   dat_0262_L/H  - Set to input DiskSector_L/H
+                ;   dat_0006      - Loop control var, number of retries to read sector
                 ;
 8317: a9 80                     LDA #$80             ; Set
 8319: 8d 5d 02                  STA dat_025d         ;     dat_025d = $80 (128)
@@ -592,7 +641,7 @@
 834f: c8                        INY                  ;         Add 1 to Y       (Y = DiskSector_H + 1)
                                                      ;     End If
 8350: 8c 61 02  loc_8350        STY dat_0261         ;     Set dat_0261 = Y     (dat_0260/dat_0261 = DiskSector_L/H + 1)
-8353: 0e 5d 02                  ASL dat_025d         ;     Set dat_025d = dat_025d * 2   (dat_025d = 0, C = 1)
+8353: 0e 5d 02                  ASL dat_025d         ;     Set dat_025d = dat_025d * 2   (Sets dat_025d = 0, C = 1)
                                                      ; End If   (Note: This is copied to $fa33 [cont_fa33] and $833e above jumps here)
                 ;
 8356: a2 00                     LDX #$00             ; Set X = 0
@@ -627,25 +676,25 @@
                                                      ; End If
                 ; Note: Copied to $fa78 [cont_fa78], continuation point from $837b above
 839b: 2c 5b 02  loc_839b        BIT dat_025b         ; If (bit 7 of dat_025b == 0)
-839e: 30 2c                     BMI loc_83cc         ; Then
+839e: 30 2c                     BMI loc_83cc         ; Then                (read key sector and verify file ID and size)
 83a0: ad 03 19                  LDA FileSector_L     ;     Set
 83a3: 8d 32 02                  STA DiskSector_L     ;         DiskSector_L = FileSector_L
-83a6: ad 04 19                  LDA FileSector_H     ;     Set
-83a9: 8d 33 02                  STA DiskSector_H     ;         DiskSector_H = FileSector_H (DiskSector_L/H = FileSector_L/H)
+83a6: ad 04 19                  LDA FileSector_H     ;     Set                         (DiskSector_L/H = FileSector_L/H)
+83a9: 8d 33 02                  STA DiskSector_H     ;         DiskSector_H = FileSector_H
 83ac: a9 02                     LDA #$02             ;     Set
-83ae: 85 06                     STA dat_0006         ;         dat_0006 = 2  (2 retries)
+83ae: 85 06                     STA dat_0006         ;         dat_0006 = 2  (2 retries [2..1])
 83b0: 20 8e 24  loc_83b0        JSR readDiskSector   ;     Loop
                                                      ;         Call $248e [readDiskSector]
 83b3: 10 07                     BPL loc_83bc         ;         If (N == 0) Then
-                                                     ;             Continue @ loc_83bc     (successful)
+                                                     ;             Continue @ $83bc [loc_83bc]  (successful)
                                                      ;         End If
 83b5: c6 06                     DEC dat_0006         ;         Subtract 1 from dat_0006
 83b7: d0 f7                     BNE loc_83b0         ;     Repeat while (dat_0006 != 0)    (Repeat while retries remain)
-83b9: 4c 0c fb  loc_83b9        JMP cont_fb0c        ;     Continue @ [cont_fb0c]  (Note: addr is after copy, $842f below is local target)
+83b9: 4c 0c fb  loc_83b9        JMP cont_fb0c        ;     Continue @ [cont_fb0c]          (error, no more retries) (Note: $842f below is local target)
                 ; We get here if the read above was successful
 83bc: a2 03     loc_83bc        LDX #$03             ;     Set X = 3 (4 iterations: 3..0)
 83be: bd 00 01  loc_83be        LDA SioBuf,X         ;     Loop
-                                                     ;         If (SioBuf[X] == FileId_B1[X])
+                                                     ;         If (SioBuf[X] != FileId_B1[X])      (ID or size mismatch)
 83c1: dd 05 19                  CMP FileId_B1,X      ;             Continue @ [loc_83b9] -> [cont_fb0c]
 83c4: d0 f3                     BNE loc_83b9         ;         End If
 83c6: ca                        DEX                  ;         Subtract 1 from X
@@ -657,22 +706,22 @@
 83d2: ad 61 02                  LDA dat_0261         ; Set
 83d5: 8d 33 02                  STA DiskSector_H     ;     DiskSector_H = dat_0261
 83d8: a9 02                     LDA #$02             ; Set
-83da: 85 06                     STA dat_0006         ;     dat_0006 = 2  (2 retries)
-83dc: 20 8e 24  loc_83dc        JSR readDiskSector   ; Call $248e [readDiskSector]
-83df: 10 06                     BPL loc_83e7         ; If (N == 1) Then                (not successful)
-83e1: c6 06                     DEC dat_0006         ;     Subtract 1 from dat_0006    (decrement retry count)
-83e3: d0 f7                     BNE loc_83dc         ;     If (dat_0006 != 0) Then
-                                                     ;         Continue @ [loc_83dc]   (try again if retries remaining)
-                                                     ;     Else
-83e5: f0 48                     BEQ loc_842f         ;         Continue @ [loc_842f]   (no more retries)
+83da: 85 06                     STA dat_0006         ;     dat_0006 = 2  (2 retries [2..1])
+83dc: 20 8e 24  loc_83dc        JSR readDiskSector   ; Loop
+                                                     ;     Call $248e [readDiskSector]
+83df: 10 06                     BPL loc_83e7         ;     If (N == 0) Then
+                                                     ;         Continue @ $83e7 [loc_83e7]  (successful)
                                                      ;     End If
-                                                     ; End If
+83e1: c6 06                     DEC dat_0006         ;     Subtract 1 from dat_0006    (decrement retry count)
+83e3: d0 f7                     BNE loc_83dc         ; Repeat while (dat_0006 != 0)    (try again if retries remaining)
+83e5: f0 48                     BEQ loc_842f         ; Continue @ [cont_fb0c]          (error, no more retries)   (Note: $842f is pre-copy addr)
+                ; Sector read successfully
 83e7: ae a4 fd  loc_83e7        LDX dat_fda4         ; Set X = dat_fda4
 83ea: 20 88 fb                  JSR sub_fb88         ; Call $fb88 [sub_fb88]
 83ed: 8c d9 fa                  STY smc_fad7+2       ; Set smc_fad7[2] = Y
 83f0: 49 80                     EOR #$80             ; Set
 83f2: 8d d8 fa                  STA smc_fad7+1       ;     smc_fad7[1] = A | $80  (smc_fad7[1..2] = Y * 256 + (A | $80))
-83f5: a0 00                     LDY #$00             ; Set Y = 0  (256 iterations)
+83f5: a0 00                     LDY #$00             ; Set Y = 0  (128 iterations [0..127])
 83f7: b9 00 01  loc_83f7        LDA SioBuf,Y         ; Loop
 83fa: 99 ff ff                  STA $ffff,Y          ;     Set (*smc_fad7[1])[Y] = SioBuf[Y]   (Note: Self-modifying code @ $fad7 [smc_fad7])
 83fd: c8                        INY                  ;     Add 1 to Y
@@ -700,7 +749,7 @@
 842b: c6 06                     DEC dat_0006         ;     Subtract 1 from dat_0006       (decrement remaining attempts)
 842d: d0 f7                     BNE loc_8426         ; Repeat while (dat_0006 != 0)       (try again if attempts remain)
                 ; Return error
-                ; Note: This is copied to $fb0c [cont_fb0c] and is a continuation point from $83b9 above
+                ; Note: This is copied to $fb0c [cont_fb0c] and is a continuation point from multiple locations above
 842f: ad 62 02  loc_842f        LDA dat_0262_L       ; Set
 8432: 8d 32 02                  STA DiskSector_L     ;     DiskSector_L = dat_0262_L
 8435: ad 63 02                  LDA dat_0262_H       ; Set
@@ -828,8 +877,8 @@
                 ; =====================================================================
 
                 ; This is a partial copy of cont_54ee (starting @ $54f6)
-84c8: 02                        .BYTE $02            ; Copied to $fba5 [dat_fba5]
-84c9: 8d 83 62                  STA dat_6283
+84c8: 02                        .BYTE $02                    ; Copied to $fba5 [dat_fba5] when RAM >= 64K
+84c9: 8d 83 62                  STA dat_6283                 ; and overwritten if RAM >= 128KB
 84cc: 20 35 58                  JSR equipItem
 84cf: b0 03                     BCS loc_84d4
 84d1: 4c 09 52                  JMP cont_5209
@@ -921,7 +970,7 @@
 8578: 09 80                     ORA #$80
 857a: 85 51                     STA AttrAdjAmt
 857c: 98                        TYA
-857d: 9d 90 63                  STA CHR_LIT_TORCH_FLAG,X
+857d: 9d 90 63                  STA CHR_NumLights,X
 8580: 20 b7 55                  JSR sub_55b7
 8583: 20 02 56                  JSR sub_5602
 8586: 4c 09 52                  JMP cont_5209
@@ -933,7 +982,7 @@
 858d: a9 65                     LDA #$65
 858f: 85 3e                     STA EffectAdr_H
 8591: a9 00                     LDA #$00
-8593: 85 49                     STA dat_0049
+8593: 85 49                     STA EffectIndex
 8595: a0 00     loc_8595        LDY #$00
 8597: b1 3d                     LDA (EffectAdr_L),Y
 8599: 29 83                     AND #$83
@@ -946,8 +995,8 @@
 85a7: 85 3d                     STA EffectAdr_L
 85a9: 90 02                     BCC loc_85ad
 85ab: e6 3e                     INC EffectAdr_H
-85ad: e6 49     loc_85ad        INC dat_0049
-85af: a5 49                     LDA dat_0049
+85ad: e6 49     loc_85ad        INC EffectIndex
+85af: a5 49                     LDA EffectIndex
 85b1: c9 40                     CMP #$40
 85b3: 90 e0                     BCC loc_8595
 85b5: a5 51                     LDA AttrAdjAmt
@@ -956,7 +1005,7 @@
 85bb: d0 16                     BNE loc_85d3
 85bd: aa                        TAX
 85be: a9 00                     LDA #$00
-85c0: 9d 90 63                  STA CHR_LIT_TORCH_FLAG,X
+85c0: 9d 90 63                  STA CHR_NumLights,X
 85c3: a2 00                     LDX #$00
 85c5: a9 00     loc_85c5        LDA #$00
 85c7: 9d 50 63                  STA CHR_STA_UNKNOWN,X
@@ -1108,7 +1157,7 @@
 86d0: 20 4d 4b                  JSR addItem
 86d3: 30 e1                     BMI loc_86b6
 86d5: a9 88                     LDA #$88
-86d7: 20 b0 49                  JSR sub_49b0
+86d7: 20 b0 49                  JSR allocEffect
 86da: 30 da                     BMI loc_86b6
 86dc: a0 02                     LDY #$02
 86de: b9 1a 61  loc_86de        LDA EffLitTorch-2,Y
@@ -1119,7 +1168,7 @@
 86e8: a5 4b                     LDA ItemIndex
 86ea: 91 3d                     STA (EffectAdr_L),Y
 86ec: ce bd 63                  DEC INV_TORCHES
-86ef: ee 90 63                  INC CHR_LIT_TORCH_FLAG
+86ef: ee 90 63                  INC CHR_NumLights
 86f2: 4c af 54                  JMP cont_54af
 
                 ; This is an unused copy of useTimepiece
@@ -1183,12 +1232,12 @@
 8769: b0 11                     BCS loc_877c
 876b: a8                        TAY
 876c: b9 4b 64                  LDA InvItemAdr_H,Y
-876f: 85 0a                     STA dat_0009_H
+876f: 85 0a                     STA DestAdr_H
 8771: b9 0b 64                  LDA InvItemAdr_L,Y
-8774: 85 09                     STA dat_0009_L
+8774: 85 09                     STA DestAdr_L
 8776: a0 02                     LDY #$02
 8778: a9 08                     LDA #$08
-877a: 91 09                     STA (dat_0009_L),Y
+877a: 91 09                     STA (DestAdr_L),Y
 877c: 60        loc_877c        RTS
 
                 ; This is an unused copy of doAssignHand
@@ -1286,16 +1335,16 @@
 8832: a9 0f                     LDA #$0f
 8834: 8d 84 62                  STA dat_6284
 8837: ae 84 62  loc_8837        LDX dat_6284
-883a: bd 94 64                  LDA dat_6494,X
+883a: bd 94 64                  LDA DroppedGame,X
 883d: c9 02                     CMP #$02
 883f: d0 36                     BNE loc_8877
-8841: bd c4 64                  LDA dat_64c4,X
+8841: bd c4 64                  LDA DroppedMap,X
 8844: cd 15 63                  CMP CHR_LOC_MAP
 8847: d0 2e                     BNE loc_8877
-8849: bd a4 64                  LDA dat_64a4,X
+8849: bd a4 64                  LDA DroppedX,X
 884c: cd 13 63                  CMP CHR_LOC_X
 884f: d0 26                     BNE loc_8877
-8851: bd b4 64                  LDA dat_64b4,X
+8851: bd b4 64                  LDA DroppedY,X
 8854: cd 14 63                  CMP CHR_LOC_Y
 8857: d0 1e                     BNE loc_8877
 8859: 24 4b                     BIT ItemIndex
@@ -1305,7 +1354,7 @@
 8862: a9 5e                     LDA #$5e
 8864: 8d c2 59                  STA dat_59c1_H
 8867: ae 84 62  loc_8867        LDX dat_6284
-886a: bd d4 64                  LDA dat_64d4,X
+886a: bd d4 64                  LDA DroppedIndex,X
 886d: 85 4b                     STA ItemIndex
 886f: 8d c1 58                  STA dat_58c1
 8872: 20 c2 58                  JSR sub_58c2
@@ -1395,7 +1444,8 @@
                 ; The preceeding $700 (1792) bytes are copied to $f900 by sub_819e
                 ; ----------------------------------------------------------------
 
-8923: 29 38                     AND #$38             ; Note: differs from the kernel copy
+                ; This is an unused copy of code starting in middle of instruction @ $2923
+8923: 29 38                     AND #$38
 8925: 60                        RTS
 
                 ; This is an unused copy of code starting at $2926 [loc_2926]
@@ -1413,21 +1463,21 @@
 8933: 20 88 1c                  JSR printBtm
 8936: 60                        RTS
 
-                ; This is an unused copy of sub_2937
+                ; This is an unused copy of readKeySector
                 ;
 8937: ad 0b 19                  LDA FileDestAdr_L
-893a: 85 09                     STA dat_0009_L
+893a: 85 09                     STA DestAdr_L
 893c: ad 0c 19                  LDA FileDestAdr_H
-893f: 85 0a                     STA dat_0009_H
+893f: 85 0a                     STA DestAdr_H
 8941: ad 03 19                  LDA FileSector_L
 8944: 8d 32 02                  STA DiskSector_L
 8947: ad 04 19                  LDA FileSector_H
 894a: 8d 33 02                  STA DiskSector_H
 894d: ad 07 19                  LDA FileLen_L
-8950: 85 0b                     STA dat_000b
+8950: 85 0b                     STA NumBytes_L
 8952: ad 08 19                  LDA FileLen_H
-8955: 85 0c                     STA dat_000c
-8957: 20 79 29                  JSR sub_2979
+8955: 85 0c                     STA NumBytes_H
+8957: 20 79 29                  JSR readNextSector
 895a: 30 1a                     BMI loc_8976
 895c: a2 0f                     LDX #$0f
 895e: bd 00 01  loc_895e        LDA SioBuf,X
@@ -1445,7 +1495,7 @@
 8976: a9 ff     loc_8976        LDA #$ff
 8978: 60                        RTS
 
-                ; This is an unused copy of sub_2979
+                ; This is an unused copy of readNextSector
                 ;
 8979: 2c 58 02                  BIT SysMemorySize
 897c: 50 08                     BVC loc_8986
