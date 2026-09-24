@@ -1,0 +1,841 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 2 Side 1 sector 573
+;   Module 0: Normal play (renderer, compass/arrow charsets, special messages, etc)
+;
+; Should be applied along with Dungeon11-S518.sym and Dungeon11-S205.sym for full symbol mapping.
+;
+[symbols]
+
+rw  0062,1   dat_0062               ;
+rw  0063,1   dat_0063               ;
+rw  0064,1   dat_0064               ;
+rw  0065,1   dat_0065               ;
+rw  0066,1   dat_0066               ;
+rw  0067,1   dat_0067               ;
+rw  0068,1   dat_0068               ;
+rw  0069,1   dat_0069               ;
+rw  006a,1   dat_006a               ;
+rw  006b,1   dat_006b               ;
+rw  006c,1   dat_006c               ;
+rw  006d,1   dat_006d               ;
+rw  006e,1   dat_006e               ;
+rw  006f,1   dat_006f               ;
+rw  0070,1   dat_0070               ;
+rw  0071,1   dat_0071               ;
+rw  0072,1   dat_0072_L             ; LSB of addr or offset?
+rw  0073,1   dat_0072_H             ; MSB of addr or offset?
+
+rw  0076,1   dat_0076               ;
+rw  0077,1   dat_0077               ;
+rw  0078,1   dat_0078               ;
+rw  0079,1   dat_0079               ;
+rw  007a,1   dat_007a               ;
+rw  007b,1   dat_007b_L             ; LSB of address
+                                    ;    - sub_7a37: Used as a map cell address
+rw  007c,1   dat_007b_H             ; MSB of address
+rw  007d,1   dat_007d               ;
+rw  007e,1   dat_007e               ;
+rw  007f,1   dat_007f               ;
+rw  0080,1   dat_0080               ;
+rw  0081,1   dat_0081               ;
+rw  0082,1   dat_0082               ;
+rw  0083,1   dat_0083               ;
+rw  0084,1   dat_0084               ;
+rw  0085,1   dat_0085               ;
+rw  0086,1   dat_0086               ;
+                                    ;  - Initialized to 0 in S014_SECONDARY_BOOT... is it relevant?
+rw  0087,1   dat_0087               ; Possible texture position? [0..71]?
+                                    ;  - Initialized to 0 in S014_SECONDARY_BOOT... is it relevant?
+rw  0088,1   dat_0088               ;
+rw  0089,1   dat_0089_L             ;
+rw  008a,1   dat_0089_H             ;
+
+rw  008d,1   dat_008d               ;
+rw  008e,1   dat_008e               ; Loop control variable?
+                                    ;   - sub_7ef4: Loop control variable
+rw  008f,1   dat_008f               ;
+                                    ;   - sub_7ef4: used as index into dat_7fb3_L_L/H.
+                                    ;               incremented each time dat_008e is decremented
+                                    ;
+rwx 0090,48  cont_0090              ; 72 bytes: Executable code copied from dat_78a2
+rwx 009d,1   smc_009d_L             ; Self-modifying code: LSB of address of LDA $absolute   (ref $78ae)
+rwx 009e,1   smc_009d_H             ; Self-modifying code: MSB of address of LDA $absolute   (ref $78ae)
+rwx 00a0,1   smc_00a0               ; Self-modifying code: Operand of AND #immediate         (ref $78b1)
+rwx 00a6,1   smc_00a6               ; Self-modifying code: Operand of AND #immediate         (ref $78b7)
+rwx 00b0,1   smc_00b0               ; Self-modifying code: Operand of OR #immediate          (ref $78c1)
+rwx 00b2,1   smc_00b2_L             ; Self-modifying code: LSB of address of STA $absolute,Y (ref $78c3)
+rwx 00b3,1   smc_00b2_H             ; Self-modifying code: MSB of address of STA $absolute,Y (ref $78c3)
+rwx 00c2,1   smc_00c2_L             ; Self-modifying code: LSB of address of LDA $absolute   (ref $78d3)
+rwx 00c3,1   smc_00c2_H             ; Self-modifying code: MSB of address of LDA $absolute   (ref $78d3)
+rwx 00c9,1   smc_00c9_L             ; Self-modifying code: LSB of address of LDA $absolute   (ref $78da)
+rwx 00ca,1   smc_00c9_H             ; Self-modifying code: MSB of address of LDA $absolute   (ref $78da)
+
+; 00d8 is first byte _after_ cont_0090 code
+
+rw  7600,1   ModuleNumber           ; Currently loaded scenario or map number
+x   7601,3   moduleEntry1           ; First entry point for scenario  (TODO: is this a module intialization vector? Seems to be called only after loading a new module)
+x   7604,3   moduleEntry2           ; Second entry point for scenario
+x   7607,3   moduleEntry3           ; Third entry point for scenario    (TODO: is this a module unloading vector? Seems to be called before loading a new module)
+
+r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table
+r   760b,1   Mod0DescTbl_H          ; Module 0: MSB of description table
+
+rwx 760c,1   sub_760c               ; Sets dat_192a to 0 (invalidate status page 7)
+
+rwx 7612,1   sub_7612               ;
+
+rwx 7641,1   cont_7641              ;
+
+rwx 7789,1   cont_7789              ; Return point after calling j_sub_2ff3
+
+rwx 77e5,1   setAllColors           ; Sets all wall, ceiling and floor colors to the specified value.
+
+rwx 77ee,1   applyZoneClrs          ; Applies the current zone color values to the display
+
+rw  77fa,1   dat_77fa               ; Loop control var
+rw  77fb,1   dat_77fb               ; Set to effective light level value
+rw  77fc,1   dat_77fc               ; Set to number of compasses held by player
+
+rw  77fd,58  item_77fd              ; 88 bytes: Unnamed item w/ "Crystal Doom" effect
+
+rw  7855,1   PlayerIsMoving         ; Flag indicating that the player is currently moving. This is set to 0 in
+                                    ;     sub_7612 and updated to $ff in cont_7641 when the joystick is not centered.
+
+rwx 7856,1   copyFrameBuf           ; Copy the working copy (frame buffer) graphic character sets to the active
+                                    ;     character sets to update the display.
+rwx 7875,3   smc_7875               ; Self-modifying code: Address of LDA $absolute,X here is updated with values from dat_8afd_L/H
+rwx 787b,3   smc_787b               ; Self-modifying code: Address of STA $absolute,X here is updated with values from dat_7fc5_L/H
+
+rwx 7888,1   clearFrameBuf          ; Resets the frame buffer by initializing the 1296 bytes between $8f7b
+                                    ;     and $948b to 0.
+
+rwx 78a2,48  dat_78a2               ; 72 bytes: This executable code is read and copied to cont_0090
+
+rwx 78ea,1   sub_78ea               ;
+rwx 7959,3   smc_7959               ; Self-modifying code: The address of this ORA $absolute,Y is updated
+rwx 79ef,2   smc_79ef               ; Self-modifying code: The operand of this LDY #immediate is updated
+rwx 79df,2   smc_79df               ; Self-modifying code: The operand of this ADC #immediate is updated
+
+rwx 79f5,1   cont_79f5              ;
+
+rwx 7a1f,1   sub_7a1f               ;
+
+rwx 7a37,1   sub_7a37               ;
+rwx 7a8d,3   smc_7a8d               ; Self-modifying code: The address of this STA $absolute,X is updated
+rwx 7a99,2   smc_7a99               ; Self-modifying code: The operand of this ADC #immediate is updated
+rwx 7a9f,2   smc_7a9f               ; Self-modifying code: The operand of this ADC #immediate is updated
+rwx 7aaa,2   smc_7aaa               ; Self-modifying code: The operand of this ADC #immediate is updated
+rwx 7ab0,2   smc_7ab0               ; Self-modifying code: The operand of this ADC #immediate is updated
+
+rw  7abc,4   dat_7abc_L             ; 4 bytes: Amounts to use for ADC operand @ smc_7a99 based on orientation
+                                    ;          The value is added to dat_007b_L
+                                    ;   0 [North]: $04 (4)
+                                    ;   1 [East]:  $80 (128 / -128)
+                                    ;   2 [South]: $fc (252 / -4)
+                                    ;   3 [West]:  $80 (128 / -128)
+
+rw  7ac0,4   dat_7ac0_H             ; 4 bytes: Amounts to use for ADC operand @ smc_7a9f based on orientation
+                                    ;          The value is added to dat_007b_H
+                                    ;   0 [North]: $00 (0)
+                                    ;   1 [East]:  $00 (0)
+                                    ;   2 [South]: $ff (255 / -1)
+                                    ;   3 [West]:  $ff (255 / -1)
+
+rw  7ac4,4   dat_7ac4_L             ; 4 bytes: Amounts to use for ADC operand @ smc_7aaa based on orientation
+                                    ;          The value is added to dat_007b_L and appears to be a step amount to add
+                                    ;          per iteration.
+                                    ;   0 [North]: $54 (84)
+                                    ;   1 [East]:  $7c (124)
+                                    ;   2 [South]: $ac (172 / -84)
+                                    ;   3 [West]:  $84 (132 / -124)
+
+rw  7ac8,4   dat_7ac4_H             ; 4 bytes: Amounts to use for ADC operand @ smc_7ab0 based on orientation
+                                    ;          The value is added to dat_007b_H and appears to be a step amount to add
+                                    ;          per iteration.
+                                    ;   0 [North]: $00 (0)
+                                    ;   1 [East]:  $fa (250 / -6)
+                                    ;   2 [South]: $ff (255 / -1)
+                                    ;   3 [West]:  $05 (5)
+
+rw  7acc,4   dat_7acc_L             ; 4 bytes: Offset to include in the initial calculation of the map cell address
+                                    ;          initially placed into dat_007b_L based on orientation.
+                                    ;   0 [North]: $6c (108)
+                                    ;   1 [East]:  $a4 (164 / -92)
+                                    ;   2 [South]: $94 (148 / -108)
+                                    ;   3 [West]:  $5c (92)
+
+rw  7ad0,4   dat_7acc_H             ; 4 bytes: Offset to include in the initial calculation of the map cell address
+                                    ;          initially placed into dat_007b_H based on orientation.
+                                    ;   0 [North]: $fd (253 / -3)
+                                    ;   1 [East]:  $fd (253 / -3)
+                                    ;   2 [South]: $04 (4)
+                                    ;   3 [West]:  $02 (2)
+
+rwx 7ad4,1   sub_7ad4               ;
+
+rw  7dde,1   dat_7dde               ; Assigned a bitmask from dat_8dcc based on the player's orientation.
+                                    ;     This is used to select the bits for a specific wall.
+
+rw  7ddf,1   dat_7ddf               ; Assigned a bitmask from dat_8dcc based on the player's orientation.
+                                    ;     This is used to select the bits for a specific wall.
+
+rw  7de0,1   dat_7de0               ; Assigned a bitmask from dat_8dcc based on the player's orientation.
+                                    ;     This is used to select the bits for a specific wall.
+
+rw  7de1,1   dat_7de1               ;
+rw  7de2,1   dat_7de2               ;
+rw  7de3,1   dat_7de3               ;
+rw  7de4,4   dat_7de4               ; 4? bytes:
+rw  7de8,4   dat_7de8               ; 4? bytes:
+
+rwx 7dec,1   sub_7dec               ;
+
+rwx 7e0d,1   sub_7e0d               ;
+
+rwx 7e2d,1   sub_7e2d               ;
+
+rwx 7e4d,1   sub_7e4d               ;
+
+rwx 7ebc,1   sub_7ebc               ;
+
+rwx 7ec7,1   sub_7ec7               ;
+
+rwx 7ee4,1   sub_7ee4               ;
+
+rwx 7ef4,1   sub_7ef4               ;
+rwx 7f21,2   smc_7f21               ; Self-modifying code: The operand of this ADC #immediate is updated
+rwx 7f29,2   smc_7f29               ; Self-modifying code: The operand of this ADC #immediate is updated
+rwx 7f31,2   smc_7f31               ; Self-modifying code: This LDA is swapped between LDA (dat_0089_L),Y and LDA #$ff
+rwx 7f33,3   smc_7f33               ; Self-modifying code: The address of this STA $immediate,Y is updated
+
+rwx 7f4b,1   cont_7f4b              ;
+
+rw  7f63,28  unk_Mul8Tbl_L          ; 40 bytes: LSB for 16-bit multiplication table by factors of 8 (0 * 8 to 39 * 8)
+rw  7f8b,28  unk_Mul8Tbl_H          ; 40 bytes: MSB for 16-bit multiplication table by factors of 8 (0 * 8 to 39 * 8)
+                                    ; TODO: is this used? If so, where? I could see this being useful for calculating
+                                    ;       a position within a character set (8 bytes per character definition), but
+                                    ;       only 40 positions are defined. That feels like it may relate to the width
+                                    ;       of the screen. Perhaps it's both.
+
+rw  7fb3,9   dat_7fb3_L             ; 9 bytes: LSB of character set address assigned to smc_7f33[1].
+rw  7fbc,9   dat_7fb3_H             ; 9 bytes: MSB of character set address assigned to smc_7f33[2].
+                                    ;    0: $0800 [GfxTopCharset]
+                                    ;    1: $0940 [GfxTopCharset + $140 (320)]
+                                    ;    2: $0a80 [GfxTopCharset + $240 (640)]
+                                    ;    3: $0c00 [GfxMidCharset]
+                                    ;    4: $0d40 [GfxMidCharset + $140 (320)]
+                                    ;    5: $0e80 [GfxMidCharset + $240 (640)]
+                                    ;    6: $1000 [GfxBtmCharset]
+                                    ;    7: $1140 [GfxBtmCharset + $140 (320)]
+                                    ;    8: $1280 [GfxBtmCharset + $240 (640)]
+
+rw  7fc5,48  dat_7fc5_L             ; 72 bytes: LSBs of destination addresses within the graphics character sets.
+                                    ;           (copyFrameBuf: assigns to smc_787b[1])
+rw  800d,48  dat_7fc5_H             ; 72 bytes: MSBs of destination addresses within the graphics character sets.
+                                    ;           (copyFrameBuf: assigns to smc_787b[2])
+                                    ;    0: $0858 [GfxTopCharset + $58]         36: $0d9c [GfxMidCharset + $19c]
+                                    ;    1: $0859 [GfxTopCharset + $59]         37: $0d9d [GfxMidCharset + $19d]
+                                    ;    2: $085a [GfxTopCharset + $5a]         38: $0d9e [GfxMidCharset + $19e]
+                                    ;    3: $085b [GfxTopCharset + $5b]         39: $0d9f [GfxMidCharset + $19f]
+                                    ;    4: $085c [GfxTopCharset + $5c]         40: $0ed8 [GfxMidCharset + $2d8]
+                                    ;    5: $085d [GfxTopCharset + $5d]         41: $0ed9 [GfxMidCharset + $2d9]
+                                    ;    6: $085e [GfxTopCharset + $5e]         42: $0eda [GfxMidCharset + $2da]
+                                    ;    7: $085f [GfxTopCharset + $5f]         43: $0edb [GfxMidCharset + $2db]
+                                    ;    8: $0998 [GfxTopCharset + $198]        44: $0edc [GfxMidCharset + $2dc]
+                                    ;    9: $0999 [GfxTopCharset + $199]        45: $0edd [GfxMidCharset + $2dd]
+                                    ;   10: $099a [GfxTopCharset + $19a]        46: $0ede [GfxMidCharset + $2de]
+                                    ;   11: $099b [GfxTopCharset + $19b]        47: $0edf [GfxMidCharset + $2df]
+                                    ;   12: $099c [GfxTopCharset + $19c]
+                                    ;   13: $099d [GfxTopCharset + $19d]        48: $1058 [GfxBtmCharset + $58]
+                                    ;   14: $099e [GfxTopCharset + $19e]        49: $1059 [GfxBtmCharset + $59]
+                                    ;   15: $099f [GfxTopCharset + $19f]        50: $105a [GfxBtmCharset + $5a]
+                                    ;   16: $0ad8 [GfxTopCharset + $2d8]        51: $105b [GfxBtmCharset + $5b]
+                                    ;   17: $0ad9 [GfxTopCharset + $2d9]        52: $105c [GfxBtmCharset + $5c]
+                                    ;   18: $0ada [GfxTopCharset + $2da]        53: $105d [GfxBtmCharset + $5d]
+                                    ;   19: $0adb [GfxTopCharset + $2db]        54: $105e [GfxBtmCharset + $5e]
+                                    ;   20: $0adc [GfxTopCharset + $2dc]        55: $105f [GfxBtmCharset + $5f]
+                                    ;   21: $0add [GfxTopCharset + $2dd]        56: $1198 [GfxBtmCharset + $198]
+                                    ;   22: $0ade [GfxTopCharset + $2de]        57: $1199 [GfxBtmCharset + $199]
+                                    ;   23: $0adf [GfxTopCharset + $2df]        58: $119a [GfxBtmCharset + $19a]
+                                    ;                                           59: $119b [GfxBtmCharset + $19b]
+                                    ;   24: $0c58 [GfxMidCharset + $58]         60: $119c [GfxBtmCharset + $19c]
+                                    ;   25: $0c59 [GfxMidCharset + $59]         61: $119d [GfxBtmCharset + $19d]
+                                    ;   26: $0c5a [GfxMidCharset + $5a]         62: $119e [GfxBtmCharset + $19e]
+                                    ;   27: $0c5b [GfxMidCharset + $5b]         63: $119f [GfxBtmCharset + $19f]
+                                    ;   28: $0c5c [GfxMidCharset + $5c]         64: $12d8 [GfxBtmCharset + $2d8]
+                                    ;   29: $0c5d [GfxMidCharset + $5d]         65: $12d9 [GfxBtmCharset + $2d9]
+                                    ;   30: $0c5e [GfxMidCharset + $5e]         66: $12da [GfxBtmCharset + $2da]
+                                    ;   31: $0c5f [GfxMidCharset + $5f]         67: $12db [GfxBtmCharset + $2db]
+                                    ;   32: $0d98 [GfxMidCharset + $198]        68: $12dc [GfxBtmCharset + $2dc]
+                                    ;   33: $0d99 [GfxMidCharset + $199]        69: $12dd [GfxBtmCharset + $2dd]
+                                    ;   34: $0d9a [GfxMidCharset + $19a]        70: $12de [GfxBtmCharset + $2de]
+                                    ;   35: $0d9b [GfxMidCharset + $19b]        71: $12df [GfxBtmCharset + $2df]
+
+; TODO: where are these referenced?
+rw  8055,48  unk_8055_L             ; 72 bytes: LSBs of ?destination? addresses within the graphics character sets.
+rw  809d,48  unk_809d_L             ; 72 bytes: MSBs of ?destination? addresses within the graphics character sets.
+                                    ;    0: $0800 [GfxTopCharset]               36: $0d44 [GfxMidCharset + $144]
+                                    ;    1: $0801 [GfxTopCharset + $1]          37: $0d45 [GfxMidCharset + $145]
+                                    ;    2: $0802 [GfxTopCharset + $2]          38: $0d46 [GfxMidCharset + $146]
+                                    ;    3: $0803 [GfxTopCharset + $3]          39: $0d47 [GfxMidCharset + $147]
+                                    ;    4: $0804 [GfxTopCharset + $4]          40: $0e80 [GfxMidCharset + $280]
+                                    ;    5: $0805 [GfxTopCharset + $5]          41: $0e81 [GfxMidCharset + $281]
+                                    ;    6: $0806 [GfxTopCharset + $6]          42: $0e82 [GfxMidCharset + $282]
+                                    ;    7: $0807 [GfxTopCharset + $7]          43: $0e83 [GfxMidCharset + $283]
+                                    ;    8: $0940 [GfxTopCharset + $140]        44: $0e84 [GfxMidCharset + $284]
+                                    ;    9: $0941 [GfxTopCharset + $141]        45: $0e85 [GfxMidCharset + $285]
+                                    ;   10: $0942 [GfxTopCharset + $142]        46: $0e86 [GfxMidCharset + $286]
+                                    ;   11: $0943 [GfxTopCharset + $143]        47: $0e87 [GfxMidCharset + $287]
+                                    ;   12: $0944 [GfxTopCharset + $144]
+                                    ;   13: $0945 [GfxTopCharset + $145]        48: $1000 [GfxBtmCharset]
+                                    ;   14: $0946 [GfxTopCharset + $146]        49: $1001 [GfxBtmCharset + $1]
+                                    ;   15: $0947 [GfxTopCharset + $147]        50: $1002 [GfxBtmCharset + $2]
+                                    ;   16: $0a80 [GfxTopCharset + $280]        51: $1003 [GfxBtmCharset + $3]
+                                    ;   17: $0a81 [GfxTopCharset + $281]        52: $1004 [GfxBtmCharset + $4]
+                                    ;   18: $0a82 [GfxTopCharset + $282]        53: $1005 [GfxBtmCharset + $5]
+                                    ;   19: $0a83 [GfxTopCharset + $283]        54: $1006 [GfxBtmCharset + $6]
+                                    ;   20: $0a84 [GfxTopCharset + $284]        55: $1007 [GfxBtmCharset + $7]
+                                    ;   21: $0a85 [GfxTopCharset + $285]        56: $1140 [GfxBtmCharset + $140]
+                                    ;   22: $0a86 [GfxTopCharset + $286]        57: $1141 [GfxBtmCharset + $141]
+                                    ;   23: $0a87 [GfxTopCharset + $287]        58: $1142 [GfxBtmCharset + $142]
+                                    ;                                           59: $1143 [GfxBtmCharset + $143]
+                                    ;   24: $0c00 [GfxMidCharset]               60: $1144 [GfxBtmCharset + $144]
+                                    ;   25: $0c01 [GfxMidCharset + $1]          61: $1145 [GfxBtmCharset + $145]
+                                    ;   26: $0c02 [GfxMidCharset + $2]          62: $1146 [GfxBtmCharset + $146]
+                                    ;   27: $0c03 [GfxMidCharset + $3]          63: $1147 [GfxBtmCharset + $147]
+                                    ;   28: $0c04 [GfxMidCharset + $4]          64: $1280 [GfxBtmCharset + $280]
+                                    ;   29: $0c05 [GfxMidCharset + $5]          65: $1281 [GfxBtmCharset + $281]
+                                    ;   30: $0c06 [GfxMidCharset + $6]          66: $1282 [GfxBtmCharset + $282]
+                                    ;   31: $0c07 [GfxMidCharset + $7]          67: $1283 [GfxBtmCharset + $283]
+                                    ;   32: $0d40 [GfxMidCharset + $140]        68: $1284 [GfxBtmCharset + $284]
+                                    ;   33: $0d41 [GfxMidCharset + $141]        69: $1285 [GfxBtmCharset + $285]
+                                    ;   34: $0d42 [GfxMidCharset + $142]        70: $1286 [GfxBtmCharset + $286]
+                                    ;   35: $0d43 [GfxMidCharset + $143]        71: $1287 [GfxBtmCharset + $287]
+
+rw  80e5,18d MoveArrowsImg          ; 397 bytes: All 4 movement arrows (rest state) charset image
+                                    ;            Assigned to dat_0089_L/H in cont_7641
+                                    ;   5 byte header:
+                                    ;     0: $38 (56) - Bytes per row (7 characters wide)
+                                    ;     1: $07      - Row count
+                                    ;     2/3: $00f8  - 248 bytes (31 chars) added to dest address per row copied
+                                    ;     4: $01      - Start in line 1 of graphics area
+
+rw  8272,4d  MoveArwUpImg           ; 77 bytes: Move forward/up arrow charset image. Referenced in MoveArrowAdr.
+                                    ;   5 byte header:
+                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1: $03      - Row count
+                                    ;     2: $08      -
+                                    ;     3: $01      -
+                                    ;     4: $01      - Start in line 1 of graphics area
+
+rw  82bf,4d  MoveArwRgtImg          ; 77 bytes: Move right arrow charset image. Referenced in MoveArrowAdr.
+                                    ;   5 byte header:
+                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1: $03      - Row count
+                                    ;     2: $18      -
+                                    ;     3: $01      -
+                                    ;     4: $03      - Start in line 3 of graphics area
+
+rw  830c,4d  MoveArwDwnImg          ; 77 bytes: Move back/down arrow charset image. Referenced in MoveArrowAdr.
+                                    ;   5 byte header:
+                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1: $03      - Row count
+                                    ;     2: $08      -
+                                    ;     3: $01      -
+                                    ;     4: $05      - Start in line 5 of graphics area
+
+rw  8359,4d  MoveArwLftImg          ; 77 bytes: Move left arrow charset image. Referenced in MoveArrowAdr.
+                                    ;   5 byte header:
+                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1: $03      - Row count
+                                    ;     2: $f8      -
+                                    ;     3: $00      -
+                                    ;     4: $03      - Start in line 3 of graphics area
+
+rw  83a6,8   MoveArrowAdr           ; 8? bytes: Addresses (LSB/MSB) referenced in sub_7ee4 (placed into dat_0089_L/H)
+                                    ;   0/1: $8272 [MoveArwUpImg]  - Forward/Up arrow
+                                    ;   2/3: $830c [MoveArwDwnImg] - Backward/Down arrow
+                                    ;   4/5: $8359 [MoveArwLftImg] - Left arrow
+                                    ;   6/7: $82bf [MoveArwRgtImg] - Right arrow
+
+rw  83ae,10  MoveStickMap           ; 16 bytes: Mapping of joystick direction codes to movement arrow address index.
+                                    ;     0: $00 (Stick centered      -> n/a [F])
+                                    ;     1: $00 (Stick F             -> Forward)
+                                    ;     2: $02 (Stick B             -> Backward)
+                                    ;     3: $00 (Stick F + B         -> n/a [F])
+                                    ;     4: $04 (Stick L             -> Left)
+                                    ;     5: $00 (Stick F + L         -> Forward)
+                                    ;     6: $02 (Stick L + B         -> Backward)
+                                    ;     7: $00 (Stick F + L + B     -> n/a [F])
+                                    ;     8: $06 (Stick R             -> Right)
+                                    ;     9: $00 (Stick F + R         -> Forward)
+                                    ;    10: $02 (Stick B + R         -> Backward)
+                                    ;    11: $00 (Stick F + B + R     -> n/a [F])
+                                    ;    12: $06 (Stick L + R         -> n/a [R])
+                                    ;    13: $00 (Stick F + L + R     -> n/a [F])
+                                    ;    14: $02 (Stick L + B + R     -> n/a [B])
+                                    ;    15: $00 (Stick F + L + B + R -> n/a [F])
+
+rw  83be,8   CmpssArrowAdr          ; 8 bytes: Addresses (LSB/MSB) of the various compass direction arrows based on
+                                    ;          player orientation.
+                                    ;   0/1: $84bb [CmpssNorthImg] (North)
+                                    ;   2/3: $84f0 [CmpssEastImg]  (East)
+                                    ;   4/5: $8515 [CmpssSouthImg] (South)
+                                    ;   6/7: $854a [CmpssWestImg]  (West)
+
+rw  83c6,f5  CmpssFrameImg          ; 245 bytes: Empty compass frame charset image
+                                    ;   5 byte header:
+                                    ;     0: $30 (48) - Bytes per row (6 characters wide)
+                                    ;     1: $05      - Row count
+                                    ;     2: $18 (24) -
+                                    ;     3: $00      -
+                                    ;     4: $02      - Start in line 2 of graphics area
+                                    ;
+                                    ;    sub_7ebc: assigns this address to dat_0089_L/H. Only called when player does not have any compasses.
+                                    ;    sub_7ec7: assigns this address to dat_0089_L/H
+
+rw  84bb,35  CmpssNorthImg          ; 53 bytes: Compass arrow pointing North
+                                    ;   5 byte header:
+                                    ;     0: $10 (16) - Bytes per row (2 characters wide)
+                                    ;     1: $03      - Row count
+                                    ;     2: $28 (40) -
+                                    ;     3: $00      -
+                                    ;     4: $03      - Start in line 3 of graphics area
+
+rw  84f0,25  CmpssEastImg           ; 37 bytes: Compass arrow pointing East
+                                    ;   5 byte header:
+                                    ;     0: $20 (32) - Bytes per row (4 characters wide)
+                                    ;     1: $01      - Row count
+                                    ;     2: $20 (32) -
+                                    ;     3: $00      -
+                                    ;     4: $04      - Start in line 4 of graphics area
+
+rw  8515,35  CmpssSouthImg          ; 53 bytes: Compass arrow pointing South
+                                    ;   5 byte header:
+                                    ;     0: $10 (16) - Bytes per row (2 characters wide)
+                                    ;     1: $03      - Row count
+                                    ;     2: $28 (40) -
+                                    ;     3: $00      -
+                                    ;     4: $03      - Start in line 3 of graphics area
+
+rw  854a,25  CmpssWestImg           ; 37 bytes: Compass arrow pointing West
+                                    ;   5 byte header:
+                                    ;     0: $20 (32) - Bytes per row (4 characters wide)
+                                    ;     1: $01      - Row count
+                                    ;     2: $20 (32) -
+                                    ;     3: $00      -
+                                    ;     4: $04      - Start in line 4 of graphics area
+
+rw  856f,32  SpclMesgAdrs           ; 50 bytes: Addresses of the special location messages
+                                    ;    0: $85a1 [StrDPShop]
+                                    ;    1: $85da [StrRetreatInn]
+                                    ;    2: $860c [StrDRTavern]
+                                    ;    3: $8640 [StrSmithy]
+                                    ;    4: $8686 [StrArrowSouth]
+                                    ;    5: $86b9 [StrBwreDragon]
+                                    ;    6: $86f2 [StrGauntlet]
+                                    ;    7: $873b [StrEnchantress]
+                                    ;    8: $8776 [StrGoBack]
+                                    ;    9: $87ae [StrNoEscape]
+                                    ;   10: $87e9 [StrArrowEast]
+                                    ;   11: $8815 [StrGoblinsOnly]
+                                    ;   12: $8840 [StrTrollsOnly]
+                                    ;   13: $8840 [StrTrollsOnly]
+                                    ;   14: $886a [StrShrnOfMnstr]
+                                    ;   15: $8896 [StrRunningWatr]
+                                    ;   16: $88c0 [StrSeekTheLght]
+                                    ;   17: $88f9 [StrBwreCaverns]
+                                    ;   18: $8939 [StrUnbrblStnch]
+                                    ;   19: $8961 [StrChapel]
+                                    ;   20: $89ad [StrShadowHides]
+                                    ;   21: $89f3 [StrAllKnwngEye]
+                                    ;   22: $8a2c [StrPrplePyrmid]
+                                    ;   23: $8a62 [StrSkullHangs]
+                                    ;   24: $8a98 [StrElectricity]
+                                    ;   25: $8ac2 [StrElabratDoor]
+
+rw  85a1,39  StrDPShop              ; 57 bytes: 0: 'A sign on the door says:\n"Damon & Pythias Shoppe"\n'
+rw  85da,32  StrRetreatInn          ; 50 bytes: 1: 'A sign above the door reads:\n"THE RETREAT"\n'
+rw  860c,34  StrDRTavern            ; 52 bytes: 2: 'A sign reads:\n"Der Rathskeller Bar & Grille"\n'
+rw  8640,46  StrSmithy              ; 70 bytes: 3: 'Carved above the doorway are the words:\n\n"Fine Weapons & Armor"\n'
+rw  8686,33  StrArrowSouth          ; 51 bytes: 4: 'An arrow painted on the floor\n\npoints South.\n'
+rw  86b9,39  StrBwreDragon          ; 57 bytes: 5: 'Writing on the wall says:\n"BEWARE OF THE DRAGON!"\n'
+rw  86f2,49  StrGauntlet            ; 73 bytes: 6: 'Writing carved into the door reads:\n\n"THE GAUNTLET\nDO NOT ENTER"\n'
+rw  873b,3b  StrEnchantress         ; 59 bytes: 7: 'Glowing letters on the door proclaim:\n\n"Enchantress"\n'
+rw  8776,38  StrGoBack              ; 56 bytes: 8: 'Writing scrawled on the ground reads:\n\n"GO BACK!"\n'
+rw  87ae,3b  StrNoEscape            ; 59 bytes: 9: 'Scratchings on the wall read:\n\n"THERE IS NO ESCAPE!"\n'
+rw  87e9,2c  StrArrowEast           ; 44 bytes: 10: 'A red arrow on the ground points East.\n'
+rw  8815,2b  StrGoblinsOnly         ; 43 bytes: 11: 'A dirty sign reads:\n"Goblins only!"\n'
+rw  8840,2a  StrTrollsOnly          ; 42 bytes: 12: 'A crooked sign says:\n\n"TROLLS ONLY"\n'
+rw  886a,2c  StrShrnOfMnstr         ; 44 bytes: 13: 'A plaque reads:\n"Shrine of Monsters"\n'
+rw  8896,2a  StrRunningWatr         ; 42 bytes: 14: 'You hear the sound of running water.\n'
+rw  88c0,39  StrSeekTheLght         ; 57 bytes: 15: 'Glowing letters float in midair:\n"SEEK THE LIGHT"\n'
+rw  88f9,40  StrBwreCaverns         ; 64 bytes: 16: 'A note posted on the door reads:\n\n"BEWARE!  THE CAVERNS!"\n'
+rw  8939,28  StrUnbrblStnch         ; 40 bytes: 17: 'The stench is becoming unbearable.\n'
+rw  8961,4c  StrChapel              ; 76 bytes: 18: 'A sign above the door says:\n"Welcome to the Chapel. Please come in!"\n'
+rw  89ad,46  StrShadowHides         ; 70 bytes: 19: 'Black letters hovering slowly say:\n\n"THE SHADOW WILL HIDE THEE"\n'
+rw  89f3,39  StrAllKnwngEye         ; 57 bytes: 20: 'The rune of the all-knowing eye is upon\n\nthe door.\n'
+rw  8a2c,36  StrPrplePyrmid         ; 54 bytes: 21: 'On the wall is a painting of\n\na purple pyramid.\n'
+rw  8a62,36  StrSkullHangs          ; 54 bytes: 22: 'A skull hangs from the ceiling\n\nabove the door.\n'
+rw  8a98,2a  StrElectricity         ; 42 bytes: 23: 'You hear the crackle of electricity.\n'
+rw  8ac2,29  StrElabratDoor         ; 41 bytes: 24: 'You stand before an elaborate door.\n'
+
+rw  8aeb,12  Mul8Tbl                ; 18 bytes: Indexes into the bytes referenced by the addresses in dat_7fc5_L/H
+                                    ; Holds multiples of 8:
+                                    ;   0: $00 (0)       9: $48 (72)
+                                    ;   1: $08 (8)      10: $50 (80)
+                                    ;   2: $10 (16)     11: $58 (88)
+                                    ;   3: $18 (24)     12: $60 (96)
+                                    ;   4: $20 (32)     13: $68 (104)
+                                    ;   5: $28 (40)     14: $70 (112)
+                                    ;   6: $30 (48)     15: $78 (120)
+                                    ;   7: $38 (56)     16: $80 (128)
+                                    ;   8: $40 (64)     17: $88 (136)
+
+rw  8afd,48  dat_8afd_L             ; 72 bytes: LSB of source address to copy from
+                                    ;           (copyFrameBuf: assigns to smc_7875[1])
+rw  8b45,48  dat_8afd_H             ; 72 bytes: MSB of source address to copy from
+                                    ;           (copyFrameBuf: assigns to smc_7875[2])
+                                    ;   0: $8f7b [src_8f7b]             36: $9203 [src_9203]
+                                    ;   1: $8f8d [src_8f8d]             37: $9215 [src_9215]
+                                    ;   2: $8f9f [src_8f9f]             38: $9227 [src_9227]
+                                    ;   3: $8fb1 [src_8fb1]             39: $9239 [src_9239]
+                                    ;   4: $8fc3 [src_8fc3]             40: $924b [src_924b]
+                                    ;   5: $8fd5 [src_8fd5]             41: $925d [src_925d]
+                                    ;   6: $8fe7 [src_8fe7]             42: $926f [src_926f]
+                                    ;   7: $8ff9 [src_8ff9]             43: $9281 [src_9281]
+                                    ;   8: $900b [src_900b]             44: $9293 [src_9293]
+                                    ;   9: $901d [src_901d]             45: $92a5 [src_92a5]
+                                    ;  10: $902f [src_902f]             46: $92b7 [src_92b7]
+                                    ;  11: $9041 [src_9041]             47: $92c9 [src_92c9]
+                                    ;  12: $9053 [src_9053]
+                                    ;  13: $9065 [src_9065]             48: $92db [src_92db]
+                                    ;  14: $9077 [src_9077]             49: $92ed [src_92ed]
+                                    ;  15: $9089 [src_9089]             50: $92ff [src_92ff]
+                                    ;  16: $909b [src_909b]             51: $9311 [src_9311]
+                                    ;  17: $90ad [src_90ad]             52: $9323 [src_9323]
+                                    ;  18: $90bf [src_90bf]             53: $9335 [src_9335]
+                                    ;  19: $90d1 [src_90d1]             54: $9347 [src_9347]
+                                    ;  20: $90e3 [src_90e3]             55: $9359 [src_9359]
+                                    ;  21: $90f5 [src_90f5]             56: $936b [src_936b]
+                                    ;  22: $9107 [src_9107]             57: $937d [src_937d]
+                                    ;  23: $9119 [src_9119]             58: $938f [src_938f]
+                                    ;                                   59: $93a1 [src_93a1]
+                                    ;  24: $912b [src_912b]             60: $93b3 [src_93b3]
+                                    ;  25: $913d [src_913d]             61: $93c5 [src_93c5]
+                                    ;  26: $914f [src_914f]             62: $93d7 [src_93d7]
+                                    ;  27: $9161 [src_9161]             63: $93e9 [src_93e9]
+                                    ;  28: $9173 [src_9173]             64: $93fb [src_93fb]
+                                    ;  29: $9185 [src_9185]             65: $940d [src_940d]
+                                    ;  30: $9197 [src_9197]             66: $941f [src_941f]
+                                    ;  31: $91a9 [src_91a9]             67: $9431 [src_9431]
+                                    ;  32: $91bb [src_91bb]             68: $9443 [src_9443]
+                                    ;  33: $91cd [src_91cd]             69: $9455 [src_9455]
+                                    ;  34: $91df [src_91df]             70: $9467 [src_9467]
+                                    ;  35: $91f1 [src_91f1]             71: $9479 [src_9479]
+
+rw  8b8d,4   dat_8b8d               ; 4 bytes: Table of values satisfying 3 * 4^(3-idx)
+                                    ;   0: $c0 (192 = 48 * 4 = 3 * 4^3)
+                                    ;   1: $30 (48  = 12 * 4 = 3 * 4^2)
+                                    ;   2: $0c (12  =  3 * 4 = 3 * 4^1)
+                                    ;   3: $03 (3            = 3 * 4^0)
+
+rw  8b91,4   unk_8b91               ; 4 bytes: Multiples of $55 (85)
+                                    ;     TODO: Where is this used?
+                                    ;   0: $00 (0)
+                                    ;   1: $55 (85)
+                                    ;   2: $aa (170)
+                                    ;   3: $ff (255)
+
+rw  8b95,3   dat_8b95               ; 3? bytes:
+
+rw  8b98,3   dat_8b98               ; 3? bytes:
+
+rw  8b9b,3   dat_8b9b               ; 3? bytes:
+
+rw  8b9e,3   dat_8b9e               ; 3? bytes:
+
+rw  8ba1,3   dat_8ba1               ; 3? bytes:
+
+rw  8ba4,3   dat_8ba4               ; 3? bytes:
+
+rw  8ba7,fc  unk_8ba7               ; ? bytes
+
+rw  8ca3,a   dat_8ca3_L             ; 10 bytes: LSB of address where map cell data is copied
+rw  8cad,a   dat_8ca3_H             ; 10 bytes: MSB of address where map cell data is copied
+                                    ;     0: $965f [MapCellData0]       5: $9583 [MapCellData5]
+                                    ;     1: $9633 [MapCellData1]       6: $9557 [MapCellData6]
+                                    ;     2: $9607 [MapCellData2]       7: $952b [MapCellData7]
+                                    ;     3: $95db [MapCellData3]       8: $94ff [MapCellData8]
+                                    ;     4: $95af [MapCellData4]       9: $94d3 [MapCellData9]
+
+rw  8cb7,a   dat_8cb7               ; 10 bytes: Number of inner loop iterations
+                                    ;     0: 1        5: 5
+                                    ;     1: 2        6: 5
+                                    ;     2: 3        7: 5
+                                    ;     3: 4        8: 5
+                                    ;     4: 5        9: 5
+
+rw  8cc1,b   dat_8cc1               ; 11? bytes:
+
+rw  8ccc,b   dat_8ccc               ; 11? bytes:
+
+rw  8cd7,b   dat_8cd7               ; 11? bytes:
+
+rw  8ce2,42  dat_8ce2               ; ? bytes:
+
+rw  8d24,b   dat_8d24               ; 11 bytes: Lookup table of 72 / 2^(idx + 1) (entry 0: 72 / 2 = 36)
+                                    ;    0: $24 (36)         6: $01 (0.5)
+                                    ;    1: $12 (18)         7: $01 (0.25)
+                                    ;    2: $06              8: $01 (0.125)
+                                    ;    3: $03              9: $01 (0.0625)
+                                    ;    4: $02 (1.5)       10: $00
+                                    ;    5: $01
+
+rw  8d2f,6   dat_8d2f               ; 6? bytes:
+
+rw  8d35,3d  dat_8d35               ; ? bytes:
+
+rw  8d72,1   dat_8d72               ;
+
+rw  8d73,5   dat_8d73               ;
+
+rw  8d78,6   dat_8d78               ; 6? bytes:
+
+rw  8d7e,4d  dat_8d7e               ; ? bytes:
+
+rw  8dcb,3   dat_8dcb               ; 3? 4? bytes:
+rw  8dcc,3   dat_8dcc               ; 3? 4? bytes:
+
+rw  8dd0,3   dat_8dd0               ; 4 bytes (3 shared with dat_8dd1, 2 shared with dat_8dd2):
+rw  8dd1,3   dat_8dd1               ; 4 bytes (3 shared with dat_8dd2):
+rw  8dd2,4   dat_8dd2               ; 4 bytes:
+
+rw  8dd6,2a  unk_8dd6               ; ? bytes:
+
+rw  8e00,41  dat_8e00               ; ? bytes:
+
+rw  8e41,40  dat_8e41               ; ? bytes:
+
+rw  8e81,40  dat_8e81               ; ? bytes:
+
+rw  8ec1,24  dat_8ec1               ; 36? bytes:
+
+rw  8ee5,48  dat_8ee5               ; 72? bytes:
+
+rw  8f2d,48  dat_8f2d               ; 72? bytes:
+
+rw  8f75,1   dat_8f75               ;
+
+rw  8f76,1   dat_8f76               ;
+
+rw  8f77,1   dat_8f77               ; (temp)
+                                    ;    copyFrameBuf: Used to hold loop iteration count
+                                    ;    sub_7ad4: # of iterations
+
+rw  8f78,2   unk_8f78               ;
+
+rw  8f7a,1   dat_8f7a               ; 1 byte:
+
+rw  8f7b,d8  FrameBuf0              ; 216 bytes: Bytes in this range are set to 0 by clearFrameBuf
+rw  8f7b,12  src_8f7b               ; 18 bytes: Copied to $0858 [GfxTopCharset + $58] + Mul8Tbl[X]
+rw  8f8d,12  src_8f8d               ; 18 bytes: Copied to $0859 [GfxTopCharset + $59] + Mul8Tbl[X]
+rw  8f9f,12  src_8f9f               ; 18 bytes: Copied to $085a [GfxTopCharset + $5a] + Mul8Tbl[X]
+rw  8fb1,12  src_8fb1               ; 18 bytes: Copied to $085b [GfxTopCharset + $5b] + Mul8Tbl[X]
+rw  8fc3,12  src_8fc3               ; 18 bytes: Copied to $085c [GfxTopCharset + $5c] + Mul8Tbl[X]
+rw  8fd5,12  src_8fd5               ; 18 bytes: Copied to $085d [GfxTopCharset + $5d] + Mul8Tbl[X]
+rw  8fe7,12  src_8fe7               ; 18 bytes: Copied to $085e [GfxTopCharset + $5e] + Mul8Tbl[X]
+rw  8ff9,12  src_8ff9               ; 18 bytes: Copied to $085f [GfxTopCharset + $5f] + Mul8Tbl[X]
+rw  900b,12  src_900b               ; 18 bytes: Copied to $0998 [GfxTopCharset + $198] + Mul8Tbl[X]
+rw  901d,12  src_901d               ; 18 bytes: Copied to $0999 [GfxTopCharset + $199] + Mul8Tbl[X]
+rw  902f,12  src_902f               ; 18 bytes: Copied to $099a [GfxTopCharset + $19a] + Mul8Tbl[X]
+rw  9041,12  src_9041               ; 18 bytes: Copied to $099b [GfxTopCharset + $19b] + Mul8Tbl[X]
+
+rw  9053,d8  FrameBuf1              ; 216 bytes: Bytes in this range are set to 0 by clearFrameBuf
+rw  9053,12  src_9053               ; 18 bytes: Copied to $099c [GfxTopCharset + $19c] + Mul8Tbl[X]
+rw  9065,12  src_9065               ; 18 bytes: Copied to $099d [GfxTopCharset + $19d] + Mul8Tbl[X]
+rw  9077,12  src_9077               ; 18 bytes: Copied to $099e [GfxTopCharset + $19e] + Mul8Tbl[X]
+rw  9089,12  src_9089               ; 18 bytes: Copied to $099f [GfxTopCharset + $19f] + Mul8Tbl[X]
+rw  909b,12  src_909b               ; 18 bytes: Copied to $0ad8 [GfxTopCharset + $2d8] + Mul8Tbl[X]
+rw  90ad,12  src_90ad               ; 18 bytes: Copied to $0ad9 [GfxTopCharset + $2d9] + Mul8Tbl[X]
+rw  90bf,12  src_90bf               ; 18 bytes: Copied to $0ada [GfxTopCharset + $2da] + Mul8Tbl[X]
+rw  90d1,12  src_90d1               ; 18 bytes: Copied to $0adb [GfxTopCharset + $2db] + Mul8Tbl[X]
+rw  90e3,12  src_90e3               ; 18 bytes: Copied to $0adc [GfxTopCharset + $2dc] + Mul8Tbl[X]
+rw  90f5,12  src_90f5               ; 18 bytes: Copied to $0add [GfxTopCharset + $2dd] + Mul8Tbl[X]
+rw  9107,12  src_9107               ; 18 bytes: Copied to $0ade [GfxTopCharset + $2de] + Mul8Tbl[X]
+rw  9119,12  src_9119               ; 18 bytes: Copied to $0adf [GfxTopCharset + $2df] + Mul8Tbl[X]
+
+rw  912b,d8  FrameBuf2              ; 216 bytes: Bytes in this range are set to 0 by clearFrameBuf
+rw  912b,12  src_912b               ; 18 bytes: Copied to $0c58 [GfxMidCharset + $58] + Mul8Tbl[X]
+rw  913d,12  src_913d               ; 18 bytes: Copied to $0c59 [GfxMidCharset + $59] + Mul8Tbl[X]
+rw  914f,12  src_914f               ; 18 bytes: Copied to $0c5a [GfxMidCharset + $5a] + Mul8Tbl[X]
+rw  9161,12  src_9161               ; 18 bytes: Copied to $0c5b [GfxMidCharset + $5b] + Mul8Tbl[X]
+rw  9173,12  src_9173               ; 18 bytes: Copied to $0c5c [GfxMidCharset + $5c] + Mul8Tbl[X]
+rw  9185,12  src_9185               ; 18 bytes: Copied to $0c5d [GfxMidCharset + $5d] + Mul8Tbl[X]
+rw  9197,12  src_9197               ; 18 bytes: Copied to $0c5e [GfxMidCharset + $5e] + Mul8Tbl[X]
+rw  91a9,12  src_91a9               ; 18 bytes: Copied to $0c5f [GfxMidCharset + $5f] + Mul8Tbl[X]
+rw  91bb,12  src_91bb               ; 18 bytes: Copied to $0d98 [GfxMidCharset + $198] + Mul8Tbl[X]
+rw  91cd,12  src_91cd               ; 18 bytes: Copied to $0d99 [GfxMidCharset + $199] + Mul8Tbl[X]
+rw  91df,12  src_91df               ; 18 bytes: Copied to $0d9a [GfxMidCharset + $19a] + Mul8Tbl[X]
+rw  91f1,12  src_91f1               ; 18 bytes: Copied to $0d9b [GfxMidCharset + $19b] + Mul8Tbl[X]
+
+rw  9203,d8  FrameBuf3              ; 216 bytes: Bytes in this range are set to 0 by clearFrameBuf
+rw  9203,12  src_9203               ; 18 bytes: Copied to $0d9c [GfxMidCharset + $19c] + Mul8Tbl[X]
+rw  9215,12  src_9215               ; 18 bytes: Copied to $0d9d [GfxMidCharset + $19d] + Mul8Tbl[X]
+rw  9227,12  src_9227               ; 18 bytes: Copied to $0d9e [GfxMidCharset + $19e] + Mul8Tbl[X]
+rw  9239,12  src_9239               ; 18 bytes: Copied to $0d9f [GfxMidCharset + $19f] + Mul8Tbl[X]
+rw  924b,12  src_924b               ; 18 bytes: Copied to $0ed8 [GfxMidCharset + $2d8] + Mul8Tbl[X]
+rw  925d,12  src_925d               ; 18 bytes: Copied to $0ed9 [GfxMidCharset + $2d9] + Mul8Tbl[X]
+rw  926f,12  src_926f               ; 18 bytes: Copied to $0eda [GfxMidCharset + $2da] + Mul8Tbl[X]
+rw  9281,12  src_9281               ; 18 bytes: Copied to $0edb [GfxMidCharset + $2db] + Mul8Tbl[X]
+rw  9293,12  src_9293               ; 18 bytes: Copied to $0edc [GfxMidCharset + $2dc] + Mul8Tbl[X]
+rw  92a5,12  src_92a5               ; 18 bytes: Copied to $0edd [GfxMidCharset + $2dd] + Mul8Tbl[X]
+rw  92b7,12  src_92b7               ; 18 bytes: Copied to $0ede [GfxMidCharset + $2de] + Mul8Tbl[X]
+rw  92c9,12  src_92c9               ; 18 bytes: Copied to $0edf [GfxMidCharset + $2df] + Mul8Tbl[X]
+
+rw  92db,d8  FrameBuf4              ; 216 bytes: Bytes in this range are set to 0 by clearFrameBuf
+rw  92db,12  src_92db               ; 18 bytes: Copied to $1058 [GfxBtmCharset + $58] + Mul8Tbl[X]
+rw  92ed,12  src_92ed               ; 18 bytes: Copied to $1059 [GfxBtmCharset + $59] + Mul8Tbl[X]
+rw  92ff,12  src_92ff               ; 18 bytes: Copied to $105a [GfxBtmCharset + $5a] + Mul8Tbl[X]
+rw  9311,12  src_9311               ; 18 bytes: Copied to $105b [GfxBtmCharset + $5b] + Mul8Tbl[X]
+rw  9323,12  src_9323               ; 18 bytes: Copied to $105c [GfxBtmCharset + $5c] + Mul8Tbl[X]
+rw  9335,12  src_9335               ; 18 bytes: Copied to $105d [GfxBtmCharset + $5d] + Mul8Tbl[X]
+rw  9347,12  src_9347               ; 18 bytes: Copied to $105e [GfxBtmCharset + $5e] + Mul8Tbl[X]
+rw  9359,12  src_9359               ; 18 bytes: Copied to $105f [GfxBtmCharset + $5f] + Mul8Tbl[X]
+rw  936b,12  src_936b               ; 18 bytes: Copied to $1198 [GfxBtmCharset + $198] + Mul8Tbl[X]
+rw  937d,12  src_937d               ; 18 bytes: Copied to $1199 [GfxBtmCharset + $199] + Mul8Tbl[X]
+rw  938f,12  src_938f               ; 18 bytes: Copied to $119a [GfxBtmCharset + $19a] + Mul8Tbl[X]
+rw  93a1,12  src_93a1               ; 18 bytes: Copied to $119b [GfxBtmCharset + $19b] + Mul8Tbl[X]
+
+rw  93b3,d8  FrameBuf5              ; 216 bytes: Bytes in this range are set to 0 by clearFrameBuf
+rw  93b3,12  src_93b3               ; 18 bytes: Copied to $119c [GfxBtmCharset + $19c] + Mul8Tbl[X]
+rw  93c5,12  src_93c5               ; 18 bytes: Copied to $119d [GfxBtmCharset + $19d] + Mul8Tbl[X]
+rw  93d7,12  src_93d7               ; 18 bytes: Copied to $119e [GfxBtmCharset + $19e] + Mul8Tbl[X]
+rw  93e9,12  src_93e9               ; 18 bytes: Copied to $119f [GfxBtmCharset + $19f] + Mul8Tbl[X]
+rw  93fb,12  src_93fb               ; 18 bytes: Copied to $12d8 [GfxBtmCharset + $2d8] + Mul8Tbl[X]
+rw  940d,12  src_940d               ; 18 bytes: Copied to $12d9 [GfxBtmCharset + $2d9] + Mul8Tbl[X]
+rw  941f,12  src_941f               ; 18 bytes: Copied to $12da [GfxBtmCharset + $2da] + Mul8Tbl[X]
+rw  9431,12  src_9431               ; 18 bytes: Copied to $12db [GfxBtmCharset + $2db] + Mul8Tbl[X]
+rw  9443,12  src_9443               ; 18 bytes: Copied to $12dc [GfxBtmCharset + $2dc] + Mul8Tbl[X]
+rw  9455,12  src_9455               ; 18 bytes: Copied to $12dd [GfxBtmCharset + $2dd] + Mul8Tbl[X]
+rw  9467,12  src_9467               ; 18 bytes: Copied to $12de [GfxBtmCharset + $2de] + Mul8Tbl[X]
+rw  9479,12  src_9479               ; 18 bytes: Copied to $12df [GfxBtmCharset + $2df] + Mul8Tbl[X]
+
+rw  948b,48  dat_948b               ; 72 bytes:
+                                    ;     sub_78ea - checks if value >= 0. If so,
+                                    ;     sub_7ad4 - zeroed
+                                    ;
+
+rw  94d3,4   MapCellData9           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[9])
+
+rw  94d7,28  unk_94d7               ; 40 bytes unknown
+
+rw  94ff,4   MapCellData8           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[8])
+
+rw  9503,28  unk_9503               ; 40 bytes unknown
+
+rw  952d,4   MapCellData7           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[7])
+
+rw  952f,28  unk_952f               ; 40 bytes unknown
+
+rw  9557,4   MapCellData6           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[6])
+
+rw  955b,28  unk_955B               ; 40 bytes unknown
+
+rw  9583,4   MapCellData5           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[5])
+
+rw  9587,28  unk_9587               ; 40 bytes unknown
+
+rw  95af,4   MapCellData4           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[4])
+
+rw  95b3,28  unk_95b3               ; 40 bytes unknown
+
+rw  95db,4   MapCellData3           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[3])
+
+rw  95df,28  unk_95df               ; 40 bytes unknown
+
+rw  9607,4   MapCellData2           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[2])
+
+rw  960b,28  unk_960b               ; 40 bytes unknown
+
+rw  9633,4   MapCellData1           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[1])
+
+rw  9637,28  unk_9637               ; 40 bytes unknown
+
+rw  965f,4   MapCellData0           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[0])
+
+rw  9663,28  unk_9663               ; 40 bytes unknown, but seemingly significant
+
+rw  968b,66  unk_968b               ; 102 bytes unknown, possibly unused
+
+; $96f0 - Location where textures are loaded into memory (5392 bytes [$1510])
+rw  96f0,1   TexNumber              ; [$0000] 1 byte: Texture number (1..6)
+rw  96f1,10  TexWallType_L          ; [$0001] 16 bytes: LSB of address of texture to use for corresponding wall code
+rw  9701,10  TexWallType_H          ; [$0011] 16 bytes: MSB of address of texture to use for corresponding wall code
+                                    ;             Tex#1        Tex#2       Tex#3       Tex#4       Tex#5       Tex#6
+                                    ;             (Normal)     (Cryst/Mir) (Dragon)    (Goblin)    (Mausoleum) (Alien)
+                                    ;   0 (none): $0000        $0000       $0000       $0000       $0000       $0000
+                                    ;   1 (arch): $a4fd        $a4fd       $a4fd       $9e07       $9e07       $9e07
+                                    ;   2 (arch): $a4fd        $a4fd       $a4fd       $9e07       $9e07       $9e07
+                                    ;   3 (door): $9e07        $9711       $9e07       $a4fd       $a4fd       $a4fd
+                                    ;   4 (door): $9e07        $9711       $9e07       $a4fd       $a4fd       $a4fd
+                                    ;   5 (scdr): $9711        $9e07       $9711       $9711       $9711       $9711
+                                    ;   6 (scdr): $9711        $9711       $9711       $9711       $9711       $9711
+                                    ;   7 (ildr): $9711        $9711       $9711       $9711       $9711       $9711
+                                    ;   8 (lkdr): $9e07        $9711       $9e07       $9711       $a4fd       $9711
+                                    ;   9 (bldr): $9e07        $9711       $9e07       $9711       $a4fd       $9711
+                                    ;  10 (endr): $9e07        $9711       $9e07       $9711       $a4fd       $9711
+                                    ;  11 (wall): $9711        $9711       $9711       $9e07       $9e07       $9e07
+                                    ;  12 (wall): $9711        $9711       $9711       $9e07       $9e07       $9e07
+                                    ;  13 (wall): $9711        $9e07       $9711       $9711       $9711       $9711
+                                    ;  14 (wall): $9711        $9711       $9711       $9711       $9711       $9711
+                                    ;  15 (wall): $9711        $9711       $9711       $9711       $9711       $9711
+rw  9711,1   TexUnknown1            ; [$0021] Unknown 72 bytes
+rw  9759,1   TexFull1               ; [$0069] First full-size texture image (72x72, 2bpp, 1296 bytes)
+rw  9c69,1   TexHalf1               ; [$0579] First half-size texture image (36x36, 2bpp, 324 bytes)
+rw  9dad,1   TexQuarter1            ; [$06bd] First quarter-size texture image
+                                    ;         (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+rw  9e07,1   TexUnknown2            ; [$0717] Unknown 72 bytes
+rw  9e4f,1   TexFull2               ; [$075f] Second full-size texture image (72x72, 2bpp, 1296 bytes)
+rw  a35f,1   TexHalf2               ; [$0c6f] Second half-size texture image (36x36, 2bpp, 324 bytes)
+rw  a4a3,1   TexQuarter2            ; [$0db3] Second quarter-size texture image
+                                    ;         (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+rw  a4fd,1   TexUnknown3            ; [$0e0d] Unknown 72 bytes
+rw  a545,1   TexFull3               ; [$0e55] Third full-size texture image (72x72, 2bpp, 1296 bytes)
+rw  aa55,1   TexHalf3               ; [$1365] Third half-size texture image (36x36, 2bpp, 324 bytes)
+rw  ab99,1   TexQuarter3            ; [$14a9] Third quarter-size texture image
+                                    ;         (20x18, 2bpp, 90 bytes; eff. 18x18 last 2px in each row ignored)
+rw  abf3,1   TexFiller              ; [$1503] Possible filler (13 bytes)
+
+; $ac00 - 5120 bytes: Location where maps are loaded into memory
+
+rw  af00,7d  ZoneRefTbl             ; 125 bytes: Zone reference table for the currently loaded map
+
+rw  af00,1   ZoneRefsSize           ; Number of entries in the table, minus one
+rw  af01,1   ZoneRefY1              ; Lower Y limit for the zone (inclusive)
+rw  af02,1   ZoneRefX2              ; Upper X limit for the zone (exclusive)
+rw  af03,1   ZoneRefY2              ; Upper Y limit for the zone (exclusive)
+rw  af04,1   ZoneRefX1              ; Lower X limit for the zone (inclusive)
+rw  af05,1   ZoneRefId              ; ID of the zone to apply to the cells in the region
+
+    ; Table of zone definitions (8 bytes per entry; entry 0 is default and not referenced in zone region table)
+rw  af7e,82  ZoneDefTbl             ; 130 bytes: Zone definition table for the currently loaded map
+
+rw  af7e,1   ZoneDefTex             ; Texture set ID to use for the zone
+rw  af7f,1   ZoneDefWarmUnk         ; Zone definition byte B (high nibble = zone warmth; low nibble = ??)
+rw  af80,1   ZoneDef_Flags          ; Bitfield incl. light level bit
+    ; For color details see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
+rw  af81,1   ZoneDefWallClr1        ; Wall color #1
+rw  af82,1   ZoneDefWallClr2        ; Wall color #2
+rw  af83,1   ZoneDefWallClr3        ; Wall color #3
+rw  af84,1   ZoneDefCeilClr         ; Ceiling color
+rw  af85,1   ZoneDefFlrClr          ; Floor color
+
+    ; Map cell wall, description and special codes
+rw  b000,1000 MapCells              ; 4096 bytes: Map cell wall, description and special codes
+rw  b000,1   MapWall_E_N            ; Map cell E/N wall byte (high nibble = East; low nibble = North)
+rw  b001,1   MapWall_W_S            ; Map cell W/S wall byte (High nibble = West; low nibble = South)
+rw  b002,1   MAP_LOC_DESCR          ; First map cell description index byte
+rw  b003,1   MAP_SPECIAL            ; First map cell special code byte
+

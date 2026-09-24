@@ -52,8 +52,8 @@
 361D: 10 F7             BPL TLPCPYL4                ; Loop while X >= 0 (5 iterations)
 361F: A9 FF             LDA #$FF                    ; Load #$ff (-1) into A
 3621: 8D 6A 19          STA $196A                   ;
-3624: 8D 12 19          STA ZONE_ID                 ; Update current Zone ID to #$ff (-1) to trigger update
-3627: 8D 38 19          STA $1938                   ;
+3624: 8D 12 19          STA CurZoneId               ; Update current Zone ID to #$ff (-1) to trigger update
+3627: 8D 38 19          STA CurNumDropped           ;
 362A: 8D 39 19          STA $1939                   ;
 362D: 4C 8C 31          JMP $318C                   ;
 ;3630: 00 00 00 00 00 TLPTMPBUF                     ; 5 bytes of temporary storage

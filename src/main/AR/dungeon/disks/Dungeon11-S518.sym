@@ -16,20 +16,15 @@ rw  0002,2   BEParam1               ; multBEInt16 input: Big endian 16-bit unsig
 
 rw  0002,2   LEResult               ; multBytes output: Little endian 16-bit unsigned integer result
 rw  0004,1   MBTemp1                ; multBytes temp: Holds initial value of A (multiplicand 1)
-                                    ;     Kernel loader: sub_819e: used for temp storage
 rw  0005,1   MBTemp2                ; multBytes temp: Holds bit-shifted values of Y (multiplicand 2)
 
 rw  0002,1   DivQuotient            ; divByteBy10, divUint16Uint8: Quotient of result
 rw  0003,1   DivRemainder           ; divByteBy10, divUint16Uint8: Remainder of result
 rw  0004,1   DivDivisor             ; divByteBy10, divUint16Uint8: Holds input X value
-
-rw  0006,1   dat_0006               ; 1 byte:
-                                    ;   used as:
-                                    ;     - readNextSector: number of retries remaining (loop ctl) [2..1]
-                                    ;     - readBEUInt16: loop ctl var: number of BCD digits processed
-                                    ;     - sub_508c: loop ctl: menu selection index [3..0]
-                                    ;     - sub_80d2 (kernel loader): loop ctl: disk drive number [3..0], Sector count [4..1]
-                                    ;     - sub_f9f4 (kernel loader): loop ctl: number of retries remaining
+rw  0006,1   Count                  ; 1 byte: Generic counter used as a loop control variable for purposes such as
+                                    ;     number of retries remaining (readNextSector),
+                                    ;     current drive or sector (initStorage), menu selection index (load4SelItmNms),
+                                    ;     and digit position (readBEUInt16)
 rw  0007,2   BEParam2               ; multBEInt16 input: Big endian 16-bit unsigned integer input multiplicand 2
 rw  0007,1   SourceAdr_L            ; LSB of address typically used as a source for copying or comparison
 rw  0008,1   SourceAdr_H            ; MSB of address typically used as a source for copying or comparison
@@ -37,11 +32,14 @@ rw  0009,1   DestAdr_L              ; LSB of address typically used as a destina
 rw  000a,1   DestAdr_H              ; LSB of address typically used as a destination for copying or comparison
 rw  000b,1   NumBytes_L             ; LSB of int16 typically used as number of bytes to copy, read, write
 rw  000c,1   NumBytes_H             ; MSB of int16 typically used as number of bytes to copy, read, write
-rw  000d,1   dat_000d_L             ; LSB of address
-rw  000e,1   dat_000d_H             ; MSB of address
-rw  000f,1   dat_000f               ; 1 byte
-rw  0010,1   MapCell_L              ; LSB of address of current map cell data.
-rw  0011,1   MapCell_H              ; MSB of address of current map cell data.
+rw  000d,1   TmplTblAdr_L           ; LSB of address: Used in getTemplateAdr to temporarily hold location of template
+                                    ;     address table to read from
+rw  000e,1   TmplTblAdr_H           ; MSB of address: Used in getTemplateAdr to temporarily hold location of template
+                                    ;     address table to read from
+rw  000f,1   DisableEffects         ; 1 byte: Whether effects are enabled or not. Effects are only processed if the
+                                    ;     value is 0.
+rw  0010,1   MapLoc_L               ; LSB of address of current map cell data.
+rw  0011,1   MapLoc_H               ; MSB of address of current map cell data.
 rw  0012,1   DescTbl_L              ; LSB of current map location description table address
 rw  0013,1   DescTbl_H              ; MSB of current map location description table address
 rw  0014,1   DescFrag_L             ; LSB of address in current map description fragment table
@@ -72,7 +70,7 @@ rw  0025,1   OutAlignLen            ; 1 byte: Length of line being output, used 
 rw  0026,1   OutAlignEolFlg         ; 1 byte: End of line reached if bit 7 is set
 rw  0027,1   AlignStart_L           ; LSB of start of text being center or right aligned. Used to reset to beginning for output after length is computed.
 rw  0028,1   AlignStart_H           ; MSB of start of text being center or right aligned. Used to reset to beginning for output after length is computed.
-rw  0029,4   tmp_BE_UINT32          ; 4 bytes: Temp big-endian uint32 to convert to string
+rw  0029,4   TmpBeUint32            ; 4 bytes: Temp big-endian uint32 to convert to string
 
 rw  002d,1   OutWidth               ; 1 byte: Output width for value
 
@@ -92,8 +90,8 @@ rw  0030,1   KbdPendChar            ; ATASCII of most recent key read, but not y
                                     ;   $11 (17) = If START key was released
                                     ;   $12 (18) = If OPTION key was released
 rw  0031,1   KbdChar                ; ATASCII of most recent key read by readKey
-rw  0032,1   flg_PAUSED             ; If <0, then gamed is paused
-rw  0033,1   dat_0033               ;
+rw  0032,1   TimePaused             ; If <0, then game time is paused
+rw  0033,1   dat_0033               ; Counter updated in irq_VVBLKI. Every 4th update, it is reset and the time spinner is updated/time ticks forward one in-game minute? Possibly updated every 4 seconds?
 rw  0034,1   dat_0034               ; Counter around vvblki_BLINK   ?related to blinking text?
 rw  0035,1   TimeMin                ; Current game time minute of the hour
 rw  0036,1   TimeHour               ; Current game time hour of the day
@@ -116,12 +114,11 @@ rw  0046,1   AttrAddr_H             ; MSB of an attribute address
                                     ;   Used in: incAttr, decAttr, applyEffects, incChrAttr, incChrAttr8,
                                     ;   incChrAttr16, decChrAttr, decChrAttr8, decChrAttr16, setChrAttrAdr,
                                     ;   applyEffects & continuations
-rw  0047,1   dat_0047_L             ; LSB of address
-rw  0048,1   dat_0047_H             ; MSB of address
-rw  0049,1   dat_0049               ; 1 byte: temp, loop ctl var in sub_55b7
+rw  0047,1   SavItmAtrs_L           ; LSB of item attributes address
+rw  0048,1   SavItmAtrs_H           ; MSB of item attributes address
+rw  0049,1   EffectIndex            ; 1 byte: temp, loop ctl var in sub_55b7
                                     ;    - setDiseaseNms, setCurseNames, setMagicNames - loop ctl var
-                                    ;    -
-rw  004a,1   dat_004a               ; 1 byte
+rw  004a,1   dat_004a               ; 1 byte: ? holds an effect index ?
 rw  004b,1   ItemIndex              ; 1 byte: item index parameter
 rw  004c,1   dat_004c               ; 1 byte
 rw  004d,1   dat_004d               ; 1 byte
@@ -133,8 +130,8 @@ rw  004f,1   dat_004f               ; 1 byte:
 rw  0050,1   dat_0050               ; 1 byte: a flag - 0 = false, any non-0 = true
 rw  0051,1   AttrAdjAmt             ; 1 byte: Amount to adjust an attr by
 
-rw  0052,1   dat_0052               ; 1 byte
-rw  0053,1   dat_0053               ; 1 byte
+rw  0052,1   dat_0052               ; 1 byte: ? Number of steps for current effect ?
+rw  0053,1   dat_0053               ; 1 byte: ? Step amount for current effect ?
 rw  0054,1   AttrSize               ; 1 byte: Add 1 for size of attribute in bytes (incChrAttr/decChrAttr/applyEffects)
 rw  0055,1   dat_0055               ; 1 byte
 rw  0056,1   dat_0056               ; 1 byte
@@ -143,7 +140,7 @@ rw  0058,1   dat_0058_L             ; LSB of address: assigned to address of eff
 rw  0059,1   dat_0058_H             ; MSB of address
 rw  005a,1   EffLvlStr_L            ; Temp: Holds LSB of effect level string description address. Only used in updEffectStrs.
 rw  005b,1   EffLvlStr_H            ; Temp: Holds MSB of effect level string description address. Only used in updEffectStrs.
-rw  005c,1   dat_005c               ; used as loop ctl var in updEffectStrs, sub_41fc
+rw  005c,1   dat_005c               ; used as loop ctl var in updEffectStrs, calcItemStats
                                     ;  Index into EffLimitTbls_L/H, EffTimers
                                     ;     EffApplyFreq, tbl_45fc
 
@@ -252,7 +249,7 @@ rw  0256,1   dat_0256               ; Related to blinking text?  Maybe enable/di
                                     ;      - decremented in (cont) vvblki_BLINK
 rw  0257,1   SioErrReply            ; Set to $ff if an error status was received while reading an ACK/COMPLETE response,
                                     ;    otherwise 0. Note, will be 0 on timeout, since no response was received.
-rw  0258,1   SysMemorySize          ; 1 byte: Detected memory size (assigned by sub_819e in KERNEL_LOADER)
+rw  0258,1   SysMemorySize          ; 1 byte: Detected memory size (assigned by detectMemSize in KERNEL_LOADER)
                                     ;         0 = 48K, $80 = 64K, $c0 = 128K (and higher?)
 rw  0259,1   dat_0259               ; 1 byte
 rw  025a,1   dat_025a               ; 1 byte: flag indicating the value of the bit in dat_2a38_unk corresponding to
@@ -390,7 +387,7 @@ rwx 1851,1   j_setStatPgStr2        ; Alias for setStatPgStr2
 rwx 1854,1   j_initBytes            ; Alias for initBytes
 rwx 1857,1   j_sub_2c6f             ; Alias for sub_2c6f
 rwx 185a,1   j_waitSeconds          ; Alias for waitSeconds
-rwx 185d,1   j_sub_2c9b             ; Alias for sub_2c9b
+rwx 185d,1   j_getTemplateAdr       ; Alias for getTemplateAdr
 rwx 1860,1   j_updateBit            ; Alias for updateBit
 rwx 1863,1   j_testBit              ; Alias for testBit
 rwx 1866,1   j_copyBytes            ; Alias for copyBytes
@@ -426,11 +423,11 @@ rw  18b7,1   dat_18b7               ; Updated in HANDLE_VBLKI, but not read?
 rw  18B8,1   CUR_COLPF2_NUM         ; Offset to values at $1c19 [tbl_COLPF2] (one of: $46, $68, $88)
 rw  18B9,1   CUR_DLIST_NUM          ; Currently active DLIST number
 
-rw  18ba,1   CUR_COLPF0             ; Value assigned to COLPF0 (playfield 0 color) during display rendering
-rw  18bb,1   CUR_COLPF1             ; Value assigned to COLPF1 during display rendering
-rw  18bc,1   CUR_COLPF2             ; Value assigned to COLPF2 during display rendering
-rw  18bd,1   CUR_COLBK              ; Value assigned to COLBK during display rendering
-rw  18be,1   COLBK_SET_18Be         ; Value assigned to COLBK during display rendering
+rw  18ba,1   CUR_COLPF0             ; Value assigned to COLPF0 (playfield 0 color) during display rendering (wall clr 0)
+rw  18bb,1   CUR_COLPF1             ; Value assigned to COLPF1 during display rendering (wall clr 1)
+rw  18bc,1   CUR_COLPF2             ; Value assigned to COLPF2 during display rendering (wall clr 2)
+rw  18bd,1   CUR_COLBK              ; Value assigned to COLBK during display rendering (ceiling color)
+rw  18be,1   COLBK_SET_18Be         ; Value assigned to COLBK during display rendering (floor color)
 rw  18bf,1   CUR_COLPF3             ; Value assigned to COLPF3 during display rendering
 
 rw  18c1,3   SavedOutCol            ; 3 bytes: Holds saved OutCol values
@@ -438,9 +435,14 @@ rw  18c4,3   SavedOutRow            ; 3 bytes: Holds saved OutRow values (combin
 rw  18c7,1   SavedOutBlink          ; 3 bytes: Holds saved OutBlink blink values
 rw  18ca,8   OUT_UBCD_BUF           ; 10 bytes (8 used): Used to hold unpacked BCD values for output
 rw  18d4,1   MaxInputLen            ; 1 byte: Line buffer input length limit
-rw  18d5,2a  LineBuf                ; 42? byte (40 used) string line buffer
-
-rw  18fe,1   dat_18fe               ; 1 byte
+rw  18d5,29  LineBuf                ; 41? bytes (40 used): String line buffer
+rw  18fe,1   NoNumPadFlg            ; 1 byte: Flag to disable trailing space padding following numeric outputs,
+                                    ;    providing additional control over how numbers are output.
+                                    ;    When 0: values output will be right-padded with spaces to fill the specified
+                                    ;      maximum width.
+                                    ;    When less than 0 (e.g. $ff): no extra padding will be output, but the maximum
+                                    ;      width is still enforced as the maximum number of digits that may be
+                                    ;      displayed.
 rw  18ff,1   dat_18ff               ; 1 byte: flag indicating whether a new key should be read or not
 rw  1900,1   KBD_CONSOL             ; 1 byte: Status of console keys. Updated in vblank, same values as CONSOL
                                     ;
@@ -466,17 +468,19 @@ rw  190e,1   MayCancelLoad          ; 1 byte: Whether a file load operation may 
 rw  190f,1   dat_190f               ; 1 byte. Updated in readFileScan
 rw  1910,1   FileDiskSide           ; Disk side (1 or 2) Referenced in StrPleaseInsert
 rw  1911,1   FileDiskNumber         ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
-rw  1912,1   ZONE_ID                ; Zone ID value to apply
-rw  1913,10  tbl_1913_L             ; 16? bytes: LSB of status page string template address, MSB in tbl_1923_H
-rw  191a,1   dat_191a               ;
-rw  1923,10  tbl_1923_H             ; 16? bytes: MSB of status page string template address, LSB in tbl_1913_L
-rw  192a,1   dat_192a               ; Assigned to 0
+rw  1912,1   CurZoneId              ; Current Zone ID based on the player's current location
+rw  1913,10  StatusTmpl_L           ; 16 bytes: Holds LSBs of status page string template addresses
+rw  191a,1   dat_191a               ; - LSB for status page 7 template address
+rw  1923,10  StatusTmpl_H           ; 16 bytes: Holds MSBs of status page string template addresses
+rw  192a,1   dat_192a               ; - LSB for status page 7 template address
 rw  1933,1   CurStatusPage          ; Index of currently selected status page
 rw  1934,1   NumStatusPages         ; Number of status pages
 rw  1935,1   DispStatusPage         ; Index of most recently displayed status page
-rw  1936,1   dat_1936               ;
-rw  1937,1   dat_1937               ;
-rw  1938,1   UNK_BYTE_1938          ;
+rw  1936,1   PrevStatusPage         ; Previous status page to return to after menu or prompt is completed or cancelled.
+rw  1937,1   AllowActions           ; Flag controlling whether get, cast, use, drop, save and examine actions are
+                                    ;     enabled. The actions are permitted when this value is >= 0.
+rw  1938,1   CurNumDropped          ; Holds the number of dropped items at the current player position. Set to $ff if
+                                    ;     the value is unknown or needs to be recalculated.
 rw  1939,1   CurDescNum             ; Index of currently displayed cell description ($ff = needs update)
 rw  193a,1   MenuTitleAdr_L         ; LSB of NUL-terminated menu title
 rw  193b,1   MenuTitleAdr_H         ; MSB of NUL-terminated menu title
@@ -491,25 +495,41 @@ rw  1943,1   ZtsAddr4_H             ; MSB: Address of NUL-terminated string #4 f
 rw  1944,1   MenuFootrAdr_L         ; LSB of menu footer format substring
 rw  1945,1   MenuFootrAdr_H         ; MSB of menu footer format substring
 rw  1946,4   MenuSelItems           ; 4 bytes: Holds inventory indexes of items associated with menu selections
-rw  194a,1   dat_194a               ; Status page index to assign the menu template string to
-rw  194b,1   ZONE_TEXTURE_SET       ; The texture set to use. 01 = Typical; 02 = Mirror/Crystal; 03 = Dragon; 04 = Goblin; 05 = Mausoleum
-rw  194c,1   ZONE_B_BYTE            ; Byte value (not bitfield)
-rw  194d,1   ZONE_C_BF_LITE         ; Bit field containing light/dark area bit
-rw  194e,1   ZONE_WALL_CLR0         ; Wall color #1 (e.g. normal walls = 26 Brownish)
-rw  194f,1   ZONE_WALL_CLR1         ; Wall color #2 (e.g. normal walls = 00 Black)
-rw  1950,1   ZONE_WALL_CLR2         ; Wall color #3 (e.g. normal walls = 0A Grey)
-rw  1951,1   ZONE_CEILING_CLR       ; Ceiling color
-rw  1952,1   ZONE_FLOOR_CLR         ; Floor color
-rw  1953,1   ZONE_WARMTH            ; Zone base temperature/warmth
+rw  194a,1   PromptStatusPg         ; Status page index to use for displaying a menu or prompt template string
+rw  194b,1   CurZoneTex             ; The texture set to use for the current zone
+                                    ;   01 = Typical    02 = Mirror/Crystal     03 = Dragon
+                                    ;   04 = Goblin     05 = Mausoleum          06 = Alien
+rw  194c,1   CurZoneUnk             ; Byte value (not bitfield [0..15])...
+                                    ;   - Possible danger level? Appears encounter-related.
+                                    ;   - Possible encounter table number?
+                                    ;   - May be updated during encounter
+                                    ;   - Also related to CurZoneFlags bit 2
+rw  194d,1   CurZoneFlags           ; Bit field containing flags
+                                    ;   76543 2 1 0
+                                    ;   ????? C B A
+                                    ;     |   | | +-- Light level (0 = dark, 1 = light)
+                                    ;     |   | +---- Related to perception (checked for "Something is odd here" message)
+                                    ;     |   |         TODO: More analysis needed
+                                    ;     |   +------ Used during encounters
+                                    ;     |             TODO: More analysis needed
+                                    ;     +---------- TODO: Currently unknown if these bit have any meaning
+rw  194e,1   CurZneWallClr0         ; Current zone wall color #1 (e.g. normal walls = 26 Brownish)
+rw  194f,1   CurZneWallClr1         ; Current zone wall color #2 (e.g. normal walls = 00 Black)
+rw  1950,1   CurZneWallClr2         ; Current zone wall color #3 (e.g. normal walls = 0A Grey)
+rw  1951,1   CurZoneCeilClr         ; Current zone ceiling color
+rw  1952,1   CurZoneFlrClr          ; Current zone floor color
+rw  1953,1   CurZoneWarmth          ; Current zone base temperature/warmth
 rw  1954,1   dat_1954               ; 1 byte: assigned, but not obviously read anywhere
                                     ;   - contMoveWall: Assigns to $ff if the player's fractional position matches the wall boundary (perhaps to indicate collision)
-rw  1955,1   dat_1955               ; ?Possible flag indicating whether time is paused or not? Seems to only be read and not updated?
+rw  1955,1   dat_1955               ; ?Possible flag related to time progression? Seems to only be read and not updated?
                                     ;   - irq_VVBLKI: Reads value in two places related to updating the time spinner on the display
 rw  1956,1   UNK_BYTE_COUNTER       ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
 rw  1957,1   dat_1957               ;
-rw  1958,1   UNK_BYTE_1958          ; Assigned to $ff if $1959 == 2
-rw  1959,1   UNK_BYTE_1959          ; Compared to #$02, if it is 2, then $ff is loaded into $1958
-rw  195a,1   MapCellSpclCode        ; Holds special code index number parameter value for
+rw  1958,1   UNK_BYTE_1958          ; Whether encounter, treasure, message, and teleport handlers are enabled in
+                                    ;     sub_3183/contCheckPos.
+rw  1959,1   MapLocSpclType         ; The current location's special code "type" (the value of bits 4..6 of the code)
+                                    ;     0 = Encounter; 1 = Treasure; 2 = Message; 3 = Teleport
+rw  195a,1   MapLocSpclNum          ; Holds special code index number parameter value for
                                     ;   treasure, encounter, message, and teleport special codes.
 rw  195b,1   dat_195b               ; assigned CHR_FRAC_LOC_X in sub_2ff3... not read?
 rw  195c,1   dat_195c               ; assigned CHR_FRAC_LOC_Y in sub_2ff3... not read?
@@ -519,8 +539,9 @@ rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff   Possibly rel
 rw  195e,1   WarmthBonus            ; 1 byte: Holds warmth bonus provided by equipped apparel
 rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
                                     ;     update should occur. 0 is false, and any non-0 value is seen as true.
-rw  1960,1   StatRecalcFlg          ; 1 byte: Checked in sub_41fc to determine whether a stat update calc should
-                                    ;     occur. 0 is false, and any non-0 value is seen as true.
+rw  1960,1   ItemStatUpdFlg         ; 1 byte: Checked in calcItemStats to determine whether an update of stats affected
+                                    ;     by items (burden, warmth, dapperness) should occur. 0 is false, and any non-0
+                                    ;     value is seen as true.
 rw  1961,1   dat_1961               ;
 rw  1962,1   dat_1962               ;
 rw  1963,7   EffLevels              ; 7 bytes: Previous threshold index for an effect
@@ -536,7 +557,7 @@ rw  1968,1   EffInebrLvl            ; EffLevels[5]: Inebriation effect level [0.
 rw  1969,1   EffFullnLvl            ; EffLevels[6]: Fullness effect level [0..4]
 
 rw  1968,1   UNK_BYTE_1968          ; Value compared to 1
-rw  196a,1   UNK_BYTE_196A          ; 1 byte
+rw  196a,1   CompassOrient          ; 1 byte: Currently displayed compass orientation
 
 rw  196b,4   dat_196b               ; 4 bytes: player position (ORIENT, X, Y, MAP)
 rw  196f,1   dat_196f               ; 1 byte
@@ -545,9 +566,9 @@ rw  1971,1   dat_1971               ; 1 byte
 rw  1972,1   dat_1972               ; 1 byte:
                                     ;    used in applyBiology: Flag which prevents stamina from decreasing (No decrease if >= 0)
 rw  1973,1   dat_1973               ; 1 byte
-rw  1974,1   MapCellDescNum         ; 1 byte: Current map cell description index
+rw  1974,1   MapLocDescNum          ; 1 byte: Current map cell description index
 rw  1975,1   UNK_BYTE_1975          ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
-rw  1976,1   dat_1976               ; 1 byte: ?? updated based on equipped apparel - dapper? ??
+rw  1976,1   Dapperness             ; 1 byte: Holds dapper total based on equipped apparel
 rw  1977,1   cont_addr_1977_L       ; LSB of address to continue execution at from JMP sub_2ff3
 rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at from JMP sub_2ff3
 rw  1979,1   dat_1979               ;
@@ -1061,18 +1082,18 @@ rwx 2c88,1   rtn_2c88               ; Dynamically specified return location stor
 
 rw  2c99,1   TempContAdr_L          ; Used for preserving the value of cont_addr_1977_L in
 rw  2c9a,1   TempContAdr_H          ; Used for preserving the value of cont_addr_1977_H
-rwx 2c9b,1   sub_2c9b               ; Sets StrTmplate_L/H to the A-th address from the table @ Y/X
+rwx 2c9b,1   getTemplateAdr         ; Sets StrTmplate_L/H to the A-th address from the table @ Y/X
                                     ;   e.g. StrTmplate_L = *(X * 256 + Y)[A * 2]
                                     ;        StrTmplate_H = *(X * 256 + Y)[A * 2 + 1]
 rwx 2cab,1   sub_2cab               ; Does nothing / debug BRK
-rwx 2cad,1   sub_2cad               ;
-                                    ;   - Used to load map @ $ac00
+rwx 2cad,1   sub_2cad               ; Pauses game time progression and loads a module.
+                                    ;   - Used to load map @ $ac00 [MapStart]
 
-rwx 2cc2,1   sub_2cc2               ;
+rwx 2cc2,1   sub_2cc2               ; ? similar to sub_2cad : pause game & load module by file number. Diff: Sets MayCancelLoad to 0 if file number in ForcedFileIds
 
 rw  2cf7,4   ForcedFileIds          ; 4 bytes: Contains file segment entry indexes/file numbers (not IDs) which
                                     ; the user is not permitted to cancel loading.
-                                    ;   0: $10 (16) = Unknown / Compass and arrow character sets
+                                    ;   0: $10 (16) = Normal game play (screen renderer, special messages, etc)
                                     ;   1: $11 (17) = Combat Data
                                     ;   2: $12 (18) = Item Data
                                     ;   3: $3f (63) = Location Names
@@ -1089,7 +1110,7 @@ rw  2d8a,5   tbl_2d8a               ; 5 bytes: File numbers to map to
                                     ;     3: $43 (67 Unknown?)   -> $42 (66 Unknown?)
                                     ;     4: $10 (16 Compass CS) -> $3f (63 Location Names)
 
-rwx 2d8f,5   initBytes              ;
+rwx 2d8f,5   initBytes              ; Initializes bytes to a specified value
 
 rwx 2dab,1   updateBit              ; Sets or clears a bit:
                                     ;   Y/X - LSB/MSB of byte to update
@@ -1102,7 +1123,7 @@ rwx 2ddf,3   smc_2ddf               ; The address for this STA is dynamically mo
 
 rwx 2de3,1   testBit                ; Test whether a specific bit is set within a sequence of bytes.
                                     ;   Params: A = bits 0-2 (8 - bit to test); bits 3-7 (offset), Y/X = buffer address
-rwx 2df3,1   smc_2df3               ;
+rwx 2df3,1   smc_2df3               ; The source address for this LDA is dynamically modified
 
 rw  2dfd,8   tbl_2dfd               ; 8 bytes: dynamically selected in updateBit
 rw  2e05,8   InvBitNMask            ; 8 bytes: Bitmasks for individual bits (Inverted: bit is 7 - index)
@@ -1135,8 +1156,8 @@ rwx 2e9e,1   copyBytesNeg           ; Copies -(NumBytes_H * 256 + NumBytes_L) by
 
 rwx 2ec6,1   kernelInit             ; Initialization code called from KERNEL_ENTRY after base initialization
 
-rw  2f70,8   stdStatPgStr_L         ; LSB of standard status page template string addresses
-rw  2f78,8   stdStatPgStr_H         ; MSB of standard status page template string addresses
+rw  2f70,8   StdStatPgStr_L         ; LSB of standard status page template string addresses
+rw  2f78,8   StdStatPgStr_H         ; MSB of standard status page template string addresses
                                     ;    0: $3cde [StrFdTrchFlsk]
                                     ;    1: $3d84 [StrGoldSilvCop]
                                     ;    2: $3e31 [StrWpnsArmr]
@@ -1146,7 +1167,7 @@ rw  2f78,8   stdStatPgStr_H         ; MSB of standard status page template strin
                                     ;    6: $3f03 [StrCurses]
                                     ;    7: $0000 - unused
 
-rwx 2ff3,1   sub_2ff3               ;
+rwx 2ff3,1   sub_2ff3               ; ?Main game loop? Handles player actions (get, cast, drop, save, quit, pause, etc)... and much more...
 
 rwx 307f,1   cont_307f              ;
 
@@ -1164,11 +1185,15 @@ rw  317f,1   MoveOrient             ;  Movement orientation direction (backwards
                                     ;   Forward:  0 - North; 1 - East; 2 - South; 3 - West
                                     ;   Backward: 4 - North; 5 - East; 6 - South; 7 - West
 
-rwx 3180,1   cont_3180              ; Alias for cont_318c
-rwx 3183,1   sub_3183               ;
-rwx 318c,1   cont_318c              ; Check if player moved to new map
+rwx 3180,1   contCheckPos1          ; Alias for contCheckPos: Check if player moved to new map
+
+rwx 3183,1   sub_3183               ; ....Load map (if necessary) and execute special for current location...
+
+rwx 318c,1   contCheckPos           ; Check if player moved to new map
 
 rwx 31f5,3   smc_31f5               ; The address for this JMP is dynamically modified
+
+rwx 320d,1   cont_320d              ;
 
 rw  3225,7   MapNum2Level           ; 7 bytes: Table for translating a map number to corresponding dungeon level
                                     ;    [01 01 01 01 02 03 04]
@@ -1209,14 +1234,17 @@ rw  3530,1   dat_3530               ; 1 byte
 
 rwx 3531,1   calcCellAddr           ; Computes the address of the character's current cell within the map data
 
-; The following are from addr_3b9f_L/addr_3ba3_H
+; The following are from SpclLocHndlr_L/H
 rwx 3548,1   cont_3548              ; Related to encounters?
 rwx 3564,1   cont_3564              ; Related to treasures?
-rwx 3583,1   cont_Message           ; Adds special message for the current map cell as a status page and displays it.
+rwx 3583,1   contMessage            ; Adds special message for the current map cell as a status page and displays it.
 rwx 3596,1   sub_3596               ; Adds special message for the current map cell as a status page and displays it.
-rwx 35c1,1   cont_Teleport          ; Teleports the player to the teleport destination at MapCellSpclCode*4 of TlpDest
+rwx 35c1,1   contTeleport           ; Teleports the player to the teleport destination at MapLocSpclNum * 4 of TlpDest
 rw  3630,5   TlpColorBuf            ; 5 bytes: Holds previous color values while flashing the screen
 
+rwx 3635,1   pauseGamePlay          ; Pause the game (time, effects, disable action keys, etc) and clear message area.
+rwx 3662,1   resumeGamePlay         ; Resume the game, restoring state saved by pauseGamePlay (time, effects, enable
+                                    ;     action keys, etc).
 rw  3681,1   dat_3681_L             ; Used for preserving the value of cont_addr_1977_L
 rw  3682,1   dat_3681_H             ; Used for preserving the value of cont_addr_1977_H
 
@@ -1224,6 +1252,8 @@ rwx 3683,1   actionExamine          ; Examine items or spells action
 
 rwx 36b1,1   contExmnItems          ; User selected "Examine Inventory"
 rwx 36c3,1   contExmnSpells         ; User selected "Examine Spells"
+
+rwx 36d2,1   cont_36d2              ; Both contExmnItems & contExmnSpells end up here
 
 rw  36ef,12  ZtsExmnItems           ; 18: "Examine Inventory"
 rw  3701,f   ZtsExmnSpells          ; 15: "Examine Spells"
@@ -1250,7 +1280,8 @@ rw  3860,f   StrPaused              ; 15 bytes: "(Paused)"
 
 rwx 386f,1   sub_386f               ;
 
-rw  38cf,1   dat_38cf               ; 1 byte
+rw  38cf,1   NumDropped             ; 1 byte: Temp used in sub_386f for holding the number of dropped items at the
+                                    ;     player's current location.
 rw  38d0,5   StrClrLocDesc2         ; 5 bytes: Clears the secondary location description line
 rw  38d5,24  StrThingsHere          ; 36 bytes: "There are several things here."
 rw  38f9,1e  StrSomthngHere         ; 30 bytes: "There is something here"
@@ -1340,15 +1371,15 @@ rw  3b5c,8   MoveBounds             ; 8 bytes: Minimum/maximum bounds for fracti
                                     ;     7: $23 - West-facing maximum bound
 rw  3b64,8   MoveWallOfs            ; 8 bytes: Offset in map cell data of wall code for direction
                                     ;   Forward movement
-                                    ;     0: $00 - MAP_WALL_E_N (North)
-                                    ;     1: $00 - MAP_WALL_E_N (East)
-                                    ;     2: $01 - MAP_WALL_W_S (South)
-                                    ;     3: $01 - MAP_WALL_W_S (West)
+                                    ;     0: $00 - MapWall_E_N (North)
+                                    ;     1: $00 - MapWall_E_N (East)
+                                    ;     2: $01 - MapWall_W_S (South)
+                                    ;     3: $01 - MapWall_W_S (West)
                                     ;   Backward movement (player orientation + 4)
-                                    ;     4: $01 - MAP_WALL_W_S (North)
-                                    ;     5: $01 - MAP_WALL_W_S (East)
-                                    ;     6: $00 - MAP_WALL_E_N (South)
-                                    ;     7: $00 - MAP_WALL_E_N (West)
+                                    ;     4: $01 - MapWall_W_S (North)
+                                    ;     5: $01 - MapWall_W_S (East)
+                                    ;     6: $00 - MapWall_E_N (South)
+                                    ;     7: $00 - MapWall_E_N (West)
 rw  3b6c,8   MoveWallHigh           ; 8 bytes: Flag indicating nibble with wall code for a movement direction
                                     ;     Bit 7 = 0: Wall code in lower nibble
                                     ;     Bit 7 = 1: Wall code in upper nibble
@@ -1389,18 +1420,51 @@ rw  3b92,d   ActionSubAdr_H         ; 13 byte table of MSB of subroutine address
                                     ;    11: $3c8c [actionPrevStat] - (START) Previous status page action
                                     ;    12: $2cab [sub_2cab] - () Does nothing/debug BRK
 
-rw  3b9f,4   addr_3b9f_L            ; 4 byte table: LSB of address
-rw  3ba3,4   addr_3ba3_H            ; 4 byte table: MSB of address
-                                    ;    0: $3548 [cont_3548]     - (Related to encounters?)
-                                    ;    1: $3564 [cont_3564]     - (Related to treasures?)
-                                    ;    2: $3583 [cont_Message]  - Display location message
-                                    ;    3: $35c1 [cont_Teleport] - Teleport player
+rw  3b9f,4   SpclLocHndlr_L         ; 4 byte table: LSB of addresses of special location code handlers
+rw  3ba3,4   SpclLocHndlr_H         ; 4 byte table: MSB of addresses of special location code handlers
+                                    ;    0: $3548 [cont_3548]    - (Related to encounters?)
+                                    ;    1: $3564 [cont_3564]    - (Related to treasures?)
+                                    ;    2: $3583 [contMessage]  - Display location message
+                                    ;    3: $35c1 [contTeleport] - Teleport player
 
-rw  3ba7,7e  TlpDest                ; 126 bytes / 4 byte entries = 31 entries
+rw  3ba7,7e  TlpDest                ; 128 bytes / 4 byte entries = 32 entries
 rw  3ba7,1   TlpDest_X              ; X location to teleport player to
 rw  3ba8,1   TlpDest_Y              ; Y location to teleport player to
-rw  3ba9,1   TlpDest_Map            ; Map to teleport player to (corresponds to MAP_NUMBER value)
+rw  3ba9,1   TlpDest_Map            ; Map to teleport player to (corresponds to MapNumber value)
 rw  3baa,1   TlpDest_Orient         ; Orientation to assign to player (FF = no chg; <0 = random; 0 = N; 1 = E; 2 = S; 3 = W)
+                                    ; The 32 teleport destinations are:
+                                    ;    0 ($e0): [18, 30, Level 1.1 (NW), Unchanged]
+                                    ;    1 ($e1): [18, 27, Level 1.1 (NW), West]
+                                    ;    2 ($e2): [19, 27, Level 1.1 (NW), East]
+                                    ;    3 ($e3): [15, 23, Level 1.1 (NW), North]
+                                    ;    4 ($e4): [29, 23, Level 1.1 (NW), North]
+                                    ;    5 ($e5): [ 5, 26, Level 1.1 (NW), Unchanged]
+                                    ;    6 ($e6): [20, 31, Level 1.1 (NW), North]
+                                    ;    7 ($e7): [16,  1, Level 1.1 (NW), Unchanged]
+                                    ;    8 ($e8): [11,  1, Level 1.2 (NE), Unchanged]
+                                    ;    9 ($e9): [17,  7, Level 1.2 (NE), Unchanged]
+                                    ;   10 ($ea): [11, 10, Level 1.2 (NE), Unchanged]
+                                    ;   11 ($eb): [11, 27, Level 1.2 (NE), Unchanged]
+                                    ;   12 ($ec): [11, 31, Level 1.2 (NE), Unchanged]
+                                    ;   13 ($ed): [ 8, 15, Level 1.2 (NE), Random]
+                                    ;   14 ($ee): [ 8, 19, Level 1.3 (SW), Random]
+                                    ;   15 ($ef): [ 0,  1, Level 1.3 (SW), Unchanged]
+                                    ;   16 ($f0): [ 9, 30, Level 1.1 (NW), Unchanged]
+                                    ;   17 ($f1): [ 1,  0, Level 1.2 (NE), Unchanged]
+                                    ;   18 ($f2): [30,  0, Level 1.1 (NW), Unchanged]
+                                    ;   19 ($f3): [31, 30, Level 1.2 (NE), Unchanged]
+                                    ;   20 ($f4): [31,  1, Level 1.4 (SE), Unchanged]
+                                    ;   21 ($f5): [ 1, 31, Level 1.4 (SE), Unchanged]
+                                    ;   22 ($f6): [31, 31, Level 1.3 (SW), Unchanged]
+                                    ;   23 ($f7): [ 8, 18, Level 3,        Unchanged]
+                                    ;   24 ($f8): [13, 15, Level 3,        Unchanged]
+                                    ;   25 ($f9): [ 3,  1, Level 1.4 (SE), Unchanged]
+                                    ;   26 ($fa): [ 3, 30, Level 1.2 (NE), Unchanged]
+                                    ;   27 ($fb): [11,  0, Level 2,        Unchanged]
+                                    ;   28 ($fc): [24,  7, Level 1.2 (NE), South]
+                                    ;   29 ($fd): [26,  5, Level 1.2 (NE), North]
+                                    ;   30 ($fe): [28,  7, Level 1.2 (NE), South]
+                                    ;   31 ($ff): [24, 27, Level 1.3 (SW), West]
 
 rwx 3c27,1   dispStatPgIfEq         ; Displays the currently selected status page if A equals CurStatusPage.
 
@@ -1467,7 +1531,7 @@ rwx 413d,1   sub_413d               ;
 
 rw  4168,2   smc_4168               ; The value for this CMP is dynamically modified
 
-rw  4172,4   tbl_4172               ; 4? byte table
+rw  4172,4   tbl_4172               ; 4 bytes:
 
 rwx 4176,1   applyBiology           ; Applies standard time-based adjustments to character biological status (hunger,
                                     ;     thirst, stamina, drunkenness, and stomach)
@@ -1492,12 +1556,12 @@ rw  41f5,7   StdItemWgtDiv          ; 7 bytes: One byte indicating power of 2 we
                                     ;    5: compasses  - divide by 4 (weight = 0.25 * count)
                                     ;    6: timepieces - divide by 4 (weight = 0.25 * count)
 
-rwx 41fc,1   sub_41fc               ;
+rwx 41fc,1   calcItemStats          ; Updates stats affected by items (burden, warmth, dapperness)
 
 rwx 42c8,1   smc_42c8               ; Self-modifying: The arg to this "SBC imm" is dynamically set to effective STR / 2
 
-rw  42e5,1   dat_42e5_L             ; LSB of int16
-rw  42e6,1   dat_42e5_H             ; MSB of int16
+rw  42e5,1   TmpBurden_L            ; LSB of uint16: Temporary storage for player burden calculation
+rw  42e6,1   TmpBurden_H            ; MSB of uint16: Temporary storage for player burden calculation
 
 rwx 42e7,1   updEffectStrs          ; Updates the effect status strings on the display
 rwx 4377,1   applyBioAdj            ; Applies standard biological status effects (stat adjustments/etc based on current
@@ -1883,13 +1947,12 @@ rwx 4959,1   contBitAttr            ; Applies a bitwise operation (XOR, AND, OR)
                                     ;     starting at AttrAddr_L.
 rwx 495b,1   smc_495b               ; Self-modifying code: Assigned one of $45 (EOR), $25 (AND) or $05 (ORA)
 
-rw  4965,3   EffectBitOps           ; Op assigned to smc_495b
+rw  4965,3   EffectBitOps           ; Lookup table for op assigned to smc_495b
                                     ;   0: $45 = EOR zpg
                                     ;   1: $25 = AND zpg
                                     ;   2: $05 = ORA zpg
 
-rw  4968,10  tbl_4968_L             ; Table of addresses (LSB)
-rw  4969,f   tbl_4968_H             ; Table of addresses (MSB)
+rw  4968,10  EfctAttrOps            ; Table of continuation addresses for attribute modification operations.
                                     ; Contains the following values:
                                     ;    0: $494d [contIncAttr]  - Increases attribute value
                                     ;    1: $4953 [contDecAttr]  - Decreases attribute value
@@ -1898,11 +1961,11 @@ rw  4969,f   tbl_4968_H             ; Table of addresses (MSB)
                                     ;    4: $4959 [contBitAttr]  - XOR bytes
                                     ;    5: $4959 [contBitAttr]  - AND bytes
                                     ;    6: $4959 [contBitAttr]  - OR bytes
-                                    ;    7: $4982 [brk_rts_4982]  - this sub is simply a BRK, RTS sequence
+                                    ;    7: $4982 [brk_rts_4982] - this sub is simply a BRK, RTS sequence
 
 rwx 4978,1   contSetAttr            ; Assigns Y bytes @ AttrAddr_L/H to the value in AttrAdjAmt;
                                     ;     Continues @ $4939 [contNextAttr]
-rwx 4982,1   brk_rts_4982           ; Continuation address from tbl_4968_L/H
+rwx 4982,1   brk_rts_4982           ; Continuation address from EfctAttrOp_L/H
 rwx 4984,1   contIterEffect         ; Decreases the repetition count for the current effect (removing effect if it
                                     ;     reaches 0) and moves to the next effect.
 rwx 4999,1   contNextEffect         ; Moves to the next effect
@@ -1912,7 +1975,13 @@ rwx 49af,1   rts_49af               ; RTS
 rwx 49b0,1   allocEffect            ; Reserves a space in the table at $6500 [CHR_Effects] for an effect of the
                                     ;     specified type.
 
-rwx 4a5f,1   sub_4a5f               ;
+rwx 4a01,1   removeEffectAt         ; Removes an effect by item index, including all associated effects.
+
+rwx 4a4a,1   removeEffect           ; Invalidates/removes (sets byte 0 to $80) the current effect, including the
+                                    ; following entry if the current effect's type code is >= $f0 (description w/
+                                    ; linked effect).
+
+rwx 4a5f,1   sub_4a5f               ; Calls sub_4bb3 for each item in the game inventory.
 
 rwx 4a83,1   allocItem              ; Reserves a space in the inventory for an item of the specified size.
 
@@ -1923,16 +1992,16 @@ rwx 4b4d,1   addItem                ; Adds an item to the game inventory.
 rwx 4b74,1   getItemAdr             ; Sets ItemAdr_L/H to the address of the item at index in A
 
 rwx 4b80,1   sub_4b80               ;
-rw  4b82,1   nop_4b82               ; Forms 'BIT $02a2' with following LDA - essential NOP
+rw  4b82,1   nop_4b82               ; Forms 'BIT $02a2' with following LDA (e.g. NOP)
 
 rwx 4b82,1   sub_4b83               ;
-rw  4b85,1   nop_4b85               ; Forms 'BIT $04a2' with following LDA - essential NOP
+rw  4b85,1   nop_4b85               ; Forms 'BIT $04a2' with following LDA (e.g. NOP)
 
 rwx 4b86,1   sub_4b86               ;
-rw  4b88,1   nop_4b88               ; Forms 'BIT $08a2' with following LDA - essential NOP
+rw  4b88,1   nop_4b88               ; Forms 'BIT $08a2' with following LDA (e.g. NOP)
 
 rwx 4b89,1   sub_4b89               ;
-rwx 4b8b,1   nop_4b8b               ; Forms 'BIT $10a2' with following LDA - essential NOP
+rwx 4b8b,1   nop_4b8b               ; Forms 'BIT $10a2' with following LDA (e.g. NOP)
 
 rwx 4b8c,1   sub_4b8c               ;
 rwx 4baa,1   sub_4baa               ; Calls sub_4bb3 for the item in the specified inventory index, if one is assigned.
@@ -1964,7 +2033,7 @@ rwx 4ccf,1   sub_4ccf               ;
 rwx 4d92,1   rts_4d92               ; Return to caller
 
 rwx 4d93,1   sub_4d93               ; Searches active effects for effects linked to an inventory item and calls
-                                    ;     sub_4a01 for each match.
+                                    ;     removeEffectAt for each match.
 
 rwx 4dd4,1   sub_4dd4               ; Searches $6500 [CHR_Effects] for an effect matching an effect associated with
                                     ;     an item.
@@ -2017,9 +2086,14 @@ rwx 502e,1   init4SelMenu           ; Initialization for 4 selection menu: Sets 
 
 rwx 5049,1   do4SelMenu             ; Display 4-selection menu of options and handle user input
 rwx 5077,1   rtn_5077               ; Dynamically specified return location stored in cont_addr_1977_L/H
-rwx 508c,1   sub_508c               ; Loads item names into 4-selection menu option labels
-rwx 50b2,1   sub_50b2               ; Sets dat_6277 to 0 then calls sub_50b7
-rwx 50b7,1   sub_50b7               ;
+rwx 508c,1   load4SelItmNms         ; Loads item names into 4-selection menu option labels
+rwx 50b2,1   do4SelItmMnuP1         ; Sets dat_6277 to 0 then calls do4SelItmMnuPg
+rwx 50b7,1   do4SelItmMnuPg         ; Display 4-selection inventory menu, starting with the specified offset.
+
+rwx 5180,1   contMnuForward         ; Execution continues here when the user chose to move forward to next menu page.
+                                    ;     Sets dat_5470 to current value of dat_6277 and adds 4 to dat_6277
+rwx 518e,1   contMnuBack            ; Execution continues here when the user chose to move back to previous menu page
+rwx 516e,1   contMnuItmPckd         ; Execution continues here when the user selects an item from the 4 sel menu.
 
 rwx 5198,1   nextMenuSel            ; Increments MenuSelIdx and compares result to 4
 
@@ -2074,7 +2148,7 @@ rw  540d,2   tbl_540d               ; 2 byte table of data [$08, $10].
                                     ;     Corresponds to values in tbl_5409_L/tbl_540b_H
 
 rwx 540f,1   cont_540f              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
-rw  5470,1   dat_5470               ; 1 byte of storage
+rw  5470,1   dat_5470               ; 1 byte: Menu selection offset ??value is assigned to dat_6277??
 rwx 5471,1   sub_5471               ;
 
 rwx 548e,1   divByteBy10            ; Divide unsigned byte in A by 10, setting DivQuotient and DivRemainder
@@ -2154,8 +2228,9 @@ rw  59c2,1   ZtsGetName_H           ; MSB of address of item name to display for
 rw  59e3,1   GetNum_H               ; 1 byte: MSB of number of items (uint16)
 rw  59e4,1   GetNum_L               ; 1 byte: LSB of number of items (uint16)
 
-rwx 59e5,3   sub_59e5               ; Sets dat_18fe to 0
-rwx 59e8,6   sub_59e8               ; Sets dat_18fe to $ff
+rwx 59e5,3   numPaddingOn           ; Sets NoNumPadFlg to 0 (enables right-padding output numbers with spaces to
+                                    ;     specified max width)
+rwx 59e8,6   numPaddingOff          ; Sets NoNumPadFlg to $ff (disables width padding when outputting numbers)
 
 rw  59ee,13  StrNothingHere         ; 19 bytes: "Nothing here."
 rw  5a01,6   unk_5a01               ; 6 bytes
@@ -2181,8 +2256,8 @@ rw  5a74,9   ZtsJewels              ;  9 bytes - "Jewel(s)"
 rw  5a7d,5   ZtsGold                ;  5 bytes - "Gold"
 rw  5a82,7   ZtsSilver              ;  7 bytes - "Silver"
 rw  5a89,7   ZtsCopper              ;  7 bytes - "Copper"
-rw  5a90,c   dat_5a90_L             ; 12 bytes: LSB of addresses of NUL-terminated strings
-rw  5a9c,c   dat_5a9c_H             ; 12 bytes: MSB of addresses of NUL-terminated strings
+rw  5a90,c   BasicItmZts_L          ; 12 bytes: LSB of addresses of NUL-terminated strings
+rw  5a9c,c   BasicItmZts_H          ; 12 bytes: MSB of addresses of NUL-terminated strings
                                     ;     0: $5a1a [ZtsFoodPackets] - "Food Packet(s)"
                                     ;     1: $5a29 [ZtsWaterFlasks] - "Water Flask(s)"
                                     ;     2: $5a38 [ZtsTorches]     - "Torch(es)"
@@ -2195,13 +2270,27 @@ rw  5a9c,c   dat_5a9c_H             ; 12 bytes: MSB of addresses of NUL-terminat
                                     ;     9: $5a7d [ZtsGold]        - "Gold"
                                     ;    10: $5a82 [ZtsSilver]      - "Silver"
                                     ;    11: $5a89 [ZtsCopper]      - "Copper"
-rw  5aa8,c   dat_5aa8               ; 12? bytes
+rw  5aa8,c   BasicItemOfs           ; 12 bytes: Offsets from $6300 [CHR_STATE] to the various basic item attributes in
+                                    ; the order displayed in the inventory menu. Used to map menu selection indexes to
+                                    ; attribute offsets.
+                                    ;   0: $bb -> $63bb [INV_FOOD]
+                                    ;   1: $bc -> $63bc [INV_WATER]
+                                    ;   2: $bd -> $63bd [INV_TORCHES]
+                                    ;   3: $c1 -> $63c1 [INV_TIMEPIECES]
+                                    ;   4: $c0 -> $63c0 [INV_COMPASSES]
+                                    ;   5: $bf -> $63bf [INV_KEYS]
+                                    ;   6: $be -> $63be [INV_CRYSTALS]
+                                    ;   7: $b7 -> $63b7 [INV_GEMS_U16_HI]
+                                    ;   8: $b9 -> $63b9 [INV_JEWELS_U16_HI]
+                                    ;   9: $b1 -> $63b1 [INV_GOLD_U16_HI]
+                                    ;  10: $b3 -> $63b3 [INV_SILVER_U16_HI]
+                                    ;  11: $b5 -> $63b5 [INV_COPPER_U16_HI]
 
 rwx 5ab4,1   sub_5ab4               ;
 
 rwx 5acb,1   doDropMenu             ; Display the "DROP" menu and process user input
 
-rwx 5b0e,1   rts_5b0e               ; Decrements StatUpdateFlg and StatRecalcFlg and returns to caller
+rwx 5b0e,1   rts_5b0e               ; Decrements StatUpdateFlg and ItemStatUpdFlg and returns to caller
 
 rwx 5bb8,1   sub_5bb8               ;
 
@@ -2296,10 +2385,13 @@ rw  61e1,2c  StrYouCast             ; 44 bytes: "You cast the spell of ..."
 rw  620d,17  StrSpellFailed         ; 23 bytes: "The spell failed!"
 rw  6224,36  StrSpellBckfre         ; 54 bytes: "The spell failed and backfired for xxx!"
 rw  625a,1c  StrSomethngOdd         ; 28 bytes: "Something is odd here."
-rw  6276,1   dat_6276               ; 1 byte
-rw  6277,1   dat_6277               ; 1 byte
+rw  6276,1   dat_6276               ; 1 byte: Menu selection offset where non-basic items start. Basic items include
+                                    ;     the stackable items such as unlit torches, food packets, water flasks,
+                                    ;     currency, gems, crystals, keys. Non-basic items are any other type of item
+                                    ;     which is stored in the general game inventory and are not stackable.
+rw  6277,1   dat_6277               ; 1 byte: Menu selection offset to start displayed menu selections at.
 rw  6278,1   MenuSelIdx             ; 1 byte: a menu selection index (e.g. 0..3 for 4 item menu)
-rw  6279,1   dat_6279               ; 1 byte
+rw  6279,1   dat_6279               ; 1 byte: Menu selection offset for ???
 rw  627a,1   dat_627a               ; 1 byte
 rw  627b,1   dat_627b               ; 1 byte (Related to cont_52c3)
 rw  627c,1   dat_627c               ; 1 byte (Related to cont_540f)
@@ -2357,20 +2449,12 @@ rw  631a,1   CHR_SAV_LOC_MAP        ; Saved player map number
 rw  631b,1   CHR_SAV_FRAC_LOC_X     ; Saved fractional X position
 rw  631c,1   CHR_SAV_FRAC_LOC_Y     ; Saved fractional Y position
 rw  631d,1   ChrDungeonLevel        ; Current dungeon level number
-rw  631e,1   dat_631e               ; TODO: Holds a module number (perhaps new module to load?)
-                                    ;    - loc_2f80 - seems to be input, new module to load
-                                    ;    - sub_2ff3 - puts current value into dat_631f before reassigning dat_631e and calling loc_2f80
-                                    ;    - loc_30e3 - puts current value into dat_631f before calling
-                                    ;                   cont_318c (basically sub_3183)
-                                    ;    - sub_3183 - puts current value into dat_631f before loading new map (dat_631e does not seem to be reassigned here)
-                                    ;    -
-rw  631f,1   dat_631f               ; TODO: Holds a module number (currently loaded module?)
-                                    ;    - sub_2ff3 - sets to current value of dat_631e before reassigning dat_631e and calling loc_2f80
-                                    ;    - loc_30e3 - sets to current value of dat_631e before reassigning dat_631e and calling
-                                    ;                   cont_318c (basically sub_3183),
-                                    ;                   contMoveLockd, contMoveBoltd, contMoveEnchd, contMoveWall
-                                    ;    - sub_3183 - sets to current value of dat_631e before loading new map
-                                    ;
+rw  631e,1   CurrentModule          ; Module number of the "current" module the game should currently be executing.
+                                    ;     When this value differs from the LoadedModule, this module will be loaded by
+                                    ;     the game engine and executed.
+rw  631f,1   LoadedModule           ; Module number of the loaded/resident module present at $7600 [ModuleStart].
+                                    ;     When this value differs from the CurrentModule, the CurrentModule will be
+                                    ;     loaded by the game engine and executed.
 rw  6320,1   dat_6320               ;
 rw  6321,19  CHR_NAME               ; Player name (25 characters)
 
@@ -2542,16 +2626,23 @@ rw  6500,400 CHR_Effects            ; Currently active effects applied to player
                                     ;    - Timer based effects
                                     ;    - ?
 
-rw  6900,d00 CHR_Items              ; 3328 bytes: Items currently present in the game
+rw  6900,c00 CHR_Items              ; 3072 bytes: Storage for items currently present in the game
                                     ;   Contains variable length entries. Locations for each item are stored
                                     ;   in InvItemAdr_L/H (max 64 entries)
+
+rw  7500,4   EncntrDefeated         ; Contains bits for each encounter (0..31) indicating whether the player has
+                                    ;   defeated the corresponding encounter (1) or not (0)
+
+rw  7504,4   TreasureTaken          ; Contains bits for each treasure (0..31) indicating whether the player has
+                                    ;   taken the corresponding treasure (1) or not (0)
 
 rwx 7600,3800 ModuleStart           ;  14336 bytes (possibly 16384?): Starting address where modules are loaded
                                     ;   - Combat data is 14336 bytes [$3800] - Minimum limit... Maybe $4000 was intent?
                                     ;   - $7600 + $3800 = $ae00
                                     ;   - $7600 = module start
+                                    ;   - $96f0 = texture start
                                     ;   - $ac00 = map start
-rw  7600,1   ModuleNumber           ; Currently loaded scenario or map number
+rw  7600,1   ModuleNumber           ; Currently loaded module/scenario number
 x   7601,3   moduleEntry1           ; First entry point for scenario  (TODO: is this a module intialization vector? Seems to be called only after loading a new module)
 x   7604,3   moduleEntry2           ; Second entry point for scenario
 x   7607,3   moduleEntry3           ; Third entry point for scenario    (TODO: is this a module unloading vector? Seems to be called before loading a new module)
@@ -2560,12 +2651,11 @@ x   760a,3   moduleEntry4           ; Fourth entry point for scenario
 r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table
 r   760b,1   Mod0DescTbl_H          ; Module 0: MSB of description table
 
-rw  96f0,1   TEX_Headers            ; Location where textures are loaded into memory (5392 bytes)
-
-rw  ac00,1   MAP_Number             ; Number/ID of the loaded map
-rw  ac01,1   MAP_DescTbl_L          ; LSB of map description table (offset from $ac00 for std maps)
-rw  ac02,1   MAP_DescTbl_H          ; MSB of map description table (always $ac for std maps)
+rw  ac00,1   MapNumber              ; Number/ID of the loaded map
+rw  ac01,1   MapDescTbl_L           ; LSB of map description table (offset from $ac00 for std maps)
+rw  ac02,1   MapDescTbl_H           ; MSB of map description table (always $ac for std maps)
 rw  ac03,1   MAP_DescFragTbl        ; Start of description fragment table
 
-rwx f9f4,1   sub_f9f4               ; Called from readNextSector. Defined in KERNEL_LOADER and only present on 64KB+ systems.
+rwx f9f4,1   sub_f9f4               ; Called from readNextSector. Defined in KERNEL_LOADER and only present
+                                    ;     on 64KB+ systems.
 

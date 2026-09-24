@@ -25,23 +25,46 @@ rw  818e,10  MemSizeTbl             ; 16 bytes: Table of memory size strings. 4 
                                     ;    4: " ??K"
                                     ;    8: " 64K"
                                     ;   12: "128K"
+rwx 819e,1   detectMemSize          ; Detects the system memory size and (when supported) copies subs used for high
+                                    ;    and extended memory management to their permanent run-time location.
 
-rwx 819e,1   sub_819e               ;
-rwx 8223,1   sub_8223               ;
+rwx 8223,700 dat_8223               ; 1792 bytes: This mixed use data is copied to $f900 and includes the following:
+                                    ;    $8223 (  83 bytes, exe): Copied to $f900 [cacheMapOrTex]
+                                    ;    $8276 (  89 bytes, exe): Copied to $f953 [revertMapOrTex]
+                                    ;    $82cf (  29 bytes, exe): Copied to $f9ac [irq_NMI_f9ac]
+                                    ;    $82ec (   4 bytes, exe): Copied to $f9c9 [irq_VIMIRQ_f9c9]
+                                    ;    $82f0 (   1 byte,  dat): Copied to $f9cd [SavedFileNum]
+                                    ;    $82f1 (   1 byte,  dat): Copied to $f9ce [SavedMapNum]
+                                    ;    $82f2 (  37 bytes, exe): Copied to $f9cf [sub_f9cf]
+                                    ;    $8317 ( 366 bytes, exe): Copied to $f9f4 [sub_f9f4]
+                                    ;    $8485 (  17 bytes, exe): Copied to $fb62 [sub_fb62]
+                                    ;    $8496 (  21 bytes, exe): Copied to $fb73 [sub_fb73]
+                                    ;    $84ab (  29 bytes, exe): Copied to $fb88 [sub_fb88]
+                                    ;    $84c8 (1115 bytes, dat): Copied to $fba5 [dat_fba5]
+                                    ;    (final byte copied is $8922)
 
-rw  82f0,2   dat_82f0               ; 2 bytes of data: Copied to $f9cd [dat_f9cd]
+rw  82f0,2   dat_82f0               ; 2 bytes of data: Copied to $f9cd [SavedFileNum] / $f9ce [SavedMapNum]
 
 rw  899f,61  dat_899f               ; 97 bytes: unused partial copy of StrPleaseInsert
 
-rw  c000,1000 MAP_Copy              ; 4KB: If the system has 64KB or more, map data is copied here when an
+rw  96f0,1510 TextureStart          ; 5392 bytes: Location where textures are loaded into memory
+
+rw  ac00,1400 MapStart              ; 5120 bytes: Location where maps are loaded into memory
+
+rw  c000,1000 MAP_CopySeg1          ; 4KB: If the system has 64KB or more, 4KB of map data is copied here when an
                                     ;   encounter or module is loaded
 
 rw  d800,1   OsRomStart             ; Starting address of range containing OS ROM (10KB - $d800-$ffff)
-rw  dc00,1510 TEX_Copy              ; 5392 bytes: If the system has 64KB or more, texture data is copied here when an
+
+rw  d800,400  MAP_CopySeg2          ; 1KB: If the system has 64KB or more, 1KB of map data is copied here when an
                                     ;   encounter or module is loaded
 
-rwx f900,1   sub_f900               ; (Copied from $8223)
-rwx f953,1   sub_f953               ; (Copied from $8276)
+rw  dc00,1510 TEX_Copy              ; 5392 bytes: If the system has 64KB or more, texture data is copied here when an
+                                    ;   encounter or module is loaded
+rwx f900,1   cacheMapOrTex          ; (Copied from $8223) Copies/caches a currently loaded map or texture from the
+                                    ;     runtime location into high memory for retrieval later.
+rwx f953,1   revertMapOrTex         ; (Copied from $8276) Copies a previously cached map or texture from high memory
+                                    ;     to the appropriate runtime location.
 rwx f9ac,1   irq_NMI_f9ac           ; (Copied from $82cf)
 
 rw  f9cd,1   SavedFileNum           ; (Copied from $82f0) Holds the original value of FileNumber if >= 8

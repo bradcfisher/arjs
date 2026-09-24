@@ -119,7 +119,7 @@
 1912 ZONE_ID                ; Zone ID value to apply in PROCESS_HOURLY_UPDATES
 192A UNK_BYTE_192A          ; Assigned to 0
 1933 UNK_BYTE_1933          ; Assigned to 0
-1938 UNK_BYTE_1938
+1938 CurNumDropped          ; Holds the number of dropped items at the current player position.
 1939 UNK_BYTE_1939
 
 194b ZONE_TEXTURE_SET       ; The texture set to use. 01 = Typical; 02 = Mirror/Crystal; 03 = Dragon; 04 = Goblin; 05 = Mausoleum

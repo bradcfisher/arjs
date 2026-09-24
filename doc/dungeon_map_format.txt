@@ -544,7 +544,7 @@ lbl_$7EB0:
   RTS              ; Return to caller
 
 ; ----------------------
-; Selects to next/final zone definition entry
+; Selects the next/final zone definition entry
 
 sub_$7eb1:
   TXA              ; Copy X into A (X holds offset into the Zone Ref table)
@@ -578,13 +578,13 @@ sub_$7eb1:
 2: $194d - bitfield
  ? ? ? ? ? C B A
  | | | | | | | +- Light level/blindness? Checked when display is updated. 0 = dark, 1 = light
- | | | | | | |    Sub @ $: ORd with value at $6390 (01 if carrying lit torch) then compared with value at $77fb.
+ | | | | | | |    Sub @ $: ORd with value at $6390 (non-zero if carrying lit torch or other light source) then compared with value at $77fb.
  | | | | | | |    If different, $77fb is updated to match and $1956 is decremented.
  | | | | | | |    Either way, $1956 is read and if it is 0
  | | | | | | +--- also related to light level or perception? Checked when displaying "Something is odd here" message
  | | | | | +----- Sub @ $aa19: Used during encounters.
- | | | | |        If clear, loads the value $11 into $194c [ZONE_B_BYTE]
- | | | | |        If value in $194c [ZONE_B_BYTE] is $0e, stores $ff into $6320 [dat_6320] (character status related)
+ | | | | |        If clear, loads the value $11 into $194c [CurZone_UnkB]
+ | | | | |        If value in $194c [CurZone_UnkB] is $0e, stores $ff into $6320 [dat_6320] (character status related)
  | | | | |        If $633c (player experience lvl) = 0,
  | | | | +------- ?
  | | | +--------- ?
@@ -592,9 +592,9 @@ sub_$7eb1:
  | +------------- ?
  +--------------- ?
 
-3: $194e = Wall color #1 (e.g. normal walls = 26 Brownish)
-4: $194f = Wall color #2 (e.g. normal walls = 00 Black)
-5: $1950 = Wall color #3 (e.g. normal walls = 0A Grey)
+3: $194e = Wall color #1 (e.g. normal walls = $26 Brownish)
+4: $194f = Wall color #2 (e.g. normal walls = $00 Black)
+5: $1950 = Wall color #3 (e.g. normal walls = $0a Grey)
 6: $1951 = Ceiling color
 7: $1952 = Floor color
 8: $1953 = Base Temperature/Warmth ($80 neutral, <$80 colder, >$80 warmer)
@@ -602,8 +602,7 @@ sub_$7eb1:
 For color codes see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
 
 
-Some additional items which may be encoded in a zone definition:
-  - Environmental conditions - Cold/hot
+Are there any additional items which may be encoded in a zone definition?
   - Music cues?
   - Special scripts?
   - Encounter tables?
@@ -611,7 +610,7 @@ Some additional items which may be encoded in a zone definition:
 
 ---
 
-- The map cell data starts at offset $400 (1024)
+- The map cell data starts at offset $400 ($b000 to $bfff in memory)
 >> 4096 bytes
 >> 4 bytes per cell (ABCD)
 >> Always 32 cells (80 bytes) per row
@@ -672,6 +671,11 @@ location in the dungeon). Some examples include:
 Special:
 ===========
 
+0000 0000  - No special code / normal cell
+
+000 AAAAA
+      +---- Module number to load when non-zero
+
 0BB 00000
  +--------- Danger level / Encounter frequency? (if Special & 10011111 ($9f) == 0)
             ... below are guesses. each bit could also be interpreted separately ...
@@ -683,19 +687,22 @@ Special:
 0?? CCCCC
       +---- Scenario index (0-31) (if CCCCC != 0)
 
-1AA CCCCC
- |    +---- Encounter / Treasure / Message / Teleport index (0-31)
- +--------- 100 = Encounter
-            101 = Treasure
-            110 = Message
-            111 = Teleport
+7 65 43210
+1 AA CCCCC
+  |    +---- Encounter / Treasure / Message / Teleport index (0-31)
+  +--------- 00 = Encounter
+             01 = Treasure
+             10 = Message
+             11 = Teleport
 
 
 - Scenarios/Modules (01-1F) -
 
 Scenario module have a header structured as follows:
   $7600 - Byte (Module number? or perhaps flags indicating entry points?)
-           - $00 - ( 0) Spcl. Messages (3 entry points - loaded during normal gameplay)
+           - $00 - ( 0) Normal play    (3 entry points - screen renderer, special messages, etc)
+           -     - ( 1) Combat data
+           -     - ( 2) Item data
            - $13 - ( 3) Fountain       (4 entry points?)
            - $04 - ( 4) Dungeon exit   (1 or 2 entry points?)
            - $01 - ( 5) Stairway       (4 or 5 entry points?)
@@ -730,7 +737,11 @@ Scenario module have a header structured as follows:
 
   = Scenarios =
 
-  01-02 = Unused
+  00 - Normal play / screen renderer, special messages, etc
+
+  01 - Encounters / Combat
+
+  02 - Item Data
 
   03 (  3) = Fountain (Hit points)
     - Level 1.3 (14, 20) - Hit points
@@ -1037,8 +1048,8 @@ Scenario module have a header structured as follows:
   C5 (197) [Level 3   ( 1,  9)] = 'Writing on the wall says:\n"BEWARE OF THE DRAGON!"'
   C6 (198) [Level 3   ( 9,  7)] = 'Writing carved into the door reads:\n\n"THE GAUNTLET\nDO NOT ENTER"'
   C7 (199) [Level 1.4 (13, 28)] = 'Glowing letters on the door proclaim:\n\n"Enchantress"'
-  C8 (200) [Level 1.3 (11, 10)] = 'Writing scrawled on the ground reads:\n"GO BACK!"'
-  C9 (201) [Level 1.3 ( 7,  0)] = 'Scratchings on the wall read:\n"THERE IS NO ESCAPE!"'
+  C8 (200) [Level 1.3 (11, 10)] = 'Writing scrawled on the ground reads:\n\n"GO BACK!"'
+  C9 (201) [Level 1.3 ( 7,  0)] = 'Scratchings on the wall read:\n\n"THERE IS NO ESCAPE!"'
   CA (202) [Level 1.3 (16,  9)] = 'A red arrow on the ground points East.'
   CB (203) [Level 1.1 ( 6, 14)] = 'A dirty sign reads:\n"Goblins only!"'
   CC (204) [Level 1.4 (20, 25)] = 'A crooked sign says:\n\n"TROLLS ONLY"'
@@ -1419,7 +1430,7 @@ Texture set format:
         - A quarter-size image (18x18)
 
   Offset 0 [1 byte] - Texture Set ID (1, 2, 3, 4, 5, 6)
-  Offset 1 [32 bytes] - Headwr data
+  Offset 1 [32 bytes] - Header data
     - Format currently unknown.
     - Suspect there is information here used to indicate how each texture may be used (e.g. wall, door, arch)
 
@@ -1505,6 +1516,7 @@ TODO: A special case appears to exist where all bits (except for bit 7) are zero
 
   I1: Full object length, including the 6 byte header
   I2: Action triggers
+        $00 = none
         $01 = get/pickup
         $02 = drop
         $04 = use
@@ -1515,10 +1527,10 @@ TODO: A special case appears to exist where all bits (except for bit 7) are zero
       - read @ $4bb5 and used to skip item if value is 0
       - sub_4bb3 reads this byte and dynamically calls a routine determined based on the value
 
-  3: Alignment requirement - Evil weapons have $7f or below, Good weapons have $80 or greater.
+  I3: Alignment requirement - Evil weapons have $7f or below, Good weapons have $80 or greater.
      Neutral weapons typically have $00 here.
-  4: Item weight
-  5: Offset from the start of the object to the start of the effects/attributes data region
+  I4: Item weight
+  I5: Offset from the start of the object to the start of the effects/attributes data region
      (e.g. offset of byte following item name's terminating NUL)
 
 Name (1..? bytes)
@@ -1549,25 +1561,24 @@ Effect: Each effect is 16 bytes long
       When the value is >= $e0, the entry is a description entry. In which case:
 
       765 4 3 210
-      111 A B BBB
+      111 A B CCC
        |  | |  +-- Description Type
        |  | |        1 - Disease
        |  | |        3 - Curse
        |  | |        4 - Magic
        |  | +----- Description Visibility
-       |  |          0 - Does not show in list
+       |  |          0 - Does not show in list (e.g. disease not yet identified/still incubating)
        |  |          1 - Shows in list
        |  +------- Has Associated Effect
        |             0 - (top nibble = $e) 16 byte description entry (this byte + 15 byte zts)
        |             1 - (top nibble = $f) 16 byte description entry with associated effect
        +---------- Indicates description entry
 
-      Otherwise, may be any other value but $80 (which is used to indicate an unused entry in the active effect list):
+      Otherwise, may be any other value except $80 (which indicates an unused entry in the active effect list):
 
       7 6 54 3 210
       A B CC D EEE
       | | |  |  +-- Effect Type
-      | | |  |        0  - ? Timer ?     $80 won't process (it's an empty slot) so this may not be a valid option
       | | |  |        1  - Disease
       | | |  |        2  - Poison
       | | |  |        3  - Curse
@@ -1579,11 +1590,11 @@ Effect: Each effect is 16 bytes long
       | | |           0  - Standalone or parent effect
       | | |           1  - Effect is linked to another (linked effect index in E1)
       | | +-------- ?? unused / 0 ??
-      | +---------- Bit 6 appears to have special meaning (ref $4853) When it is set, sub_:
+      | +---------- Bit 6 appears to have special meaning (ref $4853) When it is set, and the effect triggers, applyEffects does the following:
       |               - The bit is cleared
       |               - The value of E1 is read
       |               - All effects following the current effect are searched for a description which has the same value in E1
-      |               - If a match is found, bit 3 (8) is set on that effect
+      |               - If a match is found, bit 3 (8) is set on that effect, which makes the description visible
       +------------ Effect Type
                       - Always 1?
 
@@ -1612,12 +1623,16 @@ Effect: Each effect is 16 bytes long
 
   When Effect Type is NOT $e or $f:
     E3: Number of repetitions (0 = infinite/forever)
-    E4: Execution Timer LSB    (delay in game minutes before next execution)
-    E5: Execution Timer MSB
-    E6: Repetition Delay LSB   (delay in game minutes between executions)
+    E4: Execution Timer LSB   (Delay in game minutes before next execution. Initially, this is the incubation period
+    E5: Execution Timer MSB    or delay before the first execution. Minimum value for new effect is 1)
+    E6: Repetition Delay LSB  (Delay in game minutes between executions. Minimum value for repeating effects is 1)
     E7: Repetition Delay MSB
-    E8: Chance to naturally cure/expire?? There is a 12.5% (32/256) chance that this byte is checked. When it is, and
-        the random value (0..31) is less than the value of this byte, then the effect will be removed.
+    E8: Chance per execution to naturally cure/expire before all repetitions finish. Each time the execution time
+        elapses, a random byte is chosen, and if the value is less than 32 it is compared to this value. When it is,
+        and the random value (0..31) is less than the value of this byte, the effect is removed and the current and
+        all future executions are cancelled.
+        Thus, E8/256 gives the percent chance of a natural cure/removal of the effect, with a maximum effective value
+        of 32 (12.5% chance per execution).
     E9: Action
         If bit 7 is not set (e.g. the value is 0..127) it specifies an assignment:
           - This value is the number of bytes to assign
@@ -1664,11 +1679,11 @@ Effect: Each effect is 16 bytes long
   Example: EffLitTorch
   --------------------
   8? ?? 04 01 f0 00 00 00 00 01 02 80 01 00 08 ??
-   |  |  |  | |   | |   |  |  |  |  |  |  |  |  +- 15:    Set to inventory item index for equipped torch
-   |  |  |  | |   | |   |  |  |  |  |  |  |  +---- 14:    Delta amt: 8 (decrease attribute by 8)
-   |  |  |  | |   | |   |  |  |  |  |  |  +------- 13:    Step Size: 0
-   |  |  |  | |   | |   |  |  |  |  |  +---------- 12:    Steps: 1
-   |  |  |  | |   | |   |  |  |  +--+------------- 10-11: Attribute offset: $8002 [relative to item, 2 bytes, e.g. H2]
+   |  |  |  | |   | |   |  |  |  | |   |  |  |  +- 15:    Set to inventory item index for equipped torch
+   |  |  |  | |   | |   |  |  |  | |   |  |  +---- 14:    Delta amt: 8 (decrease attribute by 8)
+   |  |  |  | |   | |   |  |  |  | |   |  +------- 13:    Step Size: 0
+   |  |  |  | |   | |   |  |  |  | |   +---------- 12:    Steps: 1
+   |  |  |  | |   | |   |  |  |  +-+-------------- 10-11: Attribute offset: $8002 [relative to item, 2 bytes, e.g. H2]
    |  |  |  | |   | |   |  |  +------------------- 9:     Action: 1 (decrease item attribute)
    |  |  |  | |   | |   |  +---------------------- 8:     Effect doesn't spontaneously "cure"/delete
    |  |  |  | |   | +---+------------------------- 6-7:   Repetition delay:  0 (no repetitions)
@@ -1677,6 +1692,32 @@ Effect: Each effect is 16 bytes long
    |  |  +---------------------------------------- 2:     Trigger on "use"
    |  +------------------------------------------- 1:     Set to this effect's index
    +---------------------------------------------- 0:     Effect/timer, not description
+
+  Example:
+  "Green Lung" disease effect
+  --------------------
+  C1 01 C1 FF 33 05 22 00 07 92 45 00 01 00 01 82
+   |  |  |  | |   | |   |  |  |  | |   |  |  |  +- 15:    ?? is this meaningful for this effect ??
+   |  |  |  | |   | |   |  |  |  | |   |  |  +---- 14:    Adj amount: Decrease by 1
+   |  |  |  | |   | |   |  |  |  | |   |  +------- 13:    Step size: 0 (only one attr updated)
+   |  |  |  | |   | |   |  |  |  | |   +---------- 12:    Steps: 1
+   |  |  |  | |   | |   |  |  |  +-+-------------- 10-11: Offset $0045 relative to $6300 ($6345 [CHR_HP_CURRENT_HI])
+   |  |  |  | |   | |   |  |  +------------------- 9:     $80 (not assignment) + $10 (decrease attr) + $02 (attribute size = 2 bytes)
+   |  |  |  | |   | |   |  +---------------------- 8:     2.73% chance (7/256) to naturally cure
+   |  |  |  | |   | +---+------------------------- 6-7:   Repetition delay:  22 minutes
+   |  |  |  | +---+------------------------------- 4-5:   Incubation period: 1308 minutes (21 hours 11 minutes)
+   |  |  |  +------------------------------------- 3:     Repetitions: 255
+   |  |  +---------------------------------------- 2:     1 = get; $40 = drain charge; $80 = set timer
+   |  +------------------------------------------- 1:     Parent effect index = 1  (this is the parent)
+   +---------------------------------------------- 0:     $80 (Timer?) + $40 (set linked desc visible on first exec?) + $01 (Disease)
+
+  "Green Lung" description
+  --------------------
+  E1 01 41 47 72 65 65 6E 20 4C 75 6E 67 00 00 00
+   |  | |   +----------------------------------+-- "Green Lung"
+   |  | +----------------------------------------- 1 = get, $40 = drain charge?
+   |  +------------------------------------------- Parent effect index = 1
+   +---------------------------------------------- $e0 (description) + 1 (disease)
 
 Attributes: Structure varies based on item type
 
@@ -1806,7 +1847,7 @@ Intro scene
 
 The city scene in the intro is generated using several 2-bpp "fonts".
 
-These fonts used are stored at $A000, $A400, $A800, $AC00, $B000, $B400, $B800
+These fonts used are stored at $a000, $a400, $a800, $ac00, $b000, $b400, $b800
 Each character set is 128 entries of 8 bytes each (1024 bytes total)
 Each entry defines an 4 px x 8 scanline character.
 2bpp = 4px per byte, 1 byte per scanline
