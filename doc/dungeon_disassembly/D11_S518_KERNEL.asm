@@ -2,140 +2,241 @@
 ; 0000 L4f00 @1400 [exe]
 * = $1400
 
-1400: 00 00 00 00 00 00 00 00  DungeonCharset  .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
-1408: 78 9c 3c 36 3e 66 66 c3   .BYTE $78,$9c,$3c,$36,$3e,$66,$66,$c3  ; x.<6>ff.
-1410: ee 73 63 6e 63 63 63 de   .BYTE $ee,$73,$63,$6e,$63,$63,$63,$de  ; .scnccc.
-1418: 3c 66 cc c0 c0 c0 e6 7c   .BYTE $3c,$66,$cc,$c0,$c0,$c0,$e6,$7c  ; <f.....|
-1420: ee 73 63 63 63 63 63 de   .BYTE $ee,$73,$63,$63,$63,$63,$63,$de  ; .sccccc.
-1428: fe 66 60 78 60 63 66 7c   .BYTE $fe,$66,$60,$78,$60,$63,$66,$7c  ; .f`x`cf|
-1430: fe 66 60 78 60 60 60 60   .BYTE $fe,$66,$60,$78,$60,$60,$60,$60  ; .f`x````
-1438: 3c 66 c6 c0 de c6 66 3c   .BYTE $3c,$66,$c6,$c0,$de,$c6,$66,$3c  ; <f....f<
-1440: c6 c6 c6 ce fe e6 c6 c6   .BYTE $c6,$c6,$c6,$ce,$fe,$e6,$c6,$c6  ; ........
-1448: 30 18 18 18 18 18 18 0c   .BYTE $30,$18,$18,$18,$18,$18,$18,$0c  ; 0.......
-1450: 1e 0c 0c 0c 0c 1c 38 60   .BYTE $1e,$0c,$0c,$0c,$0c,$1c,$38,$60  ; ......8`
-1458: c6 6c 6c 78 78 6c 6c c6   .BYTE $c6,$6c,$6c,$78,$78,$6c,$6c,$c6  ; .llxxll.
-1460: e0 60 60 60 60 66 7e 78   .BYTE $e0,$60,$60,$60,$60,$66,$7e,$78  ; .````f~x
-1468: c6 ee fe d6 c6 c6 c6 c6   .BYTE $c6,$ee,$fe,$d6,$c6,$c6,$c6,$c6  ; ........
-1470: c6 c6 e6 f6 de ce c6 c6   .BYTE $c6,$c6,$e6,$f6,$de,$ce,$c6,$c6  ; ........
-1478: 7c ce c6 c6 c6 c6 e6 7c   .BYTE $7c,$ce,$c6,$c6,$c6,$c6,$e6,$7c  ; |......|
-1480: fc 66 66 66 6c 60 60 c0   .BYTE $fc,$66,$66,$66,$6c,$60,$60,$c0  ; .fffl``.
-1488: 7c e6 c6 c6 c6 c6 ce 7f   .BYTE $7c,$e6,$c6,$c6,$c6,$c6,$ce,$7f  ; |.......
-1490: ee 73 66 6c 66 66 63 c3   .BYTE $ee,$73,$66,$6c,$66,$66,$63,$c3  ; .sflffc.
-1498: 3a 66 60 3c 06 06 66 5c   .BYTE $3a,$66,$60,$3c,$06,$06,$66,$5c  ; :f`<..f\
-14a0: fe 30 60 c0 c0 c2 c6 7c   .BYTE $fe,$30,$60,$c0,$c0,$c2,$c6,$7c  ; .0`....|
-14a8: e6 66 66 66 66 66 6e 3f   .BYTE $e6,$66,$66,$66,$66,$66,$6e,$3f  ; .fffffn?
-14b0: c3 66 66 66 66 66 3c 18   .BYTE $c3,$66,$66,$66,$66,$66,$3c,$18  ; .fffff<.
-14b8: c3 c3 c3 d3 cb df 77 62   .BYTE $c3,$c3,$c3,$d3,$cb,$df,$77,$62  ; ......wb
-14c0: c3 c3 66 3c 3c 66 c3 c3   .BYTE $c3,$c3,$66,$3c,$3c,$66,$c3,$c3  ; ..f<<f..
-14c8: c3 66 66 3c 18 18 18 18   .BYTE $c3,$66,$66,$3c,$18,$18,$18,$18  ; .ff<....
-14d0: 7e c6 0c 18 fe 60 c3 fe   .BYTE $7e,$c6,$0c,$18,$fe,$60,$c3,$fe  ; ~....`..
-14d8: 00 00 00 00 00 18 18 00   .BYTE $00,$00,$00,$00,$00,$18,$18,$00  ; ........
-14e0: 00 00 00 00 7e 00 00 00   .BYTE $00,$00,$00,$00,$7e,$00,$00,$00  ; ....~...
-14e8: 00 18 18 18 00 00 00 00   .BYTE $00,$18,$18,$18,$00,$00,$00,$00  ; ........
-14f0: 18 3c 3c 3c 18 18 00 18   .BYTE $18,$3c,$3c,$3c,$18,$18,$00,$18  ; .<<<....
-14f8: 3c 66 66 0c 18 00 18 00   .BYTE $3c,$66,$66,$0c,$18,$00,$18,$00  ; <ff.....
-1500: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; ........
-1508: 18 3c 3c 3c 18 18 00 18   .BYTE $18,$3c,$3c,$3c,$18,$18,$00,$18  ; .<<<....
-1510: 66 66 66 00 00 00 00 00   .BYTE $66,$66,$66,$00,$00,$00,$00,$00  ; fff.....
-1518: 00 66 ff 66 66 ff 66 00   .BYTE $00,$66,$ff,$66,$66,$ff,$66,$00  ; .f.ff.f.
-1520: 18 3e 60 3c 06 7c 18 00   .BYTE $18,$3e,$60,$3c,$06,$7c,$18,$00  ; .>`<.|..
-1528: 00 66 6c 18 30 66 46 00   .BYTE $00,$66,$6c,$18,$30,$66,$46,$00  ; .fl.0fF.
-1530: 1c 36 1c 38 6f 66 3b 00   .BYTE $1c,$36,$1c,$38,$6f,$66,$3b,$00  ; .6.8of;.
-1538: 00 18 18 18 00 00 00 00   .BYTE $00,$18,$18,$18,$00,$00,$00,$00  ; ........
-1540: 06 0e 1c 18 18 1c 0e 06   .BYTE $06,$0e,$1c,$18,$18,$1c,$0e,$06  ; ........
-1548: 60 70 38 18 18 38 70 60   .BYTE $60,$70,$38,$18,$18,$38,$70,$60  ; `p8..8p`
-1550: 00 66 3c ff 3c 66 00 00   .BYTE $00,$66,$3c,$ff,$3c,$66,$00,$00  ; .f<.<f..
-1558: 00 18 18 7e 18 18 00 00   .BYTE $00,$18,$18,$7e,$18,$18,$00,$00  ; ...~....
-1560: 00 00 00 00 00 18 18 30   .BYTE $00,$00,$00,$00,$00,$18,$18,$30  ; .......0
-1568: 00 00 00 7e 00 00 00 00   .BYTE $00,$00,$00,$7e,$00,$00,$00,$00  ; ...~....
-1570: 00 00 00 00 00 18 18 00   .BYTE $00,$00,$00,$00,$00,$18,$18,$00  ; ........
-1578: 03 06 0c 18 30 60 40 00   .BYTE $03,$06,$0c,$18,$30,$60,$40,$00  ; ....0`@.
-1580: 7c ce c6 c6 c6 e6 7c 00   .BYTE $7c,$ce,$c6,$c6,$c6,$e6,$7c,$00  ; |.....|.
-1588: 38 38 18 18 18 18 18 00   .BYTE $38,$38,$18,$18,$18,$18,$18,$00  ; 88......
-1590: 7c e6 0c 18 30 60 fe 00   .BYTE $7c,$e6,$0c,$18,$30,$60,$fe,$00  ; |...0`..
-1598: 7e 0c 18 0c 06 66 3c 00   .BYTE $7e,$0c,$18,$0c,$06,$66,$3c,$00  ; ~....f<.
-15a0: 0c 1c 3c 6c cc fe 0c 00   .BYTE $0c,$1c,$3c,$6c,$cc,$fe,$0c,$00  ; ..<l....
-15a8: 7e 60 7c 06 06 66 3c 00   .BYTE $7e,$60,$7c,$06,$06,$66,$3c,$00  ; ~`|..f<.
-15b0: 7c c6 c0 fc ce e6 7c 00   .BYTE $7c,$c6,$c0,$fc,$ce,$e6,$7c,$00  ; |.....|.
-15b8: 7e 06 0c 18 30 30 30 00   .BYTE $7e,$06,$0c,$18,$30,$30,$30,$00  ; ~...000.
-15c0: 7c ce e6 7c ce e6 7c 00   .BYTE $7c,$ce,$e6,$7c,$ce,$e6,$7c,$00  ; |..|..|.
-15c8: 7c ce c6 e6 7e 0c 18 30   .BYTE $7c,$ce,$c6,$e6,$7e,$0c,$18,$30  ; |...~..0
-15d0: 00 38 38 00 00 38 38 00   .BYTE $00,$38,$38,$00,$00,$38,$38,$00  ; .88..88.
-15d8: 00 00 18 18 00 18 18 30   .BYTE $00,$00,$18,$18,$00,$18,$18,$30  ; .......0
-15e0: 06 0c 18 30 18 0c 06 00   .BYTE $06,$0c,$18,$30,$18,$0c,$06,$00  ; ...0....
-15e8: 00 00 7e 00 00 7e 00 00   .BYTE $00,$00,$7e,$00,$00,$7e,$00,$00  ; ..~..~..
-15f0: 60 30 18 0c 18 30 60 00   .BYTE $60,$30,$18,$0c,$18,$30,$60,$00  ; `0...0`.
-15f8: 3c 66 66 0c 18 00 18 00   .BYTE $3c,$66,$66,$0c,$18,$00,$18,$00  ; <ff.....
-1600: 00 3c 66 6e 6e 60 3e 00   .BYTE $00,$3c,$66,$6e,$6e,$60,$3e,$00  ; .<fnn`>.
-1608: 78 9c 3c 36 3e 66 66 c3   .BYTE $78,$9c,$3c,$36,$3e,$66,$66,$c3  ; x.<6>ff.
-1610: ee 73 63 6e 63 63 63 de   .BYTE $ee,$73,$63,$6e,$63,$63,$63,$de  ; .scnccc.
-1618: 3c 66 cc c0 c0 c0 e6 7c   .BYTE $3c,$66,$cc,$c0,$c0,$c0,$e6,$7c  ; <f.....|
-1620: ee 73 63 63 63 63 63 de   .BYTE $ee,$73,$63,$63,$63,$63,$63,$de  ; .sccccc.
-1628: fe 66 60 78 60 63 66 7c   .BYTE $fe,$66,$60,$78,$60,$63,$66,$7c  ; .f`x`cf|
-1630: fe 66 60 78 60 60 60 60   .BYTE $fe,$66,$60,$78,$60,$60,$60,$60  ; .f`x````
-1638: 3c 66 c6 c0 de c6 66 3c   .BYTE $3c,$66,$c6,$c0,$de,$c6,$66,$3c  ; <f....f<
-1640: c6 c6 c6 ce fe e6 c6 c6   .BYTE $c6,$c6,$c6,$ce,$fe,$e6,$c6,$c6  ; ........
-1648: 30 18 18 18 18 18 18 0c   .BYTE $30,$18,$18,$18,$18,$18,$18,$0c  ; 0.......
-1650: 1e 0c 0c 0c 0c 1c 38 60   .BYTE $1e,$0c,$0c,$0c,$0c,$1c,$38,$60  ; ......8`
-1658: c6 6c 6c 78 78 6c 6c c6   .BYTE $c6,$6c,$6c,$78,$78,$6c,$6c,$c6  ; .llxxll.
-1660: e0 60 60 60 60 66 7e 78   .BYTE $e0,$60,$60,$60,$60,$66,$7e,$78  ; .````f~x
-1668: c6 ee fe d6 c6 c6 c6 c6   .BYTE $c6,$ee,$fe,$d6,$c6,$c6,$c6,$c6  ; ........
-1670: c6 c6 e6 f6 de ce c6 c6   .BYTE $c6,$c6,$e6,$f6,$de,$ce,$c6,$c6  ; ........
-1678: 7c ce c6 c6 c6 c6 e6 7c   .BYTE $7c,$ce,$c6,$c6,$c6,$c6,$e6,$7c  ; |......|
-1680: fc 66 66 66 6c 60 60 c0   .BYTE $fc,$66,$66,$66,$6c,$60,$60,$c0  ; .fffl``.
-1688: 7c e6 c6 c6 c6 c6 ce 7f   .BYTE $7c,$e6,$c6,$c6,$c6,$c6,$ce,$7f  ; |.......
-1690: ee 73 66 6c 66 66 63 c3   .BYTE $ee,$73,$66,$6c,$66,$66,$63,$c3  ; .sflffc.
-1698: 3a 66 60 3c 06 06 66 5c   .BYTE $3a,$66,$60,$3c,$06,$06,$66,$5c  ; :f`<..f\
-16a0: fe 30 60 c0 c0 c2 c6 7c   .BYTE $fe,$30,$60,$c0,$c0,$c2,$c6,$7c  ; .0`....|
-16a8: e6 66 66 66 66 66 6e 3f   .BYTE $e6,$66,$66,$66,$66,$66,$6e,$3f  ; .fffffn?
-16b0: c3 66 66 66 66 66 3c 18   .BYTE $c3,$66,$66,$66,$66,$66,$3c,$18  ; .fffff<.
-16b8: c3 c3 c3 d3 cb df 77 62   .BYTE $c3,$c3,$c3,$d3,$cb,$df,$77,$62  ; ......wb
-16c0: c3 c3 66 3c 3c 66 c3 c3   .BYTE $c3,$c3,$66,$3c,$3c,$66,$c3,$c3  ; ..f<<f..
-16c8: c3 66 66 3c 18 18 18 18   .BYTE $c3,$66,$66,$3c,$18,$18,$18,$18  ; .ff<....
-16d0: 7e c6 0c 18 fe 60 c3 fe   .BYTE $7e,$c6,$0c,$18,$fe,$60,$c3,$fe  ; ~....`..
-16d8: 1e 18 18 18 18 18 18 1e   .BYTE $1e,$18,$18,$18,$18,$18,$18,$1e  ; ........
-16e0: 00 40 60 30 18 0c 06 00   .BYTE $00,$40,$60,$30,$18,$0c,$06,$00  ; .@`0....
-16e8: 78 18 18 18 18 18 18 78   .BYTE $78,$18,$18,$18,$18,$18,$18,$78  ; x......x
-16f0: 00 08 1c 36 63 00 00 00   .BYTE $00,$08,$1c,$36,$63,$00,$00,$00  ; ...6c...
-16f8: 00 00 00 00 00 00 00 ff   .BYTE $00,$00,$00,$00,$00,$00,$00,$ff  ; ........
-1700: 7e 7e 7e 7e 7e 7e 7e 7e   .BYTE $7e,$7e,$7e,$7e,$7e,$7e,$7e,$7e  ; ~~~~~~~~
-1708: 00 00 3e 66 66 66 3b 00   .BYTE $00,$00,$3e,$66,$66,$66,$3b,$00  ; ..>fff;.
-1710: e0 60 60 7c 66 66 7c 00   .BYTE $e0,$60,$60,$7c,$66,$66,$7c,$00  ; .``|ff|.
-1718: 00 00 3c 66 60 66 3c 00   .BYTE $00,$00,$3c,$66,$60,$66,$3c,$00  ; ..<f`f<.
-1720: 0c 06 06 3e 66 66 3b 00   .BYTE $0c,$06,$06,$3e,$66,$66,$3b,$00  ; ...>ff;.
-1728: 00 00 3c 66 7e 60 3e 00   .BYTE $00,$00,$3c,$66,$7e,$60,$3e,$00  ; ..<f~`>.
-1730: 0e 18 18 18 3e 18 18 00   .BYTE $0e,$18,$18,$18,$3e,$18,$18,$00  ; ....>...
-1738: 00 06 7c cc cc 78 c2 7c   .BYTE $00,$06,$7c,$cc,$cc,$78,$c2,$7c  ; ..|..x.|
-1740: c0 60 60 6c 76 66 66 00   .BYTE $c0,$60,$60,$6c,$76,$66,$66,$00  ; .``lvff.
-1748: 30 00 18 0c 0c 0c 0c 00   .BYTE $30,$00,$18,$0c,$0c,$0c,$0c,$00  ; 0.......
-1750: 0c 00 0c 0c 0c 0c 0c 38   .BYTE $0c,$00,$0c,$0c,$0c,$0c,$0c,$38  ; .......8
-1758: c0 60 66 6c 78 6c e6 00   .BYTE $c0,$60,$66,$6c,$78,$6c,$e6,$00  ; .`flxl..
-1760: 30 18 18 18 18 18 0c 00   .BYTE $30,$18,$18,$18,$18,$18,$0c,$00  ; 0.......
-1768: 00 c0 66 7e 7e 6b 63 00   .BYTE $00,$c0,$66,$7e,$7e,$6b,$63,$00  ; ..f~~kc.
-1770: 00 c0 7c 66 66 66 63 00   .BYTE $00,$c0,$7c,$66,$66,$66,$63,$00  ; ..|fffc.
-1778: 00 00 3c 6e 66 76 3c 00   .BYTE $00,$00,$3c,$6e,$66,$76,$3c,$00  ; ..<nfv<.
-1780: 00 c0 7c 66 66 7c 60 e0   .BYTE $00,$c0,$7c,$66,$66,$7c,$60,$e0  ; ..|ff|`.
-1788: 00 00 3b 66 66 3e 06 07   .BYTE $00,$00,$3b,$66,$66,$3e,$06,$07  ; ..;ff>..
-1790: 00 c0 7c 76 60 60 60 00   .BYTE $00,$c0,$7c,$76,$60,$60,$60,$00  ; ..|v```.
-1798: 00 00 3e 60 3c 06 7c 00   .BYTE $00,$00,$3e,$60,$3c,$06,$7c,$00  ; ..>`<.|.
-17a0: 00 30 7e 30 30 30 36 1c   .BYTE $00,$30,$7e,$30,$30,$30,$36,$1c  ; .0~0006.
-17a8: 00 00 e6 66 66 6e 3b 00   .BYTE $00,$00,$e6,$66,$66,$6e,$3b,$00  ; ...ffn;.
-17b0: 00 00 e6 66 66 3c 18 00   .BYTE $00,$00,$e6,$66,$66,$3c,$18,$00  ; ...ff<..
-17b8: 00 00 e3 6b 7f 3e 36 00   .BYTE $00,$00,$e3,$6b,$7f,$3e,$36,$00  ; ...k.>6.
-17c0: 00 03 66 3c 18 3c 66 c0   .BYTE $00,$03,$66,$3c,$18,$3c,$66,$c0  ; ..f<.<f.
-17c8: 00 00 e6 66 66 3e cc 78   .BYTE $00,$00,$e6,$66,$66,$3e,$cc,$78  ; ...ff>.x
-17d0: 00 00 7e 0c 7e 31 7e 00   .BYTE $00,$00,$7e,$0c,$7e,$31,$7e,$00  ; ..~.~1~.
-17d8: 18 18 18 ff ff 18 18 18   .BYTE $18,$18,$18,$ff,$ff,$18,$18,$18  ; ........
-17e0: 0c 0c d8 fc 3f 1b 30 30   .BYTE $0c,$0c,$d8,$fc,$3f,$1b,$30,$30  ; ....?.00
-17e8: 42 e7 7e 3c 3c 7e e7 42   .BYTE $42,$e7,$7e,$3c,$3c,$7e,$e7,$42  ; B.~<<~.B
-17f0: 30 30 1b 3f fc d8 0c 0c   .BYTE $30,$30,$1b,$3f,$fc,$d8,$0c,$0c  ; 00.?....
-17f8: 08 18 30 7c 18 30 60 40   .BYTE $08,$18,$30,$7c,$18,$30,$60,$40  ; ..0|.0`@
+1400: 00        DungeonCharset  .BYTE $00                              ; $00 (  0): " " ........ (space)
+1401: 00                        .BYTE $00                              ;                ........
+1402: 00                        .BYTE $00                              ;                ........
+1403: 00                        .BYTE $00                              ;                ........
+1404: 00                        .BYTE $00                              ;                ........
+1405: 00                        .BYTE $00                              ;                ........
+1406: 00                        .BYTE $00                              ;                ........
+1407: 00                        .BYTE $00                              ;                ........
+1408: 78                        .BYTE $78                              ; $01 (  1): "A" .####...
+1409: 9c                        .BYTE $9c                              ;                #..###..
+140a: 3c                        .BYTE $3c                              ;                ..####..
+140b: 36                        .BYTE $36                              ;                ..##.##.
+140c: 3e                        .BYTE $3e                              ;                ..#####.
+140d: 66                        .BYTE $66                              ;                .##..##.
+140e: 66                        .BYTE $66                              ;                .##..##.
+140f: c3                        .BYTE $c3                              ;                ##....##
+1410: ee 73 63 6e 63 63 63 de   .BYTE $ee,$73,$63,$6e,$63,$63,$63,$de  ; $02 (  2): "B"
+1418: 3c 66 cc c0 c0 c0 e6 7c   .BYTE $3c,$66,$cc,$c0,$c0,$c0,$e6,$7c  ; $03 (  3): "C"
+1420: ee 73 63 63 63 63 63 de   .BYTE $ee,$73,$63,$63,$63,$63,$63,$de  ; $04 (  4): "D"
+1428: fe 66 60 78 60 63 66 7c   .BYTE $fe,$66,$60,$78,$60,$63,$66,$7c  ; $05 (  5): "E"
+1430: fe 66 60 78 60 60 60 60   .BYTE $fe,$66,$60,$78,$60,$60,$60,$60  ; $06 (  6): "F"
+1438: 3c 66 c6 c0 de c6 66 3c   .BYTE $3c,$66,$c6,$c0,$de,$c6,$66,$3c  ; $07 (  7): "G"
+1440: c6 c6 c6 ce fe e6 c6 c6   .BYTE $c6,$c6,$c6,$ce,$fe,$e6,$c6,$c6  ; $08 (  8): "H"
+1448: 30 18 18 18 18 18 18 0c   .BYTE $30,$18,$18,$18,$18,$18,$18,$0c  ; $09 (  9): "I"
+1450: 1e 0c 0c 0c 0c 1c 38 60   .BYTE $1e,$0c,$0c,$0c,$0c,$1c,$38,$60  ; $0a ( 10): "J"
+1458: c6 6c 6c 78 78 6c 6c c6   .BYTE $c6,$6c,$6c,$78,$78,$6c,$6c,$c6  ; $0b ( 11): "K"
+1460: e0 60 60 60 60 66 7e 78   .BYTE $e0,$60,$60,$60,$60,$66,$7e,$78  ; $0c ( 12): "L"
+1468: c6 ee fe d6 c6 c6 c6 c6   .BYTE $c6,$ee,$fe,$d6,$c6,$c6,$c6,$c6  ; $0d ( 13): "M"
+1470: c6 c6 e6 f6 de ce c6 c6   .BYTE $c6,$c6,$e6,$f6,$de,$ce,$c6,$c6  ; $0e ( 14): "N"
+1478: 7c ce c6 c6 c6 c6 e6 7c   .BYTE $7c,$ce,$c6,$c6,$c6,$c6,$e6,$7c  ; $0f ( 15): "O"
+1480: fc 66 66 66 6c 60 60 c0   .BYTE $fc,$66,$66,$66,$6c,$60,$60,$c0  ; $10 ( 16): "P"
+1488: 7c e6 c6 c6 c6 c6 ce 7f   .BYTE $7c,$e6,$c6,$c6,$c6,$c6,$ce,$7f  ; $11 ( 17): "Q"
+1490: ee 73 66 6c 66 66 63 c3   .BYTE $ee,$73,$66,$6c,$66,$66,$63,$c3  ; $12 ( 18): "R"
+1498: 3a 66 60 3c 06 06 66 5c   .BYTE $3a,$66,$60,$3c,$06,$06,$66,$5c  ; $13 ( 19): "S"
+14a0: fe 30 60 c0 c0 c2 c6 7c   .BYTE $fe,$30,$60,$c0,$c0,$c2,$c6,$7c  ; $14 ( 20): "T"
+14a8: e6 66 66 66 66 66 6e 3f   .BYTE $e6,$66,$66,$66,$66,$66,$6e,$3f  ; $15 ( 21): "U"
+14b0: c3 66 66 66 66 66 3c 18   .BYTE $c3,$66,$66,$66,$66,$66,$3c,$18  ; $16 ( 22): "V"
+14b8: c3 c3 c3 d3 cb df 77 62   .BYTE $c3,$c3,$c3,$d3,$cb,$df,$77,$62  ; $17 ( 23): "W"
+14c0: c3 c3 66 3c 3c 66 c3 c3   .BYTE $c3,$c3,$66,$3c,$3c,$66,$c3,$c3  ; $18 ( 24): "X"
+14c8: c3 66 66 3c 18 18 18 18   .BYTE $c3,$66,$66,$3c,$18,$18,$18,$18  ; $19 ( 25): "Y"
+14d0: 7e                        .BYTE $7e                              ; $1a ( 26): "Z" .######.
+14d1: c6                        .BYTE $c6                              ;                ##...##.
+14d2: 0c                        .BYTE $0c                              ;                ....##..
+14d3: 18                        .BYTE $18                              ;                ...##...
+14d4: fe                        .BYTE $fe                              ;                #######.
+14d5: 60                        .BYTE $60                              ;                .##.....
+14d6: c3                        .BYTE $c3                              ;                ##....##
+14d7: fe                        .BYTE $fe                              ;                #######.
+14d8: 00 00 00 00 00 18 18 00   .BYTE $00,$00,$00,$00,$00,$18,$18,$00  ; $1b ( 27): "." (period)
+14e0: 00 00 00 00 7e 00 00 00   .BYTE $00,$00,$00,$00,$7e,$00,$00,$00  ; $1c ( 28): "-" (hyphen/minus)
+14e8: 00 18 18 18 00 00 00 00   .BYTE $00,$18,$18,$18,$00,$00,$00,$00  ; $1d ( 29): "'" (apostrophe)
+14f0: 18 3c 3c 3c 18 18 00 18   .BYTE $18,$3c,$3c,$3c,$18,$18,$00,$18  ; $1e ( 30): "!" (exclamation)
+14f8: 3c 66 66 0c 18 00 18 00   .BYTE $3c,$66,$66,$0c,$18,$00,$18,$00  ; $1f ( 31): "?" (question)
+1500: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ; $20 ( 32): " " (space)
+1508: 18 3c 3c 3c 18 18 00 18   .BYTE $18,$3c,$3c,$3c,$18,$18,$00,$18  ; $21 ( 33): "!" (exclamation)
+1510: 66 66 66 00 00 00 00 00   .BYTE $66,$66,$66,$00,$00,$00,$00,$00  ; $22 ( 34): """ (double-quote)
+1518: 00 66 ff 66 66 ff 66 00   .BYTE $00,$66,$ff,$66,$66,$ff,$66,$00  ; $23 ( 35): "#" (pound)
+1520: 18 3e 60 3c 06 7c 18 00   .BYTE $18,$3e,$60,$3c,$06,$7c,$18,$00  ; $24 ( 36): "$" (dollar)
+1528: 00 66 6c 18 30 66 46 00   .BYTE $00,$66,$6c,$18,$30,$66,$46,$00  ; $25 ( 37): "%" (percent)
+1530: 1c 36 1c 38 6f 66 3b 00   .BYTE $1c,$36,$1c,$38,$6f,$66,$3b,$00  ; $26 ( 38): "&" (ampersand)
+1538: 00 18 18 18 00 00 00 00   .BYTE $00,$18,$18,$18,$00,$00,$00,$00  ; $27 ( 39): "'" (apostrophe)
+1540: 06 0e 1c 18 18 1c 0e 06   .BYTE $06,$0e,$1c,$18,$18,$1c,$0e,$06  ; $28 ( 40): "(" (left parenthesis)
+1548: 60 70 38 18 18 38 70 60   .BYTE $60,$70,$38,$18,$18,$38,$70,$60  ; $29 ( 41): ")" (right parenthesis)
+1550: 00 66 3c ff 3c 66 00 00   .BYTE $00,$66,$3c,$ff,$3c,$66,$00,$00  ; $2a ( 42): "*" (asterisk)
+1558: 00 18 18 7e 18 18 00 00   .BYTE $00,$18,$18,$7e,$18,$18,$00,$00  ; $2b ( 43): "+" (plus)
+1560: 00 00 00 00 00 18 18 30   .BYTE $00,$00,$00,$00,$00,$18,$18,$30  ; $2c ( 44): "," (comma)
+1568: 00 00 00 7e 00 00 00 00   .BYTE $00,$00,$00,$7e,$00,$00,$00,$00  ; $2d ( 45): "-" (hyphen/minus)
+1570: 00 00 00 00 00 18 18 00   .BYTE $00,$00,$00,$00,$00,$18,$18,$00  ; $2e ( 46): "." (period)
+1578: 03 06 0c 18 30 60 40 00   .BYTE $03,$06,$0c,$18,$30,$60,$40,$00  ; $2f ( 47): "/" (forward slash)
+1580: 7c                        .BYTE $7c                              ; $30 ( 48): "0" .#####..
+1581: ce                        .BYTE $ce                              ;                ##..###.
+1582: c6                        .BYTE $c6                              ;                ##...##.
+1583: c6                        .BYTE $c6                              ;                ##...##.
+1584: c6                        .BYTE $c6                              ;                ##...##.
+1585: e6                        .BYTE $e6                              ;                ###..##.
+1586: 7c                        .BYTE $7c                              ;                .#####..
+1587: 00                        .BYTE $00                              ;                ........
+1588: 38 38 18 18 18 18 18 00   .BYTE $38,$38,$18,$18,$18,$18,$18,$00  ; $31 ( 49): "1"
+1590: 7c e6 0c 18 30 60 fe 00   .BYTE $7c,$e6,$0c,$18,$30,$60,$fe,$00  ; $32 ( 50): "2"
+1598: 7e 0c 18 0c 06 66 3c 00   .BYTE $7e,$0c,$18,$0c,$06,$66,$3c,$00  ; $33 ( 51): "3"
+15a0: 0c 1c 3c 6c cc fe 0c 00   .BYTE $0c,$1c,$3c,$6c,$cc,$fe,$0c,$00  ; $34 ( 52): "4"
+15a8: 7e 60 7c 06 06 66 3c 00   .BYTE $7e,$60,$7c,$06,$06,$66,$3c,$00  ; $35 ( 53): "5"
+15b0: 7c c6 c0 fc ce e6 7c 00   .BYTE $7c,$c6,$c0,$fc,$ce,$e6,$7c,$00  ; $36 ( 54): "6"
+15b8: 7e 06 0c 18 30 30 30 00   .BYTE $7e,$06,$0c,$18,$30,$30,$30,$00  ; $37 ( 55): "7"
+15c0: 7c ce e6 7c ce e6 7c 00   .BYTE $7c,$ce,$e6,$7c,$ce,$e6,$7c,$00  ; $38 ( 56): "8"
+15c8: 7c                        .BYTE $7c                              ; $39 ( 57): "9" .#####..
+15c9: ce                        .BYTE $ce                              ;                ##..###.
+15ca: c6                        .BYTE $c6                              ;                ##...##.
+15cb: e6                        .BYTE $e6                              ;                ###..##.
+15cc: 7e                        .BYTE $7e                              ;                .######.
+15cd: 0c                        .BYTE $0c                              ;                ....##..
+15ce: 18                        .BYTE $18                              ;                ...##...
+15cf: 30                        .BYTE $30                              ;                ..##....
+15d0: 00 38 38 00 00 38 38 00   .BYTE $00,$38,$38,$00,$00,$38,$38,$00  ; $3a ( 58): ":" (colon)
+15d8: 00 00 18 18 00 18 18 30   .BYTE $00,$00,$18,$18,$00,$18,$18,$30  ; $3b ( 59): ";" (semicolon)
+15e0: 06 0c 18 30 18 0c 06 00   .BYTE $06,$0c,$18,$30,$18,$0c,$06,$00  ; $3c ( 60): "<" (less)
+15e8: 00 00 7e 00 00 7e 00 00   .BYTE $00,$00,$7e,$00,$00,$7e,$00,$00  ; $3d ( 61): "=" (equal)
+15f0: 60 30 18 0c 18 30 60 00   .BYTE $60,$30,$18,$0c,$18,$30,$60,$00  ; $3e ( 62): ">" (greater)
+15f8: 3c 66 66 0c 18 00 18 00   .BYTE $3c,$66,$66,$0c,$18,$00,$18,$00  ; $3f ( 63): "?" (question)
+1600: 00 3c 66 6e 6e 60 3e 00   .BYTE $00,$3c,$66,$6e,$6e,$60,$3e,$00  ; $40 ( 64): "@" (at)
+1608: 78                        .BYTE $78                              ; $41 ( 65): "A" .####...
+1609: 9c                        .BYTE $9c                              ;                #..###..
+160a: 3c                        .BYTE $3c                              ;                ..####..
+160b: 36                        .BYTE $36                              ;                ..##.##.
+160c: 3e                        .BYTE $3e                              ;                ..#####.
+160d: 66                        .BYTE $66                              ;                .##..##.
+160e: 66                        .BYTE $66                              ;                .##..##.
+160f: c3                        .BYTE $c3                              ;                ##....##
+1610: ee 73 63 6e 63 63 63 de   .BYTE $ee,$73,$63,$6e,$63,$63,$63,$de  ; $42 ( 66): "B"
+1618: 3c 66 cc c0 c0 c0 e6 7c   .BYTE $3c,$66,$cc,$c0,$c0,$c0,$e6,$7c  ; $43 ( 67): "C"
+1620: ee 73 63 63 63 63 63 de   .BYTE $ee,$73,$63,$63,$63,$63,$63,$de  ; $44 ( 68): "D"
+1628: fe 66 60 78 60 63 66 7c   .BYTE $fe,$66,$60,$78,$60,$63,$66,$7c  ; $45 ( 69): "E"
+1630: fe 66 60 78 60 60 60 60   .BYTE $fe,$66,$60,$78,$60,$60,$60,$60  ; $46 ( 70): "F"
+1638: 3c 66 c6 c0 de c6 66 3c   .BYTE $3c,$66,$c6,$c0,$de,$c6,$66,$3c  ; $47 ( 71): "G"
+1640: c6 c6 c6 ce fe e6 c6 c6   .BYTE $c6,$c6,$c6,$ce,$fe,$e6,$c6,$c6  ; $48 ( 72): "H"
+1648: 30 18 18 18 18 18 18 0c   .BYTE $30,$18,$18,$18,$18,$18,$18,$0c  ; $49 ( 73): "I"
+1650: 1e 0c 0c 0c 0c 1c 38 60   .BYTE $1e,$0c,$0c,$0c,$0c,$1c,$38,$60  ; $4a ( 74): "J"
+1658: c6 6c 6c 78 78 6c 6c c6   .BYTE $c6,$6c,$6c,$78,$78,$6c,$6c,$c6  ; $4b ( 75): "K"
+1660: e0 60 60 60 60 66 7e 78   .BYTE $e0,$60,$60,$60,$60,$66,$7e,$78  ; $4c ( 76): "L"
+1668: c6 ee fe d6 c6 c6 c6 c6   .BYTE $c6,$ee,$fe,$d6,$c6,$c6,$c6,$c6  ; $4d ( 77): "M"
+1670: c6 c6 e6 f6 de ce c6 c6   .BYTE $c6,$c6,$e6,$f6,$de,$ce,$c6,$c6  ; $4e ( 78): "N"
+1678: 7c ce c6 c6 c6 c6 e6 7c   .BYTE $7c,$ce,$c6,$c6,$c6,$c6,$e6,$7c  ; $4f ( 79): "O"
+1680: fc 66 66 66 6c 60 60 c0   .BYTE $fc,$66,$66,$66,$6c,$60,$60,$c0  ; $50 ( 80): "P"
+1688: 7c e6 c6 c6 c6 c6 ce 7f   .BYTE $7c,$e6,$c6,$c6,$c6,$c6,$ce,$7f  ; $51 ( 81): "Q"
+1690: ee 73 66 6c 66 66 63 c3   .BYTE $ee,$73,$66,$6c,$66,$66,$63,$c3  ; $52 ( 82): "R"
+1698: 3a 66 60 3c 06 06 66 5c   .BYTE $3a,$66,$60,$3c,$06,$06,$66,$5c  ; $53 ( 83): "S"
+16a0: fe 30 60 c0 c0 c2 c6 7c   .BYTE $fe,$30,$60,$c0,$c0,$c2,$c6,$7c  ; $54 ( 84): "T"
+16a8: e6 66 66 66 66 66 6e 3f   .BYTE $e6,$66,$66,$66,$66,$66,$6e,$3f  ; $55 ( 85): "U"
+16b0: c3 66 66 66 66 66 3c 18   .BYTE $c3,$66,$66,$66,$66,$66,$3c,$18  ; $56 ( 86): "V"
+16b8: c3 c3 c3 d3 cb df 77 62   .BYTE $c3,$c3,$c3,$d3,$cb,$df,$77,$62  ; $57 ( 87): "W"
+16c0: c3 c3 66 3c 3c 66 c3 c3   .BYTE $c3,$c3,$66,$3c,$3c,$66,$c3,$c3  ; $58 ( 88): "X"
+16c8: c3 66 66 3c 18 18 18 18   .BYTE $c3,$66,$66,$3c,$18,$18,$18,$18  ; $59 ( 89): "Y"
+16d0: 7e                        .BYTE $7e                              ; $5a ( 90): "Z" .######.
+16d1: c6                        .BYTE $c6                              ;                ##...##.
+16d2: 0c                        .BYTE $0c                              ;                ....##..
+16d3: 18                        .BYTE $18                              ;                ...##...
+16d4: fe                        .BYTE $fe                              ;                #######.
+16d5: 60                        .BYTE $60                              ;                .##.....
+16d6: c3                        .BYTE $c3                              ;                ##....##
+16d7: fe                        .BYTE $fe                              ;                #######.
+16d8: 1e 18 18 18 18 18 18 1e   .BYTE $1e,$18,$18,$18,$18,$18,$18,$1e  ; $5b ( 91): "[" (left square bracket)
+16e0: 00 40 60 30 18 0c 06 00   .BYTE $00,$40,$60,$30,$18,$0c,$06,$00  ; $5c ( 92): "\" (backslash)
+16e8: 78 18 18 18 18 18 18 78   .BYTE $78,$18,$18,$18,$18,$18,$18,$78  ; $5d ( 93): "]" (right square bracket)
+16f0: 00 08 1c 36 63 00 00 00   .BYTE $00,$08,$1c,$36,$63,$00,$00,$00  ; $5e ( 94): "^" (caret)
+16f8: 00 00 00 00 00 00 00 ff   .BYTE $00,$00,$00,$00,$00,$00,$00,$ff  ; $5f ( 95): "_" (underscore)
+1700: 7e 7e 7e 7e 7e 7e 7e 7e   .BYTE $7e,$7e,$7e,$7e,$7e,$7e,$7e,$7e  ; $60 ( 96): "█" (block cursor)
+1708: 00                        .BYTE $00                              ; $61 ( 97): "a" ........
+1709: 00                        .BYTE $00                              ;                ........
+170a: 3e                        .BYTE $3e                              ;                ..#####.
+170b: 66                        .BYTE $66                              ;                .##..##.
+170c: 66                        .BYTE $66                              ;                .##..##.
+170d: 66                        .BYTE $66                              ;                .##..##.
+170e: 3b                        .BYTE $3b                              ;                ..###.##
+170f: 00                        .BYTE $00                              ;                ........
+1710: e0 60 60 7c 66 66 7c 00   .BYTE $e0,$60,$60,$7c,$66,$66,$7c,$00  ; $62 ( 98): "b"
+1718: 00 00 3c 66 60 66 3c 00   .BYTE $00,$00,$3c,$66,$60,$66,$3c,$00  ; $63 ( 99): "c"
+1720: 0c 06 06 3e 66 66 3b 00   .BYTE $0c,$06,$06,$3e,$66,$66,$3b,$00  ; $64 (100): "d"
+1728: 00 00 3c 66 7e 60 3e 00   .BYTE $00,$00,$3c,$66,$7e,$60,$3e,$00  ; $65 (101): "e"
+1730: 0e 18 18 18 3e 18 18 00   .BYTE $0e,$18,$18,$18,$3e,$18,$18,$00  ; $66 (102): "f"
+1738: 00 06 7c cc cc 78 c2 7c   .BYTE $00,$06,$7c,$cc,$cc,$78,$c2,$7c  ; $67 (103): "g"
+1740: c0 60 60 6c 76 66 66 00   .BYTE $c0,$60,$60,$6c,$76,$66,$66,$00  ; $68 (104): "h"
+1748: 30 00 18 0c 0c 0c 0c 00   .BYTE $30,$00,$18,$0c,$0c,$0c,$0c,$00  ; $69 (105): "i"
+1750: 0c 00 0c 0c 0c 0c 0c 38   .BYTE $0c,$00,$0c,$0c,$0c,$0c,$0c,$38  ; $6a (106): "j"
+1758: c0 60 66 6c 78 6c e6 00   .BYTE $c0,$60,$66,$6c,$78,$6c,$e6,$00  ; $6b (107): "k"
+1760: 30 18 18 18 18 18 0c 00   .BYTE $30,$18,$18,$18,$18,$18,$0c,$00  ; $6c (108): "l"
+1768: 00 c0 66 7e 7e 6b 63 00   .BYTE $00,$c0,$66,$7e,$7e,$6b,$63,$00  ; $6d (109): "m"
+1770: 00 c0 7c 66 66 66 63 00   .BYTE $00,$c0,$7c,$66,$66,$66,$63,$00  ; $6e (110): "n"
+1778: 00 00 3c 6e 66 76 3c 00   .BYTE $00,$00,$3c,$6e,$66,$76,$3c,$00  ; $6f (111): "o"
+1780: 00 c0 7c 66 66 7c 60 e0   .BYTE $00,$c0,$7c,$66,$66,$7c,$60,$e0  ; $70 (112): "p"
+1788: 00 00 3b 66 66 3e 06 07   .BYTE $00,$00,$3b,$66,$66,$3e,$06,$07  ; $71 (113): "q"
+1790: 00 c0 7c 76 60 60 60 00   .BYTE $00,$c0,$7c,$76,$60,$60,$60,$00  ; $72 (114): "r"
+1798: 00 00 3e 60 3c 06 7c 00   .BYTE $00,$00,$3e,$60,$3c,$06,$7c,$00  ; $73 (115): "s"
+17a0: 00 30 7e 30 30 30 36 1c   .BYTE $00,$30,$7e,$30,$30,$30,$36,$1c  ; $74 (116): "t"
+17a8: 00 00 e6 66 66 6e 3b 00   .BYTE $00,$00,$e6,$66,$66,$6e,$3b,$00  ; $75 (117): "u"
+17b0: 00 00 e6 66 66 3c 18 00   .BYTE $00,$00,$e6,$66,$66,$3c,$18,$00  ; $76 (118): "v"
+17b8: 00 00 e3 6b 7f 3e 36 00   .BYTE $00,$00,$e3,$6b,$7f,$3e,$36,$00  ; $77 (119): "w"
+17c0: 00 03 66 3c 18 3c 66 c0   .BYTE $00,$03,$66,$3c,$18,$3c,$66,$c0  ; $78 (120): "x"
+17c8: 00 00 e6 66 66 3e cc 78   .BYTE $00,$00,$e6,$66,$66,$3e,$cc,$78  ; $79 (121): "y"
+17d0: 00                        .BYTE $00                              ; $7a (122): "z" ........
+17d1: 00                        .BYTE $00                              ;                ........
+17d2: 7e                        .BYTE $7e                              ;                .######.
+17d3: 0c                        .BYTE $0c                              ;                ....##..
+17d4: 7e                        .BYTE $7e                              ;                .######.
+17d5: 31                        .BYTE $31                              ;                ..##...#
+17d6: 7e                        .BYTE $7e                              ;                .######.
+17d7: 00                        .BYTE $00                              ;                ........
+17d8: 18                        .BYTE $18                              ; $7b (123): "+" ...##... (spinner 1)
+17d9: 18                        .BYTE $18                              ;                ...##...
+17da: 18                        .BYTE $18                              ;                ...##...
+17db: ff                        .BYTE $ff                              ;                ########
+17dc: ff                        .BYTE $ff                              ;                ########
+17dd: 18                        .BYTE $18                              ;                ...##...
+17de: 18                        .BYTE $18                              ;                ...##...
+17df: 18                        .BYTE $18                              ;                ...##...
+17e0: 0c                        .BYTE $0c                              ; $7c (124): "/" ....##.. (spinner 2)
+17e1: 0c                        .BYTE $0c                              ;                ....##..
+17e2: d8                        .BYTE $d8                              ;                ##.##...
+17e3: fc                        .BYTE $fc                              ;                ######..
+17e4: 3f                        .BYTE $3f                              ;                ..######
+17e5: 1b                        .BYTE $1b                              ;                ...##.##
+17e6: 30                        .BYTE $30                              ;                ..##....
+17e7: 30                        .BYTE $30                              ;                ..##....
+17e8: 42                        .BYTE $42                              ; $7d (125): "x" .#....#. (spinner 3)
+17e9: e7                        .BYTE $e7                              ;                ###..###
+17ea: 7e                        .BYTE $7e                              ;                .######.
+17eb: 3c                        .BYTE $3c                              ;                ..####..
+17ec: 3c                        .BYTE $3c                              ;                ..####..
+17ed: 7e                        .BYTE $7e                              ;                .######.
+17ee: e7                        .BYTE $e7                              ;                ###..###
+17ef: 42                        .BYTE $42                              ;                .#....#.
+17f0: 30                        .BYTE $30                              ; $7e (126): "\" ..##.... (spinner 4)
+17f1: 30                        .BYTE $30                              ;                ..##....
+17f2: 1b                        .BYTE $1b                              ;                ...##.##
+17f3: 3f                        .BYTE $3f                              ;                ..######
+17f4: fc                        .BYTE $fc                              ;                ######..
+17f5: d8                        .BYTE $d8                              ;                ##.##...
+17f6: 0c                        .BYTE $0c                              ;                ....##..
+17f7: 0c                        .BYTE $0c                              ;                ....##..
+17f8: 08                        .BYTE $08                              ; $7f (127): "ϟ" ....#... (lightning/magic)
+17f9: 18                        .BYTE $18                              ;                ...##...
+17fa: 30                        .BYTE $30                              ;                ..##....
+17fb: 7c                        .BYTE $7c                              ;                .#####..
+17fc: 18                        .BYTE $18                              ;                ...##...
+17fd: 30                        .BYTE $30                              ;                ..##....
+17fe: 60                        .BYTE $60                              ;                .##.....
+17ff: 40                        .BYTE $40                              ;                .#......
 
 1800: 4c 79 29  j_readNextSector  JMP readNextSector ; Reads a sector from disk into SioBuf and adds 1 to DiskSector_L/H
-1803: 4c 80 2f  j_loc_2f80      JMP loc_2f80         ;
+1803: 4c 80 2f  j_loadModule    JMP loadModule       ; Loads a module into the 16KB memory area starting
+                                                     ;     at $7600 [ModuleStart] then continues at the address
+                                                     ;     in cont_addr_1977_L/H.
 1806: 4c f3 2f  j_sub_2ff3      JMP sub_2ff3         ;
-1809: 4c e3 30  j_loc_30e3      JMP loc_30e3         ;
-180c: 4c 83 31  j_sub_3183      JMP sub_3183         ;
+1809: 4c e3 30  j_doPlayerMove  JMP doPlayerMove     ; Updates player position based on the stick direction and handles
+                                                     ;     wall interactions when player attempts to move between cells.
+180c: 4c 83 31  j_sub_3183      JMP sub_3183         ; ....Load map (if necessary) and execute special for current location...
 180f: 4c 0d 1a  j_setDisplayMode  JMP setDisplayMode ; Initializes a display mode based on the input parameter (A)
 1812: 4c 84 1c  j_printTop      JMP printTop         ; Output interpolated string (Mode 0: Top 6 rows of screen)
 1815: 4c 88 1c  j_printBtm      JMP printBtm         ; Output interpolated string (mode 1: Bottom 15 to 22 rows of screen)
@@ -188,15 +289,15 @@
                                                      ;     player's current alignment.
 1890: 4c b0 49  j_allocEffect   JMP allocEffect      ; Reserves a space in the table at $6500 [CHR_Effects] for an
                                                      ;     effect of the specified type.
-1893: 4c b7 55  j_sub_55b7      JMP sub_55b7         ;
+1893: 4c b7 55  j_rmvEfcts4ItmTp  JMP rmvEfcts4ItmTp ;
 1896: 4c c4 4e  j_getItemAttrs  JMP getItemAttrs     ; Updates ItemAttrs_L/H to skip past item effects to the
                                                      ;     attribute section.
 1899: 4c 6b 2b  j_randInRange   JMP randInRange      ; Computes a random byte value within a specified range
 189c: 4c 71 54  j_sub_5471      JMP sub_5471         ;
-189f: 4c 5f 37  j_actionOffer   JMP actionOffer      ; Handles the OFFER action (e.g. during encounters)
+189f: 4c 5f 37  j_startOffer    JMP startOffer       ; Initiates Offer interaction (e.g. during encounters)
 18a2: 4c 47 2b  j_multBEInt16   JMP multBEInt16      ; Multiplies big-endian 16-bit values in BEParam1 and BEParam2
 18a5: 4c 8b 40  j_sub_408b      JMP sub_408b         ;
-18a8: 4c 71 37  j_actionUse     JMP actionUse        ; (U) Use action
+18a8: 4c 71 37  j_startUse      JMP startUse         ; Initiates "Use" interaction
 18ab: 4c b8 5b  j_sub_5bb8      JMP sub_5bb8         ;
 18ae: 4c a0 2a  j_readBEUInt16  JMP readBEUInt16     ; Reads up to 5 characters of keyboard input and converts them
                                                      ;     to a big endian unsigned 16-bit integer value.
@@ -233,7 +334,10 @@
                                                        ;    When less than 0 (e.g. $ff): no extra padding will be
                                                        ;      output, but the maximum width is still enforced as the
                                                        ;      maximum number of digits that may be displayed.
-18ff: 00        dat_18ff        .BYTE $00              ;
+18ff: 00        KbdPendVBlnk    .BYTE $00              ; Flag indicating whether a new key was read since the last time
+                                                       ;     key input was processed in the vblank handler. Set to
+                                                       ;     non-0 when a key is read, which signals the vblank handler
+                                                       ;     to click the internal speaker and reset the flag to 0.
 1900: 00        KBD_CONSOL      .BYTE $00              ; Status of console keys. Updated in vblank, same values as CONSOL
 1901: 00        CalcChksum_L    .BYTE $00              ; LSB of computed checksum for decrypted data. Only used in decryptBytes
 1902: 00        CalcChksum_H    .BYTE $00              ; MSB of computed checksum for decrypted data. Only used in decryptBytes
@@ -252,18 +356,19 @@
                                                        ;         0 = false (user cannot cancel),
                                                        ;         non-zero = true (user can cancel by pressing ESC when
                                                        ;                          prompted for disk)
-190f: 00        dat_190f        .BYTE $00              ;
+190f: 00        FileDriveNum    .BYTE $00              ; The current drive number (1..4) being scanned by readFileScan
+                                                       ;     as it iterates the drives to search for the file.
 1910: 00        FileDiskSide    .BYTE $00              ; Disk side (1 or 2) Referenced in StrPleaseInsert
 1911: 00        FileDiskNumber  .BYTE $00              ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
 1912: 00        CurZoneId       .BYTE $00              ; Current Zone ID based on the player's current location
 1913: 80 80 80  StatusTmpl_L    .BYTE $80,$80,$80      ; 16 bytes: Holds LSBs of status page string template addresses
 1916: 80 80 80 80               .BYTE $80,$80,$80,$80  ;
-191a: 80        dat_191a        .BYTE $80              ;   - LSB for status page 7 template address
+191a: 80        StatPg7Tmpl_L   .BYTE $80              ;   - LSB for status page 7 template address
 191b: 80 80 80 80               .BYTE $80,$80,$80,$80  ;
 191f: 80 80 80 80               .BYTE $80,$80,$80,$80  ;
 1923: 80 80 80  StatusTmpl_H    .BYTE $80,$80,$80      ; 16 bytes: Holds MSBs of status page string template addresses
 1926: 80 80 80 80               .BYTE $80,$80,$80,$80  ;
-192a: 80        dat_192a        .BYTE $80              ;   - MSB for status page 7 template address
+192a: 80        StatPg7Tmpl_H   .BYTE $80              ;   - MSB for status page 7 template address
 192b: 80 80 80 80               .BYTE $80,$80,$80,$80  ;
 192f: 80 80 80 80               .BYTE $80,$80,$80,$80  ;
 1933: 00        CurStatusPage   .BYTE $00              ; Index of currently selected status page
@@ -310,18 +415,34 @@
 1952: 00        CurZoneFlrClr   .BYTE $00              ; Current zone floor color
 1953: 80        CurZoneWarmth   .BYTE $80              ; Current zone base temperature/warmth
                                                        ;     (from high-nibble of map zone def byte 1)
-1954: 00        dat_1954        .BYTE $00              ;
-1955: 00        dat_1955        .BYTE $00              ;
-1956: 00        UNK_BYTE_COUNTER  .BYTE $00            ;
-1957: 00        loc_1957        .BYTE $00              ;
-1958: 00        UNK_BYTE_1958   .BYTE $00              ;
+1954: 00        WallCollisnFlg  .BYTE $00              ; Flag indicating the player collided with a solid wall.
+                                                       ;     When set, the renderer will flash the screen briefly and
+                                                       ;     clear the flag.
+                                                       ;     - $ff = collided with wall; 0 = no collision
+1955: 00        dat_1955        .BYTE $00              ; ?Possible flag related to time progression? Seems to only be read and not updated?
+1956: 00        UpdateSceneFlg  .BYTE $00              ; Flag indicating the graphical scene needs an update.
+                                                       ;     - 0 = no updated needed; non-0 = update requested
+1957: 00        ShowScrtDoors   .BYTE $00              ; Flag indicating whether secret doors should be rendered like
+                                                       ;     regular doors or not.
+                                                       ;     - If <0 secret doors will be rendered as normal doors
+                                                       ;       (wall codes 5 & 6 are rendered as wall codes 3 & 4,
+                                                       ;       respectively).
+1958: 00        PendingSpclFlg  .BYTE $00              ; Whether an encounter, treasure, message, or teleport is
+                                                       ; currently pending/incomplete or not.
+                                                       ;     $ff (<0 or "true") indicates an encounter, treasure,
+                                                       ;         message or teleport is pending/not yet completed. When
+                                                       ;         the value is <0, any new special actions are disabled.
+                                                       ;     The flag is reset to 0 after the special action has
+                                                       ;         finished. Values of 0 or greater are seen as "false"
+                                                       ;         (no pending special action).
 1959: 00        MapLocSpclType  .BYTE $00              ; The current location's special code "type" (the value of
                                                        ;     bits 4..6 of the code)
                                                        ;   0 = Encounter; 1 = Treasure; 2 = Message; 3 = Teleport
 195a: 00        MapLocSpclNum   .BYTE $00              ; Holds special code index number parameter value for
                                                        ;   treasure, encounter, message, and teleport special codes.
-195b: 00 00                     .BYTE $00,$00          ;
-195d: 00        dat_195d        .BYTE $00              ;
+195b: 00        dat_195b        .BYTE $00              ; assigned CHR_FRAC_LOC_X in sub_2ff3... not read?
+195c: 00        dat_195c        .BYTE $00              ; assigned CHR_FRAC_LOC_Y in sub_2ff3... not read?
+195d: 00        EncounterFlg    .BYTE $00              ;
 195e: 00        WarmthBonus     .BYTE $00              ; Holds warmth bonus provided by equipped apparel
 195f: 00        StatDisplayFlg  .BYTE $00              ; Checked in sub_408b to determine whether a general stat and
                                                        ;     display update should occur. 0 is false, and any non-0 value
@@ -331,7 +452,6 @@
                                                        ;     occur. 0 is false, and any non-0 value is seen as true.
 1961: 00        dat_1961        .BYTE $00              ;
 1962: 00        dat_1962        .BYTE $00              ;
-
 1963: 00        EffWrmthLvl     .BYTE $00              ; EffLevels[0]: Warmth effect level [0..6]
 1964: 00        EffHungrLvl     .BYTE $00              ; EffLevels[1]: Hunger effect level [0..4]
 1965: 00        EffThrstLvl     .BYTE $00              ; EffLevels[2]: Thrist effect level [0..4]
@@ -340,21 +460,28 @@
 1968: 00        EffInebrLvl     .BYTE $00              ; EffLevels[5]: Inebriation effect level [0..4]
 1969: 00        EffFullnLvl     .BYTE $00              ; EffLevels[6]: Fullness effect level [0..4]
 196a: 00        CompassOrient   .BYTE $00              ; Currently displayed compass orientation
-196b: 00 00 00  dat_196b        .BYTE $00,$00,$00      ; Player position (ORIENT, X, Y, MAP)
-196e: 00                        .BYTE $00
-196f: 00        dat_196f        .BYTE $00              ;
-1970: 00        dat_1970        .BYTE $00              ;
+196b: 00 00 00  ObsDoorPos      .BYTE $00,$00,$00      ; 4 bytes: Position of last obstructed door encountered
+196e: 00                        .BYTE $00              ;      (ORIENT, X, Y, MAP)
+196f: 00        ObsDoorState    .BYTE $00              ; State of the most recently encountered obstructed door.
+                                                       ;     Only bits 0 and 7 are used:
+                                                       ;     - bit 0 is set if the type of door (locked, bolted,
+                                                       ;       enchanted) is known
+                                                       ;     - bit 7 is set if the door has been opened
+1970: 00        ObsDoorType     .BYTE $00              ; Type of obstructed door: 0 (key), 1 (bolted), 2 (enchanted)
 1971: 00        dat_1971        .BYTE $00              ;
 1972: 00        dat_1972        .BYTE $00              ;
-1973: 00        dat_1973        .BYTE $00              ;
+1973: 00        MapLocDngrLvl   .BYTE $00              ; Current map cell danger level (0..3)
 1974: 00        MapLocDescNum   .BYTE $00              ; Current map cell description index
-1975: 00        UNK_BYTE_1975   .BYTE $00              ;
+1975: 00        UNK_BYTE_1975   .BYTE $00              ; ? Possibly flag indicating the scene rendering should be refreshed. Player moved? ?
 1976: 00        Dapperness      .BYTE $00              ; Holds dapper total based on equipped apparel
-1977: 00        cont_addr_1977_L  .BYTE $00            ;
-1978: 00        cont_addr_1977_H  .BYTE $00            ;
+1977: 00        cont_addr_1977_L  .BYTE $00            ; Address invoked at the end of each call to sub_2ff3 (main game loop?) and loadModule
+1978: 00        cont_addr_1977_H  .BYTE $00            ; At most times, this is most likely configured in the module init
+                                                       ; sub to hook into a module-specific callback. For example, used
+                                                       ; in module 0 to invoke screen rendering.
 1979: 00        dat_1979        .BYTE $00
 197a: 00        dat_197a        .BYTE $00
-197b: 00        dat_197b        .BYTE $00
+197b: 00        ForceGetFlg     .BYTE $00              ; Flag which automatically triggers a "GET" action in
+                                                       ;     sub_2ff3 when non-zero.
 197c: 80 80 80  DispBuf40x1     .BYTE $80,$80,$80                      ; 32 byte display buffer
 197f: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ;     used by DLIST_40x1
 1987: 80 80 80 80 80 80 80 80   .BYTE $80,$80,$80,$80,$80,$80,$80,$80  ;     & zeroed in sub_2cfb.
@@ -2051,7 +2178,7 @@
                 ;   - SioRetries = 1        # Retry entire sequence one time on error
                 ;   - SioCmdRetries = 13    # Up to 14 attempts to send command frame
                 ; - Sends a serial I/O command frame
-                ;   - DiskNumber, DiskCommand, DiskSector_L, DiskSector_H, and checksum
+                ;   - DriveId, DiskCommand, DiskSector_L, DiskSector_H, and checksum
                 ;   - Reads device ack byte
                 ; - If data write/send operation:
                 ;   - Writes data frame (bytes + checksum)
@@ -2064,7 +2191,7 @@
                 ;   - Reads device complete byte
                 ;
                 ; Input
-                ;   DiskNumber     - Disk Number (ATASCII value between '1' and '4' inclusive)
+                ;   DriveId        - Disk Serial Device Id (ATASCII value between '1' and '4' inclusive)
                 ;   DiskCommand    - Disk Command Code
                 ;   DiskSector_L/H - Disk sector number (uint16)
                 ;
@@ -2087,11 +2214,11 @@
 2053: a9 0d     cont_sioRetry   LDA #$0d             ; Set
 2055: 8d 3e 02                  STA SioCmdRetries    ;     SioCmdRetries = $0d (13: 14 iterations)
 2058: a2 03     loc_2058        LDX #$03             ; Loop
-                ; Initialize the SioCmdBuf with DiskNumber, DiskCommand, DiskSector_L, and DiskSector_H
+                ; Initialize the SioCmdBuf with DriveId, DiskCommand, DiskSector_L, and DiskSector_H
                                                      ;     Set X = 3         (4 iterations: [3..0])
-205a: bd 30 02  loc_205a        LDA DiskNumber,X     ;     Loop
+205a: bd 30 02  loc_205a        LDA DriveId,X        ;     Loop
                                                      ;         Set
-205d: 9d 66 02                  STA SioCmdBuf,X      ;             SioCmdBuf[X] = DiskNumber[X]
+205d: 9d 66 02                  STA SioCmdBuf,X      ;             SioCmdBuf[X] = DriveId[X]
 2060: ca                        DEX                  ;         Subtract 1 from X
 2061: 10 f7     loc_2061        BPL loc_205a         ;     Repeat while (X >= 0)
 2063: a9 28                     LDA #$28             ;     Set                            (Set serial transmit
@@ -2831,6 +2958,11 @@
 23bd: a6 32                     LDX TimePaused       ; If (TimePaused < 0) Then    (Game time paused, skip time updates)
 23bf: 30 6d                     BMI vvblki_BLINK     ;     Continue @ $242e [vvblki_BLINK]
                                                      ; End If
+                                                     ;  (Code below assumes X is 0 past here, but it is only
+                                                     ;   guaranteed as >= 0 by the check above. It is likely
+                                                     ;   never > 0, but that depends on TimePaused never exceeding
+                                                     ;   0 elsewhere. Since that value is often modified with INC &
+                                                     ;   DEC, it's difficult to guarantee it's never double-incremented)
 23c1: 2c 55 19                  BIT dat_1955         ; If (dat_1955 < 0)
 23c4: 10 03                     BPL loc_23c9         ; Then
 23c6: 20 e5 24                  JSR updTimeSpinner   ;     Call $24e5 [updTimeSpinner]
@@ -2859,32 +2991,32 @@
 23f3: ee 62 19                  INC dat_1962         ;     Add 1 to dat_1962
                                                      ; End If
 23f6: 86 50     loc_23f6        STX dat_0050         ; Set dat_0050 = 0
-23f8: 86 50                     STX dat_0050         ; Set dat_0050 = 0     (TODO: Why twice?)
-23fa: e6 35                     INC TimeMin          ; Add 1 to TimeMin                (next game minute)
+23f8: 86 50                     STX dat_0050         ; Set dat_0050 = 0        (TODO: Why twice?)
+23fa: e6 35                     INC TimeMin          ; Add 1 to TimeMin                      (next in-game minute)
 23fc: a5 35                     LDA TimeMin          ; If
 23fe: c9 3c                     CMP #$3c             ;    (TimeMin >= $3c (60))
 2400: 90 2c                     BCC vvblki_BLINK     ; Then
-2402: 86 35                     STX TimeMin          ;     Set TimeMin = X
-2404: e6 36                     INC TimeHour         ;     Add 1 to TimeHour            (next game hour)
+2402: 86 35                     STX TimeMin          ;     Set TimeMin = 0
+2404: e6 36                     INC TimeHour         ;     Add 1 to TimeHour                 (next in-game hour)
 2406: a5 36                     LDA TimeHour         ;     If
 2408: c9 18                     CMP #$18             ;        (TimeHour >= $18 (24)) Then
 240a: 90 22                     BCC vvblki_BLINK     ;     Then
 240c: 86 36                     STX TimeHour         ;         Set TimeHour = 0
-240e: e6 3b                     INC TimeDays_L       ;         Add 1 to TimeDays_L
-2410: d0 02                     BNE loc_2414         ;         If (TimeDays_L == 0) Then  (overflow)
+240e: e6 3b                     INC TimeDays_L       ;         Add 1 to TimeDays_L           (next in-game day)
+2410: d0 02                     BNE loc_2414         ;         If (TimeDays_L == 0) Then
 2412: e6 3c                     INC TimeDays_H       ;             Add 1 to TimeDays_H
                                                      ;         End If
-2414: e6 37     loc_2414        INC TimeDayOfMnth    ;         Add 1 to TimeDayOfMnth        (next day of month)
+2414: e6 37     loc_2414        INC TimeDayOfMnth    ;         Add 1 to TimeDayOfMnth        (next in-game day of month)
 2416: a5 37                     LDA TimeDayOfMnth    ;         If
 2418: c9 1e                     CMP #$1e             ;            (TimeDayOfMnth >= $1e (30))
 241a: 90 12                     BCC vvblki_BLINK     ;         Then
 241c: 86 37                     STX TimeDayOfMnth    ;             Set TimeDayOfMnth = 0
-241e: e6 38                     INC TimeMonth        ;             Add 1 to TimeMonth  (next month)
+241e: e6 38                     INC TimeMonth        ;             Add 1 to TimeMonth        (next in-game month)
 2420: a5 38                     LDA TimeMonth        ;             If
 2422: c9 0c                     CMP #$0c             ;                (TimeMonth >= $0c (12))
 2424: 90 08                     BCC vvblki_BLINK     ;             Then
 2426: 86 38                     STX TimeMonth        ;                 Set TimeMonth = 0
-2428: e6 3a                     INC TimeYears_L      ;                 Add 1 to TimeYears_L
+2428: e6 3a                     INC TimeYears_L      ;                 Add 1 to TimeYears_L  (next in-game year)
 242a: d0 02                     BNE vvblki_BLINK     ;                 If (TimeYears_L == 0) Then
 242c: e6 39                     INC TimeYears_H      ;                     Add 1 to TimeYears_H
                                                      ;                 End If
@@ -2977,7 +3109,7 @@
                 ;   Y = $03 (3)      - Assigned to SioTimeoutSecs
                 ;
                 ; Input:
-                ;   DiskNumber       - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
+                ;   DriveId          - Disk serial device ID (one of $30 '1', $31 '2', $32 '3', $33 '4')
                 ;   DiskSector_L/H   - Disk sector to read
                 ;
                 ; Output:
@@ -3079,7 +3211,7 @@
                 ; Called from the KERNEL_LOADER
                 ;
                 ; Input
-                ;   DiskNumber   - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
+                ;   DriveId      - Disk serial device ID (one of $30 '1', $31 '2', $32 '3', $33 '4')
                 ;
                 ; Output
                 ;   SioSize_L/H  - Set to $80 (128 bytes)  ?disk sector size?
@@ -3492,7 +3624,8 @@
                 ;
                 ; Input
                 ;   KbdPendChar  - A new key is read only if this value is less than 0 on input
-                ;   dat_18ff     - A new key is read only if this vaue is 0 on input
+                ;   KbdPendVBlnk - A new key is read only if this value is 0 on input, meaning at least one vblank has
+                ;                  occurred since the last key was read
                 ;   SKSTAT       - Serial port status. A new key is read only if bit 5 is set on input
                 ;   KBCODE       - Keyboard matrix code for the key that was pressed. Codes indicating the
                 ;                  control key is pressed (bit 7 set) are ignored.
@@ -3502,7 +3635,7 @@
                 ;                  but only if the input preconditions are met. Result will
                 ;                  be less than 0 if no mapping exists for the key that was
                 ;                  pressed.
-                ;   dat_18ff     - 4 if a key was read
+                ;   KbdPendVBlnk - Set to 4 if a new key was read
                 ;
                 ; The VKEYBD vector is invoked from [irq_VIMIRQ_22ac], which pushes A to the stack prior to calling.
                 ;
@@ -3512,15 +3645,15 @@
                 ;
 2653: 8a        irq_VKEYBD_2653  TXA                 ; Save original
 2654: 48                        PHA                  ;     value of X
-2655: a5 30                     LDA KbdPendChar      ; If (KbdPendChar < 0)  (Only update if ready for next key)
+2655: a5 30                     LDA KbdPendChar      ; If (KbdPendChar < 0)    (previous key was processed)
 2657: 10 1d                     BPL loc_2676         ;    And
-2659: ad ff 18                  LDA dat_18ff         ;    (dat_18ff == 0)      (Only update if ready for next key)
+2659: ad ff 18                  LDA KbdPendVBlnk     ;    (KbdPendVBlnk == 0)  (a vblank has occurred since last read)
 265c: d0 18                     BNE loc_2676         ;
 265e: ad 0f d2                  LDA SKSTAT           ;    And
-2661: 29 20                     AND #$20             ;    (SKSTAT & $20 != 0)  (xxxx)
+2661: 29 20                     AND #$20             ;    (SKSTAT & $20 != 0)  (Keyboard overrun)
 2663: f0 11                     BEQ loc_2676         ; Then
 2665: a9 04                     LDA #$04             ;     Set
-2667: 8d ff 18                  STA dat_18ff         ;         dat_18ff = 4
+2667: 8d ff 18                  STA KbdPendVBlnk     ;         KbdPendVBlnk = 4
 266a: ae 09 d2                  LDX KBCODE           ;     If (KBCODE >= 0)    (Ignore control codes)
 266d: 30 07                     BMI loc_2676         ;        And
 266f: bd d1 26                  LDA KbdCd2Atascii,X  ;        (KbdCd2Atascii[KBCODE] >= 0)
@@ -3539,14 +3672,15 @@
                 ; Input
                 ;   KBCODE       - Current key being pressed (Drives updates to StickKbdDir)
                 ;   KbdPendChar  - Previously recorded key being pressed (<0 if no key pressed)
-                ;   dat_18ff     - ?New key pressed flag? If non-0, will click the speaker
+                ;   KbdPendVBlnk - Flag indicating a key has been read since the last vblank check. When non-0, the
+                ;                  speaker is clicked and the value is set to 0.
                 ;   KBD_CONSOL   - Previous state of console keys
                 ;
                 ; Output
                 ;   KbdPendChar  - May be updated if console key pressed or released
                 ;   KBD_CONSOL   - Current state of console keys
                 ;   StickKbdDir  - Current keyboard-based stick status (from movement keys i,j,k,l, spacebar = trigger)
-                ;   dat_18ff     - Set to 0 if non-0 on input
+                ;   KbdPendVBlnk - Set to 0 if non-0 on input
                 ;
 267a: a9 08     vvblkiKeyInput  LDA #$08             ; Set
 267c: 8d 1f d0                  STA CONSOL           ;     CONSOL = 8                        (Reset register to default)
@@ -3590,14 +3724,14 @@
                                                      ;     End If
                                                      ; End If
 26bd: 84 2f     loc_26bd        STY StickKbdDir      ; Set StickKbdDir = Y (0 if non-movement key, else stick direction)
-26bf: ad ff 18                  LDA dat_18ff         ; If (dat_18ff != 0)
+26bf: ad ff 18                  LDA KbdPendVBlnk     ; If (KbdPendVBlnk != 0)
 26c2: f0 0c                     BEQ loc_26d0         ; Then
                                                      ;     (Click the speaker when a new key is pressed)
 26c4: a0 01                     LDY #$01             ;     Set          (Writing 0-8 to CONSOL produces a speaker click)
 26c6: 8c 1f d0                  STY CONSOL           ;         CONSOL = 1
 26c9: 88                        DEY                  ;     Set
 26ca: 8c 1f d0                  STY CONSOL           ;         CONSOL = 0
-26cd: 8c ff 18                  STY dat_18ff         ;     Set dat_18ff = 0
+26cd: 8c ff 18                  STY KbdPendVBlnk     ;     Set KbdPendVBlnk = 0
                                                      ; End If
 26d0: 60        loc_26d0        RTS                  ; Return to caller
 
@@ -3642,26 +3776,26 @@
                 ; Reads a file from disk, scanning all detected drives for the file.
                 ;
                 ; Input
-                ;   DiskNumber      - First disk drive to read from (1..4)
+                ;   DriveId         - Serial device ID of first disk drive to read from (1..4)
                 ;   FileNumber      - The file number to load the entry for (0 .. 68)
                 ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
                 ;
                 ; Output
-                ;   C           - Set to 0 on success, 1 if file not present in any loaded disk
-                ;   DiskNumber  - When C = 0, set to the drive the file was eventually loaded from
+                ;   C         - Set to 0 on success, 1 if file not present in any loaded disk
+                ;   DriveId   - When C = 0, set to the ID of the drive the file was eventually loaded from
                 ;
                 ; Temp
-                ;   dat_190f - Loop control var
+                ;   FileDriveNum - Loop control var
                 ;
-275b: 20 88 27  readFileScan    JSR normalizeDisk    ; Call $2788 [normalizeDisk]    (Ensure DiskNumber between 1 and 4)
+275b: 20 88 27  readFileScan    JSR normalizeDisk    ; Call $2788 [normalizeDisk]    (Ensure DriveId between 1 and 4)
 275e: 20 5d 24                  JSR resetIO          ; Call $245d [resetIO]
 2761: 20 a1 28                  JSR getFileEntry     ; Call $28a1 [getFileEntry]     (Read directory entry for file)
 2764: a9 04                     LDA #$04             ; Set
-2766: 8d 0f 19                  STA dat_190f         ;     dat_190f = 4   (4 iterations [4..1])
-2769: ad 30 02  loc_2769        LDA DiskNumber       ; Loop
+2766: 8d 0f 19                  STA FileDriveNum     ;     FileDriveNum = 4   (4 iterations [4..1])
+2769: ad 30 02  loc_2769        LDA DriveId          ; Loop
                                                      ;     Set
 276c: 29 0f                     AND #$0f             ;         X
-276e: aa                        TAX                  ;           = DiskNumber & $0f   (convert ATASCII digit to base 10)
+276e: aa                        TAX                  ;           = DriveId & $0f  (convert ATASCII digit to base 10)
 276f: bd 4d 02                  LDA DrivePresent-1,X ;     If (DrivePresent[X - 1] >= 0)
 2772: 30 05                     BMI loc_2779         ;     Then                   (drive was detected, try loading file)
 2774: 20 99 27                  JSR readFile         ;         Call $2799 [readFile]
@@ -3670,46 +3804,46 @@
                                                      ;         End If
                                                      ;     End If
 2779: 20 85 27  loc_2779        JSR nextDisk         ;     Call $2785 [nextDisk]      (Try again with next disk)
-277c: ce 0f 19                  DEC dat_190f         ;     Subtract 1 from dat_190f
-277f: d0 e8                     BNE loc_2769         ; Repeat while (dat_190f != 0)
+277c: ce 0f 19                  DEC FileDriveNum     ;     Subtract 1 from FileDriveNum
+277f: d0 e8                     BNE loc_2769         ; Repeat while (FileDriveNum != 0)
 2781: 38                        SEC                  ; Set C = 1               (Not found)
 2782: 4c c6 24  loc_2782        JMP sub_24c6         ; Continue @ $24c6 [sub_24c6]
 
-                ; Increments DiskNumber and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
+                ; Increments DriveId and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
                 ;
                 ; Input
-                ;    DiskNumber - Current disk number
+                ;    DriveId - Current disk number
                 ;
                 ; Output
-                ;    DiskNumber - Updated to next disk if between '1' and '3' (inclusive)
-                ;               Set to '1' otherwise
+                ;    DriveId - Updated to next disk if between '1' and '3' (inclusive)
+                ;              Set to '1' otherwise
                 ;
-2785: ee 30 02  nextDisk        INC DiskNumber       ; Add 1 to DiskNumber
+2785: ee 30 02  nextDisk        INC DriveId          ; Add 1 to DriveId
                                                      ; Continue to normalizeDisk
 
-                ; Tests DiskNumber and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
+                ; Tests DriveId and sets to '1' ($31) if not between '1' ($31) and '4' ($34) (inclusive)
                 ;
                 ; Input
-                ;    DiskNumber - value to test and optionally update
+                ;    DriveId - value to test and optionally update
                 ;
                 ; Output
-                ;    DiskNumber - Unchanged if between '1' and '4' (inclusive)
-                ;               Set to '1' ($31 49) otherwise
+                ;    DriveId - Unchanged if between '1' and '4' (inclusive)
+                ;              Set to '1' ($31 49) otherwise
                 ;
-2788: ad 30 02  normalizeDisk   LDA DiskNumber       ; If
-278b: c9 31                     CMP #$31             ;    (DiskNumber < $31 (49 '1'))
+2788: ad 30 02  normalizeDisk   LDA DriveId          ; If
+278b: c9 31                     CMP #$31             ;    (DriveId < $31 (49 '1'))
 278d: 90 04                     BCC loc_2793         ;    Or
-278f: c9 35                     CMP #$35             ;    (DiskNumber >= $35 (53 '5'))
+278f: c9 35                     CMP #$35             ;    (DriveId >= $35 (53 '5'))
 2791: 90 05                     BCC loc_2798         ; Then
 2793: a9 31     loc_2793        LDA #$31             ;     Set
-2795: 8d 30 02                  STA DiskNumber       ;         DiskNumber = $31 (49 '1')
+2795: 8d 30 02                  STA DriveId          ;         DriveId = $31 (49 '1')
                                                      ; End If
 2798: 60        loc_2798        RTS                  ; Return to caller
 
-                ; Reads a file and it's corresponding key sector from the specified disk and decrypts the result.
+                ; Reads a file and it's corresponding key sector from the specified drive and decrypts the result.
                 ;
                 ; Input
-                ;   DiskNumber      - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
+                ;   DriveId         - Disk drive serial device ID (one of $30 '1', $31 '2', $32 '3', $33 '4')
                 ;   FileDestAdr_L/H - Address of buffer to write retrieved data to
                 ;   FileSector_L/H  - Starting disk sector
                 ;   FileId_B1/B2    - File ID from file segment directory
@@ -4083,7 +4217,7 @@
                 ;   SysMemorySize  - The detected system memory size (0 = 48K, $80 = 64K, $c0 = 128K or more)
                 ;   dat_025a       - flag indicating the value of the bit in dat_2a38_unk corresponding to the FileNumber
                 ;                    Only matters for systems with 128KB or more of RAM.
-                ;   DiskNumber     - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
+                ;   DriveId        - Disk drive serial device ID (one of $30 '1', $31 '2', $32 '3', $33 '4')
                 ;   DiskSector_L/H - Disk sector to read
                 ;
                 ; Output
@@ -4536,6 +4670,9 @@
                 ; Checks every 1/6th second (after an initial 1/3 second delay) and returns early if the spacebar
                 ; is pressed.
                 ;
+                ; - Executes the primary game loop functions while waiting (is this just for key reading/processing?)
+                ; - Does not execute module-specific hook, since it uses the same hook to return execution to itself.
+                ;
                 ; Input
                 ;    A = Specifies the number of seconds to wait
                 ;
@@ -4607,7 +4744,8 @@
 2c6e: 60                        RTS                  ; Return to caller
 
                 ; Repeatedly executes sub_2ff3 while KbdChar is < 0
-                ; Primary game idle loop?
+                ; - Waits for user input while still executing the primary game loop functions.
+                ; - Will not execute module-specific hook, since it uses the same hook to return execution to itself.
                 ;
                 ; Input
                 ;   cont_addr_1977_L/H - The cu
@@ -5286,7 +5424,7 @@
 2ecd: 9d b6 18  loc_2ecd        STA dat_18b7-1,X     ; Loop
                                                      ;     Set dat_18b7[X - 1] = 0
 2ed0: ca                        DEX                  ;     Subtract 1 from X
-2ed1: d0 fa                     BNE loc_2ecd         ; Repeat while X > 0
+2ed1: d0 fa                     BNE loc_2ecd         ; Repeat while (X != 0)
 2ed3: a9 00                     LDA #$00             ; Set display mode to 0
 2ed5: 20 0d 1a                  JSR setDisplayMode   ;     (plain 40x25 character display)
 2ed8: a9 07                     LDA #$07             ; Set StrTmplate_L/H
@@ -5372,17 +5510,28 @@
                                                             ;    6: $3f03 [StrCurses]
                                                             ;    7: $0000 - unused
 
-                ; Loads a scenario module
+                ; Loads a module into the 16KB memory area starting at $7600 [ModuleStart]
+                ;     then continues at the address in cont_addr_1977_L/H.
                 ;
                 ; Input
                 ;   CurrentModule - The module number to load (file number is module number + 16)
                 ;   LoadedModule  - The current resident module number
                 ;   ModuleNumber  - Currently loaded scenario or map number
                 ;
-                ; Temp
-                ;   FileNumber   - File segment index of module file load
+                ; Output
+                ;   CurZoneId      - Set to $ff to trigger update on next check
+                ;   CurNumDropped  - Set to $ff to trigger update on next check
+                ;   CompassOrient  - Set to $ff to trigger update on next check
+                ;   CurDescNum     - Set to $ff to trigger update on next check
+                ;   StatDisplayFlg - Set to $ff to trigger update on next check
+                ;   ItemStatUpdFlg - Set to $ff to trigger update on next check
                 ;
-2f80: 20 2c 32  loc_2f80        JSR updateLocDesc    ; Call $322c [updateLocDesc]
+                ; Temp
+                ;   FileDestAdr_L/H - Assigned to the address where the module is loaded ($7600 [ModuleStart])
+                ;   FileNumber      - File segment index of module file load
+                ;   MayCancelLoad   - Set to $ff if the load may be cancelled, 0 otherwise.
+                ;
+2f80: 20 2c 32  loadModule      JSR updateLocDesc    ; Call $322c [updateLocDesc]
 2f83: ad 00 76                  LDA ModuleNumber     ; If
 2f86: cd 1e 63                  CMP CurrentModule    ;    (CurrentModule != ModuleNumber)
 2f89: f0 5a                     BEQ loc_2fe5         ; Then
@@ -5420,40 +5569,59 @@
 2fd5: 90 03                     BCC loc_2fda         ;     If (C = 1) Then     (TODO: meaning?)
 2fd7: 4c 83 31                  JMP sub_3183         ;         Continue execution @ $3183 [sub_3183]
                                                      ;     End If
-2fda: a2 f3     loc_2fda        LDX #$f3             ;     Set X = $f3 (243)
-2fdc: a9 00                     LDA #$00             ;     Set A = 0
+2fda: a2 f3     loc_2fda        LDX #$f3             ;     Set X = $f3 (243)        (Set bytes [98..243] in SioBuf to 0)
+2fdc: a9 00                     LDA #$00             ;     Set A = 0                (TODO: why?)
 2fde: 95 00     loc_2fde        STA SioBufPos_L,X    ;     Loop
                                                      ;         Set SioBufPos_L[X] = 0
 2fe0: ca                        DEX                  ;         Subtract 1 from X
 2fe1: e0 62                     CPX #$62             ;     Repeat
-2fe3: b0 f9                     BCS loc_2fde         ;       while (X > $63 (99))
+2fe3: b0 f9                     BCS loc_2fde         ;       while (X >= $62 (98))
                                                      ; End If
 2fe5: ad 1f 63  loc_2fe5        LDA LoadedModule     ; If
 2fe8: cd 1e 63                  CMP CurrentModule    ;    (LoadedModule != CurrentModule)
 2feb: f0 03                     BEQ loc_2ff0         ; Then
-2fed: 20 01 76                  JSR moduleEntry1     ;     Continue @ $7601 [moduleEntry1]   (initialize module vector?)
+2fed: 20 01 76                  JSR moduleInit       ;     Continue @ $7601 [moduleInit]
                                                      ; End If
 2ff0: 6c 77 19  loc_2ff0        JMP (cont_addr_1977_L) ; Continue @ address in cont_addr_1977_L/H
 
                 ; ?Main game loop?
+                ;  ? Often used to read a keypress ?
+                ;
+                ; - Displays any pending special message when PendignSpclFlg >= 0 and MapLocSpclType = 2 (message)
+                ; -
                 ;
                 ; Inputs?
+                ;   PendingSpclFlg -
+                ;   MapLocSpclType -
+                ;   dat_1971       -
+                ;   ModuleNumber   -
+                ;   dat_1979       -
+                ;   ForceGetFlg    -
+                ;   dat_6320       -
+                ;   EncounterFlg   -
+                ;   CHR_FRAC_LOC_X -
+                ;   CHR_FRAC_LOC_Y -
+                ;
+                ; Output
+                ;   PendingSpclFlg - Set to $ff if >= 0 and MapLocSpclType == 2 on input
+                ;   LoadedModule   -
+                ;   UpdateSceneFlg -
                 ;
 2ff3: 20 8b 40  sub_2ff3        JSR sub_408b         ; Call $408b [sub_408b]
 2ff6: 20 6f 38                  JSR sub_386f         ; Call $386f [sub_386f]
-2ff9: ad 58 19                  LDA UNK_BYTE_1958    ; If
-2ffc: 30 0f                     BMI loc_300d         ;    (UNK_BYTE_1958 >= 0)
+2ff9: ad 58 19                  LDA PendingSpclFlg   ; If
+2ffc: 30 0f                     BMI loc_300d         ;    (PendingSpclFlg >= 0)       (no pending special action)
 2ffe: ad 59 19                  LDA MapLocSpclType   ;    And
 3001: c9 02                     CMP #$02             ;    (MapLocSpclType == 2)       (special code type 2 is a message)
 3003: d0 08                     BNE loc_300d         ; Then
 3005: a9 ff                     LDA #$ff             ;     Set
-3007: 8d 58 19                  STA UNK_BYTE_1958    ;         UNK_BYTE_1958 = $ff
-300a: 20 96 35                  JSR sub_3596         ;     Call $3596 [sub_3596]
+3007: 8d 58 19                  STA PendingSpclFlg   ;         PendingSpclFlg = $ff   (set pending special action flag)
+300a: 20 96 35                  JSR showSpclMsg      ;     Call $3596 [showSpclMsg]   (try to display the message)
                                                      ; End If
 300d: ad 71 19  loc_300d        LDA dat_1971         ; If (dat_1971 < 0)
-3010: 30 6d                     BMI cont_307f        ;    Or (ModuleNumber != 0)
+3010: 30 6d                     BMI contReadKey      ;    Or (ModuleNumber != 0)
 3012: ad 00 76                  LDA ModuleNumber     ; Then
-3015: d0 68                     BNE cont_307f        ;     Continue @ $307f [cont_307f]
+3015: d0 68                     BNE contReadKey      ;     Continue @ $307f [contReadKey]
                                                      ; End If
 3017: ad 79 19                  LDA dat_1979         ; If (dat_1979 < 0)
 301a: 10 16                     BPL loc_3032         ; Then
@@ -5464,21 +5632,21 @@
 3027: a9 02                     LDA #$02             ;     Set
 3029: 8d 1e 63                  STA CurrentModule    ;         CurrentModule = 2              (2 = Item Data module)
 302c: 20 07 76                  JSR moduleEntry3     ;     Call $7607 [moduleEntry3]          (TODO: is this a module unloading vector?)
-302f: 4c 80 2f                  JMP loc_2f80         ;     Continue execution @ $2f80 [loc_2f80]
+302f: 4c 80 2f                  JMP loadModule       ;     Continue execution @ $2f80 [loadModule]
                                                      ; End If
-3032: ad 7b 19  loc_3032        LDA dat_197b         ; If (dat_197b != 0)
+3032: ad 7b 19  loc_3032        LDA ForceGetFlg      ; If (ForceGetFlg != 0)
 3035: f0 05                     BEQ loc_303c         ; Then
-3037: a9 47                     LDA #$47             ;     Set A = $47 (71 'G')
-3039: 4c aa 30                  JMP loc_30aa         ;     Continue execution @ $30aa [loc_30aa]
+3037: a9 47                     LDA #$47             ;     Set A = $47 (71 'G' (Get))             (trigger a get action)
+3039: 4c aa 30                  JMP contUcChar       ;     Continue execution @ $30aa [contUcChar]
                                                      ; End If
 303c: ad 20 63  loc_303c        LDA dat_6320         ; If (dat_6320 < 0)
 303f: 10 05                     BPL loc_3046         ; Then
-3041: ad 5d 19                  LDA dat_195d         ;     If (dat_195d == 0) Then
-3044: f0 39                     BEQ cont_307f        ;         Continue @ cont_307f [cont_307f]
+3041: ad 5d 19                  LDA EncounterFlg     ;     If (EncounterFlg == 0) Then
+3044: f0 39                     BEQ contReadKey      ;         Continue @ contReadKey [contReadKey]
                                                      ;     End If
                                                      ; End If
 3046: a9 ff     loc_3046        LDA #$ff             ; Set
-3048: 8d 5d 19                  STA dat_195d         ;     dat_195d = $ff
+3048: 8d 5d 19                  STA EncounterFlg     ;     EncounterFlg = $ff                        (trigger encounter)
 304b: ad 16 63                  LDA CHR_FRAC_LOC_X   ; If
 304e: c9 12                     CMP #$12             ;    (CHR_FRAC_LOC_X == $12)
 3050: d0 18                     BNE loc_306a         ;    And
@@ -5490,15 +5658,15 @@
 305f: a9 01                     LDA #$01             ;     Set
 3061: 8d 1e 63                  STA CurrentModule    ;         CurrentModule = 1              (1 = Combat Data module)
 3064: 20 07 76                  JSR moduleEntry3     ;     Call $7607 [moduleEntry3]          (TODO: is this a module unloading vector?)
-3067: 4c 80 2f                  JMP loc_2f80         ;     Continue execution @ $2f80 [loc_2f80]
+3067: 4c 80 2f                  JMP loadModule       ;     Continue execution @ $2f80 [loadModule]
                                                      ; End If
                 ;
-                ; Subtract 1 from UNK_BYTE_COUNTER
+                ; Subtract 1 from UpdateSceneFlg
                 ; Set dat_195b = CHR_FRAC_LOC_X
                 ; Set loc_195c = CHR_FRAC_LOC_Y
                 ; Set CHR_FRAC_LOC_X = $12 (18)
                 ; Set CHR_FRAC_LOC_Y = $12 (18)
-306a: ce 56 19  loc_306a        DEC UNK_BYTE_COUNTER ; Subtract 1 from UNK_BYTE_COUNTER
+306a: ce 56 19  loc_306a        DEC UpdateSceneFlg   ; Subtract 1 from UpdateSceneFlg             (update requested)
 306d: a2 01                     LDX #$01             ; Set X = 1 (2 iterations [1..0])
 306f: bd 16 63  loc_306f        LDA CHR_FRAC_LOC_X,X ; Loop
                                                      ;     Set
@@ -5510,14 +5678,15 @@
 307d: 30 5c                     BMI cont_30db        ; Continue @ $30db [cont_30db]
 
                 ; Reads a keypress and executes the corresponding action (if any).
-                ; When Tipsy or above: Applies random effect of swapping status screens instead of reading actual keypress.
+                ; When Tipsy or above:
+                ;   - Applies random effect of swapping status screens instead of reading actual keypress.
                 ;
-307f: a9 00     cont_307f       LDA #$00             ; Set
-3081: 8d 5d 19                  STA dat_195d         ;     dat_195d = 0
+307f: a9 00     contReadKey     LDA #$00             ; Set
+3081: 8d 5d 19                  STA EncounterFlg     ;     EncounterFlg = 0
 3084: ad 68 19                  LDA EffInebrLvl      ; If
 3087: c9 01                     CMP #$01             ;    (EffInebrLvl >= 1)     (1 = Tipsy)
 3089: 90 1a                     BCC loc_30a5         ;    AND
-308b: ad 0a d2                  LDA RANDOM           ;    (random byte < $10 (16))
+308b: ad 0a d2                  LDA RANDOM           ;    (random byte < $10 (16 / 6.25%))
 308e: c9 10                     CMP #$10             ;    AND
 3090: b0 13                     BCS loc_30a5         ;    ([Set A = random byte],
 3092: ad 0a d2                  LDA RANDOM           ;     A < EffInebrLvl)
@@ -5527,15 +5696,15 @@
 309c: aa                        TAX                  ;         X = A & 1
 309d: bd e1 30                  LDA DrunkInputs,X    ;     Set         (Randomly selected: $2c (44 ',') or $2e (46 '.'))
 30a0: 85 31                     STA KbdChar          ;         KbdChar = DrunkInputs[X]      (Randomly changes status page)
-30a2: 4c aa 30                  JMP loc_30aa         ; Else
+30a2: 4c aa 30                  JMP contUcChar       ; Else
 30a5: 20 43 26  loc_30a5        JSR readKey          ;     Call $2643 [readKey]
 30a8: 30 31                     BMI cont_30db        ;     If (A < 0) Then
                                                      ;         Continue @ $30db [cont_30db]
                                                      ;     End If
                                                      ; End If
-30aa: 20 a5 2b  loc_30aa        JSR charToUpper      ; Call $2ba5 [charToUpper]
+30aa: 20 a5 2b  contUcChar      JSR charToUpper      ; Call $2ba5 [charToUpper]
                 ; Search ActionKeyBind for a match to keyboard character in A
-                ; If a match is found, continue @ the corresponding address from ActionSubAdr_L/H
+                ; If a match is found, continue @ the corresponding address from KbdActSubAdr_L/H
                 ;
 30ad: a2 0c                     LDX #$0c             ; Set X = $0c (12 : 13 iterations)
 30af: dd 78 3b  loc_30af        CMP ActionKeyBind,X  ; Loop
@@ -5550,24 +5719,24 @@
 30bf: e0 05                     CPX #$05             ;      Or (X > 5) )        (quit, pause, next, prev always allowed)
 30c1: b0 02                     BCS loc_30c5         ; Then
 30c3: 90 19                     BCC loc_30de         ;     (Self-modifying code)
-30c5: bd 85 3b  loc_30c5        LDA ActionSubAdr_L,X ;     Set the
+30c5: bd 85 3b  loc_30c5        LDA KbdActSubAdr_L,X ;     Set the
 30c8: 8d d2 30                  STA smc_30d1+1       ;         JSR address
-30cb: bd 92 3b                  LDA ActionSubAdr_H,X ;         @ $30d1 [smc_30d1] below
-30ce: 8d d3 30                  STA smc_30d1+2       ;         to ActionSubAdr_L/H[X]
+30cb: bd 92 3b                  LDA KbdActSubAdr_H,X ;         @ $30d1 [smc_30d1] below
+30ce: 8d d3 30                  STA smc_30d1+2       ;         to KbdActSubAdr_L/H[X]
 30d1: 20 ff ff  smc_30d1        JSR $ffff            ;     The address for this JSR is dynamically modified
                                                      ;     to one of the following addresses
-                                                     ;         0: $3756 [actionGet]      - (G) Get action
-                                                     ;         1: $3768 [actionDrop]     - (D) Drop action
-                                                     ;         2: $3771 [actionUse]      - (U) Use action
-                                                     ;         3: $377a [actionCast]     - (C) Cast spell action
-                                                     ;         4: $3783 [actionSave]     - (S) Save character action
-                                                     ;         5: $3683 [actionExamine]  - (E) Examine items or spells action
-                                                     ;         6: $37d6 [actionQuit]     - (Q) Quit game action
-                                                     ;         7: $384a [actionPause]    - (P) Pause game action
-                                                     ;         8: $3c8c [actionPrevStat] - (,) Previous status page action
-                                                     ;         9: $3c71 [actionNextStat] - (.) Next status page action
-                                                     ;        10: $3c71 [actionNextStat] - (SELECT) Next status page action
-                                                     ;        11: $3c8c [actionPrevStat] - (START) Previous status page action
+                                                     ;         0: $3756 [startGet]       - (G) Get interaction
+                                                     ;         1: $3768 [startDrop]      - (D) Drop interaction
+                                                     ;         2: $3771 [startUse]       - (U) Use interaction
+                                                     ;         3: $377a [startCast]      - (C) Cast spell interaction
+                                                     ;         4: $3783 [startSave]      - (S) Save character interaction
+                                                     ;         5: $3683 [startExamine]   - (E) Examine items or spells interaction
+                                                     ;         6: $37d6 [startQuit]      - (Q) Quit game interaction
+                                                     ;         7: $384a [startPause]     - (P) Pause game interaction
+                                                     ;         8: $3c8c [showPrevStatPg] - (,) Previous status page interaction
+                                                     ;         9: $3c71 [showNextStatPg] - (.) Next status page interaction
+                                                     ;        10: $3c71 [showNextStatPg] - (SELECT) Next status page interaction
+                                                     ;        11: $3c8c [showPrevStatPg] - (START) Previous status page interaction
                                                      ;        12: $2cab [sub_2cab] - () Does nothing/debug BRK
 30d4: a9 ff                     LDA #$ff             ;     Set
 30d6: 85 31                     STA KbdChar          ;         KbdChar = $ff (255 - No key available)
@@ -5580,11 +5749,12 @@
                                                      ;   0: $2c (44 ',') - Prev status page
                                                      ;   1: $2e (46 '.') - Next status page
 
+                ; Updates player position based on the stick direction and handles wall interactions when player
+                ; attempts to move between cells.
                 ;
-                ; TODO: How is this invoked?
-                ;   Called from $77e2 during gameplay. TODO: Where is that loaded from?
+                ; Called from cont_7641 (Module 0) during normal gameplay.
                 ;
-30e3: a9 00     loc_30e3        LDA #$00             ; Set
+30e3: a9 00     doPlayerMove    LDA #$00             ; Set
 30e5: 8d 75 19                  STA UNK_BYTE_1975    ;     UNK_BYTE_1975 = 0
 30e8: ad 1e 63                  LDA CurrentModule    ; Set
 30eb: 8d 1f 63                  STA LoadedModule     ;     LoadedModule = CurrentModule
@@ -5672,6 +5842,7 @@
                 ;
 3180: 4c 8c 31  contCheckPos1   JMP contCheckPos     ; Continue @ $318c [contCheckPos]
 
+                ; ....Load map (if necessary) and execute special for current location...
                 ;
                 ; - Save current player location
                 ; - Set LoadedModule = CurrentModule
@@ -5694,12 +5865,14 @@
                 ;
                 ; - Checks the currently loaded map and loads a new map if it doesn't match the player's current map.
                 ; - Updates current map  cell address and description
-                ; - Executes any action for the cell's special code value
+                ; - If the cell's special code value has bit 7 set, execute a corresponding action:
                 ;   - Initiate an encounter
                 ;   - Treasure
                 ;   - Display a special message
                 ;   - Teleport the player
-                ;
+                ; - Otherwise, if the cell's special code is a positive value
+                ;   - Assign the module number from the special code (bits 0..4)
+                ;   - Assign the danger level from the special code (bits 5..6)
                 ;
                 ; Input
                 ;   CHR_LOC_MAP
@@ -5748,7 +5921,7 @@
 31be: b1 10                     LDA (MapLoc_L),Y     ;     MapLocDescNum
 31c0: 8d 74 19                  STA MapLocDescNum    ;          = (*MapLoc_L)[2]
 31c3: a0 03                     LDY #$03             ; If                         (3 = offset of special code byte)
-31c5: b1 10                     LDA (MapLoc_L),Y     ;    ((*MapLoc_L)[3] < 0)
+31c5: b1 10                     LDA (MapLoc_L),Y     ;    ((*MapLoc_L)[3] < 0)    (bit 7 indicates a special code)
 31c7: 10 2f                     BPL loc_31f8         ; Then
                 ; Handle encounter, treasure, message or teleport codes
                 ;   80-9F=Encounter 0-31        A0-BF=Treasure 0-31
@@ -5757,13 +5930,13 @@
 31cb: 8d 5a 19                  STA MapLocSpclNum    ;         MapLocSpclNum = (*MapLoc_L)[3] & $1f
 31ce: a9 00                     LDA #$00             ;     Set
 31d0: 8d 1e 63                  STA CurrentModule    ;         CurrentModule = 0          (load module 0, if not loaded)
-31d3: 2c 58 19                  BIT UNK_BYTE_1958    ;     If (UNK_BYTE_1958 < 0)
+31d3: 2c 58 19                  BIT PendingSpclFlg   ;     If (PendingSpclFlg < 0) Then     (special action in progress)
 31d6: 30 35                     BMI cont_320d        ;         Continue @ $320d [cont_320d]
                                                      ;     End If
 31d8: b1 10                     LDA (MapLoc_L),Y     ;     Set
 31da: 2a                        ROL                  ;         A
 31db: 2a                        ROL                  ;           =
-31dc: 2a                        ROL                  ;             ((*MapLoc_L)[3] >> 4) & 3
+31dc: 2a                        ROL                  ;             ((*MapLoc_L)[3] >> 5) & 3             (A = bits 5..6)
 31dd: 2a                        ROL                  ;         .
 31de: 29 03                     AND #$03             ;         .
 31e0: 8d 59 19                  STA MapLocSpclType   ;     Set MapLocSpclType = A
@@ -5773,31 +5946,31 @@
 31ea: bd a3 3b                  LDA SpclLocHndlr_H,X ;         @ $31f5 below
 31ed: 8d f7 31                  STA smc_31f5+2       ;         to SpclLocHndlr_L/H[X]
 31f0: a9 ff                     LDA #$ff             ;     Set
-31f2: 8d 58 19                  STA UNK_BYTE_1958    ;         UNK_BYTE_1958 = $ff
+31f2: 8d 58 19                  STA PendingSpclFlg   ;         PendingSpclFlg = $ff         (special action in progress)
 31f5: 4c ff ff  smc_31f5        JMP $ffff            ;     Continue @ the address assigned from SpclLocHndlr_L/H
                                                      ;     One of the following addresses:
-                                                     ;        0: $3548 [cont_3548]    - (handle encounter?)
-                                                     ;        1: $3564 [cont_3564]    - (handle treasure?)
-                                                     ;        2: $3583 [contMessage]  - Display location message
-                                                     ;        3: $35c1 [contTeleport] - Teleport player
+                                                     ;        0: $3548 [contEncounter] - Initiates a special encounter
+                                                     ;        1: $3564 [contTreasure]  - Handle special treasure prompt
+                                                     ;        2: $3583 [contMessage]   - Display location message
+                                                     ;        3: $35c1 [contTeleport]  - Teleport player
                                                      ; End If
 31f8: 29 1f     loc_31f8        AND #$1f             ; Set
 31fa: 8d 1e 63                  STA CurrentModule    ;     CurrentModule = (*MapLoc_L)[3] & $1f (module to load [0..31])
 31fd: a9 ff                     LDA #$ff             ; Set
 31ff: 8d 59 19                  STA MapLocSpclType   ;     MapLocSpclType = $ff
 3202: b1 10                     LDA (MapLoc_L),Y     ; Set
-3204: 2a                        ROL                  ;     A
+3204: 2a                        ROL                  ;     MapLocDngrLvl
 3205: 2a                        ROL                  ;       =
-3206: 2a                        ROL                  ;         (*MapLoc_L)[Y] >> 4
-3207: 2a                        ROL                  ;
-3208: 29 03                     AND #$03             ; Set
-320a: 8d 73 19                  STA dat_1973         ;     dat_1973 = A & 3    (e.g. ((*MapLoc_L)[Y] >> 4) & 3)
+3206: 2a                        ROL                  ;         ((*MapLoc_L)[3] >> 5) & 3        (bits 5..6)
+3207: 2a                        ROL                  ;       .
+3208: 29 03                     AND #$03             ;       .
+320a: 8d 73 19                  STA MapLocDngrLvl    ;       .
 
                 ;
                 ; Many points converge here
                 ;
                 ; - Invokes moduleEntry2 if LoadedModule != $ff and CurrentModule != LoadedModule
-                ; - Continues @ $2f80 [loc_2f80]
+                ; - Continues @ $2f80 [loadModule]
                 ;
 320d: ad 1f 63  cont_320d       LDA LoadedModule     ; If
 3210: c9 ff                     CMP #$ff             ;    (LoadedModule != $ff)
@@ -5805,10 +5978,10 @@
 3214: ad 1e 63                  LDA CurrentModule    ;    And
 3217: cd 1f 63                  CMP LoadedModule     ;    (CurrentModule != LoadedModule)
 321a: d0 03                     BNE loc_321f         ;
-321c: 4c 80 2f                  JMP loc_2f80         ; Then
+321c: 4c 80 2f                  JMP loadModule       ; Then
 321f: 20 04 76  loc_321f        JSR moduleEntry2     ;     Call $7604 [moduleEntry2]     TODO: is this an unload vector?
                                                      ; End If
-3222: 4c 80 2f  loc_3222        JMP loc_2f80         ; Continue @ $2f80 [loc_2f80]
+3222: 4c 80 2f  loc_3222        JMP loadModule       ; Continue @ $2f80 [loadModule]
 
 3225: 01 01 01  MapNum2Level    .BYTE $01,$01,$01    ; Map number (index + 1) to corresponding dungeon level
 3228: 01 02 03 04               .BYTE $01,$02,$03,$04
@@ -5994,7 +6167,7 @@
                 ;   MoveBounds[0..7] -
                 ;
                 ; Output
-                ;   dat_1954       - Set to $ff if MoveBounds[X] == CHR_SAV_FRAC_LOC_X[MovePropOfs[X]]
+                ;   WallCollisnFlg       - Set to $ff if MoveBounds[X] == CHR_SAV_FRAC_LOC_X[MovePropOfs[X]]
                 ;   CHR_FRAC_LOC_X
                 ;   CHR_FRAC_LOC_Y
                 ;
@@ -6005,7 +6178,7 @@
 32e0: d9 1b 63                  CMP CHR_SAV_FRAC_LOC_X,Y ; If (A == CHR_SAV_FRAC_LOC_X[Y])
 32e3: d0 08                     BNE loc_32ed         ; Then
 32e5: a9 ff                     LDA #$ff             ;     Set
-32e7: 8d 54 19                  STA dat_1954         ;         dat_1954 = $ff
+32e7: 8d 54 19                  STA WallCollisnFlg   ;         WallCollisnFlg = $ff
 32ea: bd 5c 3b                  LDA MoveBounds,X     ;     Set A = MoveBounds[X]
                                                      ; End If
 32ed: 99 16 63  loc_32ed        STA CHR_FRAC_LOC_X,Y ; Set CHR_FRAC_LOC_X[Y] = A
@@ -6033,14 +6206,14 @@
                 ;   MoveOrient - Current movement orientation
                 ;
                 ; Output
-                ;   CHR_LOC_X     - updated based on movement orientation (E/W) and movement speed
-                ;   CHR_LOC_Y     - updated based on movement orientation (N/S) and movement speed
-                ;   UNK_BYTE_1975 - Set to $ff
-                ;   UNK_BYTE_1958 - Set to 0
-                ;   dat_191a      - Set to 0
-                ;   dat_192a      - Set to 0
-                ;   SoundState    - set to $80 (128) - Request "Secret door" sound be played
-                ;   dat_195d      - randomly decreased by one (approx 12.5% chance)
+                ;   CHR_LOC_X      - updated based on movement orientation (E/W) and movement speed
+                ;   CHR_LOC_Y      - updated based on movement orientation (N/S) and movement speed
+                ;   UNK_BYTE_1975  - Set to $ff
+                ;   PendingSpclFlg - Set to 0 (cancel/complete any pending special action)
+                ;   StatPg7Tmpl_L  - Set to 0
+                ;   StatPg7Tmpl_H  - Set to 0
+                ;   SoundState     - set to $80 (128) - Request "Secret door" sound be played
+                ;   EncounterFlg   - Approx 12.5% chance of an encounter being triggered by setting this to $ff
                 ;
                 ; Continues @ $3314 [loc_3314] -> $3321 [contMoveThru] -> $3180 [contCheckPos1] -> $318c [contCheckPos]
                 ;
@@ -6056,23 +6229,23 @@
                 ;   MoveOrient - Current movement orientation
                 ;
                 ; Output
-                ;   CHR_LOC_X     - updated based on movement orientation (E/W) and movement speed
-                ;   CHR_LOC_Y     - updated based on movement orientation (N/S) and movement speed
-                ;   UNK_BYTE_1975 - Set to $ff
-                ;   UNK_BYTE_1958 - Set to 0
-                ;   dat_191a      - Set to 0
-                ;   dat_192a      - Set to 0
-                ;   SoundState    - Set to $81 (129) - Request "Door" sound be played
-                ;   dat_195d      - Randomly decreased by one (approx 12.5% chance)
+                ;   CHR_LOC_X      - updated based on movement orientation (E/W) and movement speed
+                ;   CHR_LOC_Y      - updated based on movement orientation (N/S) and movement speed
+                ;   UNK_BYTE_1975  - Set to $ff
+                ;   PendingSpclFlg - Set to 0 (cancel/complete any pending special action)
+                ;   StatPg7Tmpl_L  - Set to 0
+                ;   StatPg7Tmpl_H  - Set to 0
+                ;   SoundState     - Set to $81 (129) - Request "Door" sound be played
+                ;   EncounterFlg   - Approx 12.5% chance of an encounter being triggered by setting this to $ff
                 ;
                 ; Continues @ $3321 [contMoveThru] -> $3180 [contCheckPos1] -> $318c [contCheckPos]
                 ;
 330f: a9 81     contMoveDoor    LDA #$81             ; Set
 3311: 8d 9c 19                  STA SoundState       ;     SoundState = $81 (129 - Request "Door" sound)
 3314: ad 0a d2  loc_3314        LDA RANDOM           ; Set
-3317: 29 51                     AND #$51             ;     A = random byte & $51
-3319: d0 03                     BNE loc_331e         ; If (A == 0) Then
-331b: ce 5d 19                  DEC dat_195d         ;     Subtract 1 from dat_195d
+3317: 29 51                     AND #$51             ;     A = random byte & $51   (3 bits set in mask, 5 bits clear
+3319: d0 03                     BNE loc_331e         ; If (A == 0) Then       -> 32 values (2^5) which result in 0 here)
+331b: ce 5d 19                  DEC EncounterFlg     ;     Subtract 1 from EncounterFlg
                                                      ; End If
 331e: ae 7f 31  loc_331e        LDX MoveOrient       ; Set X = MoveOrient
                 ;
@@ -6086,12 +6259,12 @@
                 ;   X    - movement orientation (0..3 forward, 4..7 backward)
                 ;
                 ; Output
-                ;   CHR_LOC_X     - updated based on movement orientation (E/W) and movement speed
-                ;   CHR_LOC_Y     - updated based on movement orientation (N/S) and movement speed
-                ;   UNK_BYTE_1975 - Set to $ff
-                ;   UNK_BYTE_1958 - Set to 0
-                ;   dat_191a      - Set to 0
-                ;   dat_192a      - Set to 0
+                ;   CHR_LOC_X      - updated based on movement orientation (E/W) and movement speed
+                ;   CHR_LOC_Y      - updated based on movement orientation (N/S) and movement speed
+                ;   UNK_BYTE_1975  - Set to $ff
+                ;   PendingSpclFlg - Set to 0 (cancel/complete any pending special action)
+                ;   StatPg7Tmpl_L  - Set to 0
+                ;   StatPg7Tmpl_H  - Set to 0
                 ;
                 ; Continues @ $3180 [contCheckPos1] -> $318c [contCheckPos]
                 ;
@@ -6103,9 +6276,9 @@
 332e: a9 ff                     LDA #$ff             ; Set
 3330: 8d 75 19                  STA UNK_BYTE_1975    ;     UNK_BYTE_1975 = $ff
 3333: a9 00                     LDA #$00             ; Set
-3335: 8d 58 19                  STA UNK_BYTE_1958    ;     UNK_BYTE_1958 = 0
-3338: 8d 1a 19                  STA dat_191a         ; Set dat_191a = 0
-333b: 8d 2a 19                  STA dat_192a         ; Set dat_192a = 0
+3335: 8d 58 19                  STA PendingSpclFlg   ;     PendingSpclFlg = 0   (cancel/complete pending special action)
+3338: 8d 1a 19                  STA StatPg7Tmpl_L    ; Set StatPg7Tmpl_L = 0
+333b: 8d 2a 19                  STA StatPg7Tmpl_H    ; Set StatPg7Tmpl_H = 0
 333e: 20 2d 3c                  JSR dispStatusPg     ; Call $3c2d [dispStatusPg]
 3341: 4c 80 31                  JMP contCheckPos1    ; Continue @ $3180 [contCheckPos1] - $318c [contCheckPos]
                 ;
@@ -6145,29 +6318,32 @@
                 ; contMoveLockd and contMoveBoltd also end up here
                 ;
                 ; Input
-                ;   Chr_Unk_6388 - If bit 1 is set, the bit is cleared and the player is permitted to pass through
-                ;                  the door.
-                ;   dat_196b[0..3] - Compared to current player position (ORIENT, X, Y, MAP)
+                ;   Chr_Unk_6388  - If bit 1 is set, the bit is cleared and the player is permitted to pass through
+                ;                   the door.
+                ;   ObsDoorOrient - Compared to current player orientation
+                ;   ObsDoorX      - Compared to current player X position
+                ;   ObsDoorY      - Compared to current player Y position
+                ;   ObsDoorMap    - Compared to current player map
                 ;
                 ; ???
-                ;   dat_1970   - (temp/output?) Set to input value of A (0 = locked, 1 = bolted, 2 = enchanted)
+                ;   ObsDoorType      - (temp/output?) Set to input value of A (0: locked, 1: bolted, 2: enchanted)
                 ;   The below are only updated when Chr_Unk_6388 bit 1 is clear
                 ;     AllowActions   - (input/output?) Always decremented, conditionally incremented
-                ;     dat_1971   - (input/output?) Always decremented, conditionally incremented
+                ;     dat_1971       - (input/output?) Always decremented, conditionally incremented
                 ;     StrTmplate_L/H - (temp) Updated to message template strings to display
-                ;     dat_352e   - (temp) Set to current status page after calling addStatPage, later used for param to setStatPgStr2
-                ;     dat_196f   - (input) Set to 0 if current position doesn't match position in dat_196b
+                ;     dat_352e       - (temp) Set to current status page after calling addStatPage, later used for param to setStatPgStr2
+                ;     ObsDoorState   - (input) Set to 0 if current position doesn't match position in ObsDoorPos
                 ;     dat_352f/dat_3530 - (temp?) Used to preserve the value of cont_addr_1977_L/H
-                ;     dat_195d   - Used as a flag for whether to increment AllowActions, dat_1971
+                ;     EncounterFlg   - Enables actions, etc when no encounter pending
                 ;
                 ; May continue at one of the following:
                 ;   -> $330f [contMoveDoor] -> $3321 [contMoveThru] -> $3180 [contCheckPos1] -> $318c [contCheckPos]
-                ;   -> $347e [loc_347e] (successfully opened) -> $330f [contMoveDoor] -> $3321 [contMoveThru] -> $3180 [contCheckPos1] -> $318c [contCheckPos]
+                ;   -> $347e [contDoorOpens] -> $330f [contMoveDoor] -> $3321 [contMoveThru] -> $3180 [contCheckPos1] -> $318c [contCheckPos]
                 ;   -> $32f3 [cont_32f3] -> $3180 [contCheckPos1] -> $318c [contCheckPos]
                 ;   -> $339f [contDoorMenu] (bad input) - repeats menu
-                ;   -> $3449 [loc_3449] (examine failed) -> $343b [contDoorRetry] -> $339f [contDoorMenu] - repeats menu
+                ;   -> $3449 [contDoorUnk] (examine failed) -> $343b [contDoorRetry] -> $339f [contDoorMenu] - repeats menu
                 ;
-334e: 8d 70 19  loc_334e        STA dat_1970         ; Set dat_1970 = A  (0 = locked, 1 = bolted, 2 = enchanted)
+334e: 8d 70 19  loc_334e        STA ObsDoorType      ; Set ObsDoorType = A          (0: locked, 1: bolted, 2: enchanted)
 3351: ad 88 63                  LDA Chr_Unk_6388     ; If
 3354: 29 02                     AND #$02             ;    (Chr_Unk_6388 & 2 != 0)
 3356: f0 09                     BEQ loc_3361         ; Then                            (When bit 1 of Chr_Unk_6388 == 1)
@@ -6185,24 +6361,24 @@
 3372: ad 33 19                  LDA CurStatusPage    ; Set
 3375: 8d 2e 35                  STA dat_352e         ;     dat_352e = CurStatusPage
 3378: a2 03                     LDX #$03             ; Set X = 3 (max 4 iterations [3..0])
-337a: bd 6b 19  loc_337a        LDA dat_196b,X       ; Loop
-                                                     ;     If (dat_196b[X] != CHR_LOC_ORIENT[X]) Then
+337a: bd 6b 19  loc_337a        LDA ObsDoorPos,X     ; Loop            (is this door the most recently one encountered?)
+                                                     ;     If (ObsDoorPos[X] != CHR_LOC_ORIENT[X]) Then
 337d: dd 12 63                  CMP CHR_LOC_ORIENT,X ;         Exit Loop
 3380: d0 05                     BNE loc_3387         ;     End If
 3382: ca                        DEX                  ;     Subtract 1 from X
 3383: 10 f5                     BPL loc_337a         ; Repeat while (X >= 0)
-3385: 30 10                     BMI loc_3397         ; If (X >= 0) Then         (exited loop early, found mismatch)
+3385: 30 10                     BMI loc_3397         ; If (X >= 0) Then              (exited loop early, found mismatch)
 3387: a9 00     loc_3387        LDA #$00             ;     Set
-3389: 8d 6f 19                  STA dat_196f         ;         dat_196f = 0
+3389: 8d 6f 19                  STA ObsDoorState     ;         ObsDoorState = 0        (door is unopened & type unknown)
 338c: a2 03                     LDX #$03             ;     Set X = 3  (4 iterations: [3..0])
-338e: bd 12 63  loc_338e        LDA CHR_LOC_ORIENT,X ;     Loop
-3391: 9d 6b 19                  STA dat_196b,X       ;         Set dat_196b[X] = CHR_LOC_ORIENT[X]
+338e: bd 12 63  loc_338e        LDA CHR_LOC_ORIENT,X ;     Loop                                 (save new door position)
+3391: 9d 6b 19                  STA ObsDoorPos,X     ;         Set ObsDoorPos[X] = CHR_LOC_ORIENT[X]
 3394: ca                        DEX                  ;         Subtract 1 from X
 3395: 10 f7                     BPL loc_338e         ;     Repeat while (X >= 0)
                                                      ; End If
-3397: ad 6f 19  loc_3397        LDA dat_196f         ; If (dat_196f < 0) Then
-339a: 10 03                     BPL contDoorMenu     ;     Continue @ $347e [loc_347e]
-339c: 4c 7e 34                  JMP loc_347e         ; End If
+3397: ad 6f 19  loc_3397        LDA ObsDoorState     ; If (ObsDoorState < 0) Then         (door has already been opened)
+339a: 10 03                     BPL contDoorMenu     ;     Continue @ $347e [contDoorOpens]
+339c: 4c 7e 34                  JMP contDoorOpens    ; End If
                 ; Display locked/barred/ench. door menu and process user input
 339f: a9 b0     contDoorMenu    LDA #$b0             ; Set StrTmplate_L/H
 33a1: 85 16                     STA StrTmplate_L     ;     address
@@ -6224,7 +6400,7 @@
 33c9: 8d 77 19                  STA cont_addr_1977_L ;         value of cont_addr_1977_L
 33cc: ad 30 35                  LDA dat_3530         ;     Restore the previous
 33cf: 8d 78 19                  STA cont_addr_1977_H ;         value of cont_addr_1977_H
-33d2: ad 5d 19                  LDA dat_195d         ;     If (dat_195d >= 0)
+33d2: ad 5d 19                  LDA EncounterFlg     ;     If (EncounterFlg >= 0)           (no encounter)
 33d5: 10 0f                     BPL loc_33e6         ;     Then
 33d7: ee 37 19                  INC AllowActions     ;         Add 1 to AllowActions        (enable get, cast, use, etc)
 33da: ee 71 19                  INC dat_1971         ;         Add 1 to dat_1971
@@ -6255,24 +6431,24 @@
                                                      ;         Call $2c66 [waitForVblankB]
 3408: ca                        DEX                  ;         Subtract 1 from X
 3409: d0 fa                     BNE loc_3405         ;     Repeat while (X != 0)
-340b: ad 6f 19                  LDA dat_196f         ;     If
-340e: 29 01                     AND #$01             ;        (dat_196f & 1 == 0)
+340b: ad 6f 19                  LDA ObsDoorState     ;     If
+340e: 29 01                     AND #$01             ;        (ObsDoorState & 1 == 0)             (door type is unknown)
 3410: d0 0a                     BNE loc_341c         ;     Then
 3412: ad 0a d2                  LDA RANDOM           ;         Set A
 3415: 4a                        LSR                  ;               =
 3416: 4a                        LSR                  ;                 random byte / 4        (result ranges from 0..63)
-3417: cd 69 63                  CMP CHR_WIS_EFFECTIVE ;        If (A >= CHR_WIS_EFFECTIVE) Then
-341a: b0 2d                     BCS loc_3449         ;             Continue @ $3449 [loc_3449]   (failed to determine what blocks the door)
+3417: cd 69 63                  CMP CHR_WIS_EFFECTIVE ;        If (A >= CHR_WIS_EFFECTIVE) Then    (failed to determine
+341a: b0 2d                     BCS contDoorUnk      ;             Continue @ $3449 [contDoorUnk]  what blocks the door)
                                                      ;         End If
                                                      ;     End If
-341c: ae 70 19  loc_341c        LDX dat_1970         ;     Set X = dat_1970    - type of locked door? 0, 1, 2
+341c: ae 70 19  loc_341c        LDX ObsDoorType      ;     Set X = ObsDoorType      (0: locked; 1: bolted; 2: enchanted)
 341f: bd f9 3a                  LDA DoorDescs_L,X    ;     Set ZtsDoorDesc_L/H
 3422: 8d 61 3a                  STA ZtsDoorDesc_L    ;          address
 3425: bd fc 3a                  LDA DoorDescs_H,X    ;          to DoorDescs_L[X]/DoorDescs_H[X]
 3428: 8d 62 3a                  STA ZtsDoorDesc_H    ;          (one of $3aff [ZtsNeedAKey], $3b0b [ZtsBeBolted], $3b16 [ZtsBeEnchanted])
-342b: ad 6f 19                  LDA dat_196f         ;     Set
+342b: ad 6f 19                  LDA ObsDoorState     ;     Set
 342e: 09 01                     ORA #$01             ;         bit 0 of
-3430: 8d 6f 19                  STA dat_196f         ;         dat_196f to 1
+3430: 8d 6f 19                  STA ObsDoorState     ;         ObsDoorState to 1         (player now knows type of door)
 3433: a9 48                     LDA #$48             ;     Set StrTmplate_L/H
 3435: 85 16                     STA StrTmplate_L     ;         address
 3437: a9 3a                     LDA #$3a             ;         to
@@ -6288,7 +6464,7 @@
                 ;
                 ; Unable to to determine what obstructs the door
                 ;
-3449: a9 66     loc_3449        LDA #$66             ;     Set StrTmplate_L/H
+3449: a9 66     contDoorUnk     LDA #$66             ;     Set StrTmplate_L/H
 344b: 85 16                     STA StrTmplate_L     ;         address
 344d: a9 3a                     LDA #$3a             ;         to
 344f: 85 17                     STA StrTmplate_H     ;         $3a66 [StrDoorUnknown]
@@ -6311,19 +6487,19 @@
 3471: 4a                        LSR                  ;         A = random byte / 2
 3472: cd 59 63                  CMP CHR_STR_EFFECTIVE ;    If
 3475: b0 2c                     BCS loc_34a3         ;        (A < CHR_STR_EFFECTIVE)
-3477: ad 70 19                  LDA dat_1970         ;        And
-347a: c9 01                     CMP #$01             ;        (dat_1970 == 1)
+3477: ad 70 19                  LDA ObsDoorType      ;        And
+347a: c9 01                     CMP #$01             ;        (ObsDoorType == 1)                       (1 = bolted door)
 347c: d0 25                     BNE loc_34a3         ;     Then
-347e: a9 9c     loc_347e        LDA #$9c             ;         Set StrTmplate_L/H
+347e: a9 9c     contDoorOpens   LDA #$9c             ;         Set StrTmplate_L/H
 3480: 85 16                     STA StrTmplate_L     ;             address
 3482: a9 3a                     LDA #$3a             ;             to
 3484: 85 17                     STA StrTmplate_H     ;             $3a9c [StrDoorOpens]
 3486: ae 2e 35                  LDX dat_352e         ;         Set X = dat_352e
 3489: 20 5c 3c                  JSR setStatPgStr2    ;         Call $3c5c [setStatPgStr2]
 348c: 20 b0 2b                  JSR pressAnyKey      ;         Call $2bb0 [pressAnyKey]
-348f: ad 6f 19                  LDA dat_196f         ;         Set dat_196f
+348f: ad 6f 19                  LDA ObsDoorState     ;         Set ObsDoorState
 3492: 09 80                     ORA #$80             ;                =
-3494: 8d 6f 19                  STA dat_196f         ;                  dat_196f | $80
+3494: 8d 6f 19                  STA ObsDoorState     ;                  ObsDoorState | $80            (door is now open)
 3497: ee 37 19                  INC AllowActions     ;         Add 1 to AllowActions        (enable get, cast, use, etc)
 349a: ee 71 19                  INC dat_1971         ;         Add 1 to dat_1971
 349d: 20 c2 3c                  JSR remStatPage      ;         Call $3cc2 [remStatPage]
@@ -6340,6 +6516,7 @@
 34b4: a9 3a                     LDA #$3a             ;             to
 34b6: 85 17                     STA StrTmplate_H     ;             $3ab1 [StrDoorFail]
 34b8: 4c 3b 34                  JMP contDoorRetry    ;         Continue @ $343b [contDoorRetry]
+                                                     ;     End If
                 ;
                 ; (3) Use a key
                 ;
@@ -6354,10 +6531,10 @@
 34cc: 4c 3b 34                  JMP contDoorRetry    ;         Continue @ $343b [contDoorRetry]
                                                      ;     End If
 34cf: ce bf 63  loc_34cf        DEC INV_KEYS         ;     Subtract 1 from INV_KEYS
-34d2: ad 70 19                  LDA dat_1970         ;     If (dat_1970 != 0) then
-34d5: d0 cc                     BNE loc_34a3         ;         Continue @ $34a3 [loc_34a3]
+34d2: ad 70 19                  LDA ObsDoorType      ;     If (ObsDoorType != 0) then                  (0 = locked door)
+34d5: d0 cc                     BNE loc_34a3         ;         Continue @ $34a3 [loc_34a3]     (fail, not a locked door)
                                                      ;     End If
-34d7: f0 a5                     BEQ loc_347e         ;     Continue @ $347e [loc_347e]
+34d7: f0 a5                     BEQ contDoorOpens    ;     Continue @ $347e [contDoorOpens]                    (success)
 
                 ;
                 ; (4) Break an enchantment
@@ -6382,10 +6559,10 @@
 34fd: 4a                        LSR                  ;         A = random byte / 2
 34fe: cd 61 63                  CMP CHR_INT_EFFECTIVE ;    If
 3501: b0 0a                     BCS loc_350d         ;        (A < CHR_INT_EFFECTIVE)
-3503: ad 70 19                  LDA dat_1970         ;        And
-3506: c9 02                     CMP #$02             ;        (dat_1970 == 2)
+3503: ad 70 19                  LDA ObsDoorType      ;        And
+3506: c9 02                     CMP #$02             ;        (ObsDoorType == 2)                    (2 = enchanted door)
 3508: d0 03                     BNE loc_350d         ;     Then
-350a: 4c 7e 34                  JMP loc_347e         ;         Continue @ $347e [loc_347e]
+350a: 4c 7e 34                  JMP contDoorOpens    ;         Continue @ $347e [contDoorOpens]                (success)
                                                      ;     End If
 350d: a9 b1     loc_350d        LDA #$b1             ;     Set StrTmplate_L/H
 350f: 85 16                     STA StrTmplate_L     ;         address
@@ -6435,9 +6612,9 @@
                 ; Handles the player entering a location with a special encounter code.
                 ;
                 ; - Checks the value of the bit corresponding to the encounter number in $7500 [EncntrDefeated]
-                ; - If the bit is clear (0), then:
-                ;    - Sets dat_195d to $ff
-                ; - If the bit is set (1), then:
+                ; - If the bit is clear (0 - not defeated), then:
+                ;    - Sets EncounterFlg to $ff (trigger encounter)
+                ; - If the bit is set (1 - defeated), then:
                 ;    - Sets MapLocSpclType to $ff
                 ; - Continues @ $320d [cont_320d]
                 ;
@@ -6447,19 +6624,19 @@
                 ;                          defeated the corresponding encounter (1) or not (0)
                 ;
                 ; Output
-                ;   dat_195d       - Set to $ff if the encounter should be initiated
+                ;   EncounterFlg   - Set to $ff if the encounter should be initiated
                 ;   MapLocSpclType - Set to $ff if the encounter should not be initiated
                 ;
                 ;
-3548: ad 5a 19  cont_3548       LDA MapLocSpclNum    ; Set A = MapLocSpclNum
+3548: ad 5a 19  contEncounter   LDA MapLocSpclNum    ; Set A = MapLocSpclNum
 354b: a2 75                     LDX #$75             ; Set X = $75
 354d: a0 00                     LDY #$00             ; Set Y = 0            (X/Y = $7500 [EncntrDefeated])
 354f: 20 e3 2d                  JSR testBit          ; Call $2de3 [testBit]
 3552: b0 08                     BCS loc_355c         ; If (C = 1) Then
-                                                     ;     Continue @ $355c [loc_355c]  (Bit set, already defeated)
+                                                     ;     Continue @ $355c [loc_355c]  (already defeated, no encounter)
                                                      ; End If
 3554: a9 ff                     LDA #$ff             ; Set
-3556: 8d 5d 19                  STA dat_195d         ;     dat_195d = $ff (255)         (Not defeated yet)
+3556: 8d 5d 19                  STA EncounterFlg     ;     EncounterFlg = $ff (255)   (not defeated, initiate encounter)
 3559: 4c 0d 32                  JMP cont_320d        ; Continue @ $320d [cont_320d]
                 ;
                 ; Jumps here appears to indicate a failure or similar... Perhaps already triggered?
@@ -6471,9 +6648,9 @@
                 ; Handles the player entering a location with a special treasure code.
                 ;
                 ; - Checks the value of the bit corresponding to the treasure number in $7504 [TreasureTaken]
-                ; - If the bit is clear (0), then:
+                ; - If the bit is clear (0 - treasure not taken), then:
                 ;    - Sets dat_1979 to $ff
-                ; - If the bit is set (1), then:
+                ; - If the bit is set (1 - treasure taken), then:
                 ;    - Sets MapLocSpclType to $ff
                 ; - Continues @ $320d [cont_320d]
                 ;
@@ -6483,10 +6660,10 @@
                 ;                         taken the treasure (1) or not (0)
                 ;
                 ; Output
-                ;   dat_195d       - Set to $ff if the treasure interaction should be initiated
+                ;   dat_1979       - Set to $ff if the treasure interaction should be initiated
                 ;   MapLocSpclType - Set to $ff if the treasure was already taken
                 ;
-3564: ad 5a 19  cont_3564       LDA MapLocSpclNum    ; Set A = MapLocSpclNum
+3564: ad 5a 19  contTreasure    LDA MapLocSpclNum    ; Set A = MapLocSpclNum
 3567: a2 75                     LDX #$75             ; Set X = $75
 3569: a0 04                     LDY #$04             ; Set Y = 4                (X/Y = $7504 [TreasureTaken])
 356b: 20 e3 2d                  JSR testBit          ; Call $2de3 [testBit]
@@ -6504,36 +6681,36 @@
 
                 ; Adds special message for the current map cell as a status page and displays it.
                 ;
-                ; No updates are made unless module 0 is loaded (the messages module)
+                ; No updates are made unless module 0 is loaded (the normal gameplay/renderer module)
                 ; Continues @ $320d [cont_320d] after processing
                 ;
                 ; Input
                 ;   MapLocSpclNum - Message index [0..31]
                 ;
                 ; Output
-                ;   UNK_BYTE_1958 - set to 0 if module 0 is loaded, otherwise no change
-                ;   dat_192a      - set to 0 if module 0 is loaded, otherwise no change
+                ;   PendingSpclFlg - set to 0 if module 0 is loaded, otherwise no change
+                ;   StatPg7Tmpl_H  - set to 0 if module 0 is loaded, otherwise no change
                 ;
-3583: 20 96 35  contMessage     JSR sub_3596         ; Call $3596 [sub_3596]
+3583: 20 96 35  contMessage     JSR showSpclMsg      ; Call $3596 [showSpclMsg]
 3586: b0 03                     BCS loc_358b         ; If (C = 0)             (Message was displayed)
 3588: 4c 0d 32                  JMP cont_320d        ; Then
-358b: a9 00     loc_358b        LDA #$00             ;     Set UNK_BYTE_1958 = 0
-358d: 8d 58 19                  STA UNK_BYTE_1958    ;     Set dat_192a = 0
-3590: 8d 2a 19                  STA dat_192a         ; End If
+358b: a9 00     loc_358b        LDA #$00             ;     Set PendingSpclFlg = 0
+358d: 8d 58 19                  STA PendingSpclFlg   ;     Set StatPg7Tmpl_H = 0
+3590: 8d 2a 19                  STA StatPg7Tmpl_H    ; End If
 3593: 4c 0d 32                  JMP cont_320d        ; Continue @ $320d [cont_320d]
 
                 ; Adds special message for the current map cell as a status page and displays it.
                 ;
-                ; No updates are made unless module 0 is loaded (the messages module)
+                ; No updates are made unless module 0 is loaded (the normal gameplay/rederer module)
                 ;
                 ; Input
                 ;   MapLocSpclNum - Message index [0..31]
                 ;
                 ; Output
-                ;   C    - 0 if the messages module is currently loaded (ModuleNumber == 0)
+                ;   C    - 0 if the renderer module is currently loaded (ModuleNumber == 0)
                 ;          1 if another module is loaded (ModuleNumber != 0). No message is displayed in this case.
                 ;
-3596: ad 00 76  sub_3596        LDA ModuleNumber     ; If (ModuleNumber == 0)
+3596: ad 00 76  showSpclMsg     LDA ModuleNumber     ; If (ModuleNumber == 0)
 3599: d0 24                     BNE loc_35bf         ; Then
 359b: ad 0a 76                  LDA Mod0DescTbl_L    ;     Set
 359e: 85 12                     STA DescTbl_L        ;         DescTbl_L/H
@@ -6543,10 +6720,10 @@
 35a8: 0a                        ASL                  ;           =
 35a9: a8                        TAY                  ;             MapLocSpclNum * 2
 35aa: b1 12                     LDA (DescTbl_L),Y    ;     Set
-35ac: 8d 1a 19                  STA dat_191a         ;         dat_191a = (*DescTbl_L)[Y]
+35ac: 8d 1a 19                  STA StatPg7Tmpl_L    ;         StatPg7Tmpl_L = (*DescTbl_L)[Y]
 35af: c8                        INY                  ;     Add 1 to Y
 35b0: b1 12                     LDA (DescTbl_L),Y    ;     Set
-35b2: 8d 2a 19                  STA dat_192a         ;         dat_192a = (*DescTbl_L)[Y]
+35b2: 8d 2a 19                  STA StatPg7Tmpl_H    ;         StatPg7Tmpl_H = (*DescTbl_L)[Y]
 35b5: a9 07                     LDA #$07             ;     Set
 35b7: 8d 33 19                  STA CurStatusPage    ;         CurStatusPage = 7
 35ba: 20 2d 3c                  JSR dispStatusPg     ;     Call $3c2d [dispStatusPg]   (Add and display the status page)
@@ -6645,8 +6822,8 @@
                 ; Output
                 ;   X              - set to value in CurStatusPage
                 ;   PromptStatusPg - set to value in CurStatusPage
-                ;   dat_197a       - set to $ff - Seems to be a flag indicating pauseGamePlay (or perhaps actionExamine) was called. Checked in
-                ;                    actionExamine where it prevents the action if non-zero.
+                ;   dat_197a       - set to $ff - Seems to be a flag indicating pauseGamePlay (or perhaps startExamine) was called. Checked in
+                ;                    startExamine where it prevents the action if non-zero.
                 ;   DisableEffects - decremented to disable effect processing
                 ;   TimePaused     - decremented (e.g. game time paused)
                 ;   AllowActions   - decremented to disable get, cast, use, etc actions.
@@ -6698,10 +6875,10 @@
 3681: ff        dat_3681_L      .BYTE $ff            ; Used for preserving the value of cont_addr_1977_L
 3682: ff        dat_3681_H      .BYTE $ff            ; Used for preserving the value of cont_addr_1977_H
 
-                ; (E) Examine items or spells action
+                ; ("E") Initiate Examine items or spells interaction
                 ;
                 ; Prompt the user to select whether to examine items or spells.
-                ; Executed via address from ActionSubAdr_L/H
+                ; Executed via address from KbdActSubAdr_L/H
                 ;
                 ; Input
                 ;   dat_197a       - No action taken if value is non-zero
@@ -6710,7 +6887,7 @@
                 ; Temp
                 ;   StrTmplate_L/H - Set to $3710 [StrExmnItmSpl]
                 ;
-3683: ad 7a 19  actionExamine   LDA dat_197a         ; If (dat_197a != 0) Then
+3683: ad 7a 19  startExamine    LDA dat_197a         ; If (dat_197a != 0) Then
 3686: f0 01                     BEQ loc_3689         ;     Return to caller
 3688: 60                        RTS                  ; End If
 3689: 20 35 36  loc_3689        JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
@@ -6790,49 +6967,49 @@
 374d: 20 74 6f 20 65 78 69 74   .BYTE $20,$74,$6f,$20,$65,$78,$69,$74  ;  to exit
 3755: ae                        .BYTE $ae                              ; .
 
-                ; (G) Get action
+                ; ("G") Initiates Get interaction
                 ;
-                ; Executed via address from ActionSubAdr_L/H
+                ; Executed via address from KbdActSubAdr_L/H
                 ;
-3756: 20 35 36  actionGet       JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
+3756: 20 35 36  startGet        JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
 3759: 20 57 58                  JSR sub_5857         ; Call $5857 [sub_5857]
 375c: 4c 62 36                  JMP resumeGamePlay   ; Continue @ $3662 [resumeGamePlay]
 
-                ; Handles the OFFER action (e.g. during encounters)
+                ; Initiates Offer interaction (e.g. during encounters)
                 ;
-375f: 20 35 36  actionOffer     JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
+375f: 20 35 36  startOffer      JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
 3762: 20 b4 5a                  JSR doOfferMenu      ; Call $5ab4 [doOfferMenu]
 3765: 4c 62 36                  JMP resumeGamePlay   ; Continue @ $3662 [resumeGamePlay]
 
-                ; (D) Drop action
+                ; ("D") Initiates Drop interaction
                 ;
-                ; Executed via address from ActionSubAdr_L/H
+                ; Executed via address from KbdActSubAdr_L/H
                 ;
-3768: 20 35 36  actionDrop      JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
+3768: 20 35 36  startDrop       JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
 376b: 20 cb 5a                  JSR doDropMenu       ; Call $5acb [doDropMenu]
 376e: 4c 62 36                  JMP resumeGamePlay   ; Continue @ $3662 [resumeGamePlay]
 
-                ; (U) Use action
+                ; ("U") Initiates Use interaction
                 ;
-                ; Executed via address from ActionSubAdr_L/H
+                ; Executed via address from KbdActSubAdr_L/H
                 ;
-3771: 20 35 36  actionUse       JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
+3771: 20 35 36  startUse        JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
 3774: 20 b6 51                  JSR doUseMenu        ; Call $51b6 [doUseMenu]
 3777: 4c 62 36                  JMP resumeGamePlay   ; Continue @ $3662 [resumeGamePlay]
 
-                ; (C) Cast spell action
+                ; ("C") Initiates Cast spell interaction
                 ;
-                ; Executed via address from ActionSubAdr_L/H
+                ; Executed via address from KbdActSubAdr_L/H
                 ;
-377a: 20 35 36  actionCast      JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
+377a: 20 35 36  startCast       JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
 377d: 20 7e 57                  JSR doCastMenu       ; Call $577e [doCastMenu]
 3780: 4c 62 36                  JMP resumeGamePlay   ; Continue @ $3662 [resumeGamePlay]
 
-                ; (S) Save character action
+                ; ("S") Initiates Save character interaction
                 ;
-                ; Executed via address from ActionSubAdr_L/H
+                ; Executed via address from KbdActSubAdr_L/H
                 ;
-3783: ad 00 76  actionSave      LDA ModuleNumber     ; If (ModuleNumber != 0) Then
+3783: ad 00 76  startSave       LDA ModuleNumber     ; If (ModuleNumber != 0) Then
 3786: f0 01                     BEQ loc_3789         ;     Return to caller
 3788: 60                        RTS                  ; End If
 3789: 20 35 36  loc_3789        JSR pauseGamePlay    ; Call $3635 [pauseGamePlay]
@@ -6866,7 +7043,7 @@
 37d2: 0d                        .BYTE $0d                              ; "\n"
 37d3: ac 2e 38                  .BYTE $ac,$2e,$38                      ; {Continue @ $382e [StrAreYouSure]}
 
-                ; (Q) Quit game action
+                ; ("Q") Initiate Quit game interaction
                 ;
                 ; Handle 'Q' keypress during normal gameplay.
                 ;
@@ -6878,7 +7055,7 @@
                 ; This is dynamically invoked from $30d1 [smc_30d1] when the 'Q' character
                 ; is pressed during normal game play.
                 ;
-37d6: c6 32     actionQuit      DEC TimePaused       ; Subtract 1 from TimePaused    (pause game time progression)
+37d6: c6 32     startQuit       DEC TimePaused       ; Subtract 1 from TimePaused    (pause game time progression)
 37d8: a9 04                     LDA #$04             ; Set StrTmplate_L/H
 37da: 85 16                     STA StrTmplate_L     ;     address
 37dc: a9 38                     LDA #$38             ;     to
@@ -6922,9 +7099,9 @@
 3847: 29 0d                     .BYTE $29,$0d                          ; ")\n"
 3849: ff                        .BYTE $ff                              ; {End of string}
 
-                ; (P) Pause game action
+                ; ("P") Initiate Pause game interaction
                 ;
-384a: c6 32     actionPause     DEC TimePaused       ; Subtract 1 from TimePaused     (pause game time)
+384a: c6 32     startPause      DEC TimePaused       ; Subtract 1 from TimePaused     (pause game time)
 384c: a9 60                     LDA #$60             ; Set StrTmplate_L/H
 384e: 85 16                     STA StrTmplate_L     ;     address
 3850: a9 38                     LDA #$38             ;     to
@@ -7311,38 +7488,38 @@
 
 3b78: 47 44 55  ActionKeyBind   .BYTE $47,$44,$55                      ; Table of key characters mapped to
 3b7b: 43 53 45 51 50 2c 2e 10   .BYTE $43,$53,$45,$51,$50,$2c,$2e,$10  ; corresponding action entries
-3b83: 11 13                     .BYTE $11,$13                          ; in ActionSubAdr_L/H:
+3b83: 11 13                     .BYTE $11,$13                          ; in KbdActSubAdr_L/H:
                                                                        ;     0: "G", 1: "D", 2: "U", 3: "C", 4: "S",
                                                                        ;     5: "E", 6: "Q", 7: "P", 8: ",", 9: ".",
                                                                        ;    10: $10 (SELECT), 11: $11 (START),
                                                                        ;    12: $13 (??)
 
-3b85: 56 68 71  ActionSubAdr_L  .BYTE $56,$68,$71                      ; Table of subroutine address LSBs
+3b85: 56 68 71  KbdActSubAdr_L  .BYTE $56,$68,$71                      ; Table of UI interaction subroutine address LSBs
 3b88: 7a 83 83 d6 4a 8c 71 71   .BYTE $7a,$83,$83,$d6,$4a,$8c,$71,$71  ;
 3b90: 8c ab                     .BYTE $8c,$ab                          ;
-3b92: 37 37 37  ActionSubAdr_H  .BYTE $37,$37,$37                      ; Table of subroutine address MSBs
-3b95: 37 37 36 37 38 3c 3c 3c   .BYTE $37,$37,$36,$37,$38,$3c,$3c,$3c  ;   0: $3756 [actionGet]      - (G) Get action
-3b9d: 3c 2c                     .BYTE $3c,$2c                          ;   1: $3768 [actionDrop]     - (D) Drop action
-                                                                       ;   2: $3771 [actionUse]      - (U) Use action
-                                                                       ;   3: $377a [actionCast]     - (C) Cast spell action
-                                                                       ;   4: $3783 [actionSave]     - (S) Save character action
-                                                                       ;   5: $3683 [actionExamine]  - (E) Examine items or spells action
-                                                                       ;   6: $37d6 [actionQuit]     - (Q) Quit game action
-                                                                       ;   7: $384a [actionPause]    - (P) Pause game action
-                                                                       ;   8: $3c8c [actionPrevStat] - (,) Previous status page action
-                                                                       ;   9: $3c71 [actionNextStat] - (.) Next status page action
-                                                                       ;  10: $3c71 [actionNextStat] - (SELECT) Next status page action
-                                                                       ;  11: $3c8c [actionPrevStat] - (START) Previous status page action
+3b92: 37 37 37  KbdActSubAdr_H  .BYTE $37,$37,$37                      ; Table of UI interaction subroutine address MSBs
+3b95: 37 37 36 37 38 3c 3c 3c   .BYTE $37,$37,$36,$37,$38,$3c,$3c,$3c  ;   0: $3756 [startGet]       - (G) Get interaction
+3b9d: 3c 2c                     .BYTE $3c,$2c                          ;   1: $3768 [startDrop]      - (D) Drop interaction
+                                                                       ;   2: $3771 [startUse]       - (U) Use interaction
+                                                                       ;   3: $377a [startCast]      - (C) Cast spell interaction
+                                                                       ;   4: $3783 [startSave]      - (S) Save character interaction
+                                                                       ;   5: $3683 [startExamine]   - (E) Examine items or spells interaction
+                                                                       ;   6: $37d6 [startQuit]      - (Q) Quit game interaction
+                                                                       ;   7: $384a [startPause]     - (P) Pause game interaction
+                                                                       ;   8: $3c8c [showPrevStatPg] - (,) Previous status page interaction
+                                                                       ;   9: $3c71 [showNextStatPg] - (.) Next status page interaction
+                                                                       ;  10: $3c71 [showNextStatPg] - (SELECT) Next status page interaction
+                                                                       ;  11: $3c8c [showPrevStatPg] - (START) Previous status page interaction
                                                                        ;  12: $2cab [sub_2cab] - () does nothing/debug BRK
 
 
 3b9f: 48 64 83  SpclLocHndlr_L  .BYTE $48,$64,$83      ; LSB of addresses of special location code handlers
 3ba2: c1                        .BYTE $c1              ;
 3ba3: 35 35 35  SpclLocHndlr_H  .BYTE $35,$35,$35      ; MSB of addresses of special location code handlers
-3ba6: 35                        .BYTE $35              ;    0: $3548 [cont_3548]    - (Related to encounters?)
-                                                       ;    1: $3564 [cont_3564]    - (Related to treasures?)
-                                                       ;    2: $3583 [contMessage]  - Display location message
-                                                       ;    3: $35c1 [contTeleport] - Teleport player
+3ba6: 35                        .BYTE $35              ;    0: $3548 [contEncounter] - Initiates a special encounter
+                                                       ;    1: $3564 [contTreasure]  - Handle special treasure prompt
+                                                       ;    2: $3583 [contMessage]   - Display location message
+                                                       ;    3: $35c1 [contTeleport]  - Teleport player
 
                 ; Teleport destination location table follows
                 ; Each entry consists of 4 bytes and correspond to special location codes $e0-$ff.
@@ -7461,7 +7638,7 @@
 3c6b: 9d 23 19                  STA StatusTmpl_H,X   ;     StatusTmpl_H[X] = StrTmplate_H
 3c6e: 4c 2d 3c                  JMP dispStatusPg     ; Continue @ $3c2d [dispStatusPg]
 
-                ; (. or SELECT) Next status page action
+                ; (. or SELECT) Display the next status page
                 ;
                 ; Input
                 ;   CurStatusPage  - Current status page displayed
@@ -7469,7 +7646,7 @@
                 ;   StatusTmpl_H   - Table of MSBs of status page addresses. Entries holding a 0 are considered
                 ;                    invalid and are skipped.
                 ;
-3c71: ee 33 19  actionNextStat  INC CurStatusPage    ; Loop
+3c71: ee 33 19  showNextStatPg  INC CurStatusPage    ; Loop
                                                      ;     Add 1 to CurStatusPage
 3c74: ad 33 19                  LDA CurStatusPage    ;     If
 3c77: cd 34 19                  CMP NumStatusPages   ;        (CurStatusPage >= NumStatusPages)
@@ -7478,10 +7655,10 @@
 3c7e: 8d 33 19                  STA CurStatusPage    ;     End If
 3c81: ae 33 19  loc_3c81        LDX CurStatusPage    ; Repeat
 3c84: bd 23 19                  LDA StatusTmpl_H,X   ;    while
-3c87: f0 e8                     BEQ actionNextStat   ;       (StatusTmpl_H[CurStatusPage] == 0)
+3c87: f0 e8                     BEQ showNextStatPg   ;       (StatusTmpl_H[CurStatusPage] == 0)
 3c89: 4c 2d 3c                  JMP dispStatusPg     ; Continue @ $3c2d [dispStatusPg]
 
-                ; (, or START) Previous status page action
+                ; (, or START) Display the previous status page
                 ;
                 ; Input
                 ;   CurStatusPage  - Current status page
@@ -7489,7 +7666,7 @@
                 ;   StatusTmpl_H   - Table of MSBs of status page addresses. Entries holding a 0 are considered
                 ;                    invalid and are skipped.
                 ;
-3c8c: ce 33 19  actionPrevStat  DEC CurStatusPage    ; Loop
+3c8c: ce 33 19  showPrevStatPg  DEC CurStatusPage    ; Loop
                                                      ;     Subtract 1 from CurStatusPage
 3c8f: 10 09                     BPL loc_3c9a         ;     If (CurStatusPage < 0) Then
 3c91: ad 34 19                  LDA NumStatusPages   ;         Set
@@ -7499,7 +7676,7 @@
                                                      ;     End If
 3c9a: ae 33 19  loc_3c9a        LDX CurStatusPage    ; Repeat
 3c9d: bd 23 19                  LDA StatusTmpl_H,X   ;    while
-3ca0: f0 ea                     BEQ actionPrevStat   ;       (StatusTmpl_H[CurStatusPage] == 0)
+3ca0: f0 ea                     BEQ showPrevStatPg   ;       (StatusTmpl_H[CurStatusPage] == 0)
 3ca2: 4c 2d 3c                  JMP dispStatusPg     ; Continue @ $3c2d [dispStatusPg]
 
                 ; Add a new status page string template to the end of the list
@@ -8032,7 +8209,10 @@
                 ; Input
                 ;   dat_1962  - ?number of loop iterations?
                 ;
-408b: 20 5f 4a  sub_408b        JSR sub_4a5f         ; Call $4a5f [sub_4a5f]
+                ; Temp
+                ;   dat_413c  -
+                ;
+408b: 20 5f 4a  sub_408b        JSR doAllItemActs    ; Call $4a5f [doAllItemActs]
 408e: a6 50                     LDX dat_0050         ; If (dat_0050 != 0)
 4090: f0 03                     BEQ loc_4095         ; Then
 4092: 4c cd 40                  JMP loc_40cd         ;     Continue @ $40cd [loc_40cd]
@@ -8042,28 +8222,28 @@
 4098: ad 62 19                  LDA dat_1962         ; Set A = dat_1962
 409b: 86 50                     STX dat_0050         ; Set dat_0050 = $ff    (X = $ff)
 409d: 8c 62 19                  STY dat_1962         ; Set dat_1962 = 0      (Y = 0)
-40a0: 8d 3c 41                  STA dat_413c         ; Set dat_413c = A      (A = dat_1962)
+40a0: 8d 3c 41                  STA dat_413c         ; Set dat_413c = A      (A = prev dat_1962 value; min 1 iteration)
 40a3: 20 fc 41                  JSR calcItemStats    ; Call $41fc [calcItemStats]        (update warmth, dapper, burden)
 40a6: 20 f2 47  loc_40a6        JSR applyEffects     ; Loop
                                                      ;     Call $47f2 [applyEffects]
 40a9: 20 76 41                  JSR applyBiology     ;     Call $4176 [applyBiology]
-40ac: 20 e7 42                  JSR updEffectStrs    ;     Call $42e7 [updEffectStrs]
+40ac: 20 e7 42                  JSR updEffectStrs    ;     Call $42e7 [updEffectStrs]      (Why call inside the loop?)
 40af: 20 77 43                  JSR applyBioAdj      ;     Call $4377 [applyBioAdj]
-40b2: 20 c6 43                  JSR minuteUpdates    ;     Call $43c6 [minuteUpdates]
-40b5: ad 8b 63                  LDA CHR_SEE_SECRET_DOORS ; Set A = CHR_SEE_SECRET_DOORS
+40b2: 20 c6 43                  JSR updStatEffVals   ;     Call $43c6 [updStatEffVals]
+40b5: ad 8b 63                  LDA CHR_SEE_SECRET_DOORS ; Set A = CHR_SEE_SECRET_DOORS    (Why update inside the loop?)
 40b8: f0 05                     BEQ loc_40bf         ;     If (A != 0) Then
-40ba: ce 56 19                  DEC UNK_BYTE_COUNTER ;         Subtract 1 from UNK_BYTE_COUNTER
+40ba: ce 56 19                  DEC UpdateSceneFlg   ;         Subtract 1 from UpdateSceneFlg     (update requested)
 40bd: a9 ff                     LDA #$ff             ;         Set A = $ff
                                                      ;     End If
-40bf: 8d 57 19  loc_40bf        STA dat_1957         ;     Set dat_1957 = A
-40c2: 20 3d 41                  JSR sub_413d         ;     Call $413d [sub_413d]
+40bf: 8d 57 19  loc_40bf        STA ShowScrtDoors    ;     Set ShowScrtDoors = A
+40c2: 20 3d 41                  JSR checkEncounter   ;     Call $413d [checkEncounter]
 40c5: ce 3c 41                  DEC dat_413c         ;     Subtract 1 from dat_413c
 40c8: 30 03                     BMI loc_40cd         ; Repeat
 40ca: 4c a6 40                  JMP loc_40a6         ;   while (dat_413c >= 0)
 40cd: ad 5f 19  loc_40cd        LDA StatDisplayFlg   ; If (StatDisplayFlg != 0)
 40d0: f0 19                     BEQ loc_40eb         ; Then
 40d2: 20 e7 42                  JSR updEffectStrs    ;     Call $42e7 [updEffectStrs]
-40d5: 20 c6 43                  JSR minuteUpdates    ;     Call $43c6 [minuteUpdates]
+40d5: 20 c6 43                  JSR updStatEffVals   ;     Call $43c6 [updStatEffVals]
 40d8: a9 69                     LDA #$69             ;     Set StrTmplate_L/H
 40da: 85 16                     STA StrTmplate_L     ;         address
 40dc: a9 39                     LDA #$39             ;         to
@@ -8116,37 +8296,34 @@
 
 413c: 00        dat_413c        .BYTE $00            ;
 
-                ; Randomly decreases dat_195d if random draw 0..255 is less
-                ;     than (Chr_Unk_6382 - -128) + tbl_4172[dat_1973] clamped to 0..255.
+                ; Randomly trigger encounter if random draw 0..255 is less
+                ;     than (CHR_Obviousness - -128) + DangerModTbl[MapLocDngrLvl] clamped to 0..255.
                 ;
                 ; Input
-                ;   ModuleNumber  -
-                ;   TimePaused    -
-                ;   Chr_Unk_6382  -
-                ;   dat_1973      - values range from 0..4?
+                ;   ModuleNumber    - Does nothing unless module 0 (normal game play) is loaded
+                ;   TimePaused      - Does nothing if time is paused
+                ;   CHR_Obviousness - The more obvious the player is, the more likely an encounter wil occur
+                ;   MapLocDngrLvl   - Current map cell danger level (0..3)
                 ;
                 ; Output
-                ;   dat_195d      - value may be decremented
+                ;   EncounterFlg  - May be decremented (typically this will set to $ff and trigger encounter)
                 ;
-                ; ???
-                ;   tbl_4172[0?..3?]
-                ;
-413d: ad 00 76  sub_413d        LDA ModuleNumber     ; If
-4140: d0 2f                     BNE loc_4171         ;    (ModuleNumber == 0)
+413d: ad 00 76  checkEncounter  LDA ModuleNumber     ; If
+4140: d0 2f                     BNE loc_4171         ;    (ModuleNumber == 0)       (normal game play)
 4142: 24 32                     BIT TimePaused       ;    And (TimePaused >= 0)     (game time is not paused)
 4144: 30 2b                     BMI loc_4171         ; Then
-4146: ad 82 63                  LDA Chr_Unk_6382     ;     Set A = Chr_Unk_6382
-4149: ae 73 19                  LDX dat_1973         ;     Set X = dat_1973
+4146: ad 82 63                  LDA CHR_Obviousness  ;     Set A = CHR_Obviousness
+4149: ae 73 19                  LDX MapLocDngrLvl    ;     Set X = MapLocDngrLvl
 414c: 38                        SEC                  ;     Set
 414d: e9 80                     SBC #$80             ;         A = A - $80 (-128)
 414f: 18                        CLC                  ;     Set C = 0
 4150: 30 09                     BMI loc_415b         ;     If (A >= 0) Then
-4152: 7d 72 41                  ADC tbl_4172,X       ;         Set A = A + tbl_4172[dat_1973]  (C=1 on overflow else 0)
-4155: 90 0b                     BCC loc_4162         ;         If (C == 1) Then                (overflow, clamp to $ff)
+4152: 7d 72 41                  ADC DangerModTbl,X   ;         Set A = A + DangerModTbl[MapLocDngrLvl]
+4155: 90 0b                     BCC loc_4162         ;         If (C == 1) Then                 (overflow, clamp to $ff)
 4157: a9 ff                     LDA #$ff             ;             Set A = $ff
                                                      ;         End If
 4159: 30 07                     BMI loc_4162         ;     Else       (A is negative, so "add" below is really subtract)
-415b: 7d 72 41  loc_415b        ADC tbl_4172,X       ;         Set A = A + tbl_4172[dat_1973]  (C=0 on underflow else 0)
+415b: 7d 72 41  loc_415b        ADC DangerModTbl,X   ;         Set A = A + DangerModTbl[MapLocDngrLvl]
 415e: b0 02                     BCS loc_4162         ;         If (C == 0) Then                (underflow, clamp to 0)
 4160: a9 00                     LDA #$00             ;             Set A = 0
                                                      ;         End If
@@ -8157,60 +8334,63 @@
 416a: f0 02                     BEQ loc_416e         ;     If (Z == 0)      (A is not equal to the test value)
 416c: b0 03                     BCS loc_4171         ;        And (C == 0)  (A is less than the test value)
                                                      ;     Then
-416e: ce 5d 19  loc_416e        DEC dat_195d         ;         Subtract 1 from dat_195d
+416e: ce 5d 19  loc_416e        DEC EncounterFlg     ;         Subtract 1 from EncounterFlg          (trigger encounter)
                                                      ;     End If
                                                      ; End If
 4171: 60        loc_4171        RTS                  ; Return to caller
 
-4172: 0c 10 18  tbl_4172       .BYTE $0c,$10,$18     ; ? Indexed by dat_1973 and value is added to Chr_Unk_6382 ?
-4175: 20                       .BYTE $20             ;
+4172: 0c 10 18  DangerModTbl   .BYTE $0c,$10,$18     ; Danger modifiers for the 4 different danger levels
+4175: 20                       .BYTE $20             ;    0: $0c (12)
+                                                     ;    1: $10 (16 =  +4 /  +33.3%)
+                                                     ;    2: $18 (24 = +12 / +100.0%)
+                                                     ;    3: $20 (32 = +20 / +166.6%)
 
                 ; Applies standard time-based adjustments to character biological status (hunger, thirst, stamina,
                 ;   drunkenness, and stomach)
                 ;
                 ; Input
-                ;   hungerTimer  - Number of calls before player hunger is decremented
-                ;   thirstTimer  - Number of hunger decreases before player thirst is decremented
-                ;   staminaTimer - Number of calls before player stamina is decremented
+                ;   HungerTimer  - Number of calls before player hunger is decremented
+                ;   ThirstTimer  - Number of hunger decreases before player thirst is decremented
+                ;   StaminaTimer - Number of calls before player stamina is decremented
                 ;   dat_1972     - Flag which prevents stamina from decreasing (No decrease if < 0)
-                ;   drunkTimer   - Number of calls before player drunkenness is updated
+                ;   DrunkTimer   - Number of calls before player drunkenness is updated
                 ;   Chr_Unk_6396 - Blood alcohol level? If greater than 0, will be decreased each time drunkenness is updated.
-                ;   stomachTimer - Number of calls before player stomach is updated
+                ;   StomachTimer - Number of calls before player stomach is updated
                 ;
                 ; Output
-                ;   hungerTimer  - Decremented on each call. If the value reaches 0, it is reset to $21 (33).
-                ;   thirstTimer  - Decremented each time hunger is decreased. If the value reaches 0, it is reset to $16 (22).
-                ;   staminaTimer - Decremented on each call. If the value reaches 0, it is reset to $0e (14).
-                ;   drunkTimer   - Decremented on each call. If the value reaches 0, it is reset to 1.
+                ;   HungerTimer  - Decremented on each call. If the value reaches 0, it is reset to $21 (33).
+                ;   ThirstTimer  - Decremented each time hunger is decreased. If the value reaches 0, it is reset to $16 (22).
+                ;   StaminaTimer - Decremented on each call. If the value reaches 0, it is reset to $0e (14).
+                ;   DrunkTimer   - Decremented on each call. If the value reaches 0, it is reset to 1.
                 ;   Chr_Unk_6396 - If greater than 0, decremented each time drunkenness is updated.
-                ;   dat_41d3     - All bits are flipped each time drunkTimer reaches 0 and is reset AND Chr_Unk_6396 == 0.
+                ;   dat_41d3     - All bits are flipped each time DrunkTimer reaches 0 and is reset AND Chr_Unk_6396 == 0.
                 ;                  Related to drunkenness.
-                ;   CHR_HUNGER   - Decremented if hungerTimer reaches 0 and is reset.
-                ;   CHR_THIRST   - Decremented if thirstTimer reaches 0 and is reset.
-                ;   CHR_STAMINA  - Decremented if staminaTimer reaches 0 and is reset AND dat_1972 is >= 0.
-                ;   CHR_DRUNK    - Decremented if drunkTimer reaches 0 and is reset AND Chr_Unk_6396 != 0.
-                ;   CHR_STOMACH  - Decremented if stomachTimer reaches 0 and is reset.
+                ;   CHR_HUNGER   - Decremented if HungerTimer reaches 0 and is reset.
+                ;   CHR_THIRST   - Decremented if ThirstTimer reaches 0 and is reset.
+                ;   CHR_STAMINA  - Decremented if dat_1972 >= 0 when StaminaTimer reaches 0 and is reset.
+                ;   CHR_DRUNK    - Decremented if Chr_Unk_6396 != 0 when DrunkTimer reaches 0 and is reset.
+                ;   CHR_STOMACH  - Decremented if StomachTimer reaches 0 and is reset.
                 ;
-4176: ce 90 45  applyBiology    DEC hungerTimer      ; Subtract 1 from hungerTimer
-4179: d0 0c                     BNE loc_4198         ; If (hungerTimer == 0) Then
+4176: ce 90 45  applyBiology    DEC HungerTimer      ; Subtract 1 from HungerTimer
+4179: d0 0c                     BNE loc_4198         ; If (HungerTimer == 0) Then
 417b: a9 21                     LDA #$21             ;     Set
-417d: 8d 90 45                  STA hungerTimer      ;         hungerTimer = $21 (33)
+417d: 8d 90 45                  STA HungerTimer      ;         HungerTimer = $21 (33)
 4180: a2 99                     LDX #$99             ;     Set X = $99                  ($6399 [CHR_HUNGER])
 4182: a9 01                     LDA #$01             ;     Set A = 1
 4184: 20 69 2e                  JSR decChrAttr8      ;     Call $2e69 [decChrAttr8]     (Decrease hunger by 1)
-4187: ce 91 45                  DEC thirstTimer      ;     Subtract 1 from thirstTimer
-418a: d0 0c                     BNE loc_4198         ;     If (thirstTimer == 0) Then
+4187: ce 91 45                  DEC ThirstTimer      ;     Subtract 1 from ThirstTimer
+418a: d0 0c                     BNE loc_4198         ;     If (ThirstTimer == 0) Then
 418c: a9 16                     LDA #$16             ;         Set
-418e: 8d 91 45                  STA thirstTimer      ;             thirstTimer = $16 (22)
+418e: 8d 91 45                  STA ThirstTimer      ;             ThirstTimer = $16 (22)
 4191: a2 9a                     LDX #$9a             ;         Set X = $9a              ($639a [CHR_THIRST])
 4193: a9 01                     LDA #$01             ;         Set A = 1
 4195: 20 69 2e                  JSR decChrAttr8      ;         Call $2e69 [decChrAttr8] (Decrease thirst by 1)
                                                      ;     End If
                                                      ; End If
-4198: ce 92 45  loc_4198        DEC staminaTimer     ; Subtract 1 from staminaTimer
-419b: d0 11                     BNE loc_41ae         ; If (staminaTimer == 0) Then
+4198: ce 92 45  loc_4198        DEC StaminaTimer     ; Subtract 1 from StaminaTimer
+419b: d0 11                     BNE loc_41ae         ; If (StaminaTimer == 0) Then
 419d: a9 0e                     LDA #$0e             ;     Set
-419f: 8d 92 45                  STA staminaTimer     ;         staminaTimer = $0e (14)
+419f: 8d 92 45                  STA StaminaTimer     ;         StaminaTimer = $0e (14)
 41a2: 2c 72 19                  BIT dat_1972         ;     If (dat_1972 >= 0)
 41a5: 30 07                     BMI loc_41ae         ;     Then
 41a7: a2 9b                     LDX #$9b             ;         Set X = $9b (155)        ($639b [CHR_STAMINA])
@@ -8218,10 +8398,10 @@
 41ab: 20 69 2e                  JSR decChrAttr8      ;         Call $2e69 [decChrAttr8] (Decrease stamina by 1)
                                                      ;     End If
                                                      ; End If
-41ae: ce 93 45  loc_41ae        DEC drunkTimer       ; Subtract 1 from drunkTimer
-41b1: d0 2b                     BNE loc_41de         ; If (drunkTimer == 0) Then
+41ae: ce 93 45  loc_41ae        DEC DrunkTimer       ; Subtract 1 from DrunkTimer
+41b1: d0 2b                     BNE loc_41de         ; If (DrunkTimer == 0) Then
 41b3: a9 01                     LDA #$01             ;     Set
-41b5: 8d 93 45                  STA drunkTimer       ;         drunkTimer = 1
+41b5: 8d 93 45                  STA DrunkTimer       ;         DrunkTimer = 1
 41b8: ad 96 63                  LDA Chr_Unk_6396     ;     If (Chr_Unk_6396 != 0)
 41bb: f0 0d                     BEQ loc_41ca         ;     Then
 41bd: ce 96 63                  DEC Chr_Unk_6396     ;         Subtract 1 from Chr_Unk_6396
@@ -8240,10 +8420,10 @@
                                                      ;         End If
                                                      ;     End If
                                                      ; End If
-41de: ce 94 45  loc_41de        DEC stomachTimer     ; Subtract 1 from stomachTimer
-41e1: d0 0c                     BNE loc_41ef         ; If (stomachTimer == 0) Then
+41de: ce 94 45  loc_41de        DEC StomachTimer     ; Subtract 1 from StomachTimer
+41e1: d0 0c                     BNE loc_41ef         ; If (StomachTimer == 0) Then
 41e3: a9 02                     LDA #$02             ;     Set
-41e5: 8d 94 45                  STA stomachTimer     ;         stomachTimer = 2
+41e5: 8d 94 45                  STA StomachTimer     ;         StomachTimer = 2
 41e8: a2 98                     LDX #$98             ;     Set X = $98              ($6398 [CHR_STOMACH])
 41ea: a9 01                     LDA #$01             ;     Set A = 1
 41ec: 20 69 2e                  JSR decChrAttr8      ;     Call $2e69 [decChrAttr8] (Decrease stomach by 1)
@@ -8586,12 +8766,16 @@
 
 43c5: 00        TmpCHR_STAMINA  .BYTE $00            ; Used in applyBioAdj to temporarily store value of CHR_STAMINA
 
-                ; Called each game minute (every 4 seconds)
+                ; Updates the effective value for each primary stat and updates the HP separator character displayed
+                ; on the screen (':' if less than max, '=' if max)
+                ;
+                ; Called for each in-game minute which passes (generally every 4 seconds), though it could be called
+                ; at any point a stat update occurs.
                 ;
                 ; - Updates the HP separator char (':' if less than max, '=' if max)
                 ; - Computes the effective value for each primary stat (STA, CHR, STR,  INT, WIS, SKL, ???)
                 ;
-43c6: ad 46 63  minuteUpdates   LDA CHR_HP_CURRENT_LO ; Set
+43c6: ad 46 63  updStatEffVals  LDA CHR_HP_CURRENT_LO ; Set
 43c9: cd 48 63                  CMP CHR_HP_MAX_LO     ;    C = 1 if CHR_HP_CURRENT_LO >= CHR_HP_MAX_LO else 0
 43cc: ad 45 63                  LDA CHR_HP_CURRENT_HI ; If
 43cf: ed 47 63                  SBC CHR_HP_MAX_HI    ;    (CHR_HP_CURRENT_HI < CHR_HP_MAX_HI + C)
@@ -8660,7 +8844,7 @@
                 ;    If (CHR_BURDEN >= $e0 [224]) Then
                 ;        CHR_MOVE_SPEED = 2
                 ;    Else
-                ;        CHR_MOVE_SPEED = tbl_MOVE_SPEED[CHR_SPD_EFFECTIVE / 16]
+                ;        CHR_MOVE_SPEED = MoveSpeedTbl[CHR_SPD_EFFECTIVE / 16]
                 ;        If (CHR_STOMACH > 127) Then CHR_MOVE_SPEED /= 2
                 ;        If (CHR_MOVE_SPEED < 4) Then CHR_MOVE_SPEED = 4
 4430: ad 79 63                  LDA CHR_SPD_EFFECTIVE ; Set A = CHR_SPD_EFFECTIVE
@@ -8669,8 +8853,8 @@
 4435: 4a                        LSR                  ;     by
 4436: 4a                        LSR                  ;     16
 4437: aa                        TAX                  ; Set X = A
-4438: bd 5f 44                  LDA tbl_MOVE_SPEED,X ; Set
-443b: 8d 83 63                  STA CHR_MOVE_SPEED   ;     CHR_MOVE_SPEED = tbl_MOVE_SPEED[X]
+4438: bd 5f 44                  LDA MoveSpeedTbl,X   ; Set
+443b: 8d 83 63                  STA CHR_MOVE_SPEED   ;     CHR_MOVE_SPEED = MoveSpeedTbl[X]
                                                      ; One of:
                                                      ;     $06,$07,$08,$09,$0a,$0b,$0c,$0d
                                                      ;     $0e,$0f,$10,$11,$11,$11,$12,$12
@@ -8692,8 +8876,17 @@
                                                      ; End If
 445e: 60        loc_445e        RTS                  ; Return to caller
 
-445f: 06 07 08 09 0a 0b 0c 0d  tbl_MOVE_SPEED  .BYTE $06,$07,$08,$09,$0a,$0b,$0c,$0d  ; ........
-4467: 0e 0f 10 11 11 11 12 12   .BYTE $0e,$0f,$10,$11,$11,$11,$12,$12  ; ........
+445f: 06 07 08  MoveSpeedTbl    .BYTE $06,$07,$08                      ; 16 bytes: Movement speed values indexed by
+4462: 09 0a 0b 0c 0d 0e 0f 10   .BYTE $09,$0a,$0b,$0c,$0d,$0e,$0f,$10  ;           CHR_SPD_EFFECTIVE/16.
+446a: 11 11 11 12 12            .BYTE $11,$11,$11,$12,$12              ; One of:
+                                                                       ;    0: $06           8: $0e
+                                                                       ;    1: $07           9: $0f
+                                                                       ;    2: $08          10: $10
+                                                                       ;    3: $09          11: $11
+                                                                       ;    4: $0a          12: $11
+                                                                       ;    5: $0b          13: $11
+                                                                       ;    6: $0c          14: $12
+                                                                       ;    7: $0d          15: $12
 
                 ; Returns to caller of previous sub (unwinding stack) if the player's STA / 2 >= random byte
                 ;
@@ -8922,15 +9115,15 @@
                 ; Referenced in StatEffcts_L/H
 458f: 60        effBloated      RTS                  ; Return to caller
 
-4590: 21        hungerTimer     .BYTE $21              ; applyBiology: Number of calls before player hunger is
+4590: 21        HungerTimer     .BYTE $21              ; applyBiology: Number of calls before player hunger is
                                                        ;     decremented.
-4591: 16        thirstTimer     .BYTE $16              ; applyBiology: Number of hunger decreases before player thirst
+4591: 16        ThirstTimer     .BYTE $16              ; applyBiology: Number of hunger decreases before player thirst
                                                        ;     is decremented
-4592: 0e        staminaTimer    .BYTE $0e              ; applyBiology: Number of calls before player stamina is
+4592: 0e        StaminaTimer    .BYTE $0e              ; applyBiology: Number of calls before player stamina is
                                                        ;     decremented
-4593: 04        drunkTimer      .BYTE $04              ; applyBiology: Number of calls before player drunkenness is
+4593: 04        DrunkTimer      .BYTE $04              ; applyBiology: Number of calls before player drunkenness is
                                                        ;     updated
-4594: 03        stomachTimer    .BYTE $03              ; applyBiology: Number of calls before player stomach is updated
+4594: 03        StomachTimer    .BYTE $03              ; applyBiology: Number of calls before player stomach is updated
 
 4595: 04 21 16  EffTimers       .BYTE $04,$21,$16      ; 7 bytes: Table of countdown counters for the various biological
 4598: 0e 03 02 02               .BYTE $0e,$03,$02,$02  ;     and environmental effect types. Each counter is decremented
@@ -9606,7 +9799,7 @@
 4936: 4c ff ff  smc_4936        JMP $ffff            ; Self-modifying: Continue @ the address assigned above
                                                      ; At this point:
                                                      ;    Y & AttrSize hold same value
-                                                     ;    AttrAdjAmt    - Operation argument
+                                                     ;    AttrAdjAmt    - Operation argument value
                                                      ;    AttrAddr_L/H  - Address of attribute to update
                                                      ;    dat_0052      - Number of attributes to update
                                                      ;    dat_0053      - Attribute offset step size between attributes
@@ -9692,7 +9885,7 @@
                 ;
                 ; Input
                 ;   Y            - Number of bytes to apply the operation to
-                ;   AttrAdjAmt   - Operation argument
+                ;   AttrAdjAmt   - Operation argument value
                 ;   AttrAddr_L/H - Address of buffer to update
                 ;
                 ; Indirectly invoked from applyEffects
@@ -9981,8 +10174,7 @@
 4a5c: 91 3f                     STA (CurEffAdr_L),Y  ;     (*CurEffAdr_L)[0] = $80 (128)      (invalidate current entry)
 4a5e: 60                        RTS                  ; Return to caller
 
-                ;
-                ; Calls sub_4bb3 for each item in the game inventory.
+                ; Calls doItemAction for each item in the game inventory.
                 ;
                 ; Input
                 ;   DisableEffects - Whether effects are enabled or not. This method will do nothing if this value
@@ -9993,9 +10185,9 @@
                 ;
                 ; Temp
                 ;   ItemIndex    - loop var: item index
-                ;   ItemAdr_L/H  - param for sub_4bb3?
+                ;   ItemAdr_L/H  - param for doItemAction?
                 ;
-4a5f: a5 0f     sub_4a5f        LDA DisableEffects   ; If (DisableEffects == 0)
+4a5f: a5 0f     doAllItemActs   LDA DisableEffects   ; If (DisableEffects == 0)
 4a61: d0 1f                     BNE loc_4a82         ; Then
 4a63: c6 0f                     DEC DisableEffects   ;     Subtract 1 from DisableEffects         (To prevent re-entry?)
 4a65: a2 00                     LDX #$00             ;     Set X = 0
@@ -10005,7 +10197,7 @@
 4a6e: 85 42                     STA ItemAdr_H        ;             Set ItemAdr_H = InvItemAdr_H[ItemIndex]
 4a70: bd 0b 64                  LDA InvItemAdr_L,X   ;             Set
 4a73: 85 41                     STA ItemAdr_L        ;                 ItemAdr_L = InvItemAdr_L[ItemIndex]
-4a75: 20 b3 4b                  JSR sub_4bb3         ;             Call $4bb3 [sub_4bb3]
+4a75: 20 b3 4b                  JSR doItemAction     ;             Call $4bb3 [doItemAction]
                                                      ;         End If
 4a78: e6 4b     loc_4a78        INC ItemIndex        ;         Add 1 to ItemIndex
 4a7a: a6 4b                     LDX ItemIndex        ;     Repeat
@@ -10028,7 +10220,9 @@
                 ; Output
                 ;   A                 - Holds the index where the new item was added, or $ff if insufficient space.
                 ;   N                 - 0 on success, 1 if insufficient space available (A = $ff).
-                ;   ItemIndex         - Inventory item index for the new item on success
+                ;   ItemIndex         - Inventory item index for the new item on success.
+                ;                       If space could not be allocated, this will be the index where the item would
+                ;                       have been assigned.
                 ;   dat_004f          - Set to parameter A value (new item size)
                 ;   InvItemAdr_L/H[A] - Set to address for the new item. Will be the same as the input value
                 ;                       of CHR_ItemsEnd_L/H.
@@ -10051,14 +10245,16 @@
 4a8d: 10 f8                     BPL loc_4a87         ; Repeat while  (X >= 0)
 4a8f: 30 2d                     BMI loc_4abe         ; Continue @ $4abe [loc_4abe]    (No open slots, return to caller)
                                                      ;                     This case seems buggy, since it does not
-                                                     ;                     assign a value to the output param A to
-                                                     ;                     indicate the lack of assignment.
+                                                     ;                     assign a value to the output param A or
+                                                     ;                     ItemIndex to indicate the lack of assignment.
                                                      ;                     The value in A will be the last MSB value
                                                      ;                     read in the loop above, which will be a
                                                      ;                     non-zero value between $69 and $75 since it
-                                                     ;                     will fall inside CHR_Items.
-                                                     ;                     Jumping to $4ac6 or setting A to $ff here
-                                                     ;                     before branching would fix the issue.
+                                                     ;                     will fall inside CHR_Items. The value of
+                                                     ;                     ItemIndex is unmodified at this point, so It
+                                                     ;                     is indeterminate.
+                                                     ;                     Setting A and ItemIndex to $ff before
+                                                     ;                     returning would have been better.
 4a91: 86 4b     loc_4a91        STX ItemIndex        ; Set ItemIndex = X   (open inventory slot to assign the item into)
 4a93: 18                        CLC                  ; Set C = 0
 4a94: ad e4 64                  LDA CHR_ItemsEnd_L   ; Set A = CHR_ItemsEnd_L
@@ -10122,7 +10318,7 @@
                 ;   SourceAdr_L/H         - Address following item (ItemAdr_L/H + item size). Param to copyBytes
                 ;   DestAdr_L/H           - Item addresss (ItemAdr_L/H). Param to copyBytes
                 ;   ItemIndex             - Assigned the index of the removed item (input value of A)
-                ;   dat_004c              - input value saved/restored on stack so $ff can be passed into sub_4d93
+                ;   dat_004c              - input value saved/restored on stack so $ff can be passed into removeItmEfcts
                 ;   dat_004f              - Assigned to the size/length of the item
                 ;
 4ac9: 85 4b     removeItem      STA ItemIndex        ; Set ItemIndex = A
@@ -10135,11 +10331,11 @@
 4ad8: 48                        PHA                  ;     dat_004c to stack
 4ad9: a9 ff                     LDA #$ff             ; Set
 4adb: 85 4c                     STA dat_004c         ;     dat_004c = $ff
-4add: 20 93 4d                  JSR sub_4d93         ; Call $4d93 [sub_4d93]
+4add: 20 93 4d                  JSR removeItmEfcts   ; Call $4d93 [removeItmEfcts]
 4ae0: 68                        PLA                  ; Restore original value
 4ae1: 85 4c                     STA dat_004c         ;     of dat_004c from stack
 4ae3: 20 a2 4e                  JSR unequipItem      ; Call $4ea2 [unequipItem]
-4ae6: 20 90 4e                  JSR sub_4e90         ; Call $4e90 [sub_4e90]
+4ae6: 20 90 4e                  JSR itemNotDropped   ; Call $4e90 [itemNotDropped]          (param: ItemIndex)
 4ae9: a6 4b                     LDX ItemIndex        ; Set X = ItemIndex
 4aeb: a9 00                     LDA #$00             ; Set
 4aed: 9d 4b 64                  STA InvItemAdr_H,X   ;     InvItemAdr_H[X] = 0              (clear item's slot)
@@ -10196,17 +10392,15 @@
                 ; Adds an item to the game inventory.
                 ;
                 ; Input
-                ;   Y    - LSB of source address of item to add
-                ;   X    - MSB of source address of item to add
-                ;
-                ; ???
-                ;   ItemIndex    - index new item was assigned by allocItem
-                ;   dat_004f     -
-                ;   ItemAdr_L/H  -
+                ;   Y           - LSB of source address of item to add
+                ;   X           - MSB of source address of item to add
                 ;
                 ; Output
-                ;   N    - 0 on success, 1 if no space available
-                ;   A    - index the new item was assigned, when N = 0
+                ;   N           - 0 on success, 1 if no space available
+                ;   A           - index the new item was assigned, when N = 0
+                ;   ItemIndex   - index the new item was assigned, when N = 0
+                ;   dat_004f    - the size of the item data in bytes
+                ;   ItemAdr_L/H - Set to the inventory address for the new item.
                 ;
                 ; Temp
                 ;   SourceAdr_L/H - updated to source address of item to add (input Y/X)
@@ -10236,10 +10430,10 @@
                 ; Sets ItemAdr_L/H to the address of the inventory item at index in A
                 ;
                 ; Input
-                ;   A            - Inventory item number (offset relative to InvItemAdr_L and InvItemAdr_H)
+                ;   A            - Inventory item number (offset relative to InvItemAdr_L/H)
                 ;
                 ; Output
-                ;   ItemAdr_L/H  - Set to address from InvItemAdr_L[X] / InvItemAdr_H[X]
+                ;   ItemAdr_L/H  - Set to address from InvItemAdr_L/H[X]
                 ;                  (No item present if ItemAdr_H = 0)
                 ;   X            - Set to value of parameter A
                 ;   N            - 1 if ItemAdr_H < 0 otherwise 0
@@ -10260,8 +10454,8 @@
                 ; Output
                 ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
-                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
-                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   A         - set to 0 if no item was present after the first call to doItemAtAction,
+                ;               set to $ff if an item was present after the first call to doItemAtAction
                 ;   Z         - 1 if A is 0, otherwise 0
                 ;   N         - 0 if A is 0, otherwise 1
                 ;
@@ -10276,8 +10470,8 @@
                 ; Output
                 ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
-                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
-                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   A         - set to 0 if no item was present after the first call to doItemAtAction,
+                ;               set to $ff if an item was present after the first call to doItemAtAction
                 ;   Z         - 1 if A is 0, otherwise 0
                 ;   N         - 0 if A is 0, otherwise 1
                 ;
@@ -10292,8 +10486,8 @@
                 ; Output
                 ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
-                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
-                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   A         - set to 0 if no item was present after the first call to doItemAtAction,
+                ;               set to $ff if an item was present after the first call to doItemAtAction
                 ;   Z         - 1 if A is 0, otherwise 0
                 ;   N         - 0 if A is 0, otherwise 1
                 ;
@@ -10308,8 +10502,8 @@
                 ; Output
                 ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
-                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
-                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   A         - set to 0 if no item was present after the first call to doItemAtAction,
+                ;               set to $ff if an item was present after the first call to doItemAtAction
                 ;   Z         - 1 if A is 0, otherwise 0
                 ;   N         - 0 if A is 0, otherwise 1
                 ;
@@ -10324,8 +10518,8 @@
                 ; Output
                 ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
-                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
-                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   A         - set to 0 if no item was present after the first call to doItemAtAction,
+                ;               set to $ff if an item was present after the first call to doItemAtAction
                 ;   Z         - 1 if A is 0, otherwise 0
                 ;   N         - 0 if A is 0, otherwise 1
                 ;
@@ -10333,29 +10527,30 @@
 
                 ; Reached from one of: sub_4b80, sub_4b83, sub_4b86, sub_4b89, sub_4b8c
                 ;
-                ; - Invokes sub_4baa for the item specified by A
-                ;    - Calls sub_4bb3 for the item if an item is at the specified index
+                ; - Invokes doItemAtAction for the item specified by A
+                ;    - Calls doItemAction for the item if an item is at the specified index
                 ; - If an item is still present
-                ;    - Sets byte 2 of the item to the input value of X
-                ;    - Calls sub_4bb3 for the item
+                ;    - Sets byte 2 (action flags) of the item to the input value of X
+                ;    - Calls doItemAction for the item
                 ;    - Sets A = $ff, N = 1, Z = 0
                 ;
                 ; Input
                 ;   A - item index
-                ;   X - From sub entry point above: One of 1 (get), 2 (drop), 4 (use), 8 (unuse), 16 (??)
+                ;   X - From sub entry point above: Action signal to match for the object.
+                ;       One of 1 (get), 2 (drop), 4 (use), 8 (unuse), 16 (??)
                 ;       Bitmask to AND with byte H2 of the item data for matching.
                 ;
                 ; Output
                 ;   ItemIndex - set to input value of A
                 ;   dat_004d  - set to the input value of X
-                ;   A         - set to 0 if no item was present after the first call to sub_4baa,
-                ;               set to $ff if an item was present after the first call to sub_4baa
+                ;   A         - set to 0 if no item was present after the first call to doItemAtAction,
+                ;               set to $ff if an item was present after the first call to doItemAtAction
                 ;   Z         - 1 if A is 0, otherwise 0
                 ;   N         - 0 if A is 0, otherwise 1
                 ;
 4b8e: 85 4b                     STA ItemIndex        ; Set ItemIndex = A
 4b90: 86 4d                     STX dat_004d         ; Set dat_004d = X
-4b92: 20 aa 4b                  JSR sub_4baa         ; Call $4baa [sub_4baa]
+4b92: 20 aa 4b                  JSR doItemAtAction         ; Call $4baa [doItemAtAction]            (params: A, X)
 4b95: a5 4b                     LDA ItemIndex        ; Set A = ItemIndex                (A = item index)
 4b97: 20 74 4b                  JSR getItemAdr       ; Call $4b74 [getItemAdr]
 4b9a: f0 0d                     BEQ loc_4ba9         ; If (ItemAdr_H != 0) Then
@@ -10363,42 +10558,59 @@
 4b9e: a5 4d                     LDA dat_004d         ;     Set
 4ba0: 85 4c                     STA dat_004c         ;         dat_004c = dat_004d (saved X parm)
 4ba2: 91 41                     STA (ItemAdr_L),Y    ;     Set (*ItemAdr_L)[2] = dat_004d (saved X parm)
-4ba4: 20 b3 4b                  JSR sub_4bb3         ;     Call $4bb3 [sub_4bb3]
+4ba4: 20 b3 4b                  JSR doItemAction     ;     Call $4bb3 [doItemAction]
 4ba7: a9 ff                     LDA #$ff             ;     Set A = $ff
                                                      ; End If
 4ba9: 60        loc_4ba9        RTS                  ; Return to caller
 
-                ; Calls sub_4bb3 for the item in the specified inventory index, if one is assigned.
+                ; Calls doItemAction for the item in the specified inventory index, if one is assigned.
                 ;
                 ; Input
                 ;   A            - Inventory item number (offset relative to InvItemAdr_L and InvItemAdr_H)
                 ;
-4baa: 20 74 4b  sub_4baa        JSR getItemAdr       ; Call $4b74 [getItemAdr]
+4baa: 20 74 4b  doItemAtAction  JSR getItemAdr       ; Call $4b74 [getItemAdr]    (param: A)
 4bad: f0 03                     BEQ loc_4bb2         ; If (ItemAdr_H != 0) Then
-4baf: 20 b3 4b                  JSR sub_4bb3         ;     Call $4bb3 [sub_4bb3]
+4baf: 20 b3 4b                  JSR doItemAction     ;     Call $4bb3 [doItemAction]  (param: ItemAdr_L/H)
                                                      ; End If
 4bb2: 60        loc_4bb2        RTS                  ; Return to caller
 
+                ; Processes a signalled action trigger for an item.
+                ;
+                ; If byte 2 of the item header @ ItemAdr_L/H is 0, returns without any updates.
+                ; If it has any other value:
+                ;   - dat_004c is set the original value and item header byte 2 is set to 0
+                ;   - Checks the item's alignment against the player's alignment and displays a message if
+                ;     the player doesn't meet the item alignment requirements.
+                ;   - Identifies the lowest (least significant) bit position (0..7) of dat_004c that is set (1)
+                ;     (if any) and executes the corresponding action for the item.
+                ;       bit 0 ($01): get action: Mark item as in player inventory
+                ;       bit 1 ($02): drop action: Drops an item held by the player
+                ;       bit 2 ($04): use action: Mark the inventory slot at ItemIndex "available"
+                ;       bit 3 ($08): unuse action:
+                ;       bit 4 ($10): ?? action:
+                ;       bit 5 ($20): NOP
+                ;       bit 6 ($40): NOP
+                ;       bit 7 ($80): NOP
                 ;
                 ; Input
-                ;   ItemAdr_L/H -
+                ;   ItemAdr_L/H - Address of the item
                 ;
                 ; Output
                 ;   ItemStatUpdFlg - Decremented to make non-0 (update needed)
                 ;   StatDisplayFlg - Decremented to make non-0 (update needed)
-                ;   dat_004c       - (temp?) Set to (*ItemAdr_L)[2] if it's not equal to 0
+                ;   dat_004c       - (temp?) Set to (*ItemAdr_L)[2] (action trigger flags) if it's not equal to 0
                 ;
-4bb3: a0 02     sub_4bb3        LDY #$02             ; Set Y = 2
-4bb5: b1 41                     LDA (ItemAdr_L),Y    ; Set A = (*ItemAdr_L)[2]
+4bb3: a0 02     doItemAction    LDY #$02             ; Set Y = 2
+4bb5: b1 41                     LDA (ItemAdr_L),Y    ; Set A = (*ItemAdr_L)[2]          (I2: action trigger flags)
 4bb7: d0 01                     BNE loc_4bba         ; If (A == 0) Then
-4bb9: 60                        RTS                  ;     Return to caller
+4bb9: 60                        RTS                  ;     Return to caller             (no actions triggered)
                                                      ; End If
 4bba: 85 4c     loc_4bba        STA dat_004c         ; Set dat_004c = A
 4bbc: ce 60 19                  DEC ItemStatUpdFlg   ; Subtract 1 from ItemStatUpdFlg   (update needed)
 4bbf: ce 5f 19                  DEC StatDisplayFlg   ; Subtract 1 from StatDisplayFlg   (update needed)
 4bc2: a9 00                     LDA #$00             ; Set
-4bc4: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[2] = 0
-4bc6: 20 0f 4e                  JSR chkItemAlign     ; Call $4e0f [chkItemAlign]
+4bc4: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[2] = 0          (clear triggers)
+4bc6: 20 0f 4e                  JSR chkItemAlign     ; Call $4e0f [chkItemAlign]        (param: dat_004c, ItemAdr_L/H)
                 ; Find position of first 1 bit in dat_004c (0..7)
 4bc9: a5 4c                     LDA dat_004c         ; Set A = dat_004c
 4bcb: a0 07                     LDY #$07             ; Set Y = 7    (7 iterations [7..1])
@@ -10421,44 +10633,45 @@
 4be0: 48                        PHA                  ;    onto the stack
 4be1: 60                        RTS                  ; Indirectly jump to the address on the stack + 1
                                                      ; One of the following:
-                                                     ;     0: $4be2 [sub_4be2] - (dat_004c: xxxxxxx1) - (get) Mark item as in player inventory
-                                                     ;     1: $4bf5 [sub_4bf5] - (dat_004c: xxxxxx10) - (drop) Drops an item held by the player
-                                                     ;     2: $4c5a [sub_4c5a] - (dat_004c: xxxxx100) - (use) Mark the inventory slot at ItemIndex "available"
-                                                     ;     3: $4c6b [sub_4c6b] - (dat_004c: xxxx1000) - (unuse)
-                                                     ;     4: $4c9d [sub_4c9d] - (dat_004c: xxx10000) - ?
-                                                     ;     5: $4c9c [rts_4c9c] - (dat_004c: xx100000) - NOP
-                                                     ;     6: $4c9c [rts_4c9c] - (dat_004c: x1000000) - NOP
-                                                     ;     7: $4c9c [rts_4c9c] - (dat_004c: 10000000) - NOP
-                                                     ;     8: $4c86 [sub_4c86] - (dat_004c: 00000000) - Unreachable? Mark the inventory slot at ItemIndex "occupied"
+                                                     ;     0: $4be2 [doGetAction]  - xxxxxxx1: $01: get: Mark item as in player inventory
+                                                     ;     1: $4bf5 [doDropAction] - xxxxxx10: $02: drop: Drops an item held by the player
+                                                     ;     2: $4c5a [doUseAction]  - xxxxx100: $04: use: Mark the inventory slot at ItemIndex "available"
+                                                     ;     3: $4c6b [sub_4c6b] - xxxx1000: $08: unuse:
+                                                     ;     4: $4c9d [sub_4c9d] - xxx10000: $10: ??:
+                                                     ;     5: $4c9c [rts_4c9c] - xx100000: $20: NOP
+                                                     ;     6: $4c9c [rts_4c9c] - x1000000: $40: NOP
+                                                     ;     7: $4c9c [rts_4c9c] - 10000000: $80: NOP
+                                                     ;     8: $4c86 [sub_4c86] - 00000000: Unreachable? Mark the inventory slot at ItemIndex "occupied"
 
-                ; Mark item as in player inventory
+                ; Executes $01 "get" action for item: Mark item as in player inventory
                 ;
                 ; - Set bit 7 of the item's byte 0 to indicate it is held in the player's inventory
-                ; - Calls sub_4e90
+                ; - Calls itemNotDropped
                 ; - Pushes 1 to the stack (get)
                 ; - Sets A = 2 (drop)
                 ; - Continues @ $4c95 [cont_4c95]
                 ;
                 ; Input
+                ;   ItemIndex     - The index of the item being picked up
                 ;   ItemAdr_L/H   - The byte at this address will have bit 7 set to 1
                 ;
                 ; Referenced in tbl_4cbf_L/H
                 ;
-4be2: a9 80     sub_4be2        LDA #$80             ; Set A = $80
+4be2: a9 80     doGetAction     LDA #$80             ; Set A = $80
 4be4: a0 00                     LDY #$00             ; Set Y = 0
-4be6: 11 41                     ORA (ItemAdr_L),Y    ; Set
-4be8: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[0] |= $80
-4bea: 20 90 4e                  JSR sub_4e90         ; Call $4e90 [sub_4e90]
+4be6: 11 41                     ORA (ItemAdr_L),Y    ; Set                                 (mark item as held by player)
+4be8: 91 41                     STA (ItemAdr_L),Y    ;     (*ItemAdr_L)[0] = (*ItemAdr_L)[0] | $80
+4bea: 20 90 4e                  JSR itemNotDropped   ; Call $4e90 [itemNotDropped]         (param: ItemIndex)
 4bed: a9 01                     LDA #$01             ; Push the
-4bef: 48                        PHA                  ;     value 1 to the stack
-4bf0: a9 02                     LDA #$02             ; Set A = 2
+4bef: 48                        PHA                  ;     value 1 to the stack            (trigger action 1 = get)
+4bf0: a9 02                     LDA #$02             ; Set A = 2                           (trigger action 2 = drop)
 4bf2: 4c 95 4c                  JMP cont_4c95        ; Continue @ $4c95 [cont_4c95]
 
-                ; Drops an item held by the player
+                ; Executes $02 "drop" action for item: Drops an item held by the player
                 ;
                 ; - Returns to caller with no changes if the item isn't held by the player
                 ; - Clears the "held" bit for the item
-                ; - If the item is a torch, calls sub_4efd
+                ; - If the item is a torch, calls torchBurnedOut
                 ; - Unequips the item if it was equipped
                 ; - Adds the item to the list of dropped items, removing the oldest dropped item if all 16 slots are
                 ;   already occupied.
@@ -10472,7 +10685,7 @@
                 ;
                 ; Referenced in tbl_4cbf_L/H
                 ;
-4bf5: a0 00     sub_4bf5        LDY #$00             ; Set Y = 0
+4bf5: a0 00     doDropAction    LDY #$00             ; Set Y = 0
 4bf7: b1 41                     LDA (ItemAdr_L),Y    ; Set A = (*ItemAdr_L)[0]
 4bf9: 30 03                     BMI loc_4bfe         ; If (A >= 0) Then
 4bfb: 4c 9c 4c                  JMP rts_4c9c         ;     Return to caller         (bit 7 = 0, item not held by player)
@@ -10481,7 +10694,7 @@
 4c00: 91 41                     STA (ItemAdr_L),Y    ; Set (*ItemAdr_L)[0] = A
 4c02: c9 0b                     CMP #$0b             ; If (A == $0b (1011))        ($b 1011 - weapon plus bit 3 == 1??))
 4c04: d0 03                     BNE loc_4c09         ; Then
-4c06: 20 fd 4e                  JSR sub_4efd         ;     Call $4efd [sub_4efd]
+4c06: 20 fd 4e                  JSR torchBurnedOut   ;     Call $4efd [torchBurnedOut]
                                                      ; End If
 4c09: 20 a2 4e  loc_4c09        JSR unequipItem      ; Call $4ea2 [unequipItem]
 4c0c: ae 93 64                  LDX NextDropped      ; Set X = NextDropped
@@ -10490,8 +10703,8 @@
 4c14: f0 11                     BEQ loc_4c27         ; Then
 4c16: a5 4b                     LDA ItemIndex        ;     Push value of ItemIndex
 4c18: 48                        PHA                  ;         to the stack
-4c19: bd d4 64                  LDA DroppedIndex,X   ;     Set
-4c1c: 85 4b                     STA ItemIndex        ;         ItemIndex = DroppedIndex[X]
+4c19: bd d4 64                  LDA DroppedItmIdx,X  ;     Set
+4c1c: 85 4b                     STA ItemIndex        ;         ItemIndex = DroppedItmIdx[X]
 4c1e: 20 c9 4a                  JSR removeItem       ;     Call $4ac9 [removeItem]
 4c21: 68                        PLA                  ;     Restore value of ItemIndex
 4c22: 85 4b                     STA ItemIndex        ;         from the stack
@@ -10507,7 +10720,7 @@
 4c3c: a9 02                     LDA #$02             ; Set
 4c3e: 9d 94 64                  STA DroppedGame,X    ;     DroppedGame[X] = 2   (2 = Dungeon)
 4c41: a5 4b                     LDA ItemIndex        ; Set
-4c43: 9d d4 64                  STA DroppedIndex,X   ;     DroppedIndex[X] = ItemIndex
+4c43: 9d d4 64                  STA DroppedItmIdx,X  ;     DroppedItmIdx[X] = ItemIndex
 4c46: e8                        INX                  ; Add 1 to X
 4c47: 8a                        TXA                  ; Set NextDropped
 4c48: 29 0f                     AND #$0f             ;       =
@@ -10520,7 +10733,7 @@
 4c56: a9 01                     LDA #$01             ; Set A = 1
 4c58: d0 3b                     BNE cont_4c95        ; Continue @ $4c95 [cont_4c95]
 
-                ; Mark the inventory slot at ItemIndex "available"
+                ; Executes $04 "use" action for item: Mark the inventory slot at ItemIndex "available"
                 ;
                 ; - Sets the bit in InvSlotFree corresponding to ItemIndex to 1
                 ; - Pushes 4 to the stack (use)
@@ -10532,7 +10745,7 @@
                 ;
                 ; Referenced in tbl_4cbf_L/H
                 ;
-4c5a: a2 64     sub_4c5a        LDX #$64             ; Set
+4c5a: a2 64     doUseAction     LDX #$64             ; Set
 4c5c: a0 8b                     LDY #$8b             ;     Y/X = $648b [InvSlotFree]    (bits for open inventory slots)
 4c5e: a5 4b                     LDA ItemIndex        ; Set A = ItemIndex                (bit # = inventory slot #)
 4c60: 38                        SEC                  ; Set C = 1                        (set the bit to 1)
@@ -10542,10 +10755,11 @@
 4c67: a9 08                     LDA #$08             ; Set A = 8
 4c69: d0 2a                     BNE cont_4c95        ; Continue @ $4c95 [cont_4c95]
 
+                ; Executes $08 "unuse" action for item:
                 ;
                 ; - Pushes 8 to the stack (unuse)
                 ; - Sets A = 4 (use)
-                ; - Calls sub_4d93
+                ; - Calls removeItmEfcts
                 ;
                 ; Input
                 ;   ItemAdr_L/H  - Address of item
@@ -10556,9 +10770,9 @@
 4c6b: a0 00     sub_4c6b        LDY #$00             ; Set Y = 0
 4c6d: b1 41                     LDA (ItemAdr_L),Y    ; Set
 4c6f: 29 7f                     AND #$7f             ;     A = (*ItemAdr_L)[0] & $7f    (item type with held flag clear)
-4c71: c9 0b                     CMP #$0b             ; If (A == $0b (x000_1011 - weapon plus bit 3 set? torch?))
+4c71: c9 0b                     CMP #$0b             ; If (A == $0b (x000_1011 - Item type weapon subtype 1, torch))
 4c73: d0 03                     BNE loc_4c78         ; Then
-4c75: 20 fd 4e                  JSR sub_4efd         ;     Call $4efd [sub_4efd]        (torch burns out)
+4c75: 20 fd 4e                  JSR torchBurnedOut   ;     Call $4efd [torchBurnedOut]        (torch burns out)
                                                      ; End If
 4c78: a2 64     loc_4c78        LDX #$64             ; Set
 4c7a: a0 8b                     LDY #$8b             ;     Y/X = $648b [InvSlotFree]    (bits for open inventory slots)
@@ -10573,7 +10787,7 @@
                 ;
                 ; - Pushes 8 to the stack (unuse)
                 ; - Sets A = 4 (use)
-                ; - Calls sub_4d93
+                ; - Calls removeItmEfcts
                 ;
                 ; Input
                 ;   ItemIndex   - item index
@@ -10592,25 +10806,32 @@
 4c92: 48                        PHA                  ;     8 onto the stack
 4c93: a9 04                     LDA #$04             ; Set A = 4                        (4 = match "use" effects?)
                 ;
-                ; Invoked from sub_4be2, sub_4bf5, sub_4c5a, sub_4c86
+                ; Invoked from doGetAction, doDropAction, doUseAction, sub_4c86
                 ;
-                ; - Calls sub_4d93 (A = param)
+                ; - Calls removeItmEfcts (A = param)
                 ; - Pulls a byte from the stack and places it in A
                 ; - Calls sub_4ccf
                 ; - Returns to caller
                 ;
                 ; Input
-                ;   A   - sub_4d93 param: Bitmask to AND with the effect triggers for matching effects
+                ;   A   - removeItmEfcts param: Bitmask to AND with the effect triggers for matching effects
                 ;   Byte on stack - sub_4ccf param: Bitmask to AND with the effect triggers for matching effects
                 ;
-4c95: 20 93 4d  cont_4c95       JSR sub_4d93         ; Call $4d93 [sub_4d93]
+4c95: 20 93 4d  cont_4c95       JSR removeItmEfcts   ; Call $4d93 [removeItmEfcts]
 4c98: 68                        PLA                  ; Set A = value pulled from stack
 4c99: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]
 
                 ; Referenced in tbl_4cbf_L/H
 4c9c: 60        rts_4c9c        RTS                  ; Return to caller
 
-                ; ?Seems to be related to dropping an item or removing it from inventory?
+                ; Processes a $10 action flag: Drops, unuses and permanently removes the specified item from the
+                ;     game inventory.
+                ;
+                ; - If the item is a light-producing weapon (item type 3, subtype 1), the number of lights produced by
+                ;   player is decreased by one.
+                ; - Executes a "drop" action on the item
+                ; - Executes a "unuse" action on the item
+                ; - Removes the item permanently from the game inventory
                 ;
                 ; Input
                 ;   ItemAdr_L/H   - Address of current item
@@ -10620,34 +10841,35 @@
                 ;
 4c9d: a0 00     sub_4c9d        LDY #$00             ; Set Y = 0
 4c9f: b1 41                     LDA (ItemAdr_L),Y    ; If
-4ca1: c9 8b                     CMP #$8b             ;    ((*ItemAdr_L)[0] == $8b (139 1000_1011, held weapn w/ bit3=1))
-4ca3: d0 08                     BNE loc_4cad         ; Then
+4ca1: c9 8b                     CMP #$8b             ;    ((*ItemAdr_L)[0] == $8b)     (1000_1011, held weapn subtype 1)
+4ca3: d0 08                     BNE loc_4cad         ; Then                     (light-producing weapon, e.g. lit torch)
 4ca5: ad 90 63                  LDA CHR_NumLights    ;   If (CHR_NumLights != 0)
 4ca8: f0 03                     BEQ loc_4cad         ;     Then
 4caa: ce 90 63                  DEC CHR_NumLights    ;       Subtract 1 from CHR_NumLights
                                                      ;     End If
                                                      ; End If
-4cad: a9 02     loc_4cad        LDA #$02             ; Set A = 2
-4caf: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]
-4cb2: a9 08                     LDA #$08             ; Set A = 8
-4cb4: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]
-4cb7: 20 90 4e                  JSR sub_4e90         ; Call $4e90 [sub_4e90]
+4cad: a9 02     loc_4cad        LDA #$02             ; Set A = 2                        (trigger action 2 = drop)
+4caf: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]            (param: A)
+4cb2: a9 08                     LDA #$08             ; Set A = 8                        (trigger action 8 = unuse)
+4cb4: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]            (param: A)
+4cb7: 20 90 4e                  JSR itemNotDropped   ; Call $4e90 [itemNotDropped]      (param: ItemIndex)
 4cba: a5 4b                     LDA ItemIndex        ; Set A = ItemIndex
 4cbc: 4c c9 4a                  JMP removeItem       ; Continue execution @ $4ac9 [removeItem]
 
-4cbf: e1        tbl_4cbf_L      .BYTE $e1            ;
-4cc0: 4b f4 4b 59 4c 6a 4c  tbl_4cbf_H  .BYTE $4b,$f4,$4b,$59,$4c,$6a,$4c  ; K.KYLjL
-4cc7: 9c 4c 9b 4c 9b 4c 9b 4c   .BYTE $9c,$4c,$9b,$4c,$9b,$4c,$9b,$4c  ; .L.L.L.L
+4cbf: e1        tbl_4cbf_L      .BYTE $e1                              ; LSB of continuation addr
+4cc0: 4b        tbl_4cbf_H      .BYTE $4b                              ; MSB of continuation addr
+4cc1: f4 4b 59 4c 6a 4c 9c 4c   .BYTE $f4,$4b,$59,$4c,$6a,$4c,$9c,$4c  ; (18 byte table of 9 x 2 byte entries)
+4cc9: 9b 4c 9b 4c 9b 4c         .BYTE $9b,$4c,$9b,$4c,$9b,$4c          ;
                                     ; Add 1 to the addresses in this table for the sub start:
-                                    ;     0: $4be2 [sub_4be2] - (get) Mark item as in player inventory
-                                    ;     1: $4bf5 [sub_4bf5] - (drop) Drops an item held by the player
-                                    ;     2: $4c5a [sub_4c5a] - (use) Mark the inventory slot at ItemIndex "available"
-                                    ;     3: $4c6b [sub_4c6b] - (unuse)
-                                    ;     4: $4c9d [sub_4c9d] - ?
-                                    ;     5: $4c9c [rts_4c9c] - NOP
-                                    ;     6: $4c9c [rts_4c9c] - NOP
-                                    ;     7: $4c9c [rts_4c9c] - NOP
-                                    ;     8: $4c86 [sub_4c86] - Mark the inventory slot at ItemIndex "occupied"
+                                    ;     0: $4be2 [doGetAction]  - $01 get: Mark item as in player inventory
+                                    ;     1: $4bf5 [doDropAction] - $02 drop: Drops an item held by the player
+                                    ;     2: $4c5a [doUseAction]  - $04 use: Mark inventory slot at ItemIndex "available"
+                                    ;     3: $4c6b [sub_4c6b] - $08 unuse:
+                                    ;     4: $4c9d [sub_4c9d] - $10 ??:
+                                    ;     5: $4c9c [rts_4c9c] - $20 NOP
+                                    ;     6: $4c9c [rts_4c9c] - $40 NOP
+                                    ;     7: $4c9c [rts_4c9c] - $80 NOP
+                                    ;     8: $4c86 [sub_4c86] - $00 ??: Mark the inventory slot at ItemIndex "occupied"
 
                 ;
                 ; Input
@@ -10793,7 +11015,7 @@
                 ;   EffectIndex   - Loop control var
                 ;   EffectAdr_L/H - Current effect address for iteration
                 ;
-4d93: 85 4c     sub_4d93        STA dat_004c         ; Set dat_004c = A
+4d93: 85 4c     removeItmEfcts  STA dat_004c         ; Set dat_004c = A
 4d95: a9 00                     LDA #$00             ; Set
 4d97: 85 3d                     STA EffectAdr_L      ;     EffectAdr_L/H
 4d99: a9 65                     LDA #$65             ;     address
@@ -10897,51 +11119,50 @@
                 ; - If the player's alignment doesn't "align" with the item, a message is displayed.
                 ;
                 ; Input
-                ;   Y            - seems this register may be used if dat_004c & 5 is 0
-                ;   dat_004c     -
-                ;   ItemAdr_L/H  -
-                ;   CHR_ALIGN    -
+                ;   dat_004c     - Holds the action trigger flags for the item
+                ;   ItemAdr_L/H  - The address of the item
+                ;   CHR_ALIGN    - The player's alignment
                 ;
                 ; Temp
                 ;   ZtsAlgnName_L/H - set to address of item name if message is displayed
                 ;   ZtsAlgnScrm_L/H - set to address of item scream if message is displayed
                 ;   StrTmplate_L/H  - set to $4f7d [StrItemScreams]
                 ;
-4e0f: a5 4c     chkItemAlign    LDA dat_004c         ; If ((dat_004c & 5) == 0) Then
+4e0f: a5 4c     chkItemAlign    LDA dat_004c         ; If ((dat_004c & 5) == 0) Then    (5 = use | get triggers)
 4e11: 29 05                     AND #$05             ;     Continue @ $4e22 [rts_4e22]  (Return to caller)
 4e13: f0 0d                     BEQ rts_4e22         ; End If
 4e15: a0 03                     LDY #$03             ; Set Y = 3
-4e17: b1 41                     LDA (ItemAdr_L),Y    ; If ((*ItemAdr_L)[3] == 0) Then
+4e17: b1 41                     LDA (ItemAdr_L),Y    ; If ((*ItemAdr_L)[3] == 0) Then   (I3: Alignment requirement)
 4e19: f0 07                     BEQ rts_4e22         ;     Continue @ $4e22 [rts_4e22]  (Return to caller, item neutral)
-4e1b: 10 06                     BPL loc_4e23         ; Else If ((*ItemAdr_L)[3] < 0) Then                 (Item is evil)
+4e1b: 10 06                     BPL loc_4e23         ; Else If ((*ItemAdr_L)[3] < 0) Then                 (Item is good)
 4e1d: cd 85 63                  CMP CHR_ALIGN        ;     If ((*ItemAdr_L)[3] >= CHR_ALIGN) Then
-4e20: b0 06                     BCS loc_4e28         ;         Continue @ $4e28 [loc_4e28]         (Player is more evil)
+4e20: b0 06                     BCS loc_4e28         ;         Continue @ $4e28 [loc_4e28]         (Player is less good)
                                                      ;     End If
 4e22: 60        rts_4e22        RTS                  ;     Return to caller
-4e23: cd 85 63  loc_4e23        CMP CHR_ALIGN        ; Else If ((*ItemAdr_L)[3] >= CHR_ALIGN) Then
-4e26: b0 fa                     BCS rts_4e22         ;     Continue @ $4e22 [rts_4e22]  (Return, player more evil)
-4e28: b1 41     loc_4e28        LDA (ItemAdr_L),Y    ; Else If ((*ItemAdr_L)[3] < 0)
+4e23: cd 85 63  loc_4e23        CMP CHR_ALIGN        ; Else If ((*ItemAdr_L)[3] >= CHR_ALIGN) Then        (Item is evil)
+4e26: b0 fa                     BCS rts_4e22         ;     Continue @ $4e22 [rts_4e22]        (Return, player more evil)
+4e28: b1 41     loc_4e28        LDA (ItemAdr_L),Y    ; Else If ((*ItemAdr_L)[3] < 0)                      (Item is good)
 4e2a: 10 1d                     BPL loc_4e49         ; Then
-4e2c: ad 85 63                  LDA CHR_ALIGN        ;     If (CHR_ALIGN < 0)
+4e2c: ad 85 63                  LDA CHR_ALIGN        ;     If (CHR_ALIGN < 0)                (Player is not good enough)
 4e2f: 10 0c                     BPL loc_4e3d         ;     Then
 4e31: a9 9d                     LDA #$9d             ;         Set
 4e33: 8d 2c 50                  STA ZtsAlgnScrm_L    ;             ZtsAlgnScrm_L/H
 4e36: a9 4f                     LDA #$4f             ;                =
 4e38: 8d 2d 50                  STA ZtsAlgnScrm_H    ;                  $4f9d [ZtsBtrThanYou]
-4e3b: d0 27                     BNE loc_4e64         ;     Else
+4e3b: d0 27                     BNE loc_4e64         ;     Else                              (Player is not evil enough)
 4e3d: a9 e4     loc_4e3d        LDA #$e4             ;         Set
 4e3f: 8d 2c 50                  STA ZtsAlgnScrm_L    ;             ZtsAlgnScrm_L/H
 4e42: a9 4f                     LDA #$4f             ;                =
 4e44: 8d 2d 50                  STA ZtsAlgnScrm_H    ;                  $4fe4 [ZtsReleaseMe]
                                                      ;     End If
-4e47: d0 1b                     BNE loc_4e64         ; Else If
-4e49: ad 85 63  loc_4e49        LDA CHR_ALIGN        ;         (CHR_ALIGN >= 0)
+4e47: d0 1b                     BNE loc_4e64         ; Else If                                            (Item is evil)
+4e49: ad 85 63  loc_4e49        LDA CHR_ALIGN        ;         (CHR_ALIGN >= 0)              (Player is not evil enough)
 4e4c: 30 0c                     BMI loc_4e5a         ; Then
 4e4e: a9 c0                     LDA #$c0             ;     Set
 4e50: 8d 2c 50                  STA ZtsAlgnScrm_L    ;         ZtsAlgnScrm_L/H
 4e53: a9 4f                     LDA #$4f             ;            =
 4e55: 8d 2d 50                  STA ZtsAlgnScrm_H    ;              $4fc0 [ZtsEvilThanYou]
-4e58: d0 0a                     BNE loc_4e64         ; Else
+4e58: d0 0a                     BNE loc_4e64         ; Else                                             (Player is good)
 4e5a: a9 05     loc_4e5a        LDA #$05             ;     Set
 4e5c: 8d 2c 50                  STA ZtsAlgnScrm_L    ;         ZtsAlgnScrm_L/H
 4e5f: a9 50                     LDA #$50             ;            =
@@ -10963,25 +11184,25 @@
 4e81: 20 c2 3c                  JSR remStatPage      ; Call $3cc2 [remStatPage]
 4e84: a5 4c                     LDA dat_004c         ; Set A = dat_004c
 4e86: 48                        PHA                  ; Preserve value of A
-4e87: 09 20                     ORA #$20             ; Set A = A | $20
-4e89: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]
+4e87: 09 20                     ORA #$20             ; Set A = A | $20              (trigger action: $20 = NOP)
+4e89: 20 cf 4c                  JSR sub_4ccf         ; Call $4ccf [sub_4ccf]        (param: A)
 4e8c: 68                        PLA                  ; Restore previous value of A
 4e8d: 85 4c                     STA dat_004c         ; Set dat_004c = A
 4e8f: 60                        RTS                  ; Return to caller
 
                 ; Removes an item from the dropped item list.
-                ; Sets DroppedGame[X] to 0 for each index where DroppedIndex[X] equals ItemIndex
+                ; Sets DroppedGame[X] to 0 for each index where DroppedItmIdx[X] equals ItemIndex
                 ;
                 ; Input
-                ;   ItemIndex    - Item index to search for in DroppedIndex
-                ;   DroppedIndex - The values to search
+                ;   ItemIndex     - Item index to search for in DroppedItmIdx
+                ;   DroppedItmIdx - The values to search
                 ;
                 ; Output
-                ;   DroppedGame  - All positions corresponding to matches in DroppedIndex are set to 0
+                ;   DroppedGame  - All positions corresponding to matches in DroppedItmIdx are set to 0
                 ;
-4e90: a2 0f     sub_4e90        LDX #$0f             ; Set X = $f    (16 iterations)
+4e90: a2 0f     itemNotDropped  LDX #$0f             ; Set X = $f    (16 iterations)
 4e92: a5 4b     loc_4e92        LDA ItemIndex        ; Loop
-4e94: dd d4 64                  CMP DroppedIndex,X   ;     If (ItemIndex == DroppedIndex[X])
+4e94: dd d4 64                  CMP DroppedItmIdx,X  ;     If (ItemIndex == DroppedItmIdx[X])
 4e97: d0 05                     BNE loc_4e9e         ;     Then
 4e99: a9 00                     LDA #$00             ;         Set
 4e9b: 9d 94 64                  STA DroppedGame,X    ;             DroppedGame[X] = 0
@@ -11099,7 +11320,7 @@
 4efa: 85 44                     STA ItemAttrs_H      ;         ItemAdr_H + C
 4efc: 60                        RTS                  ; Return to caller
 
-                ; ?Seems to be torch burning out?
+                ; Called when a torch burns out.
                 ;
                 ; Input
                 ;   CHR_NumLights - Number of active player light sources (torch, spell, etc).
@@ -11114,7 +11335,7 @@
                 ;   - If the item was equipped, the equipped slot is updated to the new "stick" item
                 ;   - If the item was dropped, the dropped item slot is updated to the new "stick" item
                 ;
-4efd: ad 90 63  sub_4efd        LDA CHR_NumLights    ; If (CHR_NumLights != 0)
+4efd: ad 90 63  torchBurnedOut  LDA CHR_NumLights    ; If (CHR_NumLights != 0)
 4f00: f0 03                     BEQ loc_4f05         ; Then
 4f02: ce 90 63                  DEC CHR_NumLights    ;     Subtract 1 from CHR_NumLights
                                                      ; End If
@@ -11131,8 +11352,8 @@
 4f15: ca                        DEX                  ;     Subtract 1 from X
 4f16: 10 f8                     BPL loc_4f10         ; Repeat while (X >= 0)
 4f18: a0 0f     loc_4f18        LDY #$0f             ; Set Y = $f  (16 iterations [15..0])
-4f1a: d9 d4 64  loc_4f1a        CMP DroppedIndex,Y   ; Loop
-                                                     ;     If (ItemIndex == DroppedIndex[Y]) Then
+4f1a: d9 d4 64  loc_4f1a        CMP DroppedItmIdx,Y  ; Loop
+                                                     ;     If (ItemIndex == DroppedItmIdx[Y]) Then
 4f1d: f0 03                     BEQ loc_4f22         ;         Exit Loop    (Y = index of dropped item slot)
                                                      ;     End If
 4f1f: 88                        DEY                  ;     Subtract 1 from Y
@@ -11150,7 +11371,7 @@
 4f33: aa                        TAX                  ;     stack into X  (dropped item slot 0..15 or $ff if not dropped)
 4f34: 30 16                     BMI loc_4f4c         ; If (X >= 0) Then
 4f36: a5 4b                     LDA ItemIndex        ;     Set
-4f38: 9d d4 64                  STA DroppedIndex,X   ;         DroppedIndex[X] = ItemIndex
+4f38: 9d d4 64                  STA DroppedItmIdx,X  ;         DroppedItmIdx[X] = ItemIndex
 4f3b: ad 13 63                  LDA CHR_LOC_X        ;     Set
 4f3e: 9d a4 64                  STA DroppedX,X       ;         DroppedX[X] = CHR_LOC_X
 4f41: ad 14 63                  LDA CHR_LOC_Y        ;     Set
@@ -11346,6 +11567,19 @@
                 ;   dat_6277   - Offset to start displayed menu selections at.
                 ;
                 ; Output
+                ;   C                  - ?
+                ;   ZtsAddr1_L/H[0..3] - Updated to the value to display for the corresponding menu item
+                ;                        (an item or spell name)
+                ;   MenuSelItems[0..3] - Updated to the corresponding menu offset value for each menu item
+                ;                        (e.g. dat_6277 + MenuSelIdx)
+                ;
+                ; Temp
+                ;   MenuSelIdx - Updated for each of the 4 displayed menu items (0..3)
+                ;   dat_6279   - Holds the difference of dat_6277 - dat_6276 while
+                ;   dat_627a   - Loop control var for iterating over the game inventory items
+                ;   dat_627d   - Used to track current menu offset for each displayed menu item, starting from dat_6277.
+                ;                Essentially holds dat_6277 + MenuSelIdx.
+                ;
 50b7: 20 2e 50  do4SelItmMnuPg  JSR init4SelMenu     ; Call $502e [init4SelMenu]
 50ba: a9 00                     LDA #$00             ; Set
 50bc: 8d 78 62                  STA MenuSelIdx       ;     MenuSelIdx = 0
@@ -11503,7 +11737,7 @@
                 ;
 5198: ee 78 62  nextMenuSel     INC MenuSelIdx       ; Add 1 to MenuSelIdx
 519b: ad 78 62                  LDA MenuSelIdx       ; Set A = MenuSelIdx
-519e: c9 04                     CMP #$04             ; Set C, Z and N
+519e: c9 04                     CMP #$04             ; Compare A to 4: Set C, Z and N
 51a0: 60                        RTS                  ; Return to caller
 
                 ;
@@ -11530,17 +11764,19 @@
 
                 ; Display the "USE" menu and process user input
                 ;
-                ; - Sets dat_627f to 0
-                ; - Sets dat_6276 to 0 if module 1 (stairway) loaded, otherwise 4
+                ; - Sets RemoveItemFlg to 0
+                ; - Sets dat_6276 to 0 if module 1 (combat) loaded, otherwise 4
+                ; - Sets smc_51b0 to $f0 (BEQ - Use items)
                 ; - Sets MenuTitleAdr_L/H to "USE"
-                ; - SetsMenuFootrAdr_L/H to "Item #, Forward, Backward, or ESC to exit"
+                ; - Sets MenuFootrAdr_L/H to "Item #, Forward, Backward, or ESC to exit"
+                ; - Displays the first page of the menu
                 ; - TODO: complete
                 ;
 51b6: a9 00     doUseMenu       LDA #$00             ; Set
-51b8: 8d 7f 62                  STA dat_627f         ;     dat_627f = 0
+51b8: 8d 7f 62                  STA RemoveItemFlg    ;     RemoveItemFlg = 0
 51bb: a9 04                     LDA #$04             ; Set A = 4
 51bd: ae 00 76                  LDX ModuleNumber     ; If
-51c0: e0 01                     CPX #$01             ;    (ModuleNumber == 1)   (1 = stairway module)
+51c0: e0 01                     CPX #$01             ;    (ModuleNumber == 1)     (1 = combat/encounter module)
 51c2: d0 02                     BNE loc_51c6         ; Then
 51c4: a9 00                     LDA #$00             ;     Set A = 0
                                                      ; End If
@@ -11558,9 +11794,9 @@
 51da: 8d 44 19                  STA MenuFootrAdr_L   ;     address
 51dd: a9 5f                     LDA #$5f             ;     to
 51df: 8d 45 19                  STA MenuFootrAdr_H   ;     $5f57 [StrItmNmFwdBck] "Item #, Forward, Backward, or ESC to exit"
-51e2: 20 b2 50                  JSR do4SelItmMnuP1   ; Call $50b2 [do4SelItmMnuP1]
-51e5: b0 3e                     BCS cont_5225        ; If (C == 1) Then
-                                                     ;     Continue @ $5225 [cont_5225]
+51e2: 20 b2 50                  JSR do4SelItmMnuP1   ; Call $50b2 [do4SelItmMnuP1]     (start on page 1 of the menu)
+51e5: b0 3e                     BCS contUseRts       ; If (C == 1) Then                (TODO: meaning?)
+                                                     ;     Continue @ $5225 [contUseRts]
                                                      ; End If
 51e7: c9 80                     CMP #$80             ; If (A >= $80)    (no key available??? TODO: this can't be right)
 51e9: 90 03                     BCC loc_51ee         ; Then
@@ -11580,14 +11816,14 @@
 5207: 48                        PHA                  ;     onto the stack
 5208: 60                        RTS                  ; Indirectly jump to address on stack + 1
                                                      ; One of the following (after adding 1 to get final addr to execute)
-                                                     ;   0: $5239 [cont_5239]
-                                                     ;   1: $52c3 [cont_52c3]
-                                                     ;   2: $540f [cont_540f]
-                                                     ;   3: $54aa [cont_54aa]
-                                                     ;   4: $54ee [cont_54ee]
-                                                     ;   5: $5505 [cont_5505]
-                                                     ;   6: $556b [cont_556b]
-                                                     ;   7: $5632 [cont_5632]
+                                                     ;   0: $5239 [cont_5239] - ? Charged magic item ?
+                                                     ;   1: $52c3 [contCastSpell]  - Cast spell
+                                                     ;   2: $540f [contUseAmmo]    - Use ammo/Guild Ring
+                                                     ;   3: $54aa [contAssgnWeapn] - Equips a weapon
+                                                     ;   4: $54ee [contEquipArmor] - Equips a piece of armor
+                                                     ;   5: $5505 [contEquipApprl] - Equips a piece of clothing
+                                                     ;   6: $556b [cont_556b] - ? Potion ?
+                                                     ;   7: $5632 [cont_5632] - ? Other / Special ?
 
                 ; ? Related to using an item ?
                 ;
@@ -11596,19 +11832,21 @@
                 ;
 5209: a5 4b     cont_5209       LDA ItemIndex        ; Set A = ItemIndex
 520b: 20 74 4b                  JSR getItemAdr       ; Call $4b74 [getItemAdr]
-520e: f0 15                     BEQ cont_5225        ; If (ItemAdr_H != 0) Then
+520e: f0 15                     BEQ contUseRts       ; If (ItemAdr_H != 0) Then
 5210: a5 4b                     LDA ItemIndex        ;     Set A = ItemIndex
 5212: 20 86 4b                  JSR sub_4b86         ;     Call $4b86 [sub_4b86]
 5215: ad 7e 62                  LDA dat_627e         ;     Set
 5218: 8d 61 19                  STA dat_1961         ;         dat_1961 = dat_627e
-521b: 2c 7f 62                  BIT dat_627f         ;     If ((dat_627e & dat_627f) < 0)
-521e: 10 05                     BPL cont_5225        ;     Then
+521b: 2c 7f 62                  BIT RemoveItemFlg    ;     If (RemoveItemFlg < 0)
+521e: 10 05                     BPL contUseRts       ;     Then
 5220: a5 4b                     LDA ItemIndex        ;         Set A = ItemIndex
 5222: 20 c9 4a                  JSR removeItem       ;         Call $4ac9 [removeItem]
                                                      ;     End If
                                                      ; End If
                 ; Several points converge here
-5225: ce 5f 19  cont_5225       DEC StatDisplayFlg   ; Subtract 1 from StatDisplayFlg    (update needed)
+                ; Requests stat display update and returns to caller
+                ;
+5225: ce 5f 19  contUseRts      DEC StatDisplayFlg   ; Subtract 1 from StatDisplayFlg    (update needed)
 5228: 60                        RTS                  ; Return to caller
 
 5229: 52 52 54  tbl_5229_H      .BYTE $52,$52,$54                   ; MSB of address
@@ -11616,45 +11854,52 @@
 5231: 38 c2 0e  tbl_5231_L      .BYTE $38,$c2,$0e                   ; LSB of address
 5234: a9 ed 04 6a 31            .BYTE $a9,$ed,$04,$6a,$31           ; Contains the following addresses
                                                                     ; (after adding 1 to get final addr to execute)
-                                                                    ;   0: $5239 [cont_5239]
-                                                                    ;   1: $52c3 [cont_52c3]
-                                                                    ;   2: $540f [cont_540f]
-                                                                    ;   3: $54aa [cont_54aa]
-                                                                    ;   4: $54ee [cont_54ee]
-                                                                    ;   5: $5505 [cont_5505]
-                                                                    ;   6: $556b [cont_556b]
-                                                                    ;   7: $5632 [cont_5632]
+                                                                    ;   0: $5239 [cont_5239] - ? Charged magic item ?
+                                                                    ;   1: $52c3 [contCastSpell]  - Cast spell
+                                                                    ;   2: $540f [contUseAmmo]    - Use ammo/Guild Ring
+                                                                    ;   3: $54aa [contAssgnWeapn] - Equip weapon
+                                                                    ;   4: $54ee [contEquipArmor] - Equip armor
+                                                                    ;   5: $5505 [contEquipApprl] - Equip clothing
+                                                                    ;   6: $556b [cont_556b] - ? Potion ?
+                                                                    ;   7: $5632 [cont_5632] - ? Other / Special ?
 
-; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
+                ; ? Use Charged magic item ?
+                ;
+                ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
+                ;
 5239: a0 00     cont_5239       LDY #$00             ; Set Y = 0
-523b: b1 41                     LDA (ItemAdr_L),Y    ; Set
+523b: b1 41                     LDA (ItemAdr_L),Y    ; Set               ($78 = 0111_1000: select bits 3-6 of item type)
 523d: 29 78                     AND #$78             ;     A = (*ItemAdr_L)[0] & $78
 523f: d0 03                     BNE loc_5244         ; If (A == 0) Then
-5241: 4c 25 52                  JMP cont_5225        ;     Continue @ $5225 [cont_5225]
+5241: 4c 25 52                  JMP contUseRts       ;     Continue @ $5225 [contUseRts]
                                                      ; End If
-5244: a2 02     loc_5244        LDX #$02             ; Set X = 2 (3 iterations)
+5244: a2 02     loc_5244        LDX #$02             ; Set X = 2 (3 iterations [2..0])
 5246: dd 60 52  loc_5246        CMP tbl_5260,X       ; Loop
                                                      ;     If (A == tbl_5260[X]) Then
-5249: f0 06                     BEQ loc_5251         ;         Continue @ $5251 [loc_5251]
+5249: f0 06                     BEQ loc_5251         ;         Exit Loop
                                                      ;     End If
 524b: ca                        DEX                  ;     Subtract 1 from X
 524c: 10 f8                     BPL loc_5246         ; Repeat while X >= 0
-524e: 4c 09 52                  JMP cont_5209        ; Continue @ $5209 [cont_5209]
+524e: 4c 09 52                  JMP cont_5209        ; If (X < 0) Then                                 (no match found)
+                                                     ;     Continue @ $5209 [cont_5209]
+                                                     ; End If
 5251: bd 5d 52  loc_5251        LDA tbl_525d_H,X     ; Read the corresponding entry from
 5254: 48                        PHA                  ;     tbl_525a_L/tbl_525d_H
 5255: bd 5a 52                  LDA tbl_525a_L,X     ;     and push it
 5258: 48                        PHA                  ;     onto the stack
 5259: 60                        RTS                  ; Indirectly jump to address on stack + 1
-                                                     ;     $5263 [cont_5263]
-                                                     ;     $5282 [cont_5282]
-                                                     ;     $5293 [cont_5293]
+                                                     ;     $5263 [cont_5263] - Wand (Consumes a crystal) (subtype 1)
+                                                     ;     $5282 [cont_5282] - Consumes a charge from the item's attr 0
+                                                     ;                         (subtype 2 - card, ??)
+                                                     ;     $5293 [cont_5293] - (subtype 3)
 
 525a: 62 81 92  tbl_525a_L      .BYTE $62,$81,$92    ; 3 byte table with LSB of address
 525d: 52 52 52  tbl_525d_H      .BYTE $52,$52,$52    ; 3 byte table with MSB of address
 5260: 08 10 18  tbl_5260        .BYTE $08,$10,$18    ; 3 byte table of data
 
+                ; Use a wand ? Use item which consumes a crystal (e.g. Wand?) ?
                 ;
-                ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
+                ; Indirectly called from cont_5239 using lookup tables tbl_525a_L/tbl_525d_H
                 ;
 5263: ad be 63  cont_5263       LDA INV_CRYSTALS     ; If (INV_CRYSTALS != 0)
 5266: f0 06                     BEQ loc_526e         ; Then
@@ -11668,23 +11913,38 @@
 5276: ae 4a 19                  LDX PromptStatusPg   ; Set X = PromptStatusPg
 5279: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
 527c: 20 fa 2b                  JSR waitSixSeconds   ; Call $2bfa [waitSixSeconds]
-527f: 4c 25 52                  JMP cont_5225        ; Continue @ $5225 [cont_5225]
+527f: 4c 25 52                  JMP contUseRts       ; Continue @ $5225 [contUseRts]
 
+                ; Use Card
                 ;
-                ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
+                ; Indirectly called from cont_5239 using lookup tables tbl_525a_L/tbl_525d_H
+                ;
+                ; - Decreases the number of charges on the item
+                ; - Marks the item for removal if no more charges remain
+                ; - Continues @ $5209 [cont_5209]
+                ;
+                ; Input
+                ;   ItemAttrs_L/H - Address of the charged magic item's attributes
                 ;
 5282: a0 00     cont_5282       LDY #$00             ; Set Y = 0
 5284: b1 43                     LDA (ItemAttrs_L),Y  ; Set
 5286: 38                        SEC                  ;     (*ItemAttrs_L)[0]
 5287: e9 01                     SBC #$01             ;        =
 5289: 91 43                     STA (ItemAttrs_L),Y  ;          (*ItemAttrs_L)[0] - 1
-528b: d0 03                     BNE loc_5290         ; If (Z == 1) Then   (underflow)
-528d: ce 7f 62                  DEC dat_627f         ;     Subtract 1 from dat_627f
+528b: d0 03                     BNE loc_5290         ; If ((*ItemAttrs_L)[0] == 0) Then
+528d: ce 7f 62                  DEC RemoveItemFlg    ;     Subtract 1 from RemoveItemFlg            (all charges used)
                                                      ; End If
-5290: 4c 09 52  loc_5290        JMP cont_5209        ; Continue @ 5209 [cont_5209]
+5290: 4c 09 52  loc_5290        JMP cont_5209        ; Continue @ $5209 [cont_5209]
 
+                ; ?scroll (charged)?
                 ;
-                ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
+                ; Indirectly called from cont_5239 using lookup tables tbl_525a_L/tbl_525d_H
+                ;
+                ; Input
+                ;   ItemAttrs_L/H - Address of the charged magic item's attributes
+                ;
+                ; Temp
+                ;   AttrAdjAmt -
                 ;
 5293: a0 01     cont_5293       LDY #$01             ; Set Y = 1
 5295: b1 43                     LDA (ItemAttrs_L),Y  ; If ((*ItemAttrs_L)[1] != 0)
@@ -11693,7 +11953,7 @@
 529a: e9 01                     SBC #$01             ;            =
 529c: 91 43                     STA (ItemAttrs_L),Y  ;              (*ItemAttrs_L)[1] - 1
 529e: d0 03                     BNE loc_52a3         ;     If ((*ItemAttrs_L)[1] == 0) Then
-52a0: ce 7f 62                  DEC dat_627f         ;         Subtract 1 from dat_627f
+52a0: ce 7f 62                  DEC RemoveItemFlg    ;         Subtract 1 from RemoveItemFlg       (all charges used)
                                                      ;     End If
                                                      ; End If
 52a3: c8        loc_52a3        INY                  ; Add 1 to Y       (Y = 2)
@@ -11707,19 +11967,36 @@
 52b1: a0 00                     LDY #$00             ;         Set Y = 0
 52b3: b1 43                     LDA (ItemAttrs_L),Y  ;         Set
 52b5: 85 51                     STA AttrAdjAmt       ;             AttrAdjAmt = (*ItemAttrs_L)[0]
-52b7: 20 b7 55                  JSR sub_55b7         ;         Call $55b7 [sub_55b7]
+52b7: 20 b7 55                  JSR rmvEfcts4ItmTp   ;         Call $55b7 [rmvEfcts4ItmTp]      (param AttrAdjAmt)
                                                      ;     End If
 52ba: 4c 09 52  loc_52ba        JMP cont_5209        ;     Continue @ 5209 [cont_5209]
                                                      ; End If
 52bd: c8        loc_52bd        INY                  ; Add 1 to Y       (Y = 3)
-52be: b1 43                     LDA (ItemAttrs_L),Y  ; Set A = (*ItemAttrs_L)[3]
-52c0: 4c f3 53                  JMP cont_53f3        ; Continue @ 53f3 [cont_53f3]
+52be: b1 43                     LDA (ItemAttrs_L),Y  ; Set A = (*ItemAttrs_L)[3]    (a type value to match to continuation)
+52c0: 4c f3 53                  JMP cont_53f3        ; Continue @ 53f3 [cont_53f3]  (param A)
 
+                ; Attempts to cast the spell in the specified game inventory index.
                 ;
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
                 ;
-52c3: a9 00     cont_52c3       LDA #$00             ; Set
-52c5: 8d 7f 62                  STA dat_627f         ;     dat_627f = 0
+                ; Input
+                ;   ItemIndex     - Inventory index of the spell to cast
+                ;   ItemAttrs_L/H - Address of the attributes of the spell to cast
+                ;
+                ; Temp
+                ;   SpellCost     - Set to the spell casting cost
+                ;   SpellSkill    - Set to the player's skill level for the spell
+                ;   SpellBackfire - Set to the spell backfire penalty
+                ;   ItemIndex     - Used to iterate over all items in the game inventory
+                ;   RemoveItemFlg -
+                ;   dat_1961  -
+                ;   dat_627b  -
+                ;   SavItmAtrs_L/H - Assigned the input values of ItemAttrs_L/H
+                ;   ItemAdr_L/H    -
+                ;   ItemAttrs_L/H  -
+                ;
+52c3: a9 00     contCastSpell   LDA #$00             ; Set
+52c5: 8d 7f 62                  STA RemoveItemFlg    ;     RemoveItemFlg = 0
 52c8: 8d 61 19                  STA dat_1961         ; Set dat_1961 = 0
 52cb: a5 4b                     LDA ItemIndex        ; Set
 52cd: 8d 7b 62                  STA dat_627b         ;     dat_627b = ItemIndex
@@ -11727,58 +12004,58 @@
 52d2: 85 47                     STA SavItmAtrs_L     ;     SavItmAtrs_L = ItemAttrs_L
 52d4: a5 44                     LDA ItemAttrs_H      ; Set
 52d6: 85 48                     STA SavItmAtrs_H     ;     SavItmAtrs_H = ItemAttrs_H
-52d8: a0 02                     LDY #$02             ; Set Y = 2  (3 iterations)
+52d8: a0 02                     LDY #$02             ; Set Y = 2  (3 iterations [2..0])
 52da: b1 47     loc_52da        LDA (SavItmAtrs_L),Y ; Loop
                                                      ;     Set
-52dc: 99 80 62                  STA dat_6280,Y       ;         dat_6280[Y] = (*SavItmAtrs_L)[Y]
+52dc: 99 80 62                  STA SpellCost,Y      ;         SpellCost[Y] = (*SavItmAtrs_L)[Y]
 52df: 88                        DEY                  ;     Subtract 1 from Y
 52e0: 10 f8                     BPL loc_52da         ; Repeat while (Y >= 0)
-52e2: a9 3f                     LDA #$3f             ; Set
-52e4: 85 4b                     STA ItemIndex        ;     ItemIndex = $3f (63)
+52e2: a9 3f                     LDA #$3f             ; Set        (search for a type 1/spell ammo item: e.g. Guild ring)
+52e4: 85 4b                     STA ItemIndex        ;     ItemIndex = $3f   (64 iterations [63..0])
 52e6: a5 4b     loc_52e6        LDA ItemIndex        ; Loop
                                                      ;     Set A = ItemIndex            (A = item index)
 52e8: 20 74 4b                  JSR getItemAdr       ;     Call $4b74 [getItemAdr]
-52eb: f0 13                     BEQ loc_5300         ;     If (ItemAdr_H != 0) Then
+52eb: f0 13                     BEQ loc_5300         ;     If (ItemAdr_H != 0) Then     (slot is not empty)
 52ed: a0 00                     LDY #$00             ;         Set Y = 0
 52ef: b1 41                     LDA (ItemAdr_L),Y    ;         If
-52f1: c9 82                     CMP #$82             ;            ((*ItemAdr_L)[0] 00 $82)
+52f1: c9 82                     CMP #$82             ;            ((*ItemAdr_L)[0] == $82 (1000_0010))  (ammo item type)
 52f3: d0 0b                     BNE loc_5300         ;         Then
 52f5: 20 c4 4e                  JSR getItemAttrs     ;             Call $4ec4 [getItemAttrs]
 52f8: a9 01                     LDA #$01             ;             Set A = 1
 52fa: a0 00                     LDY #$00             ;             Set Y = 0
-52fc: d1 43                     CMP (ItemAttrs_L),Y  ;             If (1 == (*ItemAttrs_L)[0]) Then
-52fe: f0 06                     BEQ loc_5306         ;                 Exit Loop
+52fc: d1 43                     CMP (ItemAttrs_L),Y  ;             If ((*ItemAttrs_L)[0] == 1) Then  (ammo type 1/spell)
+52fe: f0 06                     BEQ loc_5306         ;                 Exit Loop                           (found match)
                                                      ;             End If
                                                      ;         End If
                                                      ;     End If
 5300: c6 4b     loc_5300        DEC ItemIndex        ;     Subtract 1 from ItemIndex
 5302: 10 e2                     BPL loc_52e6         ; Repeat while (ItemIndex >= 0)
-5304: 30 22                     BMI loc_5328         ; If (ItemIndex >= 0) Then
+5304: 30 22                     BMI loc_5328         ; If (ItemIndex >= 0) Then         (Player is holding a Guild ring)
 5306: a0 01     loc_5306        LDY #$01             ;     Set Y = 1
 5308: 38                        SEC                  ;     Set A
 5309: b1 43                     LDA (ItemAttrs_L),Y  ;           =
-530b: ed 80 62                  SBC dat_6280         ;             (*ItemAttrs_L)[1] - dat_6280
+530b: ed 80 62                  SBC SpellCost        ;             (*ItemAttrs_L)[1] - SpellCost
 530e: 90 08                     BCC loc_5318         ;     If (C == 1) Then     (no underflow)
 5310: 91 43                     STA (ItemAttrs_L),Y  ;         Set (*ItemAttrs_L)[1] = A
 5312: 20 71 54                  JSR sub_5471         ;         Call $5471 [sub_5471]
 5315: 4c 42 53                  JMP loc_5342         ;         Continue @ 5342 [loc_5342]
                                                      ;     End If
 5318: 38        loc_5318        SEC                  ;     Set
-5319: ad 80 62                  LDA dat_6280         ;         dat_6280
+5319: ad 80 62                  LDA SpellCost        ;         SpellCost
 531c: f1 43                     SBC (ItemAttrs_L),Y  ;            =
-531e: 8d 80 62                  STA dat_6280         ;              dat_6280 - (*ItemAttrs_L)[1]
+531e: 8d 80 62                  STA SpellCost        ;              SpellCost - (*ItemAttrs_L)[1]
 5321: a9 00                     LDA #$00             ;     Set
 5323: 91 43                     STA (ItemAttrs_L),Y  ;         (*ItemAttrs_L)[1] = 0
 5325: 20 71 54                  JSR sub_5471         ;     Call $5471 [sub_5471]
                                                      ; End If
 5328: 38        loc_5328        SEC                  ; Set A
 5329: ad 9b 63                  LDA CHR_STAMINA      ;       =
-532c: ed 80 62                  SBC dat_6280         ;         CHR_STAMINA - dat_6280
+532c: ed 80 62                  SBC SpellCost        ;         CHR_STAMINA - SpellCost
 532f: b0 0e                     BCS loc_533f         ; If (C == 0) Then   (undeflow occurred)
 5331: a2 45                     LDX #$45             ;     Set X = $45    ($6345 [CHR_HP_CURRENT_HI/LO])
 5333: 38                        SEC                  ;     Set A
-5334: ad 80 62                  LDA dat_6280         ;           =
-5337: ed 9b 63                  SBC CHR_STAMINA      ;             dat_6280 - CHR_STAMINA
+5334: ad 80 62                  LDA SpellCost        ;           =
+5337: ed 9b 63                  SBC CHR_STAMINA      ;             SpellCost - CHR_STAMINA
 533a: 20 66 2e                  JSR decChrAttr16     ;     Call $2e66 [decChrAttr16]
 533d: a9 00                     LDA #$00             ;     Set A = 0
                                                      ; End If
@@ -11797,7 +12074,7 @@
                                                      ; End If
 535b: a9 64     loc_535b        LDA #$64             ; Compute a
 535d: 20 6b 2b                  JSR randInRange      ;     random value from 0..$64 (100)
-5360: cd 81 62                  CMP dat_6281         ; If (the random value >= dat_6281) Then
+5360: cd 81 62                  CMP SpellSkill       ; If (the random value >= SpellSkill) Then
 5363: b0 65                     BCS loc_53ca         ;     Continue @ $53ca [loc_53ca]
                                                      ; End If
 5365: ad 0a d2                  LDA RANDOM           ; Set      (Self-modifying: update the CMP below to a random value)
@@ -11853,14 +12130,14 @@
 53c7: 4c 09 52                  JMP cont_5209        ; Continue @ $5209 [cont_5209]
                 ;
                 ;
-53ca: a2 45     loc_53ca        LDX #$45             ; Set X = $45          ($6345 [CHR_HP_CURRENT_HI/LO])
-53cc: ad 82 62                  LDA dat_6282         ; Set A = dat_6282     (A = amount to subtract)
+53ca: a2 45     loc_53ca        LDX #$45             ; Set X = $45               ($6345 [CHR_HP_CURRENT_HI/LO])
+53cc: ad 82 62                  LDA SpellBackfire    ; Set A = SpellBackfire     (A = amount to subtract)
 53cf: 20 66 2e                  JSR decChrAttr16     ; Call $2e66 [decChrAttr16]
 53d2: a9 0d                     LDA #$0d             ; Set StrTmplate_L/H
 53d4: 85 16                     STA StrTmplate_L     ;     address
 53d6: a9 62                     LDA #$62             ;     to
 53d8: 85 17                     STA StrTmplate_H     ;     $620d [StrSpellFailed] ("The spell failed!")
-53da: ad 82 62                  LDA dat_6282         ; If (dat_6282 != 0)
+53da: ad 82 62                  LDA SpellBackfire    ; If (SpellBackfire != 0)
 53dd: f0 08                     BEQ loc_53e7         ; Then
 53df: a9 24                     LDA #$24             ;     Set StrTmplate_L/H
 53e1: 85 16                     STA StrTmplate_L     ;         address
@@ -11870,50 +12147,71 @@
 53e7: ae 4a 19  loc_53e7        LDX PromptStatusPg   ; Set X = PromptStatusPg
 53ea: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
 53ed: 20 fa 2b                  JSR waitSixSeconds   ; Call $2bfa [waitSixSeconds]
-53f0: 4c 25 52                  JMP cont_5225        ; Continue @ $5225 [cont_5225]
+53f0: 4c 25 52                  JMP contUseRts       ; Continue @ $5225 [contUseRts]
                 ;
                 ; Input
                 ;   A   - Value to compare
                 ;
-53f3: a2 01     cont_53f3       LDX #$01             ; Set X = 1   (2 iterations)
+53f3: a2 01     cont_53f3       LDX #$01             ; Set X = 1   (2 iterations [1..0])
 53f5: dd 0d 54  loc_53f5        CMP tbl_540d,X       ; Loop
                                                      ;     If (A == tbl_540d[X]) Then
-53f8: f0 06                     BEQ loc_5400         ;         Continue @ $5400 [loc_5400]
+53f8: f0 06                     BEQ loc_5400         ;         Exit Loop
                                                      ;     End If
 53fa: ca                        DEX                  ;     Subtract 1 from X
 53fb: 10 f8                     BPL loc_53f5         ; Repeat while (X >= 0)
-53fd: 4c 25 52                  JMP cont_5225        ; Continue @ $5225 [cont_5225]
-                ;
+53fd: 4c 25 52                  JMP contUseRts       ; If (X < 0) Then                     (no match was found)
+                                                     ;     Continue @ $5225 [contUseRts]
+                                                     ; End If
 5400: bd 0b 54  loc_5400        LDA tbl_540b_H,X     ; Read the corresponding entry from
 5403: 48                        PHA                  ;     tbl_5409_L/tbl_540b_H
 5404: bd 09 54                  LDA tbl_5409_L,X     ;     and push it
 5407: 48                        PHA                  ;     onto the stack
 5408: 60                        RTS                  ; Indirectly jump to address on stack + 1. One of the following:
-                                                     ;     $57ed [cont_57ed]
-                                                     ;     $5cc5 [cont_5cc5]
+                                                     ;     0: $57ed [cont_57ed] -
+                                                     ;     1: $5cc5 [cont_5cc5] -
 
-5409: ec c4     tbl_5409_L      .BYTE $ec $c4        ; 2 byte table with LSB of address
-540b: 57 5c     tbl_540b_H      .BYTE $57 $5c        ; 2 byte table with MSB of address
-540d: 08 10     tbl_540d        .BYTE $08 $10        ; 2 byte table of data
+5409: ec c4     tbl_5409_L      .BYTE $ec $c4        ; 2 bytes: LSB of continuation address
+540b: 57 5c     tbl_540b_H      .BYTE $57 $5c        ; 2 bytes: MSB of continuation address
+                                                     ;   One of the following:
+                                                     ;     0: $57ed [cont_57ed] -
+                                                     ;     1: $5cc5 [cont_5cc5] -
+540d: 08 10     tbl_540d        .BYTE $08 $10        ; 2 bytes: ? ?charged? item subtypes? Index of match corresponds to index of continuation in tbl_5409_L/H to invoke.
+                                                     ;   One of:
+                                                     ;     0: $08 -
+                                                     ;     1: $10 -
 
+                ; Use ammo item (incl. Guild Ring) in the specified inventory index.
+                ;
+                ; There are two primary modes, depending on the type of ammo:
+                ;   1. When the ammo type is 1 (spell), this actually recharges the item by adding 10 charges at the
+                ;      cost of 1 crystal. In practice, this applies to the Guild Ring item, which works as "ammo"
+                ;      for spell casting.
+                ;   2. For all other ammo types, the ammo type is checked against the ammo type needed for the primary
+                ;      weapon. If they match, then the ammo is applied to the primary weapon, replacing any previous
+                ;      ammo.
+                ;      - The ammo itself is consumed and removed from the inventory.
+                ;      - The weapon's previous ammo is discarded, so don't reload until you run out if you like the
+                ;        current ammo.
                 ;
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
                 ;
                 ; Input
-                ;   ItemAttrs_L/H   - Address of current item attributes.
+                ;   ItemIndex       - Inventory index of the ammo item.
+                ;   ItemAttrs_L/H   - Address of the ammo item attributes.
                 ;   CHR_PRI_WEAPON  - Item index of equipped primary weapon (bit 7 set if none)
                 ;
                 ; Output
-                ;   ItemIndex       -
-                ;   dat_627f        - player attr? related to ammo? perhaps equipped ammo count?
-                ;   INV_CRYSTALS    - Number of crystals in player's inventory
+                ;   RemoveItemFlg   - Set to a negative value when the item is consumed and should be removed
+                ;                     (e.g. for any ammo type except 1/spell)
+                ;   INV_CRYSTALS    - Number of crystals in player's inventory is decreased by 1 if ammo type
+                ;                     is 1/spell.
                 ;
                 ; Temp
-                ;   dat_627c        - Temporary storage for current item index
+                ;   dat_627c        - Temporary storage for input item index
                 ;   SourceAdr_L/H   - Set to input ItemAttrs_L/H. Used to compare values to equipped primary
                 ;                     weapon attributes.
                 ;
-540f: a5 4b     cont_540f       LDA ItemIndex        ; Set
+540f: a5 4b     contUseAmmo     LDA ItemIndex        ; Set
 5411: 8d 7c 62                  STA dat_627c         ;     dat_627c = ItemIndex
 5414: a5 43                     LDA ItemAttrs_L      ; Set SourceAdr_L/H
 5416: 85 07                     STA SourceAdr_L      ;     address
@@ -11921,31 +12219,32 @@
 541a: 85 08                     STA SourceAdr_H      ;     ItemAttrs_L/H
 541c: a0 00                     LDY #$00             ; Set Y = 0
 541e: b1 07                     LDA (SourceAdr_L),Y  ; If
-5420: c9 01                     CMP #$01             ;    ((*SourceAdr_L)[0] != 1)            (ammo type?)
-5422: f0 2c                     BEQ loc_5450         ; Then
-5424: ad 9c 63                  LDA CHR_PRI_WEAPON   ;     If (CHR_PRI_WEAPON < 0) Then       (no primary equipped)
-5427: 30 44                     BMI loc_546d         ;         Continue @ $546d [loc_546d] -> $5225 [cont_5225]
+5420: c9 01                     CMP #$01             ;    ((*SourceAdr_L)[0] != 1)              (ammo type != 1 (spell)
+5422: f0 2c                     BEQ loc_5450         ; Then                                         e.g. not guild ring)
+5424: ad 9c 63                  LDA CHR_PRI_WEAPON   ;     If (CHR_PRI_WEAPON < 0) Then         (no primary equipped)
+5427: 30 44                     BMI loc_546d         ;         Continue @ $546d [loc_546d] -> $5225 [contUseRts]
                                                      ;     End If
-5429: 85 4b                     STA ItemIndex        ;     Set ItemIndex = CHR_PRI_WEAPON     (A = item index)
+5429: 85 4b                     STA ItemIndex        ;     Set ItemIndex = CHR_PRI_WEAPON       (A = item index)
 542b: 20 74 4b                  JSR getItemAdr       ;     Call $4b74 [getItemAdr]
 542e: 20 c4 4e                  JSR getItemAttrs     ;     Call $4ec4 [getItemAttrs]
 5431: a0 00                     LDY #$00             ;     Set Y = 0
 5433: b1 43                     LDA (ItemAttrs_L),Y  ;     If ((*ItemAttrs_L)[0] != (*SourceAdr_L)[0])
-5435: d1 07                     CMP (SourceAdr_L),Y  ;     Then                               (different ammo types)
-5437: d0 34                     BNE loc_546d         ;         Continue @ $546d [loc_546d] -> $5225 [cont_5225]
+5435: d1 07                     CMP (SourceAdr_L),Y  ;     Then                                 (different ammo types)
+5437: d0 34                     BNE loc_546d         ;         Continue @ $546d [loc_546d] -> $5225 [contUseRts]
                                                      ;     End If
 5439: a0 0c                     LDY #$0c             ;     Set Y = $c (12 iterations [12..1])
 543b: b1 07     loc_543b        LDA (SourceAdr_L),Y  ;     Loop                      (copy damage stats, remaining ammo)
-                                                     ;         Set
+                                                     ;         Set   (NOTE: Any ammo already loaded is lost/overwritten)
 543d: 91 43                     STA (ItemAttrs_L),Y  ;             (*ItemAttrs_L)[Y] = (*SourceAdr_L)[Y]
 543f: 88                        DEY                  ;         Subtract 1 from Y
 5440: d0 f9                     BNE loc_543b         ;     Repeat while (Y != 0)
 5442: 20 71 54                  JSR sub_5471         ;     Call $5471 [sub_5471]
 5445: ad 7c 62                  LDA dat_627c         ;     Set
 5448: 85 4b                     STA ItemIndex        ;         ItemIndex = dat_627c
-544a: ce 7f 62                  DEC dat_627f         ;     Subtract 1 from dat_627f
+544a: ce 7f 62                  DEC RemoveItemFlg    ;     Subtract 1 from RemoveItemFlg             (ammo was consumed)
 544d: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]
                                                      ; End If
+                ; Handles "use" for Guild ring (e.g. spell ammo). Adds 10 charges for 1 crystal
 5450: c8        loc_5450        INY                  ; Add 1 to Y   (Y = 1)
 5451: b1 07                     LDA (SourceAdr_L),Y  ; If
 5453: c9 63                     CMP #$63             ;    ((*SourceAdr_L)[1] < $63 (99))      (max loaded ammo is 99)
@@ -11962,7 +12261,7 @@
 5468: 91 07     loc_5468        STA (SourceAdr_L),Y  ;     Set (*SourceAdr_L)[1] = A
 546a: 20 71 54                  JSR sub_5471         ;     Call $5471 [sub_5471]
                                                      ; End If
-546d: 4c 25 52  loc_546d        JMP cont_5225        ; Continue execution @ $5225 [cont_5225]
+546d: 4c 25 52  loc_546d        JMP contUseRts       ; Continue execution @ $5225 [contUseRts]
 
 5470: 00        dat_5470        .BYTE $00            ;
 
@@ -12006,7 +12305,7 @@
                 ; Output
                 ;   DivQuotient  - Quotient (A / 10)
                 ;   DivRemainder - Remainder (A % 10)
-                ;   A            - Remainder (A % X)
+                ;   A            - Remainder (A % 10)
                 ;   N            - 1 if remainder < 0 otherwise 0
                 ;   Z            - 1 if remainder == 0 otherwise 0
                 ;   X            - Always 0
@@ -12052,7 +12351,7 @@
 54a7: 85 03                     STA DivRemainder     ; Set DivRemainder = A          (N,Z set based on A)
 54a9: 60                        RTS                  ; Return to caller
 
-                ; Prompts the user to assign a weapon to a hand (primary/secondary) and ??.
+                ; Prompts the user to assign a weapon to a hand (primary/secondary) and equips the weapon to that slot.
                 ;
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
                 ;
@@ -12060,10 +12359,20 @@
                 ;   PromptStatusPg - Status page index to assign the menu template string to
                 ;   EquipSlot      - Assigned 0 if user selected primary and 1 if secondary was selected
                 ;
-54aa: 20 ab 57  cont_54aa       JSR doAssignHand     ; Call $57ab [doAssignHand]
+54aa: 20 ab 57  contAssgnWeapn  JSR doAssignHand     ; Call $57ab [doAssignHand]
 54ad: b0 3c                     BCS loc_54eb         ; If (C == 0) Then    (weapon was assigned / user didn't press ESC)
+
+                ; Invoked from contAssgnWeapn & useUnlitTorch after a new weapon is equipped
                 ;
-54af: a2 0a     cont_54af       LDX #$0a             ;     Set X = $a (11 iterations [10..0])
+                ; - Sets the value of each byte in dat_63d2[0..10] to 0
+                ; - Removes all ?type 7? effects
+                ; - Equips the weapon
+                ;
+                ; Input
+                ;   ItemIndex  - Inventory item index of the weapon to equip
+                ;   EquipSlot  - Either 0 for the primary weapon or 1 for secondary
+                ;
+54af: a2 0a     contEquipWeapn  LDX #$0a             ;     Set X = $a (11 iterations [10..0])
 54b1: a9 00                     LDA #$00             ;     Set A = 0
 54b3: 9d d2 63  loc_54b3        STA dat_63d2,X       ;     Loop
                                                      ;         Set dat_63d2[X] = 0
@@ -12078,7 +12387,7 @@
 54c5: a0 00     loc_54c5        LDY #$00             ;     Loop
                                                      ;         Set Y = 0
 54c7: b1 3d                     LDA (EffectAdr_L),Y  ;         If
-54c9: c9 87                     CMP #$87             ;            ((*EffectAdr_L)[0] == $87)            (TODO: meaning?)
+54c9: c9 87                     CMP #$87             ;            ((*EffectAdr_L)[0] == $87 (1000_0111))
 54cb: d0 03                     BNE loc_54d0         ;         Then
 54cd: 20 01 4a                  JSR removeEffectAt   ;             Call $4a01 [removeEffectAt]
                                                      ;         End If
@@ -12098,7 +12407,7 @@
 54e8: 4c 09 52                  JMP cont_5209        ;         Continue @ $5209 [cont_5209] (wasn't previously equipped)
                                                      ;     End If
                                                      ; End If
-54eb: 4c 25 52  loc_54eb        JMP cont_5225        ; Continue @ $5225 [cont_5225]
+54eb: 4c 25 52  loc_54eb        JMP contUseRts       ; Continue @ $5225 [contUseRts]
 
                 ; Equips a piece of armor to the appropriate equipment slot.
                 ;
@@ -12114,7 +12423,7 @@
                 ;                  4: CHR_ARMOR_ARMS
                 ;                  5: CHR_ARMOR_LEGS
                 ;
-54ee: a0 00     cont_54ee       LDY #$00             ; Set Y = 0
+54ee: a0 00     contEquipArmor  LDY #$00             ; Set Y = 0
 54f0: b1 43                     LDA (ItemAttrs_L),Y  ; Set
 54f2: 29 03                     AND #$03             ;     A
 54f4: 18                        CLC                  ;       =
@@ -12124,59 +12433,64 @@
 54fd: b0 03                     BCS loc_5502         ; If (C == 0) Then
 54ff: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]   (wasn't previously equipped)
                                                      ; End If
-5502: 4c 25 52  loc_5502        JMP cont_5225        ; Continue @ $5225 [cont_5225]
+5502: 4c 25 52  loc_5502        JMP contUseRts       ; Continue @ $5225 [contUseRts]
 
                 ; Equips a piece of clothing to an apparel equipment slot.
                 ;
+                ; - If there is an open apparel slot, the item will be equipped to it.
+                ; - If all apparel slots are occupied, will prompt the player to select a currently equipped piece to replace.
+                ;
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
                 ;
-5505: a2 00     cont_5505       LDX #$00             ; Set X = 0    (max. 4 iterations)
+                ; Input
+                ;   ItemAttrs_L/H -
+                ;
+5505: a2 00     contEquipApprl  LDX #$00             ; Set X = 0        (max. 4 iterations [0..3] - Check for open slot)
 5507: bd a2 63  loc_5507        LDA CHR_APPAREL,X    ; Loop
-550a: c9 ff                     CMP #$ff             ;     If (CHR_APPAREL[X] == $ff) Then
-550c: f0 07                     BEQ loc_5515         ;         Continue @ $5515 [loc_5515]      (found open slot)
+550a: c9 ff                     CMP #$ff             ;     If (CHR_APPAREL[X] == $ff) Then          (slot is unoccupied)
+550c: f0 07                     BEQ loc_5515         ;         Exit Loop
                                                      ;     End If
 550e: e8                        INX                  ;     Add 1 to X
 550f: e0 04                     CPX #$04             ; Repeat
 5511: 90 f4                     BCC loc_5507         ;    while (X < 4)
-5513: b0 04                     BCS loc_5519         ; Continue @ $5519 [loc_5519]              (no open slots)
-                ; Found an open apparel slot to assign the item to
-5515: 8a        loc_5515        TXA                  ; Set A = X
-5516: 4c 5a 55                  JMP loc_555a         ; Continue @ $555a [loc_555a]
-                ; No open apparel slots, prompt the user for an equipped item to replace.
-5519: a2 31     loc_5519        LDX #$31             ; Set
-551b: 8e 51 5d                  STX Sel1EquipInd     ;     Sel1EquipInd = $31 (49 '1')
-551e: e8                        INX                  ; Set
-551f: 8e 67 5d                  STX Sel2EquipInd     ;     Sel2EquipInd = $32 (50 '2')
-5522: e8                        INX                  ; Set
-5523: 8e 7d 5d                  STX Sel3EquipInd     ;     Sel3EquipInd = $33 (51 '3')
-5526: e8                        INX                  ; Set
-5527: 8e 93 5d                  STX Sel4EquipInd     ;     Sel4EquipInd = $34 (52 '4')
-552a: 20 2e 50                  JSR init4SelMenu     ; Call $502e [init4SelMenu]
-552d: a9 85                     LDA #$85             ; Set MenuTitleAdr_L/H
-552f: 8d 3a 19                  STA MenuTitleAdr_L   ;     address
-5532: a9 5f                     LDA #$5f             ;     to
-5534: 8d 3b 19                  STA MenuTitleAdr_H   ;     $5f85 [ZtsWearInstead] "Wear instead of:"
-5537: a9 3d                     LDA #$3d             ; Set MenuFootrAdr_L/H
-5539: 8d 44 19                  STA MenuFootrAdr_L   ;     address
-553c: a9 5f                     LDA #$5f             ;     to
-553e: 8d 45 19                  STA MenuFootrAdr_H   ;     $5f3d [StrItemNum] "Item # or ESC to exit"
-5541: a2 03                     LDX #$03             ; Set X = 3    (4 iterations)
-5543: bd a2 63  loc_5543        LDA CHR_APPAREL,X    ; Loop
-5546: 9d 46 19                  STA MenuSelItems,X   ;     Set MenuSelItems[X] = CHR_APPAREL[X]
-5549: ca                        DEX                  ;     Subtract 1 from X
-554a: 10 f7                     BPL loc_5543         ; Repeat while (X >= 0)
-554c: 20 8c 50                  JSR load4SelItmNms   ; Call $508c [load4SelItmNms]
-554f: 20 49 50  loc_554f        JSR do4SelMenu       ; Loop
-                                                     ;     Call $5049 [do4SelMenu]
-5552: 90 06                     BCC loc_555a         ;     If (C == 0) Then
-                                                     ;         Exit Loop
-                                                     ;     End If
-5554: c9 1b                     CMP #$1b             ;     If (A == $1b (27 ESC)) Then
-5556: f0 10                     BEQ loc_5568         ;         Continue @ $5568 [loc_5568] (cancelled, skip assignment)
-                                                     ;     End If
-5558: d0 f5                     BNE loc_554f         ; Repeat while (true)
+5513: b0 04                     BCS loc_5519         ; If (X < 4) Then               (Found open slot to assign item to)
+5515: 8a        loc_5515        TXA                  ;     Set A = X
+5516: 4c 5a 55                  JMP loc_555a         ; Else         (No open slots, prompt for equipped item to replace)
+5519: a2 31     loc_5519        LDX #$31             ;     Set
+551b: 8e 51 5d                  STX Sel1EquipInd     ;         Sel1EquipInd = $31 (49 '1')
+551e: e8                        INX                  ;     Set
+551f: 8e 67 5d                  STX Sel2EquipInd     ;         Sel2EquipInd = $32 (50 '2')
+5522: e8                        INX                  ;     Set
+5523: 8e 7d 5d                  STX Sel3EquipInd     ;         Sel3EquipInd = $33 (51 '3')
+5526: e8                        INX                  ;     Set
+5527: 8e 93 5d                  STX Sel4EquipInd     ;         Sel4EquipInd = $34 (52 '4')
+552a: 20 2e 50                  JSR init4SelMenu     ;     Call $502e [init4SelMenu]
+552d: a9 85                     LDA #$85             ;     Set MenuTitleAdr_L/H
+552f: 8d 3a 19                  STA MenuTitleAdr_L   ;         address
+5532: a9 5f                     LDA #$5f             ;         to
+5534: 8d 3b 19                  STA MenuTitleAdr_H   ;         $5f85 [ZtsWearInstead] "Wear instead of:"
+5537: a9 3d                     LDA #$3d             ;     Set MenuFootrAdr_L/H
+5539: 8d 44 19                  STA MenuFootrAdr_L   ;         address
+553c: a9 5f                     LDA #$5f             ;         to
+553e: 8d 45 19                  STA MenuFootrAdr_H   ;         $5f3d [StrItemNum] "Item # or ESC to exit"
+5541: a2 03                     LDX #$03             ;     Set X = 3    (4 iterations)
+5543: bd a2 63  loc_5543        LDA CHR_APPAREL,X    ;     Loop
+5546: 9d 46 19                  STA MenuSelItems,X   ;         Set MenuSelItems[X] = CHR_APPAREL[X]
+5549: ca                        DEX                  ;         Subtract 1 from X
+554a: 10 f7                     BPL loc_5543         ;     Repeat while (X >= 0)
+554c: 20 8c 50                  JSR load4SelItmNms   ;     Call $508c [load4SelItmNms]
+554f: 20 49 50  loc_554f        JSR do4SelMenu       ;     Loop
+                                                     ;         Call $5049 [do4SelMenu]
+5552: 90 06                     BCC loc_555a         ;         If (C == 0) Then
+                                                     ;             Exit Loop
+                                                     ;         End If
+5554: c9 1b                     CMP #$1b             ;         If (A == $1b (27 ESC)) Then  (cancelled, skip assignment)
+5556: f0 10                     BEQ loc_5568         ;             Continue @ $5568 [loc_5568] -> $5225 [contUseRts]
+                                                     ;         End If
+5558: d0 f5                     BNE loc_554f         ;     Repeat while (true)
+                                                     ; End If
                 ; Assign selected apparel item to the identified slot
-                ; A = equipped apparel slot index (0..3)
+                ;   A = apparel slot index (0..3) to equip to
                 ;
 555a: 18        loc_555a        CLC                  ; Set C = 0
 555b: 69 06                     ADC #$06             ; Set
@@ -12185,12 +12499,12 @@
 5563: b0 03                     BCS loc_5568         ; If (C == 0) Then
 5565: 4c 09 52                  JMP cont_5209        ;     Continue @ $5209 [cont_5209]  (wasn't previously equipped)
                                                      ; End If
-5568: 4c 25 52  loc_5568        JMP cont_5225        ; Continue @ $5225 [cont_5225]      (item was previously equipped)
+5568: 4c 25 52  loc_5568        JMP contUseRts       ; Continue @ $5225 [contUseRts]     (item was previously equipped)
 
                 ;
                 ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
                 ;
-556b: ce 7f 62  cont_556b       DEC dat_627f         ; Subtract 1 from dat_627f
+556b: ce 7f 62  cont_556b       DEC RemoveItemFlg    ; Subtract 1 from RemoveItemFlg
 556e: ad 98 63                  LDA CHR_STOMACH      ; If (CHR_STOMACH < 0) Then
 5571: 10 03                     BPL loc_5576         ;     Continue @ $56c1 [loc_56c1]
 5573: 4c c1 56                  JMP loc_56c1         ; End If
@@ -12199,7 +12513,7 @@
 557a: 20 d7 56                  JSR sub_56d7         ; Call $56d7 [sub_56d7]
 557d: a0 00                     LDY #$00             ; Set Y = 0
 557f: b1 41                     LDA (ItemAdr_L),Y    ; Set
-5581: 29 78                     AND #$78             ;     A = (*ItemAdr_L)[0] & $78 (0111 1000)
+5581: 29 78                     AND #$78             ;     A = (*ItemAdr_L)[0] & $78  (0111 1000 - extract item subtype)
 5583: f0 0a                     BEQ loc_558f         ; If (A != 0) Then
 5585: a2 00                     LDX #$00             ;     Set X = 0 (1 iteration)
 5587: dd 9e 55  loc_5587        CMP tbl_559e,X       ;     Loop
@@ -12246,22 +12560,23 @@
 55a6: 09 80                     ORA #$80             ; Set
 55a8: 85 51                     STA AttrAdjAmt       ;     AttrAdjAmt = A | $80
 55aa: 98                        TYA                  ; Set
-55ab: 9d 90 63                  STA CHR_NumLights,X  ;     CHR_NumLights[X] = 0
-55ae: 20 b7 55                  JSR sub_55b7         ; Call $55b7 [sub_55b7]
+55ab: 9d 90 63                  STA CHR_NumLights,X  ;     CHR_NumLights[X] = 0    (X: 1=diseased, 2=poisoned, 3=cursed)
+55ae: 20 b7 55                  JSR rmvEfcts4ItmTp   ; Call $55b7 [rmvEfcts4ItmTp]
 55b1: 20 02 56                  JSR sub_5602         ; Call $5602 [sub_5602]
 55b4: 4c 09 52                  JMP cont_5209        ; Continue @ $5209 [cont_5209]
 
-                ; CHR_Effects
+                ; Removes all effects matching an item type value. If a weapon item type is given (bits 0-1 == 3),
+                ; the player curse flag and all of the ?UNKNOWN? stat values are also cleared.
                 ;
                 ; Input
-                ;   AttrAdjAmt  -
+                ;   AttrAdjAmt    - Holds a masked item type (bits 0, 1 & 7 of item type) to search effects for
                 ;
                 ; Temp
                 ;   EffectIndex   - Used as loop control var for effect index (0..63)
                 ;   EffectAdr_L/H - Current effect address in CHR_Effects during iteration
                 ;   A, X, Y       - not preserved/guaranteed on return
                 ;
-55b7: a9 00     sub_55b7        LDA #$00             ; Set
+55b7: a9 00     rmvEfcts4ItmTp  LDA #$00             ; Set
 55b9: 85 3d                     STA EffectAdr_L      ;     EffectAdr_L/H
 55bb: a9 65                     LDA #$65             ;     to
 55bd: 85 3e                     STA EffectAdr_H      ;     $6500 [CHR_Effects]
@@ -12288,13 +12603,13 @@
 55e1: 90 e0                     BCC loc_55c3         ;       (EffectIndex < $40 (64))
 55e3: a5 51                     LDA AttrAdjAmt       ; Set
 55e5: 29 03                     AND #$03             ;     A = AttrAdjAmt & 3
-55e7: c9 03                     CMP #$03             ; If (A == 3)
+55e7: c9 03                     CMP #$03             ; If (A == 3)                                (item type 3 = weapon)
 55e9: d0 16                     BNE loc_5601         ; Then
-55eb: aa                        TAX                  ;     Set X = 3         (A == 3 per comparison above)
+55eb: aa                        TAX                  ;     Set X = 3                       (A == 3 per comparison above)
 55ec: a9 00                     LDA #$00             ;     Set
-55ee: 9d 90 63                  STA CHR_NumLights,X  ;         CHR_NumLights[3] = 0        (CHR_Cursed = 0)
-55f1: a2 00                     LDX #$00             ;     Set X = 0   (7 iterations w/ step 8 (56/8 = 7))
-55f3: a9 00     loc_55f3        LDA #$00             ;     Loop
+55ee: 9d 90 63                  STA CHR_NumLights,X  ;         CHR_Cursed = 0                         (clear curse flag)
+55f1: a2 00                     LDX #$00             ;     Set X = 0                 (7 iterations w/ step 8 (56/8 = 7))
+55f3: a9 00     loc_55f3        LDA #$00             ;     Loop    (Clear unk val for STA, CHR, STR, INT, WIS, SKL, SPD)
                                                      ;         Set
 55f5: 9d 50 63                  STA CHR_STA_UNKNOWN,X ;             CHR_STA_UNKNOWN[X] = 0
 55f8: 8a                        TXA                  ;         Set
@@ -12309,7 +12624,7 @@
                 ; Displays a notification after the player drinks a potion.
                 ;
                 ; Input
-                ;   ItemAdr_L/H    - ?address of potion being consumed?
+                ;   ItemAdr_L/H    - ?address of potion item being consumed?
                 ;   PromptStatusPg - status page entry index to assign for output
                 ;
                 ; Output
@@ -12412,7 +12727,7 @@
 5687: a9 1c                     LDA #$1c             ;     Set A = $1c
 5689: a2 98                     LDX #$98             ;     Set X = $98
 568b: 20 43 2e                  JSR incChrAttr8      ;     Call $2e43 [incChrAttr8]
-568e: 4c 25 52                  JMP cont_5225        ;     Continue @ $5225 [cont_5225]
+568e: 4c 25 52                  JMP contUseRts       ;     Continue @ $5225 [contUseRts]
                                                      ; End If
 5691: a9 ef     loc_5691        LDA #$ef             ; Set StrTmplate_L/H
 5693: 85 16                     STA StrTmplate_L     ;    address
@@ -12422,7 +12737,7 @@
 569c: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
 569f: a9 10                     LDA #$10             ; Set A = $10
 56a1: 20 fc 2b                  JSR waitSeconds      ; Set $2bfc [waitSeconds]
-56a4: 4c 25 52                  JMP cont_5225        ; Continue @ $5225 [cont_5225]
+56a4: 4c 25 52                  JMP contUseRts       ; Continue @ $5225 [contUseRts]
 
                 ; Use Water Flask
                 ;
@@ -12435,7 +12750,7 @@
 56b7: a9 10                     LDA #$10             ;     Set A = $10
 56b9: a0 08                     LDY #$08             ;     Set Y = 8
 56bb: 20 d7 56                  JSR sub_56d7         ;     Call $56d7 [sub_56d7]
-56be: 4c 25 52                  JMP cont_5225        ;     Continue @ $5225 [cont_5225]
+56be: 4c 25 52                  JMP contUseRts       ;     Continue @ $5225 [contUseRts]
                                                      ; End If
 56c1: a9 64     loc_56c1        LDA #$64             ; Set StrTmplate_L/H
 56c3: 85 16                     STA StrTmplate_L     ;     address
@@ -12445,7 +12760,7 @@
 56cc: 20 5c 3c                  JSR setStatPgStr2    ; Call $3c5c [setStatPgStr2]
 56cf: a9 10                     LDA #$10             ; Set A = $10
 56d1: 20 fc 2b                  JSR waitSeconds      ; Call $2bfc [waitSeconds]
-56d4: 4c 25 52                  JMP cont_5225        ; Continue @ $5225 [cont_5225]
+56d4: 4c 25 52                  JMP contUseRts       ; Continue @ $5225 [contUseRts]
 
                 ;
                 ; Input
@@ -12460,10 +12775,10 @@
 56e1: 4c 43 2e                  JMP incChrAttr8      ; Continue @ $2e43 [incChrAttr8]
                                                      ; (update attribute and return to caller)
 
-                ; Calls sub_57dc then jumps to cont_5225
+                ; Calls sub_57dc then jumps to contUseRts
                 ;
 56e4: 20 dc 57  cont_56e4       JSR sub_57dc         ; Call $57dc [sub_57dc]
-56e7: 4c 25 52                  JMP cont_5225        ; Continue @ $5225 [cont_5225]
+56e7: 4c 25 52                  JMP contUseRts       ; Continue @ $5225 [contUseRts]
 
                 ; Use Unlit Torch
                 ;
@@ -12473,9 +12788,9 @@
 56ea: ad bd 63  useUnlitTorch   LDA INV_TORCHES      ; If (INV_TORCHES == 0) Then
 56ed: d0 06                     BNE loc_56f5         ;     Continue @ $5774 [contYouHaveNone]
 56ef: 4c 74 57                  JMP contYouHaveNone  ; End If
-56f2: 4c 25 52  loc_56f2        JMP cont_5225        ; Call $57ab [doAssignHand]
+56f2: 4c 25 52  loc_56f2        JMP contUseRts       ; Call $57ab [doAssignHand]
 56f5: 20 ab 57  loc_56f5        JSR doAssignHand     ; If (C == 1) Then   (user pressed ESC to cancel)
-56f8: b0 f8                     BCS loc_56f2         ;     Continue @ $5225 [cont_5225]
+56f8: b0 f8                     BCS loc_56f2         ;     Continue @ $5225 [contUseRts]
                                                      ; End If
 56fa: a2 61                     LDX #$61             ; Set
 56fc: a0 29                     LDY #$29             ;     Y/X = $6129 [ItemLitTorch]
@@ -12498,7 +12813,7 @@
 5718: 91 3d                     STA (EffectAdr_L),Y  ;     (*EffectAdr_L)[15] = ItemIndex
 571a: ce bd 63                  DEC INV_TORCHES      ; Subtract 1 from INV_TORCHES
 571d: ee 90 63                  INC CHR_NumLights    ; Add 1 to CHR_NumLights
-5720: 4c af 54  loc_5720        JMP cont_54af        ; Continue @ $54af [cont_54af]
+5720: 4c af 54  loc_5720        JMP contEquipWeapn   ; Continue @ $54af [contEquipWeapn]
 
                 ; Use Timepiece
                 ;
@@ -12548,7 +12863,7 @@
 5768: ae 4a 19  loc_5768        LDX PromptStatusPg   ;     Set X = PromptStatusPg
 576b: 20 5c 3c                  JSR setStatPgStr2    ;     Call $3c5c [setStatPgStr2]
 576e: 20 fa 2b                  JSR waitSixSeconds   ;     Call $2bfa [waitSixSeconds]
-5771: 4c 25 52                  JMP cont_5225        ;     Continue @ $5225 [cont_5225]
+5771: 4c 25 52                  JMP contUseRts       ;     Continue @ $5225 [contUseRts]
                                                      ; End If
                 ; No items of the needed type (unlit torches, timepieces, food packets, water flasks) in inventory
                 ;
@@ -12749,20 +13064,23 @@
                 ; ...related to get action...
                 ;
                 ; ???
-                ;   dat_197b  - Set to 0
-                ;   dat_6284  - (temp?) Loop control var used for iterating over dropped items
-                ;   dat_58c1  - (temp?) Indicates whether an item is in the current player location or not. $ff = nothing here.
-                ;   ItemIndex - (input? or buggy temp?)
+                ;   ForceGetFlg  - Set to 0
+                ;   ItemIndex    - (input? or buggy temp?)
+                ;
+                ; Temp
+                ;   DroppedIndex - Loop control var used for iterating over dropped items
+                ;   dat_58c1     - Indicates whether one or more item are present in the current player location or not.
+                ;                  $ff = nothing here.
                 ;
                 ;
 5857: a2 00     sub_5857        LDX #$00             ; Set
-5859: 8e 7b 19                  STX dat_197b         ;     dat_197b = 0
+5859: 8e 7b 19                  STX ForceGetFlg      ;     ForceGetFlg = 0                           (clear flag)
 585c: ca                        DEX                  ; Set
 585d: 8e c1 58                  STX dat_58c1         ;     dat_58c1 = $ff
 5860: a9 0f                     LDA #$0f             ; Set
-5862: 8d 84 62                  STA dat_6284         ;     dat_6284 = $f  (16 iterations [15..0])
-5865: ae 84 62  loc_5865        LDX dat_6284         ; Loop
-                                                     ;     Set X = dat_6284
+5862: 8d 84 62                  STA DroppedIndex     ;     DroppedIndex = $f  (16 iterations [15..0])
+5865: ae 84 62  loc_5865        LDX DroppedIndex     ; Loop
+                                                     ;     Set X = DroppedIndex
 5868: bd 94 64                  LDA DroppedGame,X    ;     If
 586b: c9 02                     CMP #$02             ;
 586d: d0 36                     BNE loc_58a5         ;        (DroppedGame[X] == 2)                  (2 = Dungeon)
@@ -12775,24 +13093,24 @@
 587f: bd b4 64                  LDA DroppedY,X       ;        And
 5882: cd 14 63                  CMP CHR_LOC_Y        ;        (DroppedY[X] == CHR_LOC_Y)
 5885: d0 1e                     BNE loc_58a5         ;     Then
-5887: 24 4b                     BIT ItemIndex        ;         If (DroppedY[X] & ItemIndex < 0)  (one/both has bit 7==1)
+5887: 24 4b                     BIT ItemIndex        ;         If (ItemIndex < 0)       (ItemIndex bit 7 == 1)
 5889: 10 0a                     BPL loc_5895         ;         Then                     (Note: This seems buggy, since
 588b: a9 53                     LDA #$53             ;             Set ZtsGetName_L/H    ItemIndex isn't updated in the
 588d: 8d c1 59                  STA ZtsGetName_L     ;                 address           sub before it's checked & value
 5890: a9 5e                     LDA #$5e             ;                 to                appears unused by later code.
 5892: 8d c2 59                  STA ZtsGetName_H     ;                 $5e53 [ZtsBlank]  Perhaps intent was to give
                                                      ;         End If                    richer messages (e.g. "There
-5895: ae 84 62  loc_5895        LDX dat_6284         ;         Set X = dat_6284          is a dagger here."?))
-5898: bd d4 64                  LDA DroppedIndex,X   ;         Set
-589b: 85 4b                     STA ItemIndex        ;             ItemIndex = DroppedIndex[X]
-589d: 8d c1 58                  STA dat_58c1         ;         Set dat_58c1 = DroppedIndex[X]
+5895: ae 84 62  loc_5895        LDX DroppedIndex     ;         Set X = DroppedIndex      is a dagger here."?))
+5898: bd d4 64                  LDA DroppedItmIdx,X  ;         Set
+589b: 85 4b                     STA ItemIndex        ;             ItemIndex = DroppedItmIdx[X]
+589d: 8d c1 58                  STA dat_58c1         ;         Set dat_58c1 = DroppedItmIdx[X]
 58a0: 20 c2 58                  JSR sub_58c2         ;         Call $58c2 [sub_58c2]
 58a3: b0 1b                     BCS loc_58c0         ;         If (C == 1) Then
                                                      ;             Continue @ $58c0 [loc_58c0] (Return to caller)
                                                      ;         End If
                                                      ;     End If
-58a5: ce 84 62  loc_58a5        DEC dat_6284         ;     Subtract 1 from dat_6284
-58a8: 10 bb                     BPL loc_5865         ; Repeat while (dat_6284 >= 0)
+58a5: ce 84 62  loc_58a5        DEC DroppedIndex     ;     Subtract 1 from DroppedIndex
+58a8: 10 bb                     BPL loc_5865         ; Repeat while (DroppedIndex >= 0)
 58aa: ad c1 58                  LDA dat_58c1         ; If (dat_58c1 < 0)
 58ad: 10 11                     BPL loc_58c0         ; Then
 58af: a9 ee                     LDA #$ee             ;     Set StrTmplate_L/H
@@ -12812,6 +13130,15 @@
                 ; Input
                 ;   ItemIndex  - Inventory item number (offset relative to InvItemAdr_L and InvItemAdr_H)
                 ;
+                ; Output
+                ;
+                ; Temp
+                ;   ItemAdr_L/H    - Updated to the address of the item at the specified index
+                ;   ItemAttrs_L/H  - May be updated to the attributes for the item at the specified index
+                ;   ZtsGetName_L/H - Set to the address of item name
+                ;   StrGetAdr_L/H  - Set to the prompt template string
+                ;   StrTmplate_L/H - Set to the prompt template string
+                ;
 58c2: a5 4b     sub_58c2        LDA ItemIndex        ; Set A = ItemIndex
 58c4: 20 74 4b                  JSR getItemAdr       ; Call $4b74 [getItemAdr]
 58c7: a9 06                     LDA #$06             ; Set
@@ -12827,16 +13154,16 @@
 58dd: 8d 56 59                  STA StrGetAdr_H      ;     $599b [StrGetOne]    ("GET? ??? Yes, No or ESC")
 58e0: a0 00                     LDY #$00             ; Set Y = 0
 58e2: b1 41                     LDA (ItemAdr_L),Y    ; If
-58e4: 29 7f                     AND #$7f             ;    ((*ItemAdr_L)[0] & $7f == 0)      (All type bits clear? Seems to indicate multiple items/group of items?)
-58e6: d0 1c                     BNE loc_5904         ; Then
+58e4: 29 7f                     AND #$7f             ;    ((*ItemAdr_L)[0] & $7f == 0)           (All type bits clear:
+58e6: d0 1c                     BNE loc_5904         ; Then       Stack of std item (Gem, Gold, etc) [type 0 subtype 0])
 58e8: a5 4b                     LDA ItemIndex        ;     Set A = ItemIndex
 58ea: 20 c4 4e                  JSR getItemAttrs     ;     Call $4ec4 [getItemAttrs]
 58ed: a0 01                     LDY #$01             ;     Set Y = 1
 58ef: b1 43                     LDA (ItemAttrs_L),Y  ;     Set
-58f1: 8d e3 59                  STA GetNum_H         ;         GetNum_H = (*ItemAttrs_L)[1]
+58f1: 8d e3 59                  STA GetNumBe16_H     ;         GetNumBe16_H = (*ItemAttrs_L)[1]
 58f4: c8                        INY                  ;     Add 1 to Y   (Y = 2)
 58f5: b1 43                     LDA (ItemAttrs_L),Y  ;     Set
-58f7: 8d e4 59                  STA GetNum_L         ;         GetNum_L = (*ItemAttrs_L)[2]
+58f7: 8d e4 59                  STA GetNumBe16_L     ;         GetNumBe16_L = (*ItemAttrs_L)[2]
 58fa: a9 ab                     LDA #$ab             ;     Set StrGetAdr_L/H
 58fc: 8d 55 59                  STA StrGetAdr_L      ;         address
 58ff: a9 59                     LDA #$59             ;         to
@@ -12874,7 +13201,7 @@
                                                      ;         End If
 5945: a0 02     loc_5945        LDY #$02             ;         Set Y = 2
 5947: a9 01                     LDA #$01             ;         Set
-5949: 91 41                     STA (ItemAdr_L),Y    ;             (*ItemAdr_L)[2] = 1
+5949: 91 41                     STA (ItemAdr_L),Y    ;             (*ItemAdr_L)[2] = 1         (action 1 = get/pickup)
                                                      ;     End If
 594b: 18        cont_594b       CLC                  ;     Set C = 0
 594c: 24                        .BYTE $24            ; Else            (Forms 'BIT $38' with next byte / skips SEC)
@@ -12943,13 +13270,14 @@
 59b6: a3 e8 59                  .BYTE $a3,$e8,$59                      ; {Call $59e8 [numPaddingOff]}
 59b9: a9                        .BYTE $a9                              ; {Clear to EOL}
 59ba: a5                        .BYTE $a5                              ; {Blink On}
-59bb: b1 e3 59 06               .BYTE $b1,$e3,$59,$06                  ; {Print uint16 @ $59e3 [GetNum_H] width 6}
+59bb: b1 e3 59 06               .BYTE $b1,$e3,$59,$06                  ; {Print uint16 @ $59e3 [GetNumBe16_H] width 6}
 59bf: 20                        .BYTE $20                              ; " "        (Flows into StrYesNoEsc)
 
-59c0: b3        StrYesNoEsc     .BYTE $b3                              ; {Print ZTS @ $5e53 [ZtsBlank]}
-59c1: 53        ZtsGetName_L    .BYTE $53                              ;     (address of ZTS is
-59c2: 5e        ZtsGetName_H    .BYTE $5e                              ;      dynamically updated)
-59c3: 26 0d                     .BYTE $26,$0d                          ; "&\n"
+59c0: b3        StrYesNoEsc     .BYTE $b3                              ; {Print ZTS
+59c1: 53        ZtsGetName_L    .BYTE $53                              ;    @ $5e53 [ZtsBlank]
+59c2: 5e        ZtsGetName_H    .BYTE $5e                              ;    max width 38}
+59c3: 26                        .BYTE $26                              ; (address of ZTS dynamically assigned item name)
+59c4: 0d                        .BYTE $0d                              ; "\n"
 59c5: a3 e5 59                  .BYTE $a3,$e5,$59                      ; {Call $59e5 [numPaddingOn]}
 59c8: a6 00 07                  .BYTE $a6,$00,$07                      ; {Col 0 Row 7}
 59cb: a5                        .BYTE $a5                              ; {Center}
@@ -12967,8 +13295,8 @@
 59e2: 2e 0d                     .BYTE $2e,$0d                          ; ".\n"
 59e4: ff                        .BYTE $ff                              ; {End of string}
 
-59e3: 00        GetNum_H        .BYTE $00            ; MSB of number of items (uint16)
-59e4: 00        GetNum_L        .BYTE $00            ; LSB of number of items (uint16)
+59e3: 00        GetNumBe16_H    .BYTE $00            ; MSB of number of items (big-endian uint16)
+59e4: 00        GetNumBe16_L    .BYTE $00            ; LSB of number of items (big-endian uint16)
 
                 ; Sets NoNumPadFlg to 0 (enables right-padding output numbers with spaces to specified max width)
                 ;
@@ -12990,8 +13318,8 @@
 59fa: 68 65 72 65 2e 0d         .BYTE $68,$65,$72,$65,$2e,$0d          ; "here.\n"
 5900: ff                        .BYTE $ff                              ; {End of string}
 
-5a01: 80 19 02   unk_5a01       .BYTE $80,$19,$02
-5a04: 00 00 15                  .BYTE $00,$00,$15
+5a01: 80 19 02   unk_5a01       .BYTE $80,$19,$02   ; 6 bytes: Item header bytes for a dropped stackable/standard item
+5a04: 00 00 15                  .BYTE $00,$00,$15   ;          (e.g. Food Packets, Water Flasks, Unlit Torches, etc.)
 
 5a07: 46 6f 6f   ZtsTempBuf     .BYTE $46,$6f,$6f                      ; "Foo"
 5a0a: 64 20 50 61 63 6b 65 74   .BYTE $64,$20,$50,$61,$63,$6b,$65,$74  ; "d Packet"
@@ -13219,6 +13547,9 @@
                 ;   LEResult[1] -
                 ;   BasicItmZts_L/H[X] -
                 ;
+                ; Temp
+                ;   DroppedIndex - Loop control var used for iterating over dropped items
+                ;
 5bb8: 8e 17 5a  sub_5bb8        STX dat_5a17         ; Set dat_5a17 = X
 5bbb: a5 02                     LDA LEResult         ; Set
 5bbd: 8d 18 5a                  STA dat_5a18         ;     dat_5a18 = LEResult[0]
@@ -13246,11 +13577,11 @@
 5be1: c0 0f                     CPY #$0f             ; Repeat
 5be3: 90 f8                     BCC loc_5bdd         ;   while (Y < $f (15))
 5be5: a9 0f                     LDA #$0f             ; Set
-5be7: 8d 84 62                  STA dat_6284         ;     dat_6284 = $f (15 - max 16 iterations)
-5bea: ae 84 62  loc_5bea        LDX dat_6284         ; Loop
-                                                     ;     Set X = dat_6284
+5be7: 8d 84 62                  STA DroppedIndex     ;     DroppedIndex = $f     (15 - max 16 iterations)
+5bea: ae 84 62  loc_5bea        LDX DroppedIndex     ; Loop
+                                                     ;     Set X = DroppedIndex
 5bed: bd 94 64                  LDA DroppedGame,X    ;     If
-5bf0: c9 02                     CMP #$02             ;        (DroppedGame[X] == 2)
+5bf0: c9 02                     CMP #$02             ;        (DroppedGame[X] == 2)             (2 = Dungeon)
 5bf2: d0 50                     BNE loc_5c44         ;
 5bf4: bd a4 64                  LDA DroppedX,X       ;        And
 5bf7: cd 13 63                  CMP CHR_LOC_X        ;        (DroppedX[X] == CHR_LOC_X)
@@ -13261,7 +13592,7 @@
 5c04: bd c4 64                  LDA DroppedMap,X     ;        And
 5c07: cd 15 63                  CMP CHR_LOC_MAP      ;        (DroppedMap[X] == CHR_LOC_MAP)
 5c0a: d0 38                     BNE loc_5c44         ;     Then
-5c0c: bd d4 64                  LDA DroppedIndex,X   ;         Set A = DroppedIndex[X]          (A = item index)
+5c0c: bd d4 64                  LDA DroppedItmIdx,X  ;         Set A = DroppedItmIdx[X]          (A = item index)
 5c0f: 85 4b                     STA ItemIndex        ;         Set ItemIndex = A
 5c11: 20 74 4b                  JSR getItemAdr       ;         Call $4b74 [getItemAdr]
 5c14: f0 2e                     BEQ loc_5c44         ;         If (ItemAdr_H != 0)
@@ -13290,10 +13621,10 @@
 5c41: 4c 0e 5b  loc_5c41        JMP rts_5b0e         ;             Continue @ $5b0e [rts_5b0e]
                                                      ;         End If
                                                      ;     End If
-5c44: ce 84 62  loc_5c44        DEC dat_6284         ;     Subtract 1 from dat_6284
-5c47: 10 a1                     BPL loc_5bea         ; Repeat while (dat_6284 >= 0)
+5c44: ce 84 62  loc_5c44        DEC DroppedIndex     ;     Subtract 1 from DroppedIndex
+5c47: 10 a1                     BPL loc_5bea         ; Repeat while (DroppedIndex >= 0)
 5c49: a2 5a                     LDX #$5a             ; Set
-5c4b: a0 01                     LDY #$01             ;     Y/X = $5a01 [TODO: label]
+5c4b: a0 01                     LDY #$01             ;     Y/X = $5a01 [unk_5a01]
 5c4d: 20 4d 4b                  JSR addItem          ; Call $4b4d [addItem]
 5c50: 4c 0e 5b                  JMP rts_5b0e         ; Continue @ $5b0e [rts_5b0e]
 
@@ -13863,7 +14194,7 @@
 623e: 61 6e 64 20 62 61 63 6b   .BYTE $61,$6e,$64,$20,$62,$61,$63,$6b  ; "and back"
 6246: 66 69 72 65 64 20 66 6f   .BYTE $66,$69,$72,$65,$64,$20,$66,$6f  ; "fired fo"
 624e: 72 20                     .BYTE $72,$20                          ; "r "
-6250: b2 82 62 02               .BYTE $b2,$82,$62,$02                  ; {Print uint8 @ address at $6282 [dat_6282] width 2}
+6250: b2 82 62 02               .BYTE $b2,$82,$62,$02                  ; {Print uint8 @ address at $6282 [SpellBackfire] width 2}
 6254: 21 0d                     .BYTE $21,$0d                          ; "!\n"
 6256: a3 e5 59                  .BYTE $a3,$e5,$59                      ; {Call $59e5 [numPaddingOn]}
 6257: ff                        .BYTE $ff                              ; {End of string}
@@ -13877,17 +14208,21 @@
 
 6276: 00        dat_6276        .BYTE $00
 6277: 00        dat_6277        .BYTE $00
-6278: 00        MenuSelIdx      .BYTE $00                              ; Menu selection index (e.g. 0..3 for 4 sel menu)
+6278: 00        MenuSelIdx      .BYTE $00            ; Menu selection index (e.g. 0..3 for 4 sel menu)
 6279: 00        dat_6279        .BYTE $00
 627a: 00        dat_627a        .BYTE $00
 627b: 00        dat_627b        .BYTE $00
 627c: 00        dat_627c        .BYTE $00
 627d: 00        dat_627d        .BYTE $00
 627e: 00        dat_627e        .BYTE $00
-627f: 00        dat_627f        .BYTE $00
-6280: 00        dat_6280        .BYTE $00
-6281: 00        dat_6281        .BYTE $00
-6282: 00        dat_6282        .BYTE $00
+627f: 00        RemoveItemFlg   .BYTE $00            ; When <0, cont_5209 will remove the item at ItemIndex
+                                                     ;    (e.g. the item was consumed when used)
+6280: 00        SpellCost       .BYTE $00            ; contCastSpell (temp): Spell cast cost, copied from spell
+                                                     ;     attribute S0 (Cast cost)
+6281: 00        SpellSkill      .BYTE $00            ; contCastSpell (temp): Spell cast skill, copied from spell
+                                                     ;     attribute S1 (Cast skill)
+6282: 00        SpellBackfire   .BYTE $00            ; contCastSpell (temp): Spell backfire penalty, copied from spell
+                                                     ;     attribute S2 (Backfire penalty)
 6283: 00        EquipSlot       .BYTE $00            ; equipItem param: equipment slot to assign (0..9)
                                                      ;     0: CHR_PRI_WEAPON
                                                      ;     1: CHR_SEC_WEAPON
@@ -13899,7 +14234,7 @@
                                                      ;     7: CHR_APPAREL[1]
                                                      ;     8: CHR_APPAREL[2]
                                                      ;     9: CHR_APPAREL[3]
-6284: 00        dat_6284        .BYTE $00
+6284: 00        DroppedIndex    .BYTE $00            ; Loop index variable for iterating dropped items
 6285: 00        dat_6285        .BYTE $00
 6286: 00        dat_6286        .BYTE $00
 6287: 00        dat_6287        .BYTE $00

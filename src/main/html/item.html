@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>AR Item Decoder</title>
+	<link rel="icon" href="../ar-icon-48x48.png" type="image/png" sizes="48x48">
+	<link rel="icon" href="../ar-icon-192x192.png" type="image/png" sizes="192x192">
+	<link rel="icon" href="../ar-icon-512x512.png" type="image/png" sizes="512x512">
+</head>
+<body>
+    <style type="text/css">
+        @font-face {
+            font-family: "AlternateRealityTheDungeon";
+            src: url("../font/AlternateRealityTheDungeon.woff");
+        }
+
+        * {
+            font-family: "AlternateRealityTheDungeon", serif
+        }
+
+        #byteOutput {
+            font-family: monospace
+        }
+
+        textarea {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+
+    <div class="title">Enter Item Data In Hex</div>
+    <div><textarea id="itemDataInput" cols="100" rows="10" spellcheck="false"></textarea></div>
+    <div><input id="decodeButton" type="button" value="Decode"/></div>
+    <div><textarea id="itemDataOutput" cols="100" rows="30" spellcheck="false"></textarea></div>
+
+    <script type="module" src="item.js"></script>
+</body>
+</html>

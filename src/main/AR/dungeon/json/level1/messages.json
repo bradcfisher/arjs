@@ -30,7 +30,7 @@
     "23": "You hear the crackle of electricity.",
     "24": "You stand before an elaborate door.",
 
-// Item messages... Perhaps these are not shown after the item is claimed?
+// Item/treasure messages... these are not shown after the item is claimed
 
     "trumpCard": "Sealed in an envelope is a trump card.",
     "sandals": "A powerful but feminine voice says:\n\n\"For thy victory I give thee these\nsandals to make thee quick and agile.\"",

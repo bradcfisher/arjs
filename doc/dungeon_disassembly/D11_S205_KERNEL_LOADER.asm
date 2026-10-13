@@ -166,7 +166,7 @@
 80ec: 8a                        TXA                  ;         Set A
 80ed: 29 0f                     AND #$0f             ;               =
 80ef: 09 30                     ORA #$30             ;                 (X & $f) | $30
-80f1: 8d 30 02                  STA DiskNumber       ;         Set DiskNumber = A         (A = [$34 "4".. $31 "1"])
+80f1: 8d 30 02                  STA DriveId          ;         Set DriveId = A            (A = [$34 "4".. $31 "1"])
 80f4: 20 a3 24                  JSR readDiskStatus   ;         Call $24a3 [readDiskStatus]
 80f7: 30 0b                     BMI loc_8104         ;         If (N = 0) Then            (success, drive present)
 80f9: a6 06                     LDX Count            ;             Set X = Count
@@ -191,7 +191,7 @@
                 ;     (sectors 2..6 (512 bytes)) to $0280 [FILE_SEG_DIR]
                 ;
 810d: a9 31                     LDA #$31             ; Set
-810f: 8d 30 02                  STA DiskNumber       ;     DiskNumber = $31 (49 '1')  (read from drive #1)
+810f: 8d 30 02                  STA DriveId          ;     DriveId = $31 (49 '1')     (read from drive #1)
 8112: a9 04                     LDA #$04             ; Set
 8114: 85 06                     STA Count            ;     Count = 4                  (4 iterations/sectors - 4..1)
 8116: a9 80                     LDA #$80             ; Set
@@ -594,7 +594,7 @@
                 ;      dat_0260/dat_0261 = DiskSector_L/H + 1
                 ;
                 ; Input
-                ;   DiskNumber     - Disk number (one of $30 '1', $31 '2', $32 '3', $33 '4')
+                ;   DriveId        - Disk serial device ID (one of $30 '1', $31 '2', $32 '3', $33 '4')
                 ;   DiskSector_L/H - Disk sector to read
                 ;
                 ; ???
@@ -882,7 +882,7 @@
                 ; some of the subs above.
                 ; =====================================================================
 
-                ; This is a partial copy of cont_54ee (starting @ $54f6)
+                ; This is a partial copy of contEquipArmor (starting @ $54f6)
 84c8: 02                        .BYTE $02                    ; Copied to $fba5 [dat_fba5] when RAM >= 64K
 84c9: 8d 83 62                  STA dat_6283                 ; and overwritten if RAM >= 128KB
 84cc: 20 35 58                  JSR equipItem
@@ -890,7 +890,7 @@
 84d1: 4c 09 52                  JMP cont_5209
 84d4: 4c 25 52  loc_84d4        JMP cont_5225
 
-                ; This is an unused copy of cont_5505
+                ; This is an unused copy of contEquipApprl
                 ;
 84d7: a2 00                     LDX #$00
 84d9: bd a2 63  loc_84d9        LDA CHR_APPAREL,X
@@ -940,7 +940,7 @@
 
                 ; This is an unused copy of cont_556b
                 ;
-853d: ce 7f 62                  DEC dat_627f
+853d: ce 7f 62                  DEC RemoveItemFlg
 8540: ad 98 63                  LDA CHR_STOMACH
 8543: 10 03                     BPL loc_8548
 8545: 4c c1 56                  JMP loc_56c1
@@ -1175,7 +1175,7 @@
 86ea: 91 3d                     STA (EffectAdr_L),Y
 86ec: ce bd 63                  DEC INV_TORCHES
 86ef: ee 90 63                  INC CHR_NumLights
-86f2: 4c af 54                  JMP cont_54af
+86f2: 4c af 54                  JMP contEquipWeapn
 
                 ; This is an unused copy of useTimepiece
                 ;
@@ -1335,7 +1335,7 @@
                 ; This is an unused copy of sub_5857
                 ;
 8829: a2 00                     LDX #$00
-882b: 8e 7b 19                  STX dat_197b
+882b: 8e 7b 19                  STX ForceGetFlg
 882e: ca                        DEX
 882f: 8e c1 58                  STX dat_58c1
 8832: a9 0f                     LDA #$0f
@@ -1360,7 +1360,7 @@
 8862: a9 5e                     LDA #$5e
 8864: 8d c2 59                  STA dat_59c1_H
 8867: ae 84 62  loc_8867        LDX dat_6284
-886a: bd d4 64                  LDA DroppedIndex,X
+886a: bd d4 64                  LDA DroppedItmIdx,X
 886d: 85 4b                     STA ItemIndex
 886f: 8d c1 58                  STA dat_58c1
 8872: 20 c2 58                  JSR sub_58c2

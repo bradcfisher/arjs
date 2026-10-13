@@ -4,25 +4,27 @@
 
 7600: 00        ModuleNumber    .BYTE $00            ; Module # 0
 
-7601: 4c 12 76  moduleEntry1    JMP sub_7612         ; Alias for sub_7612
+7601: 4c 12 76  moduleInit      JMP initModule0      ; Alias for initModule0
 7604: 4c 0c 76  moduleEntry2    JMP sub_760c         ; Alias for sub_760c
 7607: 4c 0c 76  moduleEntry3    JMP sub_760c         ; Alias for sub_760c
 
 760a: 6f        Mod0DescTbl_L   .BYTE $6f            ; LSB of special location message table $856f [SpclMesgAdrs]
 760b: 85        Mod0DescTbl_H   .BYTE $85            ; MSB of special location message table $856f [SpclMesgAdrs]
 
-                ; Sets dat_192a to 0 (invalidate status page 7)
+                ; Sets StatPg7Tmpl_H to 0 (invalidate status page 7)
                 ;
 760c: a9 00     sub_760c        LDA #$00             ; Set
-760e: 8d 2a 19                  STA dat_192a         ;     dat_192a = 0         (invalidate status page 7)
+760e: 8d 2a 19                  STA StatPg7Tmpl_H    ;     StatPg7Tmpl_H = 0         (invalidate status page 7)
 7611: 60                        RTS                  ; Return to caller
 
+                ; Performs initialization tasks for Module 0
                 ;
                 ; - Sets the display mode to 1
                 ; - Copies time-critical sub at dat_78a2 to zero page cont_0090
-                ; -
+                ; - Sets cont_addr_1977_L/H to $7641 [cont_7641]
+                ; - Enables time progression, effect timers, keyboard actions, etc.
                 ;
-7612: ad b9 18  sub_7612        LDA CUR_DLIST_NUM    ; If
+7612: ad b9 18  initModule0     LDA CUR_DLIST_NUM    ; If
 7615: c9 01                     CMP #$01             ;    (CUR_DLIST_NUM != 1)
 7617: f0 05                     BEQ loc_761e         ; Then
 7619: a9 01                     LDA #$01             ;     Set A = 1
@@ -32,7 +34,7 @@
 7620: 8d 77 19                  STA cont_addr_1977_L ;     cont_addr_1977_L/H
 7623: a9 76                     LDA #$76             ;     to
 7625: 8d 78 19                  STA cont_addr_1977_H ;     $7641 [cont_7641]
-7628: a2 48                     LDX #$48             ; Set X = $48 (72)
+7628: a2 48                     LDX #$48             ; Set X = $48 (72)                 (copy time-critical sub to zpg)
 762a: bd a2 78  loc_762a        LDA dat_78a2,X       ; Loop
                                                      ;     Set
 762d: 95 90                     STA cont_0090,X      ;         cont_0090[X] = dat_78a2[X]
@@ -50,7 +52,8 @@
                 ; - 7.8% chance of getting Crystal Doom if in Crystal Caverns (Level 2 Zone 1)
                 ; - Teleports player from Hall of the Adept (Level 2 Zone 8 [28,14]) to Level 1.1 [0,1] if conditions are met
                 ; - Player may randomly drop item if their burden is maxed at 255
-                ;
+                ; - Flashes the screen if the player has collided with a solid wall
+                ; -
                 ;
 7641: 2c 75 19  cont_7641       BIT UNK_BYTE_1975    ; If
 7644: 30 03                     BMI loc_7649         ;    (UNK_BYTE_1975 < 0)
@@ -83,12 +86,12 @@
 7685: 8d 13 63                  STA CHR_LOC_X        ;                 CHR_LOC_X = 0
 7688: a9 01                     LDA #$01             ;             Set
 768a: 8d 14 63                  STA CHR_LOC_Y        ;                 CHR_LOC_Y = 1
-768d: 8d 15 63                  STA CHR_LOC_MAP      ;             Set CHR_LOC_MAP = 1
+768d: 8d 15 63                  STA CHR_LOC_MAP      ;             Set CHR_LOC_MAP = 1        (Level 1.1)
 7690: a9 00                     LDA #$00             ;             Set
-7692: 8d 2a 19                  STA dat_192a         ;                 dat_192a = 0
+7692: 8d 2a 19                  STA StatPg7Tmpl_H    ;                 StatPg7Tmpl_H = 0      (invalidate status page 7)
 7695: a9 ff                     LDA #$ff             ;             Set
 7697: 8d 75 19                  STA UNK_BYTE_1975    ;                 UNK_BYTE_1975 = $ff
-769a: ce 56 19                  DEC UNK_BYTE_COUNTER ;             Subtract 1 from UNK_BYTE_COUNTER
+769a: ce 56 19                  DEC UpdateSceneFlg   ;             Subtract 1 from UpdateSceneFlg     (update requested)
 769d: 4c 0c 18                  JMP j_loc_3183       ;             Continue @ $3183 [j_loc_3183]
                                                      ;         End If
                                                      ;     End If
@@ -140,9 +143,9 @@
 76eb: 8d 0c 19                  STA FileDestAdr_H    ;                  $96f0 [TextureStart]
 76ee: 20 42 18                  JSR j_sub_2cad       ;         Call $1842 [j_sub_2cad]
                                                      ;     End If
-76f1: 20 d4 7a  loc_76f1        JSR sub_7ad4         ;     Call $7ad4 [sub_7ad4]
+76f1: 20 d4 7a  loc_76f1        JSR renderScene      ;     Call $7ad4 [renderScene]
 76f4: 4c 36 77                  JMP loc_7736         ; Else If                            (UNK_BYTE_1975 is >= 0 here)
-76f7: 2c 54 19  loc_76f7        BIT dat_1954         ;    (dat_1954 < 0)
+76f7: 2c 54 19  loc_76f7        BIT WallCollisnFlg   ;    (WallCollisnFlg < 0)            (Bumped into a solid wall)
 76fa: 10 37                     BPL loc_7733         ; Then
 76fc: a9 03                     LDA #$03             ;     Set
 76fe: 8d fa 77                  STA dat_77fa         ;         dat_77fa = 3  (4 iterations [3..0])
@@ -167,7 +170,7 @@
 772b: ce fa 77                  DEC dat_77fa         ;         Subtract 1 from dat_77fa
 772e: 10 d1                     BPL loc_7701         ;     Repeat while (dat_77fa >= 0)
 7730: 4c 4e 77                  JMP loc_774e         ; Else
-7733: 20 d4 7a  loc_7733        JSR sub_7ad4         ;     Call $7ad4 [sub_7ad4]
+7733: 20 d4 7a  loc_7733        JSR renderScene      ;     Call $7ad4 [renderScene]
                                                      ; End If
 7736: ad 4d 19  loc_7736        LDA CurZoneFlags     ; If
 7739: 29 01                     AND #$01             ;    (((CurZoneFlags & 1) | CHR_NumLights) == 0)
@@ -180,24 +183,24 @@
                                                      ; End If
 774b: 20 56 78  loc_774b        JSR copyFrameBuf     ; Call $7856 [copyFrameBuf]
 774e: a9 e5     loc_774e        LDA #$e5             ; Set
-7750: 85 89                     STA dat_0089_L       ;     dat_0089_L/H
+7750: 85 89                     STA ImgAddr_L        ;     ImgAddr_L/H
 7752: a9 80                     LDA #$80             ;        =
-7754: 85 8a                     STA dat_0089_H       ;          $80e5 [MoveArrowsImg]
-7756: 20 f4 7e                  JSR sub_7ef4         ; Call $7ef4 [sub_7ef4]
+7754: 85 8a                     STA ImgAddr_H        ;          $80e5 [MoveArrowsImg]
+7756: 20 f4 7e                  JSR putCharImage     ; Call $7ef4 [putCharImage]
 7759: ad c0 63                  LDA INV_COMPASSES    ; If (INV_COMPASSES != 0)
 775c: f0 11                     BEQ loc_776f         ; Then
 775e: ad 12 63                  LDA CHR_LOC_ORIENT   ;     If
 7761: cd 6a 19                  CMP CompassOrient    ;        (CHR_LOC_ORIENT != CompassOrient)
 7764: f0 16                     BEQ loc_777c         ;     Then
 7766: 8d 6a 19                  STA CompassOrient    ;         Set A = CompassOrient
-7769: 20 c7 7e                  JSR sub_7ec7         ;         Call $7ec7 [sub_7ec7]
+7769: 20 c7 7e                  JSR putCompassImg    ;         Call $7ec7 [putCompassImg]
                                                      ;     End If
 776c: 4c 7c 77                  JMP loc_777c         ; Else
 776f: a9 55     loc_776f        LDA #$55             ;      If
 7771: cd 6a 19                  CMP CompassOrient    ;         (CompassOrient != $55)       (player has no compasses)
 7774: f0 06                     BEQ loc_777c         ; Then
 7776: 8d 6a 19                  STA CompassOrient    ;     Set CompassOrient = $55
-7779: 20 bc 7e                  JSR sub_7ebc         ;     Call $7ebc [sub_7ebc]
+7779: 20 bc 7e                  JSR clrCompassImg    ;     Call $7ebc [clrCompassImg]
                                                      ; End If
 777c: a9 89     loc_777c        LDA #$89             ; Set
 777e: 8d 77 19                  STA cont_addr_1977_L ;     cont_addr_1977_L/H
@@ -212,39 +215,39 @@
 7794: ce 5f 19                  DEC StatUpdateFlg    ;     Subtract 1 from StatUpdateFlg    (needs update)
                                                      ; End If
 7797: ad c0 63  loc_7797        LDA INV_COMPASSES    ; If
-779a: cd fc 77                  CMP dat_77fc         ;    (INV_COMPASSES != dat_77fc)
+779a: cd fc 77                  CMP CurNumCmpss      ;    (INV_COMPASSES != CurNumCmpss)
 779d: f0 06                     BEQ loc_77a5         ; Then
-779f: 8d fc 77                  STA dat_77fc         ;     Set dat_77fc = INV_COMPASSES
-77a2: ce 56 19                  DEC UNK_BYTE_COUNTER ;     Subtract 1 from UNK_BYTE_COUNTER
+779f: 8d fc 77                  STA CurNumCmpss      ;     Set CurNumCmpss = INV_COMPASSES
+77a2: ce 56 19                  DEC UpdateSceneFlg   ;     Subtract 1 from UpdateSceneFlg             (update requested)
                                                      ; End If
 77a5: ad 4d 19  loc_77a5        LDA CurZoneFlags     ; If
 77a8: 29 01                     AND #$01             ;    (((CurZoneFlags & 1) | CHR_NumLights)
 77aa: 0d 90 63                  ORA CHR_NumLights    ;        !=
-77ad: cd fb 77                  CMP dat_77fb         ;           dat_77fb)
+77ad: cd fb 77                  CMP CurLightLevel    ;           CurLightLevel)
 77b0: f0 06                     BEQ loc_77b8         ; Then
-77b2: 8d fb 77                  STA dat_77fb         ;     Set dat_77fb = ((CurZoneFlags & 1) | CHR_NumLights)
-77b5: ce 56 19                  DEC UNK_BYTE_COUNTER ;     Subtract 1 from UNK_BYTE_COUNTER
+77b2: 8d fb 77                  STA CurLightLevel    ;     Set CurLightLevel = ((CurZoneFlags & 1) | CHR_NumLights)
+77b5: ce 56 19                  DEC UpdateSceneFlg   ;     Subtract 1 from UpdateSceneFlg             (update requested)
                                                      ; End If
-77b8: ad 56 19  loc_77b8        LDA UNK_BYTE_COUNTER ; If (UNK_BYTE_COUNTER != 0)
+77b8: ad 56 19  loc_77b8        LDA UpdateSceneFlg   ; If (UpdateSceneFlg != 0)
 77bb: f0 08                     BEQ loc_77c5         ; Then
 77bd: a9 00                     LDA #$00             ;     Set
-77bf: 8d 56 19                  STA UNK_BYTE_COUNTER ;         UNK_BYTE_COUNTER = 0
-77c2: 4c 33 77                  JMP loc_7733         ;     Continue @ $7733 [loc_7733]
+77bf: 8d 56 19                  STA UpdateSceneFlg   ;         UpdateSceneFlg = 0
+77c2: 4c 33 77                  JMP loc_7733         ;     Continue @ $7733 [loc_7733]                (redraw the scene)
                                                      ; End If
 77c5: 20 21 18  loc_77c5        JSR j_readStick      ; Call $1821 [j_readStick]
 77c8: 29 0f                     AND #$0f             ; If ((A & $f) == 0) Then           (stick is centered)
 77ca: f0 b0                     BEQ loc_777c         ;     Continue @ $777c [loc_777c]
                                                      ; End If
-77cc: 20 e4 7e                  JSR sub_7ee4         ; Call $7ee4 [sub_7ee4]
+77cc: 20 e4 7e                  JSR putMoveArwImg    ; Call $7ee4 [putMoveArwImg]
 77cf: a9 41                     LDA #$41             ; Set
 77d1: 8d 77 19                  STA cont_addr_1977_L ;     cont_addr_1977_L/H
 77d4: a9 76                     LDA #$76             ;        =
 77d6: 8d 78 19                  STA cont_addr_1977_H ;          $7641 [cont_7641]
 77d9: a2 00                     LDX #$00             ; Set X = 0
-77db: 8e 54 19                  STX dat_1954         ; Set dat_1954 = 0
+77db: 8e 54 19                  STX WallCollisnFlg   ; Set WallCollisnFlg = 0
 77de: ca                        DEX                  ; Subtract 1 from X  (X = $ff)
 77df: 8e 55 78                  STX PlayerIsMoving   ; Set PlayerIsMoving = $ff
-77e2: 4c 09 18                  JMP j_loc_30e3       ; Continue @ $1809 [j_loc_30e3]
+77e2: 4c 09 18                  JMP j_doPlayerMove   ; Continue @ $1809 [j_doPlayerMove]
 
                 ; Sets all wall, ceiling and floor colors to the specified value.
                 ;
@@ -282,8 +285,8 @@
 77f9: 60                        RTS                  ; Return to caller
 
 77fa: 00        dat_77fa        .BYTE $00            ; Loop control var
-77fb: ff        dat_77fb        .BYTE $ff            ; Set to effective light level value
-77fc: ff        dat_77fc        .BYTE $ff            ; Set to number of compasses held by player
+77fb: ff        CurLightLevel   .BYTE $ff            ; Set to effective light level value
+77fc: ff        CurNumCmpss     .BYTE $ff            ; Set to number of compasses held by player
 
 77fd: 07 58 01  item_77fd       .BYTE $07,$58,$01                      ; .X.
 7800: 00 00 07 00 88 ff 01 01   .BYTE $00,$00,$07,$00,$88,$ff,$01,$01  ; ........
@@ -299,7 +302,7 @@
 7850: 6f 6f 6d 00 00            .BYTE $6f,$6f,$6d,$00,$00              ; oom..
 
 7855: 00        PlayerIsMoving  .BYTE $00            ; Flag indicating that the player is currently moving. This is set
-                                                     ;     to 0 in sub_7612 and updated to $ff in cont_7641 when the
+                                                     ;     to 0 in initModule0 and updated to $ff in cont_7641 when the
                                                      ;     joystick is not centered.
 
                 ; Copy the working copy (frame buffer) graphic character sets to the active character sets to update
@@ -412,9 +415,9 @@
 
                 ;
                 ; Input
-                ;   dat_1957  -
+                ;   ShowScrtDoors - Whether secret doors should be rendered like regular doors or not.
                 ;   dat_0087  - Possible texture position? [0..71]?
-                ;   dat_8f75  -
+                ;   dat_8f75  - Wall type code
                 ;   dat_8f7a  - Appears to be some sort of delta. Added to dat_0063 at the end of each loop iteration
                 ;   dat_0063  - [0..71] Loop is exited if value is outside range.
                 ;
@@ -447,14 +450,14 @@
 7915: 85 6d                     STA dat_006d         ;         dat_006d = $47 (71)
                                                      ; End If
 7917: ae 75 8f  loc_7917        LDX dat_8f75         ; Set X = dat_8f75
-791a: 2c 57 19                  BIT dat_1957         ; If (dat_1957 < 0)
+791a: 2c 57 19                  BIT ShowScrtDoors    ; If (ShowScrtDoors < 0)           (show as normal doors)
 791d: 10 0a                     BPL loc_7929         ;    And
-791f: e0 05                     CPX #$05             ;    (dat_8f75 >= 5)
+791f: e0 05                     CPX #$05             ;    (dat_8f75 >= 5)               ("secret door" wall types: 5, 6)
 7921: 90 06                     BCC loc_7929         ;    And
 7923: e0 07                     CPX #$07             ;    (dat_8f75 < 7)
 7925: b0 02                     BCS loc_7929         ; Then
 7927: ca                        DEX                  ;     Set
-7928: ca                        DEX                  ;         X = dat_8f75 - 2
+7928: ca                        DEX                  ;         X = dat_8f75 - 2         (map to door types: 3, 4)
                                                      ; End If
 7929: bd f1 96  loc_7929        LDA TexWallType_L,X  ; Set A = TexWallType_L[X]
 792c: 8d 5a 79                  STA smc_7959+1       ; Set smc_7959[1] = A
@@ -701,10 +704,10 @@
 7ad0: fb fd 04  dat_7acc_H      .BYTE $fb,$fd,$04    ; Offsets to include in the initial calculation of the map cell
 7ad3: 02                        .BYTE $02            ; address initially placed into dat_007b_H based on orientation.
 
+                ; Render the current scene into the graphical character set frame buffer.
                 ;
                 ;
-                ;
-7ad4: 20 88 78  sub_7ad4        JSR clearFrameBuf    ; Call $7888 [clearFrameBuf]
+7ad4: 20 88 78  renderScene     JSR clearFrameBuf    ; Call $7888 [clearFrameBuf]
 7ad7: a2 47                     LDX #$47             ; Set X = $47 (72 iterations [71..0])
 7ad9: a9 00                     LDA #$00             ; Set A = 0
 7adb: 9d 8b 94  loc_7adb        STA dat_948b,X       ; Loop
@@ -725,14 +728,14 @@
 7b01: 8d df 7d                  STA dat_7ddf         ;     dat_7ddf = dat_8dcc[X]                    (wall type bitmask)
 7b04: bd d2 8d                  LDA dat_8dd2,X       ; Set
 7b07: 8d e2 7d                  STA dat_7de2         ;     dat_7de2 = dat_8dd2[X]
-7b0a: bc e4 7d                  LDY dat_7de4,X       ; Set Y = dat_7de4[X]
+7b0a: bc e4 7d                  LDY dat_7de4,X       ; Set Y = dat_7de4[X]               (0 = use X frac pos; 1 = use Y)
 7b0d: b9 16 63                  LDA CHR_FRAC_LOC_X,Y ; Set A
 7b10: 18                        CLC                  ;       =
 7b11: 7d e8 7d                  ADC dat_7de8,X       ;         CHR_FRAC_LOC_X[Y] + dat_7de8[X]
 7b14: 10 05                     BPL loc_7b1b         ; If (A < 0) Then
 7b16: 49 ff                     EOR #$ff             ;     Set A
 7b18: 18                        CLC                  ;           =
-7b19: 69 01                     ADC #$01             ;             (A xor $ff) + 1
+7b19: 69 01                     ADC #$01             ;             (A xor $ff) + 1              (2s-complement negation)
                                                      ; End If
 7b1b: 85 7f     loc_7b1b        STA dat_007f         ; Set dat_007f = A
 7b1d: a2 00                     LDX #$00             ; Set X = 0          (10 iterations [0..9])
@@ -1094,15 +1097,21 @@
 7de1: 00        dat_7de1        .BYTE $00            ;
 7de2: 00        dat_7de2        .BYTE $00            ;
 7de3: 00        dat_7de3        .BYTE $00            ;
-7de4: 01 00 01  dat_7de4        .BYTE $01,$00,$01    ;
-7de7: 00                        .BYTE $00            ;
-7de8: dd 00 00  dat_7de8        .BYTE $dd,$00,$00    ;
-7deb: dd                        .BYTE $dd            ;
+7de4: 01 00 01  dat_7de4        .BYTE $01,$00,$01    ; 4 bytes: Offset for selecting either X or Y fractional position.
+7de7: 00                        .BYTE $00            ;   0 [North]: $01 - Use Y fractional position
+                                                     ;   1 [East]:  $00 - Use X fractional position
+                                                     ;   2 [South]: $01 - Use Y fractional position
+                                                     ;   3 [West]:  $00 - Use X fractional position
+7de8: dd 00 00  dat_7de8        .BYTE $dd,$00,$00    ; 4 bytes:
+7deb: dd                        .BYTE $dd            ;   0 [North]: $dd (-35) -
+                                                     ;   1 [East]:  $00       -
+                                                     ;   2 [South]: $00       -
+                                                     ;   3 [West]:  $dd (-35) -
 
                 ;
                 ; Input
                 ;   Y        - Index into dat_8d24 (power of 2 to divide by, minus one)
-                ;   dat_007f -
+                ;   dat_007f - The player's adjusted fractional position assigned in renderScene
                 ;
                 ; ???
                 ;   dat_007a -
@@ -1129,6 +1138,9 @@
 7e0c: 60                        RTS                  ; Return to caller
 
                 ; Same as sub_7e2d except for the final calculation of A (subtracts instead of adds)
+                ;
+                ; Input
+                ;   dat_007f  - The player's adjusted fractional position assigned in renderScene
                 ;
                 ; Output
                 ;   A   -
@@ -1227,9 +1239,9 @@
 7e89: c8                        INY                  ;                 Add 1 to Y
 7e8a: c0 08                     CPY #$08             ;             Repeat
 7e8c: 90 f4                     BCC loc_7e82         ;                while (Y < 8)
-7e8e: ad 4e 19                  LDA CurZneWallClr0   ;             Set A = CurZneWallClr0
-7e91: ae 4f 19                  LDX CurZneWallClr1   ;             Set X = CurZneWallClr1
-7e94: ac 50 19                  LDY CurZneWallClr2   ;             Set Y = CurZneWallClr2
+7e8e: ad 4e 19                  LDA CurZneWallClr0   ;             Set A = CurZneWallClr0        (color ordering in map
+7e91: ae 4f 19                  LDX CurZneWallClr1   ;             Set X = CurZneWallClr1         differs from active
+7e94: ac 50 19                  LDY CurZneWallClr2   ;             Set Y = CurZneWallClr2         in mem representation)
 7e97: 8d 50 19                  STA CurZneWallClr2   ;             Set CurZneWallClr2 = A
 7e9a: 8e 4e 19                  STX CurZneWallClr0   ;             Set CurZneWallClr0 = X
 7e9d: 8c 4f 19                  STY CurZneWallClr1   ;             Set CurZneWallClr1 = Y
@@ -1250,94 +1262,91 @@
 7eb8: a9 00                     LDA #$00             ; Set A = 0        (Did not match any zone ref, use default zone 0)
 7eba: 90 b8                     BCC loc_7e74         ; Continue @ $7e74 [loc_7e74]                  (C is always 0 here)
 
+                ; Clears the area where the compass is displayed.
                 ;
-                ; - Sets dat_0089_L/H to $83c6 [CmpssFrameImg]
-                ; - Continues @ $7f4b [cont_7f4b]
-                ;
-7ebc: a9 c6     sub_7ebc        LDA #$c6             ; Set
-7ebe: 85 89                     STA dat_0089_L       ;     dat_0089_L/H
+7ebc: a9 c6     clrCompassImg   LDA #$c6             ; Set
+7ebe: 85 89                     STA ImgAddr_L        ;     ImgAddr_L/H
 7ec0: a9 83                     LDA #$83             ;        =
-7ec2: 85 8a                     STA dat_0089_H       ;          $83c6 [CmpssFrameImg]
-7ec4: 4c 4b 7f                  JMP cont_7f4b        ; Continue @ $7f4b [cont_7f4b]
+7ec2: 85 8a                     STA ImgAddr_H        ;          $83c6 [CmpssFrameImg]
+7ec4: 4c 4b 7f                  JMP clearCharImg     ; Continue @ $7f4b [clearCharImg]
 
+                ; Renders the compass frame and directional arrow into the graphics character sets.
                 ;
-                ; Continues @ $7ef4 [sub_7ef4]
-                ;
-7ec7: a9 c6     sub_7ec7        LDA #$c6             ; Set
-7ec9: 85 89                     STA dat_0089_L       ;     dat_0089_L/H
+7ec7: a9 c6     putCompassImg   LDA #$c6             ; Set
+7ec9: 85 89                     STA ImgAddr_L        ;     ImgAddr_L/H
 7ecb: a9 83                     LDA #$83             ;        =
-7ecd: 85 8a                     STA dat_0089_H       ;          $83c6 [CmpssFrameImg]
-7ecf: 20 f4 7e                  JSR sub_7ef4         ; Call $7ef4 [sub_7ef4]
+7ecd: 85 8a                     STA ImgAddr_H        ;          $83c6 [CmpssFrameImg]
+7ecf: 20 f4 7e                  JSR putCharImage     ; Call $7ef4 [putCharImage]
 7ed2: ad 12 63                  LDA CHR_LOC_ORIENT   ; Set X
 7ed5: 0a                        ASL                  ;       =
 7ed6: aa                        TAX                  ;         CHR_LOC_ORIENT * 2
 7ed7: bd be 83                  LDA CmpssArrwAdr,X   ; Set
-7eda: 85 89                     STA dat_0089_L       ;     dat_0089_L/H
+7eda: 85 89                     STA ImgAddr_L        ;     ImgAddr_L/H
 7edc: bd bf 83                  LDA CmpssArrwAdr+1,X ;        =
-7edf: 85 8a                     STA dat_0089_H       ;          CmpssArrwAdr[X,X+1]
-7ee1: 4c f4 7e                  JMP sub_7ef4         ; Continue @ $7ef4 [sub_7ef4]
+7edf: 85 8a                     STA ImgAddr_H        ;          CmpssArrwAdr[X,X+1]
+7ee1: 4c f4 7e                  JMP putCharImage     ; Continue @ $7ef4 [putCharImage]
 
+                ; Puts the arrow image for the current movement direction to the graphics character sets.
                 ;
                 ; Input
                 ;   A    - Stick direction code [0..15] for retrieving value from MoveStickMap to use as an offset
                 ;            into MoveArrowAdr [0, 2, 4, 6].
                 ;
                 ; Output
-                ;   dat_0089_L/H - Holds the retrieved address
+                ;   ImgAddr_L/H - Holds the retrieved address
                 ;
-                ; Continues @ $7ef4 [sub_7ef4]
+                ; Continues @ $7ef4 [putCharImage]
                 ;
-7ee4: a8        sub_7ee4        TAY                  ; Set Y = A
+7ee4: a8        putMoveArwImg   TAY                  ; Set Y = A
 7ee5: be ae 83                  LDX MoveStickMap,Y   ; Set X = MoveStickMap[Y]
 7ee8: d0 00                     BNE loc_7eea         ; (hmm... why?)
 7eea: bd a6 83  loc_7eea        LDA MoveArrowAdr,X   ; Set
-7eed: 85 89                     STA dat_0089_L       ;     dat_0089_L = MoveArrowAdr[X]
+7eed: 85 89                     STA ImgAddr_L        ;     ImgAddr_L = MoveArrowAdr[X]
 7eef: bd a7 83                  LDA MoveArrowAdr+1,X ; Set
-7ef2: 85 8a                     STA dat_0089_H       ;     dat_0089_H = MoveArrowAdr[X + 1]
+7ef2: 85 8a                     STA ImgAddr_H        ;     ImgAddr_H = MoveArrowAdr[X + 1]
 
-                ; Copies a character set-based image into a character set
+                ; Copies a character set-based image into the graphics character sets
                 ;
                 ; Input
-                ;   dat_0089_L/H   - Address of a character set image. Starts with a 5 byte header, followed by the
-                ;                    character set definitions.
-                ;                       Header
-                ;                          0: Bytes per row (divide by 8 for number of characters wide)
-                ;                          1: Number of rows
-                ;                          2: LSB of amount to add to destination address per row
-                ;                          3: MSB of amount to add to destination address per row
-                ;                          4: Index into dat_7fb3_L/H used to select the base destination character
-                ;                             set offset.
+                ;   ImgAddr_L/H - Address of a character set image. Starts with a 5 byte header, followed by the
+                ;                 character set definitions.
+                ;                    Header
+                ;                       0: Bytes per row (divide by 8 for number of characters wide)
+                ;                       1: Number of rows
+                ;                       2: LSB of offset from start of output row (e.g. horizontal position)
+                ;                       3: MSB of offset from start of output row (e.g. horizontal position)
+                ;                       4: Row number within the graphical area text lines for the top of the image
                 ;
-                ; ???
-                ;   dat_008d   - Set to dat_0089_L/H[0]. Number of bytes per row.
-                ;   dat_008e   - Initially set to dat_0089_L/H[1]. Number of rows to copy, 0 on return.
-                ;   dat_008f   - Initially set to dat_0089_L/H[4]. Offset from dat_7fb3_L/H. Incremented dat_008e times.
+                ; Temp
+                ;   ImgRowBytes - Number of bytes per character image row. Set to ImgAddr_L/H[0].
+                ;   ImgNumRows  - Number of rows in the image. Initially set to ImgAddr_L/H[1].
+                ;   GfxAreaRow  - The current row number within the graphical area text lines.
+                ;                 Initially set to ImgAddr_L/H[4]. Offset from dat_7fb3_L/H.
                 ;
-                putImage
-7ef4: a0 00     sub_7ef4        LDY #$00             ; Set Y  = 0
-7ef6: b1 89                     LDA (dat_0089_L),Y   ; Set
-7ef8: 85 8d                     STA dat_008d         ;     dat_008d = (*dat_0089_L)[0]
+7ef4: a0 00     putCharImage    LDY #$00             ; Set Y  = 0
+7ef6: b1 89                     LDA (ImgAddr_L),Y    ; Set
+7ef8: 85 8d                     STA ImgRowBytes      ;     ImgRowBytes = (*ImgAddr_L)[0]
 7efa: c8                        INY                  ; Add 1 to Y   (Y = 1)
-7efb: b1 89                     LDA (dat_0089_L),Y   ; Set
-7efd: 85 8e                     STA dat_008e         ;     dat_008e = (*dat_0089_L)[1]
+7efb: b1 89                     LDA (ImgAddr_L),Y    ; Set
+7efd: 85 8e                     STA ImgNumRows       ;     ImgNumRows = (*ImgAddr_L)[1]
 7eff: c8                        INY                  ; Add 1 to Y   (Y = 2)
-7f00: b1 89                     LDA (dat_0089_L),Y   ; Set
-7f02: 8d 22 7f                  STA smc_7f21+1       ;     smc_7f21[1] = (*dat_0089_L)[2]
+7f00: b1 89                     LDA (ImgAddr_L),Y    ; Set
+7f02: 8d 22 7f                  STA smc_7f21+1       ;     smc_7f21[1] = (*ImgAddr_L)[2]
 7f05: c8                        INY                  ; Add 1 to Y   (Y = 3)
-7f06: b1 89                     LDA (dat_0089_L),Y   ; Set
-7f08: 8d 2a 7f                  STA smc_7f29+1       ;     smc_7f29[1] = (*dat_0089_L)[3]
+7f06: b1 89                     LDA (ImgAddr_L),Y    ; Set
+7f08: 8d 2a 7f                  STA smc_7f29+1       ;     smc_7f29[1] = (*ImgAddr_L)[3]
 7f0b: c8                        INY                  ; Add 1 to Y   (Y = 4)
-7f0c: b1 89                     LDA (dat_0089_L),Y   ; Set
-7f0e: 85 8f                     STA dat_008f         ;     dat_008f = (*dat_0089_L)[4]
-7f10: a5 89                     LDA dat_0089_L       ; Set
-7f12: 18                        CLC                  ;     dat_0089_L
+7f0c: b1 89                     LDA (ImgAddr_L),Y    ; Set
+7f0e: 85 8f                     STA GfxAreaRow       ;     GfxAreaRow = (*ImgAddr_L)[4]
+7f10: a5 89                     LDA ImgAddr_L        ; Set
+7f12: 18                        CLC                  ;     ImgAddr_L
 7f13: 69 05                     ADC #$05             ;        =
-7f15: 85 89                     STA dat_0089_L       ;          dat_0089_L + 5
+7f15: 85 89                     STA ImgAddr_L        ;          ImgAddr_L + 5
 7f17: 90 02                     BCC loc_7f1b         ; If (C == 1) Then
-7f19: e6 8a                     INC dat_0089_H       ;     Add 1 to dat_0089_H
+7f19: e6 8a                     INC ImgAddr_H        ;     Add 1 to ImgAddr_H
                                                      ; End If
-7f1b: a6 8f     loc_7f1b        LDX dat_008f         ; Loop
-                                                     ;     Set X = dat_008f
+7f1b: a6 8f     loc_7f1b        LDX GfxAreaRow       ; Loop
+                                                     ;     Set X = GfxAreaRow
 7f1d: bd b3 7f                  LDA dat_7fb3_L,X     ;     Set
 7f20: 18                        CLC                  ;         smc_7f33[1]
 7f21: 69 ff     smc_7f21        ADC #$ff             ;            =
@@ -1345,36 +1354,48 @@
 7f26: bd bc 7f                  LDA dat_7fb3_H,X     ;     Set smc_7f33[2]
 7f29: 69 ff     smc_7f29        ADC #$ff             ;            =
 7f2b: 8d 35 7f                  STA smc_7f33+2       ;              dat_7fb3_H[X] + smc_7f29[1] + C
-7f2e: a4 8d                     LDY dat_008d         ;     Set
-7f30: 88                        DEY                  ;         Y = dat_008d - 1                           (copy one row)
-7f31: b1 89     smc_7f31        LDA (dat_0089_L),Y   ;     Loop
-7f33: 99 ff ff  smc_7f33        STA $ffff,Y          ;         Set (*(smc_7f33[1])) = (*dat_0089_L)[Y]
+7f2e: a4 8d                     LDY ImgRowBytes      ;     Set
+7f30: 88                        DEY                  ;         Y = ImgRowBytes - 1                        (copy one row)
+7f31: b1 89     smc_7f31        LDA (ImgAddr_L),Y    ;     Loop
+7f33: 99 ff ff  smc_7f33        STA $ffff,Y          ;         Set (*(smc_7f33[1])) = (*ImgAddr_L)[Y]
 7f36: 88                        DEY                  ;         Subtract 1 from Y
 7f37: 10 f8                     BPL smc_7f31         ;     Repeat while (Y >= 0)
-7f39: a5 89                     LDA dat_0089_L       ;     Set
-7f3b: 18                        CLC                  ;         dat_0089_L
-7f3c: 65 8d                     ADC dat_008d         ;            =
-7f3e: 85 89                     STA dat_0089_L       ;              dat_0089_L + dat_008d
+7f39: a5 89                     LDA ImgAddr_L        ;     Set
+7f3b: 18                        CLC                  ;         ImgAddr_L
+7f3c: 65 8d                     ADC ImgRowBytes      ;            =
+7f3e: 85 89                     STA ImgAddr_L        ;              ImgAddr_L + ImgRowBytes           (Move to next row)
 7f40: 90 02                     BCC loc_7f44         ;     If (C == 1) Then
-7f42: e6 8a                     INC dat_0089_H       ;         Add 1 to dat_0089_H
+7f42: e6 8a                     INC ImgAddr_H        ;         Add 1 to ImgAddr_H
                                                      ;     End If
-7f44: e6 8f     loc_7f44        INC dat_008f         ;     Add 1 to dat_008f
-7f46: c6 8e                     DEC dat_008e         ;     Subtract 1 from dat_008e
-7f48: d0 d1                     BNE loc_7f1b         ; Repeat while (dat_008e != 0)
+7f44: e6 8f     loc_7f44        INC GfxAreaRow       ;     Add 1 to GfxAreaRow
+7f46: c6 8e                     DEC ImgNumRows       ;     Subtract 1 from ImgNumRows
+7f48: d0 d1                     BNE loc_7f1b         ; Repeat while (ImgNumRows != 0)
 7f4a: 60                        RTS                  ; Return to caller
 
+                ; Clears the area where a character set-based image would be rendered in the graphics character sets.
                 ;
-                ; Same as sub_7ef4 except smc_7f31 is "LDA #$ff" instead of "LDA (dat_0089_L),Y"
+                ; This sets all bits in the area the image would be placed to 1, which has the effect of displaying the
+                ; background color.
                 ;
-7f4b: a9 a9     cont_7f4b       LDA #$a9             ; Set
+                ; Input
+                ;   ImgAddr_L/H - Address of a character set image. Starts with a 5 byte header, followed by the
+                ;                 character set definitions.
+                ;                    Header
+                ;                       0: Bytes per row (divide by 8 for number of characters wide)
+                ;                       1: Number of rows
+                ;                       2: LSB of amount to add to destination address per row
+                ;                       3: MSB of amount to add to destination address per row
+                ;                       4: Row number within the graphical area text lines for the top of the image
+                ;
+7f4b: a9 a9     clearCharImg    LDA #$a9             ; Set
 7f4d: 8d 31 7f                  STA smc_7f31         ;     smc_7f31
 7f50: a9 ff                     LDA #$ff             ;        =
 7f52: 8d 32 7f                  STA smc_7f31+1       ;          "LDA #$ff"
-7f55: 20 f4 7e                  JSR sub_7ef4         ; Call $7ef4 [sub_7ef4]
+7f55: 20 f4 7e                  JSR putCharImage     ; Call $7ef4 [putCharImage]
 7f58: a9 b1                     LDA #$b1             ; Set
 7f5a: 8d 31 7f                  STA smc_7f31         ;     smc_7f31
 7f5d: a9 89                     LDA #$89             ;       =
-7f5f: 8d 32 7f                  STA smc_7f31+1       ;         "LDA (dat_0089_L),Y"
+7f5f: 8d 32 7f                  STA smc_7f31+1       ;         "LDA (ImgAddr_L),Y"
 7f62: 60                        RTS                  ; Return to caller
 
                 ;
@@ -1594,14 +1615,14 @@
 
 80e5: 38 07 f8  MoveArrowsImg   .BYTE $38,$07,$f8                      ; 397 bytes: All 4 movement arrows (rest state)
 80e8: 00 01 ff ff ff ff ff ff   .BYTE $00,$01,$ff,$ff,$ff,$ff,$ff,$ff  ;            charset image. Assigned to
-80f0: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;            dat_0089_L/H in cont_7641.
-80f8: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;    5 byte header:
-8100: ff ff ff ff ff fb fb e2   .BYTE $ff,$ff,$ff,$ff,$ff,$fb,$fb,$e2  ;     0: $38 (56) - Bytes per row (7 chars wide)
-8108: e2 80 ff ff ff ff ff ff   .BYTE $e2,$80,$ff,$ff,$ff,$ff,$ff,$ff  ;     1: $07      - Row count
-8110: ff bf ff ff ff ff ff ff   .BYTE $ff,$bf,$ff,$ff,$ff,$ff,$ff,$ff  ;     2: $f8      -
-8118: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;     3: $00      -
-8120: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;     4: $01      -
-8128: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;
+80f0: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;            ImgAddr_L/H in cont_7641.
+80f8: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;   5 byte header:
+8100: ff ff ff ff ff fb fb e2   .BYTE $ff,$ff,$ff,$ff,$ff,$fb,$fb,$e2  ;     0:   $38 (56) - Bytes per row (7 chars)
+8108: e2 80 ff ff ff ff ff ff   .BYTE $e2,$80,$ff,$ff,$ff,$ff,$ff,$ff  ;     1:   $07      - Row count
+8110: ff bf ff ff ff ff ff ff   .BYTE $ff,$bf,$ff,$ff,$ff,$ff,$ff,$ff  ;     2/3: $00f8    - Start 248 bytes (31 chars)
+8118: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;                     from start of row
+8120: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;     4:   $01      - Start in line 1 of
+8128: ff ff ff ff ff ff ff ff   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff  ;                     graphics area
 8130: ff ff ff fe fe f8 f8 e0   .BYTE $ff,$ff,$ff,$fe,$fe,$f8,$f8,$e0  ;
 8138: ea ff 80 00 00 00 00 00   .BYTE $ea,$ff,$80,$00,$00,$00,$00,$00  ;
 8140: 80 80 bf 2f 2f 0b 0b 02   .BYTE $80,$80,$bf,$2f,$2f,$0b,$0b,$02  ;
@@ -1646,53 +1667,53 @@
 
 8272: 18 03 08  MoveArwUpImg    .BYTE $18,$03,$08                      ; 77 bytes: Forward/Up arrow charset image.
 8275: 01 01 ff ff ff ff ff ff   .BYTE $01,$01,$ff,$ff,$ff,$ff,$ff,$ff  ;           Referenced in MoveArrowAdr.
-827d: ff ff ff ff ff fb fb ea   .BYTE $ff,$ff,$ff,$ff,$ff,$fb,$fb,$ea  ;    5 byte header:
-8285: ea aa ff ff ff ff ff ff   .BYTE $ea,$aa,$ff,$ff,$ff,$ff,$ff,$ff  ;     0: $18 (24) - Bytes per row (4 chars wide)
-828d: ff bf ff fe fe fa fa ea   .BYTE $ff,$bf,$ff,$fe,$fe,$fa,$fa,$ea  ;     1: $03      - Row count
-8295: ea ff aa aa aa aa aa aa   .BYTE $ea,$ff,$aa,$aa,$aa,$aa,$aa,$aa  ;     2: $08      -
-829d: aa aa bf af af ab ab aa   .BYTE $aa,$aa,$bf,$af,$af,$ab,$ab,$aa  ;     3: $01      -
-82a5: aa bf ff ff ff ff ff ff   .BYTE $aa,$bf,$ff,$ff,$ff,$ff,$ff,$ff  ;     4: $01      -
-82ad: ff ab aa aa aa ff ff ff   .BYTE $ff,$ab,$aa,$aa,$aa,$ff,$ff,$ff  ;
+827d: ff ff ff ff ff fb fb ea   .BYTE $ff,$ff,$ff,$ff,$ff,$fb,$fb,$ea  ;   5 byte header:
+8285: ea aa ff ff ff ff ff ff   .BYTE $ea,$aa,$ff,$ff,$ff,$ff,$ff,$ff  ;     0:   $18 (24) - Bytes per row (4 chars)
+828d: ff bf ff fe fe fa fa ea   .BYTE $ff,$bf,$ff,$fe,$fe,$fa,$fa,$ea  ;     1:   $03      - Row count
+8295: ea ff aa aa aa aa aa aa   .BYTE $ea,$ff,$aa,$aa,$aa,$aa,$aa,$aa  ;     2/3: $0108    - Start 264 bytes (33 chars)
+829d: aa aa bf af af ab ab aa   .BYTE $aa,$aa,$bf,$af,$af,$ab,$ab,$aa  ;                     from start of row
+82a5: aa bf ff ff ff ff ff ff   .BYTE $aa,$bf,$ff,$ff,$ff,$ff,$ff,$ff  ;     4:   $01      - Start in line 1 of
+82ad: ff ab aa aa aa ff ff ff   .BYTE $ff,$ab,$aa,$aa,$aa,$ff,$ff,$ff  ;                     graphics area
 82b5: ff ff bf bf bf ff ff ff   .BYTE $ff,$ff,$bf,$bf,$bf,$ff,$ff,$ff  ;
 82bd: ff fa                     .BYTE $ff,$fa                          ;
 
 82bf: 18 03 18  MoveArwRgtImg   .BYTE $18,$03,$18                      ; 77 bytes: Move right arrow charset image.
 82c2: 01 03 bf bf bf ff ff ff   .BYTE $01,$03,$bf,$bf,$bf,$ff,$ff,$ff  ;           Referenced in MoveArrowAdr.
 82ca: ff fa ff ef ef eb eb ea   .BYTE $ff,$fa,$ff,$ef,$ef,$eb,$eb,$ea  ;   5 byte header:
-82d2: ea aa ff ff ff ff ff ff   .BYTE $ea,$aa,$ff,$ff,$ff,$ff,$ff,$ff  ;     0: $18 (24) - Bytes per row (4 chars wide)
-82da: ff bf fa fa fa fa fa fa   .BYTE $ff,$bf,$fa,$fa,$fa,$fa,$fa,$fa  ;     1: $03      - Row count
-82e2: fa fa aa aa aa aa aa aa   .BYTE $fa,$fa,$aa,$aa,$aa,$aa,$aa,$aa  ;     2: $18      -
-82ea: aa aa bf af af ab ab af   .BYTE $aa,$aa,$bf,$af,$af,$ab,$ab,$af  ;     3: $01      -
-82f2: af bf fa ff ff ff bf bf   .BYTE $af,$bf,$fa,$ff,$ff,$ff,$bf,$bf  ;     4: $03      -
-82fa: bf bf aa ea ea eb eb ef   .BYTE $bf,$bf,$aa,$ea,$ea,$eb,$eb,$ef  ;
+82d2: ea aa ff ff ff ff ff ff   .BYTE $ea,$aa,$ff,$ff,$ff,$ff,$ff,$ff  ;     0:   $18 (24) - Bytes per row (4 chars)
+82da: ff bf fa fa fa fa fa fa   .BYTE $ff,$bf,$fa,$fa,$fa,$fa,$fa,$fa  ;     1:   $03      - Row count
+82e2: fa fa aa aa aa aa aa aa   .BYTE $fa,$fa,$aa,$aa,$aa,$aa,$aa,$aa  ;     2/3: $0118    - Start 280 bytes (35 chars)
+82ea: aa aa bf af af ab ab af   .BYTE $aa,$aa,$bf,$af,$af,$ab,$ab,$af  ;                     from start of row
+82f2: af bf fa ff ff ff bf bf   .BYTE $af,$bf,$fa,$ff,$ff,$ff,$bf,$bf  ;     4:   $03      - Start in line 3 of
+82fa: bf bf aa ea ea eb eb ef   .BYTE $bf,$bf,$aa,$ea,$ea,$eb,$eb,$ef  ;                     graphics area
 8302: ef ff bf ff ff ff ff ff   .BYTE $ef,$ff,$bf,$ff,$ff,$ff,$ff,$ff  ;
 830a: ff ff                     .BYTE $ff,$ff                          ;
 
 830c: 18 03 08  MoveArwDwnImg   .BYTE $18,$03,$08                      ; 77 bytes: Move back/down arrow charset image.
 830f: 01 05 ab ff ff ff ff ff   .BYTE $01,$05,$ab,$ff,$ff,$ff,$ff,$ff  ;           Referenced in MoveArrowAdr.
 8317: ff ff ff ff ff ff aa aa   .BYTE $ff,$ff,$ff,$ff,$ff,$ff,$aa,$aa  ;   5 byte header:
-831f: aa aa fa ff ff ff bf bf   .BYTE $aa,$aa,$fa,$ff,$ff,$ff,$bf,$bf  ;     0: $18 (24) - Bytes per row (4 chars wide)
-8327: bf bf ff ea ea fa fa fe   .BYTE $bf,$bf,$ff,$ea,$ea,$fa,$fa,$fe  ;     1: $03      - Row count
-832f: fe ff aa aa aa aa aa aa   .BYTE $fe,$ff,$aa,$aa,$aa,$aa,$aa,$aa  ;     2: $08      -
-8337: aa aa bf aa aa ab ab af   .BYTE $aa,$aa,$bf,$aa,$aa,$ab,$ab,$af  ;     3: $01      -
-833f: af bf ff ff ff ff ff ff   .BYTE $af,$bf,$ff,$ff,$ff,$ff,$ff,$ff  ;     4: $05      -
-8347: ff ff aa ea ea fb fb ff   .BYTE $ff,$ff,$aa,$ea,$ea,$fb,$fb,$ff  ;
+831f: aa aa fa ff ff ff bf bf   .BYTE $aa,$aa,$fa,$ff,$ff,$ff,$bf,$bf  ;     0:   $18 (24) - Bytes per row (4 chars)
+8327: bf bf ff ea ea fa fa fe   .BYTE $bf,$bf,$ff,$ea,$ea,$fa,$fa,$fe  ;     1:   $03      - Row count
+832f: fe ff aa aa aa aa aa aa   .BYTE $fe,$ff,$aa,$aa,$aa,$aa,$aa,$aa  ;     2/3: $0108    - Start 264 bytes (33 chars)
+8337: aa aa bf aa aa ab ab af   .BYTE $aa,$aa,$bf,$aa,$aa,$ab,$ab,$af  ;                     from start of row
+833f: af bf ff ff ff ff ff ff   .BYTE $af,$bf,$ff,$ff,$ff,$ff,$ff,$ff  ;     4:   $05      - Start in line 5 of
+8347: ff ff aa ea ea fb fb ff   .BYTE $ff,$ff,$aa,$ea,$ea,$fb,$fb,$ff  ;                     graphics area
 834f: ff ff bf ff ff ff ff ff   .BYTE $ff,$ff,$bf,$ff,$ff,$ff,$ff,$ff  ;
 8357: ff ff                     .BYTE $ff,$ff                          ;
 
 8359: 18 03 f8  MoveArwLftImg   .BYTE $18,$03,$f8                      ; 77 bytes: Move left arrow charset image.
 835c: 00 03 ff ff ff ff ff ff   .BYTE $00,$03,$ff,$ff,$ff,$ff,$ff,$ff  ;           Referenced in MoveArrowAdr.
 8364: ff ff ff fe fe fa fa ea   .BYTE $ff,$ff,$ff,$fe,$fe,$fa,$fa,$ea  ;   5 byte header:
-836c: ea aa ff ff ff ff ff ff   .BYTE $ea,$aa,$ff,$ff,$ff,$ff,$ff,$ff  ;     0: $18 (24) - Bytes per row (4 chars wide)
-8374: ff ab ff fe fe fa fa fe   .BYTE $ff,$ab,$ff,$fe,$fe,$fa,$fa,$fe  ;     1: $03      - Row count
-837c: fe ff aa aa aa aa aa aa   .BYTE $fe,$ff,$aa,$aa,$aa,$aa,$aa,$aa  ;     2: $f8      -
-8384: aa aa ab ab ab ab ab ab   .BYTE $aa,$aa,$ab,$ab,$ab,$ab,$ab,$ab  ;     3: $00      -
-838c: ab ab ff ff ff ff ff ff   .BYTE $ab,$ab,$ff,$ff,$ff,$ff,$ff,$ff  ;     4: $03      -
-8394: ff ff aa ea ea fa fa fe   .BYTE $ff,$ff,$aa,$ea,$ea,$fa,$fa,$fe  ;
+836c: ea aa ff ff ff ff ff ff   .BYTE $ea,$aa,$ff,$ff,$ff,$ff,$ff,$ff  ;     0:   $18 (24) - Bytes per row (4 chars)
+8374: ff ab ff fe fe fa fa fe   .BYTE $ff,$ab,$ff,$fe,$fe,$fa,$fa,$fe  ;     1:   $03      - Row count
+837c: fe ff aa aa aa aa aa aa   .BYTE $fe,$ff,$aa,$aa,$aa,$aa,$aa,$aa  ;     2/3: $00f8    - Start 248 bytes (31 chars)
+8384: aa aa ab ab ab ab ab ab   .BYTE $aa,$aa,$ab,$ab,$ab,$ab,$ab,$ab  ;                     from start of row
+838c: ab ab ff ff ff ff ff ff   .BYTE $ab,$ab,$ff,$ff,$ff,$ff,$ff,$ff  ;     4:   $03      - Start in line 3 of
+8394: ff ff aa ea ea fa fa fe   .BYTE $ff,$ff,$aa,$ea,$ea,$fa,$fa,$fe  ;                     graphics area
 839c: fe ff ab ff ff ff ff ff   .BYTE $fe,$ff,$ab,$ff,$ff,$ff,$ff,$ff  ;
 83a4: ff ff                     .BYTE $ff,$ff                          ;
 
-83a6: 72 82 0c  MoveArrowAdr    .BYTE $72,$82,$0c          ; 8 bytes: Addresses (LSB/MSB) referenced in sub_7ee4
+83a6: 72 82 0c  MoveArrowAdr    .BYTE $72,$82,$0c          ; 8 bytes: Addresses (LSB/MSB) referenced in putMoveArwImg
 83a9: 83 59 83 bf 82            .BYTE $83,$59,$83,$bf,$82  ;   0/1: $8272 [MoveArwUpImg]  (Forward/up)
                                                            ;   2/3: $830c [MoveArwDwnImg] (Backward/down)
                                                            ;   4/5: $8359 [MoveArwLftImg] (Left)
@@ -1726,12 +1747,12 @@
 
 83c6: 30 05 18  CmpssFrameImg   .BYTE $30,$05,$18                      ; 245 bytes: Empty compass frame charset image
 83c9: 00 02 ff ff ff ff ff ff   .BYTE $00,$02,$ff,$ff,$ff,$ff,$ff,$ff  ;   5 byte header:
-83d1: fe fe ff ff fe fa ea a8   .BYTE $fe,$fe,$ff,$ff,$fe,$fa,$ea,$a8  ;     0: $30 (48) - Bytes per row
-83d9: a0 80 ff ea aa aa 0a 02   .BYTE $a0,$80,$ff,$ea,$aa,$aa,$0a,$02  ;     1: $05      - Row count
-83e1: 02 00 ff af aa aa 82 00   .BYTE $02,$00,$ff,$af,$aa,$aa,$82,$00  ;     2: $18 (24) -
-83e9: 00 00 ff ff ff bf af ab   .BYTE $00,$00,$ff,$ff,$ff,$bf,$af,$ab  ;     3: $00      -
-83f1: 2a 0a ff ff ff ff ff ff   .BYTE $2a,$0a,$ff,$ff,$ff,$ff,$ff,$ff  ;     4: $02      -
-83f9: ff ff fa fa ea e8 e8 a8   .BYTE $ff,$ff,$fa,$fa,$ea,$e8,$e8,$a8  ;
+83d1: fe fe ff ff fe fa ea a8   .BYTE $fe,$fe,$ff,$ff,$fe,$fa,$ea,$a8  ;     0:   $30 (48) - Bytes per row (6 chars)
+83d9: a0 80 ff ea aa aa 0a 02   .BYTE $a0,$80,$ff,$ea,$aa,$aa,$0a,$02  ;     1:   $05      - Row count
+83e1: 02 00 ff af aa aa 82 00   .BYTE $02,$00,$ff,$af,$aa,$aa,$82,$00  ;     2/3: $0018    - Start 24 bytes (3 chars)
+83e9: 00 00 ff ff ff bf af ab   .BYTE $00,$00,$ff,$ff,$ff,$bf,$af,$ab  ;                     from start of row
+83f1: 2a 0a ff ff ff ff ff ff   .BYTE $2a,$0a,$ff,$ff,$ff,$ff,$ff,$ff  ;     4:   $02      - Start in line 2 of
+83f9: ff ff fa fa ea e8 e8 a8   .BYTE $ff,$ff,$fa,$fa,$ea,$e8,$e8,$a8  ;                     graphics area
 8401: a0 a0 80 00 00 00 00 00   .BYTE $a0,$a0,$80,$00,$00,$00,$00,$00  ;
 8409: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ;
 8411: 00 00 00 00 00 00 00 00   .BYTE $00,$00,$00,$00,$00,$00,$00,$00  ;
@@ -1759,37 +1780,39 @@
 
 84bb: 10 03 28  CmpssNorthImg   .BYTE $10,$03,$28                      ; 53 bytes: Compass arrow pointing North
 84be: 00 03 02 0a 2a aa 0a 0a   .BYTE $00,$03,$02,$0a,$2a,$aa,$0a,$0a  ;   5 byte header:
-84c6: 0a 0a 00 80 a0 a8 80 80   .BYTE $0a,$0a,$00,$80,$a0,$a8,$80,$80  ;     0: $10 (16) - Bytes per row (2 chars wide)
-84ce: 80 80 0a 0a 0a 0a 08 0a   .BYTE $80,$80,$0a,$0a,$0a,$0a,$08,$0a  ;     1: $03      - Row count
-84d6: 0a 0a 80 80 80 80 80 80   .BYTE $0a,$0a,$80,$80,$80,$80,$80,$80  ;     2: $28 (40) -
-84de: 80 80 0a 0a 2a 28 28 28   .BYTE $80,$80,$0a,$0a,$2a,$28,$28,$28  ;     3: $00      -
-84e6: 20 20 80 80 a0 a0 a0 a0   .BYTE $20,$20,$80,$80,$a0,$a0,$a0,$a0  ;     4: $03      -
-84e9: 20 20                     .BYTE $20,$20                          ;
+84c6: 0a 0a 00 80 a0 a8 80 80   .BYTE $0a,$0a,$00,$80,$a0,$a8,$80,$80  ;     0:   $10 (16) - Bytes per row (2 chars)
+84ce: 80 80 0a 0a 0a 0a 08 0a   .BYTE $80,$80,$0a,$0a,$0a,$0a,$08,$0a  ;     1:   $03      - Row count
+84d6: 0a 0a 80 80 80 80 80 80   .BYTE $0a,$0a,$80,$80,$80,$80,$80,$80  ;     2/3: $0028    - Start 40 bytes (5 chars)
+84de: 80 80 0a 0a 2a 28 28 28   .BYTE $80,$80,$0a,$0a,$2a,$28,$28,$28  ;                     from start of row
+84e6: 20 20 80 80 a0 a0 a0 a0   .BYTE $20,$20,$80,$80,$a0,$a0,$a0,$a0  ;     4:   $03      - Start in line 3 of
+84e9: 20 20                     .BYTE $20,$20                          ;                     graphics area
 
 84f0: 20 01 20  CmpssEastImg    .BYTE $20,$01,$20                      ; 37 bytes: Compass arrow pointing East
 84f3: 00 04 00 00 2a 0a 00 0a   .BYTE $00,$04,$00,$00,$2a,$0a,$00,$0a  ;   5 byte header:
-84fb: 2a 00 00 00 80 aa a8 aa   .BYTE $2a,$00,$00,$00,$80,$aa,$a8,$aa  ;     0: $20 (32) - Bytes per row (4 chars wide)
-8503: 80 00 00 02 02 aa aa aa   .BYTE $80,$00,$00,$02,$02,$aa,$aa,$aa  ;     1: $01      - Row count
-850b: 02 02 00 00 80 a0 a8 a0   .BYTE $02,$02,$00,$00,$80,$a0,$a8,$a0  ;     2: $20 (32) -
-8513: 80 00                     .BYTE $80,$00                          ;     3: $00      -
-                                                                       ;     4: $04      -
+84fb: 2a 00 00 00 80 aa a8 aa   .BYTE $2a,$00,$00,$00,$80,$aa,$a8,$aa  ;     0:   $20 (32) - Bytes per row (4 chars)
+8503: 80 00 00 02 02 aa aa aa   .BYTE $80,$00,$00,$02,$02,$aa,$aa,$aa  ;     1:   $01      - Row count
+850b: 02 02 00 00 80 a0 a8 a0   .BYTE $02,$02,$00,$00,$80,$a0,$a8,$a0  ;     2/3: $0020    - Start 32 bytes (4 chars)
+8513: 80 00                     .BYTE $80,$00                          ;                     from start of row
+                                                                       ;     4:   $04      - Start in line 4 of
+                                                                       ;                     graphics area
 
 8515: 10 03 28  CmpssSouthImg   .BYTE $10,$03,$28                      ; 53 bytes: Compass arrow pointing South
 8518: 00 03 20 20 28 28 28 2a   .BYTE $00,$03,$20,$20,$28,$28,$28,$2a  ;   5 byte header:
-8520: 0a 0a 20 20 a0 a0 a0 a0   .BYTE $0a,$0a,$20,$20,$a0,$a0,$a0,$a0  ;     0: $10 (16) - Bytes per row (2 chars wide)
-8528: 80 80 0a 0a 0a 0a 08 0a   .BYTE $80,$80,$0a,$0a,$0a,$0a,$08,$0a  ;     1: $03      - Row count
-8530: 0a 0a 80 80 80 80 80 80   .BYTE $0a,$0a,$80,$80,$80,$80,$80,$80  ;     2: $28 (40) -
-8538: 80 80 0a 0a 0a 0a aa 2a   .BYTE $80,$80,$0a,$0a,$0a,$0a,$aa,$2a  ;     3: $00      -
-8540: 0a 02 80 80 80 80 a8 a0   .BYTE $0a,$02,$80,$80,$80,$80,$a8,$a0  ;     4: $03      -
-8548: 80 00                     .BYTE $80,$00                          ;
+8520: 0a 0a 20 20 a0 a0 a0 a0   .BYTE $0a,$0a,$20,$20,$a0,$a0,$a0,$a0  ;     0:   $10 (16) - Bytes per row (2 chars)
+8528: 80 80 0a 0a 0a 0a 08 0a   .BYTE $80,$80,$0a,$0a,$0a,$0a,$08,$0a  ;     1:   $03      - Row count
+8530: 0a 0a 80 80 80 80 80 80   .BYTE $0a,$0a,$80,$80,$80,$80,$80,$80  ;     2/3: $0028    - Start 40 bytes (5 chars)
+8538: 80 80 0a 0a 0a 0a aa 2a   .BYTE $80,$80,$0a,$0a,$0a,$0a,$aa,$2a  ;                     from start of row
+8540: 0a 02 80 80 80 80 a8 a0   .BYTE $0a,$02,$80,$80,$80,$80,$a8,$a0  ;     4:   $03      - Start in line 3 of
+8548: 80 00                     .BYTE $80,$00                          ;                     graphics area
 
 854a: 20 01 20  CmpssWestImg    .BYTE $20,$01,$20                      ; 37 bytes: Compass arrow pointing West
 854d: 00 04 00 02 0a 2a aa 2a   .BYTE $00,$04,$00,$02,$0a,$2a,$aa,$2a  ;   5 byte header:
-8555: 0a 02 00 00 00 aa a8 aa   .BYTE $0a,$02,$00,$00,$00,$aa,$a8,$aa  ;     0: $20 (32) - Bytes per row (4 chars wide)
-855d: 00 00 00 00 0a aa a8 aa   .BYTE $00,$00,$00,$00,$0a,$aa,$a8,$aa  ;     1: $01      - Row count
-8565: 0a 00 00 00 a0 80 00 80   .BYTE $0a,$00,$00,$00,$a0,$80,$00,$80  ;     2: $20 (32) -
-856d: a0 00                     .BYTE $a0,$00                          ;     3: $00      -
-                                                                       ;     4: $04      -
+8555: 0a 02 00 00 00 aa a8 aa   .BYTE $0a,$02,$00,$00,$00,$aa,$a8,$aa  ;     0:   $20 (32) - Bytes per row (4 chars)
+855d: 00 00 00 00 0a aa a8 aa   .BYTE $00,$00,$00,$00,$0a,$aa,$a8,$aa  ;     1:   $01      - Row count
+8565: 0a 00 00 00 a0 80 00 80   .BYTE $0a,$00,$00,$00,$a0,$80,$00,$80  ;     2/3: $0020    - Start 32 bytes (4 chars)
+856d: a0 00                     .BYTE $a0,$00                          ;                     from start of row
+                                                                       ;     4:   $04      - Start in line 4 of
+                                                                       ;                     graphics area
 
 856f: a1 85 da  SpclMesgAdrs    .BYTE $a1,$85,$da                      ; 50 bytes: Addresses of the special location
 8572: 85 0c 86 40 86 86 86 b9   .BYTE $85,$0c,$86,$40,$86,$86,$86,$b9  ; messages.
@@ -2337,7 +2360,7 @@
 8d78: 1f 20 21  dat_8d78        .BYTE $1f,$20,$21    ; . !
 8d7b: 22 23 89                  .BYTE $22,$23,$89    ; "#.
 
-8d7e: 94 9f aa  dat_8d7e        .BYTE $94,$9f,$aa    ; ...
+8d7e: 94 9f aa  dat_8d7e        .BYTE $94,$9f,$aa                      ; ...
 8d81: b5 c0 8d 8d 8d 8d 8d 8d   .BYTE $b5,$c0,$8d,$8d,$8d,$8d,$8d,$8d  ; ........
 8d89: 48 36 30 2d 2b 2a 29 28   .BYTE $48,$36,$30,$2d,$2b,$2a,$29,$28  ; H60-+*)(
 8d91: 27 26 25 7e 5a 48 3f 39   .BYTE $27,$26,$25,$7e,$5a,$48,$3f,$39  ; '&%~ZH?9
@@ -2347,9 +2370,14 @@
 8db1: 40 39 32 2b 49 49 49 49   .BYTE $40,$39,$32,$2b,$49,$49,$49,$49  ; @92+IIII
 8db9: 49 49 51 48 3f 36 2d 49   .BYTE $49,$49,$51,$48,$3f,$36,$2d,$49  ; IIQH?6-I
 8dc1: 49 49 49 49 49 49 50 45   .BYTE $49,$49,$49,$49,$49,$49,$50,$45  ; IIIIIIPE
-8dc9: 3a 2f                     .BYTE $3a,$2f        ; :/
+8dc9: 3a 2f                     .BYTE $3a,$2f                          ; :/
 
-8dcb: 0f        dat_8dcb        .BYTE $0f            ; .
+8dcb: 0f        dat_8dcb        .BYTE $0f            ; 4 bytes: Bit masks for selecting wall bits based on player
+                                                     ;          orientation. (Shares 3 bytes with dat_8dcc)
+                                                     ;   0 [North]: $0f - selects low nibble
+                                                     ;   1 [East]:  $f0 - selects high nibble
+                                                     ;   2 [South]: $0f - selects low nibble
+                                                     ;   3 [West]:  $f0 - selects high nibble
 
 8dcc: f0 0f f0  dat_8dcc        .BYTE $f0,$0f,$f0    ; 4 bytes: Bit masks for selecting wall bits based on player
 8dcf: 0f                        .BYTE $0f            ;          orientation.

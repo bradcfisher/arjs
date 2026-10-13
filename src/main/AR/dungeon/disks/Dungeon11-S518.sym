@@ -120,8 +120,11 @@ rw  0049,1   EffectIndex            ; 1 byte: temp, loop ctl var in sub_55b7
                                     ;    - setDiseaseNms, setCurseNames, setMagicNames - loop ctl var
 rw  004a,1   dat_004a               ; 1 byte: ? holds an effect index ?
 rw  004b,1   ItemIndex              ; 1 byte: item index parameter
-rw  004c,1   dat_004c               ; 1 byte
-rw  004d,1   dat_004d               ; 1 byte
+rw  004c,1   dat_004c               ; 1 byte: Set to a action trigger bit mask. Bit-anded with effect or item trigger bytes for matching.
+                                    ;     removeItem: temporarily set to $ff as param to removeItmEfcts (match any triggers)
+                                    ;
+rw  004d,1   dat_004d               ; 1 byte: Appears to hold an action trigger bit mask
+                                    ;     sub_4b8c: used to temp hold X param to be placed into dat_004c later
 
 rw  004f,1   dat_004f               ; 1 byte:
                                     ;    - allocItem: Set to parameter A value (new item size)
@@ -178,7 +181,7 @@ rw  0224,2   VVBLKD                 ; VBLANK deferred interrupt vector
 rw  022f,1   vblk_CRITIC            ; Critical region flag (prevents VVBLKD if <0)
 
              ; The following 4 properties match the structure of the SioCmdBuf
-rw  0230,1   DiskNumber             ; Disk Number (ATASCII value between '1' and '4' inclusive)
+rw  0230,1   DriveId                ; Disk drive serial device ID (ATASCII value between '1' and '4' inclusive)
 rw  0231,1   DiskCommand            ; Disk Command Code
 rw  0232,1   DiskSector_L           ; LSB of Disk sector number
 rw  0233,1   DiskSector_H           ; MSB of Disk sector number
@@ -271,7 +274,7 @@ rw  0263,1   dat_0262_H             ; 1 byte: MSB of sector number (input file s
 rw  0264,1   dat_0264               ;
 rw  0265,1   dat_0265               ; 1? byte
 rw  0266,4   SioCmdBuf              ; 4 bytes: Used as SIO command frame buffer
-rw  0266,1   SioCmdDiskNumber       ; Disk Number (ATASCII value between '1' and '4' inclusive)
+rw  0266,1   SioCmdDriveId          ; Disk drive serial device ID (ATASCII value between '1' and '4' inclusive)
 rw  0267,1   SioCmdDiskCommand      ; Disk Command Code
 rw  0268,1   SioCmdDiskSector_L     ; LSB of Disk sector number
 rw  0269,1   SioCmdDiskSector_H     ; MSB of Disk sector number
@@ -357,9 +360,9 @@ rw  1000,400 GfxBtmCharset          ; Character set for bottom third of the grap
 rw  1400,400 DungeonCharset         ; Dungeon character set font (1bpp)
 
 rwx 1800,1   j_readNextSector       ; Alias for readNextSector
-rwx 1803,1   j_loc_2f80             ; Alias for loc_2f80
+rwx 1803,1   j_loadModule           ; Alias for loadModule
 rwx 1806,1   j_sub_2ff3             ; Alias for sub_2ff3
-rwx 1809,1   j_loc_30e3             ; Alias for loc_30e3
+rwx 1809,1   j_doPlayerMove         ; Alias for doPlayerMove
 rwx 180c,1   j_loc_3183             ; Alias for loc_3183
 rwx 180f,1   j_setDisplayMode       ; Alias for setDisplayMode
 rwx 1812,1   j_printTop             ; Alias for printTop
@@ -409,10 +412,10 @@ rwx 1893,1   j_sub_55b7             ; Alias for sub_55b7
 rwx 1896,1   j_getItemAttrs         ; Alias for getItemAttrs
 rwx 1899,1   j_randInRange          ; Alias for randInRange
 rwx 189c,1   j_sub_5471             ; Alias for sub_5471
-rwx 189f,1   j_actionOffer          ; Alias for actionOffer
+rwx 189f,1   j_startOffer           ; Alias for startOffer
 rwx 18a2,1   j_multBEInt16          ; Alias for multBEInt16
 rwx 18a5,1   j_sub_408b             ; Alias for sub_408b
-rwx 18a8,1   j_actionUse            ; Alias for actionUse
+rwx 18a8,1   j_startUse             ; Alias for startUse
 rwx 18ab,1   j_sub_5bb8             ; Alias for sub_5bb8
 rwx 18ae,1   j_readBEUInt16         ; Alias for readBEUInt16
 rwx 18b1,1   j_divUint16Uint8       ; Alias for divUint16Uint8
@@ -443,7 +446,10 @@ rw  18fe,1   NoNumPadFlg            ; 1 byte: Flag to disable trailing space pad
                                     ;    When less than 0 (e.g. $ff): no extra padding will be output, but the maximum
                                     ;      width is still enforced as the maximum number of digits that may be
                                     ;      displayed.
-rw  18ff,1   dat_18ff               ; 1 byte: flag indicating whether a new key should be read or not
+rw  18ff,1   KbdPendVBlnk           ; Flag indicating whether a new key was read since the last time key input was
+                                    ;     processed in the vblank handler. Set to non-0 when a key is read, which
+                                    ;     signals the vblank handler to click the internal speaker and reset the
+                                    ;     flag to 0.
 rw  1900,1   KBD_CONSOL             ; 1 byte: Status of console keys. Updated in vblank, same values as CONSOL
                                     ;
 rw  1901,1   CalcChksum_L           ; LSB of computed checksum for decrypted data. Only used in decryptBytes
@@ -465,14 +471,15 @@ rw  190d,1   dat_190d               ; 1 byte. Only updated? Where is this read?
 rw  190e,1   MayCancelLoad          ; 1 byte: Whether a file load operation may be cancelled by the user or not
                                     ;         0 = false (user cannot cancel),
                                     ;         non-zero = true (user can cancel by pressing ESC when prompted for disk)
-rw  190f,1   dat_190f               ; 1 byte. Updated in readFileScan
+rw  190f,1   FileDriveNum           ; The current drive number (1..4) being scanned by readFileScan as it iterates the
+                                    ;     drives to search for the file.
 rw  1910,1   FileDiskSide           ; Disk side (1 or 2) Referenced in StrPleaseInsert
 rw  1911,1   FileDiskNumber         ; Disk number (1, 2, 3) Referenced in StrPleaseInsert
 rw  1912,1   CurZoneId              ; Current Zone ID based on the player's current location
 rw  1913,10  StatusTmpl_L           ; 16 bytes: Holds LSBs of status page string template addresses
-rw  191a,1   dat_191a               ; - LSB for status page 7 template address
+rw  191a,1   StatPg7Tmpl_L          ; - LSB for status page 7 template address
 rw  1923,10  StatusTmpl_H           ; 16 bytes: Holds MSBs of status page string template addresses
-rw  192a,1   dat_192a               ; - LSB for status page 7 template address
+rw  192a,1   StatPg7Tmpl_H          ; - LSB for status page 7 template address
 rw  1933,1   CurStatusPage          ; Index of currently selected status page
 rw  1934,1   NumStatusPages         ; Number of status pages
 rw  1935,1   DispStatusPage         ; Index of most recently displayed status page
@@ -519,22 +526,31 @@ rw  1950,1   CurZneWallClr2         ; Current zone wall color #3 (e.g. normal wa
 rw  1951,1   CurZoneCeilClr         ; Current zone ceiling color
 rw  1952,1   CurZoneFlrClr          ; Current zone floor color
 rw  1953,1   CurZoneWarmth          ; Current zone base temperature/warmth
-rw  1954,1   dat_1954               ; 1 byte: assigned, but not obviously read anywhere
-                                    ;   - contMoveWall: Assigns to $ff if the player's fractional position matches the wall boundary (perhaps to indicate collision)
+rw  1954,1   WallCollisnFlg         ; Flag indicating the player collided with a solid wall. When set, the renderer
+                                    ;     will flash the screen briefly and clear the flag.
+                                    ;     - $ff = collided with wall; 0 = no collision
 rw  1955,1   dat_1955               ; ?Possible flag related to time progression? Seems to only be read and not updated?
                                     ;   - irq_VVBLKI: Reads value in two places related to updating the time spinner on the display
-rw  1956,1   UNK_BYTE_COUNTER       ; Decremented each time the player is teleported in CHK_IF_MAP4_ZONE8
-rw  1957,1   dat_1957               ;
-rw  1958,1   UNK_BYTE_1958          ; Whether encounter, treasure, message, and teleport handlers are enabled in
-                                    ;     sub_3183/contCheckPos.
+rw  1956,1   UpdateSceneFlg         ; Flag indicating the graphical scene needs an update.
+rw  1957,1   ShowScrtDoors          ; Flag indicating whether secret doors should be rendered like regular doors or not.
+                                    ;     - If <0 secret doors will be rendered as normal doors (wall codes 5 & 6 are
+                                    ;       rendered as wall codes 3 & 4, respectively).
+rw  1958,1   PendingSpclFlg         ; Whether an encounter, treasure, message, or teleport is currently
+                                    ; pending/incomplete or not.
+                                    ;     $ff (<0 or "true") indicates an encounter, treasure, message or teleport is
+                                    ;         pending/not yet completed. When the value is <0, any new special actions
+                                    ;         are disabled.
+                                    ;     The flag is reset to 0 after the special action has finished. Values of 0 or
+                                    ;         greater are seen as "false" (no pending special action).
 rw  1959,1   MapLocSpclType         ; The current location's special code "type" (the value of bits 4..6 of the code)
                                     ;     0 = Encounter; 1 = Treasure; 2 = Message; 3 = Teleport
-rw  195a,1   MapLocSpclNum          ; Holds special code index number parameter value for
+rw  195a,1   MapLocSpclNum          ; Holds special code index number parameter value (0...31) for
                                     ;   treasure, encounter, message, and teleport special codes.
 rw  195b,1   dat_195b               ; assigned CHR_FRAC_LOC_X in sub_2ff3... not read?
 rw  195c,1   dat_195c               ; assigned CHR_FRAC_LOC_Y in sub_2ff3... not read?
-rw  195d,1   dat_195d               ; 1 byte: TODO: flag?  0, $ff   Possibly related to encounters?
-                                    ;    - contMoveSecrt and contMoveDoor - randomly decrease this value when you pass through (approx 1/8 or 12.5% chance)
+rw  195d,1   EncounterFlg           ; When negative, this flag causes an encounter to occur on the next check.
+                                    ;    - contMoveSecrt and contMoveDoor - randomly triggers an encounter when you
+                                    ;      pass through (approx 1/8 or 12.5% chance)
                                     ;
 rw  195e,1   WarmthBonus            ; 1 byte: Holds warmth bonus provided by equipped apparel
 rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
@@ -543,7 +559,9 @@ rw  1960,1   ItemStatUpdFlg         ; 1 byte: Checked in calcItemStats to determ
                                     ;     by items (burden, warmth, dapperness) should occur. 0 is false, and any non-0
                                     ;     value is seen as true.
 rw  1961,1   dat_1961               ;
-rw  1962,1   dat_1962               ;
+rw  1962,1   dat_1962               ; The number of in-game minutes which have occurred while dat_0050 == 0 since the
+                                    ;     last time the counter was reset by a call to sub_408b. This count controls
+                                    ;     the number of times sub_408b executes effects, biology, encounter checks
 rw  1963,7   EffLevels              ; 7 bytes: Previous threshold index for an effect
                                     ;    (Warmth, Hunger, Thirst, Stamina, Burden, Drunk, Stomach)
                                     ;    Used to determine whether a display update is needed for the effect labels on
@@ -555,17 +573,22 @@ rw  1966,1   EffStmnaLvl            ; EffLevels[3]: Stamina effect level [0..4]
 rw  1967,1   EffBurdnLvl            ; EffLevels[4]: Burden effect level [0..4]
 rw  1968,1   EffInebrLvl            ; EffLevels[5]: Inebriation effect level [0..4]
 rw  1969,1   EffFullnLvl            ; EffLevels[6]: Fullness effect level [0..4]
-
-rw  1968,1   UNK_BYTE_1968          ; Value compared to 1
-rw  196a,1   CompassOrient          ; 1 byte: Currently displayed compass orientation
-
-rw  196b,4   dat_196b               ; 4 bytes: player position (ORIENT, X, Y, MAP)
-rw  196f,1   dat_196f               ; 1 byte
-rw  1970,1   dat_1970               ; 1 byte: Type of locked door: 0 (key), 1 (bolted), 2 (enchanted)
-rw  1971,1   dat_1971               ; 1 byte
+rw  196a,1   CompassOrient          ; Currently displayed compass orientation (0 = N, 1 = E, 2 = S, 3 = W)
+rw  196b,4   ObsDoorPos             ; 4 bytes: Position of last obstructed door encountered (ORIENT, X, Y, MAP)
+rw  196b,1   ObsDoorOrient          ; Orientation of last obstructed door encountered (0 = N, 1 = E, 2 = S, 3 = W)
+rw  196c,1   ObsDoorX               ; X position of last obstructed door encountered
+rw  196d,1   ObsDoorY               ; Y position of last obstructed door encountered
+rw  196e,1   ObsDoorMap             ; Map for last obstructed door encountered
+rw  196f,1   ObsDoorState           ; State of the most recently encountered obstructed door.
+                                    ;     Only bits 0 and 7 are used:
+                                    ;     - bit 0 is set if the type of door (locked, bolted, enchanted) is known
+                                    ;     - bit 7 is set if the door has been opened
+rw  1970,1   ObsDoorType            ; Type of obstructed door: 0 (key), 1 (bolted), 2 (enchanted)
+rw  1971,1   dat_1971               ; 1 byte: Flag which prevents ?loading a new module / redrawing the scene? when module 0 is loaded
+                                    ;     If less than 0, a portion of the main game loop is skipped
 rw  1972,1   dat_1972               ; 1 byte:
                                     ;    used in applyBiology: Flag which prevents stamina from decreasing (No decrease if >= 0)
-rw  1973,1   dat_1973               ; 1 byte
+rw  1973,1   MapLocDngrLvl          ; Current map cell danger level (0..3)
 rw  1974,1   MapLocDescNum          ; 1 byte: Current map cell description index
 rw  1975,1   UNK_BYTE_1975          ; If this byte has sign bit set, calls CHK_IF_MAP4_ZONE1.  Assigned to $ff.
 rw  1976,1   Dapperness             ; 1 byte: Holds dapper total based on equipped apparel
@@ -573,7 +596,7 @@ rw  1977,1   cont_addr_1977_L       ; LSB of address to continue execution at fr
 rw  1978,1   cont_addr_1977_H       ; MSB of address to continue execution at from JMP sub_2ff3
 rw  1979,1   dat_1979               ;
 rw  197a,1   dat_197a               ; 1 byte
-rw  197b,1   dat_197b               ;
+rw  197b,1   ForceGetFlg            ; Flag which automatically triggers a "GET" action in sub_2ff3 when non-zero.
 rw  197c,20  dat_197c               ; 32 byte display buffer used by DLIST_40x1 & zeroed in sub_2cfb.
                                     ;   Related to loading encounters/scenarios
 
@@ -1006,9 +1029,9 @@ rw  2755,5   StickDirCde            ; 5 bytes: Joystick direction values corresp
 
 rwx 275b,1   readFileScan           ; Reads a file from disk, scanning all detected drives for the file.
 
-rwx 2785,1   nextDisk               ; Increments DiskNumber and sets to '1' ($31) if not between '1' ($31)
+rwx 2785,1   nextDisk               ; Increments DriveId and sets to '1' ($31) if not between '1' ($31)
                                     ;     and '4' ($34) (inclusive)
-rwx 2788,1   normalizeDisk          ; Tests DiskNumber and sets to '1' ($31) if not between '1' ($31)
+rwx 2788,1   normalizeDisk          ; Tests DriveId and sets to '1' ($31) if not between '1' ($31)
                                     ;     and '4' ($34) (inclusive)
 rwx 2799,1   readFile               ; Reads a file and it's corresponding key sector from the specified disk and
                                     ;     decrypts the result.
@@ -1167,9 +1190,14 @@ rw  2f78,8   StdStatPgStr_H         ; MSB of standard status page template strin
                                     ;    6: $3f03 [StrCurses]
                                     ;    7: $0000 - unused
 
+rwx 2f80,1   loadModule             ; Loads a module into the 16KB memory area starting at $7600 [ModuleStart] then
+                                    ;     continues at the address in cont_addr_1977_L/H.
+
 rwx 2ff3,1   sub_2ff3               ; ?Main game loop? Handles player actions (get, cast, drop, save, quit, pause, etc)... and much more...
 
-rwx 307f,1   cont_307f              ;
+rwx 307f,1   contReadKey            ; sub_2ff3: Reads a keypress and executes the corresponding action (if any).
+rwx 30aa,1   contUcChar             ; sub_2ff3: Converts character in A to uppercase, then executes any action (get,
+                                    ;     cast, use, drop, save, examine, quit, pause, next, prev) bound to the key
 
 rwx 30d1,3   smc_30d1               ; The address for this JSR abs is dynamically modified
 
@@ -1227,18 +1255,20 @@ rwx 33c6,1   rtn_33c6               ; Dynamically specified return location stor
 
 rwx 339f,1   contDoorMenu           ; Locked/Barred/Ench. door menu
 rwx 343b,1   contDoorRetry          ; Prompts the user to enter another selection
+rwx 3449,1   contDoorUnk            ; Continues here when examining the door fails to determine what obstructs it
+rwx 347e,1   contDoorOpens          ; Continues here when the door has been successfully opened
 
 rw  352e,1   dat_352e               ; 1 byte
-rw  352f,1   dat_352f               ; 1 byte
-rw  3530,1   dat_3530               ; 1 byte
+rw  352f,1   dat_352f               ; 1 byte: Used to temporarily store the value of cont_addr_1977_L
+rw  3530,1   dat_3530               ; 1 byte: Used to temporarily store the value of cont_addr_1977_H
 
 rwx 3531,1   calcCellAddr           ; Computes the address of the character's current cell within the map data
 
 ; The following are from SpclLocHndlr_L/H
-rwx 3548,1   cont_3548              ; Related to encounters?
-rwx 3564,1   cont_3564              ; Related to treasures?
+rwx 3548,1   contEncounter          ; Related to encounters?
+rwx 3564,1   contTreasure           ; Handle special treasure prompt interaction
 rwx 3583,1   contMessage            ; Adds special message for the current map cell as a status page and displays it.
-rwx 3596,1   sub_3596               ; Adds special message for the current map cell as a status page and displays it.
+rwx 3596,1   showSpclMsg            ; Adds special message for the current map cell as a status page and displays it.
 rwx 35c1,1   contTeleport           ; Teleports the player to the teleport destination at MapLocSpclNum * 4 of TlpDest
 rw  3630,5   TlpColorBuf            ; 5 bytes: Holds previous color values while flashing the screen
 
@@ -1248,7 +1278,7 @@ rwx 3662,1   resumeGamePlay         ; Resume the game, restoring state saved by 
 rw  3681,1   dat_3681_L             ; Used for preserving the value of cont_addr_1977_L
 rw  3682,1   dat_3681_H             ; Used for preserving the value of cont_addr_1977_H
 
-rwx 3683,1   actionExamine          ; Examine items or spells action
+rwx 3683,1   startExamine           ; ("E") Initiate Examine items or spells interaction
 
 rwx 36b1,1   contExmnItems          ; User selected "Examine Inventory"
 rwx 36c3,1   contExmnSpells         ; User selected "Examine Spells"
@@ -1260,21 +1290,21 @@ rw  3701,f   ZtsExmnSpells          ; 15: "Examine Spells"
 rw  3710,22  StrExmnItmSpl          ; 34 bytes: "Examine Items or Spells?"
 rw  3732,24  StrFwdBackEsc          ; 36 bytes: "Forward, Back, or ESC to exit"
 
-rwx 3756,1   actionGet              ; (G) Get action
-rwx 375f,1   actionOffer            ; Handles the OFFER action (e.g. during encounters)
-rwx 3768,1   actionDrop             ; (D) Drop action
-rwx 3771,1   actionUse              ; (U) Use action
-rwx 377a,1   actionCast             ; (C) Cast spell action
-rwx 3783,1   actionSave             ; (S) Save character action
+rwx 3756,1   startGet               ; ("G") Initiates Get interaction
+rwx 375f,1   startOffer             ; Initiates Offer interaction (e.g. during encounters)
+rwx 3768,1   startDrop              ; ("D") Initiates Drop interaction
+rwx 3771,1   startUse               ; ("U") Initiates Use interaction
+rwx 377a,1   startCast              ; ("C") Initiates Cast spell interaction
+rwx 3783,1   startSave              ; ("S") Initiates Save character interaction
 
 rw  37be,18  StrSaveChrctr          ; 24? bytes: "Save character?"
 
-rwx 37d6,1   actionQuit             ; (Q) Quit game action
+rwx 37d6,1   startQuit              ; ("Q") Initiates Quit game interaction
 
 rw  3804,46  StrQuitNoSave          ; 70 bytes: "Quit game without saving character? " & flows into StrAreYouSure
 rw  382e,1c  StrAreYouSure          ; 28 bytes: "Are you sure (Y or N)"
 
-rwx 384a,1   actionPause            ; (P) Pause game action
+rwx 384a,1   startPause             ; ("P") Initiates Pause game interaction
 
 rw  3860,f   StrPaused              ; 15 bytes: "(Paused)"
 
@@ -1360,15 +1390,15 @@ rw  3b54,8   MoveStepDir            ; 8 bytes: Direction step for orientation
                                     ;     7: $01 - +1 (West)
 rw  3b5c,8   MoveBounds             ; 8 bytes: Minimum/maximum bounds for fractional position within a map.
                                     ;   Forward movement
-                                    ;     0: $00 - North-facing minimum bound
-                                    ;     1: $23 - East-facing maximum bound
-                                    ;     2: $23 - South-facing maximum bound
-                                    ;     3: $00 - West-facing minimum bound
+                                    ;     0: $00      - North-facing minimum bound
+                                    ;     1: $23 (35) - East-facing maximum bound
+                                    ;     2: $23 (35) - South-facing maximum bound
+                                    ;     3: $00      - West-facing minimum bound
                                     ;   Backward movement (player orientation + 4)
-                                    ;     4: $23 - North-facing maximum bound
-                                    ;     5: $00 - East-facing minimum bound
-                                    ;     6: $00 - South-facing minimum bound
-                                    ;     7: $23 - West-facing maximum bound
+                                    ;     4: $23 (35) - North-facing maximum bound
+                                    ;     5: $00      - East-facing minimum bound
+                                    ;     6: $00      - South-facing minimum bound
+                                    ;     7: $23 (35) - West-facing maximum bound
 rw  3b64,8   MoveWallOfs            ; 8 bytes: Offset in map cell data of wall code for direction
                                     ;   Forward movement
                                     ;     0: $00 - MapWall_E_N (North)
@@ -1399,33 +1429,35 @@ rw  3b76,1   StickMaskLeft          ; Contains $04: Joystick direction mask (Lef
 rw  3b77,1   StickMaskRight         ; Contains $08: Joystick direction mask (Right) (unused?)
 
 rw  3b78,d   ActionKeyBind          ; 13 bytes: table of key characters mapped to corresponding action entries
-                                    ; in ActionSubAdr_L/H:
-                                    ;     0: "G", 1: "D", 2: "U", 3: "C",  4: "S",  5: "E"
-                                    ;     6: "Q", 7: "P", 8: ",", 9: ".", 10: $10 (SELECT), 11: $11 (START)
-                                    ;    12: $13 (CR)
+                                    ; in KbdActSubAdr_L/H:
+                                    ;     0: "G" (Get),       1: "D" (Drop),          2: "U" (Use),
+                                    ;     3: "C" (Cast),      4: "S" (Save),          5: "E" (Examine),
+                                    ;     6: "Q" (Quit),      7: "P" (Pause),         8: "," (Prev),
+                                    ;     9: "." (Next),     10: $10 (SELECT/Next),  11: $11 (START/Prev),
+                                    ;    12: $13 (??)
 
-rw  3b85,d   ActionSubAdr_L         ; 13 byte table of LSB of subroutine address
-rw  3b92,d   ActionSubAdr_H         ; 13 byte table of MSB of subroutine address
-                                    ;     0: $3756 [actionGet]      - (G) Get action
-                                    ;     1: $3768 [actionDrop]     - (D) Drop action
-                                    ;     2: $3771 [actionUse]      - (U) Use action
-                                    ;     3: $377a [actionCast]     - (C) Cast spell action
-                                    ;     4: $3783 [actionSave]     - (S) Save character action
-                                    ;     5: $3683 [actionExamine]  - (E) Examine items or spells action
-                                    ;     6: $37d6 [actionQuit]     - (Q) Quit game action
-                                    ;     7: $384a [actionPause]    - (P) Pause game action
-                                    ;     8: $3c8c [actionPrevStat] - (,) Previous status page action
-                                    ;     9: $3c71 [actionNextStat] - (.) Next status page action
-                                    ;    10: $3c71 [actionNextStat] - (SELECT) Next status page action
-                                    ;    11: $3c8c [actionPrevStat] - (START) Previous status page action
-                                    ;    12: $2cab [sub_2cab] - () Does nothing/debug BRK
+rw  3b85,d   KbdActSubAdr_L         ; 13 byte table of LSB of subroutine address
+rw  3b92,d   KbdActSubAdr_H         ; 13 byte table of MSB of subroutine address
+                                    ;     0: $3756 [startGet]       - (G) Get interaction
+                                    ;     1: $3768 [startDrop]      - (D) Drop interaction
+                                    ;     2: $3771 [startUse]       - (U) Use interaction
+                                    ;     3: $377a [startCast]      - (C) Cast spell interaction
+                                    ;     4: $3783 [startSave]      - (S) Save character interaction
+                                    ;     5: $3683 [startExamine]   - (E) Examine items or spells interaction
+                                    ;     6: $37d6 [startQuit]      - (Q) Quit game interaction
+                                    ;     7: $384a [startPause]     - (P) Pause game interaction
+                                    ;     8: $3c8c [showPrevStatPg] - (,) Show previous status page
+                                    ;     9: $3c71 [showNextStatPg] - (.) Next status page interaction
+                                    ;    10: $3c71 [showNextStatPg] - (SELECT) Next status page interaction
+                                    ;    11: $3c8c [showPrevStatPg] - (START) Show previous status page
+                                    ;    12: $2cab [sub_2cab]       - (CR) Does nothing/debug BRK
 
 rw  3b9f,4   SpclLocHndlr_L         ; 4 byte table: LSB of addresses of special location code handlers
 rw  3ba3,4   SpclLocHndlr_H         ; 4 byte table: MSB of addresses of special location code handlers
-                                    ;    0: $3548 [cont_3548]    - (Related to encounters?)
-                                    ;    1: $3564 [cont_3564]    - (Related to treasures?)
-                                    ;    2: $3583 [contMessage]  - Display location message
-                                    ;    3: $35c1 [contTeleport] - Teleport player
+                                    ;    0: $3548 [contEncounter] - Initiates a special encounter
+                                    ;    1: $3564 [contTreasure]  - Handle special treasure prompt
+                                    ;    2: $3583 [contMessage]   - Display location message
+                                    ;    3: $35c1 [contTeleport]  - Teleport player
 
 rw  3ba7,7e  TlpDest                ; 128 bytes / 4 byte entries = 32 entries
 rw  3ba7,1   TlpDest_X              ; X location to teleport player to
@@ -1476,9 +1508,9 @@ rwx 3c5c,1   setStatPgStr2          ; Assigns a template string to the status pa
 
 rwx 3c61,1   setStatPgStr           ; Assigns a template string to the status page list at a specified index and displays it.
 
-rwx 3c71,1   actionNextStat         ; (. or SELECT) Next status page action
+rwx 3c71,1   showNextStatPg         ; (. or SELECT) Display the next status page
 
-rwx 3c8c,1   actionPrevStat         ; (, or START) Previous status page action
+rwx 3c8c,1   showPrevStatPg         ; (, or START) Display the previous status page
 
 rwx 3ca5,1   addStatPage            ; Add a new status page string template to the end of the list
 
@@ -1527,11 +1559,16 @@ rwx 408b,1   sub_408b               ;
 
 rw  413c,1   dat_413c               ; 1 byte
 
-rwx 413d,1   sub_413d               ;
+rwx 413d,1   checkEncounter         ; Randomly trigger encounter if random draw 0..255 is less
+                                    ;     than (CHR_Obviousness - -128) + DangerModTbl[MapLocDngrLvl] clamped to 0..255.
 
 rw  4168,2   smc_4168               ; The value for this CMP is dynamically modified
 
-rw  4172,4   tbl_4172               ; 4 bytes:
+rw  4172,4   DangerModTbl           ; Standard encounter probabilities for the 4 different danger levels
+                                    ;    0: $0c (12)                 - 12/256 =  4.7% chance
+                                    ;    1: $10 (16 =  +4 /  +33.3%) - 16/256 =  6.3% chance (1.6% over base [ 33% inc])
+                                    ;    2: $18 (24 = +12 / +100.0%) - 24/256 =  9.4% chance (4.7% over base [100% inc])
+                                    ;    3: $20 (32 = +20 / +166.6%) - 32/256 = 12.5% chance (7.8% over base [166% inc])
 
 rwx 4176,1   applyBiology           ; Applies standard time-based adjustments to character biological status (hunger,
                                     ;     thirst, stamina, drunkenness, and stomach)
@@ -1560,8 +1597,8 @@ rwx 41fc,1   calcItemStats          ; Updates stats affected by items (burden, w
 
 rwx 42c8,1   smc_42c8               ; Self-modifying: The arg to this "SBC imm" is dynamically set to effective STR / 2
 
-rw  42e5,1   TmpBurden_L            ; LSB of uint16: Temporary storage for player burden calculation
-rw  42e6,1   TmpBurden_H            ; MSB of uint16: Temporary storage for player burden calculation
+rw  42e5,1   TmpBurden_L            ; LSB of uint16: calcItemStats: Temporary storage for player burden calculation
+rw  42e6,1   TmpBurden_H            ; MSB of uint16: calcItemStats: Temporary storage for player burden calculation
 
 rwx 42e7,1   updEffectStrs          ; Updates the effect status strings on the display
 rwx 4377,1   applyBioAdj            ; Applies standard biological status effects (stat adjustments/etc based on current
@@ -1571,13 +1608,19 @@ rwx 43b1,3   smc_43b0               ; The address for this JSR is dynamically mo
 
 rw  43c5,1   TmpCHR_STAMINA         ; Used in applyBioAdj to temporarily store value of CHR_STAMINA
 
-rwx 43c6,1   minuteUpdates          ; Called each game minute (every 4 seconds)
+rwx 43c6,1   updStatEffVals         ; Updates the effective value for each primary stat and updates the HP separator
+                                    ;     character displayed on the screen (':' if less than max, '=' if max)
 
-rw  445f,10  tbl_MOVE_SPEED         ; Table of 16 x 1 byte values indexed by CHR_SPD_EFFECTIVE/16
-                                    ;   and assigned to CHR_MOVE_SPEED
+rw  445f,10  MoveSpeedTbl           ; 16 bytes: Movement speed values indexed by CHR_SPD_EFFECTIVE/16.
                                     ;   One of:
-                                    ;     $06,$07,$08,$09,$0a,$0b,$0c,$0d
-                                    ;     $0e,$0f,$10,$11,$11,$11,$12,$12
+                                    ;    0: $06           8: $0e
+                                    ;    1: $07           9: $0f
+                                    ;    2: $08          10: $10
+                                    ;    3: $09          11: $11
+                                    ;    4: $0a          12: $11
+                                    ;    5: $0b          13: $11
+                                    ;    6: $0c          14: $12
+                                    ;    7: $0d          15: $12
 
 rwx 446f,1   rtsIfRndStaChk         ; Returns to caller of previous sub (unwinding stack)
                                     ;     if the player's STA / 2 >= random byte chosen amount.
@@ -1611,12 +1654,12 @@ rwx 458d,1   effVeryDrunk           ; Inebriation:Very Drunk - NOP: Simply retur
 rwx 458e,1   effStuffed             ; Fullness:Stuffed - NOP: Simply returns to caller
 rwx 458f,1   effBloated             ; Fullness:Bloated - NOP: Simply returns to caller
 
-rw  4590,1   hungerTimer            ; 1 byte: applyBiology: Number of calls before player hunger is decremented
-rw  4591,1   thirstTimer            ; 1 byte: applyBiology: Number of hunger decreases before player thirst is
+rw  4590,1   HungerTimer            ; 1 byte: applyBiology: Number of calls before player hunger is decremented
+rw  4591,1   ThirstTimer            ; 1 byte: applyBiology: Number of hunger decreases before player thirst is
                                     ;     decremented
-rw  4592,1   staminaTimer           ; 1 byte: applyBiology: Number of calls before player stamina is decremented
-rw  4593,1   drunkTimer             ; 1 byte: applyBiology: Number of calls before player drunkenness is updated
-rw  4594,1   stomachTimer           ; 1 byte: applyBiology: Number of calls before player stomach is updated
+rw  4592,1   StaminaTimer           ; 1 byte: applyBiology: Number of calls before player stamina is decremented
+rw  4593,1   DrunkTimer             ; 1 byte: applyBiology: Number of calls before player drunkenness is updated
+rw  4594,1   StomachTimer           ; 1 byte: applyBiology: Number of calls before player stomach is updated
 
 rw  4595,7   EffTimers              ; 7 bytes: Table of countdown counters for the various biological and environmental
                                     ;     effect types. Each counter is decremented until 0, then reset to the
@@ -1981,7 +2024,7 @@ rwx 4a4a,1   removeEffect           ; Invalidates/removes (sets byte 0 to $80) t
                                     ; following entry if the current effect's type code is >= $f0 (description w/
                                     ; linked effect).
 
-rwx 4a5f,1   sub_4a5f               ; Calls sub_4bb3 for each item in the game inventory.
+rwx 4a5f,1   doAllItemActs          ; Calls doItemAction for each item in the game inventory.
 
 rwx 4a83,1   allocItem              ; Reserves a space in the inventory for an item of the specified size.
 
@@ -2004,13 +2047,12 @@ rwx 4b89,1   sub_4b89               ;
 rwx 4b8b,1   nop_4b8b               ; Forms 'BIT $10a2' with following LDA (e.g. NOP)
 
 rwx 4b8c,1   sub_4b8c               ;
-rwx 4baa,1   sub_4baa               ; Calls sub_4bb3 for the item in the specified inventory index, if one is assigned.
-rwx 4bb3,1   sub_4bb3               ;
+rwx 4baa,1   sub_4baa               ; Calls doItemAction for the item in the specified inventory index, if one is assigned.
+rwx 4bb3,1   doItemAction           ; Processes a signalled action trigger for an item.
 
-rwx 4be2,1   sub_4be2               ; Mark item as in player inventory
-rwx 4bf5,1   sub_4bf5               ; Drops an item held by the player
-rwx 4c5a,1   sub_4c5a               ; Mark the inventory slot at ItemIndex "available"
-rwx 4c6b,1   sub_4c6b               ; Sub referenced in tbl_4cbf_L/H
+rwx 4be2,1   doGetAction            ; Executes $01 "get" action for item: Mark item as in player inventory
+rwx 4bf5,1   doDropAction           ; Executes $02 "drop" action for item: Drops an item held by the player
+rwx 4c5a,1   doUseAction            ; Executes $04 "use" action for item: Mark the inventory slot at ItemIndex "available"
 rwx 4c86,1   sub_4c86               ; Mark the inventory slot at ItemIndex "occupied"
 rwx 4c95,1   cont_4c95              ;
 rwx 4c9c,1   rts_4c9c               ; NOP - Just an RTS. Sub referenced in tbl_4cbf_L/H
@@ -2019,20 +2061,20 @@ rwx 4c9d,1   sub_4c9d               ; Sub referenced in tbl_4cbf_L/H
 rw  4cbf,12  tbl_4cbf_L             ; LSB of continuation addr (18 byte table of 9 x 2 byte entries)
 rw  4cc0,1   tbl_4cbf_H             ; MSB of continuation addr
                                     ; Add 1 to the addresses in this table for the sub start:
-                                    ;     0: $4be2 [sub_4be2] - (dat_004c: xxxxxxx0) -
-                                    ;     1: $4bf5 [sub_4bf5] - (dat_004c: xxxxxx01) -
-                                    ;     2: $4c5a [sub_4c5a] - (dat_004c: xxxxx011) -
-                                    ;     3: $4c6b [sub_4c6b] - (dat_004c: xxxx0111) -
-                                    ;     4: $4c9d [sub_4c9d] - (dat_004c: xxx01111) -
-                                    ;     5: $4c9c [rts_4c9c] - (dat_004c: xx011111) - NOP
-                                    ;     6: $4c9c [rts_4c9c] - (dat_004c: x0111111) - NOP
-                                    ;     7: $4c9c [rts_4c9c] - (dat_004c: 01111111) - NOP
-                                    ;     8: $4c86 [sub_4c86] - (dat_004c: 11111111) -
+                                    ;     0: $4be2 [doGetAction]  - xxxxxxx1: $01 get: Mark item as in player inventory
+                                    ;     1: $4bf5 [doDropAction] - xxxxxx10: $02 drop: Drops an item held by the player
+                                    ;     2: $4c5a [doUseAction]  - xxxxx100: $04 use: Mark inventory slot at ItemIndex "available"
+                                    ;     3: $4c6b [sub_4c6b] - xxxx1000: $08 unuse:
+                                    ;     4: $4c9d [sub_4c9d] - xxx10000: $10 ??:
+                                    ;     5: $4c9c [rts_4c9c] - xx100000: $20 NOP
+                                    ;     6: $4c9c [rts_4c9c] - x1000000: $40 NOP
+                                    ;     7: $4c9c [rts_4c9c] - 10000000: $80 NOP
+                                    ;     8: $4c86 [sub_4c86] - 00000000: Unreachable? Mark the inventory slot at ItemIndex "occupied"
 
 rwx 4ccf,1   sub_4ccf               ;
 rwx 4d92,1   rts_4d92               ; Return to caller
 
-rwx 4d93,1   sub_4d93               ; Searches active effects for effects linked to an inventory item and calls
+rwx 4d93,1   removeItmEfcts         ; Searches active effects for effects linked to an inventory item and calls
                                     ;     removeEffectAt for each match.
 
 rwx 4dd4,1   sub_4dd4               ; Searches $6500 [CHR_Effects] for an effect matching an effect associated with
@@ -2046,7 +2088,7 @@ rwx 4e0f,1   chkItemAlign           ; Checks the alignment of item at ItemAdr_L/
                                     ;     current alignment.
 rwx 4e22,1   rts_4e22               ; Return to caller
 
-rwx 4e90,1   sub_4e90               ; Removes an item from the dropped item list.
+rwx 4e90,1   itemNotDropped         ; Removes an item from the dropped item list.
 
 rwx 4ea2,1   unequipItem            ; Unequips any equipped weapon, armor or apparel with the specified item index
                                     ;     from the player.
@@ -2067,7 +2109,7 @@ rwx 4ec4,1   getItemAttrs           ; Updates ItemAttrs_L/H to skip past item ef
 rwx 4ee8,1   getItemEfcts           ; Sets ItemAdr_L/H to the address of the specified inventory item and ItemAttrs_L/H
                                     ;     to the start of the effect section for that item.
 
-rwx 4efd,1   sub_4efd               ; ?Perhaps torch burning out?
+rwx 4efd,1   torchBurnedOut         ; Called when a torch burns out.
 
 rw  4f5d,20  ItemStick              ; 32 bytes: "stick" item
 
@@ -2108,33 +2150,44 @@ rwx 51d8,1   cont_51d8              ;
 
 rwx 5209,1   cont_5209              ;
 
-rwx 5225,1   cont_5225              ;
+rwx 5225,1   cont_5225              ; Requests stat display update and returns to caller
 
 rw  5229,8   tbl_5229_H             ; 8 bytes: MSB of address
 rw  5231,8   tbl_5231_L             ; 8 bytes: LSB of address
                                     ; Contains the following addresses (after adding 1 to get final addr to execute)
-                                    ;   0: $5239 [cont_5239]
-                                    ;   1: $52c3 [cont_52c3]
-                                    ;   2: $540f [cont_540f]
-                                    ;   3: $54aa [cont_54aa]
-                                    ;   4: $54ee [cont_54ee]
-                                    ;   5: $5505 [cont_5505]
-                                    ;   6: $556b [cont_556b]
-                                    ;   7: $5632 [cont_5632]
+                                    ;   1: $52c3 [contCastSpell]  - Attempts to cast the spell in the specified game
+                                    ;                               inventory index.
+                                    ;   2: $540f [contUseAmmo]    - Use ammo item (incl. Guild Ring) in the specified
+                                    ;                               inventory index.
+                                    ;   3: $54aa [contAssgnWeapn] - Prompts the user to assign a weapon to a hand
+                                    ;                               (primary/secondary) and equips the weapon to that
+                                    ;                               slot.
+                                    ;   4: $54ee [contEquipArmor] - Equips a piece of armor to the appropriate
+                                    ;                               equipment slot.
+                                    ;   5: $5505 [contEquipApprl] - Equips a piece of clothing to an apparel
+                                    ;                               equipment slot.
 
 rwx 5239,1   cont_5239              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 
-rw  525a,3   tbl_525a_L             ; 3 byte table with LSB of address
-                                    ; Contains the following addresses (after adding 1 to get final addr to execute)
-                                    ;     $5263,$5282,$5293
-rw  525d,3   tbl_525d_H             ; 3 byte table with MSB of address
-rw  5260,3   tbl_5260               ; 3 byte table of data [$08, $10, $18]
-                                    ;     Corresponds to values in tbl_5409_L/tbl_540b_H
-rwx 5263,1   cont_5263              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
-rwx 5282,1   cont_5282              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
-rwx 5293,1   cont_5293              ; Indirectly called using lookup tables tbl_525a_L/tbl_525d_H
+rw  525a,3   tbl_525a_L             ; 3 bytes: cont_5239: LSB of contination address
+rw  525d,3   tbl_525d_H             ; 3 bytes: cont_5239: MSB of contination address
+                                    ;   Contains the following addresses (after adding 1 to get final addr to execute)
+                                    ;   0: $5263 [cont_5263]
+                                    ;   1: $5282 [cont_5282]
+                                    ;   2: $5293 [cont_5293]
+rw  5260,3   tbl_5260               ; 3 bytes: cont_5239: Charged magic item sub type lookup. Compared to bits 3-6 of
+                                    ;     the item type, bits 5 & 6 must be 0 to match. Match position corresponds to
+                                    ;     index in tbl_525a_L/tbl_525d_H.
+                                    ;   0: $08 - Requires a crystal
+                                    ;   1: $10 - ? Uses charge on item, removes item when charges reach 0
+                                    ;   2: $18 - ? May use charge on item (if charged) & removes item when charges go below 0
+                                    ;                scroll (charges) or spell (no charges)?
+                                    ;
+rwx 5263,1   cont_5263              ; Indirectly called from cont_5239 using lookup tables tbl_525a_L/tbl_525d_H
+rwx 5282,1   cont_5282              ; Indirectly called from cont_5239 using lookup tables tbl_525a_L/tbl_525d_H
+rwx 5293,1   cont_5293              ; Indirectly called from cont_5239 using lookup tables tbl_525a_L/tbl_525d_H
 
-rwx 52c3,1   cont_52c3              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
+rwx 52c3,1   contCastSpell          ; Attempts to cast the spell in the specified game inventory index.
 
 rwx 5371,1   smc_5371               ; Self-modifying code: This CMP immediate value is updated to a random value
 
@@ -2147,17 +2200,17 @@ rw  540b,2   tbl_540b_H             ; 2 byte table with MSB of address
 rw  540d,2   tbl_540d               ; 2 byte table of data [$08, $10].
                                     ;     Corresponds to values in tbl_5409_L/tbl_540b_H
 
-rwx 540f,1   cont_540f              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
+rwx 540f,1   contUseAmmo            ; Use ammo item (incl. Guild Ring) in the specified inventory index.
 rw  5470,1   dat_5470               ; 1 byte: Menu selection offset ??value is assigned to dat_6277??
 rwx 5471,1   sub_5471               ;
 
 rwx 548e,1   divByteBy10            ; Divide unsigned byte in A by 10, setting DivQuotient and DivRemainder
 rwx 5492,1   divUint16Uint8         ; Perform unsigned integer division
-rwx 54aa,1   cont_54aa              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
-rwx 54af,1   cont_54af              ;
-rwx 54ee,1   cont_54ee              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
-rwx 5505,1   cont_5505              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
-rwx 555a,1   cont_555a              ;
+rwx 54aa,1   contAssgnWeapn         ; Prompts the user to assign a weapon to a hand (primary/secondary) and equips
+                                    ;     the weapon to that slot.
+rwx 54af,1   contEquipWeapn         ; Invoked from contAssgnWeapn & useUnlitTorch after a new weapon is equipped
+rwx 54ee,1   contEquipArmor         ; Equips a piece of armor to the appropriate equipment slot.
+rwx 5505,1   contEquipApprl         ; Equips a piece of clothing to an apparel equipment slot.
 rwx 556b,1   cont_556b              ; Indirectly called using lookup tables tbl_5231_L/tbl_5229_H
 
 rw  559e,1   tbl_559e               ; 1 byte table of data [$08].
@@ -2233,7 +2286,9 @@ rwx 59e5,3   numPaddingOn           ; Sets NoNumPadFlg to 0 (enables right-paddi
 rwx 59e8,6   numPaddingOff          ; Sets NoNumPadFlg to $ff (disables width padding when outputting numbers)
 
 rw  59ee,13  StrNothingHere         ; 19 bytes: "Nothing here."
-rw  5a01,6   unk_5a01               ; 6 bytes
+rw  5a01,6   unk_5a01               ; 6 bytes: Item header bytes for a dropped stackable/standard item
+                                    ;          (e.g. Food Packets, Water Flasks, Unlit Torches, etc.)
+                                    ;   - sub_5bb8: Uses this header to build item
 
 rw  5a07,10  ZtsTempBuf             ; 16 bytes: Populated with NUL-terminated string
                                     ;    (Only written?)
@@ -2393,14 +2448,16 @@ rw  6277,1   dat_6277               ; 1 byte: Menu selection offset to start dis
 rw  6278,1   MenuSelIdx             ; 1 byte: a menu selection index (e.g. 0..3 for 4 item menu)
 rw  6279,1   dat_6279               ; 1 byte: Menu selection offset for ???
 rw  627a,1   dat_627a               ; 1 byte
-rw  627b,1   dat_627b               ; 1 byte (Related to cont_52c3)
-rw  627c,1   dat_627c               ; 1 byte (Related to cont_540f)
+rw  627b,1   dat_627b               ; 1 byte (Related to contCastSpell)
+rw  627c,1   dat_627c               ; 1 byte (Related to contUseAmmo)
 rw  627d,1   dat_627d               ; 1 byte
 rw  627e,1   dat_627e               ; 1 byte
-rw  627f,1   dat_627f               ; 1 byte
-rw  6280,1   dat_6280               ; 1 byte:
-rw  6281,1   dat_6281               ; 1 byte:
-rw  6282,1   dat_6282               ; 1 byte:
+rw  627f,1   RemoveItemFlg          ; When <0, cont_5209 will remove the item at ItemIndex
+                                    ;    (e.g. the item was consumed when used)
+rw  6280,1   SpellCost              ; contCastSpell: Spell cast cost, copied from spell attribute S0 (Cast cost)
+rw  6281,1   SpellSkill             ; contCastSpell: Spell cast skill, copied from spell attribute S1 (Cast skill)
+rw  6282,1   SpellBackfire          ; contCastSpell: Spell backfire penalty, copied from spell
+                                    ;     attribute S2 (Backfire penalty)
 rw  6283,1   EquipSlot              ; 1 byte: equipItem param: equipment slot to assign (0..9)
                                     ;     0: CHR_PRI_WEAPON
                                     ;     1: CHR_SEC_WEAPON
@@ -2412,7 +2469,7 @@ rw  6283,1   EquipSlot              ; 1 byte: equipItem param: equipment slot to
                                     ;     7: CHR_APPAREL[1]
                                     ;     8: CHR_APPAREL[2]
                                     ;     9: CHR_APPAREL[3]
-rw  6284,1   dat_6284               ; 1 byte: Loop index variable
+rw  6284,1   DroppedIndex           ; Loop index variable for iterating dropped items
 rw  6285,1   dat_6285               ; 1 byte: possible LSB of address?
 rw  6286,1   dat_6286               ; 1 byte: possible MSB of address?
 rw  6287,1   dat_6287               ; 1 byte: possible LSB of address?
@@ -2480,7 +2537,7 @@ rw  634c,1   CHR_STA_PENALTY1       ; First penalty to STA value
 rw  634d,1   CHR_STA_PENALTY2       ; Second penalty to STA value
 rw  634e,1   CHR_STA_PENALTY3       ; Third penalty to STA value
 rw  634f,1   CHR_STA_PENALTY4       ; Fourth penalty to STA value
-rw  6350,1   CHR_STA_UNKNOWN
+rw  6350,1   CHR_STA_UNKNOWN        ; Unknown value related to STA stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 rw  6351,1   CHR_CHR_EFFECTIVE      ; Effective CHR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
 rw  6352,1   CHR_CHR_BASE           ; Base CHR value
 rw  6353,1   CHR_CHR_BONUS          ; Bonus to CHR value
@@ -2488,7 +2545,7 @@ rw  6354,1   CHR_CHR_PENALTY1       ; First penalty to CHR value
 rw  6355,1   CHR_CHR_PENALTY2       ; Second penalty to CHR value
 rw  6356,1   CHR_CHR_PENALTY3       ; Third penalty to CHR value
 rw  6357,1   CHR_CHR_PENALTY4       ; Fourth penalty to CHR value
-rw  6358,1   CHR_CHR_UNKNOWN
+rw  6358,1   CHR_CHR_UNKNOWN        ; Unknown value related to CHR stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 rw  6359,1   CHR_STR_EFFECTIVE      ; Effective STR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
 rw  635a,1   CHR_STR_BASE           ; Base STR value
 rw  635b,1   CHR_STR_BONUS          ; Bonus to STR value
@@ -2496,7 +2553,7 @@ rw  635c,1   CHR_STR_PENALTY1       ; First penalty to STR value
 rw  635d,1   CHR_STR_PENALTY2       ; Second penalty to STR value
 rw  635e,1   CHR_STR_PENALTY3       ; Third penalty to STR value
 rw  635f,1   CHR_STR_PENALTY4       ; Fourth penalty to STR value
-rw  6360,1   CHR_STR_UNKNOWN
+rw  6360,1   CHR_STR_UNKNOWN        ; Unknown value related to STR stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 rw  6361,1   CHR_INT_EFFECTIVE      ; Effective INT value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
 rw  6362,1   CHR_INT_BASE           ; Base INT value
 rw  6363,1   CHR_INT_BONUS          ; Bonus to INT value
@@ -2504,7 +2561,7 @@ rw  6364,1   CHR_INT_PENALTY1       ; First penalty to INT value
 rw  6365,1   CHR_INT_PENALTY2       ; Second penalty to INT value
 rw  6366,1   CHR_INT_PENALTY3       ; Third penalty to INT value
 rw  6367,1   CHR_INT_PENALTY4       ; Fourth penalty to INT value
-rw  6368,1   CHR_INT_UNKNOWN
+rw  6368,1   CHR_INT_UNKNOWN        ; Unknown value related to INT stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 rw  6369,1   CHR_WIS_EFFECTIVE      ; Effective WIS value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
 rw  636a,1   CHR_WIS_BASE           ; Base WIS value
 rw  636b,1   CHR_WIS_BONUS          ; Bonus to WIS value
@@ -2512,7 +2569,7 @@ rw  636c,1   CHR_WIS_PENALTY1       ; First penalty to WIS value
 rw  636d,1   CHR_WIS_PENALTY2       ; Second penalty to WIS value
 rw  636e,1   CHR_WIS_PENALTY3       ; Third penalty to WIS value
 rw  636f,1   CHR_WIS_PENALTY4       ; Fourth penalty to WIS value
-rw  6370,1   CHR_WIS_UNKNOWN
+rw  6370,1   CHR_WIS_UNKNOWN        ; Unknown value related to WIS stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 rw  6371,1   CHR_SKL_EFFECTIVE      ; Effective SKL value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
 rw  6372,1   CHR_SKL_BASE           ; Base SKL value
 rw  6373,1   CHR_SKL_BONUS          ; Bonus to SKL value
@@ -2520,7 +2577,7 @@ rw  6374,1   CHR_SKL_PENALTY1       ; First penalty to SKL value
 rw  6375,1   CHR_SKL_PENALTY2       ; Second penalty to SKL value
 rw  6376,1   CHR_SKL_PENALTY3       ; Third penalty to SKL value
 rw  6377,1   CHR_SKL_PENALTY4       ; Fourth penalty to SKL value
-rw  6378,1   CHR_SKL_UNKNOWN
+rw  6378,1   CHR_SKL_UNKNOWN        ; Unknown value related to SKL stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 rw  6379,1   CHR_SPD_EFFECTIVE      ; Effective SPD value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
 rw  637a,1   CHR_SPD_BASE           ; Base SPD value
 rw  637b,1   CHR_SPD_BONUS          ; Bonus to SPD value
@@ -2529,16 +2586,21 @@ rw  637d,1   CHR_SPD_PENALTY2       ; Second penalty to SPD value
 rw  637e,1   CHR_SPD_PENALTY3       ; Third penalty to SPD value
 rw  637f,1   CHR_SPD_PENALTY4       ; Fourth penalty to SPD value
 ; The following 128 bytes ($6380-$63FF) are copied to $100-$17F on return from a scenario module
-rw  6380,1   CHR_SPD_UNKNOWN
+rw  6380,1   CHR_SPD_UNKNOWN        ; Unknown value related to SPD stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 
-rw  6381,1   CHR_NOTICEABILITY      ; ?Noticeability? / ?Stealth?  Related to stealth suit
+rw  6381,1   CHR_TREASURE_FINDING   ; ? treasure finding ?
+rw  6382,1   CHR_Obviousness        ;  ?Related to elven cloak ? This seems likely to be noticeability / stealth, based on how it's used in the encounter calculation in checkEncounter... ?
 
-rw  6382,1   Chr_Unk_6382           ;
+rw  6384,1   CHR_LUCK               ; ?Luck?
+rw  6385,1   CHR_ALIGN              ; Alignment (Base $80 (Neutral), lower = more evil, higher = more good)
+rw  6386,1   CHR_MORALE             ; ?Morale?/?Mood?
 
-rw  6388,1   Chr_Unk_6388           ; Bit 1 related to movement thru door - When a locked/barred/enchanted door is encountered, the player moves through if this bit is 1.
-                                    ; Bit 2 related to perception? (Part of "Something odd here" check)
+rw  6388,1   Chr_Unk_6388           ; Bit 1 (1) related to movement thru door - When a locked/barred/enchanted door is encountered, the player moves through if this bit is 1 and the bit is cleared.
+                                    ; Bit 2 (2) related to perception? (Part of "Something odd here" check)
+                                    ; Bit 3 (4) related to solar suit. This bit is set when the player wears the solar suit and cleared when they remove it.
 
-rw  638b,1   CHR_SEE_SECRET_DOORS   ; Flag indicating whether the player can see secret doors or not. Interacts with UNK_BYTE_COUNTER ($1956)
+rw  638b,1   CHR_SEE_SECRET_DOORS   ; Flag indicating whether the player can see secret doors or not.
+                                    ;     (0 = no, non-zero = yes)
 
 rw  638d,1   CHR_DIFFICULT_TO_HIT   ;
 
@@ -2552,7 +2614,7 @@ rw  6393,1   CHR_Cursed             ; Negative two's complement of the number of
 rw  6394,1   CHR_BURDEN             ; Player encumberment
 rw  6395,1   CHR_WARMTH             ; Player warmth
 rw  6396,1   Chr_Unk_6396           ; TODO: Related to CHR_DRUNK (decreased when drunk increased... stomach alcohol level?)
-rw  6397,1   CHR_DRUNK              ; Player drunkeness level (blood alcohol level?)
+rw  6397,1   CHR_DRUNK              ; Player drunk flag (drunk if less than 0)
 rw  6398,1   CHR_STOMACH            ; Player fullness/bloated?
 rw  6399,1   CHR_HUNGER             ; Player hunger      TODO: rename to satiation?
 rw  639a,1   CHR_THIRST             ; Player thirst      TODO: rename to hydration?
@@ -2595,15 +2657,27 @@ rw  63c1,1   INV_TIMEPIECES         ; Number of timepieces in inventory (uint16)
 
 ; What are 63c2 ... 63d1?
 
-rw  63d2,b   dat_63d2               ; 11? bytes
+rw  63d2,b   dat_63d2               ; 11 bytes:
+                                    ;   contEquipWeapn: Set to 0 whenever a new weapon is equipped.
 
+rw  63dd,1   Chr_BluntDmg           ; Player blunt damage attr
+rw  63de,1   Chr_SharpDmg           ; Player sharp damage attr
+rw  63df,1   Chr_EarthDmg           ; Player earth damage attr
+rw  63e0,1   Chr_AirDmg             ; Player air damage attr
+rw  63e1,1   Chr_FireDmg            ; Player fire damage attr
+rw  63e2,1   Chr_WaterDmg           ; Player water damage attr
+rw  63e3,1   Chr_PowerDmg           ; Player power damage attr
+rw  63e4,1   Chr_MagicDmg           ; Player magic damage attr
+rw  63e5,1   Chr_GoodDmg            ; Player good damage attr
+rw  63e6,1   Chr_EvilDmg            ; Player evil damage attr
+rw  63e7,1   Chr_ColdDmg            ; Player cold damage attr
 rw  640b,40  InvItemAdr_L           ; 64 bytes: Holds LSBs of inventory item addresses
 rw  644b,40  InvItemAdr_H           ; 64 bytes: Holds MSBs of inventory item addresses
 rw  648b,8   InvSlotFree            ; 8 bytes: Bitfield with one bit per inventory slot. 1 = free, 0 = allocated
                                     ;    addItem: clears bits
                                     ;    sub_4c6b: tests bits
                                     ;    sub_4c86: clears bits
-                                    ;    sub_4c5a: sets bits
+                                    ;    doUseAction: sets bits
 rw  6493,1   NextDropped            ; 1 byte: Index where next droppped item will be placed
 rw  6494,10  DroppedGame            ; 16 bytes: Likely a value indicating the game (City, Dungeon, etc.) the item
                                     ;    was dropped in. (1 = City, 2 = Dungeon, etc.) All items dropped in the dungeon
@@ -2611,12 +2685,12 @@ rw  6494,10  DroppedGame            ; 16 bytes: Likely a value indicating the ga
                                     ;    determining whether an item is present in the current dungeon player location.
                                     ;    The value is also used to determine is a dropped item is present in a given
                                     ;    slot. If the value is non-zero, the slot is occupied and the corresponding
-                                    ;    items in DroppedX, DroppedY, DroppedMap, DroppedIndex contain the rest of the
+                                    ;    items in DroppedX, DroppedY, DroppedMap, DroppedItmIdx contain the rest of the
                                     ;    item location and inventory slot position of the dropped item.
 rw  64a4,10  DroppedX               ; 16 bytes: Holds item location X coordinate for dropped items
 rw  64b4,10  DroppedY               ; 16 bytes: Holds item location Y coordinate for dropped items
 rw  64c4,10  DroppedMap             ; 16 bytes: Holds item location map number for dropped items
-rw  64d4,10  DroppedIndex           ; 16 bytes: Holds item indexes for dropped items
+rw  64d4,10  DroppedItmIdx          ; 16 bytes: Holds item indexes for dropped items
 rw  64e4,1   CHR_ItemsEnd_L         ; 1 byte: LSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
 rw  64e5,1   CHR_ItemsEnd_H         ; 1 byte: MSB of current end of item data in the range $6900 [CHR_Items] to $75ff.
 
@@ -2636,6 +2710,25 @@ rw  7500,4   EncntrDefeated         ; Contains bits for each encounter (0..31) i
 rw  7504,4   TreasureTaken          ; Contains bits for each treasure (0..31) indicating whether the player has
                                     ;   taken the corresponding treasure (1) or not (0)
 
+; Guild Locker
+rw  7571,1    GldLkrGold_H          ; MSB of number of gold coins in the guild locker
+rw  7572,1    GldLkrGold            ; LSB of number of gold coins in the guild locker
+rw  7573,1    GldLkrSilver_H        ; MSB of number of silver coins in the guild locker
+rw  7574,1    GldLkrSilver          ; LSB of number of silver coins in the guild locker
+rw  7575,1    GldLkrCopper_H        ; MSB of number of coppers in the guild locker
+rw  7576,1    GldLkrCopper          ; LSB of number of coppers in the guild locker
+rw  7577,1    GldLkrGems_H          ; MSB of number of gems in the guild locker
+rw  7578,1    GldLkrGems            ; LSB of number of gems in the guild locker
+rw  7579,1    GldLkrJewels_H        ; MSB of number of jewels in the guild locker
+rw  757a,1    GldLkrJewels          ; LSB of number of jewels in the guild locker
+rw  757b,1    GldLkrFoodPkts        ; Number of food packets in the guild locker
+rw  757c,1    GldLkrWatrPkts        ; Number of water packets in the guild locker
+rw  757d,1    GldLkrTorches         ; Number of torches in the guild locker
+rw  757e,1    GldLkrCrystals        ; Number of crystals in the guild locker
+rw  757f,1    GldLkrKeys            ; Number of keys in the guild locker
+rw  7580,1    GldLkrCompass         ; Number of compasses in the guild locker
+rw  7581,1    GldLkrTimepcs         ; Number of timepieces in the guild locker
+
 rwx 7600,3800 ModuleStart           ;  14336 bytes (possibly 16384?): Starting address where modules are loaded
                                     ;   - Combat data is 14336 bytes [$3800] - Minimum limit... Maybe $4000 was intent?
                                     ;   - $7600 + $3800 = $ae00
@@ -2643,9 +2736,9 @@ rwx 7600,3800 ModuleStart           ;  14336 bytes (possibly 16384?): Starting a
                                     ;   - $96f0 = texture start
                                     ;   - $ac00 = map start
 rw  7600,1   ModuleNumber           ; Currently loaded module/scenario number
-x   7601,3   moduleEntry1           ; First entry point for scenario  (TODO: is this a module intialization vector? Seems to be called only after loading a new module)
+x   7601,3   moduleInit             ; Module intialization vector. Called after a new module is loaded.
 x   7604,3   moduleEntry2           ; Second entry point for scenario
-x   7607,3   moduleEntry3           ; Third entry point for scenario    (TODO: is this a module unloading vector? Seems to be called before loading a new module)
+x   7607,3   moduleEntry3           ; Third entry point for scenario. Called before loading combat or item data module.
 
 x   760a,3   moduleEntry4           ; Fourth entry point for scenario
 r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table

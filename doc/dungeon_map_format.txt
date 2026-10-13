@@ -626,14 +626,14 @@ Are there any additional items which may be encoded in a zone definition?
 Walls are encoded in the first 2 bytes (A & B)
 	There are 8 types of walls generally used (primary texture),
   and 8 others used infrequently or not at all (alternate textures):
-	 0 (0000) = No wall / open
+	 0 (0000 / $0) = No wall / open
    1 (0001 / $1) = Archway
    2 (0002 / $2) = Archway (alt) - Crystal Caverns
    3 (0011 / $3) = Regular Door
    4 (0100 / $4) = Regular Door (alt)
    5 (0101 / $5) = Secret Door (~)
    6 (0110 / $6) = Secret Door (~) (alt)
-   7 (0111 / $7) = Secret Door (~) (alt / no sound - handled like none/arch)
+   7 (0111 / $7) = Illusory Door (~) (alt / no sound - handled like none/arch. Not made visible by spells/items)
    8 (1000 / $8) = Locked Door (L)
    9 (1001 / $9) = Bolted Door (X)
   10 (1010 / $a) = Enchanted Door (O)
@@ -671,32 +671,32 @@ location in the dungeon). Some examples include:
 Special:
 ===========
 
-0000 0000  - No special code / normal cell
+There are 2 interpretations for the special code values. Which one applies depends on the value of bit 7.
 
-000 AAAAA
-      +---- Module number to load when non-zero
+For the first type, bit 7 == 0 and the value specifies a module/scenario and danger level for the cell:
 
-0BB 00000
- +--------- Danger level / Encounter frequency? (if Special & 10011111 ($9f) == 0)
-            ... below are guesses. each bit could also be interpreted separately ...
-            000 00000 = (00) Normal?
-            001 00000 = (20) Slightly increased?
-            010 00000 = (40) Moderately increased?
-            011 00000 = (60) Greatly increased?
+  7 65 43210
+  0 AA BBBBB
+    |    +---- Module number
+    +--------- Danger level / Encounter frequency
+                00 = Normal
+                01 = Slightly increased
+                10 = Moderately increased
+                11 = Greatly increased
 
-0?? CCCCC
-      +---- Scenario index (0-31) (if CCCCC != 0)
+The second type of special code has bit 7 == 1 and indicates a special encounter, treasure, message or teleport:
 
-7 65 43210
-1 AA CCCCC
-  |    +---- Encounter / Treasure / Message / Teleport index (0-31)
-  +--------- 00 = Encounter
-             01 = Treasure
-             10 = Message
-             11 = Teleport
+  7 65 43210
+  1 AA CCCCC
+    |    +---- Encounter / Treasure / Message / Teleport index (0-31)
+    +--------- Special Type
+                00 = Encounter
+                01 = Treasure
+                10 = Message
+                11 = Teleport
 
 
-- Scenarios/Modules (01-1F) -
+- Scenarios/Modules (00-1F) -
 
 Scenario module have a header structured as follows:
   $7600 - Byte (Module number? or perhaps flags indicating entry points?)
@@ -946,15 +946,13 @@ Scenario module have a header structured as follows:
 
   1e-1f = Unused
 
-- Effects (20, 40, 60) -
+- Danger level (20, 40, 60) -
 
-  20 ( 32) =
-    - Encounters: Phoenix
+  20 ( 32) = 33% increased base encounter frequency (6.3% instead of 4.7% chance)
 
-  40 ( 64) =
-    - Encounters: Pauper
+  40 ( 64) = 100% increased base encounter frequency (9.4% instead of 4.7% chance)
 
-  60 ( 96) = ? Increased encounter frequency ?
+  60 ( 96) = 166% increased base encounter frequency (12.5% instead of 4.7% chance)
 
 - Encounters (80-9F) -
 
@@ -1028,7 +1026,7 @@ Scenario module have a header structured as follows:
   B6 (182) [Level 1.3 ( 3,16)] = Amethyst Rod ('A blue-violet quartz rod lies\non a purple dias.')
   B7 (183) [Level 1.4 (27, 3)] = Map Stone ('A note reads:\n{left}{name},\n\n{left}   Congratulations my good {man|woman} on\n{left}getting this far.\n\n{right}A friend')
   B8 (184) [Level 3   ( 4, 5)] = Flame Quarrels [10] ('There are 10 quarrels in\na metallic clip here.')
-  B9 (185) [Level 1.1 (11, 1)] = Thunder Quarrels [10] ('There are 10 quarrels in a magnetic clip here.')
+  B9 (185) [Level 1.1 (11, 1)] = Thunder Quarrels [10] ('There are 10 quarrels in\na metallic clip here.')
   BA (186) [Level 1.1 (11,27)] = Staff of Amber ('There is a long electrum rod here.')
   BB (187) [Level 1.2 ( 6, 6)] = Loadstone ('A curious looking stone fastens itself around your neck.')
   BC (188) [Level 1.1 (31, 4)] = Golden Apple ('A golden apple rests on a golden\npillow.  Inscribed on the apple\nare the words:\n\n"For the pretty one."')
@@ -1421,7 +1419,7 @@ Bitmap format:
 
 Texture set format:
   - Each texture set consists of 5392 bytes [$1510] containing:
-    - A header
+    - A 32 byte header
     - Three texture sections (Typically wall, door and arch, though order can vary - wall, arch, door is also common)
       - Each texture has
         - A 72 byte lead-in - use currently unknown, but possibly related to the rows/columns of the images
@@ -1431,8 +1429,32 @@ Texture set format:
 
   Offset 0 [1 byte] - Texture Set ID (1, 2, 3, 4, 5, 6)
   Offset 1 [32 bytes] - Header data
-    - Format currently unknown.
-    - Suspect there is information here used to indicate how each texture may be used (e.g. wall, door, arch)
+    Offset 1..16 [16 bytes] - One entry per wall type: LSB of address of texture to use for wall type
+    Offset 17..32 [16 bytes] - One entry per wall type: MSB of address of texture to use for wall type
+      - In practice, there are only 4 values used in this section:
+        - $0000 = no texture
+        - $9711 = first texture
+        - $9e07 = second texture
+        - $a4fd = third texture
+
+                   Tex#1        Tex#2       Tex#3       Tex#4       Tex#5       Tex#6
+                   (Normal)     (Cryst/Mir) (Dragon)    (Goblin)    (Mausoleum) (Alien)
+         0 (none): $0000        $0000       $0000       $0000       $0000       $0000
+         1 (arch): $a4fd        $a4fd       $a4fd       $9e07       $9e07       $9e07
+         2 (arch): $a4fd        $a4fd       $a4fd       $9e07       $9e07       $9e07
+         3 (door): $9e07        $9711       $9e07       $a4fd       $a4fd       $a4fd
+         4 (door): $9e07        $9711       $9e07       $a4fd       $a4fd       $a4fd
+         5 (scdr): $9711        $9e07       $9711       $9711       $9711       $9711
+         6 (scdr): $9711        $9711       $9711       $9711       $9711       $9711
+         7 (ildr): $9711        $9711       $9711       $9711       $9711       $9711
+         8 (lkdr): $9e07        $9711       $9e07       $9711       $a4fd       $9711
+         9 (bldr): $9e07        $9711       $9e07       $9711       $a4fd       $9711
+        10 (endr): $9e07        $9711       $9e07       $9711       $a4fd       $9711
+        11 (wall): $9711        $9711       $9711       $9e07       $9e07       $9e07
+        12 (wall): $9711        $9711       $9711       $9e07       $9e07       $9e07
+        13 (wall): $9711        $9e07       $9711       $9711       $9711       $9711
+        14 (wall): $9711        $9711       $9711       $9711       $9711       $9711
+        15 (wall): $9711        $9711       $9711       $9711       $9711       $9711
 
   Offset 33 [72 bytes]
     - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
@@ -1463,19 +1485,20 @@ Texture set format:
 
   Offset 3597 ($e0d) [72 bytes]:
     - Unknown format. This section seems special in some way. May be related to horizontal pixels or vertical scanlines?
-
   Offset 3669 ($e55) [1296 bytes] - Third full-size texture (72x72)
     - Same format as first full-size texture
   Offset 4965 ($1365) [324 bytes] - Third half-size texture (36x36)
     - Same format as first half-size texture
   Offset 5289 ($14a9) [90 bytes] - Third quarter-size texture (20x18 / byte-aligned 18x18)
     - Same format as first quarter-size texture
+
   Offset 5379 ($1503) [13 bytes]
     - Potentially filler bytes to fill out the disk sector
 
 NOTE: Walls in the game are rendered twice as wide as they are tall, which implies the actual image should be 144x72.
-  However, the textures themselves are square. The game appears to horizontally scale the textures by 2. I suspect this
-  was a tradeoff made to reduce image size at the expense of decreased rendering quality.
+  However, the textures themselves are square. The discrepancy is due to how the ANTIC chip renders 2-bpp fonts. While
+  each pixel is 2-bits and thus allows up to 4 colors, each pixel is also doubled horizontally when rendered. Thus a
+  72-pixel wide 2-bbp image is rendered with a horizontal aspect ratio of 2:1 or 144x72.
 
 
 
@@ -1494,41 +1517,70 @@ type-specific attributes:
 
 Header (6 bytes)
   I0: Flags & Type
-      ABCD E FFF
-      |||| |  +-- Item type: 0 (0000) - ?? Charged Magic Item (Card/Scroll/Wand) ??
-      |||| |                 1 (0001) - ? Spell
-      |||| |                 2 (0010) - ? Ammo
-      |||| |                 3 (0011) - ? Weapon
-      |||| |                 4 (0100) - ? Armor
-      |||| |                 5 (0101) - ? Apparel
-      |||| |                 6 (0110) - ? Potion
-      |||| |                 7 (0111) - ? Special items (Golden apple, Amethyst Rod, Loadstone, PAC Card, Staff piece, Silver Key, ... )
-      |||| +---- ?: 0 - ?? - Normal weapon / armor / ammo / spell / apparel / potion
-      ||||          1 - ?? - Lit Torch, ? Wand / ? Scroll (Renewal/Whetstone/Remove curse)
-      |||+------ unknown (related to items with effects?)
-      ||+------- unknown
-      |+-------- unknown
-      +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere ... where is the location stored?)
+      A BBBB CCC
+      | |  |  +-- Item type: 0 (0000) - Stack of standard items / Charged Magic Item (Card/Scroll/Wand)
+      | |  |                 1 (0001) - ? Spell
+      | |  |                 2 (0010) - ? Ammo
+      | |  |                 3 (0011) - ? Weapon
+      | |  |                 4 (0100) - ? Armor
+      | |  |                 5 (0101) - ? Apparel
+      | |  |                 6 (0110) - ? Potion
+      | |  |                 7 (0111) - ? Special items (Golden apple, Amethyst Rod, Loadstone, PAC Card, Staff piece, Silver Key, ... )
+      | +--+----- Item subtype value. The meaning of this value depends on the primary Item type as follows:
+      |              Type 0 subtypes:
+      |                0000 (0) - Dropped Stackable/Standard Item
+      |                0001 (1) - ? Wand (or other item which requires a crystal to use)
+      |                0010 (2) - Card/Saurian Brandy/Six pack/Iron Palm Salve    ? Scroll (Renewal/Remove curse)
+      |                0011 (3) - Whetstone/Map stone
+      |
+      |              Type 1 (Spell) subtypes:
+      |                0000 - ? Standard
+      |
+      |              Type 2 (Ammo) subtypes:
+      |                0000 - ? Standard
+      |
+      |              Type 3 (Weapon) subtypes:
+      |                0000 - Standard weapon
+      |                0001 - Light-producing weapon (e.g. Lit Torch)
+      |
+      |              Type 4 (Armor) subtypes:
+      |                0000 - Standard armor
+      |
+      |              Type 5 (Apparel) subtypes:
+      |                0000 - Standard apparel
+      |
+      |              Type 6 (Potion) subtypes:
+      |                0000 - ? Standard potion ?
+      |                0001 - ? Curative potion (cure disease/poison/curse) ?
+      |                0002 - Potion of Restoration
+      |
+      |              Type 7 (Special item) subtypes:
+      |                0000 - ? Standard
+      |
+      +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere)
+                 The locations for dropped/not-held items are stored between $6493 and $64e3.
+                 (NextDropped, DroppedGame, DroppedX, DroppedY, DroppedMap, DroppedItmIdx)
+
 
 TODO: A special case appears to exist where all bits (except for bit 7) are zero. This seems to indicate a bundle of
       mutliple items (perhaps used when multiple items are present in a single map cell?). In that case, the attributes
       seem to have the number of items present in bytes 1 (LSB) & 2 (MSB) (see $58e2 to $5901)
 
   I1: Full object length, including the 6 byte header
-  I2: Action triggers
-        $00 = none
+  I2: Action triggers (assigned when an action is performed on an item; checked and processed later)
+        $00 = none / NOP
         $01 = get/pickup
         $02 = drop
         $04 = use
         $08 = unuse
-        $10 = ??
+        $10 = ?? (Assigned @ $4b8c [sub_4b8c] then doItemAction is called)
+        $20 = NOP (Assigned @ $4e87 then sub_4ccf is called; which then executes a NOP)
 
       - sub $5795 assigns to 8
-      - read @ $4bb5 and used to skip item if value is 0
-      - sub_4bb3 reads this byte and dynamically calls a routine determined based on the value
+      - doItemAction reads this byte and dynamically calls a routine determined based on the value
 
   I3: Alignment requirement - Evil weapons have $7f or below, Good weapons have $80 or greater.
-     Neutral weapons typically have $00 here.
+        - Neutral weapons typically have $00 here.
   I4: Item weight
   I5: Offset from the start of the object to the start of the effects/attributes data region
      (e.g. offset of byte following item name's terminating NUL)
@@ -1546,6 +1598,7 @@ Effects (0..n*16 bytes)
 
 Attributes (1..? bytes)
   - Attributes are always last and their structure depends on the type of the item
+      Stack/Charged Item
       Spell
       Weapon
       Ammo
@@ -1721,6 +1774,39 @@ Effect: Each effect is 16 bytes long
 
 Attributes: Structure varies based on item type
 
+Item Type 0 subtypes: (Dropped stackable/standard item; Charged Magic Item)
+
+  Subtype 0: Dropped Stackable/Standard Item
+    S0: Type of stackable/standard item
+          0 - Food Packet(s)
+          1 - Water Flask(s)
+          2 - Unlit Torch(es)
+          3 - Timepiece(s)
+          4 - Compass(es)
+          5 - Key(s)
+          6 - Crystal(s)
+          7 - Gem(s)
+          8 - Jewel(s)
+          9 - Gold
+        10 - Silver
+        11 - Copper
+    S1: MSB of big-endian uint16 amount
+    S2: LSB of big-endian uint16 amount
+
+  Subtype 1: ?Wand?  (cont_5263)
+    No attributes?
+
+  Subtype 2: Card    (cont_5282)
+    C0: Number of charges
+
+  Subtype 3: ?Scroll?  (cont_5293)
+    C0: Type
+    C1: Number of charges/uses (or 0 if unlimited charges?)
+    C2: ??
+        1 -
+    C3: ??
+        8 - removes effects for item type in C0 on use?
+
 Spell (Item type 1)
   S0: Cast cost (stamina)
   S1: Current skill (0..100%)
@@ -1729,6 +1815,12 @@ Spell (Item type 1)
 
 Ammo (Item type 2)
   A0:  Ammo type
+         1 = Spell (e.g. Guild ring)
+         3 = Crossbow
+         5 = Beam Weapon
+         6 = Gauss Rifle
+         255 = None/Melee
+
   A1:  Quantity
   A2:  Blunt damage (high nibble = number of dice, low nibble = number of sides per die)
   A3:  Sharp damage
@@ -1743,28 +1835,29 @@ Ammo (Item type 2)
   A12: Cold damage
 
 Weapon (Item type 3)
-  W0:  Ammo type ($ff = melee)
-  W1:  Remaining ammo (ignored for melee)
-  W2:  Blunt damage (high nibble = number of dice, low nibble = number of sides per die)
-  W3:  Sharp damage
-  W4:  Earth damage
-  W5:  Air damage
-  W6:  Fire damage
-  W7:  Water damage
-  W8:  Power damage
-  W9:  Magic damage
-  W10: Good damage
-  W11: Evil damage
-  W12: Cold damage
-  W13: ?Min STR required?
-  W14: ?Min SKL required?
-  W15: Current durability
-  W16: Max durability
-  W17: Flags / bitfield
-       - Bits 0..2: 010 - Message table num (2 = bash/wallop?)
-       - Bits 3..4: 00  - Bonus to hit?
-       - Bits 5..7: unknown?
-  W18: Parry value
+  Subtype 0 & 1:
+    W0:  Ammo type ($ff = melee)
+    W1:  Remaining ammo (ignored for melee)
+    W2:  Blunt damage (high nibble = number of dice, low nibble = number of sides per die)
+    W3:  Sharp damage
+    W4:  Earth damage
+    W5:  Air damage
+    W6:  Fire damage
+    W7:  Water damage
+    W8:  Power damage
+    W9:  Magic damage
+    W10: Good damage
+    W11: Evil damage
+    W12: Cold damage
+    W13: ?Min STR required?
+    W14: ?Min SKL required?
+    W15: Current durability
+    W16: Max durability
+    W17: Flags / bitfield
+      - Bits 0..2: 010 - Message table num (2 = bash/wallop?)
+      - Bits 3..4: 00  - Bonus to hit?
+      - Bits 5..7: unknown?
+    W18: Parry value
 
 Armor / Defense (Item type 4)
   D0:  Armor type (0 - head, 1 - body, 2 - arms, 3 - legs)

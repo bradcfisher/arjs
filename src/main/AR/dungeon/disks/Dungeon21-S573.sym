@@ -48,16 +48,14 @@ rw  0086,1   dat_0086               ;
 rw  0087,1   dat_0087               ; Possible texture position? [0..71]?
                                     ;  - Initialized to 0 in S014_SECONDARY_BOOT... is it relevant?
 rw  0088,1   dat_0088               ;
-rw  0089,1   dat_0089_L             ;
-rw  008a,1   dat_0089_H             ;
+rw  0089,1   ImgAddr_L              ; LSB of character set image address to put into the graphics character sets
+rw  008a,1   ImgAddr_H              ; MSB of character set image address to put into the graphics character sets
 
-rw  008d,1   dat_008d               ;
-rw  008e,1   dat_008e               ; Loop control variable?
-                                    ;   - sub_7ef4: Loop control variable
-rw  008f,1   dat_008f               ;
-                                    ;   - sub_7ef4: used as index into dat_7fb3_L_L/H.
-                                    ;               incremented each time dat_008e is decremented
-                                    ;
+rw  008d,1   ImgRowBytes            ; putImage: Number of bytes per character image row
+rw  008e,1   ImgNumRows             ; putImage: Number of rows in the image
+rw  008f,1   GfxAreaRow             ; putImage: Assigned the current row number within the graphical area text lines
+                                    ;     where the copied charset image data will be displayed. This is used to lookup
+                                    ;     the character set address for the row from dat_7fb3_L/H.
 rwx 0090,48  cont_0090              ; 72 bytes: Executable code copied from dat_78a2
 rwx 009d,1   smc_009d_L             ; Self-modifying code: LSB of address of LDA $absolute   (ref $78ae)
 rwx 009e,1   smc_009d_H             ; Self-modifying code: MSB of address of LDA $absolute   (ref $78ae)
@@ -73,17 +71,15 @@ rwx 00ca,1   smc_00c9_H             ; Self-modifying code: MSB of address of LDA
 
 ; 00d8 is first byte _after_ cont_0090 code
 
-rw  7600,1   ModuleNumber           ; Currently loaded scenario or map number
-x   7601,3   moduleEntry1           ; First entry point for scenario  (TODO: is this a module intialization vector? Seems to be called only after loading a new module)
 x   7604,3   moduleEntry2           ; Second entry point for scenario
 x   7607,3   moduleEntry3           ; Third entry point for scenario    (TODO: is this a module unloading vector? Seems to be called before loading a new module)
 
 r   760a,1   Mod0DescTbl_L          ; Module 0: LSB of description table
 r   760b,1   Mod0DescTbl_H          ; Module 0: MSB of description table
 
-rwx 760c,1   sub_760c               ; Sets dat_192a to 0 (invalidate status page 7)
+rwx 760c,1   sub_760c               ; Sets StatPg7Tmpl_H to 0 (invalidate status page 7)
 
-rwx 7612,1   sub_7612               ;
+rwx 7612,1   initModule0            ; Performs initialization tasks for Module 0.
 
 rwx 7641,1   cont_7641              ;
 
@@ -94,13 +90,13 @@ rwx 77e5,1   setAllColors           ; Sets all wall, ceiling and floor colors to
 rwx 77ee,1   applyZoneClrs          ; Applies the current zone color values to the display
 
 rw  77fa,1   dat_77fa               ; Loop control var
-rw  77fb,1   dat_77fb               ; Set to effective light level value
-rw  77fc,1   dat_77fc               ; Set to number of compasses held by player
+rw  77fb,1   CurLightLevel          ; Set to effective light level value
+rw  77fc,1   CurNumCmpss            ; Set to number of compasses held by player
 
 rw  77fd,58  item_77fd              ; 88 bytes: Unnamed item w/ "Crystal Doom" effect
 
 rw  7855,1   PlayerIsMoving         ; Flag indicating that the player is currently moving. This is set to 0 in
-                                    ;     sub_7612 and updated to $ff in cont_7641 when the joystick is not centered.
+                                    ;     initModule0 and updated to $ff in cont_7641 when the joystick is not centered.
 
 rwx 7856,1   copyFrameBuf           ; Copy the working copy (frame buffer) graphic character sets to the active
                                     ;     character sets to update the display.
@@ -160,19 +156,19 @@ rw  7ac8,4   dat_7ac4_H             ; 4 bytes: Amounts to use for ADC operand @ 
 
 rw  7acc,4   dat_7acc_L             ; 4 bytes: Offset to include in the initial calculation of the map cell address
                                     ;          initially placed into dat_007b_L based on orientation.
-                                    ;   0 [North]: $6c (108)
-                                    ;   1 [East]:  $a4 (164 / -92)
-                                    ;   2 [South]: $94 (148 / -108)
-                                    ;   3 [West]:  $5c (92)
+                                    ;   0 [North]: $6c (108)        -  27 cells @ 4 bytes/cell
+                                    ;   1 [East]:  $a4 (164 / -92)  - -23 cells @ 4 bytes/cell
+                                    ;   2 [South]: $94 (148 / -108) - -27 cells @ 4 bytes/cell
+                                    ;   3 [West]:  $5c (92)         -  23 cells @ 4 bytes/cell
 
 rw  7ad0,4   dat_7acc_H             ; 4 bytes: Offset to include in the initial calculation of the map cell address
                                     ;          initially placed into dat_007b_H based on orientation.
-                                    ;   0 [North]: $fd (253 / -3)
-                                    ;   1 [East]:  $fd (253 / -3)
-                                    ;   2 [South]: $04 (4)
-                                    ;   3 [West]:  $02 (2)
+                                    ;   0 [North]: $fd (253 / -3)     $fd6c (-660 bytes, -165 cells, -5 rows + -5 cells)
+                                    ;   1 [East]:  $fd (253 / -3)     $fda4 (-604 bytes, -151 cells, -4 rows + -24 cells)
+                                    ;   2 [South]: $04 (4)            $0494 (1172 bytes,  293 cells, 9 rows + 5 cells)
+                                    ;   3 [West]:  $02 (2)            $025c ( 604 bytes,  151 cells, 4 rows + 24 cells)
 
-rwx 7ad4,1   sub_7ad4               ;
+rwx 7ad4,1   renderScene            ; Render the current scene into the graphical character set frame buffer.
 
 rw  7dde,1   dat_7dde               ; Assigned a bitmask from dat_8dcc based on the player's orientation.
                                     ;     This is used to select the bits for a specific wall.
@@ -186,8 +182,18 @@ rw  7de0,1   dat_7de0               ; Assigned a bitmask from dat_8dcc based on 
 rw  7de1,1   dat_7de1               ;
 rw  7de2,1   dat_7de2               ;
 rw  7de3,1   dat_7de3               ;
-rw  7de4,4   dat_7de4               ; 4? bytes:
-rw  7de8,4   dat_7de8               ; 4? bytes:
+
+rw  7de4,4   dat_7de4               ; 4 bytes: Offset for selecting either X or Y fractional position. (0 = X, 1 = Y)
+                                    ;   0 [North]: $01 - Use Y fractional position
+                                    ;   1 [East]:  $00 - Use X fractional position
+                                    ;   2 [South]: $01 - Use Y fractional position
+                                    ;   3 [West]:  $00 - Use X fractional position
+
+rw  7de8,4   dat_7de8               ; 4 bytes: Orientation-specific offset added to the player's fractional position
+                                    ;   0 [North]: $dd (-35) -
+                                    ;   1 [East]:  $00       -
+                                    ;   2 [South]: $00       -
+                                    ;   3 [West]:  $dd (-35) -
 
 rwx 7dec,1   sub_7dec               ;
 
@@ -197,19 +203,21 @@ rwx 7e2d,1   sub_7e2d               ;
 
 rwx 7e4d,1   sub_7e4d               ;
 
-rwx 7ebc,1   sub_7ebc               ;
+rwx 7ebc,1   clrCompassImg          ; Clears the area where the compass is displayed.
 
-rwx 7ec7,1   sub_7ec7               ;
+rwx 7ec7,1   putCompassImg          ; Renders the compass frame and directional arrow into the graphics character sets
 
-rwx 7ee4,1   sub_7ee4               ;
+rwx 7ee4,1   putMoveArwImg          ; Puts the arrow image for the current movement direction to the graphics
+                                    ;     character sets.
 
-rwx 7ef4,1   sub_7ef4               ;
+rwx 7ef4,1   putCharImage           ; Copies a character set-based image into the graphics character sets
 rwx 7f21,2   smc_7f21               ; Self-modifying code: The operand of this ADC #immediate is updated
 rwx 7f29,2   smc_7f29               ; Self-modifying code: The operand of this ADC #immediate is updated
-rwx 7f31,2   smc_7f31               ; Self-modifying code: This LDA is swapped between LDA (dat_0089_L),Y and LDA #$ff
+rwx 7f31,2   smc_7f31               ; Self-modifying code: This LDA is swapped between LDA (ImgAddr_L),Y and LDA #$ff
 rwx 7f33,3   smc_7f33               ; Self-modifying code: The address of this STA $immediate,Y is updated
 
-rwx 7f4b,1   cont_7f4b              ;
+rwx 7f4b,1   clearCharImg           ; Clears the area where a character set-based image would be rendered in the
+                                    ;     graphics character sets.
 
 rw  7f63,28  unk_Mul8Tbl_L          ; 40 bytes: LSB for 16-bit multiplication table by factors of 8 (0 * 8 to 39 * 8)
 rw  7f8b,28  unk_Mul8Tbl_H          ; 40 bytes: MSB for 16-bit multiplication table by factors of 8 (0 * 8 to 39 * 8)
@@ -314,46 +322,42 @@ rw  809d,48  unk_809d_L             ; 72 bytes: MSBs of ?destination? addresses 
                                     ;   35: $0d43 [GfxMidCharset + $143]        71: $1287 [GfxBtmCharset + $287]
 
 rw  80e5,18d MoveArrowsImg          ; 397 bytes: All 4 movement arrows (rest state) charset image
-                                    ;            Assigned to dat_0089_L/H in cont_7641
+                                    ;            Assigned to ImgAddr_L/H in cont_7641
                                     ;   5 byte header:
-                                    ;     0: $38 (56) - Bytes per row (7 characters wide)
-                                    ;     1: $07      - Row count
-                                    ;     2/3: $00f8  - 248 bytes (31 chars) added to dest address per row copied
-                                    ;     4: $01      - Start in line 1 of graphics area
+                                    ;     0:   $38 (56) - Bytes per row (7 characters wide)
+                                    ;     1:   $07      - Row count
+                                    ;     2/3: $00f8    - Start 248 bytes (31 chars) from start of row
+                                    ;     4:   $01      - Start in line 1 of graphics area
 
 rw  8272,4d  MoveArwUpImg           ; 77 bytes: Move forward/up arrow charset image. Referenced in MoveArrowAdr.
                                     ;   5 byte header:
-                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
-                                    ;     1: $03      - Row count
-                                    ;     2: $08      -
-                                    ;     3: $01      -
-                                    ;     4: $01      - Start in line 1 of graphics area
+                                    ;     0:   $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1:   $03      - Row count
+                                    ;     2/3: $0108    - Start 264 bytes (33 chars) from start of row
+                                    ;     4:   $01      - Start in line 1 of graphics area
 
 rw  82bf,4d  MoveArwRgtImg          ; 77 bytes: Move right arrow charset image. Referenced in MoveArrowAdr.
                                     ;   5 byte header:
-                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
-                                    ;     1: $03      - Row count
-                                    ;     2: $18      -
-                                    ;     3: $01      -
-                                    ;     4: $03      - Start in line 3 of graphics area
+                                    ;     0:   $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1:   $03      - Row count
+                                    ;     2/3: $0118    - Start 280 bytes (35 chars) from start of row
+                                    ;     4:   $03      - Start in line 3 of graphics area
 
 rw  830c,4d  MoveArwDwnImg          ; 77 bytes: Move back/down arrow charset image. Referenced in MoveArrowAdr.
                                     ;   5 byte header:
-                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
-                                    ;     1: $03      - Row count
-                                    ;     2: $08      -
-                                    ;     3: $01      -
-                                    ;     4: $05      - Start in line 5 of graphics area
+                                    ;     0:   $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1:   $03      - Row count
+                                    ;     2/3: $0108    - Start 264 bytes (33 chars) from start of row
+                                    ;     4:   $05      - Start in line 5 of graphics area
 
 rw  8359,4d  MoveArwLftImg          ; 77 bytes: Move left arrow charset image. Referenced in MoveArrowAdr.
                                     ;   5 byte header:
-                                    ;     0: $18 (24) - Bytes per row (4 characters wide)
-                                    ;     1: $03      - Row count
-                                    ;     2: $f8      -
-                                    ;     3: $00      -
-                                    ;     4: $03      - Start in line 3 of graphics area
+                                    ;     0:   $18 (24) - Bytes per row (4 characters wide)
+                                    ;     1:   $03      - Row count
+                                    ;     2/3: $00f8    - Start 248 bytes (31 chars) from start of row
+                                    ;     4:   $03      - Start in line 3 of graphics area
 
-rw  83a6,8   MoveArrowAdr           ; 8? bytes: Addresses (LSB/MSB) referenced in sub_7ee4 (placed into dat_0089_L/H)
+rw  83a6,8   MoveArrowAdr           ; 8? bytes: Addresses (LSB/MSB) referenced in putMoveArwImg (placed into ImgAddr_L/H)
                                     ;   0/1: $8272 [MoveArwUpImg]  - Forward/Up arrow
                                     ;   2/3: $830c [MoveArwDwnImg] - Backward/Down arrow
                                     ;   4/5: $8359 [MoveArwLftImg] - Left arrow
@@ -386,46 +390,38 @@ rw  83be,8   CmpssArrowAdr          ; 8 bytes: Addresses (LSB/MSB) of the variou
 
 rw  83c6,f5  CmpssFrameImg          ; 245 bytes: Empty compass frame charset image
                                     ;   5 byte header:
-                                    ;     0: $30 (48) - Bytes per row (6 characters wide)
-                                    ;     1: $05      - Row count
-                                    ;     2: $18 (24) -
-                                    ;     3: $00      -
-                                    ;     4: $02      - Start in line 2 of graphics area
-                                    ;
-                                    ;    sub_7ebc: assigns this address to dat_0089_L/H. Only called when player does not have any compasses.
-                                    ;    sub_7ec7: assigns this address to dat_0089_L/H
+                                    ;     0:   $30 (48) - Bytes per row (6 characters wide)
+                                    ;     1:   $05      - Row count
+                                    ;     2/3: $0018    - Start 24 bytes (3 chars) from start of row
+                                    ;     4:   $02      - Start in line 2 of graphics area
 
 rw  84bb,35  CmpssNorthImg          ; 53 bytes: Compass arrow pointing North
                                     ;   5 byte header:
-                                    ;     0: $10 (16) - Bytes per row (2 characters wide)
-                                    ;     1: $03      - Row count
-                                    ;     2: $28 (40) -
-                                    ;     3: $00      -
-                                    ;     4: $03      - Start in line 3 of graphics area
+                                    ;     0:   $10 (16) - Bytes per row (2 characters wide)
+                                    ;     1:   $03      - Row count
+                                    ;     2/3: $0028    - Start 40 bytes (5 chars) from start of row
+                                    ;     4:   $03      - Start in line 3 of graphics area
 
 rw  84f0,25  CmpssEastImg           ; 37 bytes: Compass arrow pointing East
                                     ;   5 byte header:
-                                    ;     0: $20 (32) - Bytes per row (4 characters wide)
-                                    ;     1: $01      - Row count
-                                    ;     2: $20 (32) -
-                                    ;     3: $00      -
-                                    ;     4: $04      - Start in line 4 of graphics area
+                                    ;     0:   $20 (32) - Bytes per row (4 characters wide)
+                                    ;     1:   $01      - Row count
+                                    ;     2/3: $0020    - Start 32 bytes (4 chars) from start of row
+                                    ;     4:   $04      - Start in line 4 of graphics area
 
 rw  8515,35  CmpssSouthImg          ; 53 bytes: Compass arrow pointing South
                                     ;   5 byte header:
-                                    ;     0: $10 (16) - Bytes per row (2 characters wide)
-                                    ;     1: $03      - Row count
-                                    ;     2: $28 (40) -
-                                    ;     3: $00      -
-                                    ;     4: $03      - Start in line 3 of graphics area
+                                    ;     0:   $10 (16) - Bytes per row (2 characters wide)
+                                    ;     1:   $03      - Row count
+                                    ;     2/3: $0028    - Start 40 bytes (5 chars) from start of row
+                                    ;     4:   $03      - Start in line 3 of graphics area
 
 rw  854a,25  CmpssWestImg           ; 37 bytes: Compass arrow pointing West
                                     ;   5 byte header:
-                                    ;     0: $20 (32) - Bytes per row (4 characters wide)
-                                    ;     1: $01      - Row count
-                                    ;     2: $20 (32) -
-                                    ;     3: $00      -
-                                    ;     4: $04      - Start in line 4 of graphics area
+                                    ;     0:   $20 (32) - Bytes per row (4 characters wide)
+                                    ;     1:   $01      - Row count
+                                    ;     2/3: $0020    - Start 32 bytes (4 chars) from start of row
+                                    ;     4:   $04      - Start in line 4 of graphics area
 
 rw  856f,32  SpclMesgAdrs           ; 50 bytes: Addresses of the special location messages
                                     ;    0: $85a1 [StrDPShop]
@@ -605,12 +601,43 @@ rw  8d78,6   dat_8d78               ; 6? bytes:
 
 rw  8d7e,4d  dat_8d7e               ; ? bytes:
 
-rw  8dcb,3   dat_8dcb               ; 3? 4? bytes:
-rw  8dcc,3   dat_8dcc               ; 3? 4? bytes:
+rw  8dcb,4   dat_8dcb               ; 4 bytes: Bit masks for selecting wall bits based on player
+                                    ;          orientation. (Shares 3 bytes with dat_8dcc)
+                                    ;   0 [North]: $0f - selects low nibble
+                                    ;   1 [East]:  $f0 - selects high nibble
+                                    ;   2 [South]: $0f - selects low nibble
+                                    ;   3 [West]:  $f0 - selects high nibble
 
-rw  8dd0,3   dat_8dd0               ; 4 bytes (3 shared with dat_8dd1, 2 shared with dat_8dd2):
-rw  8dd1,3   dat_8dd1               ; 4 bytes (3 shared with dat_8dd2):
+rw  8dcc,4   dat_8dcc               ; 4 bytes: Bit masks for selecting wall bits based on player
+                                    ;          orientation.
+                                    ;   0 [North]: $f0 - selects high nibble
+                                    ;   1 [East]:  $0f - selects low nibble
+                                    ;   2 [South]: $f0 - selects high nibble
+                                    ;   3 [West]:  $0f - selects low nibble
+
+rw  8dd0,4   dat_8dd0               ; 4 bytes:
+                                    ;          (3 bytes shared with dat_8dd1, 2 shared with dat_8dd2)
+                                    ;   0 [North]: $01 -
+                                    ; * 1 [East]:  $00 -
+                                    ; * 2 [South]: $00 -
+                                    ; * 3 [West]:  $01 -
+                                    ;    - relates to player orientation
+                                    ;    - assigned to dat_7de3
+
+rw  8dd1,4   dat_8dd1               ; 4 bytes:
+                                    ;          (3 bytes shared with dat_8dd2)
+                                    ;   0 [North]: $00 -
+                                    ; * 1 [East]:  $00 -
+                                    ; * 2 [South]: $01 -
+                                    ; * 3 [West]:  $01 -
+                                    ;    - assigned to dat_8dd1
+
 rw  8dd2,4   dat_8dd2               ; 4 bytes:
+                                    ;   0 [North]: $00 -
+                                    ;   1 [East]:  $01 -
+                                    ;   2 [South]: $01 -
+                                    ;   3 [West]:  $00 -
+                                    ;    - assigned to dat_7de2
 
 rw  8dd6,2a  unk_8dd6               ; ? bytes:
 
@@ -632,7 +659,7 @@ rw  8f76,1   dat_8f76               ;
 
 rw  8f77,1   dat_8f77               ; (temp)
                                     ;    copyFrameBuf: Used to hold loop iteration count
-                                    ;    sub_7ad4: # of iterations
+                                    ;    renderScene: # of iterations
 
 rw  8f78,2   unk_8f78               ;
 
@@ -724,7 +751,7 @@ rw  9479,12  src_9479               ; 18 bytes: Copied to $12df [GfxBtmCharset +
 
 rw  948b,48  dat_948b               ; 72 bytes:
                                     ;     sub_78ea - checks if value >= 0. If so,
-                                    ;     sub_7ad4 - zeroed
+                                    ;     renderScene - zeroed
                                     ;
 
 rw  94d3,4   MapCellData9           ; 4 bytes: Map cell data is copied here (dat_8ca3_L/H[9])
@@ -826,9 +853,9 @@ rw  af7e,1   ZoneDefTex             ; Texture set ID to use for the zone
 rw  af7f,1   ZoneDefWarmUnk         ; Zone definition byte B (high nibble = zone warmth; low nibble = ??)
 rw  af80,1   ZoneDef_Flags          ; Bitfield incl. light level bit
     ; For color details see: https://www.atariwiki.org/wiki/Wiki.jsp?page=Color%20names
-rw  af81,1   ZoneDefWallClr1        ; Wall color #1
-rw  af82,1   ZoneDefWallClr2        ; Wall color #2
-rw  af83,1   ZoneDefWallClr3        ; Wall color #3
+rw  af81,1   ZoneDefWallClr2        ; Wall color #3 (mapped to CurZneWallClr2 - CUR_COLPF2)
+rw  af82,1   ZoneDefWallClr0        ; Wall color #1 (mapped to CurZneWallClr0 - CUR_COLPF0)
+rw  af83,1   ZoneDefWallClr1        ; Wall color #2 (mapped to CurZneWallClr1 - CUR_COLPF1)
 rw  af84,1   ZoneDefCeilClr         ; Ceiling color
 rw  af85,1   ZoneDefFlrClr          ; Floor color
 

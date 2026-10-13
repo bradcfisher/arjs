@@ -1,0 +1,388 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 3 Side 1 sector 115
+;   Module 2: Item Data
+;
+; Should be applied along with Dungeon11-S518.sym and Dungeon11-S205.sym for full symbol mapping.
+;
+[symbols]
+
+rw  758a,1   dat_758a               ; TODO: This should be moved to Dungeon11-S518.sym
+rw  758b,1   dat_758b               ; TODO: This should be moved to Dungeon11-S518.sym
+
+rwx 7608,4   initModule2            ; Performs initialization tasks for Module 2.
+
+rwx 7627,1   cont_7627              ; continuation address
+
+rwx 763b,1   cont_763b              ; continuation address
+
+rwx 769b,1   sub_769b               ;
+rwx 76d3,1   addNewItem             ; Adds a new item to the game inventory.
+rwx 773a,1   sub_773a               ;
+rwx 78a1,1   sub_78a1               ;
+rwx 78a8,1   sub_78a8               ;
+rwx 78d5,1   sub_78d5               ;
+
+rwx 78dc,1   cont_78dc              ;
+
+rw  78de,2722 Data_Seg_             ; Data segment starts here
+
+rw  78de,1   dat_78de               ; sub_769b: assigns to random byte
+rw  78df,1   dat_78df               ; The number of the status page added when the module was initialized
+
+rw  78e0,1   dat_78e0               ;
+rw  78e1,1   dat_78e1               ; sub_773a: only used in this sub
+rw  78e2,1   dat_78e2               ; sub_773a: only used in this sub
+rw  78e3,1   dat_78e3               ;
+rw  78e4,1   dat_78e4               ; (temp) sub_773a: Loop control var
+rw  78e5,1   dat_78e5               ; (temp) Used to track index while looping
+
+rw  78e6,28  CrdTheStar             ; 40 bytes: Special Treasure 0: The Star (card)
+rw  790e,48  CrdTheFool             ; 72 bytes: The Fool (card)
+rw  7956,2e  CrdHeirophant          ; 46 bytes: The Heirophant (card)
+rw  7984,25  CrdDeath               ; 37 bytes: Special Treasure 11 & 13: Death (card)
+rw  79a9,24  CrdAceOfCups           ; 36 bytes: Ace of Cups
+rw  79cd,2b  CrdTheChariot          ; 43 bytes: The Chariot (card)
+rw  79f8,28  CrdStrength            ; 40 bytes: Strength (card)
+rw  7a20,35  CrdAceOfWands          ; 53 bytes: Ace of Wands
+rw  7a55,2a  CrdTemperance          ; 42 bytes: Temperance (card)
+rw  7a7f,46  CrdKingOfWands         ; 70 bytes: King of Wands
+rw  7ac5,3c  CrdPageOfCups          ; 60 bytes: Special Treasure 8: Page of Cups (card)
+rw  7b01,29  CrdAcePentacls         ; 41 bytes: Ace of Pentacles
+rw  7b2a,4e  CrdHighPrstess         ; 78 bytes: High Priestess (card)
+rw  7b78,21  ColdWand               ; 33 bytes: Cold Wand
+rw  7b99,21  FireWand               ; 33 bytes: Fire Wand
+rw  7bba,26  ParalysisWand          ; 38 bytes: Paralysis Wand
+rw  7be0,2c  EyeVulnerablty         ; 44 bytes: Eye of Vulnerabilty
+rw  7c0c,42  LightWand              ; 66 bytes: Light Wand
+rw  7c4e,24  HealingWand            ; 36 bytes: Healing Wand
+rw  7c72,4a  ScrlFrostblade         ; 74 bytes: Frostblade Scroll
+rw  7cbc,49  ScrlFireblade          ; 73 bytes: Fireblade Scroll
+rw  7d05,45  ScrlClout              ; 69 bytes: Clout Scroll
+rw  7d4a,18  ScrlRenew              ; 24 bytes: Renew Scroll
+rw  7d62,1f  ScrlRemovCurse         ; 31 bytes: Remove Curse Scroll
+rw  7d81,6a  ScrlWizardEye          ; 106 bytes: Wizard Eye Scroll
+rw  7deb,21  RubyEye                ; 33 bytes: Ruby Eye
+rw  7e0c,24  EmeraldEye             ; 36 bytes: Emerald Eye
+rw  7e30,25  SapphireEye            ; 37 bytes: Sapphire Eye
+rw  7e55,22  AmberEye               ; 34 bytes: Amber Eye
+rw  7e77,45  WizardsEye             ; 69 bytes: Wizard's Eye
+rw  7ebc,25  HypnoticEye            ; 37 bytes: Hypnotic Eye
+rw  7ee1,2a  TomeKnowledge          ; 42 bytes: Tome of Knowledge
+rw  7f0b,2e  TomeUndrstndng         ; 46 bytes: Tome of Understanding
+rw  7f39,2b  TomeLeadership         ; 43 bytes: Tome of Leadership
+rw  7f64,24  BronzeHorn             ; 36 bytes: Bronze Horn
+rw  7f88,24  SilverHorn             ; 36 bytes: Silver Horn
+rw  7fac,22  GoldHorn1              ; 34 bytes: Gold Horn
+rw  7fce,22  GoldHorn2              ; 34 bytes: Gold Horn
+rw  7ff0,4b  PtnFleetness           ; 75 bytes: Potion of Fleetness
+rw  803b,4a  PtnStrength            ; 74 bytes: Potion of Strength
+rw  8085,4e  PtnIntellignce         ; 78 bytes: Potion of Intelligence
+rw  80d3,4a  PtnCharisma            ; 74 bytes: Potion of Charisma
+rw  811d,2b  PtnEndurance           ; 43 bytes: Potion of Endurance
+rw  8148,4c  PtnInvBlunt            ; 76 bytes: Potion of Inv. Blunt
+rw  8194,4c  PtnInvSharp            ; 76 bytes: Potion of Inv. Sharp
+rw  81e0,4c  PtnInvEarth            ; 76 bytes: Potion of Inv. Earth
+rw  822c,4a  PtnInvAir              ; 74 bytes: Potion of Inv. Air
+rw  8276,4b  PtnInvFire             ; 75 bytes: Potion of Inv. Fire
+rw  82c1,4c  PtnInvWater            ; 76 bytes: Potion of Inv. Water
+rw  830d,3e  PtnRegenration         ; 62 bytes: Potion of Regeneration
+rw  834b,4d  PtnInvMental           ; 77 bytes: Potion of Inv. Mental
+rw  8398,4b  PtnInvCold             ; 75 bytes: Potion of Inv. Cold
+rw  83e3,2d  PtnFruitJuice          ; 45 bytes: Potion of Fruit Juice
+rw  8410,6c  PtnWizardEye           ; 108 bytes: Potion of Wizard Eye
+rw  847c,4b  PtnDexterity           ; 75 bytes: Potion of Dexterity
+rw  84c7,4e  PtnInfraVision         ; 78 bytes: Potion of Infra-Vision
+rw  8515,1c  PtnCleansing           ; 28 bytes: Potion of Cleansing
+rw  8531,1b  PtnAntidote            ; 27 bytes: Potion of Antidote
+rw  854c,2d  PtnRestoration         ; 45 bytes: Special Treasure 2: Potion of Restoration
+rw  8579,29  PtnHealing             ; 41 bytes: Potion of Healing
+rw  85a2,39  PtnHemlock             ; 57 bytes: Potion of Hemlock
+rw  85db,2d  PtnInebriation         ; 45 bytes: Potion of Inebriation
+rw  8608,49  CrystalShield          ; 73 bytes: Crystal Shield
+rw  8651,5c  ShieldOfGalahd         ; 92 bytes: Shield of Galahad
+rw  86ad,28  SpikedShield           ; 40 bytes: Spiked Shield
+rw  86d5,5c  ShieldOfMordrd         ; 92 bytes: Shield of Mordred
+rw  8731,48  SpiritShield           ; 72 bytes: Spirit Shield
+rw  8779,49  IronwoodBoken          ; 73 bytes: Ironwood Boken
+rw  87c2,23  IronFan                ; 35 bytes: Iron Fan
+rw  87e5,27  TowerShield            ; 39 bytes: Tower Shield
+rw  880c,28  Crossbow               ; 40 bytes: Special Treasure 21: Crossbow [03]
+rw  8834,22  Quarrels               ; 34 bytes: Quarrels [10]
+rw  8856,35  ChaosClub              ; 53 bytes: Chaos Club
+rw  888b,26  ShortSword             ; 38 bytes: Short Sword
+rw  88b1,4a  HolyHandGrnade         ; 74 bytes: Holy Hand Grenade
+rw  88fb,1f  Pike                   ; 31 bytes: Pike
+rw  891a,1f  Dirk                   ; 31 bytes: Dirk
+rw  8939,44  PantherGloves          ; 68 bytes: Panther Gloves
+rw  897d,43  HelmOfLight            ; 67 bytes: Special Treasure 4: Helm of Light
+rw  89c0,28  DragnsknHaubrk         ; 40 bytes: Dragonskin Hauberk
+rw  89e8,44  GoldenGreaves          ; 68 bytes: Golden Greaves
+rw  8a2c,20  PlateHelm              ; 32 bytes: Plate Helm
+rw  8a4c,25  PlateGauntlets         ; 37 bytes: Plate Gauntlets
+rw  8a71,24  PlateLeggings          ; 36 bytes: Plate Leggings
+rw  8a95,21  PlateArmor             ; 33 bytes: Plate Armor
+rw  8ab6,21  ScaleArmor             ; 33 bytes: Scale armor
+rw  8ad7,25  TruesilverHelm         ; 37 bytes: Truesilver helm
+rw  8afc,25  TruesilverCoat         ; 37 bytes: Special Treasure 5: Truesilver Coat
+rw  8b21,2a  TruslvrGuantlt         ; 42 bytes: Truesilver guantlets
+rw  8b4b,29  TruslvrLeggngs         ; 41 bytes: Truesilver leggings
+rw  8b74,26  CuirbouilliHlm         ; 38 bytes: Cuirbouilli Helm
+rw  8b9a,28  BronzeBrstplt          ; 40 bytes: Bronze Breastplate
+rw  8bc2,24  BronzeBracers          ; 36 bytes: Bronze Bracers
+rw  8be6,1b  WhiteLinenShrt         ; 27 bytes: White Linen Shirt
+rw  8c01,1b  BlckSilkKimono         ; 27 bytes: Black Silk Kimono
+rw  8c1c,14  CheapRobe              ; 20 bytes: Cheap Robe
+rw  8c30,55  ElvenCloak             ; 85 bytes: Elven Cloak
+rw  8c85,35  ElvenBoots             ; 53 bytes: Elven Boots
+rw  8cba,36  CrystalBelt            ; 54 bytes: Crystal Belt
+rw  8cf0,1a  BlueSuedeShoes         ; 26 bytes: Blue Suede Shoes
+rw  8d0a,1f  BlckWlnBreechs         ; 31 bytes: Black Woolen Breeches
+rw  8d29,20  SilverBrocadedBodice   ; 32 bytes: Silver Brocaded Bodice
+rw  8d49,18  RedPlaidKilt           ; 24 bytes: Red Plaid Kilt
+rw  8d61,1e  GldSilkPntalns         ; 30 bytes: Gold Silk Pantaloons
+rw  8d7f,18  LeatherJerkin          ; 24 bytes: Leather Jerkin
+rw  8d97,1c  FlppyLeathrHat         ; 28 bytes: Floppy Leather Hat
+rw  8db3,1e  BlckCottnPrtlt         ; 30 bytes: Black Cotton Partlet
+rw  8dd1,35  SilverSash             ; 53 bytes: Silver Sash
+rw  8e06,36  StealthSuit            ; 54 bytes: Stealth Suit
+rw  8e3c,14  SilverKey              ; 20 bytes: Silver Key
+rw  8e50,1a  GoblinRingHalf         ; 26 bytes: Goblin Ring Half
+rw  8e6a,19  TrollRingHalf          ; 25 bytes: Troll Ring Half
+rw  8e83,15  StaffPiece             ; 21 bytes: Staff Piece
+rw  8e98,22  PacCard                ; 34 bytes: PAC card
+rw  8eba,4a  MirroredShield         ; 74 bytes: Mirrored Shield
+rw  8f04,47  ReforgedRing           ; 71 bytes: Reforged Ring
+rw  8f4b,24  Bloodstone             ; 36 bytes: Bloodstone
+rw  8f6f,38  WingedSandals          ; 56 bytes: Special Treasure 1: Winged Sandals
+rw  8fa7,29  MorganasTiara          ; 41 bytes: Special Treasure 3: Morgana's Tiara
+rw  8fd0,3d  CloakLevitatn          ; 61 bytes: Special Treasure 6: Cloak of Levitation
+rw  900d,29  CrystalBrstplt         ; 41 bytes: Special Treasure 7: Crystal Breastplate
+rw  9036,38  JunaisSword            ; 56 bytes: Special Treasure 9: Junai's Sword
+rw  906e,21  Loadstone              ; 33 bytes: Special Treasure 27: Loadstone
+rw  908f,28  IronPalmSalve          ; 40 bytes: Special Treasure 12: Iron Palm Salve
+rw  90b7,2d  SwordOfAdept           ; 45 bytes: Special Treasure 14: Sword of The Adept
+rw  90e4,24  RazorIce               ; 36 bytes: Special Treasure 15: Razor Ice
+rw  9108,15  Whetstone              ; 21 bytes: Special Treasure 16: Whetstone
+rw  911d,37  SaurianBrandy          ; 55 bytes: Special Treasure 17: Saurian Brandy
+rw  9154,2c  BluePearlDaggr         ; 44 bytes: Special Treasure 18: Blue Pearl Dagger
+rw  9180,35  SixPack                ; 53 bytes: Special Treasure 19: Six pack [6]
+rw  91b5,23  MelvinsHelm            ; 35 bytes: Special Treasure 20: Melvin's Helm
+rw  91d8,36  AmethystRod            ; 54 bytes: Special Treasure 22: Amethyst Rod
+rw  920e,15  MapStone               ; 21 bytes: Special Treasure 23: Map Stone
+rw  9223,28  FlameQuarrels          ; 40 bytes: Special Treasure 24: Flame Quarrels [10]
+rw  924b,2a  ThundrQuarrels         ; 42 bytes: Special Treasure 25: Thunder Quarrels [10]
+rw  9275,29  StaffOfAmber           ; 41 bytes: Special Treasure 26: Staff of Amber
+rw  929e,36  RobinsHood             ; 54 bytes: Special Treasure 10: Robin's Hood
+rw  92d4,36  GoldenApple            ; 54 bytes: Special Treasure 28: Golden Apple
+rw  930a,2b  GaussRifle             ; 43 bytes: Special Treasure 29: Gauss Rifle [95]
+rw  9335,40  SolarSuit              ; 64 bytes: Special Treasure 30: Solar Suit
+rw  9375,2b  BeamWeapon             ; 43 bytes: Special Treasure 31: Beam Weapon [25]
+
+rw  93a0,2c  dat_93a0               ; 44 bytes: 22 item addresses: Scrolls, Cards, Tomes
+                                    ;     0: $7c72 [ScrlFrostblade]         11: $79cd [CrdTheChariot]
+                                    ;     1: $7cbc [ScrlFireblade]          12: $79f8 [CrdStrength]
+                                    ;     2: $7d05 [ScrlClout]              13: $7a20 [CrdAceOfWands]
+                                    ;     3: $7d4a [ScrlRenew]              14: $7a55 [CrdTemperance]
+                                    ;     4: $7d62 [ScrlRemovCurse]         15: $7a7f [CrdKingOfWands]
+                                    ;     5: $7d81 [ScrlWizardEye]          16: $7ac5 [CrdPageOfCups]
+                                    ;     6: $78e6 [CrdTheStar]             17: $7b01 [CrdAcePentacls]
+                                    ;     7: $790e [CrdTheFool]             18: $7b2a [CrdHighPrstess]
+                                    ;     8: $7956 [CrdHeirophant]          19: $7ee1 [TomeKnowledge]
+                                    ;     9: $7984 [CrdDeath]               20: $7f0b [TomeUndrstndng]
+                                    ;    10: $79a9 [CrdAceOfCups]           21: $7f39 [TomeLeadership]
+
+rw  93cc,20  dat_93cc               ; 32 bytes: 16 item addresses: Wands, Eyes & Horns
+                                    ;     0: $7b78 [ColdWand]                8: $7e30 [SapphireEye]
+                                    ;     1: $7b99 [FireWand]                9: $7e55 [AmberEye]
+                                    ;     2: $7bba [ParalysisWand]          10: $7e77 [WizardsEye]
+                                    ;     3: $7be0 [EyeVulnerablty]         11: $7ebc [HypnoticEye]
+                                    ;     4: $7c0c [LightWand]              12: $7f64 [BronzeHorn]
+                                    ;     5: $7c4e [HealingWand]            13: $7f88 [SilverHorn]
+                                    ;     6: $7deb [RubyEye]                14: $7fac [GoldHorn1]
+                                    ;     7: $7e0c [EmeraldEye]             15: $7fce [GoldHorn2]
+
+rw  93ec,1e  dat_93ec               ; 30 bytes: 15 item addresses: Shields & Weapons
+                                    ;     0: $8608 [CrystalShield]           8: $880c [Crossbow]
+                                    ;     1: $8651 [ShieldOfGalahd]          9: $8834 [Quarrels]
+                                    ;     2: $86ad [SpikedShield]           10: $8856 [ChaosClub]
+                                    ;     3: $86d5 [ShieldOfMordrd]         11: $888b [ShortSword]
+                                    ;     4: $8731 [SpiritShield]           12: $88b1 [HolyHandGrnade]
+                                    ;     5: $8779 [IronwoodBoken]          13: $88fb [Pike]
+                                    ;     6: $87c2 [IronFan]                14: $891a [Dirk]
+                                    ;     7: $87e5 [TowerShield]
+
+rw  940a,20  dat_940a               ; 32 bytes: 16 item addresses: Armor
+                                    ;     0: $8939 [PantherGloves]           8: $8ab6 [ScaleArmor]
+                                    ;     1: $897d [HelmOfLight]             9: $8ad7 [TruesilverHelm]
+                                    ;     2: $89c0 [DragnsknHaubrk]         10: $8afc [TruesilverCoat]
+                                    ;     3: $89e8 [GoldenGreaves]          11: $8b21 [TruslvrGuantlt]
+                                    ;     4: $8a2c [PlateHelm]              12: $8b4b [TruslvrLeggngs]
+                                    ;     5: $8a4c [PlateGauntlets]         13: $8b74 [CuirbouilliHlm]
+                                    ;     6: $8a71 [PlateLeggings]          14: $8b9a [BronzeBrstplt]
+                                    ;     7: $8a95 [PlateArmor]             15: $8bc2 [BronzeBracers]
+
+rw  942a,20  dat_942a               ; 32 bytes: 16 item addresses: Clothing
+                                    ;     0: $8be6 [WhiteLinenShrt]          8: $8d29 [SilverBrocadedBodice]
+                                    ;     1: $8c01 [BlckSilkKimono]          9: $8d49 [RedPlaidKilt]
+                                    ;     2: $8c1c [CheapRobe]              10: $8d61 [GldSilkPntalns]
+                                    ;     3: $8c30 [ElvenCloak]             11: $8d7f [LeatherJerkin]
+                                    ;     4: $8c85 [ElvenBoots]             12: $8d97 [FlppyLeathrHat]
+                                    ;     5: $8cba [CrystalBelt]            13: $8db3 [BlckCottnPrtlt]
+                                    ;     6: $8cf0 [BlueSuedeShoes]         14: $8dd1 [SilverSash]
+                                    ;     7: $8d0a [BlckWlnBreechs]         15: $8e06 [StealthSuit]
+
+rw  944a,30  dat_944a               ; 48 bytes: 24 item addresses: Potions
+                                    ;     0: $7ff0 [PtnFleetness]           12: $834b [PtnInvMental]
+                                    ;     1: $803b [PtnStrength]            13: $8398 [PtnInvCold]
+                                    ;     2: $8085 [PtnIntellignce]         14: $83e3 [PtnFruitJuice]
+                                    ;     3: $80d3 [PtnCharisma]            15: $8410 [PtnWizardEye]
+                                    ;     4: $811d [PtnEndurance]           16: $847c [PtnDexterity]
+                                    ;     5: $8148 [PtnInvBlunt]            17: $84c7 [PtnInfraVision]
+                                    ;     6: $8194 [PtnInvSharp]            18: $8515 [PtnCleansing]
+                                    ;     7: $81e0 [PtnInvSharp]            19: $8531 [PtnAntidote]
+                                    ;     8: $822c [PtnInvAir]              20: $854c [PtnRestoration]
+                                    ;     9: $8276 [PtnInvFire]             21: $8579 [PtnHealing]
+                                    ;    10: $82c1 [PtnInvWater]            22: $85a2 [PtnHemlock]
+                                    ;    11: $830d [PtnRegenration]         23: $85db [PtnInebriation]
+
+rw  947a,6   dat_947a_L             ; 6 bytes: LSB of address of item category table
+rw  9480,6   dat_9480_H             ; 6 bytes: MSB of address of item category table
+                                    ;     0: $93a0 [dat_93a0] 22 items: Scrolls & Cards
+                                    ;     1: $93cc [dat_93cc] 16 items: Wands, Eyes & Horns
+                                    ;     2: $93ec [dat_93ec] 15 items: Shields & Weapons
+                                    ;     3: $940a [dat_940a] 16 items: Armor
+                                    ;     4: $942a [dat_942a] 16 items: Clothing
+                                    ;     5: $944a [dat_944a] 24 items: Potions
+
+rw  9486,20  TreasureAdr_L          ; 32 bytes: LSB of address of special loc treasure 0..31
+rw  94a6,20  TreasureAdr_H          ; 32 bytes: MSB of address of special loc treasure 0..31
+                                    ;     0: $78e6 [CrdTheStar]             16: $9108 [Whetstone]
+                                    ;     1: $8f6f [WingedSandals]          17: $911d [SaurianBrandy]
+                                    ;     2: $854c [PtnRestoration]         18: $9154 [BluePearlDaggr]
+                                    ;     3: $8fa7 [MorganasTiara]          19: $9180 [SixPack]
+                                    ;     4: $897d [HelmOfLight]            20: $91b5 [MelvinsHelm]
+                                    ;     5: $8afc [TruesilverCoat]         21: $880c [Crossbow]
+                                    ;     6: $8fd0 [CloakLevitatn]          22: $91d8 [AmethystRod]
+                                    ;     7: $900d [CrystalBrstplt]         23: $920e [MapStone]
+                                    ;     8: $7ac5 [CrdPageOfCups]          24: $9223 [FlameQuarrels]
+                                    ;     9: $9036 [JunaisSword]            25: $924b [ThundrQuarrels]
+                                    ;    10: $929e [RobinsHood]             26: $9275 [StaffOfAmber]
+                                    ;    11: $7984 [CrdDeath]               27: $906e [Loadstone]
+                                    ;    12: $908f [IronPalmSalve]          28: $92d4 [GoldenApple]
+                                    ;    13: $7984 [CrdDeath]               29: $930a [GaussRifle]
+                                    ;    14: $90b7 [SwordOfAdept]           30: $9335 [SolarSuit]
+                                    ;    15: $90e4 [RazorIce]               31: $9375 [BeamWeapon]
+
+rw  94c6,8   dat_94c6_L             ; 8 bytes: LSB of special/quest item address
+rw  94ce,8   dat_94ce_H             ; 8 bytes: MSB of special/quest item address
+                                    ;     0: $8e3c [SilverKey]               4: $8e98 [PacCard]
+                                    ;     1: $8e50 [GoblinRingHalf]          5: $8eba [MirroredShield]
+                                    ;     2: $8e6a [TrollRingHalf]           6: $8f04 [ReforgedRing]
+                                    ;     3: $8e83 [StaffPiece]              7: $8f4b [Bloodstone]
+
+rw  94d6,16  dat_94d6               ; 22 bytes: likely probability table for items in dat_93a0
+rw  94ec,10  dat_94ec               ; 16 bytes: likely probability table for items in dat_93cc
+rw  94fc,f   dat_94fc               ; 15 bytes: likely probability table for items in dat_93ec
+rw  950b,10  dat_950b               ; 16 bytes: likely probability table for items in dat_940a
+rw  951b,10  dat_951b               ; 16 bytes: likely probability table for items in dat_942a
+rw  952b,18  dat_952b               ; 24 bytes: likely probability table for items in dat_944a
+
+rw  9543,6   dat_9543_L             ; 6 bytes: LSB of address
+rw  9549,6   dat_9549_H             ; 6 bytes: MSB of address
+                                    ;     0: $94d6 [dat_94d6]
+                                    ;     1: $94ec [dat_94ec]
+                                    ;     2: $94fc [dat_94fc]
+                                    ;     3: $950b [dat_950b]
+                                    ;     4: $951b [dat_951b]
+                                    ;     5: $952b [dat_952b]
+
+rw  954f,8   dat_954f_L             ; 8 bytes: LSB of special/quest item address
+rw  9557,8   dat_9557_H             ; 8 bytes: MSB of special/quest item address
+                                    ;     0: $8e3c [SilverKey]               4: $8e98 [PacCard]
+                                    ;     1: $8e50 [GoblinRingHalf]          5: $8eba [MirroredShield]
+                                    ;     2: $8e6a [TrollRingHalf]           6: $8f04 [ReforgedRing]
+                                    ;     3: $8e83 [StaffPiece]              7: $8f4b [Bloodstone]
+
+rw  955f,1   GenderZts_L            ; LSB of player gender ZTS assigned by setGenderZts & displayed by StrMapStone
+rw  9560,1   GenderZts_H            ; MSB of player gender ZTS assigned by setGenderZts & displayed by StrMapStone
+
+rw  9561,2   StrClrMsgRows          ; 2 bytes: Clears all message rows with NUL chars
+rw  9563,2c  StrTrumpCard           ; 44 bytes: Special Treasure 0, 8 & 11: 'Sealed in an envelope is a trump card'
+rw  958f,76  StrWingedSndls         ; 118 bytes: Special Treasure 1: 'A powerful but feminine voice says: For thy
+                                    ;     victory I give thee these sandals to make thee quick and agile.'
+rw  9605,46  StrRstratnPotn         ; 70 bytes: Special Treasure 2: 'After some prying, a small chest opens to reveal
+                                    ;     a potion vial.'
+rw  964b,25  StrMorgnsTiara         ; 37 bytes: Special Treasure 3: 'You find a dainty little crown.'
+rw  9670,3d  StrHelmOfLight         ; 61 bytes: Special Treasure 4: 'A helm glowing with runes floats in midair
+                                    ;     before you.'
+rw  96ad,3e  StrTruslvrCoat         ; 62 bytes: Special Treasure 5: 'A chain-mail coat gleems with an almost
+                                    ;     magical lustre.'
+rw  96eb,2b  StrClkLevitatn         ; 43 bytes: Special Treasure 6: 'A cloak dances to and fro before you.'
+
+;rw  96f0,1   dat_96f0               ; loc_7627: assigned $ff           TODO: replace with relative offset
+
+rw  9716,53  StrCrystlBrplt         ; 83 bytes: Special Treasure 7: 'There is a glistening breastplate that looks as
+                                    ;     if it was made just for you.'
+rw  9769,51  StrJunaisSword         ; 81 bytes: Special Treasure 9: 'A straight, single-edged, evil-looking sword
+                                    ;     of oriental design lies here.'
+rw  97ba,3f  StrLoadstone           ; 63 bytes: Special Treasure 27: 'A curious-looking stone fastens itself around
+                                    ;     your neck.'
+rw  97f9,57  StrIronPalmSlv         ; 87 bytes: Special Treasure 12: 'Directions on a small vial here read:
+                                    ;     1. Pour over hands. 2. Rub hands firmly.'
+rw  9850,2c  StrDeathCard           ; 44 bytes: Special Treasure 13: 'Sealed in an envelope is a trump card.'
+rw  987c,35  StrSwrdOfAdept         ; 53 bytes: Special Treasure 14: 'A sword protrudes from a slab of black marble.'
+rw  98b1,8b  StrRazorIce            ; 139 bytes: Special Treasure 15: 'A katana in a ribbed black laquered scabbard
+                                    ;     rests against a wall. A pattern of snowflakes has been honed along its
+                                    ;     single edge.'
+rw  993c,3a  StrWhetstone           ; 58 bytes: Special Treasure 16: 'There is a small rectangular sharpening
+                                    ;     stone here.'
+rw  9976,bd  StrSaurnBrandy         ; 189 bytes: Special Treasure 17: 'Signs of a great battle between a single
+                                    ;     warrior and a dozen or more adversaries litter this room. Clutched tightly
+                                    ;     to the warrior's is a bottle filled with green liquid.'
+rw  9a33,50  StrBluPrlDaggr         ; 80 bytes: Special Treasure 18: 'Inscribed on the blade of a dagger are the words:
+                                    ;     "Fear not The Reaper"'
+rw  9a83,c8  StrSixPack             ; 200 bytes: Special Treasure 19: 'The decaying remains of an adventurer sporting
+                                    ;     a bush hat and a very nasty knife are here. Inscribed on the broken blade is
+                                    ;     the word "G'day". Lying next to him are six tall metal cylinders.'
+rw  9b4b,36  StrMelvinsHelm         ; 54 bytes: Special Treasure 20: 'There is a golden helm with thirteen jewels here.'
+rw  9b81,46  StrCrossbow            ; 70 bytes: Special Treasure 21: 'A crossbow of incredibly fine mechanical
+                                    ;     workmanship lies here.'
+rw  9bc7,36  StrAmethystRod         ; 54 bytes: Special Treasure 22: 'A blue-violet quartz rod lies on a purple dias.'
+rw  9bfd,5d  StrMapStone            ; 93 bytes: Special Treasure 23: 'A note reads: {name}, Congratulations my
+                                    ;     good {man/woman} on getting this far. A friend'
+rwx 9c5a,1a  setGenderZts           ; 26 bytes: subroutine? TODO: verify
+rw  9c74,4   ZtsMan                 ; 4 bytes: 'man'
+rw  9c78,6   ZtsWoman               ; 6 bytes: 'woman'
+rw  9c7e,35  StrQuarrels            ; 53 bytes: Special Treasure 24 & 25: 'There are 10 quarrels in a metallic
+                                    ;     clip here.'
+rw  9cb3,28  StrStaffOfAmbr         ; 40 bytes: Special Treasure 26: 'There is a long electrum rod here.'
+rw  9cdb,20  StrRobinsHood          ; 32 bytes: Special Treasure 10: 'There is a dark cowl here.'
+rw  9cfb,6f  StrGoldenApple         ; 111 bytes: Special Treasure 28: 'A golden apple rests on a golden pillow.
+                                    ;     Inscribed on the apple are the words: "For the pretty one."'
+rw  9d6a,34  StrGaussRifle          ; 52 bytes: Special Treasure 29: 'There is evidence of small weapons fire here.'
+rw  9d9e,5e  StrSolarSuit           ; 94 bytes: Special Treasure 30: 'There are some disgusting stains on the floor
+                                    ;     and an odd looking silvery quilted vest.'
+rw  9dfc,32  StrBeamWeapon          ; 50 bytes: Special Treasure 31: 'An energy pistol is hanging on a wall rack.'
+
+rw  9e2e,20  TreasureTmpl_L         ; 32 bytes: LSB of special treasure template string
+rw  9e4e,20  TreasureTmpl_H         ; 32 bytes: MSB of special treasure template string
+                                    ;    cont_763b: one byte per special treasure index
+                                    ;    0: $9563 [StrTrumpCard] (The Star)     16: $993c [StrWhetstone]
+                                    ;    1: $958f [StrWingedSndls]              17: $9976 [StrSaurnBrandy]
+                                    ;    2: $9605 [StrRstratnPotn]              18: $9a33 [StrBluPrlDaggr]
+                                    ;    3: $964b [StrMorgnsTiara]              19: $9a83 [StrSixPack]
+                                    ;    4: $9670 [StrHelmOfLight]              20: $9b4b [StrMelvinsHelm]
+                                    ;    5: $96ad [StrTruslvrCoat]              21: $9b81 [StrCrossbow]
+                                    ;    6: $96eb [StrClkLevitatn]              22: $9bc7 [StrAmethystRod]
+                                    ;    7: $9716 [StrCrystlBrplt]              23: $9bfd [StrMapStone]
+                                    ;    8: $9563 [StrTrumpCard] (Page of Cups) 24: $9c7e [StrQuarrels] (Flame)
+                                    ;    9: $9769 [StrJunaisSword]              25: $9c7e [StrQuarrels] (Thunder)
+                                    ;   10: $9cdb [StrRobinsHood]               26: $9cb3 [StrStaffOfAmbr]
+                                    ;   11: $9563 [StrTrumpCard] (Death)        27: $97ba [StrLoadstone]
+                                    ;   12: $97f9 [StrIronPalmSlv]              28: $9cfb [StrGoldenApple]
+                                    ;   13: $9850 [StrDeathCard]                29: $9d6a [StrGaussRifle]
+                                    ;   14: $987c [StrSwrdOfAdept]              30: $9d9e [StrSolarSuit]
+                                    ;   15: $98b1 [StrRazorIce]                 31: $9dfc [StrBeamWeapon]
+
+;rw  9e6e,1   unk_9e6e               ; ???

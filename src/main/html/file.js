@@ -1,7 +1,9 @@
 
 import { GameState } from "../js/GameState.js";
 import { Parse } from "../js/Parse.js";
-import { atari800Labels, disassemble, LabelCollection, SegmentCollection, SegmentEntry } from "../js/Disasm6502.js";
+import { atari800Labels, disassemble, LabelCollection, LabelEntry, SegmentCollection, SegmentEntry,
+         InferredLabelTransformer, RawByteResizerTransformer, DisasmTransformer, AsmOpListEntry,
+         DisasmOptions, AsmOp} from "../js/Disasm6502.js";
 import { ResourceMeta } from "../js/ResourceManager.js";
 
 // 720 sectors total
@@ -148,12 +150,13 @@ Entry  62: [42a7 0001] D1 S1: sector=679 [2a7], length= 256
         { id: 0x4A31, number: 15, description: "D2S1 S562 - Unknown 1 (Executable loaded at $96F0)",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x96F0 },
-        { id: 0x4A3C, number: 16, description: "D2S1 S573 - Unknown 2 (compass and arrows character sets)",
-            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ] },
-        { id: 0x4A7F, number: 20, description: "D2S1 S640 - Dungeon Exit (Executable loaded at $7600)",
+        { id: 0x4A3C, number: 16, description: "D2S1 S573 - Module 0: Normal play (renderer, compass/arrow charsets, special messages, etc)",
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym", "Dungeon21-S573.sym" ],
+            type: "scenario", segments: 0x7600 },
+        { id: 0x4A7F, number: 20, description: "D2S1 S640 - Module 4: Dungeon Exit",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 },
-        { id: 0x4A8C, number: 21, description: "D2S1 S653 - Stairway (Executable loaded at $7600)",
+        { id: 0x4A8C, number: 21, description: "D2S1 S653 - Module 5: Stairway",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 },
         { id: 0x02B9, description: "D2S1 S697 - Unused space", length: 0xC00 } // length = 0xc00 (3072)
@@ -178,40 +181,40 @@ Entry  21: [4a8c 0016] D2 S1: sector=652 [28c], length=5632
 */
     ],
     "../AR/dungeon/disks/Dungeon22.xfd": [
-        { id: 0x4C01, number: 19, description: "D2S2 S002 - Fountain",
+        { id: 0x4C01, number: 19, description: "D2S2 S002 - Module 3: Fountain",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1100 (4352)
-        { id: 0x4C24, number: 26, description: "D2S2 S037 - Chapel",
+        { id: 0x4C24, number: 26, description: "D2S2 S037 - Module 10: Chapel",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1C00 (7168)
-        { id: 0x4C5D, number: 30, description: "D2S2 S094 - Gargoyle",
+        { id: 0x4C5D, number: 30, description: "D2S2 S094 - Module 14: Gargoyle",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1400 (5120)
-        { id: 0x4C86, number: 35, description: "D2S2 S135 - Ferryman",
+        { id: 0x4C86, number: 35, description: "D2S2 S135 - Module 19: Ferryman",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1000 (4096)
-        { id: 0x4CA7, number: 36, description: "D2S2 S168 - Clothes Horse",
+        { id: 0x4CA7, number: 36, description: "D2S2 S168 - Module 20: Clothes Horse",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0xF00 (3840)
-        { id: 0x4CC6, number: 37, description: "D2S2 S199 - Dwarven Smithy",
+        { id: 0x4CC6, number: 37, description: "D2S2 S199 - Module 21: Dwarven Smithy",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x2000 (8192)
-        { id: 0x4D07, number: 38, description: "D2S2 S264 - Brewery",
+        { id: 0x4D07, number: 38, description: "D2S2 S264 - Module 22: Brewery",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x2200 (8704)
-        { id: 0x4D4C, number: 39, description: "D2S2 S333 - Crypt",
+        { id: 0x4D4C, number: 39, description: "D2S2 S333 - Module 23: Crypt",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1000 (4096)
-        { id: 0x4D6D, number: 40, description: "D2S2 S366 - Dragon",
+        { id: 0x4D6D, number: 40, description: "D2S2 S366 - Module 24: Dragon",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1500 (5376)
-        { id: 0x4D98, number: 41, description: "D2S2 S409 - Death's Door",
+        { id: 0x4D98, number: 41, description: "D2S2 S409 - Module 25: Death's Door",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0xB00 (2816)
-        { id: 0x4DAF, number: 43, description: "D2S2 S432 - Machine Room",
+        { id: 0x4DAF, number: 43, description: "D2S2 S432 - Module 27: Machine Room",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1F00 (7936)
-        { id: 0x4DEE, number: 44, description: "D2S2 S495 - Elevator",
+        { id: 0x4DEE, number: 44, description: "D2S2 S495 - Module 28: Elevator",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x700 (1792)
         { id: 0x4DFD, number: 48, description: "D2S2 S510 - Unknown 1" }, // length = 0x400 (1024)
@@ -238,13 +241,13 @@ Entry  66: [4e18 0005] D2 S2: sector=536 [218], length=1280
 */
     ],
     "../AR/dungeon/disks/Dungeon31.xfd": [
-        { id: 0x5001, number: 17, description: "D3S1 S002 - Combat Data",
+        { id: 0x5001, number: 17, description: "D3S1 S002 - Module 1: Combat Data",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             segments: 0x7600 }, // length = 0x3800 (14336)
-        { id: 0x5072, number: 18, description: "D3S1 S115 - Item Data",
-            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
+        { id: 0x5072, number: 18, description: "D3S1 S115 - Module 2: Item Data",
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym", "Dungeon31-S115.sym" ],
             segments: 0x7600 }, // length = 0x2A00 (10752)
-        { id: 0x50C7, number: 31, description: "D3S1 S200 - Inn",
+        { id: 0x50C7, number: 31, description: "D3S1 S200 - Module 15: Inn",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1200 (4608)
         { id: 0x00EC, number: 46, description: "D3S1 S236 - Encounters Data", startSector: 0xEC, length: 0xB080,
@@ -347,31 +350,31 @@ Entry  67: [529f 0005] D3 S1: sector=671 [29f], length=1280
 */
     ],
     "../AR/dungeon/disks/Dungeon32.xfd": [
-        { id: 0x5401, number: 22, description: "D3S2 S002 - Grahm's Gold Exchange Vault",
+        { id: 0x5401, number: 22, description: "D3S2 S002 - Module 6: Bank Vault",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1000 (4096)
-        { id: 0x5422, number: 23, description: "D3S2 S035 - Goblin Troll",
+        { id: 0x5422, number: 23, description: "D3S2 S035 - Module 7: Goblin Troll",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1C00 (7168)
-        { id: 0x545B, number: 24, description: "D3S2 S092 - Acrinimiril's Tomb",
+        { id: 0x545B, number: 24, description: "D3S2 S092 - Module 8: Acrinimiril's Tomb",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1100 (4352)
-        { id: 0x547E, number: 27, description: "D3S2 S127 - Ozob",
+        { id: 0x547E, number: 27, description: "D3S2 S127 - Module 11: Prison / Ozob",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1C00 (7168)
-        { id: 0x54B7, number: 28, description: "D3S2 S184 - Guild",
+        { id: 0x54B7, number: 28, description: "D3S2 S184 - Module 12: Guild",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x2700 (9984)
-        { id: 0x5506, number: 29, description: "D3S2 S263 - Shop",
+        { id: 0x5506, number: 29, description: "D3S2 S263 - Module 13: Shop",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x2000 (8192)
-        { id: 0x5547, number: 32, description: "D3S2 S328 - Oracle",
+        { id: 0x5547, number: 32, description: "D3S2 S328 - Module 16: Oracle",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1B00 (6912)
-        { id: 0x557E, number: 33, description: "D3S2 S383 - Enchantress",
+        { id: 0x557E, number: 33, description: "D3S2 S383 - Module 17: Enchantress",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1800 (6144)
-        { id: 0x55AF, number: 45, description: "D3S2 S432 - Tavern",
+        { id: 0x55AF, number: 45, description: "D3S2 S432 - Module 29: Tavern",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
             type: "scenario", segments: 0x7600 }, // length = 0x1F00 (7936)
         { id: 0x55EE, number: 51, description: "D3S2 S495 - Picture 7", type: "charset-2bpp", segments: 0x96F0 }, // length = 0x780 (1920)
@@ -1000,6 +1003,258 @@ function getSelectedSegments(length) {
     return segments;
 }
 
+class TemplateStringFormatter extends DisasmTransformer {
+
+    /** @type {AsmOp?} */
+    #ignoreOp;
+
+    /** @type {DisasmOptions} */
+    #options;
+
+    /** @type {number} */
+    #finalAddress;
+
+    /** @type {AsmOpListEntry} */
+    #curOpEntry;
+
+    /** @type {AsmOp} */
+    #curOp;
+
+    /** @type {number[]} */
+    #bytes;
+
+    /** @type {number} */
+    #ofs;
+
+    /** @type {number} */
+    #maxOfs;
+
+    /**
+     * @param {number} ofs
+     * @param {DisasmOptions} options
+     * @param {boolean=} lookupLabel
+     * @returns {string} the word represented as 4 hex digits
+     */
+    readLeWord(ofs, lookupLabel = true) {
+        try {
+            const word = this.#bytes[ofs] + this.#bytes[ofs + 1] * 256;
+            const [ label ] =
+                (lookupLabel
+                    ? this.#options.labels.labelForAddress(word, LabelEntry.FLAG_ALL, false, true)
+                    : [""]);
+            return "$" + leftPad(word.toString(16), 4, "0") + (label ? ` [${label}]` : "");
+        } catch (e) {
+            return "????";
+        }
+    }
+
+    /**
+     * Reads a byte at the specified offset
+     * @param {number} ofs
+     * @returns {string}
+     */
+    readByte(ofs) {
+        try {
+            return String(this.#bytes[ofs]);
+        } catch (e) {
+            return "??";
+        }
+    }
+
+    /**
+     *
+     * @param {number} ofs
+     * @param {string?} comment
+     * @returns {boolean} true if split occurred, false if no more bytes to process
+     */
+    split(ofs, comment) {
+        if (comment != null) {
+            this.#curOp.preferredCommentColumn = 71;
+            this.#curOp.comment += comment;
+        }
+
+        if (ofs < this.#bytes.length) {
+            this.#curOpEntry.split(ofs);
+            this.updateProps(this.#curOpEntry.next);
+            return true;
+        }
+
+        // Ran out of bytes, end the iteration
+        this.#ofs = 0;
+        this.#maxOfs = 0;
+        return false;
+    }
+
+    updateProps(opEntry, first = false) {
+        this.#curOpEntry = opEntry;
+        this.#curOp = opEntry.op;
+        this.#curOp.preferredCommentColumn = 71;
+        this.#curOp.comment = "";
+        this.#bytes = this.#curOp.bytes;
+        this.#ofs = 0;
+        this.#maxOfs = Math.min(this.#finalAddress - this.#curOp.offset + 1,
+                this.#bytes.length,
+                this.#options.showRawBytes && first
+                        ? Math.max(1, Math.trunc((this.#options.rawBytesWidth + 1) / 3))
+                        : this.#options.maxRawBytesPerGroup
+            );
+    }
+
+    mapChar(byte) {
+        switch (byte) {
+            case 0x0:
+                return "\\0";
+            case 0x8:
+                return "␈";
+            case 0xd:
+                return "\\r";
+            case 0x7f:
+                return "⚡︎";
+            default:
+                return String.fromCharCode(byte);
+        }
+    }
+
+    /**
+     * @param {AsmOpListEntry} opEntry
+     * @param {DisasmOptions} options
+     */
+    apply(opEntry, options) {
+        const op = opEntry.op;
+        if (!(op instanceof AsmOp) || (op === this.#ignoreOp)) {
+            this.#ignoreOp = null;
+            return;
+        }
+
+        const labelEntry = options.labels.entryForAddress(op.offset, LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE);
+        if (labelEntry && (labelEntry.offset == op.offset) && (labelEntry.name.startsWith("Str"))) {
+            // Found a template string chunk
+            // Parse the string into format codes, etc.
+            this.#options = options;
+            this.#finalAddress = labelEntry.offset + labelEntry.size - 1;
+            this.updateProps(opEntry, true);
+
+            this.#ignoreOp = this.#curOpEntry.op;       // Ignore the op when we see it again in the iteration
+            this.#curOpEntry.insertPrev("");            // Insert a blank line into the output
+            this.#curOpEntry = this.#curOpEntry.next;   // Process the new "old" op node
+
+            while (this.#ofs < this.#maxOfs) {
+                const byte = this.#bytes[this.#ofs];
+
+                if (byte <= 0xa0) {
+                    this.#curOp.preferredCommentColumn = 71;
+                    this.#curOp.comment += (this.#ofs == 0 ? '"' : "") + this.mapChar(byte);
+                    ++this.#ofs;
+                    if (this.#ofs >= this.#maxOfs) {
+                        this.split(this.#ofs, '"');
+                    }
+                } else {
+                    // End any current run of characters
+                    if (this.#ofs > 0) {
+                        this.split(this.#ofs, '"');
+                    }
+
+                    switch (byte) {
+                    case 0xa0:
+                        this.split(1, "{Blink Off}");
+                        break;
+
+                    case 0xa1:
+                        this.split(1, "{Blink On}");
+                        break;
+
+                    case 0xa2:
+                        this.split(1, "{Center w/clear left}");
+                        break;
+
+                    case 0xa3:
+                        this.split(3, `{Call ${ this.readLeWord(1) }}`);
+                        break;
+
+                    case 0xa4:
+                        this.split(3, `{Print hex byte @ ${ this.readLeWord(1) }}`);
+                        break;
+
+                    case 0xa5:
+                        this.split(1, "{Center}");
+                        break;
+
+                    case 0xa6:
+                        this.split(3, `{Col ${this.readByte(1)} Row ${this.readByte(2)}}`);
+                        break;
+
+                    case 0xa7:
+                        this.split(1, "{Right Align}");
+                        break;
+
+                    case 0xa8:
+                        this.split(1, "{Clear all message rows}");
+                        break;
+
+                    case 0xa9:
+                        this.split(1, "{Clear row}");
+                        break;
+
+                    case 0xaa:
+                        this.split(1, "{Reset/No blink/Left align}");
+                        break;
+
+                    case 0xab:
+                        this.split(1, "{Clear to EOL}");
+                        break;
+
+                    case 0xac:
+                        this.split(3, `{Continue @ ${ this.readLeWord(1) }}`);
+                        break;
+
+                    case 0xad:
+                        this.split(3, `{Cont. @ addr in ${ this.readLeWord(1) }}`);
+                        break;
+
+                    case 0xae:
+                        this.split(1, "{Return to prev str}");
+                        break;
+
+                    case 0xb0:
+                        this.split(4, `{Print uint32 @ ${this.readLeWord(1)} wid ${this.readByte(3)}}`);
+                        break;
+
+                    case 0xb1:
+                        this.split(4, `{Print uint16 @ ${this.readLeWord(1)} wid ${this.readByte(3)}}`);
+                        break;
+
+                    case 0xb2:
+                        this.split(4, `{Print uint8 @ ${this.readLeWord(1)} wid ${this.readByte(3)}}`);
+                        break;
+
+                    case 0xb3:
+                        this.split(4, `{Print zts @ ${this.readLeWord(1)} wid ${this.readByte(3)}}`);
+                        break;
+
+                    case 0xb4:
+                        this.split(4, `{Print zts @ addr in ${this.readLeWord(1)} wid ${this.readByte(3)}}`);
+                        break;
+
+                    case 0xff:
+                        this.split(1, "{End of string}");
+                        break;
+
+                    default:
+                        this.split(1, `{\$${byte.toString(16).padStart(2, '0')} -> BRK & RTS}`);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    finalize(options) {
+        this.#options = null;
+        this.#curOpEntry = null;
+        this.#curOp = null;
+    }
+}
+
 /**
  *
  * @param {Uint8Array} bytes the buffer containing the bytes to output
@@ -1032,7 +1287,12 @@ function outputByteCodes(bytes) {
                 segments,
                 showOffsets: showDetails,
                 showRawBytes: showDetails,
-                showComments: showDetails
+                showComments: showDetails,
+                transformers: [
+                    new InferredLabelTransformer(),
+                    new TemplateStringFormatter(),
+                    new RawByteResizerTransformer()
+                ]
             }
         );
     } else {

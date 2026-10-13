@@ -122,10 +122,74 @@ export class LabelEntry {
     }
 }
 
-/**
- * @extends {Array<LabelEntry>}
- */
-export class LabelCollection extends Array {
+class LabelIndexEntry {
+    /**
+     * Starting offset for this entry.
+     * @type {number}
+     */
+    offset;
+
+    /**
+     * Number of bytes covered by this entry.
+     * @type {number}
+     */
+    size;
+
+    /**
+     * The labels that this entry overlaps.
+     * @type {LabelEntry[]}
+     */
+    labels = [];
+
+    /**
+     *
+     * @param {number} offset
+     * @param {number} size
+     * @param {LabelEntry[]|null} labels
+     */
+    constructor(offset, size, labels) {
+        this.offset = offset;
+        this.size = size;
+        this.labels = labels == null ? [] : labels.sort(LabelEntry.compare);
+    }
+
+    /**
+     * Splits this entry at the specified offset.
+     *
+     * This instance becomes the "left" piece and the "right" piece is returned.
+     *
+     * @param {number} offset the offset at which to split.
+     * @returns {LabelIndexEntry} the right-hand piece created from the split.
+     */
+    split(offset) {
+        const delta = offset - this.offset;
+        const size = this.size;
+        if (delta <= 0 || delta >= size) {
+            throw new Error(`Cannot split: offset ${offset} outside valid entry range [${this.offset + 1}, ${this.offset + this.size - 2}]`);
+        }
+
+        this.size = delta;
+        return new LabelIndexEntry(offset, size - delta, this.labels.slice());
+    }
+
+    /**
+     * Adds a label to this index entry, maintaining all labels in a sorted order using LabelEntry.compare.
+     * @param {LabelEntry} labelEntry
+     */
+    addLabel(labelEntry) {
+        let pos = 0;
+        for (; pos < this.labels.length; ++pos) {
+            const entry = this.labels[pos];
+            if (labelEntry.compare(entry) < 0) {
+                break;
+            }
+        }
+
+        this.labels.splice(pos, 0,  labelEntry);
+    }
+}
+
+export class LabelCollection {
 
     /**
      * Name used to identify to the collection in exceptions and logging.
@@ -141,13 +205,26 @@ export class LabelCollection extends Array {
     extendedCollections = [];
 
     /**
+     * Lookup index for labels in this collection.
+     *
+     * This index is populated as items are added to the collection.
+     *
+     * @type {(LabelEntry|LabelIndexEntry)[]}
+     */
+    index = [];
+
+    /**
+     * Map of label names defined in this collection.
+     */
+    usedNames = {};
+
+    /**
      * Creates a new collection containing the specified LabelEntries
      * @param {String} name used to identify to the collection in exceptions and logging.
      * @param {LabelCollection[]} collections collections which the new collection extends. Collections earlier in
      *        the list will have higher priority during lookups than later ones.
      */
     constructor(name, ...collections) {
-        super();
         this.name = name;
         this.extends(...collections);
     }
@@ -197,8 +274,8 @@ export class LabelCollection extends Array {
      * @param {boolean} returnUndefinedIfNotFound whether to return undefined if no matching label is found or
      *        the formatted hex form of the address.
      *
-     * @returns {string} label reference for the address or the address in hex if no label covers the specified
-     *          address.
+     * @returns {[ string, LabelEntry ]} label reference string and matched LabelEntry when a label is found,
+     *          or the address in hex and null if no label covers the specified address.
      */
     labelForAddress(
         address,
@@ -209,13 +286,13 @@ export class LabelCollection extends Array {
         const found = this.entryForAddress(address, flags);
         if (found != null) {
             if (found.offset == address) {
-                return found.name;
+                return [ found.name, found ];
             } else if (!requireExactMatch) {
-                return found.name + "+" + (address - found.offset);
+                return [ found.name + "+" + (address - found.offset), found ];
             }
         }
 
-        return (returnUndefinedIfNotFound ? undefined : '$' + fmtHex(address, (address < 256) ? 2 : 4));
+        return [ (returnUndefinedIfNotFound ? undefined : '$' + fmtHex(address, (address < 256) ? 2 : 4)), found ];
     }
 
     /**
@@ -232,17 +309,21 @@ export class LabelCollection extends Array {
             flags = LabelEntry.FLAG_ALL;
         }
 
-        let matches = [];
-        for (let entry of this) {
-            if (entry.matchAddress(address) == 0 && (entry.flags & flags) != 0) {
-                matches.push(entry);
+        const [ indexEntry ] = this.searchIndex(address);
+        if (indexEntry != null) {
+            if (indexEntry instanceof LabelEntry) {
+                if (indexEntry.matchAddress(address) == 0 && (indexEntry.flags & flags) != 0) {
+                    return indexEntry;
+                }
+            } else {
+                // If any matches are found, the last one should be the most specific one, so iterate backward
+                for (let i = indexEntry.labels.length - 1; i >= 0; --i) {
+                    const entry = indexEntry.labels[i];
+                    if (entry.matchAddress(address) == 0 && (entry.flags & flags) != 0) {
+                        return entry;
+                    }
+                }
             }
-        }
-
-        // If any matches found, sort and the last one in the list should be the most specific one
-        if (matches.length > 0) {
-            matches.sort(LabelEntry.compare);
-            return matches[matches.length - 1];
         }
 
         // If no match found yet, check the extended collections
@@ -256,24 +337,168 @@ export class LabelCollection extends Array {
         return undefined;
     }
 
-    sort(compareFn) {
-        return super.sort(compareFn ? compareFn : LabelEntry.compare);
+    /**
+     * @param {number} offset
+     * @returns {[LabelEntry|LabelIndexEntry|null,number]} an array containing the index entry found (if any) and the
+     *          last index checked.
+     */
+    searchIndex(offset) {
+        let s = 0;
+        let e = this.index.length;
+        let pos = (e - s) >> 1;
+
+        //console.debug("offset=" + offset + " s=" + s + " e=" + e + " pos=" + pos);
+        while (s < e) {
+            const entry = this.index[pos];
+            //console.debug(" >>> s=" + s + " e=" + e + " pos=" + pos + ": entry.offset=" + entry.offset + " entry.size=" + entry.size);
+            if (offset < entry.offset) { // move left
+                e = pos;
+                pos = s + ((e - s) >> 1);
+            } else if (offset >= entry.offset + entry.size) { // move right
+                s = pos + 1;
+                pos = s + ((e - s) >> 1);
+            } else { // found match
+                //console.debug(" FOUND >>> s=" + s + " e=" + e + " pos=" + pos +" offset=" + entry.offset + " size=" + entry.size);
+                return [entry, pos];
+            }
+        }
+
+        //console.debug(" INSERT >>> s=" + s + " e=" + e + " pos=" + pos);
+        return [null, pos];
     }
 
-    optimize() {
-        //this.sort();
+    /**
+     * Adds a new label to the collection.
+     * @param {LabelEntry} labelEntry the label entry to add to the collection.
+     */
+    addLabel(labelEntry) {
+        // Construct index and check for duplicate entries
+        const found = this.usedNames[labelEntry.name];
+        if (found) {
+            console.warn("%s: Duplicate label name found: %o and %o",
+                this.name, found, labelEntry);
+        } else {
+            this.usedNames[labelEntry.name] = [labelEntry];
+        }
 
-        // Check for duplicate entries
-        const usedNames = {};
-        this.forEach((entry, index) => {
-            const found = usedNames[entry.name];
-            if (found) {
-                console.warn("%s: Duplicate label name found: %o (index %i) and %o (index %i)",
-                    this.name, found[0], found[1], entry, index);
-            } else {
-                usedNames[entry.name] = [entry, index];
+        let offset = labelEntry.offset;
+        let size = labelEntry.size;
+
+        //console.debug("Adding label for offset=" + offset + " size=" + size, labelEntry);
+
+        const s = this.searchIndex(offset)[1];
+        const e = (size == 1) ? s : this.searchIndex(offset + size - 1)[1];
+        const [ spliceDel, loopE ] = (e == this.index.length) ? [e - s, e - 1] : [e - s + 1, e];
+
+        let items = [];
+
+        //console.debug("1: s=" + s + " e=" + e + " [spliceDel=" + spliceDel + " loopE=" + loopE + "]");
+
+        if (s < this.index.length) {
+            //console.debug("2: loopE=" + loopE);
+
+            for (let i = s; i <= loopE && size > 0; ++i) {
+                let indexEntry = this.index[i];
+                //console.debug("3: i=" + i + " indexEntry.offset=" + indexEntry.offset + " indexEntry.size=" + indexEntry.size + " offset=" + offset, indexEntry);
+
+                if (Number(indexEntry.offset) < Number(offset)) {
+                    //console.debug("> split1 - indexEntry.offset < offset: indexEntry.offset=" + indexEntry.offset + " offset=" + offset);
+                    if (indexEntry instanceof LabelEntry) {
+                        indexEntry = new LabelIndexEntry(indexEntry.offset, indexEntry.size, [ indexEntry ]);
+                    }
+
+                    // Split entry at offset
+                    const indexSplit = indexEntry.split(offset);
+                    items.push(indexEntry, indexSplit);
+
+                    if (indexSplit.size > size) {
+                        //console.debug("> split2 - indexSplit.size > size: indexSplit.size=" + indexSplit.size  + " size=" + size + ": offset=" + (offset + size));
+
+                        // Split again
+                        items.push(indexSplit.split(offset + size));
+                        // Fit into split, done
+                        size = 0;
+                    } else {
+                        // Done if sizes are equal
+                        offset += indexSplit.size;
+                        size -= indexSplit.size;
+                    }
+
+                    indexSplit.addLabel(labelEntry);
+                    continue;
+                }
+
+                if (indexEntry.offset > offset) {
+                    const delta = Math.min(size, indexEntry.offset - offset);
+
+                    //console.debug("> insert left - indexEntry.offset > offset: offset=" + offset + " size=" + delta);
+
+                    if (labelEntry.size == delta) {
+                        items.push(labelEntry);
+                    } else {
+                        items.push(new LabelIndexEntry(offset, delta, [ labelEntry ]));
+                    }
+
+                    offset += delta;
+                    size -= delta;
+                }
+
+                if ((size > 0) && (indexEntry instanceof LabelEntry)) {
+                    indexEntry = new LabelIndexEntry(indexEntry.offset, indexEntry.size, [ indexEntry ]);
+                }
+
+                items.push(indexEntry);
+
+                if (size > 0) {
+                    // At this point, indexEntry.offset == offset
+                    if (size < indexEntry.size) {
+                        //console.debug("> split3 - size < indexEntry.size: offset=" + (offset + size));
+
+                        items.push(indexEntry.split(offset + size));
+                        // Fit into split, done
+                        size = 0;
+                    } else {
+                        offset += indexEntry.size;
+                        size -= indexEntry.size;
+                    }
+                    indexEntry.addLabel(labelEntry);
+                }
             }
-        });
+        }
+
+        if (size > 0) {
+            // Add any leftover portion
+            //console.debug("> insert right - size > 0: offset=" + offset + " size=" + size);
+            if (size == labelEntry.size) { // Entire label
+                items.push(labelEntry);
+            } else { // Partial entry
+                items.push(new LabelIndexEntry(offset, size, [ labelEntry ]));
+            }
+        }
+
+        //console.log("4: splice(" + s + ", " + spliceDel + ",", items, ")");
+        this.index.splice(s, spliceDel, ...items);
+
+        /*
+        // Verification: Ensure the label can be retrieved by it's offset. If not, there's a bug
+        const [ entry, idx ] = this.searchIndex(labelEntry.offset);
+        if (entry == null || (entry !== labelEntry && entry.labels.findIndex(val => val === labelEntry) == -1)) {
+            console.error("Unable to find label after insertion: found=", entry, " idx=" + idx, " expected=", labelEntry);
+            debugger;
+            throw new Error("Unable to find label after insertion");
+        }
+
+        // Additional Verification: Ensure all entries are in sorted ascending order.
+        let lastOfs = -1;
+        for (let idx = 0; idx < this.index.length; ++idx) {
+            const entry = this.index[idx];
+            if (entry.offset <= lastOfs) {
+                debugger;
+                throw new Error("Entry at index " + idx + " is out of order: lastOfs=" + lastOfs + " entry.offset=" + entry.offset);
+            }
+            lastOfs = entry.offset;
+        }
+        */
 
         return this;
     }
@@ -315,8 +540,6 @@ export class LabelCollection extends Array {
 
             format.parse(line);
         });
-
-        this.optimize();
 
         console.log("Read labels: ", this);
         return this;
@@ -482,7 +705,7 @@ class AltirraSymbolFormat extends LabelParser {
         this.skipWhitespaceAndComments();
         this.throwErrorIfNotEndOfLine();
 
-        this.labels.push(new LabelEntry(value, label, size, flags));
+        this.labels.addLabel(new LabelEntry(value, label, size, flags));
     }
 
     readSection() {
@@ -547,7 +770,7 @@ class LabFileFormat extends LabelParser {
         this.skipWhitespaceAndComments();
         this.throwErrorIfNotEndOfLine();
 
-        this.labels.push(new LabelEntry(value, label));
+        this.labels.addLabel(new LabelEntry(value, label));
     }
 
 }
@@ -787,6 +1010,253 @@ export class SegmentCollection extends Array {
     }
 }
 
+export class DisasmTransformer {
+    /**
+     * Prepare any state needed for the transformation.
+     *
+     * Called before any transformers are applied.
+     *
+     * @param {DisasmOptions} options
+     * @returns {boolean} true if the transformer should be applied for the provided options, false if not.
+     */
+    initialize(options) {
+        // Base class is NOP
+        return true;
+    }
+
+    /**
+     * Applies this transformer to the provided op list entry.
+     *
+     * @param {AsmOpListEntry} op
+     * @param {DisasmOptions} options
+     */
+    apply(op, options) {
+        throw new Error("Unimplemented: Subclasses must override the apply method.")
+    }
+
+    /**
+     * Cleanup after the transformation is applied to all nodes.
+     *
+     * Called after all transformers are applied.
+     *
+     * @param {DisasmOptions} options
+     */
+    finalize(options) {
+        // Base class is NOP
+    }
+}
+
+export class InferredLabelTransformer extends DisasmTransformer {
+    /** @type {LabelCollection} */
+    #origLabels;
+
+    /** @type {Set<string>} */
+    #seenLabels;
+
+    /**
+     * @param {DisasmOptions} options
+     * @returns {boolean}
+     */
+    initialize(options) {
+        if (options.defineInferredLabels) {
+            this.#origLabels = options.labels;
+            this.#seenLabels = new Set();
+            options.labels = new LabelCollection("[Inferred labels]", options.labels);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param {AsmOpListEntry} opEntry
+     * @param {DisasmOptions} options
+     */
+    apply(opEntry, options) {
+        const op = opEntry.op;
+        if ((op instanceof AsmOp) && (op.rawBytes === false)) {
+            let ofs = 0;
+            const matches = op.template.match(/\$\$|\^\^|%%|[$#^%]/g);
+            if (matches != null) {
+                matches.forEach((substr) => {
+                    /** @type {number} */
+                    let addr = null;
+                    /** @type {number} */
+                    let labelMode;
+                    let requireExactMatch = false;
+
+                    switch (substr) {
+                        // Literal
+                        case '#':
+                            ++ofs;
+                            return;
+
+                        // Relative exec
+                        case '^':
+                        {
+                            ++ofs;
+                            let rel = op.bytes[ofs];
+                            addr = op.offset + 2 + ((rel & 0x80) ? -((~rel & 0xff) + 1) : rel);
+                            labelMode = LabelEntry.FLAG_ALL;
+                            requireExactMatch = true;
+                            break;
+                        }
+
+                        // Zero page read/write
+                        case '$':
+                        case '%':
+                            ++ofs;
+                            addr = op.bytes[ofs]
+                            labelMode = LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE;
+                            break;
+
+                        // Absolute exec
+                        case '^^':
+                            ofs += 2;
+                            addr = (op.bytes[ofs] * 256) + op.bytes[ofs - 1];
+                            labelMode = LabelEntry.FLAG_ALL;
+                            requireExactMatch = true;
+                            break;
+
+                        // Absolute read/write
+                        case '$$':
+                        case '%%':
+                            ofs += 2;
+                            addr = (op.bytes[ofs] * 256) + op.bytes[ofs - 1];
+                            labelMode = LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE;
+                            break;
+
+                        default:
+                            throw new Error("Unexpected value matched: " + substr);
+                    }
+
+                    if (isNaN(addr)) {
+                        throw new Error("Address is not a number? addr=", addr);
+                    }
+
+                    // Define a label for the offset if the address falls in a known segment
+                    // and there is no label defined for it yet
+                    const segment = options.segments.entryForAddress(addr);
+                    if (segment != null) {
+                        console.log("Segment found, checking for label: addr=" + addr + " (" + fmtHex(addr) + ") mode=" + labelMode);
+                        const found = options.labels.entryForAddress(addr, labelMode);
+                        if ((found == null || (requireExactMatch && found.offset != addr)) && !this.#seenLabels.has(addr)) {
+                            // If this op is a JSR, use the 'sub_' prefix instead of 'loc_'
+                            const prefix = (op.bytes[0] == 0x20 ? 'sub_' : 'loc_');
+
+                            const label = new LabelEntry(addr, prefix + fmtHex(addr, 4), 1, labelMode);
+                            console.log("Defining implied label: " + label);
+                            options.labels.addLabel(label);
+                            this.#seenLabels.add(addr);
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * @param {DisasmOptions} options
+     */
+    finalize(options) {
+        console.log("InferredLabelTransformer::finalize");
+        console.log("inferred labels: ", options.labels);
+        options.labels = this.#origLabels;
+        this.#origLabels = null;
+        this.#seenLabels = null;
+    }
+}
+
+export class RawByteResizerTransformer extends DisasmTransformer {
+
+    /** @type {number} */
+    #labelMaxBytes;
+
+    /**
+     * @param {DisasmOptions} options
+     * @returns {boolean}
+     */
+    initialize(options) {
+        this.#labelMaxBytes = options.showRawBytes
+                ? Math.max(1, Math.trunc((options.rawBytesWidth + 1) / 3))
+                : options.maxRawBytesPerGroup;
+        return true;
+    }
+
+    /**
+     * @param {AsmOpListEntry} opEntry
+     * @param {DisasmOptions} options
+     */
+    apply(opEntry, options) {
+        const op = opEntry.op;
+        if (op.offset != null) {
+            const labelFlags = op.rawBytes ? LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE : LabelEntry.FLAG_ALL;
+
+            let opLabelEntry;
+            [ op.label, opLabelEntry ] = options.labels.labelForAddress(op.offset, labelFlags, true, true);
+
+            if (op.rawBytes) {
+                // Max length of the first chunk
+                let chunkRemaining = (op.label != null
+                        ? Math.min(this.#labelMaxBytes, options.maxRawBytesPerGroup, opLabelEntry.size)
+                        : options.maxRawBytesPerGroup);
+
+                // Check remaining bytes (if any) for labels and split op if:
+                // - chunkRemaining reaches 0 (continue loop with new chunk)
+                // - op has label and label length is reached (terminate loop)
+                // - a label is found (terminate loop)
+                let curOpEntry = opEntry;
+                let len = op.bytes.length;
+                let ofs = op.offset + 1;
+                let maxLen = opLabelEntry ? opLabelEntry.size : len;
+                for (let i = 1; i < len; ++i) {
+                    const label = options.labels.labelForAddress(ofs, labelFlags, true, true)[0];
+                    if (label || i >= maxLen) {
+                        curOpEntry.split(ofs - curOpEntry.op.offset, label);
+                        break;
+                    }
+
+                    --chunkRemaining;
+                    if (chunkRemaining <= 0) {
+                        chunkRemaining = options.maxRawBytesPerGroup;
+                        curOpEntry.split(ofs - curOpEntry.op.offset);
+                        curOpEntry = curOpEntry.next;
+                    }
+
+                    ++ofs;
+                }
+            }
+        }
+    }
+}
+
+export class OutputTransformer extends DisasmTransformer {
+    #result;
+
+    initialize(options) {
+        this.#result = [];
+        return true;
+    }
+
+    apply(opEntry, options) {
+        this.#result.push(opEntry.op.toString(options));
+    }
+
+    get result() {
+        return this.#result.join("\n");
+    }
+
+    finalize(options) {
+        this.#result = null;
+    }
+}
+
+/**
+ * Function which transforms an AsmOpListEntry.
+ *
+ * @callback DisasmTransformer
+ * @param {AsmOpListEntry} op the entry to transform
+ * @return {AsmOpListEntry} the transformed entry (may be unmodified)
+ */
 export class DisasmOptions {
     /**
      * The starting source offset to assign to the first byte of the input data.
@@ -920,6 +1390,15 @@ export class DisasmOptions {
     defineInferredLabels = true;
 
     /**
+     * Transformers to apply to the list of parsed ops, in the order they should be applied.
+     * @type {DisasmTransformer[]}
+     */
+    transformers = [
+        new InferredLabelTransformer(),
+        new RawByteResizerTransformer()
+    ];
+
+    /**
      * The preferred starting column for labels, based on the values of the showOffsets,
      * showRawBytes and rawBytesWidth options.
      *
@@ -1012,6 +1491,14 @@ export class AsmOp {
      */
     comment;
 
+    /**
+     * The preferred column at which to output any comment when converting to a string.
+     * If defined, this will override the preferredCommentColumn specified by the options.
+     * This exists to allow transformers to specify a preferred comment layout for a transformed section.
+     * @type {number?}
+     */
+    preferredCommentColumn;
+
     constructor(offset, label) {
         this.offset = offset;
         this.label = label;
@@ -1085,19 +1572,19 @@ export class AsmOp {
                 // Zero page read
                 case '$':
                     ++ofs;
-                    return options.labels.labelForAddress(this.bytes[ofs], LabelEntry.FLAG_READ);
+                    return options.labels.labelForAddress(this.bytes[ofs], LabelEntry.FLAG_READ)[0];
 
                 // Zero page write
                 case '%':
                     ++ofs;
-                    return options.labels.labelForAddress(this.bytes[ofs], LabelEntry.FLAG_WRITE);
+                    return options.labels.labelForAddress(this.bytes[ofs], LabelEntry.FLAG_WRITE)[0];
 
                 // Relative exec
                 case '^': {
                     ++ofs;
                     let rel = this.bytes[ofs];
                     return options.labels.labelForAddress(this.offset + 2 + ((rel & 0x80) ? -((~rel & 0xff) + 1) : rel),
-                        LabelEntry.FLAG_EXECUTE);
+                        LabelEntry.FLAG_EXECUTE)[0];
                     break;
                 }
 
@@ -1105,19 +1592,19 @@ export class AsmOp {
                 case '$$':
                     ofs += 2;
                     return options.labels.labelForAddress((this.bytes[ofs] * 256) + this.bytes[ofs - 1],
-                        LabelEntry.FLAG_READ);
+                        LabelEntry.FLAG_READ)[0];
 
                 // Absolute write
                 case '%%':
                     ofs += 2;
                     return options.labels.labelForAddress((this.bytes[ofs] * 256) + this.bytes[ofs - 1],
-                        LabelEntry.FLAG_WRITE);
+                        LabelEntry.FLAG_WRITE)[0];
 
                 // Absolute exec
                 case '^^':
                     ofs += 2;
                     return options.labels.labelForAddress((this.bytes[ofs] * 256) + this.bytes[ofs - 1],
-                        LabelEntry.FLAG_EXECUTE);
+                        LabelEntry.FLAG_EXECUTE)[0];
 
                 default:
                     console.warn("Unexpected substr matched: '" + substr + "'");
@@ -1138,7 +1625,9 @@ export class AsmOp {
             }
 
             if (comment != null) {
-                result += " ".repeat(Math.max(1, options.preferredCommentColumn - result.length - 1)) + " ; " + comment;
+                let commentColumn = (this.preferredCommentColumn != null)
+                        ? this.preferredCommentColumn : options.preferredCommentColumn;
+                result += " ".repeat(Math.max(1, commentColumn - result.length - 1)) + " ; " + comment;
             }
         }
 
@@ -1163,7 +1652,7 @@ function byteToCharRepr(byte) {
     return '.';
 }
 
-class AsmOpListEntry {
+export class AsmOpListEntry {
 
     /**
      * @type {AsmOp|string}
@@ -1187,6 +1676,7 @@ class AsmOpListEntry {
 
     /**
      * Inserts an operation or sequence of operations between this operation and the next one in the list.
+     * Note: If called inside an iterator, the new items inserted will be iterated over.
      * @param {AsmOpList|AsmOp|string} op the operation or operations to insert.
      */
     insertNext(op) {
@@ -1198,6 +1688,107 @@ class AsmOpListEntry {
         } else {
             this.next = new AsmOpListEntry(op, this.next);
         }
+    }
+
+    /**
+     * Inserts an operation or sequence of operations between this operation and the previous one in the list.
+     * Note: If called inside an iterator, this should be used with care. The first op inserted will not be iterated,
+     *       but any additional ops inserted will be. The original op the new items were inserted in front
+     *       of will also be iterated again when it is reached.
+     * @param {AsmOpList|AsmOp|string} op the operation or operations to insert.
+     */
+    insertPrev(op) {
+        if (op instanceof AsmOpList) {
+            if (op.first != null) {
+                const newNode = new AsmOpListEntry(this.op, this.next);
+                this.op = op.first.op;
+                if (op.first.next) {
+                    this.next = op.first.next;
+                    op.last.next = newNode;
+                } else {
+                    this.next = newNode;
+                }
+            }
+        } else {
+            this.next = new AsmOpListEntry(this.op, this.next);
+            this.op = op;
+        }
+    }
+
+    /**
+     * Replaces the operation with a new operation or sequence of operations.
+     * Note: If called inside an iterator, this should be used with care. In particular, the first replacement op will
+     *       not be iterated, but any subsequent ops inserted will be.
+     * @param {AsmOpList|AsmOp|string} op the operation or operations to replace the existing operation with.
+     */
+    replace(op) {
+        if (op instanceof AsmOpList) {
+            if (op.first == null) {
+                throw new Error("At least one op must be provided");
+            }
+
+            this.op = op.first.op;
+            if (op.first.next) {
+                op.last.next = this.next;
+                this.next = op.first.next;
+            }
+        } else {
+            this.op = op;
+        }
+    }
+
+    /**
+     * Splits this entry into two at the specified index.
+     * @param {number} index index at which to split the bytes.
+     * @param {string?} label optional label string to assign to the new op
+     */
+    split(index, label) {
+        const op = this.op;
+        if (!(op instanceof AsmOp) || !op.rawBytes) {
+            throw new Error("Can only split raw byte ops");
+        }
+        if (index <= 0 || index >= op.bytes.length) {
+            throw new Error("Can't split op: index " + index + " must be in [1, " + (op.bytes.length - 1) + "]");
+        }
+
+        // Split the op
+        const newOp = new AsmOp();
+        newOp.bytes = op.bytes.slice(index);
+        newOp.label = label;
+        newOp.offset = op.offset + index;
+        newOp.rawBytes = true;
+
+        op.bytes.splice(index);
+
+        this.insertNext(newOp); // Modifies list, but safe to do while iterating
+
+        return newOp;
+    }
+
+    /**
+     * Attempts to merge this node with the next node.
+     * @returns {boolean} true if merged, false if no change made
+     */
+    merge() {
+        const op = this.op;
+        if (!(op instanceof AsmOp) || !op.rawBytes) {
+            throw new Error("Can only merge raw byte ops");
+        }
+        if (this.next == null) {
+            // Can only merge if there is a next node
+            return false;
+        }
+
+        const nextOp = this.next.op;
+        if (!(nextOp instanceof AsmOp) || !nextOp.rawBytes) {
+            // Will only merge if next op contains raw bytes
+            return false;
+        }
+
+        op.bytes.splice(op.bytes.length, 0, ...nextOp.bytes);
+
+        this.next = this.next.next;
+        return true;
     }
 
     /**
@@ -1432,140 +2023,30 @@ export function disassemble(bytes, options) {
         }
     }
 
-    const origLabels = options.labels;
-    if (options.defineInferredLabels) {
-        options.labels = new LabelCollection("[Inferred labels]", options.labels);
-        const d = new Set();
+    let transformers = [];
+    for (let transformer of options.transformers) {
+        if (transformer.initialize(options)) {
+            transformers.push(transformer);
+        }
+    }
 
+    const outputTransformer = new OutputTransformer();
+    if (outputTransformer.initialize(options)) {
+        transformers.push(outputTransformer);
+    }
+
+    for (let transformer of transformers) {
         for (let opEntry of ops) {
-            const op = opEntry.op;
-            if (op.rawBytes === false) {
-                let ofs = 0;
-                const matches = op.template.match(/\$\$|\^\^|%%|[$#^%]/g);
-                if (matches != null) {
-                    matches.forEach((substr) => {
-                        let addr = null;
-                        let labelMode;
-                        let requireExactMatch = false;
-
-                        switch (substr) {
-                            // Literal
-                            case '#':
-                                ++ofs;
-                                return;
-
-                            // Relative exec
-                            case '^':
-                            {
-                                ++ofs;
-                                let rel = op.bytes[ofs];
-                                addr = op.offset + 2 + ((rel & 0x80) ? -((~rel & 0xff) + 1) : rel);
-                                labelMode = LabelEntry.FLAG_ALL;
-                                requireExactMatch = true;
-                                break;
-                            }
-
-                            // Zero page read/write
-                            case '$':
-                            case '%':
-                                ++ofs;
-                                addr = op.bytes[ofs]
-                                labelMode = LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE;
-                                break;
-
-                            // Absolute exec
-                            case '^^':
-                                ofs += 2;
-                                addr = (op.bytes[ofs] * 256) + op.bytes[ofs - 1];
-                                labelMode = LabelEntry.FLAG_ALL;
-                                requireExactMatch = true;
-                                break;
-
-                            // Absolute read/write
-                            case '$$':
-                            case '%%':
-                                ofs += 2;
-                                addr = (op.bytes[ofs] * 256) + op.bytes[ofs - 1];
-                                labelMode = LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE;
-                                break;
-
-                            default:
-                                throw new Error("Unexpected value matched: " + substr);
-                        }
-
-                        if (isNaN(addr)) {
-                            throw new Error("Address is not a number? addr=", addr);
-                        }
-
-                        // Define a label for the offset if the address falls in a known segment
-                        // and there is no label defined for it yet
-                        const segment = options.segments.entryForAddress(addr);
-                        if (segment != null) {
-                            console.log("Segment found, checking for label: addr=" + addr + " (" + fmtHex(addr) + ") mode=" + labelMode);
-                            const found = options.labels.entryForAddress(addr, labelMode);
-                            if ((found == null || (requireExactMatch && found.offset != addr)) && !d.has(addr)) {
-                                // If this op is a JSR, use the 'sub_' prefix instead of 'loc_'
-                                const prefix = (op.bytes[0] == 0x20 ? 'sub_' : 'loc_');
-
-                                const label = new LabelEntry(addr, prefix + fmtHex(addr, 4), 1, labelMode);
-                                console.log("Defining implied label: " + label);
-                                options.labels.push(label);
-                                d.add(addr);
-                            }
-                        }
-                    });
-                }
-            }
+            transformer.apply(opEntry, options);
         }
-
-        //options.labels.optimize();
-        console.log("inferred labels: ", options.labels);
     }
 
-    let result = [];
-    const labelMaxBytes =
-        options.showRawBytes ? Math.max(1, Math.trunc((options.rawBytesWidth + 1) / 3)) : options.maxRawBytesPerGroup;
+    const result = outputTransformer.result;
 
-    for (let opEntry of ops) {
-        const op = opEntry.op;
-        if (op.offset != null) {
-            const labelFlags = op.rawBytes ? LabelEntry.FLAG_READ | LabelEntry.FLAG_WRITE : LabelEntry.FLAG_ALL;
-
-            op.label = options.labels.labelForAddress(op.offset, labelFlags, true, true);
-
-            if (op.rawBytes) {
-                const maxRawBytes = (op.label != null
-                        ? Math.min(labelMaxBytes, options.maxRawBytesPerGroup)
-                        : options.maxRawBytesPerGroup);
-
-                // Check remaining bytes for labels and split op if a label is found
-                // OR if the max bytes length is reached.
-                for (let i = 1; i < op.bytes.length; ++i) {
-                    const label = options.labels.labelForAddress(op.offset + i, labelFlags, true, true);
-
-                    if ((label != null) || (i >= maxRawBytes)) {
-                        // Split the op
-                        const newOp = new AsmOp();
-                        newOp.bytes = op.bytes.slice(i);
-                        newOp.label = label;
-                        newOp.offset = op.offset + i;
-                        newOp.rawBytes = true;
-
-                        op.bytes.splice(i);
-
-                        opEntry.insertNext(newOp); // Modifies list, but safe to do while iterating
-                    }
-                }
-            }
-        }
-
-        result.push(op.toString(options));
-    }
+    transformers.forEach(transformer => transformer.finalize(options));
 
     // Output the result
-    options.labels = origLabels;
-
-    return result.join("\n");
+    return result;
 }
 
 
