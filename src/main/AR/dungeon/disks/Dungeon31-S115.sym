@@ -7,35 +7,46 @@ Altirra symbol file
 ;
 [symbols]
 
-rw  758a,1   dat_758a               ; TODO: This should be moved to Dungeon11-S518.sym
-rw  758b,1   dat_758b               ; TODO: This should be moved to Dungeon11-S518.sym
+rwx 7608,4   initModule2            ; Entry point called after the module is loaded.
 
-rwx 7608,4   initModule2            ; Performs initialization tasks for Module 2.
+rwx 7627,1   contRtrnToGame         ; contAddItems continues here to return control back to the main game loop
 
-rwx 7627,1   cont_7627              ; continuation address
+rwx 763b,1   contAddItems           ; Entry point called from the main game loop which handles adding item(s) to the
+                                    ;     game then returns to normal game play.
 
-rwx 763b,1   cont_763b              ; continuation address
+rwx 769b,1   selectReward           ; Randomly chooses an item from a provided category and adds the item to the
+                                    ;     game inventory.
+rwx 76d3,1   addNewItem             ; Adds a new item to the game inventory & dropped item list.
+rwx 773a,1   lostQuestItem          ; Identifies a quest item which the player should have in their inventory, but
+                                    ;     which is not present (for example, if the player dropped the item).
+rwx 78a1,1   isQuestFlagSet         ; Tests whether a QuestFlags bit is set.
+rwx 78a8,1   hasQuestItem           ; Searches the items in the game for a type 7 (Quest/Special) item with attribute
+                                    ;     byte 0 equal to 2 and attribute byte 1 equal to the value provided in A.
+rwx 78d5,1   hasQuestItmBfr         ; Searches the items in the game prior to the index in QuestItemIndex for a
+                                    ;     type 7 (Quest/Special) item with attribute byte 0 equal to 2 and attribute
+                                    ;     byte 1 equal to the value provided in QuestItemId.
+rwx 78dc,1   contItmFndRts          ; hasQuestItem/hasQuestItmBfr: Exit point called when a matching item is found.
 
-rwx 769b,1   sub_769b               ;
-rwx 76d3,1   addNewItem             ; Adds a new item to the game inventory.
-rwx 773a,1   sub_773a               ;
-rwx 78a1,1   sub_78a1               ;
-rwx 78a8,1   sub_78a8               ;
-rwx 78d5,1   sub_78d5               ;
+; ---
+; Data segment starts here
+; ---
 
-rwx 78dc,1   cont_78dc              ;
+rw  78de,1   ItemRoll               ; selectReward: Assigned the random byte used to determine the item chosen.
+rw  78df,1   ModuleStatusPg         ; The number of the status page added when the module was initialized
 
-rw  78de,2722 Data_Seg_             ; Data segment starts here
-
-rw  78de,1   dat_78de               ; sub_769b: assigns to random byte
-rw  78df,1   dat_78df               ; The number of the status page added when the module was initialized
-
-rw  78e0,1   dat_78e0               ;
-rw  78e1,1   dat_78e1               ; sub_773a: only used in this sub
-rw  78e2,1   dat_78e2               ; sub_773a: only used in this sub
-rw  78e3,1   dat_78e3               ;
-rw  78e4,1   dat_78e4               ; (temp) sub_773a: Loop control var
-rw  78e5,1   dat_78e5               ; (temp) Used to track index while looping
+rw  78e0,1   QuestItemId            ; (hasQuestItmBfr param) Quest item ID value to match to item attribute byte 1
+rw  78e1,1   QuestItemIndex         ; (hasQuestItmBfr param) The starting item index. Only items with an index less
+                                    ;     than this value will be inspected. Must be between 1 and 64 (both inclusive).
+                                    ; (hasQuestItm/hasQuestItmBfr output) Index at which the quest item was found
+                                    ;     or $ff if not found.
+rw  78e2,1   NumStaffFlags          ; (temp) lostQuestItem: Used to count number of staff piece quest completion flags
+                                    ;     set. Note this is not initialized in the sub itself, and thus may only be
+                                    ;     valid for the first call to the sub after the module is loaded.
+rw  78e3,1   NumStaffPieces         ; (temp) lostQuestItem: Used to count number of staff pieces in inventory. Note this
+                                    ;     is not initialized in the sub itself, and thus may only be valid for the
+                                    ;     first call to the sub after the module is loaded.
+rw  78e4,1   Num                    ; (temp) lostQuestItem: Loop control var
+rw  78e5,1   StaffQuestBit          ; (temp) lostQuestItem: Holds quest bit index to test for staff piece loop
 
 rw  78e6,28  CrdTheStar             ; 40 bytes: Special Treasure 0: The Star (card)
 rw  790e,48  CrdTheFool             ; 72 bytes: The Fool (card)
@@ -138,7 +149,7 @@ rw  8c85,35  ElvenBoots             ; 53 bytes: Elven Boots
 rw  8cba,36  CrystalBelt            ; 54 bytes: Crystal Belt
 rw  8cf0,1a  BlueSuedeShoes         ; 26 bytes: Blue Suede Shoes
 rw  8d0a,1f  BlckWlnBreechs         ; 31 bytes: Black Woolen Breeches
-rw  8d29,20  SilverBrocadedBodice   ; 32 bytes: Silver Brocaded Bodice
+rw  8d29,20  SlvrBrcdBodice         ; 32 bytes: Silver Brocaded Bodice
 rw  8d49,18  RedPlaidKilt           ; 24 bytes: Red Plaid Kilt
 rw  8d61,1e  GldSilkPntalns         ; 30 bytes: Gold Silk Pantaloons
 rw  8d7f,18  LeatherJerkin          ; 24 bytes: Leather Jerkin
@@ -151,7 +162,7 @@ rw  8e50,1a  GoblinRingHalf         ; 26 bytes: Goblin Ring Half
 rw  8e6a,19  TrollRingHalf          ; 25 bytes: Troll Ring Half
 rw  8e83,15  StaffPiece             ; 21 bytes: Staff Piece
 rw  8e98,22  PacCard                ; 34 bytes: PAC card
-rw  8eba,4a  MirroredShield         ; 74 bytes: Mirrored Shield
+rw  8eba,4a  MirrorShield           ; 74 bytes: Mirrored Shield
 rw  8f04,47  ReforgedRing           ; 71 bytes: Reforged Ring
 rw  8f4b,24  Bloodstone             ; 36 bytes: Bloodstone
 rw  8f6f,38  WingedSandals          ; 56 bytes: Special Treasure 1: Winged Sandals
@@ -179,7 +190,7 @@ rw  930a,2b  GaussRifle             ; 43 bytes: Special Treasure 29: Gauss Rifle
 rw  9335,40  SolarSuit              ; 64 bytes: Special Treasure 30: Solar Suit
 rw  9375,2b  BeamWeapon             ; 43 bytes: Special Treasure 31: Beam Weapon [25]
 
-rw  93a0,2c  dat_93a0               ; 44 bytes: 22 item addresses: Scrolls, Cards, Tomes
+rw  93a0,2c  CardTomeAdrs           ; 44 bytes: 22 item addresses: Scrolls, Cards, Tomes
                                     ;     0: $7c72 [ScrlFrostblade]         11: $79cd [CrdTheChariot]
                                     ;     1: $7cbc [ScrlFireblade]          12: $79f8 [CrdStrength]
                                     ;     2: $7d05 [ScrlClout]              13: $7a20 [CrdAceOfWands]
@@ -192,7 +203,7 @@ rw  93a0,2c  dat_93a0               ; 44 bytes: 22 item addresses: Scrolls, Card
                                     ;     9: $7984 [CrdDeath]               20: $7f0b [TomeUndrstndng]
                                     ;    10: $79a9 [CrdAceOfCups]           21: $7f39 [TomeLeadership]
 
-rw  93cc,20  dat_93cc               ; 32 bytes: 16 item addresses: Wands, Eyes & Horns
+rw  93cc,20  WandEyeHrnAdrs         ; 32 bytes: 16 item addresses: Wands, Eyes & Horns
                                     ;     0: $7b78 [ColdWand]                8: $7e30 [SapphireEye]
                                     ;     1: $7b99 [FireWand]                9: $7e55 [AmberEye]
                                     ;     2: $7bba [ParalysisWand]          10: $7e77 [WizardsEye]
@@ -202,7 +213,7 @@ rw  93cc,20  dat_93cc               ; 32 bytes: 16 item addresses: Wands, Eyes &
                                     ;     6: $7deb [RubyEye]                14: $7fac [GoldHorn1]
                                     ;     7: $7e0c [EmeraldEye]             15: $7fce [GoldHorn2]
 
-rw  93ec,1e  dat_93ec               ; 30 bytes: 15 item addresses: Shields & Weapons
+rw  93ec,1e  WeaponShldAdrs         ; 30 bytes: 15 item addresses: Shields & Weapons
                                     ;     0: $8608 [CrystalShield]           8: $880c [Crossbow]
                                     ;     1: $8651 [ShieldOfGalahd]          9: $8834 [Quarrels]
                                     ;     2: $86ad [SpikedShield]           10: $8856 [ChaosClub]
@@ -212,7 +223,7 @@ rw  93ec,1e  dat_93ec               ; 30 bytes: 15 item addresses: Shields & Wea
                                     ;     6: $87c2 [IronFan]                14: $891a [Dirk]
                                     ;     7: $87e5 [TowerShield]
 
-rw  940a,20  dat_940a               ; 32 bytes: 16 item addresses: Armor
+rw  940a,20  ArmorAdrs              ; 32 bytes: 16 item addresses: Armor
                                     ;     0: $8939 [PantherGloves]           8: $8ab6 [ScaleArmor]
                                     ;     1: $897d [HelmOfLight]             9: $8ad7 [TruesilverHelm]
                                     ;     2: $89c0 [DragnsknHaubrk]         10: $8afc [TruesilverCoat]
@@ -222,8 +233,8 @@ rw  940a,20  dat_940a               ; 32 bytes: 16 item addresses: Armor
                                     ;     6: $8a71 [PlateLeggings]          14: $8b9a [BronzeBrstplt]
                                     ;     7: $8a95 [PlateArmor]             15: $8bc2 [BronzeBracers]
 
-rw  942a,20  dat_942a               ; 32 bytes: 16 item addresses: Clothing
-                                    ;     0: $8be6 [WhiteLinenShrt]          8: $8d29 [SilverBrocadedBodice]
+rw  942a,20  ApparelAdrs            ; 32 bytes: 16 item addresses: Clothing
+                                    ;     0: $8be6 [WhiteLinenShrt]          8: $8d29 [SlvrBrcdBodice]
                                     ;     1: $8c01 [BlckSilkKimono]          9: $8d49 [RedPlaidKilt]
                                     ;     2: $8c1c [CheapRobe]              10: $8d61 [GldSilkPntalns]
                                     ;     3: $8c30 [ElvenCloak]             11: $8d7f [LeatherJerkin]
@@ -232,7 +243,7 @@ rw  942a,20  dat_942a               ; 32 bytes: 16 item addresses: Clothing
                                     ;     6: $8cf0 [BlueSuedeShoes]         14: $8dd1 [SilverSash]
                                     ;     7: $8d0a [BlckWlnBreechs]         15: $8e06 [StealthSuit]
 
-rw  944a,30  dat_944a               ; 48 bytes: 24 item addresses: Potions
+rw  944a,30  PotionAdrs             ; 48 bytes: 24 item addresses: Potions
                                     ;     0: $7ff0 [PtnFleetness]           12: $834b [PtnInvMental]
                                     ;     1: $803b [PtnStrength]            13: $8398 [PtnInvCold]
                                     ;     2: $8085 [PtnIntellignce]         14: $83e3 [PtnFruitJuice]
@@ -246,14 +257,14 @@ rw  944a,30  dat_944a               ; 48 bytes: 24 item addresses: Potions
                                     ;    10: $82c1 [PtnInvWater]            22: $85a2 [PtnHemlock]
                                     ;    11: $830d [PtnRegenration]         23: $85db [PtnInebriation]
 
-rw  947a,6   dat_947a_L             ; 6 bytes: LSB of address of item category table
-rw  9480,6   dat_9480_H             ; 6 bytes: MSB of address of item category table
-                                    ;     0: $93a0 [dat_93a0] 22 items: Scrolls & Cards
-                                    ;     1: $93cc [dat_93cc] 16 items: Wands, Eyes & Horns
-                                    ;     2: $93ec [dat_93ec] 15 items: Shields & Weapons
-                                    ;     3: $940a [dat_940a] 16 items: Armor
-                                    ;     4: $942a [dat_942a] 16 items: Clothing
-                                    ;     5: $944a [dat_944a] 24 items: Potions
+rw  947a,6   CategryTbls_L          ; 6 bytes: LSB of address of item category table
+rw  9480,6   CategryTbls_H          ; 6 bytes: MSB of address of item category table
+                                    ;     0: $93a0 [CardTomeAdrs]   22 items: Scrolls & Cards
+                                    ;     1: $93cc [WandEyeHrnAdrs] 16 items: Wands, Eyes & Horns
+                                    ;     2: $93ec [WeaponShldAdrs] 15 items: Shields & Weapons
+                                    ;     3: $940a [ArmorAdrs]      16 items: Armor
+                                    ;     4: $942a [ApparelAdrs]    16 items: Clothing
+                                    ;     5: $944a [PotionAdrs]     24 items: Potions
 
 rw  9486,20  TreasureAdr_L          ; 32 bytes: LSB of address of special loc treasure 0..31
 rw  94a6,20  TreasureAdr_H          ; 32 bytes: MSB of address of special loc treasure 0..31
@@ -274,33 +285,93 @@ rw  94a6,20  TreasureAdr_H          ; 32 bytes: MSB of address of special loc tr
                                     ;    14: $90b7 [SwordOfAdept]           30: $9335 [SolarSuit]
                                     ;    15: $90e4 [RazorIce]               31: $9375 [BeamWeapon]
 
-rw  94c6,8   dat_94c6_L             ; 8 bytes: LSB of special/quest item address
-rw  94ce,8   dat_94ce_H             ; 8 bytes: MSB of special/quest item address
+rw  94c6,8   dat_94c6_L             ; 8 bytes: LSB of special/quest item address (not referenced, dup of QuestItem_L)
+rw  94ce,8   dat_94ce_H             ; 8 bytes: MSB of special/quest item address (not referenced, dup of QuestItem_H)
                                     ;     0: $8e3c [SilverKey]               4: $8e98 [PacCard]
-                                    ;     1: $8e50 [GoblinRingHalf]          5: $8eba [MirroredShield]
+                                    ;     1: $8e50 [GoblinRingHalf]          5: $8eba [MirrorShield]
                                     ;     2: $8e6a [TrollRingHalf]           6: $8f04 [ReforgedRing]
                                     ;     3: $8e83 [StaffPiece]              7: $8f4b [Bloodstone]
 
-rw  94d6,16  dat_94d6               ; 22 bytes: likely probability table for items in dat_93a0
-rw  94ec,10  dat_94ec               ; 16 bytes: likely probability table for items in dat_93cc
-rw  94fc,f   dat_94fc               ; 15 bytes: likely probability table for items in dat_93ec
-rw  950b,10  dat_950b               ; 16 bytes: likely probability table for items in dat_940a
-rw  951b,10  dat_951b               ; 16 bytes: likely probability table for items in dat_942a
-rw  952b,18  dat_952b               ; 24 bytes: likely probability table for items in dat_944a
+rw  94d6,16  CardTomePrbs           ; 22 bytes: Probability table for items in CardTomeAdrs
+                                    ;     0: $10 (ScrlFrostblade: 6.64%)    11: $9a (CrdTheChariot:  1.56%)
+                                    ;     1: $20 (ScrlFireblade:  6.25%)    12: $9e (CrdStrength:    1.56%)
+                                    ;     2: $30 (ScrlClout:      6.25%)    13: $a6 (CrdAceOfWands:  3.13%)
+                                    ;     3: $40 (ScrlRenew:      6.25%)    14: $b6 (CrdTemperance:  6.25%)
+                                    ;     4: $58 (ScrlRemovCurse: 9.38%)    15: $ba (CrdKingOfWands: 1.56%)
+                                    ;     5: $70 (ScrlWizardEye:  9.38%)    16: $ca (CrdPageOfCups:  6.25%)
+                                    ;     6: $7a (CrdTheStar:     3.91%)    17: $e0 (CrdAcePentacls: 8.59%)
+                                    ;     7: $84 (CrdTheFool:     3.91%)    18: $f0 (CrdHighPrstess: 6.25%)
+                                    ;     8: $8e (CrdHeirophant:  3.91%)    19: $f4 (TomeKnowledge:  1.56%)
+                                    ;     9: $92 (CrdDeath:       1.56%)    20: $f8 (TomeUndrstndng: 1.56%)
+                                    ;    10: $96 (CrdAceOfCups:   1.56%)    21: $ff (TomeLeadership: 2.73%)
 
-rw  9543,6   dat_9543_L             ; 6 bytes: LSB of address
-rw  9549,6   dat_9549_H             ; 6 bytes: MSB of address
-                                    ;     0: $94d6 [dat_94d6]
-                                    ;     1: $94ec [dat_94ec]
-                                    ;     2: $94fc [dat_94fc]
-                                    ;     3: $950b [dat_950b]
-                                    ;     4: $951b [dat_951b]
-                                    ;     5: $952b [dat_952b]
+rw  94ec,10  WandEyeHrnPrbs         ; 16 bytes: Probability table for items in WandEyeHrnAdrs
+                                    ;     0: $08 (ColdWand:       3.51%)   8: $80 (SapphireEye: 3.13%)
+                                    ;     1: $18 (FireWand:       6.25%)   9: $88 (AmberEye:    3.13%)
+                                    ;     2: $28 (ParalysisWand:  6.25%)  10: $98 (WizardsEye:  6.25%)
+                                    ;     3: $40 (EyeVulnerablty: 9.38%)  11: $a8 (HypnoticEye: 6.25%)
+                                    ;     4: $50 (LightWand:      6.25%)  12: $b4 (BronzeHorn:  4.69%)
+                                    ;     5: $68 (HealingWand:    9.38%)  13: $c0 (SilverHorn:  4.69%)
+                                    ;     6: $70 (RubyEye:        3.13%)  14: $e0 (GoldHorn1:  12.50%)
+                                    ;     7: $78 (EmeraldEye:     3.13%)  15: $ff (GoldHorn2:  12.11%)
 
-rw  954f,8   dat_954f_L             ; 8 bytes: LSB of special/quest item address
-rw  9557,8   dat_9557_H             ; 8 bytes: MSB of special/quest item address
+rw  94fc,f   WeaponShldPrbs         ; 15 bytes: Probability table for items in WeaponShldAdrs
+                                    ;     0: $04 (CrystalShield:  1.95%)   8: $70 (Crossbow:        6.25%)
+                                    ;     1: $08 (ShieldOfGalahd: 1.56%)   9: $80 (Quarrels:        6.25%)
+                                    ;     2: $20 (SpikedShield:   9.38%)  10: $90 (ChaosClub:       6.25%)
+                                    ;     3: $24 (ShieldOfMordrd: 1.56%)  11: $a8 (ShortSword:     12.50%)
+                                    ;     4: $28 (SpiritShield:   1.56%)  12: $c0 (HolyHandGrnade: 12.50%)
+                                    ;     5: $38 (IronwoodBoken:  6.25%)  13: $d8 (Pike:           12.50%)
+                                    ;     6: $40 (IronFan:        3.13%)  14: $ff (Dirk:           15.23%)
+                                    ;     7: $60 (TowerShield:   12.50%)
+
+rw  950b,10  ArmorPrbs              ; 16 bytes: Probability table for items in ArmorAdrs
+                                    ;     0: $04 (PantherGloves:   1.95%)   8: $b0 (ScaleArmor:     12.50%)
+                                    ;     1: $08 (HelmOfLight:     1.56%)   9: $b4 (TruesilverHelm:  1.56%)
+                                    ;     2: $0c (DragnsknHaubrk:  1.56%)  10: $b8 (TruesilverCoat:  1.56%)
+                                    ;     3: $10 (GoldenGreaves:   1.56%)  11: $bc (TruslvrGuantlt:  1.56%)
+                                    ;     4: $30 (PlateHelm:      12.50%)  12: $c0 (TruslvrLeggngs:  1.56%)
+                                    ;     5: $50 (PlateGauntlets: 12.50%)  13: $e0 (CuirbouilliHlm: 12.50%)
+                                    ;     6: $70 (PlateLeggings:  12.50%)  14: $f0 (BronzeBrstplt:   6.25%)
+                                    ;     7: $90 (PlateArmor:     12.50%)  15: $ff (BronzeBracers:   5.86%)
+
+rw  951b,10  ApparelPrbs            ; 16 bytes: Probability table for items in ApparelAdrs
+                                    ;     0: $10 (WhiteLinenShrt:  6.64%)   8: $88 (SlvrBrcdBodice: 6.25%)
+                                    ;     1: $20 (BlckSilkKimono:  6.25%)   9: $9c (RedPlaidKilt:   7.81%)
+                                    ;     2: $50 (CheapRobe:      18.75%)  10: $ac (GldSilkPntalns: 6.25%)
+                                    ;     3: $54 (ElvenCloak:      1.56%)  11: $c4 (LeatherJerkin:  9.38%)
+                                    ;     4: $5c (ElvenBoots:      3.13%)  12: $dc (FlppyLeathrHat: 9.38%)
+                                    ;     5: $60 (CrystalBelt:     1.56%)  13: $f4 (BlckCottnPrtlt: 9.38%)
+                                    ;     6: $68 (BlueSuedeShoes:  3.13%)  14: $fc (SilverSash:     3.13%)
+                                    ;     7: $78 (BlckWlnBreechs:  6.25%)  15: $ff (StealthSuit:    1.17%)
+
+rw  952b,18  PotionPrbs             ; 24 bytes: Probability table for items in PotionAdrs
+                                    ;     0: $10 (PtnFleetness:   6.64%)   12: $66 (PtnInvMental:    0.78%)
+                                    ;     1: $20 (PtnStrength:    6.25%)   13: $68 (PtnInvCold:      0.78%)
+                                    ;     2: $30 (PtnIntellignce: 6.25%)   14: $88 (PtnFruitJuice:  12.50%)
+                                    ;     3: $40 (PtnCharisma:    6.25%)   15: $90 (PtnWizardEye:    3.13%)
+                                    ;     4: $50 (PtnEndurance:   6.25%)   16: $a0 (PtnDexterity:    6.25%)
+                                    ;     5: $52 (PtnInvBlunt:    0.78%)   17: $a8 (PtnInfraVision:  3.13%)
+                                    ;     6: $54 (PtnInvSharp:    0.78%)   18: $ac (PtnCleansing:    1.56%)
+                                    ;     7: $56 (PtnInvSharp:    0.78%)   19: $b0 (PtnAntidote:     1.56%)
+                                    ;     8: $58 (PtnInvAir:      0.78%)   20: $c0 (PtnRestoration:  6.25%)
+                                    ;     9: $5a (PtnInvFire:     0.78%)   21: $e0 (PtnHealing:     12.50%)
+                                    ;    10: $5c (PtnInvWater:    0.78%)   22: $f0 (PtnHemlock:      6.25%)
+                                    ;    11: $64 (PtnRegenration: 3.13%)   23: $ff (PtnInebriation:  5.86%)
+
+rw  9543,6   ChanceTbls_L           ; 6 bytes: LSBs of probability table address for item categories
+rw  9549,6   ChanceTbls_H           ; 6 bytes: MSBs of probability table address for item categories
+                                    ;     0: $94d6 [CardTomePrbs]:   Cards, Tomes
+                                    ;     1: $94ec [WandEyeHrnPrbs]: Wands, Eyes, Horns
+                                    ;     2: $94fc [WeaponShldPrbs]: Weapons & Shields
+                                    ;     3: $950b [ArmorPrbs]:      Armor
+                                    ;     4: $951b [ApparelPrbs]:    Apparel
+                                    ;     5: $952b [PotionPrbs]:     Potions
+
+rw  954f,8   QuestItem_L            ; 8 bytes: LSB of special/quest item address
+rw  9557,8   QuestItem_H            ; 8 bytes: MSB of special/quest item address
                                     ;     0: $8e3c [SilverKey]               4: $8e98 [PacCard]
-                                    ;     1: $8e50 [GoblinRingHalf]          5: $8eba [MirroredShield]
+                                    ;     1: $8e50 [GoblinRingHalf]          5: $8eba [MirrorShield]
                                     ;     2: $8e6a [TrollRingHalf]           6: $8f04 [ReforgedRing]
                                     ;     3: $8e83 [StaffPiece]              7: $8f4b [Bloodstone]
 
@@ -319,9 +390,6 @@ rw  9670,3d  StrHelmOfLight         ; 61 bytes: Special Treasure 4: 'A helm glow
 rw  96ad,3e  StrTruslvrCoat         ; 62 bytes: Special Treasure 5: 'A chain-mail coat gleems with an almost
                                     ;     magical lustre.'
 rw  96eb,2b  StrClkLevitatn         ; 43 bytes: Special Treasure 6: 'A cloak dances to and fro before you.'
-
-;rw  96f0,1   dat_96f0               ; loc_7627: assigned $ff           TODO: replace with relative offset
-
 rw  9716,53  StrCrystlBrplt         ; 83 bytes: Special Treasure 7: 'There is a glistening breastplate that looks as
                                     ;     if it was made just for you.'
 rw  9769,51  StrJunaisSword         ; 81 bytes: Special Treasure 9: 'A straight, single-edged, evil-looking sword
@@ -367,7 +435,6 @@ rw  9dfc,32  StrBeamWeapon          ; 50 bytes: Special Treasure 31: 'An energy 
 
 rw  9e2e,20  TreasureTmpl_L         ; 32 bytes: LSB of special treasure template string
 rw  9e4e,20  TreasureTmpl_H         ; 32 bytes: MSB of special treasure template string
-                                    ;    cont_763b: one byte per special treasure index
                                     ;    0: $9563 [StrTrumpCard] (The Star)     16: $993c [StrWhetstone]
                                     ;    1: $958f [StrWingedSndls]              17: $9976 [StrSaurnBrandy]
                                     ;    2: $9605 [StrRstratnPotn]              18: $9a33 [StrBluPrlDaggr]
@@ -385,4 +452,4 @@ rw  9e4e,20  TreasureTmpl_H         ; 32 bytes: MSB of special treasure template
                                     ;   14: $987c [StrSwrdOfAdept]              30: $9d9e [StrSolarSuit]
                                     ;   15: $98b1 [StrRazorIce]                 31: $9dfc [StrBeamWeapon]
 
-;rw  9e6e,1   unk_9e6e               ; ???
+;rw  9e6e,1   unk_9e6e               ; Unused filler bytes?

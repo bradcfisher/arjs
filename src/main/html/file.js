@@ -242,7 +242,7 @@ Entry  66: [4e18 0005] D2 S2: sector=536 [218], length=1280
     ],
     "../AR/dungeon/disks/Dungeon31.xfd": [
         { id: 0x5001, number: 17, description: "D3S1 S002 - Module 1: Combat Data",
-            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym" ],
+            labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym", "Dungeon31-S002.sym" ],
             segments: 0x7600 }, // length = 0x3800 (14336)
         { id: 0x5072, number: 18, description: "D3S1 S115 - Module 2: Item Data",
             labels: [ "Dungeon11-S205.sym", "Dungeon11-S518.sym", "Dungeon31-S115.sym" ],
@@ -1141,7 +1141,7 @@ class TemplateStringFormatter extends DisasmTransformer {
             while (this.#ofs < this.#maxOfs) {
                 const byte = this.#bytes[this.#ofs];
 
-                if (byte <= 0xa0) {
+                if (byte < 0xa0) {
                     this.#curOp.preferredCommentColumn = 71;
                     this.#curOp.comment += (this.#ofs == 0 ? '"' : "") + this.mapChar(byte);
                     ++this.#ofs;

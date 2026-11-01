@@ -123,9 +123,8 @@ rw  004b,1   ItemIndex              ; 1 byte: item index parameter
 rw  004c,1   dat_004c               ; 1 byte: Set to a action trigger bit mask. Bit-anded with effect or item trigger bytes for matching.
                                     ;     removeItem: temporarily set to $ff as param to removeItmEfcts (match any triggers)
                                     ;
-rw  004d,1   dat_004d               ; 1 byte: Appears to hold an action trigger bit mask
-                                    ;     sub_4b8c: used to temp hold X param to be placed into dat_004c later
-
+rw  004d,1   TmpItmActFlgs          ; doGetItem, doDropItem, doUseItem, doUnuseItem, sub_4b8c: temp holds X param to be
+                                    ;     placed into dat_004c AND the item's action trigger flags
 rw  004f,1   dat_004f               ; 1 byte:
                                     ;    - allocItem: Set to parameter A value (new item size)
                                     ;    - removeItem: Set to byte 1 of an item (item size)
@@ -363,7 +362,7 @@ rwx 1800,1   j_readNextSector       ; Alias for readNextSector
 rwx 1803,1   j_loadModule           ; Alias for loadModule
 rwx 1806,1   j_sub_2ff3             ; Alias for sub_2ff3
 rwx 1809,1   j_doPlayerMove         ; Alias for doPlayerMove
-rwx 180c,1   j_loc_3183             ; Alias for loc_3183
+rwx 180c,1   j_sub_3183             ; Alias for sub_3183
 rwx 180f,1   j_setDisplayMode       ; Alias for setDisplayMode
 rwx 1812,1   j_printTop             ; Alias for printTop
 rwx 1815,1   j_printBtm             ; Alias for printBtm
@@ -414,7 +413,7 @@ rwx 1899,1   j_randInRange          ; Alias for randInRange
 rwx 189c,1   j_sub_5471             ; Alias for sub_5471
 rwx 189f,1   j_startOffer           ; Alias for startOffer
 rwx 18a2,1   j_multBEInt16          ; Alias for multBEInt16
-rwx 18a5,1   j_sub_408b             ; Alias for sub_408b
+rwx 18a5,1   j_applyAllCalcs        ; Alias for applyAllCalcs
 rwx 18a8,1   j_startUse             ; Alias for startUse
 rwx 18ab,1   j_sub_5bb8             ; Alias for sub_5bb8
 rwx 18ae,1   j_readBEUInt16         ; Alias for readBEUInt16
@@ -553,15 +552,16 @@ rw  195d,1   EncounterFlg           ; When negative, this flag causes an encount
                                     ;      pass through (approx 1/8 or 12.5% chance)
                                     ;
 rw  195e,1   WarmthBonus            ; 1 byte: Holds warmth bonus provided by equipped apparel
-rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in sub_408b to determine whether a general stat and display
+rw  195f,1   StatUpdateFlg          ; 1 byte: Checked in applyAllCalcs to determine whether a general stat and display
                                     ;     update should occur. 0 is false, and any non-0 value is seen as true.
 rw  1960,1   ItemStatUpdFlg         ; 1 byte: Checked in calcItemStats to determine whether an update of stats affected
                                     ;     by items (burden, warmth, dapperness) should occur. 0 is false, and any non-0
                                     ;     value is seen as true.
 rw  1961,1   dat_1961               ;
 rw  1962,1   dat_1962               ; The number of in-game minutes which have occurred while dat_0050 == 0 since the
-                                    ;     last time the counter was reset by a call to sub_408b. This count controls
-                                    ;     the number of times sub_408b executes effects, biology, encounter checks
+                                    ;     last time the counter was reset by a call to applyAllCalcs. This count
+                                    ;     controls the number of times applyAllCalcs executes effects, biology,
+                                    ;     encounter checks.
 rw  1963,7   EffLevels              ; 7 bytes: Previous threshold index for an effect
                                     ;    (Warmth, Hunger, Thirst, Stamina, Burden, Drunk, Stomach)
                                     ;    Used to determine whether a display update is needed for the effect labels on
@@ -1555,12 +1555,13 @@ rw  4088,1   ZtsName5_H             ; 1 byte: MSB of ZTS address for display on 
 rw  4089,1   ZtsName6_L             ; 1 byte: LSB of ZTS address for display on status pages
 rw  408a,1   ZtsName6_H             ; 1 byte: MSB of ZTS address for display on status pages
 
-rwx 408b,1   sub_408b               ;
+rwx 408b,1   applyAllCalcs          ; Checks all items and executes pending action triggers; recalculates item,
+                                    ;     environmental, and biological effects and stats.
 
-rw  413c,1   dat_413c               ; 1 byte
+rw  413c,1   dat_413c               ; 1 byte: applyAllCalcs: loop control var. iterations from dat_1962 down to 0
 
 rwx 413d,1   checkEncounter         ; Randomly trigger encounter if random draw 0..255 is less
-                                    ;     than (CHR_Obviousness - -128) + DangerModTbl[MapLocDngrLvl] clamped to 0..255.
+                                    ;     than (ChrObviousness - -128) + DangerModTbl[MapLocDngrLvl] clamped to 0..255.
 
 rw  4168,2   smc_4168               ; The value for this CMP is dynamically modified
 
@@ -1606,12 +1607,14 @@ rwx 4377,1   applyBioAdj            ; Applies standard biological status effects
 
 rwx 43b1,3   smc_43b0               ; The address for this JSR is dynamically modified
 
-rw  43c5,1   TmpCHR_STAMINA         ; Used in applyBioAdj to temporarily store value of CHR_STAMINA
+rw  43c5,1   TmpChrStamina          ; Used in applyBioAdj to temporarily store value of ChrStamina
 
 rwx 43c6,1   updStatEffVals         ; Updates the effective value for each primary stat and updates the HP separator
                                     ;     character displayed on the screen (':' if less than max, '=' if max)
 
-rw  445f,10  MoveSpeedTbl           ; 16 bytes: Movement speed values indexed by CHR_SPD_EFFECTIVE/16.
+rw  43e1,1   else_43e1              ; Forms 'BIT $3aa9' (essentially a NOP) with `LDA #$3a` in next 2 bytes
+
+rw  445f,10  MoveSpeedTbl           ; 16 bytes: Movement speed values indexed by ChrSpdCalc/16.
                                     ;   One of:
                                     ;    0: $06           8: $0e
                                     ;    1: $07           9: $0f
@@ -1625,30 +1628,30 @@ rw  445f,10  MoveSpeedTbl           ; 16 bytes: Movement speed values indexed by
 rwx 446f,1   rtsIfRndStaChk         ; Returns to caller of previous sub (unwinding stack)
                                     ;     if the player's STA / 2 >= random byte chosen amount.
 rwx 4479,1   smc_4479               ; Self-modifying code: The CMP value here is assigned a random value
-rwx 4481,1   effFreezing            ; Warmth:Freezing - Subtracts 1 from CHR_STAMINA and CHR_HUNGER
-rwx 448f,1   effRoasting            ; Warmth:Roasting - Subtracts 1 from CHR_STAMINA and CHR_THIRST
+rwx 4481,1   effFreezing            ; Warmth:Freezing - Subtracts 1 from ChrStamina and CHR_HUNGER
+rwx 448f,1   effRoasting            ; Warmth:Roasting - Subtracts 1 from ChrStamina and CHR_THIRST
 rwx 449d,1   effFamished            ; Hunger:Famished - Calls rtsIfRndStaChk and if the check fails,
                                     ;     adds 10 to STR penalty #2 and adds 1 to SPD penalty #2
 rwx 44ae,1   effStarving            ; Hunger:Starving - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_STAMINA,
-                                    ;     adds 1 to penalty #2 for each of STR, SKL and SPD
+                                    ;     subtracts 1 from ChrHp_H/L and ChrStamina, adds 1 to penalty #2 for each
+                                    ;     of STR, SKL and SPD
 rwx 44d4,1   effSatiated            ; Hunger:normal - Subtracts 1 from penalty #2 values for each of STR, SKL and SPD
 rwx 44e9,1   effParched             ; Thirst:Parched - Calls rtsIfRndStaChk and if the check fails,
                                     ;     adds 1 to penalty #3 for STR and SPD
 rwx 44fa,1   effDehydrated          ; Thirst:Dehydrated - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO and CHR_STAMINA,
-                                    ;     adds 1 to penalty #3 for STR and SPD
+                                    ;     subtracts 1 from ChrHp_H/L and ChrStamina, adds 1 to penalty #3 for
+                                    ;     STR and SPD
 rwx 4519,1   effHydrated            ; Thirst:normal - Subtracts 1 from penalty #3 of STR and SPD
 rwx 4527,1   effTired               ; Stamina:Tired - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
                                     ;     adds 1 to penalty #4 for SPD and STR
-rwx 453e,1   effExhausted           ; Stamina:Exhausted - Calls rtsIfRndStaChk and if the check fails and dat_1972 is >= 0,
-                                    ;     subtracts 1 from CHR_HP_CURRENT_HI/LO,
-                                    ;     adds 1 to penalty #4 for each of SPD, STR and SKL
+rwx 453e,1   effExhausted           ; Stamina:Exhausted - Calls rtsIfRndStaChk and if the check fails
+                                    ;     and dat_1972 is >= 0, subtracts 1 from ChrHp_H/L, adds 1 to penalty #4 for
+                                    ;     each of SPD, STR and SKL
 rwx 4563,1   effRested              ; Stamina:normal - Subtracts 1 from penalty #4 for each of SPD, STR and SKL
 rwx 4578,1   effEncumbered          ; Burden:Encumbered - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtract 1 from CHR_STAMINA
+                                    ;     subtract 1 from ChrStamina
 rwx 4582,1   effImmobilized         ; Burden:Immobilized - Calls rtsIfRndStaChk and if the check fails,
-                                    ;     subtract 1 from CHR_STAMINA
+                                    ;     subtract 1 from ChrStamina
 rwx 458c,1   effDrunk               ; Inebriation:Drunk - NOP: Simply returns to caller
 rwx 458d,1   effVeryDrunk           ; Inebriation:Very Drunk - NOP: Simply returns to caller
 rwx 458e,1   effStuffed             ; Fullness:Stuffed - NOP: Simply returns to caller
@@ -1726,11 +1729,11 @@ rw  45b8,1   StatEffcts_H           ; MSB of address
                                     ;   17: $4563 [effRested]      - Stamina: normal
 
 rw  45d9,7   EffAttrOfs             ; 7 bytes: Offsets of effect attributes relative to $6300 [CHR_STATE]
-                                    ;   0: $95 -> $6395 [CHR_WARMTH]
+                                    ;   0: $95 -> $6395 [ChrWarmth]
                                     ;   1: $99 -> $6399 [CHR_HUNGER]
                                     ;   2: $9a -> $639a [CHR_THIRST]
-                                    ;   3: $9b -> $639b [CHR_STAMINA]
-                                    ;   4: $94 -> $6394 [CHR_BURDEN]
+                                    ;   3: $9b -> $639b [ChrStamina]
+                                    ;   4: $94 -> $6394 [ChrBurden]
                                     ;   5: $97 -> $6397 [CHR_DRUNK]
                                     ;   6: $98 -> $6398 [CHR_STOMACH]
 
@@ -1781,13 +1784,13 @@ rw  460a,7   EffWrmthLmts           ; 7 bytes: Table of upper-limit thresholds f
 
 rw  4611,7   EffWrmthSubs           ; 7 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Warmth level.
-                                    ;     0 [Freezing]: 1 - [effFreezing] - Subtracts 1 from CHR_STAMINA and CHR_HUNGER
+                                    ;     0 [Freezing]: 1 - [effFreezing] - Subtracts 1 from ChrStamina and CHR_HUNGER
                                     ;     1 [Cold]:     0 - no effect
                                     ;     2 [Chilly]:   0 - no effect
                                     ;     3 []:         0 - no effect
                                     ;     4 [Warm]:     0 - no effect
                                     ;     5 [Hot]:      0 - no effect
-                                    ;     6 [Roasting]: 2 - [effRoasting] - Subtracts 1 from CHR_STAMINA and CHR_THIRST
+                                    ;     6 [Roasting]: 2 - [effRoasting] - Subtracts 1 from ChrStamina and CHR_THIRST
 
 rw  4618,e   EffWrmthStrs           ; 14 bytes: Warmth effect level string addresses
                                     ;     0: $4686 [ZtsFreezing]
@@ -1809,8 +1812,8 @@ rw  4626,4   EffHungrLmts           ; 4 bytes: Table of upper-limit thresholds f
 rw  462a,4   EffHungrSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Hunger level.
                                     ;     0 [Starving]: 4 [effStarving] - If rtsIfRndStaChk fails, subtracts 1 from
-                                    ;                                  CHR_HP_CURRENT_HI/LO and CHR_STAMINA, adds
-                                    ;                                  1 to penalty #2 for each of STR, SKL and SPD
+                                    ;                                  ChrHp_H/L and ChrStamina, adds 1 to
+                                    ;                                  penalty #2 for each of STR, SKL and SPD
                                     ;     1 [Famished]: 3 [effFamished] - If rtsIfRndStaChk fails, adds 10 to STR
                                     ;                                  penalty #2 and adds 1 to SPD penalty #2
                                     ;     2 [Hungry]:   0 (no effect)
@@ -1834,7 +1837,7 @@ rw  4636,4   EffThrstLmts           ; 4 bytes: Table of upper-limit thresholds f
 rw  463a,4   EffThrstSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Thirst level.
                                     ;     0 [Dehydrated]: 6 [effDehydrated] - If rtsIfRndStaChk fails, subtracts 1 from
-                                    ;                                    CHR_HP_CURRENT_HI/LO and CHR_STAMINA, adds 1 to
+                                    ;                                    ChrHp_H/L and ChrStamina, adds 1 to
                                     ;                                    penalty #3 for STR and SPD
                                     ;     1 [Parched]:    5 [effParched] - If rtsIfRndStaChk fails, adds 1 to penalty #3
                                     ;                                    for STR and SPD
@@ -1858,7 +1861,7 @@ rw  4646,4   EffStmnaLmts           ; 4 bytes: Table of upper-limit thresholds f
 rw  464a,4   EffStmnaSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H of effect sub to apply for
                                     ;   corresponding Stamina level.
                                     ;     0 [Exhausted]: 8 [effExhausted] - If rtsIfRndStaChk fails and dat_1972
-                                    ;                                   is >= 0, subtracts 1 from CHR_HP_CURRENT_HI/LO,
+                                    ;                                   is >= 0, subtracts 1 from ChrHp_H/L,
                                     ;                                   adds 1 to penalty #4 for each of SPD, STR and
                                     ;                                   SKL
                                     ;     1 [Tired]:     7 [effTired] - If rtsIfRndStaChk fails and dat_1972 is >= 0,
@@ -1886,9 +1889,9 @@ rw  465a,4   EffBurdnSubs           ; 4 bytes: 1-based indices to StatEffcts_L/H
                                     ;     0 []:             0 (no effect)
                                     ;     1 [Burdened]:     0 (no effect)
                                     ;     2 [Encumbered]:   9 [effEncumbered] - If rtsIfRndStaChk fails, subtract 1
-                                    ;                                      from CHR_STAMINA
+                                    ;                                      from ChrStamina
                                     ;     3 [Immobilized]: 10 [effImmobilized] - If rtsIfRndStaChk fails, subtract 1
-                                    ;                                      from CHR_STAMINA
+                                    ;                                      from ChrStamina
 
 rw  465e,8   EffBurdnStrs           ; 8 bytes: Burden effect level string addresses
                                     ;     0: $47e5 [Zts12Spaces]
@@ -2034,29 +2037,34 @@ rwx 4b4d,1   addItem                ; Adds an item to the game inventory.
 
 rwx 4b74,1   getItemAdr             ; Sets ItemAdr_L/H to the address of the item at index in A
 
-rwx 4b80,1   sub_4b80               ;
+rwx 4b80,1   doGetItem              ; Performs the "get" action on the item at the inventory index specified in A.
 rw  4b82,1   nop_4b82               ; Forms 'BIT $02a2' with following LDA (e.g. NOP)
 
-rwx 4b82,1   sub_4b83               ;
+rwx 4b82,1   doDropItem             ; Performs the "drop" action on the item at the inventory index specified in A.
 rw  4b85,1   nop_4b85               ; Forms 'BIT $04a2' with following LDA (e.g. NOP)
 
-rwx 4b86,1   sub_4b86               ;
+rwx 4b86,1   doUseItem              ; Performs the "use" action on the item at the inventory index specified in A.
 rw  4b88,1   nop_4b88               ; Forms 'BIT $08a2' with following LDA (e.g. NOP)
 
-rwx 4b89,1   sub_4b89               ;
+rwx 4b89,1   doUnuseItem            ; Performs the "unuse" (unequip) action on the item at the inventory index
+                                    ;     specified in A.
 rwx 4b8b,1   nop_4b8b               ; Forms 'BIT $10a2' with following LDA (e.g. NOP)
 
 rwx 4b8c,1   sub_4b8c               ;
-rwx 4baa,1   sub_4baa               ; Calls doItemAction for the item in the specified inventory index, if one is assigned.
+rwx 4baa,1   doItemAtAction         ; Calls doItemAction for the item in the specified inventory index,
+                                    ;     if one is assigned.
 rwx 4bb3,1   doItemAction           ; Processes a signalled action trigger for an item.
 
 rwx 4be2,1   doGetAction            ; Executes $01 "get" action for item: Mark item as in player inventory
 rwx 4bf5,1   doDropAction           ; Executes $02 "drop" action for item: Drops an item held by the player
 rwx 4c5a,1   doUseAction            ; Executes $04 "use" action for item: Mark the inventory slot at ItemIndex "available"
+rwx 4c6b,1   sub_4c6b               ; Executes $08 "unuse" action for item:
+                                    ;    Sub referenced in tbl_4cbf_L/H
 rwx 4c86,1   sub_4c86               ; Mark the inventory slot at ItemIndex "occupied"
-rwx 4c95,1   cont_4c95              ;
+rwx 4c95,1   cntUpdItmEfcts         ;
 rwx 4c9c,1   rts_4c9c               ; NOP - Just an RTS. Sub referenced in tbl_4cbf_L/H
-rwx 4c9d,1   sub_4c9d               ; Sub referenced in tbl_4cbf_L/H
+rwx 4c9d,1   sub_4c9d               ; Executes $10 ?? action flag: Drops, unuses and permanently removes the specified
+                                    ;     item from the game inventory.  Referenced in tbl_4cbf_L/H
 
 rw  4cbf,12  tbl_4cbf_L             ; LSB of continuation addr (18 byte table of 9 x 2 byte entries)
 rw  4cc0,1   tbl_4cbf_H             ; MSB of continuation addr
@@ -2096,7 +2104,7 @@ rwx 4eb4,1   isEquipped             ; Searches equipped weapons, armor and appar
                                     ;     specified item index.
                                     ;
                                     ; Input
-                                    ;   CHR_PRI_WEAPON[0..9] - All equipped weapons, armor and apparel.
+                                    ;   ChrPriWeapon[0..9] - All equipped weapons, armor and apparel.
                                     ;   A    - The item index value to search for. Never matches if bit 7 is set to 1.
                                     ;
                                     ; Output
@@ -2328,18 +2336,18 @@ rw  5a9c,c   BasicItmZts_H          ; 12 bytes: MSB of addresses of NUL-terminat
 rw  5aa8,c   BasicItemOfs           ; 12 bytes: Offsets from $6300 [CHR_STATE] to the various basic item attributes in
                                     ; the order displayed in the inventory menu. Used to map menu selection indexes to
                                     ; attribute offsets.
-                                    ;   0: $bb -> $63bb [INV_FOOD]
-                                    ;   1: $bc -> $63bc [INV_WATER]
-                                    ;   2: $bd -> $63bd [INV_TORCHES]
-                                    ;   3: $c1 -> $63c1 [INV_TIMEPIECES]
-                                    ;   4: $c0 -> $63c0 [INV_COMPASSES]
-                                    ;   5: $bf -> $63bf [INV_KEYS]
-                                    ;   6: $be -> $63be [INV_CRYSTALS]
-                                    ;   7: $b7 -> $63b7 [INV_GEMS_U16_HI]
-                                    ;   8: $b9 -> $63b9 [INV_JEWELS_U16_HI]
-                                    ;   9: $b1 -> $63b1 [INV_GOLD_U16_HI]
-                                    ;  10: $b3 -> $63b3 [INV_SILVER_U16_HI]
-                                    ;  11: $b5 -> $63b5 [INV_COPPER_U16_HI]
+                                    ;   0: $bb -> $63bb [InvFood]
+                                    ;   1: $bc -> $63bc [InvWater]
+                                    ;   2: $bd -> $63bd [InvTorches]
+                                    ;   3: $c1 -> $63c1 [InvTimepieces]
+                                    ;   4: $c0 -> $63c0 [InvCompasses]
+                                    ;   5: $bf -> $63bf [InvKeys]
+                                    ;   6: $be -> $63be [InvCrystals]
+                                    ;   7: $b7 -> $63b7 [InvGems_H]
+                                    ;   8: $b9 -> $63b9 [InvJewels_H]
+                                    ;   9: $b1 -> $63b1 [InvGold_H]
+                                    ;  10: $b3 -> $63b3 [InvSilver_H]
+                                    ;  11: $b5 -> $63b5 [InvCopper_H]
 
 rwx 5ab4,1   sub_5ab4               ;
 
@@ -2356,7 +2364,7 @@ rw  5ca4,1f  StrInvalTryAgn         ; 31 bytes: "Invalid entry, try again."
 rw  5cc3,1   addr_5cc3_L            ; LSB of address
 rw  5cc4,1   addr_5cc3_H            ; MSB of address
 
-rwx 5cc5,1   cont_5cc5              ;
+rwx 5cc5,1   cntRprWpnsArmr         ; Fully repairs all equipped weapons and armor.
 
 rw  5d04,1   dat_5d04               ;
 rw  5d05,38  StrItmsRepaird         ; 56 bytes: "Your in use weapons and\narmor have been repaired.\n"
@@ -2459,16 +2467,16 @@ rw  6281,1   SpellSkill             ; contCastSpell: Spell cast skill, copied fr
 rw  6282,1   SpellBackfire          ; contCastSpell: Spell backfire penalty, copied from spell
                                     ;     attribute S2 (Backfire penalty)
 rw  6283,1   EquipSlot              ; 1 byte: equipItem param: equipment slot to assign (0..9)
-                                    ;     0: CHR_PRI_WEAPON
-                                    ;     1: CHR_SEC_WEAPON
-                                    ;     2: CHR_ARMOR_HEAD
-                                    ;     3: CHR_ARMOR_BODY
-                                    ;     4: CHR_ARMOR_ARMS
-                                    ;     5: CHR_ARMOR_LEGS
-                                    ;     6: CHR_APPAREL[0]
-                                    ;     7: CHR_APPAREL[1]
-                                    ;     8: CHR_APPAREL[2]
-                                    ;     9: CHR_APPAREL[3]
+                                    ;     0: ChrPriWeapon
+                                    ;     1: ChrSecWeapon
+                                    ;     2: ChrArmorHead
+                                    ;     3: ChrArmorBody
+                                    ;     4: ChrArmorArms
+                                    ;     5: ChrArmorLegs
+                                    ;     6: ChrApparel[0]
+                                    ;     7: ChrApparel[1]
+                                    ;     8: ChrApparel[2]
+                                    ;     9: ChrApparel[3]
 rw  6284,1   DroppedIndex           ; Loop index variable for iterating dropped items
 rw  6285,1   dat_6285               ; 1 byte: possible LSB of address?
 rw  6286,1   dat_6286               ; 1 byte: possible MSB of address?
@@ -2513,88 +2521,90 @@ rw  631f,1   LoadedModule           ; Module number of the loaded/resident modul
                                     ;     When this value differs from the CurrentModule, the CurrentModule will be
                                     ;     loaded by the game engine and executed.
 rw  6320,1   dat_6320               ;
-rw  6321,19  CHR_NAME               ; Player name (25 characters)
+rw  6321,19  ChrName                ; Player name (25 characters)
 
-; TODO: What is $633a & $633b
+; TODO: What is $633a?
 
-rw  633c,1   CHR_EXPLVL             ; Player level
-rw  633d,1   CHR_EXP_U32_B3         ; Character experience points (MSB of uint32)
-rw  633e,1   CHR_EXP_U32_B2         ; Character experience points (third byte of uint32)
-rw  633f,1   CHR_EXP_U32_B1         ; Character experience points (second byte of uint32)
-rw  6340,1   CHR_EXP_U32_B0         ; Character experience points (LSB of uint32)
-rw  6341,1   CHR_LUP_EXP_U32_B3     ; Character experience points needed to level up (MSB of uint32)
-rw  6342,1   CHR_LUP_EXP_U32_B2     ; Character experience points needed to level up (third byte of uint32)
-rw  6343,1   CHR_LUP_EXP_U32_B1     ; Character experience points needed to level up (second byte of uint32)
-rw  6344,1   CHR_LUP_EXP_U32_B0     ; Character experience points needed to level up (LSB of uint32)
-rw  6345,1   CHR_HP_CURRENT_HI      ; Character HP (MSB of uint16)
-rw  6346,1   CHR_HP_CURRENT_LO      ; Character HP (LSB of uint16)
-rw  6347,1   CHR_HP_MAX_HI          ; Not fully convinced these two are accurate...
-rw  6348,1   CHR_HP_MAX_LO
-rw  6349,1   CHR_STA_EFFECTIVE      ; Effective STA value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  634a,1   CHR_STA_BASE           ; Base STA value
-rw  634b,1   CHR_STA_BONUS          ; Bonus to STA value
-rw  634c,1   CHR_STA_PENALTY1       ; First penalty to STA value
-rw  634d,1   CHR_STA_PENALTY2       ; Second penalty to STA value
-rw  634e,1   CHR_STA_PENALTY3       ; Third penalty to STA value
-rw  634f,1   CHR_STA_PENALTY4       ; Fourth penalty to STA value
-rw  6350,1   CHR_STA_UNKNOWN        ; Unknown value related to STA stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
-rw  6351,1   CHR_CHR_EFFECTIVE      ; Effective CHR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  6352,1   CHR_CHR_BASE           ; Base CHR value
-rw  6353,1   CHR_CHR_BONUS          ; Bonus to CHR value
-rw  6354,1   CHR_CHR_PENALTY1       ; First penalty to CHR value
-rw  6355,1   CHR_CHR_PENALTY2       ; Second penalty to CHR value
-rw  6356,1   CHR_CHR_PENALTY3       ; Third penalty to CHR value
-rw  6357,1   CHR_CHR_PENALTY4       ; Fourth penalty to CHR value
-rw  6358,1   CHR_CHR_UNKNOWN        ; Unknown value related to CHR stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
-rw  6359,1   CHR_STR_EFFECTIVE      ; Effective STR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  635a,1   CHR_STR_BASE           ; Base STR value
-rw  635b,1   CHR_STR_BONUS          ; Bonus to STR value
-rw  635c,1   CHR_STR_PENALTY1       ; First penalty to STR value
-rw  635d,1   CHR_STR_PENALTY2       ; Second penalty to STR value
-rw  635e,1   CHR_STR_PENALTY3       ; Third penalty to STR value
-rw  635f,1   CHR_STR_PENALTY4       ; Fourth penalty to STR value
-rw  6360,1   CHR_STR_UNKNOWN        ; Unknown value related to STR stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
-rw  6361,1   CHR_INT_EFFECTIVE      ; Effective INT value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  6362,1   CHR_INT_BASE           ; Base INT value
-rw  6363,1   CHR_INT_BONUS          ; Bonus to INT value
-rw  6364,1   CHR_INT_PENALTY1       ; First penalty to INT value
-rw  6365,1   CHR_INT_PENALTY2       ; Second penalty to INT value
-rw  6366,1   CHR_INT_PENALTY3       ; Third penalty to INT value
-rw  6367,1   CHR_INT_PENALTY4       ; Fourth penalty to INT value
-rw  6368,1   CHR_INT_UNKNOWN        ; Unknown value related to INT stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
-rw  6369,1   CHR_WIS_EFFECTIVE      ; Effective WIS value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  636a,1   CHR_WIS_BASE           ; Base WIS value
-rw  636b,1   CHR_WIS_BONUS          ; Bonus to WIS value
-rw  636c,1   CHR_WIS_PENALTY1       ; First penalty to WIS value
-rw  636d,1   CHR_WIS_PENALTY2       ; Second penalty to WIS value
-rw  636e,1   CHR_WIS_PENALTY3       ; Third penalty to WIS value
-rw  636f,1   CHR_WIS_PENALTY4       ; Fourth penalty to WIS value
-rw  6370,1   CHR_WIS_UNKNOWN        ; Unknown value related to WIS stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
-rw  6371,1   CHR_SKL_EFFECTIVE      ; Effective SKL value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  6372,1   CHR_SKL_BASE           ; Base SKL value
-rw  6373,1   CHR_SKL_BONUS          ; Bonus to SKL value
-rw  6374,1   CHR_SKL_PENALTY1       ; First penalty to SKL value
-rw  6375,1   CHR_SKL_PENALTY2       ; Second penalty to SKL value
-rw  6376,1   CHR_SKL_PENALTY3       ; Third penalty to SKL value
-rw  6377,1   CHR_SKL_PENALTY4       ; Fourth penalty to SKL value
-rw  6378,1   CHR_SKL_UNKNOWN        ; Unknown value related to SKL stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
-rw  6379,1   CHR_SPD_EFFECTIVE      ; Effective SPD value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
-rw  637a,1   CHR_SPD_BASE           ; Base SPD value
-rw  637b,1   CHR_SPD_BONUS          ; Bonus to SPD value
-rw  637c,1   CHR_SPD_PENALTY1       ; First penalty to SPD value
-rw  637d,1   CHR_SPD_PENALTY2       ; Second penalty to SPD value
-rw  637e,1   CHR_SPD_PENALTY3       ; Third penalty to SPD value
-rw  637f,1   CHR_SPD_PENALTY4       ; Fourth penalty to SPD value
-; The following 128 bytes ($6380-$63FF) are copied to $100-$17F on return from a scenario module
-rw  6380,1   CHR_SPD_UNKNOWN        ; Unknown value related to SPD stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  633b,1   ChrGender              ; Player gender (>=0 is male, <0 is female)
+rw  633c,1   ChrExpLevel            ; Player level
+rw  633d,1   ChrExp3                ; Character experience points (MSB of big-endian uint32)
+rw  633e,1   ChrExp2                ; Character experience points (third byte of big-endian uint32)
+rw  633f,1   ChrExp1                ; Character experience points (second byte of big-endian uint32)
+rw  6340,1   ChrExp0                ; Character experience points (LSB of big-endian uint32)
+rw  6341,1   ChrLvlUpExp3           ; Character experience points needed to level up (MSB of big-endian uint32)
+rw  6342,1   ChrLvlUpExp2           ; Character experience points needed to level up (third byte of big-endian uint32)
+rw  6343,1   ChrLvlUpExp1           ; Character experience points needed to level up (second byte of big-endian uint32)
+rw  6344,1   ChrLvlUpExp0           ; Character experience points needed to level up (LSB of big-endian uint32)
+rw  6345,1   ChrHp_H                ; Character HP (MSB of big-endian uint16)
+rw  6346,1   ChrHp_L                ; Character HP (LSB of big-endian uint16)
+rw  6347,1   ChrMaxHp_H             ; Character maximum HP (MSB of big-endian uint16)
+rw  6348,1   ChrMaxHp_L             ; Character maximum HP (LSB of big-endian uint16)
+rw  6349,1   ChrStaCalc             ; Calculated STA value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  634a,1   ChrStaBase             ; Base STA value
+rw  634b,1   ChrStaBonus            ; Bonus to STA value
+rw  634c,1   ChrStaPenalty1         ; First penalty to STA value
+rw  634d,1   ChrStaPenalty2         ; Second penalty to STA value
+rw  634e,1   ChrStaPenalty3         ; Third penalty to STA value
+rw  634f,1   ChrStaPenalty4         ; Fourth penalty to STA value
+rw  6350,1   ChrStaUnknown          ; Unknown value related to STA stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  6351,1   ChrChrCalc             ; Calculated CHR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6352,1   ChrChrBase             ; Base CHR value
+rw  6353,1   ChrChrBonus            ; Bonus to CHR value
+rw  6354,1   ChrChrPenalty1         ; First penalty to CHR value
+rw  6355,1   ChrChrPenalty2         ; Second penalty to CHR value
+rw  6356,1   ChrChrPenalty3         ; Third penalty to CHR value
+rw  6357,1   ChrChrPenalty4         ; Fourth penalty to CHR value
+rw  6358,1   ChrChrUnknown          ; Unknown value related to CHR stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  6359,1   ChrStrCalc             ; Calculated STR value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  635a,1   ChrStrBase             ; Base STR value
+rw  635b,1   ChrStrBonus            ; Bonus to STR value
+rw  635c,1   ChrStrPenalty1         ; First penalty to STR value
+rw  635d,1   ChrStrPenalty2         ; Second penalty to STR value
+rw  635e,1   ChrStrPenalty3         ; Third penalty to STR value
+rw  635f,1   ChrStrPenalty4         ; Fourth penalty to STR value
+rw  6360,1   ChrStrUnknown          ; Unknown value related to STR stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  6361,1   ChrIntCalc             ; Calculated INT value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6362,1   ChrIntBase             ; Base INT value
+rw  6363,1   ChrIntBonus            ; Bonus to INT value
+rw  6364,1   ChrIntPenalty1         ; First penalty to INT value
+rw  6365,1   ChrIntPenalty2         ; Second penalty to INT value
+rw  6366,1   ChrIntPenalty3         ; Third penalty to INT value
+rw  6367,1   ChrIntPenalty4         ; Fourth penalty to INT value
+rw  6368,1   ChrIntUnknown          ; Unknown value related to INT stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  6369,1   ChrWisCalc             ; Calculated WIS value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  636a,1   ChrWisBase             ; Base WIS value
+rw  636b,1   ChrWisBonus            ; Bonus to WIS value
+rw  636c,1   ChrWisPenalty1         ; First penalty to WIS value
+rw  636d,1   ChrWisPenalty2         ; Second penalty to WIS value
+rw  636e,1   ChrWisPenalty3         ; Third penalty to WIS value
+rw  636f,1   ChrWisPenalty4         ; Fourth penalty to WIS value
+rw  6370,1   ChrWisUnknown          ; Unknown value related to WIS stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  6371,1   ChrSklCalc             ; Calculated SKL value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  6372,1   ChrSklBase             ; Base SKL value
+rw  6373,1   ChrSklBonus            ; Bonus to SKL value
+rw  6374,1   ChrSklPenalty1         ; First penalty to SKL value
+rw  6375,1   ChrSklPenalty2         ; Second penalty to SKL value
+rw  6376,1   ChrSklPenalty3         ; Third penalty to SKL value
+rw  6377,1   ChrSklPenalty4         ; Fourth penalty to SKL value
+rw  6378,1   ChrSklUnknown          ; Unknown value related to SKL stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
+rw  6379,1   ChrSpdCalc             ; Calculated SPD value (base + bonus - penalty1 - penalty2 - penalty3 - penalty4)
+rw  637a,1   ChrSpdBase             ; Base SPD value
+rw  637b,1   ChrSpdBonus            ; Bonus to SPD value
+rw  637c,1   ChrSpdPenalty1         ; First penalty to SPD value
+rw  637d,1   ChrSpdPenalty2         ; Second penalty to SPD value
+rw  637e,1   ChrSpdPenalty3         ; Third penalty to SPD value
+rw  637f,1   ChrSpdPenalty4         ; Fourth penalty to SPD value
+rw  6380,1   ChrSpdUnknown          ; Unknown value related to SPD stat. Set to 0 in sub_55b7 when a weapon curse effect is removed.
 
-rw  6381,1   CHR_TREASURE_FINDING   ; ? treasure finding ?
-rw  6382,1   CHR_Obviousness        ;  ?Related to elven cloak ? This seems likely to be noticeability / stealth, based on how it's used in the encounter calculation in checkEncounter... ?
+rw  6381,1   ChrTreasureFnd         ; ? treasure finding ?
+rw  6382,1   ChrObviousness         ;  ?Related to elven cloak ? This seems likely to be noticeability / stealth, based on how it's used in the encounter calculation in checkEncounter... ?
 
-rw  6384,1   CHR_LUCK               ; ?Luck?
-rw  6385,1   CHR_ALIGN              ; Alignment (Base $80 (Neutral), lower = more evil, higher = more good)
-rw  6386,1   CHR_MORALE             ; ?Morale?/?Mood?
+; TODO: What is $6383?
 
+rw  6384,1   ChrLuck                ; ?Luck?
+rw  6385,1   ChrAlign               ; Alignment (Base $00 (Neutral), lower = more evil, higher = more good)
+rw  6386,1   CHR_MORALE             ; ?Morale?/?Mood?  Read in combat module: adds "a friend" faction if <72?
+rw  6387,1   CHR_Unk_6387           ; ?Notoriety/Intrigue/Nobility? ?Read in combat module: adds additional faction if >=16 (probably meant to be palace, but buggy)?
 rw  6388,1   Chr_Unk_6388           ; Bit 1 (1) related to movement thru door - When a locked/barred/enchanted door is encountered, the player moves through if this bit is 1 and the bit is cleared.
                                     ; Bit 2 (2) related to perception? (Part of "Something odd here" check)
                                     ; Bit 3 (4) related to solar suit. This bit is set when the player wears the solar suit and cleared when they remove it.
@@ -2604,73 +2614,93 @@ rw  638b,1   CHR_SEE_SECRET_DOORS   ; Flag indicating whether the player can see
 
 rw  638d,1   CHR_DIFFICULT_TO_HIT   ;
 
-rw  6390,1   CHR_NumLights          ; Number of active player light sources (torch, spell, item, etc).
-rw  6391,1   CHR_Diseased           ; Negative two's complement of the number of disease effects active on the player.
+rw  6390,1   ChrNumLights           ; Number of active player light sources (torch, spell, item, etc).
+rw  6391,1   ChrDiseased            ; Negative two's complement of the number of disease effects active on the player.
                                     ;     Should be interpreted as a boolean flag: 0 = undiseased, <0 = diseased
-rw  6392,1   CHR_Poisoned           ; Negative two's complement of the number of poison effects active on the player.
+rw  6392,1   ChrPoisoned            ; Negative two's complement of the number of poison effects active on the player.
                                     ;     Should be interpreted as a boolean flag: 0 = no poison, <0 = poisoned
-rw  6393,1   CHR_Cursed             ; Negative two's complement of the number of curse effects active on the player.
+rw  6393,1   ChrCursed              ; Negative two's complement of the number of curse effects active on the player.
                                     ;     Should be interpreted as a boolean flag: 0 = no curse, <0 = cursed
-rw  6394,1   CHR_BURDEN             ; Player encumberment
-rw  6395,1   CHR_WARMTH             ; Player warmth
+rw  6394,1   ChrBurden              ; Player encumberment
+rw  6395,1   ChrWarmth              ; Player warmth
 rw  6396,1   Chr_Unk_6396           ; TODO: Related to CHR_DRUNK (decreased when drunk increased... stomach alcohol level?)
 rw  6397,1   CHR_DRUNK              ; Player drunk flag (drunk if less than 0)
 rw  6398,1   CHR_STOMACH            ; Player fullness/bloated?
 rw  6399,1   CHR_HUNGER             ; Player hunger      TODO: rename to satiation?
 rw  639a,1   CHR_THIRST             ; Player thirst      TODO: rename to hydration?
-rw  639b,1   CHR_STAMINA            ; Player stamina
-rw  639c,1   CHR_PRI_WEAPON         ; Item index of equipped primary weapon (bit 7 set if none)
-rw  639d,1   CHR_SEC_WEAPON         ; Item index of equipped secondary weapon (bit 7 set if none)
-rw  639e,1   CHR_ARMOR_HEAD         ; Item index of equipped head armor (bit 7 set if none)
-rw  639f,1   CHR_ARMOR_BODY         ; Item index of equipped body armor (bit 7 set if none)
-rw  63a0,1   CHR_ARMOR_ARMS         ; Item index of equipped arms armor (bit 7 set if none)
-rw  63a1,1   CHR_ARMOR_LEGS         ; Item index of equipped legs armor (bit 7 set if none)
-rw  63a2,4   CHR_APPAREL            ; 4 bytes: Item indexes for equipped apparel (bit 7 set if none)
-rw  63a6,1   CHR_BLUNT_PROT         ; Blunt protection
-rw  63a7,1   CHR_SHARP_PROT         ; Sharp protection
-rw  63a8,1   CHR_EARTH_PROT         ; Earth protection
-rw  63a9,1   CHR_AIR_PROT           ; Air protection
-rw  63aa,1   CHR_FIRE_PROT          ; Fire protection
-rw  63ab,1   CHR_WATER_PROT         ; Water protection
-rw  63ac,1   CHR_POWER_PROT         ; Power protection
-rw  63ad,1   CHR_MENTAL_PROT        ; Mental protection
-rw  63ae,1   CHR_GOOD_PROT          ; Good protection
-rw  63af,1   CHR_EVIL_PROT          ; Evil protection
-rw  63b0,1   CHR_COLD_PROT          ; Cold protection
-rw  63b1,1   INV_GOLD_U16_HI        ; High byte of Gold inventory (uint16)
-rw  63b2,1   INV_GOLD               ; Low byte of Gold inventory (uint16)
-rw  63b3,1   INV_SILVER_U16_HI      ; High byte of Silver inventory (uint16)
-rw  63b4,1   INV_SILVER             ; Low byte of Silver inventory (uint16)
-rw  63b5,1   INV_COPPER_U16_HI      ; High byte of Copper inventory (uint16)
-rw  63b6,1   INV_COPPER             ; Low byte of Copper inventory (uint16)
-rw  63b7,1   INV_GEMS_U16_HI        ; High byte of Gems inventory (uint16)
-rw  63b8,1   INV_GEMS               ; Low byte of Gems inventory (uint16)
-rw  63b9,1   INV_JEWELS_U16_HI      ; High byte of Jewels inventory (uint16)
-rw  63ba,1   INV_JEWELS             ; Low byte of Jewels inventory (uint16)
-rw  63bb,1   INV_FOOD               ; Number of food packets in inventory (uint8)
-rw  63bc,1   INV_WATER              ; Number of water flasks in inventory (uint8)
-rw  63bd,1   INV_TORCHES            ; Number of unlit torches in inventory (uint8)
-rw  63be,1   INV_CRYSTALS           ; Number of crystals in inventory (uint8)
-rw  63bf,1   INV_KEYS               ; Number of keys in inventory (uint8)
-rw  63c0,1   INV_COMPASSES          ; Number of compasses in inventory (uint16)
-rw  63c1,1   INV_TIMEPIECES         ; Number of timepieces in inventory (uint16)
-
-; What are 63c2 ... 63d1?
+rw  639b,1   ChrStamina             ; Player stamina
+rw  639c,1   ChrPriWeapon           ; Item index of equipped primary weapon (bit 7 set if none)
+rw  639d,1   ChrSecWeapon           ; Item index of equipped secondary weapon (bit 7 set if none)
+rw  639e,4   ChrArmor               ; 4 bytes: Item indices of equipped armor (bit 7 set if none)
+                                    ;      0: Head, 1: Body, 2: Arms, 3: Legs
+rw  639e,1   ChrArmorHead           ; Item index of equipped head armor (bit 7 set if none)
+rw  639f,1   ChrArmorBody           ; Item index of equipped body armor (bit 7 set if none)
+rw  63a0,1   ChrArmorArms           ; Item index of equipped arms armor (bit 7 set if none)
+rw  63a1,1   ChrArmorLegs           ; Item index of equipped legs armor (bit 7 set if none)
+rw  63a2,4   ChrApparel             ; 4 bytes: Item indexes for equipped apparel (bit 7 set if none)
+rw  63a6,b   ChrResist              ; 11 bytes: Player intrinsic resistance
+                                    ;      0: Blunt, 1:Sharp, 2: Earth. 3: Air, 4: Fire, 5: Water,
+                                    ;      6: Power, 7: Mental, 8: Good, 9: Evil, 10: Cold
+rw  63a6,1   ResistBlunt            ; Blunt resistance
+rw  63a7,1   ResistSharp            ; Sharp resistance
+rw  63a8,1   ResistEarth            ; Earth resistance
+rw  63a9,1   ResistAir              ; Air resistance
+rw  63aa,1   ResistFire             ; Fire resistance
+rw  63ab,1   ResistWater            ; Water resistance
+rw  63ac,1   ResistPower            ; Power resistance
+rw  63ad,1   ResistMental           ; Mental resistance
+rw  63ae,1   ResistGood             ; Good resistance
+rw  63af,1   ResistEvil             ; Evil resistance
+rw  63b0,1   ResistCold             ; Cold resistance
+rw  63b1,1   InvGold_H              ; High byte of Gold inventory (uint16)
+rw  63b2,1   InvGold_L              ; Low byte of Gold inventory (uint16)
+rw  63b3,1   InvSilver_H            ; High byte of Silver inventory (uint16)
+rw  63b4,1   InvSilver_L            ; Low byte of Silver inventory (uint16)
+rw  63b5,1   InvCopper_H            ; High byte of Copper inventory (uint16)
+rw  63b6,1   InvCopper_L            ; Low byte of Copper inventory (uint16)
+rw  63b7,1   InvGems_H              ; High byte of Gems inventory (uint16)
+rw  63b8,1   InvGems_L              ; Low byte of Gems inventory (uint16)
+rw  63b9,1   InvJewels_H            ; High byte of Jewels inventory (uint16)
+rw  63ba,1   InvJewels_L            ; Low byte of Jewels inventory (uint16)
+rw  63bb,1   InvFood                ; Number of food packets in inventory (uint8)
+rw  63bc,1   InvWater               ; Number of water flasks in inventory (uint8)
+rw  63bd,1   InvTorches             ; Number of unlit torches in inventory (uint8)
+rw  63be,1   InvCrystals            ; Number of crystals in inventory (uint8)
+rw  63bf,1   InvKeys                ; Number of keys in inventory (uint8)
+rw  63c0,1   InvCompasses           ; Number of compasses in inventory (uint16)
+rw  63c1,1   InvTimepieces          ; Number of timepieces in inventory (uint16)
+rw  63c2,e   FactionRepute          ; 16 bytes: Player standing with the various factions.
+                                    ;  - Read & written in Module 1 (combat)
+                                    ; Each byte holds a bitfield for a faction:
+                                    ;   - Bit 7: Player is member of faction
+                                    ;   - Bit 6: Player has made an enemy of the faction   (module1:sub_aa00)
+                                    ;   - Bits 0..5?: Standing with faction?
+                                    ;
+                                    ; The factions are as follows:
+                                    ; (Note: Even are good, Odd are evil. Even/odd pairs are mortal enemies.)
+                                    ;     0: The Light Wizards           1: The Dark Wizards
+                                    ;     2: The Guild Of Order          3: The Guild Of Chaos
+                                    ;     4: The Guild Of Law            5: The Thieves Guild
+                                    ;     6: The Green Wizards           7: The Red Wizards
+                                    ;     8: The Star Wizards            9: The Blue Wizards
+                                    ;    10: The Physicians Guild       11: The Assassins Guild
+                                    ;    12: The Paladins               13: The Mercenary Guild
+                                    ;    14: A Friend                   15: The Palace
 
 rw  63d2,b   dat_63d2               ; 11 bytes:
                                     ;   contEquipWeapn: Set to 0 whenever a new weapon is equipped.
 
-rw  63dd,1   Chr_BluntDmg           ; Player blunt damage attr
-rw  63de,1   Chr_SharpDmg           ; Player sharp damage attr
-rw  63df,1   Chr_EarthDmg           ; Player earth damage attr
-rw  63e0,1   Chr_AirDmg             ; Player air damage attr
-rw  63e1,1   Chr_FireDmg            ; Player fire damage attr
-rw  63e2,1   Chr_WaterDmg           ; Player water damage attr
-rw  63e3,1   Chr_PowerDmg           ; Player power damage attr
-rw  63e4,1   Chr_MagicDmg           ; Player magic damage attr
-rw  63e5,1   Chr_GoodDmg            ; Player good damage attr
-rw  63e6,1   Chr_EvilDmg            ; Player evil damage attr
-rw  63e7,1   Chr_ColdDmg            ; Player cold damage attr
+rw  6400,1   HandDmgBlunt           ; Bare hands blunt damage value
+rw  6491,1   HandDmgSharp           ; Bare hands sharp damage value
+rw  6492,1   HandDmgEarth           ; Bare hands earth damage value
+rw  6493,1   HandDmgAir             ; Bare hands air damage value
+rw  6494,1   HandDmgFire            ; Bare hands fire damage value
+rw  6495,1   HandDmgWater           ; Bare hands water damage value
+rw  6496,1   HandDmgPower           ; Bare hands power damage value
+rw  6497,1   HandDmgMagic           ; Bare hands magic damage value
+rw  6498,1   HandDmgGood            ; Bare hands good damage value
+rw  6499,1   HandDmgEvil            ; Bare hands evil damage value
+rw  649a,1   HandDmgCold            ; Bare hands cold damage value
 rw  640b,40  InvItemAdr_L           ; 64 bytes: Holds LSBs of inventory item addresses
 rw  644b,40  InvItemAdr_H           ; 64 bytes: Holds MSBs of inventory item addresses
 rw  648b,8   InvSlotFree            ; 8 bytes: Bitfield with one bit per inventory slot. 1 = free, 0 = allocated
@@ -2710,6 +2740,29 @@ rw  7500,4   EncntrDefeated         ; Contains bits for each encounter (0..31) i
 rw  7504,4   TreasureTaken          ; Contains bits for each treasure (0..31) indicating whether the player has
                                     ;   taken the corresponding treasure (1) or not (0)
 
+rw  7508,3   QuestFlags             ; Contains bits for various quest progression flags indicating whether the player
+                                    ;   has completed specific quest objectives (1) or not (0).
+                                    ; TODO: How many flags are there? The largest value used in Item module 2 is 24.
+                                    ;
+                                    ;    0: Goblin/Troll: Quest completed / reforged ring destroyed
+                                    ;    1: Clothes Horse: Quest completed - Mirrored Shield reward if set
+                                    ;    2:
+                                    ;    3:
+                                    ;
+                                    ;   11: Goblin/Troll: Defeated Troll King? - Troll Ring Half reward if set and both 13 and 14 clear
+                                    ;   12: Goblin/Troll: Defeated Goblin King? - Goblin Ring Half reward if set and both 13 and 14 clear
+                                    ;   13: Goblin/Troll: ??
+                                    ;   14: Goblin/Troll: ??
+                                    ;
+                                    ;   19: Acrinimiril: ?? Master Thief ?? - Silver Key reward if not set; Staff Piece if set
+                                    ;   20: Acrinimiril: ?? Ozob / Dragon ?? - Staff Piece if set
+                                    ;   21: Acrinimiril: ?? Ozob / Dragon ?? - Staff Piece if set
+                                    ;   22: ??: Bloodstone
+                                    ;
+                                    ;   23: Goblin/Troll: ?? - Reforged Ring reward if set
+                                    ;   24: Acrinimiril: Quest completed: If set, PAC Card is reward
+                                    ;
+
 ; Guild Locker
 rw  7571,1    GldLkrGold_H          ; MSB of number of gold coins in the guild locker
 rw  7572,1    GldLkrGold            ; LSB of number of gold coins in the guild locker
@@ -2728,6 +2781,17 @@ rw  757e,1    GldLkrCrystals        ; Number of crystals in the guild locker
 rw  757f,1    GldLkrKeys            ; Number of keys in the guild locker
 rw  7580,1    GldLkrCompass         ; Number of compasses in the guild locker
 rw  7581,1    GldLkrTimepcs         ; Number of timepieces in the guild locker
+
+rw  7589,1    dat_7589              ; Referenced in Module 2: Item Data
+                                    ;   - lostQuestItem (r): Value used in calculation
+                                    ;     Subtracted from NumStaffFlags to compute final number of staff pieces outstanding.
+                                    ;     ??Possibly the number of staff pieces given to Acrinimiril so far??
+rw  758a,1    dat_758a              ; Referenced in Module 2: Item Data
+                                    ;   - contAddItems (rw): Used as an item type value? Lower 7 bits are extracted and used as a lookup into QuestItem_L/H when value is 0..7
+                                    ;   - lostQuestItem (w):
+rw  758b,1    dat_758b              ; Referenced in Module 2: Item Data
+                                    ;   - contAddItems (r)
+                                    ;   - lostQuestItem (w)
 
 rwx 7600,3800 ModuleStart           ;  14336 bytes (possibly 16384?): Starting address where modules are loaded
                                     ;   - Combat data is 14336 bytes [$3800] - Minimum limit... Maybe $4000 was intent?

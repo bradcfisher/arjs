@@ -92,7 +92,7 @@
 7695: a9 ff                     LDA #$ff             ;             Set
 7697: 8d 75 19                  STA UNK_BYTE_1975    ;                 UNK_BYTE_1975 = $ff
 769a: ce 56 19                  DEC UpdateSceneFlg   ;             Subtract 1 from UpdateSceneFlg     (update requested)
-769d: 4c 0c 18                  JMP j_loc_3183       ;             Continue @ $3183 [j_loc_3183]
+769d: 4c 0c 18                  JMP j_sub_3183       ;             Continue @ $3183 [j_sub_3183]
                                                      ;         End If
                                                      ;     End If
                 ;
@@ -106,8 +106,8 @@
 76a3: 10 2a                     BPL loc_76cf         ;        (PlayerIsMoving < 0)            (player is moving)
 76a5: ad 0a d2                  LDA RANDOM           ;        And
 76a8: 10 25                     BPL loc_76cf         ;        (Random byte < 0)               (50% chance)
-76aa: ae 94 63                  LDX CHR_BURDEN       ;        And
-76ad: e8                        INX                  ;        (CHR_BURDEN + 1 == 0)           (burden = 255)
+76aa: ae 94 63                  LDX ChrBurden        ;        And
+76ad: e8                        INX                  ;        (ChrBurden + 1 == 0)            (burden = 255)
 76ae: d0 1f                     BNE loc_76cf         ;        And
 76b0: a9 3f                     LDA #$3f             ;           Set A = $3f (63)
 76b2: 20 99 18                  JSR j_randInRange    ;           Call $1899 [j_randInRange]   (A = random value 0..63)
@@ -122,7 +122,7 @@
 76c6: a9 02                     LDA #$02             ;         Set (*ItemAdr_L)[2]
 76c8: a0 02                     LDY #$02             ;                 =
 76ca: 91 41                     STA (ItemAdr_L),Y    ;                   2                    (set trigger to "drop")
-76cc: 20 a5 18                  JSR j_sub_408b       ;         Call $18a5 [j_sub_408b]
+76cc: 20 a5 18                  JSR j_applyAllCalcs  ;         Call $18a5 [j_applyAllCalcs]   (process trigger/stats)
                                                      ;     End If
                 ;
                 ; If the player moved into a zone with a different texture set, load the new texture set
@@ -156,8 +156,8 @@
 7709: cd 52 02  loc_7709        CMP VBlankCounter    ;         Loop
 770c: f0 fb                     BEQ loc_7709         ;         Repeat While (A == VBlankCounter)     (wait for vblank)
 770e: ad 4d 19                  LDA CurZoneFlags     ;         If
-7711: 29 01                     AND #$01             ;            (((CurZoneFlags & 1) | CHR_NumLights) == 0)
-7713: 0d 90 63                  ORA CHR_NumLights    ;
+7711: 29 01                     AND #$01             ;            (((CurZoneFlags & 1) | ChrNumLights) == 0)
+7713: 0d 90 63                  ORA ChrNumLights     ;
 7716: d0 08                     BNE loc_7720         ;         Then
 7718: a9 00                     LDA #$00             ;             Set A = 0                         (0 = black)
 771a: 20 e5 77                  JSR setAllColors     ;             Call $77e5 [setAllColors]         (darkness)
@@ -173,8 +173,8 @@
 7733: 20 d4 7a  loc_7733        JSR renderScene      ;     Call $7ad4 [renderScene]
                                                      ; End If
 7736: ad 4d 19  loc_7736        LDA CurZoneFlags     ; If
-7739: 29 01                     AND #$01             ;    (((CurZoneFlags & 1) | CHR_NumLights) == 0)
-773b: 0d 90 63                  ORA CHR_NumLights    ;
+7739: 29 01                     AND #$01             ;    (((CurZoneFlags & 1) | ChrNumLights) == 0)
+773b: 0d 90 63                  ORA ChrNumLights     ;
 773e: d0 08                     BNE loc_7748         ; Then
 7740: a9 00                     LDA #$00             ;     Set A = 0                                 (0 = black)
 7742: 20 e5 77                  JSR setAllColors     ;     Call $77e5 [setAllColors]                 (darkness)
@@ -187,7 +187,7 @@
 7752: a9 80                     LDA #$80             ;        =
 7754: 85 8a                     STA ImgAddr_H        ;          $80e5 [MoveArrowsImg]
 7756: 20 f4 7e                  JSR putCharImage     ; Call $7ef4 [putCharImage]
-7759: ad c0 63                  LDA INV_COMPASSES    ; If (INV_COMPASSES != 0)
+7759: ad c0 63                  LDA InvCompasses     ; If (InvCompasses != 0)
 775c: f0 11                     BEQ loc_776f         ; Then
 775e: ad 12 63                  LDA CHR_LOC_ORIENT   ;     If
 7761: cd 6a 19                  CMP CompassOrient    ;        (CHR_LOC_ORIENT != CompassOrient)
@@ -214,18 +214,18 @@
 7791: 8d 33 19                  STA CurStatusPage    ;         CurStatusPage = 0            (reset to first status page)
 7794: ce 5f 19                  DEC StatUpdateFlg    ;     Subtract 1 from StatUpdateFlg    (needs update)
                                                      ; End If
-7797: ad c0 63  loc_7797        LDA INV_COMPASSES    ; If
-779a: cd fc 77                  CMP CurNumCmpss      ;    (INV_COMPASSES != CurNumCmpss)
+7797: ad c0 63  loc_7797        LDA InvCompasses     ; If
+779a: cd fc 77                  CMP CurNumCmpss      ;    (InvCompasses != CurNumCmpss)
 779d: f0 06                     BEQ loc_77a5         ; Then
-779f: 8d fc 77                  STA CurNumCmpss      ;     Set CurNumCmpss = INV_COMPASSES
+779f: 8d fc 77                  STA CurNumCmpss      ;     Set CurNumCmpss = InvCompasses
 77a2: ce 56 19                  DEC UpdateSceneFlg   ;     Subtract 1 from UpdateSceneFlg             (update requested)
                                                      ; End If
 77a5: ad 4d 19  loc_77a5        LDA CurZoneFlags     ; If
-77a8: 29 01                     AND #$01             ;    (((CurZoneFlags & 1) | CHR_NumLights)
-77aa: 0d 90 63                  ORA CHR_NumLights    ;        !=
+77a8: 29 01                     AND #$01             ;    (((CurZoneFlags & 1) | ChrNumLights)
+77aa: 0d 90 63                  ORA ChrNumLights     ;        !=
 77ad: cd fb 77                  CMP CurLightLevel    ;           CurLightLevel)
 77b0: f0 06                     BEQ loc_77b8         ; Then
-77b2: 8d fb 77                  STA CurLightLevel    ;     Set CurLightLevel = ((CurZoneFlags & 1) | CHR_NumLights)
+77b2: 8d fb 77                  STA CurLightLevel    ;     Set CurLightLevel = ((CurZoneFlags & 1) | ChrNumLights)
 77b5: ce 56 19                  DEC UpdateSceneFlg   ;     Subtract 1 from UpdateSceneFlg             (update requested)
                                                      ; End If
 77b8: ad 56 19  loc_77b8        LDA UpdateSceneFlg   ; If (UpdateSceneFlg != 0)

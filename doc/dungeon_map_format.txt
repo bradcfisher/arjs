@@ -835,13 +835,13 @@ Scenario module have a header structured as follows:
       1 - Message offset [Low]
       2 - Message offset [High]
 
-      Entry 0: 4A 60 86   (CHR_ALIGN <=  74, 'Thy soul is black as pitch!')
-      Entry 1: 64 3C 86   (CHR_ALIGN <= 100, 'Thy soul is dark and fearsome.')
-      Entry 2: 77 02 86   (CHR_ALIGN <= 119, 'Thou art heading down\n\nthe wrong track, Adventurer.')
-      Entry 3: 87 D0 85   (CHR_ALIGN <= 135, 'Thy personality is\n\nhard to read, stranger.')
-      Entry 4: 96 A4 85   (CHR_ALIGN <= 150, 'Thou art on the\n\nright path, pilgrim.')
-      Entry 5: E1 7C 85   (CHR_ALIGN <= 225, 'Thou soul is\n\nbecoming purer daily.') (should be "Thy"...)
-      Entry 6: FF 47 85   (CHR_ALIGN <= 255, 'Thou hast achieved\n\na level of great goodness.')
+      Entry 0: 4A 60 86   (ChrAlign <=  74, 'Thy soul is black as pitch!')
+      Entry 1: 64 3C 86   (ChrAlign <= 100, 'Thy soul is dark and fearsome.')
+      Entry 2: 77 02 86   (ChrAlign <= 119, 'Thou art heading down\n\nthe wrong track, Adventurer.')
+      Entry 3: 87 D0 85   (ChrAlign <= 135, 'Thy personality is\n\nhard to read, stranger.')
+      Entry 4: 96 A4 85   (ChrAlign <= 150, 'Thou art on the\n\nright path, pilgrim.')
+      Entry 5: E1 7C 85   (ChrAlign <= 225, 'Thou soul is\n\nbecoming purer daily.') (should be "Thy"...)
+      Entry 6: FF 47 85   (ChrAlign <= 255, 'Thou hast achieved\n\na level of great goodness.')
 
   0b ( 11) = Palace Prison (Ozob)
     - Level 1.2 (26, 27)-(28, 27)
@@ -1519,13 +1519,13 @@ Header (6 bytes)
   I0: Flags & Type
       A BBBB CCC
       | |  |  +-- Item type: 0 (0000) - Stack of standard items / Charged Magic Item (Card/Scroll/Wand)
-      | |  |                 1 (0001) - ? Spell
-      | |  |                 2 (0010) - ? Ammo
-      | |  |                 3 (0011) - ? Weapon
-      | |  |                 4 (0100) - ? Armor
-      | |  |                 5 (0101) - ? Apparel
-      | |  |                 6 (0110) - ? Potion
-      | |  |                 7 (0111) - ? Special items (Golden apple, Amethyst Rod, Loadstone, PAC Card, Staff piece, Silver Key, ... )
+      | |  |                 1 (0001) - Spell
+      | |  |                 2 (0010) - Ammo
+      | |  |                 3 (0011) - Weapon / Shield
+      | |  |                 4 (0100) - Armor
+      | |  |                 5 (0101) - Apparel
+      | |  |                 6 (0110) - Potion
+      | |  |                 7 (0111) - ? Special items (Golden apple, Amethyst Rod, Loadstone, PAC Card, Staff piece, Silver Key, corpses... )
       | +--+----- Item subtype value. The meaning of this value depends on the primary Item type as follows:
       |              Type 0 subtypes:
       |                0000 (0) - Dropped Stackable/Standard Item
@@ -1539,9 +1539,9 @@ Header (6 bytes)
       |              Type 2 (Ammo) subtypes:
       |                0000 - ? Standard
       |
-      |              Type 3 (Weapon) subtypes:
-      |                0000 - Standard weapon
-      |                0001 - Light-producing weapon (e.g. Lit Torch)
+      |              Type 3 (Weapon / Shield) subtypes:
+      |                0000 - Standard weapon / shield
+      |                0001 - Lit Torch
       |
       |              Type 4 (Armor) subtypes:
       |                0000 - Standard armor
@@ -1554,17 +1554,13 @@ Header (6 bytes)
       |                0001 - ? Curative potion (cure disease/poison/curse) ?
       |                0002 - Potion of Restoration
       |
-      |              Type 7 (Special item) subtypes:
+      |              Type 7 (Quest/Special/Unique item) subtypes:
       |                0000 - ? Standard
       |
       +--------- Held flag (if 1, item is held in player's inventory. if 0, item is laying around somewhere)
                  The locations for dropped/not-held items are stored between $6493 and $64e3.
                  (NextDropped, DroppedGame, DroppedX, DroppedY, DroppedMap, DroppedItmIdx)
 
-
-TODO: A special case appears to exist where all bits (except for bit 7) are zero. This seems to indicate a bundle of
-      mutliple items (perhaps used when multiple items are present in a single map cell?). In that case, the attributes
-      seem to have the number of items present in bytes 1 (LSB) & 2 (MSB) (see $58e2 to $5901)
 
   I1: Full object length, including the 6 byte header
   I2: Action triggers (assigned when an action is performed on an item; checked and processed later)
@@ -1662,6 +1658,8 @@ Effect: Each effect is 16 bytes long
        - Assigned to effect index at $49fb
 
   E2: Effect triggers
+      These bits are set to trigger an action on the item the next time they are checked. Checks generally occur once
+      every in-game minute (e.g. every 4 real-world seconds).
     $01 = get/pickup
     $02 = drop
     $04 = use
@@ -1754,7 +1752,7 @@ Effect: Each effect is 16 bytes long
    |  |  |  | |   | |   |  |  |  | |   |  |  +---- 14:    Adj amount: Decrease by 1
    |  |  |  | |   | |   |  |  |  | |   |  +------- 13:    Step size: 0 (only one attr updated)
    |  |  |  | |   | |   |  |  |  | |   +---------- 12:    Steps: 1
-   |  |  |  | |   | |   |  |  |  +-+-------------- 10-11: Offset $0045 relative to $6300 ($6345 [CHR_HP_CURRENT_HI])
+   |  |  |  | |   | |   |  |  |  +-+-------------- 10-11: Offset $0045 relative to $6300 ($6345 [ChrHp_H/L])
    |  |  |  | |   | |   |  |  +------------------- 9:     $80 (not assignment) + $10 (decrease attr) + $02 (attribute size = 2 bytes)
    |  |  |  | |   | |   |  +---------------------- 8:     2.73% chance (7/256) to naturally cure
    |  |  |  | |   | +---+------------------------- 6-7:   Repetition delay:  22 minutes
@@ -1851,7 +1849,7 @@ Weapon (Item type 3)
     W12: Cold damage
     W13: ?Min STR required?
     W14: ?Min SKL required?
-    W15: Current durability
+    W15: Current durability  ($ff = infinite)
     W16: Max durability
     W17: Flags / bitfield
       - Bits 0..2: 010 - Message table num (2 = bash/wallop?)
@@ -1861,7 +1859,7 @@ Weapon (Item type 3)
 
 Armor / Defense (Item type 4)
   D0:  Armor type (0 - head, 1 - body, 2 - arms, 3 - legs)
-  D1:  Blunt protection (high nibble = number of dice, low nibble = number of sides per die)
+  D1:  Blunt protection
   D2:  Sharp protection
   D3:  Earth protection
   D4:  Air protection
@@ -1872,24 +1870,46 @@ Armor / Defense (Item type 4)
   D9:  Good protection
   D10: Evil protection
   D11: Cold protection
-  D12: Current durability
+  D12: Current durability  ($ff = unbreakable)
   D13: Max durability
+
+  Protection stats are interpreted as follows:
+    - $ff = invulerable/immune/100% protection
+    - If high nibble is 0, item is weak to that damage type and damage is DOUBLED
+        - Note: No overflow protection for this multiplication, so a large damage value could be drastically reduced
+                due to an overflow.
+    - If low nibble is 0, item converts damage to HP and heals the player instead
+        - Note: A single byte is used to accumulate the total and there is no overflow protection on the calc
+                so large amounts of damage can result is low amounts of health gain due to overflows.
+    - Otherwise: high nibble = number of dice, low nibble = number of sides per die
 
 Apparel / Clothing (Item type 5)
   C0: Dapper value
   C1: Warmth value
 
 Potion (Item type 6)
-  P0:
-  P1:
-  P2:
-  P3:
-  P4:
-  P5:
+  Subtype 0:
+    P0:
+    P1:
+    P2:
+    P3:
+    P4:
+    P5:
+  Subtype 1:
 
-Other (Item type 7) - (e.g. ring halves, staff pieces, PAC card, etc)
-  O0: ??
-  O1: ?? Item ID ??
+  Subtype 2:
+    P0:
+
+Quest/Special/Unique (Item type 7) - (e.g. ring halves, staff pieces, PAC card, etc)
+  Q0: ??
+        2 appears to identify a quest item
+  Q1: When Q0 == 2, this is an item ID or 255
+        1 - PAC Card              5 - Mirrored Shield
+        2 - Reforged Ring         6 - Staff Piece
+        3 - Goblin Ring half      7 = Silver Key
+        4 - Troll Ring half       8 - Bloodstone
+        255 - Amethyst Rod / Golden Apple
+
 
 
 -- Example --
@@ -1933,6 +1953,130 @@ Data: 00 FF 00 13 00 00 00 13 00 00 00 00 00 00 04 01 16 16 82 03
 
 
 
+Format of foes/encounters (as stored on disk)
+======================================
+
+This is the foe format as stored on disk.  Format in memory during an encounter is a modified form,
+using the on-disk format as a template.
+
+Foes have a fixed size 66 byte header, covering offsets 0x0 - 0x41.
+Following this are various strings such as death message and monster name.
+After that comes any weapons the monster has.  Then finally is the monster-specific code (actual 6502 code).
+
+All pointers assume that monster code is loaded at 0xaa00 (this is true for monsters in memory during an encounter).
+All pointers are little endian unless otherwise specified.
+
+$aa00: F0:     Max number of foes that may appear
+$aa01: F1/2:   Pointer to singular foe name
+$aa03: F3/4:   Pointer to plural foe name
+$aa04: F5/6:   Pointer to weapon 1
+$aa07: F7/8:   Pointer to weapon 2
+$aa09: F9/10:  Pointer to weapon 3
+$aa0b: F11:    Unknown (May be treasure type bitset?)
+$aa0c: F12:    Base alignment (may be modified by onload code)
+$aa0d: F13:    Foe level (base on load, may be randomly adjusted during init) (low for most monsters, except FBI agent and Great Wyrm)
+$aa0e: F14:    Foe level adjustment range. Most initialization paths use this value to adjust the FoeLevel by adding
+                 min(dat_aa0e, random between 0 and ChrExpLevel/2)
+$aa0f: F15:    Unknown (Integer, typically 20, 30, 40.  Has value 255 for some special monsters)
+$aa10: F16:    Unknown (Integer, typically 20, 30, 40.  Has value 200 for devourer and assassin.  May be surprise ability)
+$aa11: F17/18: "On load" code.  Either pointer to code to execute before processing monster, or an integer
+               specifying preset code.
+$aa13: F19/20: "Surprise" code executed when the foe surprises the player.  Devourer, thief, assassin and champion are the only ones with this.
+$aa15: F21/22: "Pre-fight" code pointer.  Executed before battle begins.  Such as pauper's message, and the
+                knight's "Yield the passage" request.
+$aa17: F23/24: Unknown code pointer.  May be related to behaviour on hail/offer
+$aa19: F25/26: Unknown code pointer.  May be related to behaviour on hail/offer
+$aa1b: F27/28: "On death" code pointer.  Any special action/message when monster dies.
+               All monsters have a death message, but some (like sage, pauper, healer) also take an action on death.
+$aa1d: F29:    ID for picture to use (low integer)
+$aa1e: F30:    Unknown (Another monster level?  Mostly 1-4 for most monsters.  7 for basilisk, 8 for great wyrm)
+$aa1f: F31:    Unknown (Integer, typically 0, 30, 40.  0 for FBI agent, 255 for great wyrm, 99 for basilisk)
+$aa20: F32:    Unknown (Looks like flags.  Value 0 for many monsters)
+$aa21: F33:    Unknown (More flags.  128+32 set for most monsters)
+$aa22: F34/35: Base hit points.  Actual hit points may be up to twice this (I think)
+
+$aa24: F36:    Stamina stat
+$aa25: F37:    Charisma stat
+$aa26: F38:    Strength stat
+$aa27: F39:    Intelligence stat
+$aa28: F40:    Wisdom stat
+$aa29: F41:    Skill stat
+$aa2a: F42:    Speed stat
+
+$aa2b: F43:    Max food packet drops
+$aa2c: F44:    Max water flask drops
+$aa2d: F45:    Max torch drops
+$aa2e: F46:    Max timepiece drops
+$aa2f: F47:    Max compass drops
+$aa30: F48:    Max key drops
+$aa31: F49:    Max crystal drops
+$aa32: F50:    Max gem drops
+$aa33: F51:    Max jewel drops
+$aa34: F52:    Max gold drops
+$aa35: F53:    Max silver drops
+$aa36: F54:    Max copper drops
+
+Armor protections in order
+  - 0xff = invulnerable.  0xf0 = absorbs HP from this damage type.  0x0f = takes double damage from this damage type.
+$aa37: F55:    Blunt protection
+$aa38: F56:    Sharp protection
+$aa39: F57:    Earth protection
+$aa3a: F58:    Air protection
+$aa3b: F59:    Fire protection
+$aa3c: F60:    Water protection
+$aa3d: F61:    Power protection
+$aa3e: F62:    Magic protection
+$aa3f: F63:    Good protection
+$aa40: F64:    Evil protection
+$aa41: F65:    Cold protection
+
+Following this is the monster data.
+
+Monster weapons use the item structure (5 byte header, name, effects, attributes), however
+attributes for monster weapons differ slightly from attributes for player weapons:
+
+    W0:  <0 seems to indicate a natural/intrinsic weapon, like claws, teath, tentacles, etc.
+    W1:  ??
+    w2:  Blunt damage (high nibble = number of dice, low nibble = number of sides per die)
+    W3:  Sharp damage
+    W4:  Earth damage
+    W5:  Air damage
+    W6:  Fire damage
+    W7:  Water damage
+    W8:  Power damage
+    W9:  Magic damage
+    W10: Good damage
+    W11: Evil damage
+    W12: Cold damage
+    W13: ?? Min STR required ??
+    W14: ?? Min SKL required ??
+    W15: Flags / bitfield
+      - Bits 0..2: 010 - Attack message table base value
+                           If F0 < 0, add $10 to select natural/intrinsic attack description
+                           If ??, add $08 to select secondary description
+      - Bits 3..4: 00  - Bonus to hit?
+      - Bits 5..7: unknown?
+    W16: ?? Parry value ??
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ----
 
@@ -1953,6 +2097,9 @@ Each line of the image is:
 display list?
 
 CHBASE ($2F4) holds the character set address / 256 (e.g. the high byte of the character set address)?
+
+
+
 
 
 

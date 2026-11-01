@@ -8,8 +8,14 @@
 7604: 4c 07 76  moduleEntry2    JMP moduleEntry3     ; NOP
 7607: 60        moduleEntry3    RTS                  ; NOP
 
+                ; Entry point called after the module is loaded.
                 ;
+                ; - Disables keyboard actions
+                ; - Adds a new blank status page
+                ; - Sets contAddItems as the game loop callback
                 ;
+                ; Temp
+                ;   StrTmplate_L/H - Updated to set the status page
                 ;
 7608: ce 37 19  initModule2     DEC AllowActions     ; Subtract 1 from AllowActions                    (Disable actions)
 760b: a9 61                     LDA #$61             ; Set
@@ -18,28 +24,61 @@
 7611: 85 17                     STA StrTmplate_H     ;     $9561 [StrClrMsgRows]
 7613: 20 4b 18                  JSR j_addStatPage    ; Call $184b [j_addStatPage]
 7616: ae 33 19                  LDX CurStatusPage    ; Set
-7619: 8e df 78                  STX dat_78df         ;     dat_78df = CurStatusPage
+7619: 8e df 78                  STX ModuleStatusPg   ;     ModuleStatusPg = CurStatusPage
 761c: a9 3b                     LDA #$3b             ; Set
 761e: 8d 77 19                  STA cont_addr_1977_L ;     cont_addr_1977_L/H
 7621: a9 76                     LDA #$76             ;     to
-7623: 8d 78 19                  STA cont_addr_1977_H ;     $763b [cont_763b]
+7623: 8d 78 19                  STA cont_addr_1977_H ;     $763b [contAddItems]
 7626: 60                        RTS                  ; Return to caller
+
+                ; contAddItems continues here to return control back to the main game loop
                 ;
+                ; - Re-enables actions, removes status page, sets the ForceGetFlag and sets MapLocSpclType and
+                ;   TextureStart to $ff.
+                ; - Continues @ $3183 [j_sub_3183] to reload the map and continue game play
                 ;
-                ;
-7627: ee 37 19  cont_7627       INC AllowActions     ; Add 1 to AllowActions                            (enable actions)
+7627: ee 37 19  contRtrnToGame  INC AllowActions     ; Add 1 to AllowActions                            (enable actions)
 762a: 20 4e 18                  JSR j_remStatPage    ; Call $184e [j_remStatPage]
 762d: a9 ff                     LDA #$ff             ; Set
 762f: 8d 59 19                  STA MapLocSpclType   ;     MapLocSpclType = $ff (255)
-7632: 8d f0 96                  STA dat_96f0         ; Set dat_96f0 = $ff (255)
+7632: 8d f0 96                  STA TextureStart     ; Set TextureStart = $ff (255)
 7635: ce 7b 19                  DEC ForceGetFlg      ; Subtract 1 from ForceGetFlg
-7638: 4c 0c 18                  JMP j_loc_3183       ; Continue @ $3183 [j_loc_3183]
+7638: 4c 0c 18                  JMP j_sub_3183       ; Continue @ $3183 [j_sub_3183]
 
+                ; Entry point called from the main game loop which handles adding item(s) to the game then returns
+                ; to normal game play.
                 ;
+                ; - When MapLocSpclType is 1
+                ;   - Displays the message prompt corresponding to the treasure item identified in MapLocSpclNum
+                ;   - Adds the item to the game inventory
+                ; - Otherwise
+                ;   - When dat_758a bit 7 is 1 and bit 6 is 0
+                ;     - A check is performed for any required quest items which are no longer in the game. If one is
+                ;       found, it is added. If no missing item is found, an item will be selected from category 2
+                ;       (Wands/Eyes/Horns) instead.
+                ;     - An item from category 1 (Scrolls & Cards) is also added.
+                ;   - If dat_758a bit 7 is 0 or bit 6 is 1
+                ;     - An item from the category identified by the lower three bits of dat_758a will be selected.
+                ;     - An item from the category specified in dat_758b is added (or none if 0).
                 ;
+                ; Input
+                ;   MapLocSpclType - The current location's special code "type" (the value of bits 4..6 of the code)
+                ;   MapLocSpclNum  - Holds special code index number parameter value (0...31) for
+                ;                    treasure, encounter, message, and teleport special codes.
+                ;   dat_758a       - If bit 7 is 0, the value should be 0 through 6 and an item of the specified
+                ;                    category is chosen (or no item if 0).
+                ;                    When bit 7 is 1 then bit 6 is consulted and:
+                ;                      If bit 6 is 0, a check is performed for any required quest items which are no
+                ;                        longer in the game. If one is found, it is added. If no missing item is found,
+                ;                        an item will be selected from category 2 (Wands/Eyes/Horns) instead.
+                ;                      If bit 6 is 1, an item from the category identified by the lower three bits will
+                ;                        be selected.
+                ;   dat_758b       - When dat_758a bit 7 is 0 or bit 6 is 1 an item from the category specified is
+                ;                    added (or none if 0). Any input value is ignored when dat_758a bit 7 is 1 and
+                ;                    bit 6 is 0.
                 ;
-763b: ad 59 19  cont_763b       LDA MapLocSpclType   ; If
-763e: c9 01                     CMP #$01             ;    (MapLocSpclType == 1)                           (1 = Treasure)
+763b: ad 59 19  contAddItems    LDA MapLocSpclType   ; If
+763e: c9 01                     CMP #$01             ;    (MapLocSpclType == 1)                       (1 = Treasure)
 7640: d0 25                     BNE loc_7667         ; Then
 7642: ae 5a 19                  LDX MapLocSpclNum    ;     Set X = MapLocSpclNum
 7645: bd 2e 9e                  LDA TreasureTmpl_L,X ;     Set
@@ -50,96 +89,108 @@
 7652: bd a6 94                  LDA TreasureAdr_H,X  ;     Set
 7655: aa                        TAX                  ;         X = TreasureAdr_H[X]
 7656: 20 d3 76                  JSR addNewItem       ;     Call $76d3 [addNewItem]
-7659: 30 cc                     BMI cont_7627        ;     If (N == 1) Then
-765b: ae df 78                  LDX dat_78df         ;         Set X = dat_78df
+7659: 30 cc                     BMI contRtrnToGame   ;     If (N == 1) Then
+765b: ae df 78                  LDX ModuleStatusPg   ;         Set X = ModuleStatusPg
 765e: 20 51 18                  JSR j_setStatPgStr2  ;         Call $1851 [j_setStatPgStr2]
 7661: 20 3c 18                  JSR j_pressAnyKey    ;         Call $183c [j_pressAnyKey]
                                                      ;     End If
-7664: 4c 27 76                  JMP cont_7627        ;     Continue @ $7627 [cont_7627]
+7664: 4c 27 76                  JMP contRtrnToGame   ;     Continue @ $7627 [contRtrnToGame]
 7667: 2c 8a 75  loc_7667        BIT dat_758a         ; Else If
-766a: 10 20                     BPL loc_768c         ;    (dat_758a < 0)
-766c: 50 05                     BVC loc_7673         ;    And
-766e: 20 3a 77                  JSR sub_773a         ;
-7671: 30 19                     BMI loc_768c         ;    (call $773a [sub_773a] , N == 0)
-7673: ad 8a 75  loc_7673        LDA dat_758a         ;
-7676: 29 7f                     AND #$7f             ;    And
+766a: 10 20                     BPL loc_768c         ;    (dat_758a & $80 != 0)                       (bit 7 set)
+766c: 50 05                     BVC loc_7673         ;    And (
+766e: 20 3a 77                  JSR lostQuestItem    ;      (dat_758a & $40 == 0)                     (bit 6 not set)
+7671: 30 19                     BMI loc_768c         ;      Or
+7673: ad 8a 75  loc_7673        LDA dat_758a         ;      (call $773a [lostQuestItem] , N == 0)
+7676: 29 7f                     AND #$7f             ;    ) And
 7678: c9 08                     CMP #$08             ;    ((dat_758a & $7f) < 8)
 767a: b0 10                     BCS loc_768c         ; Then
 767c: aa                        TAX                  ;     Set X = dat_758a & $7f
-767d: bc 4f 95                  LDY dat_954f_L,X     ;     Set Y = dat_954f_L[X]
-7680: bd 57 95                  LDA dat_9557_H,X     ;     Set
-7683: aa                        TAX                  ;         X = dat_9557_H[X]
+767d: bc 4f 95                  LDY QuestItem_L,X    ;     Set Y = QuestItem_L[X]
+7680: bd 57 95                  LDA QuestItem_H,X    ;     Set
+7683: aa                        TAX                  ;         X = QuestItem_H[X]
 7684: 20 d3 76                  JSR addNewItem       ;     Call $76d3 [addNewItem]
 7687: a9 00                     LDA #$00             ;     Set
-7689: 8d 8a 75                  STA dat_758a         ;         dat_758a = 0
+7689: 8d 8a 75                  STA dat_758a         ;         dat_758a = 0     (quest item added, don't select another)
                                                      ; End If
 768c: ad 8a 75  loc_768c        LDA dat_758a         ; Set A = dat_758a
-768f: 20 9b 76                  JSR sub_769b         ; Call $769b [sub_769b]
+768f: 20 9b 76                  JSR selectReward     ; Call $769b [selectReward]
 7692: ad 8b 75                  LDA dat_758b         ; Set A = dat_758b
-7695: 20 9b 76                  JSR sub_769b         ; Call $769b [sub_769b]
-7698: 4c 27 76                  JMP cont_7627        ; Continue @ $7627 [cont_7627]
+7695: 20 9b 76                  JSR selectReward     ; Call $769b [selectReward]
+7698: 4c 27 76                  JMP contRtrnToGame   ; Continue @ $7627 [contRtrnToGame]
 
+                ; Randomly chooses an item from a provided category and adds the item to the game inventory.
                 ;
                 ; Input
-                ;   A    - (1..7)
+                ;   A    - Item category number. Only the lower 3 bits of this value are used.
+                ;           0: none, the sub returns immediately
+                ;           1: Cards, Tomes
+                ;           2: Wands, Eyes, Horns
+                ;           3: Weapons & Armor
+                ;           4: Armor
+                ;           5: Apparel
+                ;           6: Potions
+                ;           7: unsupported / undefined (off-by-one bug? Only 6 categories defined in lookup table)
                 ;
-769b: 29 07     sub_769b        AND #$07             ; If (A == 7) Then
+769b: 29 07     selectReward    AND #$07             ; A = A & 7
+                                                     ; If (A == 0) Then
 769d: d0 01                     BNE loc_76a0         ;     Return to caller
 769f: 60                        RTS                  ; End If
 76a0: aa        loc_76a0        TAX                  ; Set
-76a1: ca                        DEX                  ;     X = A - 1
-76a2: bd 43 95                  LDA dat_9543_L,X     ; Set
+76a1: ca                        DEX                  ;     X = A - 1                  (X = item category index)
+76a2: bd 43 95                  LDA ChanceTbls_L,X   ; Set
 76a5: 85 07                     STA SourceAdr_L      ;     SourceAdr_L/H
-76a7: bd 49 95                  LDA dat_9549_H,X     ;     to
-76aa: 85 08                     STA SourceAdr_H      ;     dat_9543_L/H[X]
+76a7: bd 49 95                  LDA ChanceTbls_H,X   ;     to
+76aa: 85 08                     STA SourceAdr_H      ;     ChanceTbls_L/H[X]
 76ac: ad 0a d2                  LDA RANDOM           ; Set
-76af: 8d de 78                  STA dat_78de         ;     dat_78de = random byte
-76b2: a0 00                     LDY #$00             ; Set Y = 0
-76b4: b1 07     loc_76b4        LDA (SourceAdr_L),Y  ; Loop
+76af: 8d de 78                  STA ItemRoll         ;     ItemRoll = random byte     (roll for item)
+76b2: a0 00                     LDY #$00             ; Set Y = 0                      (scan table for first item greater
+76b4: b1 07     loc_76b4        LDA (SourceAdr_L),Y  ; Loop                                   than or equal to the roll)
                                                      ;     Set A = (*SourceAdr_L)[Y]
-76b6: cd de 78                  CMP dat_78de         ;     If (A < dat_78de) Then
+76b6: cd de 78                  CMP ItemRoll         ;     If (A < ItemRoll) Then
 76b9: b0 03                     BCS loc_76be         ;         Add 1 to Y
 76bb: c8                        INY                  ;     End If
-76bc: d0 f6                     BNE loc_76b4         ; Repeat while (A < dat_78de)
+76bc: d0 f6                     BNE loc_76b4         ; Repeat while (A < ItemRoll)
 76be: 98        loc_76be        TYA                  ; Set
 76bf: 0a                        ASL                  ;     Y
 76c0: a8                        TAY                  ;       =
-76c1: c8                        INY                  ;         Y * 2 + 1
-76c2: bd 7a 94                  LDA dat_947a_L,X     ; Set
+76c1: c8                        INY                  ;         Y * 2 + 1              (offset of item address)
+76c2: bd 7a 94                  LDA CategryTbls_L,X  ; Set
 76c5: 85 07                     STA SourceAdr_L      ;     SourceAdr_L/H
-76c7: bd 80 94                  LDA dat_9480_H,X     ;     to
-76ca: 85 08                     STA SourceAdr_H      ;     dat_947a_L/H[X]
+76c7: bd 80 94                  LDA CategryTbls_H,X  ;     to
+76ca: 85 08                     STA SourceAdr_H      ;     CategryTbls_L/H[X]
 76cc: b1 07                     LDA (SourceAdr_L),Y  ; Set
 76ce: aa                        TAX                  ;     X = (*SourceAdr_L)[Y]
 76cf: 88                        DEY                  ; Subtract 1 from Y
 76d0: b1 07                     LDA (SourceAdr_L),Y  ; Set
-76d2: a8                        TAY                  ;     Y = (*SourceAdr_L)[Y]
+76d2: a8                        TAY                  ;     Y = (*SourceAdr_L)[Y]      (Y/X = address of item selected)
                                                      ; (continues to following sub)
 
-                ; Adds a new item to the game inventory.
+                ; Adds a new item to the game inventory & dropped item list.
                 ;
-                ; If insufficient space is available to add the new item:
-                ;   - An attempt is made to remove a dropped item from the game to reclaim space
-                ;   - Any item in the slot which couldn't be assigned is dropped
-                ;        (NOTE: This is buggy, since there should be nothing in the slot to drop. It should be
-                ;               an open slot that the new item would have been added at if space was available)
+                ; If space is available for the new item:
+                ;   - If the item is a potion, there is a 25% chance a wisdom check is required to identify the potion
+                ;     type. When the wisdom check is attempted, a random byte is chosen and the value is divided by 2.
+                ;     The potion will be unidentified if the result is greater or equal to the player's WIS stat.
+                ;   - The item is added to the dropped item list with the player's current location.
+                ;
+                ; If insufficient space is available to add the new item, then the item is not added to the inventory.
                 ;
                 ; Input
                 ;   Y/X    - Address of new item to add
                 ;
 76d3: 20 84 18  addNewItem      JSR j_addItem        ; Call $1884 [j_addItem]                    (param Y/X)
-76d6: 30 61                     BMI loc_7739         ; If (N == 1) Then                          (no space available)
+76d6: 30 61                     BMI loc_7739         ; If (N == 0) Then                          (added ok)
 76d8: a0 00                     LDY #$00             ;     Set Y = 0
 76da: b1 41                     LDA (ItemAdr_L),Y    ;     If
 76dc: 29 07                     AND #$07             ;        (((*ItemAdr_L)[0] & 7) == 6)       (type 6 = Potion)
 76de: c9 06                     CMP #$06             ;
 76e0: d0 16                     BNE loc_76f8         ;        And
-76e2: ad 0a d2                  LDA RANDOM           ;        (Random byte >= $40 (64))          (75% chance)
+76e2: ad 0a d2                  LDA RANDOM           ;        (Random byte >= $40 (64))          (75% chance no check)
 76e5: c9 40                     CMP #$40             ;
 76e7: 90 0f                     BCC loc_76f8         ;        And
 76e9: ad 0a d2                  LDA RANDOM           ;
-76ec: 4a                        LSR                  ;        (Random byte / 2 >= CHR_WIS_EFFECTIVE)
-76ed: cd 69 63                  CMP CHR_WIS_EFFECTIVE ;
+76ec: 4a                        LSR                  ;        (Random byte / 2 >= ChrWisCalc)
+76ed: cd 69 63                  CMP ChrWisCalc       ;
 76f0: 90 06                     BCC loc_76f8         ;     Then                            (Mark potion as unidentified)
 76f2: a0 0c                     LDY #$0c             ;         Set Y = $0c (12)  (6 byte header + 6 letters in "Potion")
 76f4: a9 00                     LDA #$00             ;         Set
@@ -176,257 +227,322 @@
                                                      ; End If
 7739: 60        loc_7739        RTS                  ; Return to caller
 
+                ; Identifies a quest item which the player should have in their inventory, but which is not present
+                ;     (for example, if the player dropped the item).
+                ;
+                ; Note: Some memory locations used by this sub (NumStaffFlags, NumStaffPieces) are not initialized in
+                ;       the sub before use. Due to this, the sub should only be called a single time after the module
+                ;       is loaded to avoid an incorrect outcome.
+                ;
+                ; Output
+                ;   A         - Set to the same value as dat_758a
+                ;   N         - 0 if a quest item was identified; 1 if not found
+                ;   dat_758a  - Set to an item index value
+                ;                 - If a specific quest point has been reached (or not) and the player doesn't have an
+                ;                   item related to that point in the quest, then the item will be the reward. In this
+                ;                   case the value will be one of 0 to 7 (an index into QuestItem_L/H), depending on
+                ;                   quest progression and missing item.
+                ;                 - If none of the quest-specific logic is matched, the value $82 is returned
+                ;                   (bit 7 set indicates no quest item match found, lower bits are an item category
+                ;                    number (2 = Weapons & Shields) from which an item should be chosen)
+                ;   dat_758b  - Set to 1 (Cards/Tomes)
                 ;
                 ; ???
-                ;   dat_758a    -
-                ;   dat_758b    -
-                ;   dat_78e0    -
-                ;   dat_78e1    -
-                ;   dat_78e2    -
-                ;   dat_78e3    -
-                ;   dat_78e4    - (temp) Loop control var
-                ;   dat_78e5    - (temp) Used to track index while looping
+                ;   dat_7589    - Subtracted from NumStaffFlags to compute final number of staff pieces outstanding.
+                ;                 ??Possibly the number of staff pieces given to Acrinimiril??
                 ;
-773a: a9 82     sub_773a        LDA #$82             ; Set
-773c: 8d 8a 75                  STA dat_758a         ;     dat_758a = $82 (130)
+                ; Temp
+                ;   QuestItemId    - hasQuestItmBfr param: Quest item ID to check for
+                ;   QuestItemIndex - hasQuestItmBfr param: Index to start searching from
+                ;   NumStaffFlags  - Used to count number of staff piece quest completion flags set. Note this is not
+                ;                    initialized in the sub itself, and thus may only be valid for the first call to
+                ;                    the sub after the module is loaded.
+                ;   NumStaffPieces - Used to count number of staff pieces in inventory. Note this is not initialized
+                ;                    in the sub itself, and thus may only be valid for the first call to the sub after
+                ;                    the module is loaded.
+                ;   Num            - Loop control var
+                ;   StaffQuestBit  - Holds quest bit index to test for staff piece loop
+                ;
+773a: a9 82     lostQuestItem   LDA #$82             ; Set
+773c: 8d 8a 75                  STA dat_758a         ;     dat_758a = $82 (130 / $80 + 2 (TrollRingHalf?))
 773f: a9 01                     LDA #$01             ; Set
 7741: 8d 8b 75                  STA dat_758b         ;     dat_758b = 1
 7744: a9 13                     LDA #$13             ; Set A = $13 (19)
-7746: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-7749: b0 0f                     BCS loc_775a         ; If (C == 0) Then         (bit 19 is NOT set)
-774b: a9 07                     LDA #$07             ;     Set A = 7
-774d: 20 a8 78                  JSR sub_78a8         ;     Call $78a8 [sub_78a8]
-7750: b0 08                     BCS loc_775a         ;     If (C == 0) Then
+7746: 20 a1 78                  JSR isQuestFlagSet   ; Call $78a1 [isQuestFlagSet]    (param A)
+7749: b0 0f                     BCS loc_775a         ; If (C == 0) Then               (bit 19 NOT set: Master Thief)
+774b: a9 07                     LDA #$07             ;     Set A = 7                  (SilverKey ID)
+774d: 20 a8 78                  JSR hasQuestItem     ;     Call $78a8 [hasQuestItem]  (param A)
+7750: b0 08                     BCS loc_775a         ;     If (C == 0) Then           (no SilverKey found)
 7752: a9 00                     LDA #$00             ;         Set
-7754: 8d 8a 75                  STA dat_758a         ;             dat_758a = 0
+7754: 8d 8a 75                  STA dat_758a         ;             dat_758a = 0       (SilverKey index in QuestItem_L/H)
 7757: 4c 9d 78                  JMP loc_789d         ;         Continue @ $789d [loc_789d]
                                                      ;     End If
                                                      ; End If
 775a: a9 18     loc_775a        LDA #$18             ; Set A = $18 (24)
-775c: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-775f: 90 0f                     BCC loc_7770         ; If (C == 1) Then         (bit 24 is set)
-7761: a9 01                     LDA #$01             ;     Set A = 1
-7763: 20 a8 78                  JSR sub_78a8         ;     Call $78a8 [sub_78a8]
+775c: 20 a1 78                  JSR isQuestFlagSet   ; Call $78a1 [isQuestFlagSet]    (param A)
+775f: 90 0f                     BCC loc_7770         ; If (C == 1) Then               (bit 24 set: Acrinimiril done)
+7761: a9 01                     LDA #$01             ;     Set A = 1                  (PacCard ID)
+7763: 20 a8 78                  JSR hasQuestItem     ;     Call $78a8 [hasQuestItem]  (param A)
 7766: b0 5f                     BCS loc_77c7         ;     If (C == 1) Then
-                                                     ;         Continue @ $77c7 [loc_77c7]
+                                                     ;         Continue @ $77c7 [loc_77c7]   (found PAC Card)
                                                      ;     End If
 7768: a9 04                     LDA #$04             ;     Set
-776a: 8d 8a 75                  STA dat_758a         ;         dat_758a = 4
+776a: 8d 8a 75                  STA dat_758a         ;         dat_758a = 4           (PacCard index in QuestItem_L/H)
 776d: 4c 9d 78                  JMP loc_789d         ;     Continue @ $789d [loc_789d]
                                                      ; End If
 7770: a9 13     loc_7770        LDA #$13             ; Set
-7772: 8d e5 78                  STA dat_78e5         ;     dat_78e5 = $13 (19)      (incremented in loop: [19..21])
+7772: 8d e5 78                  STA StaffQuestBit    ;     StaffQuestBit = $13 (19)   (incremented in loop: [19..21])
 7775: a9 03                     LDA #$03             ; Set
-7777: 8d e4 78                  STA dat_78e4         ;     dat_78e4 = 3             (3 iterations: [3..1])
-777a: ad e5 78  loc_777a        LDA dat_78e5         ; Loop
-                                                     ;     Set A = dat_78e5
-777d: 20 a1 78                  JSR sub_78a1         ;     Call $78a1 [sub_78a1]    (param A)
-7780: 90 03                     BCC loc_7785         ;     If (C == 1) Then         (bit is set)
-7782: ee e2 78                  INC dat_78e2         ;         Add 1 to dat_78e2
+7777: 8d e4 78                  STA Num              ;     Num = 3                    (3 iterations: [3..1])
+777a: ad e5 78  loc_777a        LDA StaffQuestBit    ; Loop
+                                                     ;     Set A = StaffQuestBit
+777d: 20 a1 78                  JSR isQuestFlagSet   ;     Call $78a1 [isQuestFlagSet] (param A)
+7780: 90 03                     BCC loc_7785         ;     If (C == 1) Then            (bit A is set)
+7782: ee e2 78                  INC NumStaffFlags    ;         Add 1 to NumStaffFlags
                                                      ;     End If
-7785: ee e5 78  loc_7785        INC dat_78e5         ;     Add 1 to dat_78e5
-7788: ce e4 78                  DEC dat_78e4         ;     Subtract 1 from dat_78e4
-778b: d0 ed                     BNE loc_777a         ; Repeat while (dat_78e4 != 0)
-778d: ad e2 78                  LDA dat_78e2         ; If (dat_78e2 == 0) Then
+7785: ee e5 78  loc_7785        INC StaffQuestBit    ;     Add 1 to StaffQuestBit
+7788: ce e4 78                  DEC Num              ;     Subtract 1 from Num
+778b: d0 ed                     BNE loc_777a         ; Repeat while (Num != 0)
+778d: ad e2 78                  LDA NumStaffFlags    ; If (NumStaffFlags == 0) Then
 7790: d0 03                     BNE loc_7795         ;     Continue @ $77c7 [loc_77c7]
 7792: 4c c7 77                  JMP loc_77c7         ; End If
 7795: a9 03     loc_7795        LDA #$03             ; Set
-7797: 8d e4 78                  STA dat_78e4         ;     dat_78e4 = 3
+7797: 8d e4 78                  STA Num              ;     Num = 3
 779a: a9 40                     LDA #$40             ; Set
-779c: 8d e1 78                  STA dat_78e1         ;     dat_78e1 = $40 (64)
+779c: 8d e1 78                  STA QuestItemIndex   ;     QuestItemIndex = $40 (64)
 779f: a9 06                     LDA #$06             ; Set
-77a1: 8d e0 78                  STA dat_78e0         ;     dat_78e0 = 6
-77a4: 20 d5 78  loc_77a4        JSR sub_78d5         ; Loop
-                                                     ;     Call $78d5 [sub_78d5]
-77a7: 90 08                     BCC loc_77b1         ;     If (C == 1) Then
+77a1: 8d e0 78                  STA QuestItemId      ;     QuestItemId = 6
+77a4: 20 d5 78  loc_77a4        JSR hasQuestItmBfr   ; Loop
+                                                     ;     Call $78d5 [hasQuestItmBfr]     (QuestItemId, QuestItemIndex)
+77a7: 90 08                     BCC loc_77b1         ;     If (C == 0) Then
                                                      ;         Exit Loop
                                                      ;     End If
-77a9: ee e3 78                  INC dat_78e3         ;     Add 1 to dat_78e3
-77ac: ce e4 78                  DEC dat_78e4         ;     Subtract 1 from dat_78e4
-77af: d0 f3                     BNE loc_77a4         ; Repeat while (dat_78e4 != 0)
+77a9: ee e3 78                  INC NumStaffPieces   ;     Add 1 to NumStaffPieces
+77ac: ce e4 78                  DEC Num              ;     Subtract 1 from Num
+77af: d0 f3                     BNE loc_77a4         ; Repeat while (Num != 0)
 77b1: 38        loc_77b1        SEC                  ; Set C = 1
-77b2: ad e2 78                  LDA dat_78e2         ;
-77b5: ed 89 75                  SBC $7589            ;
-77b8: f0 0d                     BEQ loc_77c7         ;
-77ba: ed e3 78                  SBC dat_78e3         ;
-77bd: f0 08                     BEQ loc_77c7         ;
-77bf: a9 03                     LDA #$03             ;
-77c1: 8d 8a 75                  STA dat_758a         ;
-77c4: 4c 9d 78                  JMP loc_789d         ;
-77c7: a9 01     loc_77c7        LDA #$01             ;
-77c9: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-77cc: b0 03                     BCS loc_77d1         ;
-77ce: 4c 24 78                  JMP loc_7824         ;
-77d1: a9 3f     loc_77d1        LDA #$3f             ;
-77d3: 8d e1 78                  STA dat_78e1         ;
-77d6: ad e1 78  loc_77d6        LDA dat_78e1         ;
-77d9: 20 87 18                  JSR j_getItemAdr     ;
-77dc: f0 39                     BEQ loc_7817         ;
+77b2: ad e2 78                  LDA NumStaffFlags    ; Set
+77b5: ed 89 75                  SBC dat_7589         ;     A = NumStaffFlags - dat_7589       (C = 0 on overflow else 1)
+77b8: f0 0d                     BEQ loc_77c7         ; If (A != 0) Then
+77ba: ed e3 78                  SBC NumStaffPieces   ;     Set A = A - NumStaffPieces - ~C    (C = 0 on overflow else 1)
+77bd: f0 08                     BEQ loc_77c7         ;     If (A != 0) Then
+77bf: a9 03                     LDA #$03             ;         Set
+77c1: 8d 8a 75                  STA dat_758a         ;             dat_758a = 3     (StaffPiece index in QuestItem_L/H)
+77c4: 4c 9d 78                  JMP loc_789d         ;         Continue @ $789d [loc_789d]
+                                                     ;     End If
+                                                     ; End If
+77c7: a9 01     loc_77c7        LDA #$01             ; Set A = 1                      (Clothes Horse/Mirrored Shield)
+77c9: 20 a1 78                  JSR isQuestFlagSet   ; Call $78a1 [isQuestFlagSet]    (param A)
+77cc: b0 03                     BCS loc_77d1         ; If (C == 1)
+77ce: 4c 24 78                  JMP loc_7824         ; Then                           (Search inv. for Mirrored Shield)
+77d1: a9 3f     loc_77d1        LDA #$3f             ;     Set
+77d3: 8d e1 78                  STA QuestItemIndex   ;         QuestItemIndex = $3f   (64 iterations [63..0])
+77d6: ad e1 78  loc_77d6        LDA QuestItemIndex   ;     Loop
+                                                     ;         Set A = QuestItemIndex
+77d9: 20 87 18                  JSR j_getItemAdr     ;         Call $1887 [j_getItemAdr]   (param A)
+77dc: f0 39                     BEQ loc_7817         ;         If (Z != 0)                 (item present in slot)
 77de: a0 00                     LDY #$00             ;
-77e0: b1 41                     LDA (ItemAdr_L),Y    ;
-77e2: 29 7f                     AND #$7f             ;
-77e4: c9 03                     CMP #$03             ;
-77e6: d0 2f                     BNE loc_7817         ;
-77e8: 18                        CLC                  ;
-77e9: a5 41                     LDA ItemAdr_L        ;
-77eb: 69 06                     ADC #$06             ;
-77ed: 85 07                     STA SourceAdr_L      ;
-77ef: a5 42                     LDA ItemAdr_H        ;
-77f1: 69 00                     ADC #$00             ;
-77f3: 85 08                     STA SourceAdr_H      ;
-77f5: a0 00                     LDY #$00             ;
-77f7: b1 07                     LDA (SourceAdr_L),Y  ;
+77e0: b1 41                     LDA (ItemAdr_L),Y    ;            And
+77e2: 29 7f                     AND #$7f             ;            ((*ItemAdr_L)[0] & $7f
+77e4: c9 03                     CMP #$03             ;               == 3)                 (3 = weapon/shield)
+77e6: d0 2f                     BNE loc_7817         ;         Then
+77e8: 18                        CLC                  ;             Set
+77e9: a5 41                     LDA ItemAdr_L        ;                 SourceAdr_L/H
+77eb: 69 06                     ADC #$06             ;                    =
+77ed: 85 07                     STA SourceAdr_L      ;                      ItemAdr_L/H + 6   (Item name)
+77ef: a5 42                     LDA ItemAdr_H        ;               .
+77f1: 69 00                     ADC #$00             ;               .
+77f3: 85 08                     STA SourceAdr_H      ;               .
+77f5: a0 00                     LDY #$00             ;             If
+77f7: b1 07                     LDA (SourceAdr_L),Y  ;                ((*SourceAdr_L)[0] == $7f)    (enchanted "⚡︎")
 77f9: c9 7f                     CMP #$7f             ;
-77fb: d0 0b                     BNE loc_7808         ;
-77fd: a5 07                     LDA SourceAdr_L      ;
-77ff: 18                        CLC                  ;
-7800: 69 02                     ADC #$02             ;
-7802: 85 07                     STA SourceAdr_L      ;
-7804: 90 02                     BCC loc_7808         ;
-7806: e6 08                     INC SourceAdr_H      ;
-7808: a0 0e     loc_7808        LDY #$0e             ;
-780a: b1 07     loc_780a        LDA (SourceAdr_L),Y  ;
-780c: d9 c0 8e                  CMP MirroredShield+6,Y ;
-780f: d0 06                     BNE loc_7817         ;
-7811: 88                        DEY                  ;
-7812: 10 f6                     BPL loc_780a         ;
-7814: 4c 24 78                  JMP loc_7824         ;
-7817: ce e1 78  loc_7817        DEC dat_78e1         ;
-781a: 10 ba                     BPL loc_77d6         ;
-781c: a9 05                     LDA #$05             ;
-781e: 8d 8a 75                  STA dat_758a         ;
-7821: 4c 9d 78                  JMP loc_789d         ;
-7824: ad 0a d2  loc_7824        LDA RANDOM           ;
-7827: cd 85 63                  CMP CHR_ALIGN        ;
-782a: b0 1d                     BCS loc_7849         ;
+77fb: d0 0b                     BNE loc_7808         ;             Then
+77fd: a5 07                     LDA SourceAdr_L      ;                 Set
+77ff: 18                        CLC                  ;                     SourceAdr_L/H
+7800: 69 02                     ADC #$02             ;                        =
+7802: 85 07                     STA SourceAdr_L      ;                          SourceAdr_L/H + 2   (skip "⚡︎ ")
+7804: 90 02                     BCC loc_7808         ;                   .
+7806: e6 08                     INC SourceAdr_H      ;                   .
+                                                     ;             End If
+7808: a0 0e     loc_7808        LDY #$0e             ;             Set Y = $0e (14)
+780a: b1 07     loc_780a        LDA (SourceAdr_L),Y  ;             Loop
+780c: d9 c0 8e                  CMP MirrorShield+6,Y ;               If (MirrorShield[6 + Y] != (*SourceAdr_L)[Y]) Then
+780f: d0 06                     BNE loc_7817         ;                     Exit Loop  (NOT mirrored shield)
+                                                     ;                 End If
+7811: 88                        DEY                  ;                 Subtract 1 from Y
+7812: 10 f6                     BPL loc_780a         ;             Repeat while (Y >= 0)
+7814: 4c 24 78                  JMP loc_7824         ;             If (Y < 0) Then               (Found Mirrored Shield)
+                                                     ;                 Continue @ $7824 [loc_7824]
+                                                     ;             End If
+                                                     ;         End If
+7817: ce e1 78  loc_7817        DEC QuestItemIndex   ;         Subtract 1 from QuestItemIndex
+781a: 10 ba                     BPL loc_77d6         ;     Repeat while (QuestItemIndex >= 0)
+781c: a9 05                     LDA #$05             ;     Set
+781e: 8d 8a 75                  STA dat_758a         ;         dat_758a = 5        (MirrorShield index in QuestItem_L/H)
+7821: 4c 9d 78                  JMP loc_789d         ; Else
+7824: ad 0a d2  loc_7824        LDA RANDOM           ;     If
+7827: cd 85 63                  CMP ChrAlign         ;        (random byte < ChrAlign)       (More good -> more likely?)
+782a: b0 1d                     BCS loc_7849         ;        And
 782c: a9 15                     LDA #$15             ;
-782e: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-7831: b0 16                     BCS loc_7849         ;
-7833: a9 16                     LDA #$16             ;
-7835: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-7838: 90 0f                     BCC loc_7849         ;
-783a: a9 08                     LDA #$08             ;
-783c: 20 a8 78                  JSR sub_78a8         ;
-783f: b0 08                     BCS loc_7849         ;
-7841: a9 07                     LDA #$07             ;
-7843: 8d 8a 75                  STA dat_758a         ;
-7846: 4c 9d 78                  JMP loc_789d         ;
-7849: a9 00     loc_7849        LDA #$00             ;
-784b: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-784e: b0 4d                     BCS loc_789d         ;
-7850: a9 17                     LDA #$17             ;
-7852: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-7855: 90 0f                     BCC loc_7866         ;
-7857: a9 02                     LDA #$02             ;
-7859: 20 a8 78                  JSR sub_78a8         ;
-785c: b0 3f                     BCS loc_789d         ;
-785e: a9 06                     LDA #$06             ;
-7860: 8d 8a 75                  STA dat_758a         ;
-7863: 4c 9d 78                  JMP loc_789d         ;
-7866: a9 0d     loc_7866        LDA #$0d             ;
-7868: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-786b: b0 30                     BCS loc_789d         ;
-786d: a9 0e                     LDA #$0e             ;
-786f: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-7872: b0 29                     BCS loc_789d         ;
-7874: a9 0b                     LDA #$0b             ;
-7876: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-7879: 90 0f                     BCC loc_788a         ;
-787b: a9 04                     LDA #$04             ;
-787d: 20 a8 78                  JSR sub_78a8         ;
-7880: b0 08                     BCS loc_788a         ;
-7882: a9 02                     LDA #$02             ;
-7884: 8d 8a 75                  STA dat_758a         ;
-7887: 4c 9d 78                  JMP loc_789d         ;
+782e: 20 a1 78                  JSR isQuestFlagSet   ;        [ Call $78a1 [isQuestFlagSet]  (param A = $15 (21)) ]
+7831: b0 16                     BCS loc_7849         ;        (C == 0)
+7833: a9 16                     LDA #$16             ;        And
+7835: 20 a1 78                  JSR isQuestFlagSet   ;        [ Call $78a1 [isQuestFlagSet]  (param A = $16 (22)) ]
+7838: 90 0f                     BCC loc_7849         ;        (C == 1)
+783a: a9 08                     LDA #$08             ;        And
+783c: 20 a8 78                  JSR hasQuestItem     ;        [ Call $78a8 [hasQuestItem]  (param A = 8 : Bloodstone) ]
+783f: b0 08                     BCS loc_7849         ;        (C == 0)
+                                                     ;     Then
+7841: a9 07                     LDA #$07             ;         Set
+7843: 8d 8a 75                  STA dat_758a         ;             dat_758a = 7      (Bloodstone index in QuestItem_L/H)
+7846: 4c 9d 78                  JMP loc_789d         ;     Else If
+7849: a9 00     loc_7849        LDA #$00             ;        [ Call $78a1 [isQuestFlagSet]  (param A = 0) ]
+784b: 20 a1 78                  JSR isQuestFlagSet   ;        (C == 0)
+784e: b0 4d                     BCS loc_789d         ;     Then
+7850: a9 17                     LDA #$17             ;         Set A = $17 (23)
+7852: 20 a1 78                  JSR isQuestFlagSet   ;         Call $78a1 [isQuestFlagSet]  (param A)
+7855: 90 0f                     BCC loc_7866         ;         If (C == 1) Then
+7857: a9 02                     LDA #$02             ;             Set A = 2                  (Reforged Ring ID)
+7859: 20 a8 78                  JSR hasQuestItem     ;             Call $78a8 [hasQuestItem]  (param A = 2)
+785c: b0 3f                     BCS loc_789d         ;             If (C == 0) Then
+785e: a9 06                     LDA #$06             ;                 Set                    (ReforgedRing index
+7860: 8d 8a 75                  STA dat_758a         ;                     dat_758a = 6        in QuestItem_L/H)
+7863: 4c 9d 78                  JMP loc_789d         ;             End If
+7866: a9 0d     loc_7866        LDA #$0d             ;         Else If
+7868: 20 a1 78                  JSR isQuestFlagSet   ;            [ Call $78a1 [isQuestFlagSet]  (param A = 13) ]
+786b: b0 30                     BCS loc_789d         ;            (C == 0)
+786d: a9 0e                     LDA #$0e             ;            And
+786f: 20 a1 78                  JSR isQuestFlagSet   ;            [ Call $78a1 [isQuestFlagSet]  (param A = 14) ]
+7872: b0 29                     BCS loc_789d         ;            (C == 0)
+7874: a9 0b                     LDA #$0b             ;         Then
+7876: 20 a1 78                  JSR isQuestFlagSet   ;             If [ Call $78a1 [isQuestFlagSet]  (param A = 11) ]
+7879: 90 0f                     BCC loc_788a         ;                (C == 1)
+787b: a9 04                     LDA #$04             ;                And                          (TrollRingHalf ID)
+787d: 20 a8 78                  JSR hasQuestItem     ;                [ Call $78a8 [hasQuestItem]  (param A = 4) ]
+                                                     ;                (C == 0)
+7880: b0 08                     BCS loc_788a         ;             Then
+7882: a9 02                     LDA #$02             ;                 Set                    (TrollRingHalf index
+7884: 8d 8a 75                  STA dat_758a         ;                     dat_758a = 2        in QuestItem_L/H)
+7887: 4c 9d 78                  JMP loc_789d         ;             Else If
 788a: a9 0c     loc_788a        LDA #$0c             ;
-788c: 20 a1 78                  JSR sub_78a1         ; Call $78a1 [sub_78a1]    (param A)
-788f: 90 0c                     BCC loc_789d         ;
-7891: a9 03                     LDA #$03             ;
-7893: 20 a8 78                  JSR sub_78a8         ;
-7896: b0 05                     BCS loc_789d         ;
-7898: a9 01                     LDA #$01             ;
-789a: 8d 8a 75                  STA dat_758a         ;
-789d: ad 8a 75  loc_789d        LDA dat_758a         ;
+788c: 20 a1 78                  JSR isQuestFlagSet   ;                [ Call $78a1 [isQuestFlagSet]  (param A = 12) ]
+788f: 90 0c                     BCC loc_789d         ;                (C == 1)
+7891: a9 03                     LDA #$03             ;                And                          (GoblinRingHalf ID)
+7893: 20 a8 78                  JSR hasQuestItem     ;                [ Call $78a8 [hasQuestItem]  (param A = 3) ]
+7896: b0 05                     BCS loc_789d         ;                (C == 0)
+                                                     ;             Then
+7898: a9 01                     LDA #$01             ;                 Set                    (GoblinRingHalf index
+789a: 8d 8a 75                  STA dat_758a         ;                     dat_758a = 1        in QuestItem_L/H)
+                                                     ;             End If
+                                                     ;         End If
+                                                     ;     End If
+                                                     ; End If
+789d: ad 8a 75  loc_789d        LDA dat_758a         ; Set A = dat_758a                       (Also sets N, Z)
 78a0: 60                        RTS                  ; Return to caller
 
-                ; Tests whether a bit is set in dat_7508.
+                ; Tests whether a QuestFlags bit is set.
                 ;
                 ; Input
-                ;   A     - The index of the bit to test
+                ;   A     - The index of the bit to test (0..7)
                 ;
                 ; Output
                 ;   A  - result of (X * 256 + Y)[A >> 3] & (1 << (7 - A & 7))
                 ;   C  - 0 if A == 0 (bit is not set)
                 ;        1 if A != 0 (bit is set)
                 ;
-78a1: a2 75     sub_78a1        LDX #$75             ; Set
-78a3: a0 08                     LDY #$08             ;     Y/X = $7508 [dat_7508]
+78a1: a2 75     isQuestFlagSet  LDX #$75             ; Set
+78a3: a0 08                     LDY #$08             ;     Y/X = $7508 [QuestFlags]
 78a5: 4c 63 18                  JMP j_testBit        ; Continue @ $1863 [j_testBit]  (param Y/X, A)
 
-                ; Searches the items in the game for a type 7 item with attribute byte 0 equal to 2 and attribute
-                ; byte 1 equal to the value provided in A.
+                ; Searches the items in the game for a type 7 (Quest/Special) item with attribute byte 0 equal to 2 and
+                ; attribute byte 1 equal to the value provided in A.
                 ;
                 ; Input
-                ;   A         - The value to match to attribute byte 1
+                ;   A         - Quest item ID value to match to item attribute byte 1.
+                ;               Each quest item has a unique ID assigned.
+                ;                 1 - PAC Card              5 - Mirrored Shield
+                ;                 2 - Reforged Ring         6 - Staff Piece
+                ;                 3 - Goblin Ring half      7 = Silver Key
+                ;                 4 - Troll Ring half       8 - Bloodstone
                 ;
                 ; Output
-                ;   C         - Set to 1 if a match was found, otherwise 0
-                ;   dat_78e1  - Holds the index of the item that matched, or $ff if no match was found.
-                ;   dat_78e0  - Assigned the input value of A
+                ;   C              - Set to 1 if a match was found, otherwise 0
+                ;   QuestItemIndex - Holds the index of the item that matched, or $ff if no match was found.
+                ;   QuestItemId    - Assigned the input value of A
                 ;
-78a8: 8d e0 78  sub_78a8        STA dat_78e0         ; Set dat_78e0 = A
+78a8: 8d e0 78  hasQuestItem    STA QuestItemId      ; Set QuestItemId = A
 78ab: a9 3f                     LDA #$3f             ; Set
-78ad: 8d e1 78                  STA dat_78e1         ;     dat_78e1 = $3f               (64 iterations [63..0])
-78b0: ad e1 78  loc_78b0        LDA dat_78e1         ; Loop
+78ad: 8d e1 78                  STA QuestItemIndex   ;     QuestItemIndex = $3f               (64 iterations [63..0])
+78b0: ad e1 78  loc_78b0        LDA QuestItemIndex   ; Loop
                                                      ;     Set
-78b3: 85 4b                     STA ItemIndex        ;         ItemIndex = dat_78e1
+78b3: 85 4b                     STA ItemIndex        ;         ItemIndex = QuestItemIndex
 78b5: 20 87 18                  JSR j_getItemAdr     ;     Call $1887 [j_getItemAdr]    (param A)
-78b8: f0 1b                     BEQ sub_78d5         ;     If (ItemAdr_H != 0) Then     (item found in specified index)
+78b8: f0 1b                     BEQ hasQuestItmBfr   ;     If (ItemAdr_H != 0) Then     (item found in specified index)
 78ba: 20 96 18                  JSR j_getItemAttrs   ;         Call $1896 [j_getItemAttrs]
 78bd: a0 00                     LDY #$00             ;         Set Y = 0
 78bf: b1 41                     LDA (ItemAdr_L),Y    ;         If
 78c1: 29 7f                     AND #$7f             ;            (((*ItemAdr_L)[0] & $7f) == 7) (type 7 = special item)
 78c3: c9 07                     CMP #$07             ;
-78c5: d0 0e                     BNE sub_78d5         ;            And
+78c5: d0 0e                     BNE hasQuestItmBfr   ;            And
 78c7: b1 43                     LDA (ItemAttrs_L),Y  ;            ((*ItemAttrs_L)[0] == 2)       (2 = ??)
 78c9: c9 02                     CMP #$02             ;
-78cb: d0 08                     BNE sub_78d5         ;         Then
+78cb: d0 08                     BNE hasQuestItmBfr   ;         Then
 78cd: c8                        INY                  ;         Add 1 to Y    (Y = 1)
-78ce: b1 43                     LDA (ItemAttrs_L),Y  ;         If ((*ItemAttrs_L)[1] == dat_78e0) Then
-78d0: cd e0 78                  CMP dat_78e0         ;             Continue @ $78dc [cont_78dc]
-78d3: f0 07                     BEQ cont_78dc        ;         End If
+78ce: b1 43                     LDA (ItemAttrs_L),Y  ;         If ((*ItemAttrs_L)[1] == QuestItemId) Then
+78d0: cd e0 78                  CMP QuestItemId      ;             Continue @ $78dc [contItmFndRts]        (found match)
+78d3: f0 07                     BEQ contItmFndRts    ;         End If
                                                      ;     End If
-                ; Searches the items in the game for a type 7 item with attribute byte 0 equal to 2 and attribute
-                ; byte 1 equal to the value provided in A.
+
+                ; Searches the items in the game prior to the index in QuestItemIndex for a type 7 (Quest/Special) item
+                ; with attribute byte 0 equal to 2 and attribute byte 1 equal to the value provided in QuestItemId.
                 ;
                 ; Input
-                ;   dat_78e0  - Value to match to item attribute byte 1
-                ;   dat_78e1  - The starting item index. Only items with an index less than this value will be
-                ;               inspected. Must be between 1 and 64 (both inclusive).
+                ;   QuestItemId    - Quest item ID value to match to item attribute byte 1
+                ;                    Each quest item has a unique ID assigned.
+                ;                      1 - PAC Card              5 - Mirrored Shield
+                ;                      2 - Reforged Ring         6 - Staff Piece
+                ;                      3 - Goblin Ring half      7 = Silver Key
+                ;                      4 - Troll Ring half       8 - Bloodstone
+                ;   QuestItemIndex - The starting item index. Only items with an index less than this value will be
+                ;                    inspected. Must be between 1 and 64 (both inclusive).
                 ;
                 ; Output
-                ;   C         - Set to 1 if a match was found, otherwise 0
-                ;   dat_78e1  - Holds the index of the item that matched, or $ff if no match was found.
+                ;   C              - Set to 1 if a match was found, otherwise 0
+                ;   QuestItemIndex - Holds the index of the item that matched, or $ff if no match was found.
                 ;
-78d5: ce e1 78  sub_78d5        DEC dat_78e1         ;     Subtract 1 from dat_78e1
-78d8: 10 d6                     BPL loc_78b0         ; Repeat while (dat_78e1 >= 0)
-78da: 18                        CLC                  ; Set C = 0                      (no match found)
+78d5: ce e1 78  hasQuestItmBfr  DEC QuestItemIndex   ;     Subtract 1 from QuestItemIndex
+78d8: 10 d6                     BPL loc_78b0         ; Repeat while (QuestItemIndex >= 0)
+78da: 18                        CLC                  ; Set C = 0                (no match found)
 78db: 60                        RTS                  ; Return to caller
-78dc: 38        cont_78dc       SEC                  ; Set C = 1                      (found a match, index in dat_78e1)
+78dc: 38        contItmFndRts   SEC                  ; Set C = 1                (found a match, index in QuestItemIndex)
 78dd: 60                        RTS                  ; Return to caller
 
                 ;
                 ; Data starts here [$78de to $9fff ($2722 / 10,018 bytes)]
                 ;
 
-78de: 00        dat_78de        .BYTE $00            ;
-78df: 00        dat_78df        .BYTE $00            ;
-78e0: 00        dat_78e0        .BYTE $00            ;
-78e1: 00        dat_78e1        .BYTE $00            ;
-78e2: 00        dat_78e2        .BYTE $00            ;
-78e3: 00        dat_78e3        .BYTE $00            ;
-78e4: 00        dat_78e4        .BYTE $00            ;
-78e5: 00        dat_78e5        .BYTE $00            ;
+78de: 00        ItemRoll        .BYTE $00            ; selectReward: Assigned the random byte used to determine the
+                                                     ;     item chosen.
+78df: 00        ModuleStatusPg  .BYTE $00            ; The number of the status page added when the module was
+                                                     ;     initialized
+78e0: 00        QuestItemId     .BYTE $00            ; (hasQuestItmBfr param) Quest item ID value to match to item
+                                                     ;     attribute byte 1
+78e1: 00        QuestItemIndex  .BYTE $00            ; (hasQuestItmBfr param) The starting item index. Only items with
+                                                     ;     an index less than this value will be inspected. Must be
+                                                     ;     between 1 and 64 (both inclusive).
+                                                     ; (hasQuestItm/hasQuestItmBfr output) Index at which the quest
+                                                     ;     item was found or $ff if not found.
+78e2: 00        NumStaffFlags   .BYTE $00            ; (temp) lostQuestItem: Used to count number of staff piece quest
+                                                     ;     completion flags set. Note this is not initialized in the
+                                                     ;     sub itself, and thus may only be valid for the first call
+                                                     ;     to the sub after the module is loaded.
+78e3: 00        NumStaffPieces  .BYTE $00            ; (temp) lostQuestItem: Used to count number of staff pieces in
+                                                     ;     inventory. Note this is not initialized in the sub itself,
+                                                     ;     and thus may only be valid for the first call to the sub
+                                                     ;     after the module is loaded.
+78e4: 00        Num             .BYTE $00            ; (temp) lostQuestItem: Loop control var
+78e5: 00        StaffQuestBit   .BYTE $00            ; (temp) lostQuestItem: Holds quest bit index to test for staff
+                                                     ;     piece loop
 
 78e6: 10 28 00  CrdTheStar      .BYTE $10,$28,$00                      ; .(.
 78e9: 00 00 16 54 68 65 20 53   .BYTE $00,$00,$16,$54,$68,$65,$20,$53  ; ...The S
@@ -1288,7 +1404,7 @@
 8d1d: 42 72 65 65 63 68 65 73   .BYTE $42,$72,$65,$65,$63,$68,$65,$73  ; Breeches
 8d25: 00 00 02 02               .BYTE $00,$00,$02,$02                  ; ....
 
-8d29: 05 20 00  SilverBrocadedBodice  .BYTE $05,$20,$00                ; . .
+8d29: 05 20 00  SlvrBrcdBodice  .BYTE $05,$20,$00                      ; . .
 8d2c: 00 01 1d 53 69 6c 76 65   .BYTE $00,$01,$1d,$53,$69,$6c,$76,$65  ; ...Silve
 8d34: 72 20 42 72 6f 63 61 64   .BYTE $72,$20,$42,$72,$6f,$63,$61,$64  ; r Brocad
 8d3c: 65 64 20 42 6f 64 69 63   .BYTE $65,$64,$20,$42,$6f,$64,$69,$63  ; ed Bodic
@@ -1366,7 +1482,7 @@
 8eab: 01 00 00 00 00 e1 88 00   .BYTE $01,$00,$00,$00,$00,$e1,$88,$00  ; ........
 8eb3: 01 00 01 00 00 02 01      .BYTE $01,$00,$01,$00,$00,$02,$01      ; .......
 
-8eba: 03 4a 00  MirroredShield  .BYTE $03,$4a,$00                      ; .J.
+8eba: 03 4a 00  MirrorShield    .BYTE $03,$4a,$00                      ; .J.
 8ebd: 00 0a 16 4d 69 72 72 6f   .BYTE $00,$0a,$16,$4d,$69,$72,$72,$6f  ; ...Mirro
 8ec5: 72 65 64 20 53 68 69 65   .BYTE $72,$65,$64,$20,$53,$68,$69,$65  ; red Shie
 8ecd: 6c 64 00 88 ff 04 01 01   .BYTE $6c,$64,$00,$88,$ff,$04,$01,$01  ; ld......
@@ -1579,7 +1695,7 @@
 9390: 00 00 00 18 00 58 00 00   .BYTE $00,$00,$00,$18,$00,$58,$00,$00  ; .....X..
 9398: 00 00 08 0c 30 30 05 ff   .BYTE $00,$00,$08,$0c,$30,$30,$05,$ff  ; ....00..
 
-93a0: 72 7c bc  dat_93a0        .BYTE $72,$7c,$bc                      ; 32 bytes: 22 addresses: Scrolls, Cards & Tomes
+93a0: 72 7c bc  CardTomeAdrs    .BYTE $72,$7c,$bc                      ; 32 bytes: 22 addresses: Scrolls, Cards & Tomes
 93a3: 7c 05 7d 4a 7d 62 7d 81   .BYTE $7c,$05,$7d,$4a,$7d,$62,$7d,$81  ;     0: $7c72 [ScrlFrostblade]
 93ab: 7d e6 78 0e 79 56 79 84   .BYTE $7d,$e6,$78,$0e,$79,$56,$79,$84  ;     1: $7cbc [ScrlFireblade]
 93b3: 79 a9 79 cd 79 f8 79 20   .BYTE $79,$a9,$79,$cd,$79,$f8,$79,$20  ;     2: $7d05 [ScrlClout]
@@ -1603,7 +1719,7 @@
                                                                        ;    20: $7f0b [TomeUndrstndng]
                                                                        ;    21: $7f39 [TomeLeadership]
 
-93cc: 78 7b 99  dat_93cc        .BYTE $78,$7b,$99                      ; 32 bytes: 16 addresses: Wands, Eyes & Horns
+93cc: 78 7b 99  WandEyeHrnAdrs  .BYTE $78,$7b,$99                      ; 32 bytes: 16 addresses: Wands, Eyes & Horns
 93cf: 7b ba 7b e0 7b 0c 7c 4e   .BYTE $7b,$ba,$7b,$e0,$7b,$0c,$7c,$4e  ;     0: $7b78 [ColdWand]
 93d7: 7c eb 7d 0c 7e 30 7e 55   .BYTE $7c,$eb,$7d,$0c,$7e,$30,$7e,$55  ;     1: $7b99 [FireWand]
 93df: 7e 77 7e bc 7e 64 7f 88   .BYTE $7e,$77,$7e,$bc,$7e,$64,$7f,$88  ;     2: $7bba [ParalysisWand]
@@ -1621,7 +1737,7 @@
                                                                        ;    14: $7fac [GoldHorn1]
                                                                        ;    15: $7fce [GoldHorn2]
 
-93ec: 08 86 51  dat_93ec        .BYTE $08,$86,$51                      ; 32 bytes: 15 addresses: Shields & Weapons
+93ec: 08 86 51  WeaponShldAdrs  .BYTE $08,$86,$51                      ; 32 bytes: 15 addresses: Shields & Weapons
 93ef: 86 ad 86 d5 86 31 87 79   .BYTE $86,$ad,$86,$d5,$86,$31,$87,$79  ;     0: $8608 [CrystalShield]
 93f7: 87 c2 87 e5 87 0c 88 34   .BYTE $87,$c2,$87,$e5,$87,$0c,$88,$34  ;     1: $8651 [ShieldOfGalahd]
 93ff: 88 56 88 8b 88 b1 88 fb   .BYTE $88,$56,$88,$8b,$88,$b1,$88,$fb  ;     2: $86ad [SpikedShield]
@@ -1638,7 +1754,7 @@
                                                                        ;    13: $88fb [Pike]
                                                                        ;    14: $891a [Dirk]
 
-940a: 39 89 7d  dat_940a        .BYTE $39,$89,$7d                      ; 32 bytes: 16 item addresses: Armor
+940a: 39 89 7d  ArmorAdrs       .BYTE $39,$89,$7d                      ; 32 bytes: 16 item addresses: Armor
 940d: 89 c0 89 e8 89 2c 8a 4c   .BYTE $89,$c0,$89,$e8,$89,$2c,$8a,$4c  ;     0: $8939 [PantherGloves]
 9415: 8a 71 8a 95 8a b6 8a d7   .BYTE $8a,$71,$8a,$95,$8a,$b6,$8a,$d7  ;     1: $897d [HelmOfLight]
 941d: 8a fc 8a 21 8b 4b 8b 74   .BYTE $8a,$fc,$8a,$21,$8b,$4b,$8b,$74  ;     2: $89c0 [DragnsknHaubrk]
@@ -1656,7 +1772,7 @@
                                                                        ;    14: $8b9a [BronzeBrstplt]
                                                                        ;    15: $8bc2 [BronzeBracers]
 
-942a: e6 8b 01  dat_942a        .BYTE $e6,$8b,$01                      ; 32 bytes: 16 item addresses: Clothing
+942a: e6 8b 01  ApparelAdrs     .BYTE $e6,$8b,$01                      ; 32 bytes: 16 item addresses: Clothing
 942d: 8c 1c 8c 30 8c 85 8c ba   .BYTE $8c,$1c,$8c,$30,$8c,$85,$8c,$ba  ;     0: $8be6 [WhiteLinenShrt]
 9435: 8c f0 8c 0a 8d 29 8d 49   .BYTE $8c,$f0,$8c,$0a,$8d,$29,$8d,$49  ;     1: $8c01 [BlckSilkKimono]
 943d: 8d 61 8d 7f 8d 97 8d b3   .BYTE $8d,$61,$8d,$7f,$8d,$97,$8d,$b3  ;     2: $8c1c [CheapRobe]
@@ -1665,7 +1781,7 @@
                                                                        ;     5: $8cba [CrystalBelt]
                                                                        ;     6: $8cf0 [BlueSuedeShoes]
                                                                        ;     7: $8d0a [BlckWlnBreechs]
-                                                                       ;     8: $8d29 [SilverBrocadedBodice]
+                                                                       ;     8: $8d29 [SlvrBrcdBodice]
                                                                        ;     9: $8d49 [RedPlaidKilt]
                                                                        ;    10: $8d61 [GldSilkPntalns]
                                                                        ;    11: $8d7f [LeatherJerkin]
@@ -1674,7 +1790,7 @@
                                                                        ;    14: $8dd1 [SilverSash]
                                                                        ;    15: $8e06 [StealthSuit]
 
-944a: f0 7f 3b  dat_944a        .BYTE $f0,$7f,$3b                      ; 48 bytes: 24 item addresses: Potions
+944a: f0 7f 3b  PotionAdrs      .BYTE $f0,$7f,$3b                      ; 48 bytes: 24 item addresses: Potions
 944d: 80 85 80 d3 80 1d 81 48   .BYTE $80,$85,$80,$d3,$80,$1d,$81,$48  ;     0: $7ff0 [PtnFleetness]
 9455: 81 94 81 e0 81 2c 82 76   .BYTE $81,$94,$81,$e0,$81,$2c,$82,$76  ;     1: $803b [PtnStrength]
 945d: 82 c1 82 0d 83 4b 83 98   .BYTE $82,$c1,$82,$0d,$83,$4b,$83,$98  ;     2: $8085 [PtnIntellignce]
@@ -1700,16 +1816,16 @@
                                                                        ;    22: $85a2 [PtnHemlock]
                                                                        ;    23: $85db [PtnInebriation]
 
-947a: a0 cc ec  dat_947a_L      .BYTE $a0,$cc,$ec    ; 6 bytes: LSB of address of item category table
+947a: a0 cc ec  CategryTbls_L   .BYTE $a0,$cc,$ec    ; 6 bytes: LSB of address of item category table
 947d: 0a 2a 4a                  .BYTE $0a,$2a,$4a    ;
 
-9480: 93 93 93  dat_9480_H      .BYTE $93,$93,$93    ; 6 bytes: MSB of address of item category table
-9483: 94 94 94                  .BYTE $94,$94,$94    ;     0: $93a0 [dat_93a0] 22 items: Scrolls & Cards
-                                                     ;     1: $93cc [dat_93cc] 16 items: Wands, Eyes & Horns
-                                                     ;     2: $93ec [dat_93ec] 15 items: Shields & Weapons
-                                                     ;     3: $940a [dat_940a] 16 items: Armor
-                                                     ;     4: $942a [dat_942a] 16 items: Clothing
-                                                     ;     5: $944a [dat_944a] 24 items: Potions
+9480: 93 93 93  CategryTbls_H   .BYTE $93,$93,$93    ; 6 bytes: MSB of address of item category table
+9483: 94 94 94                  .BYTE $94,$94,$94    ;     0: $93a0 [CardTomeAdrs]   22 items: Scrolls & Cards
+                                                     ;     1: $93cc [WandEyeHrnAdrs] 16 items: Wands, Eyes & Horns
+                                                     ;     2: $93ec [WeaponShldAdrs] 15 items: Shields & Weapons
+                                                     ;     3: $940a [ArmorAdrs]      16 items: Armor
+                                                     ;     4: $942a [ApparelAdrs]    16 items: Clothing
+                                                     ;     5: $944a [PotionAdrs]     24 items: Potions
 
 9486: e6 6f 4c  TreasureAdr_L   .BYTE $e6,$6f,$4c                      ; 32 bytes: LSB of address of
 9489: a7 7d fc d0 0d c5 36 9e   .BYTE $a7,$7d,$fc,$d0,$0d,$c5,$36,$9e  ;           special loc treasure 0..31
@@ -1753,55 +1869,166 @@
                                                                        ;    31: $9375 [BeamWeapon]
 
 94c6: 3c 50 6a  dat_94c6_L      .BYTE $3c,$50,$6a          ; 8 bytes: LSB of address of special/quest item
-94c9: 83 98 ba 04 4b            .BYTE $83,$98,$ba,$04,$4b  ;
+94c9: 83 98 ba 04 4b            .BYTE $83,$98,$ba,$04,$4b  ;          (not referenced, dup of QuestItem_L)
 
 94ce: 8e 8e 8e  dat_94ce_H      .BYTE $8e,$8e,$8e          ; 8 bytes: MSB of address of special/quest item
-94d1: 8e 8e 8e 8f 8f            .BYTE $8e,$8e,$8e,$8f,$8f  ;     0: $8e3c [SilverKey]
+94d1: 8e 8e 8e 8f 8f            .BYTE $8e,$8e,$8e,$8f,$8f  ;          (not referenced, dup of QuestItem_H)
+                                                           ;     0: $8e3c [SilverKey]
                                                            ;     1: $8e50 [GoblinRingHalf]
                                                            ;     2: $8e6a [TrollRingHalf]
                                                            ;     3: $8e83 [StaffPiece]
                                                            ;     4: $8e98 [PacCard]
-                                                           ;     5: $8eba [MirroredShield]
+                                                           ;     5: $8eba [MirrorShield]
                                                            ;     6: $8f04 [ReforgedRing]
                                                            ;     7: $8f4b [Bloodstone]
 
-94d6: 10 20 30  dat_94d6        .BYTE $10,$20,$30                      ; . 0
-94d9: 40 58 70 7a 84 8e 92 96   .BYTE $40,$58,$70,$7a,$84,$8e,$92,$96  ; @Xpz....
-94e1: 9a 9e a6 b6 ba ca e0 f0   .BYTE $9a,$9e,$a6,$b6,$ba,$ca,$e0,$f0  ; ........
-94e9: f4 f8 ff                  .BYTE $f4,$f8,$ff                      ; ...
+94d6: 10 20 30  CardTomePrbs    .BYTE $10,$20,$30                      ; 22 bytes: Probability table for items
+94d9: 40 58 70 7a 84 8e 92 96   .BYTE $40,$58,$70,$7a,$84,$8e,$92,$96  ;           in CardTomeAdrs
+94e1: 9a 9e a6 b6 ba ca e0 f0   .BYTE $9a,$9e,$a6,$b6,$ba,$ca,$e0,$f0  ;     0: $10 (ScrlFrostblade: 6.64%)
+94e9: f4 f8 ff                  .BYTE $f4,$f8,$ff                      ;     1: $20 (ScrlFireblade:  6.25%)
+                                                                       ;     2: $30 (ScrlClout:      6.25%)
+                                                                       ;     3: $40 (ScrlRenew:      6.25%)
+                                                                       ;     4: $58 (ScrlRemovCurse: 9.38%)
+                                                                       ;     5: $70 (ScrlWizardEye:  9.38%)
+                                                                       ;     6: $7a (CrdTheStar:     3.91%)
+                                                                       ;     7: $84 (CrdTheFool:     3.91%)
+                                                                       ;     8: $8e (CrdHeirophant:  3.91%)
+                                                                       ;     9: $92 (CrdDeath:       1.56%)
+                                                                       ;    10: $96 (CrdAceOfCups:   1.56%)
+                                                                       ;    11: $9a (CrdTheChariot:  1.56%)
+                                                                       ;    12: $9e (CrdStrength:    1.56%)
+                                                                       ;    13: $a6 (CrdAceOfWands:  3.13%)
+                                                                       ;    14: $b6 (CrdTemperance:  6.25%)
+                                                                       ;    15: $ba (CrdKingOfWands: 1.56%)
+                                                                       ;    16: $ca (CrdPageOfCups:  6.25%)
+                                                                       ;    17: $e0 (CrdAcePentacls: 8.59%)
+                                                                       ;    18: $f0 (CrdHighPrstess: 6.25%)
+                                                                       ;    19: $f4 (TomeKnowledge:  1.56%)
+                                                                       ;    20: $f8 (TomeUndrstndng: 1.56%)
+                                                                       ;    21: $ff (TomeLeadership: 2.73%)
 
-94ec: 08 18 28  dat_94ec        .BYTE $08,$18,$28                      ; ..(
-94ef: 40 50 68 70 78 80 88 98   .BYTE $40,$50,$68,$70,$78,$80,$88,$98  ; @Phpx...
-94f7: a8 b4 c0 e0 ff            .BYTE $a8,$b4,$c0,$e0,$ff              ; .....
 
-94fc: 04 08 20  dat_94fc        .BYTE $04,$08,$20                      ; ..
-94ff: 24 28 38 40 60 70 80 90   .BYTE $24,$28,$38,$40,$60,$70,$80,$90  ; $(8@`p..
-9507: a8 c0 d8 ff               .BYTE $a8,$c0,$d8,$ff                  ; ....
+94ec: 08 18 28  WandEyeHrnPrbs  .BYTE $08,$18,$28                      ; 16 bytes: Probability table for items
+94ef: 40 50 68 70 78 80 88 98   .BYTE $40,$50,$68,$70,$78,$80,$88,$98  ;           in WandEyeHrnAdrs
+94f7: a8 b4 c0 e0 ff            .BYTE $a8,$b4,$c0,$e0,$ff              ;     0: $08 (ColdWand:       3.51%)
+                                                                       ;     1: $18 (FireWand:       6.25%)
+                                                                       ;     2: $28 (ParalysisWand:  6.25%)
+                                                                       ;     3: $40 (EyeVulnerablty: 9.38%)
+                                                                       ;     4: $50 (LightWand:      6.25%)
+                                                                       ;     5: $68 (HealingWand:    9.38%)
+                                                                       ;     6: $70 (RubyEye:        3.13%)
+                                                                       ;     7: $78 (EmeraldEye:     3.13%)
+                                                                       ;     8: $80 (SapphireEye:    3.13%)
+                                                                       ;     9: $88 (AmberEye:       3.13%)
+                                                                       ;    10: $98 (WizardsEye:     6.25%)
+                                                                       ;    11: $a8 (HypnoticEye:    6.25%)
+                                                                       ;    12: $b4 (BronzeHorn:     4.69%)
+                                                                       ;    13: $c0 (SilverHorn:     4.69%)
+                                                                       ;    14: $e0 (GoldHorn1:     12.50%)
+                                                                       ;    15: $ff (GoldHorn2:     12.11%)
 
-950b: 04 08 0c  dat_950b        .BYTE $04,$08,$0c                      ; ...
-950e: 10 30 50 70 90 b0 b4 b8   .BYTE $10,$30,$50,$70,$90,$b0,$b4,$b8  ; .0Pp....
-9516: bc c0 e0 f0 ff            .BYTE $bc,$c0,$e0,$f0,$ff              ; .....
+94fc: 04 08 20  WeaponShldPrbs  .BYTE $04,$08,$20                      ; 15 bytes: Probability table for items
+94ff: 24 28 38 40 60 70 80 90   .BYTE $24,$28,$38,$40,$60,$70,$80,$90  ;           in WeaponShldAdrs
+9507: a8 c0 d8 ff               .BYTE $a8,$c0,$d8,$ff                  ;     0: $04 (CrystalShield:   1.95%)
+                                                                       ;     1: $08 (ShieldOfGalahd:  1.56%)
+                                                                       ;     2: $20 (SpikedShield:    9.38%)
+                                                                       ;     3: $24 (ShieldOfMordrd:  1.56%)
+                                                                       ;     4: $28 (SpiritShield:    1.56%)
+                                                                       ;     5: $38 (IronwoodBoken:   6.25%)
+                                                                       ;     6: $40 (IronFan:         3.13%)
+                                                                       ;     7: $60 (TowerShield:    12.50%)
+                                                                       ;     8: $70 (Crossbow:        6.25%)
+                                                                       ;     9: $80 (Quarrels:        6.25%)
+                                                                       ;    10: $90 (ChaosClub:       6.25%)
+                                                                       ;    11: $a8 (ShortSword:     12.50%)
+                                                                       ;    12: $c0 (HolyHandGrnade: 12.50%)
+                                                                       ;    13: $d8 (Pike:           12.50%)
+                                                                       ;    14: $ff (Dirk:           15.23%)
 
-951b: 10 20 50  dat_951b        .BYTE $10,$20,$50                      ; . P
-951e: 54 5c 60 68 78 88 9c ac   .BYTE $54,$5c,$60,$68,$78,$88,$9c,$ac  ; T\`hx...
-9526: c4 dc f4 fc ff            .BYTE $c4,$dc,$f4,$fc,$ff              ; .....
+950b: 04 08 0c  ArmorPrbs       .BYTE $04,$08,$0c                      ; 16 bytes: Probability table for items
+950e: 10 30 50 70 90 b0 b4 b8   .BYTE $10,$30,$50,$70,$90,$b0,$b4,$b8  ;           in ArmorAdrs
+9516: bc c0 e0 f0 ff            .BYTE $bc,$c0,$e0,$f0,$ff              ;     0: $04 (PantherGloves:   1.95%)
+                                                                       ;     1: $08 (HelmOfLight:     1.56%)
+                                                                       ;     2: $0c (DragnsknHaubrk:  1.56%)
+                                                                       ;     3: $10 (GoldenGreaves:   1.56%)
+                                                                       ;     4: $30 (PlateHelm:      12.50%)
+                                                                       ;     5: $50 (PlateGauntlets: 12.50%)
+                                                                       ;     6: $70 (PlateLeggings:  12.50%)
+                                                                       ;     7: $90 (PlateArmor:     12.50%)
+                                                                       ;     8: $b0 (ScaleArmor:     12.50%)
+                                                                       ;     9: $b4 (TruesilverHelm:  1.56%)
+                                                                       ;    10: $b8 (TruesilverCoat:  1.56%)
+                                                                       ;    11: $bc (TruslvrGuantlt:  1.56%)
+                                                                       ;    12: $c0 (TruslvrLeggngs:  1.56%)
+                                                                       ;    13: $e0 (CuirbouilliHlm: 12.50%)
+                                                                       ;    14: $f0 (BronzeBrstplt:   6.25%)
+                                                                       ;    15: $ff (BronzeBracers:   5.86%)
 
-952b: 10 20 30  dat_952b        .BYTE $10,$20,$30                      ; . 0
-952e: 40 50 52 54 56 58 5a 5c   .BYTE $40,$50,$52,$54,$56,$58,$5a,$5c  ; @PRTVXZ\
-9536: 64 66 68 88 90 a0 a8 ac   .BYTE $64,$66,$68,$88,$90,$a0,$a8,$ac  ; dfh.....
-953e: b0 c0 e0 f0 ff            .BYTE $b0,$c0,$e0,$f0,$ff              ; .....
+951b: 10 20 50  ApparelPrbs     .BYTE $10,$20,$50                      ; 16 bytes: Probability table for items
+951e: 54 5c 60 68 78 88 9c ac   .BYTE $54,$5c,$60,$68,$78,$88,$9c,$ac  ;           in ApparelAdrs
+9526: c4 dc f4 fc ff            .BYTE $c4,$dc,$f4,$fc,$ff              ;     0: $10 (WhiteLinenShrt:  6.64%)
+                                                                       ;     1: $20 (BlckSilkKimono:  6.25%)
+                                                                       ;     2: $50 (CheapRobe:      18.75%)
+                                                                       ;     3: $54 (ElvenCloak:      1.56%)
+                                                                       ;     4: $5c (ElvenBoots:      3.13%)
+                                                                       ;     5: $60 (CrystalBelt:     1.56%)
+                                                                       ;     6: $68 (BlueSuedeShoes:  3.13%)
+                                                                       ;     7: $78 (BlckWlnBreechs:  6.25%)
+                                                                       ;     8: $88 (SlvrBrcdBodice:  6.25%)
+                                                                       ;     9: $9c (RedPlaidKilt:    7.81%)
+                                                                       ;    10: $ac (GldSilkPntalns:  6.25%)
+                                                                       ;    11: $c4 (LeatherJerkin:   9.38%)
+                                                                       ;    12: $dc (FlppyLeathrHat:  9.38%)
+                                                                       ;    13: $f4 (BlckCottnPrtlt:  9.38%)
+                                                                       ;    14: $fc (SilverSash:      3.13%)
+                                                                       ;    15: $ff (StealthSuit:     1.17%)
 
-9543: d6 ec fc  dat_9543_L      .BYTE $d6,$ec,$fc    ; 6 bytes: LSB of address
+952b: 10 20 30  PotionPrbs      .BYTE $10,$20,$30                      ; 24 bytes: Probability table for items
+952e: 40 50 52 54 56 58 5a 5c   .BYTE $40,$50,$52,$54,$56,$58,$5a,$5c  ;           in PotionAdrs
+9536: 64 66 68 88 90 a0 a8 ac   .BYTE $64,$66,$68,$88,$90,$a0,$a8,$ac  ;     0: $10 (PtnFleetness:    6.64%)
+953e: b0 c0 e0 f0 ff            .BYTE $b0,$c0,$e0,$f0,$ff              ;     1: $20 (PtnStrength:     6.25%)
+                                                                       ;     2: $30 (PtnIntellignce:  6.25%)
+                                                                       ;     3: $40 (PtnCharisma:     6.25%)
+                                                                       ;     4: $50 (PtnEndurance:    6.25%)
+                                                                       ;     5: $52 (PtnInvBlunt:     0.78%)
+                                                                       ;     6: $54 (PtnInvSharp:     0.78%)
+                                                                       ;     7: $56 (PtnInvSharp:     0.78%)
+                                                                       ;     8: $58 (PtnInvAir:       0.78%)
+                                                                       ;     9: $5a (PtnInvFire:      0.78%)
+                                                                       ;    10: $5c (PtnInvWater:     0.78%)
+                                                                       ;    11: $64 (PtnRegenration:  3.13%)
+                                                                       ;    12: $66 (PtnInvMental:    0.78%)
+                                                                       ;    13: $68 (PtnInvCold:      0.78%)
+                                                                       ;    14: $88 (PtnFruitJuice:  12.50%)
+                                                                       ;    15: $90 (PtnWizardEye:    3.13%)
+                                                                       ;    16: $a0 (PtnDexterity:    6.25%)
+                                                                       ;    17: $a8 (PtnInfraVision:  3.13%)
+                                                                       ;    18: $ac (PtnCleansing:    1.56%)
+                                                                       ;    19: $b0 (PtnAntidote:     1.56%)
+                                                                       ;    20: $c0 (PtnRestoration:  6.25%)
+                                                                       ;    21: $e0 (PtnHealing:     12.50%)
+                                                                       ;    22: $f0 (PtnHemlock:      6.25%)
+                                                                       ;    23: $ff (PtnInebriation:  5.86%)
+
+9543: d6 ec fc  ChanceTbls_L    .BYTE $d6,$ec,$fc    ; 6 bytes: LSB of probability table address for item categories
 9546: 0b 1b 2b                  .BYTE $0b,$1b,$2b    ;
 
-9549: 94 94 94  dat_9549_H      .BYTE $94,$94,$94    ; 6 bytes: MSB of address
-954c: 95 95 95                  .BYTE $95,$95,$95    ;
+9549: 94 94 94  ChanceTbls_H    .BYTE $94,$94,$94    ; 6 bytes: MSB of probability table address for item categories
+954c: 95 95 95                  .BYTE $95,$95,$95    ;     0: $94d6 [CardTomePrbs]:   Cards, Tomes
+                                                     ;     1: $94ec [WandEyeHrnPrbs]: Wands, Eyes, Horns
+                                                     ;     2: $94fc [WeaponShldPrbs]: Weapons & Shields
+                                                     ;     3: $950b [ArmorPrbs]:      Armor
+                                                     ;     4: $951b [ApparelPrbs]:    Apparel
+                                                     ;     5: $952b [PotionPrbs]:     Potions
 
-954f: 3c 50 6a  dat_954f_L      .BYTE $3c,$50,$6a          ; 8 bytes: LSB of address
+954f: 3c 50 6a  QuestItem_L     .BYTE $3c,$50,$6a          ; 8 bytes: LSB of special/quest item address
 9552: 83 98 ba 04 4b            .BYTE $83,$98,$ba,$04,$4b  ;
 
-9557: 8e 8e 8e  dat_9557_H      .BYTE $8e,$8e,$8e          ; 8 bytes: MSB of address
-955a: 8e 8e 8e 8f 8f            .BYTE $8e,$8e,$8e,$8f,$8f  ;
+9557: 8e 8e 8e  QuestItem_H     .BYTE $8e,$8e,$8e          ; 8 bytes: MSB of special/quest item address
+955a: 8e 8e 8e 8f 8f            .BYTE $8e,$8e,$8e,$8f,$8f  ;     0: $8e3c [SilverKey]         4: $8e98 [PacCard]
+                                                           ;     1: $8e50 [GoblinRingHalf]    5: $8eba [MirrorShield]
+                                                           ;     2: $8e6a [TrollRingHalf]     6: $8f04 [ReforgedRing]
+                                                           ;     3: $8e83 [StaffPiece]        7: $8f4b [Bloodstone]
 
 955f: 00        GenderZts_L     .BYTE $00            ; LSB of player gender ZTS assigned by setGenderZts &
                                                      ;     displayed by StrMapStone
@@ -2141,7 +2368,7 @@
 9c03: a5                        .BYTE $a5                              ; {Center}
 9c04: 41 20 6e 6f 74 65 20 72   .BYTE $41,$20,$6e,$6f,$74,$65,$20,$72  ; "A note r"
 9c0c: 65 61 64 73 3a 0d         .BYTE $65,$61,$64,$73,$3a,$0d          ; "eads:\r"
-9c12: b3 21 63 19               .BYTE $b3,$21,$63,$19                  ; {Print zts @ $6321 [CHR_NAME] wid 25}
+9c12: b3 21 63 19               .BYTE $b3,$21,$63,$19                  ; {Print zts @ $6321 [ChrName] wid 25}
 9c16: 2c 0d 0d 20 20 20 43 6f   .BYTE $2c,$0d,$0d,$20,$20,$20,$43,$6f  ; ",\r\r   Co"
 9c1e: 6e 67 72 61 74 75 6c 61   .BYTE $6e,$67,$72,$61,$74,$75,$6c,$61  ; "ngratula"
 9c26: 74 69 6f 6e 73 20 6d 79   .BYTE $74,$69,$6f,$6e,$73,$20,$6d,$79  ; "tions my"
@@ -2164,7 +2391,7 @@
 9c5c: 8d 5f 95                  STA GenderZts_L      ;     GenderZts_L/H
 9c5f: a9 9c                     LDA #$9c             ;     to
 9c61: 8d 60 95                  STA GenderZts_H      ;     $9c74 [ZtsMan]
-9c64: 2c 3b 63                  BIT CHR_STATE+59     ; If (CHR_STATE[59] < 0)           TODO: Label CHR_GENDER
+9c64: 2c 3b 63                  BIT ChrGender        ; If (ChrGender < 0)
 9c67: 10 0a                     BPL loc_9c73         ; Then
 9c69: a9 78                     LDA #$78             ;    Set
 9c6b: 8d 5f 95                  STA GenderZts_L      ;        GenderZts_L/H
@@ -2313,7 +2540,7 @@
       ;
       ; The following appears to be a copy of $9454 through $95e5 (402 bytes).
       ;
-9e6e: 48 81 94  unk_9e6e        .BYTE $48,$81,$94    ; H..
+9e6e: 48 81 94  unk_9e6e        .BYTE $48,$81,$94                      ; H..
 9e71: 81 e0 81 2c 82 76 82 c1   .BYTE $81,$e0,$81,$2c,$82,$76,$82,$c1  ; ...,.v..
 9e79: 82 0d 83 4b 83 98 83 e3   .BYTE $82,$0d,$83,$4b,$83,$98,$83,$e3  ; ...K....
 9e81: 83 10 84 7c 84 c7 84 15   .BYTE $83,$10,$84,$7c,$84,$c7,$84,$15  ; ...|....
@@ -2363,4 +2590,4 @@
 9fe1: 72 79 20 49 20 67 69 76   .BYTE $72,$79,$20,$49,$20,$67,$69,$76  ; ry I giv
 9fe9: 65 20 74 68 65 65 20 74   .BYTE $65,$20,$74,$68,$65,$65,$20,$74  ; e thee t
 9ff1: 68 65 73 65 0d a5 73 61   .BYTE $68,$65,$73,$65,$0d,$a5,$73,$61  ; hese..sa
-9ff9: 6e 64 61 6c 73 20 74      .BYTE $6e,$64,$61,$6c,$73,$20,$74  ; ndals t
+9ff9: 6e 64 61 6c 73 20 74      .BYTE $6e,$64,$61,$6c,$73,$20,$74      ; ndals t

@@ -1,0 +1,1086 @@
+Altirra symbol file
+
+; Symbols for Dungeon Disk 3 Side 1 sector 002
+;   Module 1: Combat
+;
+; Should be applied along with Dungeon11-S518.sym and Dungeon11-S205.sym for full symbol mapping.
+;
+[symbols]
+
+rw  0002,1   UInt16Val_L            ; LSB of little-endian uint16 value (addByte16, mulBytesAX. )
+rw  0003,1   UInt16Val_H            ; MSB of little-endian uint16 value (addByte16, mulBytesAX, )
+rw  0004,1   Multiplicand           ; Holds input multiplicand
+
+rw  0062,1   dat_0062               ;
+                                    ;   - sub_8ccb: Used as a player attribute offset?
+                                    ;   - VVBLKD_9758: LSB of address w/dat_0063
+rw  0063,1   dat_0063               ;   - VVBLKD_9758: MSB of address w/dat_0062
+rw  0064,1   dat_0064_L             ; LSB of player weapon damage table: 11? bytes
+rw  0065,1   dat_0064_H             ; MSB of player weapon damage table: 11? bytes
+                                    ;   0: Blunt        4: Fire          8: Good
+                                    ;   1: Sharp        5: Water         9: Evil
+                                    ;   2: Earth        6: Power        10: Cold
+                                    ;   3: Air          7: Magic
+
+                                    ; - sub_9f80: reads indexed value (16 bytes?)
+                                    ;
+rw  0066,1   dat_0066_L             ;
+rw  0067,1   dat_0066_H             ;
+rw  0068,1   FoeWpnAddr_L           ; LSB of foe weapon item address
+rw  0069,1   FoeWpnAddr_H           ; MSB of foe weapon item address
+rw  006a,1   FoeWpnAtrs_L           ; LSB of foe weapon item attribute address
+rw  006b,1   FoeWpnAtrs_H           ; MSB of foe weapon item attribute address
+rw  006c,1   FoeWpnName_L           ; LSB of foe weapon item name Zts address
+rw  006d,1   FoeWpnName_H           ; MSB of foe weapon item name Zts address
+rw  006e,1   dat_006e_L             ; initCorpseItem: (temp) LSB of foe name Zts address to copy to CorpseItem
+rw  006f,1   dat_006f_H             ; initCorpseItem: (temp) MSB of foe name Zts address to copy to CorpseItem
+rw  0070,1   dat_0070_L             ; sub_938d: LSB of name of player armor item attacked
+rw  0071,1   dat_0070_H             ; sub_938d: MSB of name of player armor item attacked
+rw  0072,1   dat_0072               ; cont_77fa: assigned the current stack pointer on entry
+rw  0073,1   dat_0073               ;
+rw  0074,1   MenuSel                ; getMenuSel: (input) The number of menu item selections to choose from.
+                                    ;             (output) The menu index value selected by the player.
+rw  0075,1   dat_0075               ;
+                                    ;    cont_8abf: Assigned a menu selection index
+                                    ;    sub_8ccb: (param)
+rw  0076,1   FoeNum                 ; Current foe number/index (0..7)
+rw  0077,1   dat_0077               ; cont_8160: possible effective weapon damage? or penalties?
+rw  0078,1   dat_0078               ;
+                                    ;   - setSpllEfctStr: ?Amount of damage applied?
+                                    ;   - cont_89ef: Factor used to determine type of resistance desc to use
+                                    ;                (if this value is 0 -> "Resist")
+rw  0079,1   dat_0079               ;
+rw  007a,1   DiceRoll_L             ; rollDice, rollDiceA: (output) LSB of uint16 dice roll total
+rw  007b,1   DiceRoll_H             ; rollDice, rollDiceA: (output) MSB of uint16 dice roll total
+rw  007c,1   dat_007c               ;
+rw  007d,1   dat_007d               ;
+rw  007e,1   dat_007e               ; sub_938d: Used to calculate accumulated HP gain from attack
+rw  007f,1   dat_007f               ;
+rw  0080,1   dat_0080               ;
+rw  0081,1   dat_0081               ;
+rw  0082,1   dat_0082               ;
+rw  0083,1   dat_0083               ;
+
+rw  0086,1   dat_0086               ; sub_8e1d: set to min($40, ChrLuck * 16)
+rw  0087,1   DiceCount              ; rollDice: (input) Number of dice to roll (256 rolls will be performed if 0)
+rw  0088,1   DiceSides              ; rollDice: (input) Number of sides to dice rolled (If 0, no iterations are performed)
+
+rw  008a,1   dat_008a               ;
+                                    ;   - sub_a04f: Number of foes
+rw  008b,1   dat_008b               ; (temp?)
+                                    ;   - cont_7fab: used as a current foe number?
+                                    ;   - cont_863c: used to iterate over damage stats
+                                    ;   - sub_9219: used to calc the number of "live" foes
+
+rw  008c,1   dat_008c               ; cont_7fab: used to hold an offset to the FoeHp & ?? table while iterating foes
+rw  008d,1   dat_008d               ; ?Foe number/ID?
+rw  008e,1   dat_008e               ;
+rw  008e,1   dat_008f               ; Foe attack name index in FoeAttckNms_L/H. Computed using a bitfield:
+                                    ;    bits 0..2 are lower 3 bits of weapon attribyte byte 15
+                                    ;    bit 3 (8) is set for ?
+                                    ;    bit 4 (16) is set for melee weapons
+
+rw  0091,1   dat_0091               ;
+rw  0092,1   dat_0092               ;
+rw  0093,1   dat_0093               ;
+rw  0094,1   dat_0094               ; ... holds a provision type (>=0) or an item index (<0) ...
+
+rw  0096,1   dat_0096               ; cont_7ac2: used as a loop control var (11..0)
+                                    ; cont_7c9e: used as temp for calculation of # of foes faced; loop control var
+                                    ; cont_7d58: used as temp in calc
+                                    ; cont_7d82: used as temp in calc
+                                    ; sub_7dd2: used for holding temp related to waylay (1..3) / snatch something (1)
+                                    ; cont_8160: used for temp storage
+                                    ; cont_863c: used for temp storage in calc
+                                    ; sub_8d7e: used to determine equipped weapon with highest parry value
+rw  0097,1   dat_0097               ;
+
+rw  009b,1   dat_009b               ;
+rw  009c,1   dat_009c               ;
+rw  009d,1   dat_009d               ;
+rw  009e,1   dat_009e               ; LSB of int16
+rw  009f,1   dat_009f               ; MSB of int16
+
+rw  00a1,1   dat_00a1               ;
+rw  00a2,1   dat_00a2               ;
+rw  00a3,1   dat_00a3               ;
+rw  00a4,1   dat_00a4               ;
+rw  00a5,1   dat_00a5               ; Bitfield?
+                                    ;   - Bit 7 ($80) indicates whether the player is knocked down (1) or not (0)
+rw  00a6,1   FactionNum             ; Faction number/index
+rw  00a7,1   dat_00a7_H             ; related to HP. MSB of BE uint16 value
+rw  00a8,1   dat_00a8_L             ; related to HP. LSB of BE uint16 value
+                                    ;   - cont_89ef: amount to reduce player HP by
+rw  00a9,1   dat_00a9               ;
+
+rw  00ab,1   dat_00ab               ; related to dat_00ac... perhaps a uint16 value?
+rw  00ac,1   dat_00ac               ; related to dat_00ab... perhaps a uint16 value?
+
+rw  00ad,1   dat_00ad               ; sub_7b59: assigns bit 7 = bit 7 of ChrAlign, bit 6 = bit 7 of FoeAlign
+
+rw  00af,1   dat_00af               ;
+
+rw  00b2,10  FoeHpTbl_H             ; 16 bytes: 8 MSB/LSB big endian uint16 values: HP for each foe
+rw  00b3,f   FoeHpTbl_L             ;
+
+rw  00c2,10  dat_00c2               ; 16 bytes: 8 2-byte values: ? for each foe
+rw  00c3,10  dat_00c3               ;
+
+rw  00d2,1   dat_00d2               ;
+            ;FoeFrameVblnks
+rw  00d3,1   dat_00d3               ; ? likely a vblank count to delay before switching the current animation frame
+rw  00d4,1   dat_00d4               ;
+rw  00d5,1   dat_00d5               ;
+rw  00d6,1   dat_00d6               ; VVBLKD_9758: LSB of address w/dat_00d7
+rw  00d7,1   dat_00d7               ; VVBLKD_9758: MSB of address w/dat_00d6
+
+rw  760b,1   dat_760b_L             ; sub_760d: Assigned LSB of Zts address
+rw  760c,1   dat_760c_H             ; sub_760d: Assigned MSB of Zts address
+
+rw  760b,1   FoeNthZts_L            ; Assigned LSB of Zts address (The, 2nd, 3rd, etc)
+rw  760c,1   FoeNthZts_H            ; Assigned MSB of Zts address (The, 2nd, 3rd, etc)
+
+rwx 760d,1   setFoeNthZts           ; Sets FoeNthZts_L/H to the corresponding n-th descriptive string for the foe number.
+
+rw  7623,4   ZtsThe                 ; "The"
+rw  7627,4   Zts2nd                 ; "2nd"
+rw  762b,4   Zts3rd                 ; "3rd"
+rw  762f,4   Zts4th                 ; "4th"
+rw  7633,4   Zts5th                 ; "5th"
+rw  7637,4   Zts6th                 ; "6th"
+rw  763b,4   Zts7th                 ; "7th"
+rw  763f,4   Zts8th                 ; "8th"
+
+rw  7643,8   NthZtsTbl_L            ; 8 bytes: LSB of Zts address
+rw  764b,8   NthZtsTbl_H            ; 8 bytes: MSB of Zts address
+                                    ;    0: $7623 [ZtsThe]          4: $7633 [Zts5th]
+                                    ;    1: $7627 [Zts2nd]          5: $7637 [Zts6th]
+                                    ;    2: $762b [Zts3rd]          6: $763b [Zts7th]
+                                    ;    3: $762f [Zts4th]          7: $763f [Zts8th]
+
+rw  7653,12  StrNthFoeNmR2          ; 18 bytes: FoeNthZts_L + " " + FoeNameZts_L @ row 2
+rw  7656,f   StrNthFoeName          ; 15 bytes: FoeNthZts_L + " " + FoeNameZts_L
+
+rw  7665,6   StrNthFoeNmR3          ; 6 bytes: FoeNthZts_L + " " + FoeNameZts_L @ row 3
+
+rwx 766b,9   setStrNthFoeNm         ; 9 bytes: Updates the string template address to StrNthFoeName without changing
+                                    ;   the value of OutRetnAdr_L/H (e.g. will not return here)
+
+rw  7674,23  StrDostYield           ; 35 bytes: "Dost thou yield?"
+
+rw  7697,21  CorpseItem             ; 33 bytes: The "corpse" item definition template.
+rw  76b5,4   CorpseItmAttrs         ; initCorpseItem: address assigned to DestAdr_L/H
+
+rw  76d9,1   GrbItemName_L          ;
+                                    ;   - getItemPrvsnNm: LSB of foe's provision type zts grabbed (snatch something)
+                                    ;   - cont_7ef4: LSB of "can't"/"didn't" Zts
+                                    ;   - cont_89ef: LSB of "
+rw  76da,1   GrbItemName_H          ;
+                                    ;   - getItemPrvsnNm: MSB of foe's provision type zts grabbed (snatch something)
+                                    ;   - cont_7ef4: MSB of "can't"/"didn't" Zts
+                                    ;   -
+
+rw  76db,1   GenderZts_L            ; LSB of player gender ZTS assigned by xxx & displayed by yyy
+rw  76dc,1   GenderZts_H            ; MSB of player gender ZTS assigned by xxx & displayed by yyy
+                                    ;   - Assigned to ZtsBlank, ZtsDieOutcast, ZtsHailFriend
+
+rw  76dd,1   FactionNmZts_L         ; LSB of faction name ZTS assigned by xxx & displayed by yyy
+rw  76de,1   FactionNmZts_H         ; LSB of faction name ZTS assigned by xxx & displayed by yyy
+
+rw  76df,1   ZtsBlank               ; Empty string
+
+rw  76e0,c   PrvsnAttrSize          ; 12 bytes: Player attribute size in bytes
+rw  76ec,c   PrvsnAttrOfs           ; 12 bytes: Player attribute offset relative to $6300 [CHR_STATE]
+
+rwx 776d,1   cont_776d              ;
+
+rwx 77be,1   initModule3            ; Entry point called after the module is loaded.
+
+rwx 77fa,1   cont_77fa              ; Continuation entry point from main game loop
+
+rwx 785d,1   cont_785d              ;
+
+rwx 78dd,1   contBattlOptns         ; Displays "Battle Options" menu and waits for user input
+
+rwx 7908,1   cont_7908              ; Returns here after call to j_sub_2ff3 ("Battle Options" menu)
+
+rwx 7932,1   smc_7931               ; Self-modifying: This CMP value is updated
+
+rwx 7966,1   cont_7966              ;
+
+rwx 79f9,1   cont_79f9              ;
+
+rwx 7a53,1   cont_7a53              ;
+
+rwx 7ac2,1   cont_7ac2              ;
+
+rwx 7b42,1   contPlayerDied         ;
+
+rwx 7c78,1   doFoeInit              ; Executes the foe's initialization code.
+
+rw  7c8c,9   FoeInitCont_L          ; 9 bytes: LSBs of continuation addresses of standard foe initialization routines
+rw  7c95,9   FoeInitCont_H          ; 9 bytes: MSBs of continuation addresses of standard foe initialization routines
+                                    ;     0: $7c9e [cont_7c9e]      5: $7d4b [cont_7d4b]
+                                    ;     1: $7c9e [cont_7c9e]      6: $7d53 [cont_7d53]
+                                    ;     2: $7d38 [cont_7d38]      7: $7d82 [cont_7d82]
+                                    ;     3: $7c9e [cont_7c9e]      8: $7c9e [cont_7c9e]
+                                    ;     4: $7c9e [cont_7c9e]
+
+rwx 7c9e,1   cont_7c9e              ;
+
+rw  7d31,7   tbl_7d31               ; table related to map number
+
+rwx 7d38,1   cont_7d38              ;
+
+rwx 7d4b,1   cont_7d4b              ;
+
+rwx 7d53,1   cont_7d53              ;
+
+rwx 7d58,1   cont_7d58              ;
+
+rwx 7d82,1   cont_7d82              ;
+
+rwx 7dc6,1   doFoePreEncntr         ; Executes the "pre-encounter" code for the foe.
+
+rwx 7dd2,1   sub_7dd2               ;
+
+rwx 7ea5,1   getItemPrvsnNm         ; Assigns GrbItemName_L/H to the Zts name of the specified provision
+                                    ;     type (dat_0094 >= 0) or item (dat_0094 < 0).
+
+rwx 7ece,1   sub_7ece               ;
+
+rw  7ee6,7   ContTbl_7ee6_L         ; 7 bytes: LSBs of continuation addresses
+rw  7eed,7   ContTbl_7ee6_H         ; 7 bytes: MSBs of continuation addresses
+                                    ;     0: $7ef4 [cont_7ef4]       4: $7f7e [cont_7f7e]
+                                    ;     1: $7f4e [cont_7f4e]       5: $7faa [contRts_7faa]
+                                    ;     2: $7f51 [cont_7f51]       6: $7fab [cont_7fab]
+                                    ;     3: $7f62 [cont_7f62]
+
+rwx 7ef4,1   cont_7ef4              ;
+rwx 7f4e,1   cont_7f4e              ;
+rwx 7f51,1   cont_7f51              ;
+rwx 7f62,1   cont_7f62              ;
+rwx 7f7e,1   cont_7f7e              ;
+rwx 7faa,1   contRts_7faa           ; Returns to caller
+rwx 7fab,1   cont_7fab              ;
+
+rwx 8060,1   contRts_8060           ;
+
+rw  8081,9   ContTbl_8081_L         ; 9 bytes: LSBs of continuation addresses
+rw  808a,9   ContTbl_8081_H         ; 9 bytes: MSBs of continuation addresses
+                                    ;    0: $8093 [cont_8093]    5: $80dc [cont_80dc]
+                                    ;    1: $80a0 [cont_80a0]    6: $8125 [cont_8125]
+                                    ;    2: $80b7 [cont_80b7]    7: $813b [cont_813b]
+                                    ;    3: $80dc [cont_80dc]    8: $8141 [cont_8141]
+                                    ;    4: $80d8 [cont_80d8]
+
+rwx 8093,1   cont_8093              ;
+rwx 80dc,1   cont_80dc              ;
+rwx 80a0,1   cont_80a0              ;
+rwx 80b7,1   cont_80b7              ;
+rwx 80d8,1   cont_80d8              ;
+
+rwx 8104,1   add1Max2               ; Adds one to the value in A and clamps the result to a max of 2.
+
+rwx 810e,1   sub_810e               ;
+
+rwx 8125,1   cont_8125              ;
+rwx 813b,1   cont_813b              ;
+rwx 8141,1   cont_8141              ;
+
+rwx 8160,1   cont_8160              ;
+
+rwx 83ad,1   calcRndDmgAttr         ; Calculates a random value and assigns it to a damage attribute.
+rwx 83bc,1   sub_83bc               ;
+rwx 83d7,1   sub_83d7               ;
+rwx 8400,1   sub_8400               ;
+rwx 8451,1   dispYouMiss            ; Displays StrYouMiss for 1 second.
+rwx 845e,1   addByte16              ; Adds the value in A to the little-endian uint16 value in UInt16Val_L/H
+
+rwx 8468,1   cont_8468              ;
+
+rwx 849d,1   cont_849d              ;
+
+rwx 84cf,1   sub_84cf               ; Appears to be related to the death/defeat of a foe.
+                                    ;    sub_94c5: Calls this sub when foe HP is 0
+
+rwx 852b,1   sub_852b               ;
+
+rwx 8560,1   initCorpseItem         ; Populates byte size and item name details into the CorpseItem and sets
+                                    ;     DestAdr_L/H to $76b5 [dat_76b5].
+
+rwx 8598,1   addCorpseItem          ; Assigns CorpseItem attributes and adds the item to the game inventory.
+
+rw  85ce,1   else_85ce              ; This forms `BIT $40a9` with the next 2 bytes
+
+rw  85dc,1   dat_85dc               ; sub_85b2: input param
+rw  85dd,1   dat_85dd               ; sub_85b2: input param
+
+rw  8630,6   ContTbl_8630_L         ; 6 bytes: LSBs of continuation addresses
+rw  8636,6   ContTbl_8630_H         ; 6 bytes: MSBs of continuation addresses
+                                    ;   0: $863c [cont_863c]     3: $8864 [contRndFoeWpn]
+                                    ;   1: $880d [cont_880d]     4: $8880 [cont_8880]
+                                    ;   2: $863c [cont_863c]     5: $8898 [cont_8898]
+
+rwx 863c,1   cont_863c              ;
+rwx 880d,1   cont_880d              ;
+rwx 8864,1   contRndFoeWpn          ; Randomly selects a foe weapon & continues @ $863c [cont_863c]
+
+rwx 886f,1   sub_886f               ;
+
+rwx 8880,1   cont_8880              ;
+rwx 8898,1   cont_8898              ;
+
+rwx 88c2,1   contRtsC0_88c2         ; Set C = 0; RTS
+
+rwx 8965,1   cont_8965              ;
+
+rw  899f,b   ContTbl_899f_L         ; 11 bytes: LSBs of continuation addresses
+rw  89aa,b   ContTbl_899f_H         ; 11 bytes: MSBs of continuation addresses
+                                    ;     0: $89b5 [sub_89b5]            6: $8a8a [cont_8a8a]
+                                    ;     1: $89dc [add16ToFoeStr]       7: $8a90 [cont_8a90]
+                                    ;     2: $89df [add16ToFoeSkl]       8: $8a96 [cont_8a96]
+                                    ;     3: $89ef [cont_89ef]           9: $8a9a [cont_8a9a]
+                                    ;     4: $8a53 [cont_8a53]          10: $8aa7 [cont_8aa7]
+                                    ;     5: $8a84 [cont_8a84]
+
+rwx 89b5,1   sub_89b5               ;
+rwx 89dc,1   add16ToFoeStr          ; Adds 16 to FoeStr up to a max of $ff
+rwx 89de,1   nop_89de               ; Forms `BIT $05a2` (NOP) with `LDX #$05` in next 2 bytes
+rwx 89df,1   add16ToFoeSkl          ; Adds 16 to FoeSkl up to a max of $ff
+rwx 89ef,1   cont_89ef              ;
+rwx 8a53,1   cont_8a53              ;
+rwx 8a84,1   cont_8a84              ;
+rwx 8a8a,1   cont_8a8a              ;
+rwx 8a90,1   cont_8a90              ;
+rwx 8a96,1   cont_8a96              ;
+rwx 8a9a,1   cont_8a9a              ;
+rwx 8aa7,1   cont_8aa7              ;
+
+rwx 8abf,1   cont_8abf              ;
+rwx 8ac2,1   contTrnsctMenu         ;
+
+rw  8b30,7   ContTbl_8b30_L         ; 7 bytes: LSBs of continuation addresses
+rw  8b37,7   ContTbl_8b30_H         ; 7 bytes: MSBs of continuation addresses
+                                    ;    0: $8b80 [cont_8b80]        4: $8b80 [cont_8b80]
+                                    ;    1: $8b8f [cont_8b8f]        5: $8d31 [cont_8d31]
+                                    ;    2: $8bb3 [cont_8bb3]        6: $8d5b [cont_8d5b]
+                                    ;    3: $8bf4 [cont_8bf4]
+
+rwx 8b3e,1   sub_8b3e               ;
+rwx 8b78,1   rtsC1_8b78             ;
+rwx 8b7a,1   rtsC0_8b7a             ;
+rwx 8b7e,1   rtsC0_8b7e             ;
+
+rwx 8b80,1   cont_8b80              ;
+rwx 8b8f,1   cont_8b8f              ;
+rwx 8bb3,1   cont_8bb3              ;
+rwx 8bf4,1   cont_8bf4              ;
+rwx 8cbb,1   cont_8cbb              ;
+
+rwx 8ccb,1   sub_8ccb               ;
+
+rwx 8d31,1   cont_8d31              ;
+rwx 8d5b,1   cont_8d5b              ;
+
+rwx 8d6e,1   sub_8d6e               ; When Foe_aa21 >= 0, display a message for 4 seconds indicating the foe abandoned
+                                    ;     the engagement.
+
+rwx 8d74,1   cont_8d74              ; Display a message for 4 seconds indicating the foe abandoned the engagement.
+
+rwx 8d7e,1   sub_8d7e               ;
+
+rwx 8e1d,1   sub_8e1d               ; Sets dat_0086 to the minimum of $40 and ChrLuck << 4.
+
+rwx 8e2d,1   contDecDurblty         ; Applies 50% chance that the durability of the weapon at index dat_00a9 (or the
+                                    ;     player's equipped primary weapon when dat_00a9 is less than 0) is decreased
+                                    ;     by 1.
+
+rwx 8e31,1   decDurability          ; Applies 50% chance that the durability of the player's equipped primary weapon
+                                    ;     is decreased by 1.
+                                    ; Displays the "about to break" message when the durability reaches 5.
+rwx 8e6f,1   contHasBroken          ; Continues here when the player's weapon breaks
+
+rwx 8e7f,1   shwMsgAndUpdt          ; Displays a message, waits for any key to be pressed and applies item trigger
+                                    ;     and stat updates.
+
+rwx 8e8f,1   sub_8e8f               ; Computes the sum of the damage attributes and stores it into dat_00a8_L/H
+
+rwx 8ea7,1   sub_8ea7               ;
+
+rwx 8ece,1   dsplyMsg2Secs          ; Displays the message at the address in Y/X for 2 seconds
+
+rw  8ed0,1   nop_8ed0               ; Forms `BIT $04a9` (NOP) with the next 2 bytes, skipping the LDA
+
+rwx 8ed1,1   dsplyMsg4Secs          ; Displays the message at the address in Y/X for 4 seconds
+
+rwx 8eef,1   dsplyTmpltStr          ;
+
+rwx 8ef9,1   applyUpdates           ; Execute item triggers and stat re-calcs
+
+rwx 8f0d,1   sub_8f0d               ;
+
+rwx 8f15,1   sub_8f15               ;
+
+rwx 8f8e,1   rollDiceA              ; Rolls dice as specified in A (# of dice in high nibble, # sides in low).
+rwx 8faa,1   rollDice               ; Rolls DiceCount dice with DiceSides sides.
+rwx 8fc9,1   rts_8fc9               ;
+
+rwx 8fd2,1   readYorN               ; Waits for the player to press 'Y' or 'N' (case-insensitive). If the player is
+                                    ;     inebriated, there is a chance this will automatically report 'Y' was pressed
+                                    ;     regardless of the player's selection. The more drunk, the more likely this
+                                    ;     will occur.
+rwx 8fe1,1   cont_8fe1              ; Execution returns here from j_sub_2ff3
+rwx 900f,1   smc_900f               ; The operand for this CMP is updated based on the player's inebriation level.
+
+rwx 901c,1   getMenuSel             ; Pauses game time progression and waits for the player to select a menu item.
+
+rwx 9049,1   multBytesAX            ; Multiplies A by X returning little-endian 16-bit result in UInt16Val_L/H
+
+rwx 9067,1   clrSmthngHere          ; Clears row 5 of the top text area (e.g. "There is something here", etc)
+
+rwx 9081,1   sub_9081               ;
+
+rwx 90cd,1   rmveAllDropped         ; Unlocks and removes all dropped dungeon items present at the player's current
+                                    ;     location
+
+rwx 9100,1   sub_9100               ;
+
+rwx 911f,1   cont_911f              ;
+
+rwx 9124,1   grantExp               ;
+
+rwx 9219,1   sub_9219               ; Ensures that foe HP and corresponding ?? entries are arranged such that all
+                                    ;     entries with non-0 HP are at the beginning of their respective tables.
+
+rwx 9272,1   unlkDroppdItms         ; Zeros the top nibble for all 16 entries in the DroppedGame list
+
+rwx 9280,1   waitForVblankC         ; Waits for a vertical blank to occur
+
+rwx 9289,1   setFoeWeapon           ; Populates the foe weapon properties given a foe weapon index in A.
+
+rwx 92d0,1   sub_92d0               ;
+
+rwx 92f6,1   sub_92f6               ;
+
+rwx 9319,1   sub_9319               ;
+
+rwx 9337,1   sub_9337               ;
+
+rwx 9358,1   waitHalfSec            ; Waits for 30 vertical blanks (approx. 1/2 second)
+
+rwx 9367,1   cont_9367              ;
+
+rw  9381,c   tbl_9381               ; 12 bytes: one entry per foe spell
+
+rwx 938d,1   sub_938d               ; Applies foe attack damage to the player.
+rw  9454,1   smc_9454               ; The operand of this CMP abs is updated dynamically
+
+rwx 9482,1   sub_9482               ;
+
+rwx 9475,1   sub_9475               ;
+
+rwx 948d,1   sub_948d               ;
+
+rwx 94c5,1   sub_94c5               ;
+rw  94d2,1   nop_94d2               ; Forms `BIT $18` (NOP) with next byte to skip CLC
+
+rwx 94d5,1   sub_94d5               ;
+
+rwx 94e7,1   contAtAddrXA           ; Continues execution at the address in X/A.
+rw  94ed,3   smc_94ed               ; The destination address of this JMP is dynamically updated
+
+rwx 94f0,1   lockDroppdItms         ; Sets bit 7 on all entries of DroppedGame
+
+rwx 94fe,1   isZoneFlag1Set         ; Tests if bit 1 of the CurZoneFlags is set
+rw  9506,1   nop_9506               ; Forms `BIT $18` (NOP) with next byte to skip CLC
+
+rwx 9509,1   sub_9509               ;
+
+rwx 950e,1   sub_950e               ;
+
+rwx 9550,1   sub_9550               ;
+
+rwx 961c,1   sub_961c               ;
+
+rwx 9629,1   contRtsC1_9629         ; Sets C = 1 and returns to caller
+
+rwx 962b,1   sub_962b               ;
+
+rwx 96ea,1   sub_96ea               ;
+
+rwx 9731,1   sub_9731               ;
+
+rwx 9734,1   sub_9734               ;
+
+rwx 9758,1   VVBLKD_9758            ; VVBLKD vector assigned in initModule3
+
+rwx 9826,1   sub_9826               ; ? just an RTS ?
+
+rwx 9827,1   clrCmpssArrws          ; Clears the compass and arrows from the gfx character sets
+
+rw  984c,9   tbl_984c_L             ; 9 bytes: (clrCmpssArrws) Left-hand side charset destination LSBs
+rw  9855,9   tbl_984c_H             ; 9 bytes: (clrCmpssArrws) Left-hand side charset destination MSBs
+                                    ;     0: $0818 [GfxTopCharset+24]       5: $0e98 [GfxMidCharset+664]
+                                    ;     1: $0958 [GfxTopCharset+344]      6: $1018 [GfxBtmCharset+24]
+                                    ;     2: $0a98 [GfxTopCharset+664]      7: $1158 [GfxBtmCharset+344]
+                                    ;     3: $0c18 [GfxMidCharset+24]       8: $1298 [GfxBtmCharset+664]
+                                    ;     4: $0d58 [GfxMidCharset+344]
+
+rw  985e,9   tbl_985e_L             ; 9 bytes: (clrCmpssArrws) Right-hand side charset destination LSBs
+rw  9867,9   tbl_985e_H             ; 9 bytes: (clrCmpssArrws) Right-hand side charset destination MSBs
+                                    ;     0: $08f8 [GfxTopCharset+248]      5: $0f78 [GfxMidCharset+888]
+                                    ;     1: $0a38 [GfxTopCharset+568]      6: $10f8 [GfxBtmCharset+248]
+                                    ;     2: $0b78 [GfxTopCharset+888]      7: $1238 [GfxBtmCharset+568]
+                                    ;     3: $0cf8 [GfxMidCharset+248]      8: $1378 [GfxBtmCharset+888]
+                                    ;     4: $0e38 [GfxMidCharset+568]
+
+rw  9870,1   dat_9870               ;
+rw  9871,1   dat_9871               ;
+rw  9872,1   dat_9872               ;
+
+rw  9877,1   dat_9877               ;
+rw  9878,1   dat_9878               ;
+
+rw  987d,1   dat_987d               ; assigned to HPOSP0, HPOSP1
+rw  987e,1   dat_987e               ;
+rw  987f,1   dat_987f               ; a color value, assigned to COLPM0, COLPM2
+rw  9880,1   dat_9880               ; a color value, assigned to COLPM1, COLPM3
+
+rw  9881,2   StrClearRows           ; Clears all message rows
+rw  9883,1d  StrSurprised           ; "SURPRISED No Options"
+rw  9891,f   StrNoOptions           ; "No Options" portion of StrSurprised
+
+rw  98a0,5   ZtsFood                ; "food\0"
+rw  98a5,6   ZtsWater               ; "water\0"
+rw  98ab,8   ZtsTorches             ; "torches\0"
+rw  98b3,b   ZtsTimepieces          ; "timepieces\0"
+rw  98be,a   ZtsCompasses           ; "compasses\0"
+rw  98c8,5   ZtsKeys                ; "keys\0"
+rw  98cd,9   ZtsCrystals            ; "crystals\0"
+rw  98d6,5   ZtsGems                ; "gems\0"
+rw  98db,7   ZtsJewels              ; "jewels\0"
+rw  98e2,5   ZtsGold                ; "gold\0"
+rw  98e7,7   ZtsSilver              ; "silver\0"
+rw  98ee,7   ZtsCopper              ; "copper\0"
+
+rw  98f5,c   PrvsnNames_L           ; 12 bytes: LSB of Zts provision name address
+rw  9901,c   PrvsnNames_H           ; 12 bytes: MSB of Zts provision name address
+                                    ;     0: $98a0 [ZtsFood]            6: $98cd [ZtsCrystals]
+                                    ;     1: $98a5 [ZtsWater]           7: $98d6 [ZtsGems]
+                                    ;     2: $98ab [ZtsTorches]         8: $98db [ZtsJewels]
+                                    ;     3: $98b3 [ZtsTimepieces]      9: $98e2 [ZtsGold]
+                                    ;     4: $98be [ZtsCompasses]      10: $98e7 [ZtsSilver]
+                                    ;     5: $98c8 [ZtsKeys]           11: $98ee [ZtsCopper]
+
+rw  990d,10  StrIsStunned           ; 16 bytes: "? is stunned"
+rw  991d,12  ZtsLightWizrds         ; 18 bytes: "The Light Wizards\0"
+rw  992f,11  ZtsDarkWizards         ; 17 bytes: "The Dark Wizards\0"
+rw  9940,13  ZtsGldOfOrder          ; 19 bytes: "The Guild of Order\0"
+rw  9953,13  ZtsGldOfChaos          ; 19 bytes: "The Guild of Chaos\0"
+rw  9966,11  ZtsGldOfLaw            ; 17 bytes: "The Guild of Law\0"
+rw  9977,12  ZtsThievesGld          ; 18 bytes: "The Thieves Guild\0"
+rw  9989,12  ZtsGreenWizrds         ; 18 bytes: "The Green Wizards\0"
+rw  999b,10  ZtsRedWizards          ; 16 bytes: "The Red Wizards\0"
+rw  99ab,11  ZtsStarWizards         ; 17 bytes: "The Star Wizards\0"
+rw  99bc,11  ZtsBlueWizards         ; 17 bytes: "The Blue Wizards\0"
+rw  99cd,15  ZtsPhysicnsGld         ; 21 bytes: "The Physicians Guild\0"
+rw  99e2,14  ZtsAssassnsGld         ; 20 bytes: "The Assassins Guild\0"
+rw  99f6,d   ZtsPaladins            ; 13 bytes: "The Paladins\0"
+rw  9a03,14  ZtsMercenryGld         ; 20 bytes: "The Mercenary Guild\0"
+rw  9a17,9   ZtsAFriend             ; 9 bytes: "a friend\0"
+rw  9a20,b   ZtsThePalace           ; 11 bytes: "The Palace\0"
+
+rw  9a2b,10  FactionNames_L         ; 16 bytes: LSB of faction name Zts addresses
+rw  9a3b,10  FactionNames_H         ; 16 bytes: MSB of faction name Zts addresses
+                                    ;     0: $991d [ZtsLightWizrds]      8: $99ab [ZtsStarWizards]
+                                    ;     1: $992f [ZtsDarkWizards]      9: $99bc [ZtsBlueWizards]
+                                    ;     2: $9940 [ZtsGldOfOrder]      10: $99cd [ZtsPhysicnsGld]
+                                    ;     3: $9953 [ZtsGldOfChaos]      11: $99e2 [ZtsAssassnsGld]
+                                    ;     4: $9966 [ZtsGldOfLaw]        12: $99f6 [ZtsPaladins]
+                                    ;     5: $9977 [ZtsThievesGld]      13: $9a03 [ZtsMercenryGld]
+                                    ;     6: $9989 [ZtsGreenWizrds]     14: $9a17 [ZtsAFriend]
+                                    ;     7: $999b [ZtsRedWizards]      15: $9a20 [ZtsThePalace]
+
+rw  9a4b,84  StrBattleOptns         ; 132 bytes: Battle Options
+rw  9acf,5b  StrTrnsctOptns         ; 91 bytes: Transact Options
+rw  9b2a,82  StrYouSurprise         ; 130 bytes: You surprise
+
+rw  9bac,a   ZtsYouGrab             ; 10 bytes: "You grab \0"
+
+rw  9bb6,1b  StrNthngOfValu         ; 27 bytes: "You grab nothing of value"
+rw  9bd1,23  StrSomeOfThe           ; 35 bytes: "You grab some of the ?'s ?"
+rw  9bf4,18  StrTrickFailed         ; 24 bytes: "Your trick failed"
+rw  9c0c,18  StrNotGngForIt         ; 24 bytes: "? isn't going for it"
+rw  9c24,15  StrAttemptFail         ; 21 bytes: "Attempt failed"
+rw  9c39,51  StrForTheCause         ; 81 bytes: "? sees you have no ? and tosses you one saying: For the cause."
+
+rwx 9c8a,1a  setBrthrSister         ; Checks the player's gender an sets GenderZts_L/H to either ZtsBrother
+                                    ;     or ZtsSister.
+
+rw  9ca4,8   ZtsBrother             ; 8 bytes: "brother\0"
+rw  9cac,7   ZtsSister              ; 7 bytes: "sister\0"
+
+rw  9cb3,16  StrBreaksSpell         ; 22 bytes: " breaks the spell "
+rw  9cc9,13  Str_9cc9               ; 19 bytes: "The ? ?"
+rw  9cdc,1e  StrWt4Opening          ; 30 bytes: "You wait for an opening."
+rw  9cfa,14  StrHpplyAccept         ; 20 bytes: "In your inebriated state, you happily accept."
+rw  9d0e,24  StrDrunkState          ; 36 bytes: "In your inebriated state, you"
+rw  9d32,3b  StrDrunkRsning         ; 59 bytes: "In your inebriated state, you feel that reasoning with the ?
+                                    ;            is the best course."
+rw  9d6d,2a  StrStrengthnd          ; 42 bytes: "appears strengthened by your attack!"
+rw  9d97,18  StrUAreStunned         ; 24 bytes: "You are stunned."
+
+rwx 9daf,9   setNoOptnsStr          ; Sets StrTemplate_L/H to StrNoOptions
+
+rw  9db8,16  StrNotLoaded           ; 22 bytes: "not loaded."
+rw  9dce,1d  StrDodges              ; 29 bytes: "? dodges out of the way."
+rw  9deb,19  StrYouDodge            ; 25 bytes: "You dodge the blow."
+rw  9e04,18  StrAbout2Break         ; 24 bytes: "Your ? is about to break."
+rw  9e1c,11  StrHasBroken           ; 17 bytes: "Your ? has broken."
+rw  9e2d,13  StrYour                ; 19 bytes: "Your ?"
+
+rw  9e3e,1   dat_9e3e_L             ; sub_8d7e: Assigned LSB of player weapon name with greatest parry (either pri or sec)
+rw  9e3f,1   dat_9e3e_H             ; sub_8d7e: Assigned MSB of player weapon name with greatest parry (either pri or sec)
+
+rw  9e40,a   ZtsBareHand            ; 10 bytes: "bare hand\0"
+
+rw  9e4a,32  StrItKnckdDwn          ; 50 bytes: "? is knocked down by the force of your attack."
+rw  9e7c,13  StrIsStaggered         ; 19 bytes: "is staggered"
+rw  9e8f,2c  StrYouAttack           ; 44 bytes: "You ? the ? with your ?"
+rw  9ebb,13  StrFor                 ; 19 bytes: "for ?"
+rw  9ece,17  StrHasNoEffect         ; 23 bytes: "which has no effect!"
+
+rwx 9ee5,17  sub_9ee5               ;
+rwx 9efc,6   disableNumPad          ; Disables padding for numeric outputs
+rwx 9f02,6   enableNumPad           ; Enables padding for numeric outputs
+
+rw  9f08,5   ZtsHack                ; "hack\0"
+rw  9f0d,5   ZtsPoke                ; "poke\0"
+rw  9f12,5   ZtsBash                ; "bash\0"
+rw  9f17,6   ZtsSpear               ; "spear\0"
+rw  9f1d,5   ZtsWhip                ; "whip\0"
+rw  9f22,4   ZtsZap                 ; "zap\0"
+rw  9f26,6   ZtsPunch               ; "punch\0"
+rw  9f2c,4   ZtsHit                 ; "hit\0"
+rw  9f30,6   ZtsSlash               ; "slash\0"
+rw  9f36,5   ZtsStab                ; "stab\0"
+rw  9f3b,7   ZtsWallop              ; "wallop\0"
+rw  9f42,7   ZtsImpale              ; "impale\0"
+rw  9f49,5   ZtsLash                ; "lash\0"
+rw  9f4e,6   ZtsBlast               ; "blast\0"
+rw  9f54,6   ZtsWhomp               ; "whomp\0"
+rw  9f5a,4   ZtsHit2                ; "hit\0"
+
+rw  9f5e,8   AttckDescs1_L          ; 8 bytes: LSB of player attack description Zts addresses
+rw  9f66,8   AttckDescs1_H          ; 8 bytes: MSB of player attack description Zts addresses
+                                    ;    0: $9f08 [ZtsHack]         4: $9f1d [ZtsWhip]
+                                    ;    1: $9f0d [ZtsPoke]         5: $9f22 [ZtsZap]
+                                    ;    2: $9f12 [ZtsBash]         6: $9f26 [ZtsPunch]
+                                    ;    3: $9f17 [ZtsSpear]        7: $9f2c [ZtsHit]
+
+rw  9f6e,8   AttckDescs2_L          ; 8 bytes: LSB of player attack secondary description Zts addresses
+rw  9f76,8   AttckDescs2_H          ; 8 bytes: MSB of player attack secondary description Zts addresses
+                                    ;    0: $9f30 [ZtsSlash]        4: $9f49 [ZtsLash]
+                                    ;    1: $9f36 [ZtsStab]         5: $9f4e [ZtsBlast]
+                                    ;    2: $9f3b [ZtsWallop]       6: $9f54 [ZtsWhomp]
+                                    ;    3: $9f42 [ZtsImpale]       7: $9f5a [ZtsHit2]
+
+rw  9f7e,1   AttckDescZts_L         ; LSB of player attack description Zts address
+rw  9f7f,1   AttckDescZts_H         ; MSB of player attack description Zts address
+
+rwx 9f80,1   sub_9f80               ;
+
+rw  9fad,2e  StrPointsOfDmg         ; "The ? points of damage."
+
+rw  9fdb,1   FoeHitForStr_L         ; LSB of template string assigned by setForHitFor
+rw  9fdc,1   FoeHitForStr_H         ; MSB of template string assigned by setForHitFor
+
+rwx 9fdd,21  setFoeHitFor           ; 33 bytes
+
+rw  9ffe,10  StrIsHitFor            ; 16 bytes: "? is hit for ?"
+
+rw  a00e,11  StrAreHitFor           ; 17 bytes: "? are hit for ?"
+
+rw  a01f,a   ZtsBareHand2           ; 10 bytes: "barehand\0"
+
+rw  a029,24  StrYouEncnter          ; 36 bytes: "You encounter a ?"
+
+rw  a03f,1   dat_a03f               ;
+
+rw  a04d,1   dat_a04d_L             ;
+rw  a04e,1   dat_a04d_H             ;
+rwx a04f,54  sub_a04f               ; 84 bytes
+
+rw  a073,3   smc_a073               ; The address operand for the "LDA abs" at this location is dynamically updated
+
+rw  a0a3,a   dat_a0a3               ; 10? bytes
+
+rw  a0a5,5   dat_a0a5               ; 5? bytes
+
+rw  a0aa,f   StrYouFace             ; 18 bytes: "You face ?"
+
+rw  a0bc,5   StrClrRow5             ; 5 bytes: Moves to row 5 and clears it
+
+rw  a0c1,18  StrSwitchingTo         ; 24 bytes: "Switching to ?"
+rw  a0d9,f   StrYouMiss             ; 15 bytes: "You miss"
+rw  a0e8,27  StrItDeflects          ; 39 bytes: "? skillfully deflects your attack."
+rw  a10f,6   StrTakesOfr            ; 6 bytes: "The ? takes your offer."
+
+rwx a115,18  setTakeOfrStr          ; Sets StrTmplate_L/H to StrItTakesOfr when FoeCount = 1,
+                                    ;     otherwise sets to StrItTakesOfr2.
+
+rw  a12d,1d  StrItTakesOfr          ; 29 bytes: "The ? takes your offer."
+rw  a14a,1c  StrItTakesOfr2         ; 28 bytes: "The ? takes your offer."       TODO: when multiple foes?
+rw  a166,13  StrItSpllEffct         ; 19 bytes: "The ? ?"
+
+rw  a179,4   ZtsThe2                ; 4 bytes: "The\0"
+rw  a17d,4   ZtsOne                 ; 4 bytes: "One\0"
+
+rwx a181,27  setSpllEfctStr         ; 39 bytes: Determines the effect description string to display for the spell damage applied.
+
+rw  a1a8,1   SpllEfctStr_L          ; LSB of spell effect str address
+rw  a1a9,1   SpllEfctStr_H          ; MSB of spell effect str address
+
+rw  a1aa,16  StrTkesFlEffct         ; 22 bytes: "takes the full effect"
+rw  a1c0,14  StrRsistsEffct         ; 20 bytes: "resists the effects"
+rw  a1d4,13  StrRepelsEffct         ; 19 bytes: "repels the effects"
+rw  a1e7,1c  StrIsBewildrd          ; 28 bytes: "? is bewildered."
+rw  a203,24  StrItDrnksPtn          ; 36 bytes: "? drinks a potion and is healed."
+
+rw  a227,e   ZtsButItFails          ; 13 bytes: "but it fails!\0"
+
+rw  a235,19  StrCasts               ; 25 bytes: "? casts ?"
+rw  a24e,1f  StrRiseFrmGrnd         ; 31 bytes: "You rise from the ground."
+rw  a26d,d   StrGetsUp              ; 13 bytes: "? gets up."
+rw  a27a,c   StrMisses              ; 12 bytes: "? misses."
+rw  a286,1b  StrWaitOpening         ; "? waits for an opening."
+rw  a2a1,2c  StrFlStrngthnd         ; "You feel strengthened from the attack!"
+rw  a2cd,1e  StrWeakening           ; 30 bytes: "Your ? is weakening."
+rw  a2eb,1b  StrHasBroken2          ; "Your ? has broken."
+rw  a306,24  StrStunFrmBlow         ; "You are stunned from the blow."
+rw  a32a,21  StrURKnockdDwn         ; 33 bytes: "You have been knocked down."
+rw  a34b,1e  Str_a34b               ; 30 bytes:
+
+rw  a369,d   ZtsAtYourHead          ; "at your head\0"
+rw  a376,4   ZtsYou                 ; "you\0"
+rw  a37a,c   ZtsAtYourArm           ; "at your arm\0"
+rw  a386,d   ZtsAtYourLegs          ; "at your legs\0"
+
+rw  a393,4   AtYourDescs_L          ; 4 bytes: LSB of "at your ..." Zts addresses
+rw  a397,4   AtYourDescs_H          ; 4 bytes: MSB of "at your ..." Zts addresses
+                                    ;     0: $a369 [ZtsAtYourHead]
+                                    ;     1: $a376 [ZtsYou]
+                                    ;     2: $a37a [ZtsAtYourArm]
+                                    ;     3: $a386 [ZtsAtYourLegs]
+
+rw  a39b,6   ZtsHacks               ; "hacks\0"
+rw  a3a1,6   ZtsPokes               ; "pokes\0"
+rw  a3a7,7   ZtsBashes              ; "bashes\0"
+rw  a3ae,7   ZtsSpears              ; "spears\0"
+rw  a3b5,6   ZtsWhips               ; "whips\0"
+rw  a3bb,5   ZtsZaps                ; "zaps\0"
+rw  a3c0,8   ZtsPunches             ; "punches\0"
+rw  a3c8,5   ZtsHits                ; "hits\0"
+rw  a3cd,8   ZtsSlashes             ; "slashes\0"
+rw  a3d5,6   ZtsStabs               ; "stabs\0"
+rw  a3db,8   ZtsSmashes             ; "smashes\0"
+rw  a3e3,8   ZtsImpales             ; "impales\0"
+rw  a3eb,7   ZtsLashes              ; "lashes\0"
+rw  a3f2,7   ZtsBlasts              ; "blasts\0"
+rw  a3f9,7   ZtsWhacks              ; "whacks\0"
+rw  a400,5   ZtsHits2               ; "hits\0"
+rw  a405,6   ZtsClaws               ; "claws\0"
+rw  a40b,6   ZtsKicks               ; "kicks\0"
+rw  a411,6   ZtsBites               ; "bites\0"
+rw  a417,6   ZtsTears               ; "tears\0"
+rw  a41d,7   ZtsChokes              ; "chokes\0"
+rw  a424,7   ZtsLashes2             ; "lashes\0"
+rw  a42b,6   ZtsBurns               ; "burns\0"
+rw  a431,7   ZtsStings              ; "stings\0"
+rw  a438,5   ZtsRips                ; "rips\0"
+rw  a43d,7   ZtsStomps              ; "stomps\0"
+rw  a444,6   ZtsGnaws               ; "gnaws\0"
+rw  a44a,6   ZtsRends               ; "rends\0"
+rw  a450,c   ZtsAsphyxiates         ; "asphyxiates\0"
+rw  a45c,8   ZtsWallops             ; "wallops\0"
+rw  a464,6   ZtsFries               ; "fries\0"
+rw  a46a,7   ZtsStings2             ; "stings\0"
+
+rw  a471,20  FoeAttckNms_L          ; 32 bytes: LSB of foe attack name Zts address
+rw  a491,20  FoeAttckNms_H          ; 32 bytes: MSB of foe attack name Zts address
+                                    ;   These are organized in four chunks of 8:
+                                    ;      Held weapon attacks
+                                    ;      Primary Desc                     Secondary Desc
+                                    ;      ---                              ---
+                                    ;      0: $a39b [ZtsHacks]               8: $a3cd [ZtsSlashes]
+                                    ;      1: $a3a1 [ZtsPokes]               9: $a3d5 [ZtsStabs]
+                                    ;      2: $a3a7 [ZtsSpears]             10: $a3db [ZtsSmashes]
+                                    ;      3: $a3ae [ZtsSpears]             11: $a3e3 [ZtsImpales]
+                                    ;      4: $a3b5 [ZtsWhips]              12: $a3eb [ZtsLashes]
+                                    ;      5: $a3bb [ZtsZaps]               13: $a3f2 [ZtsBlasts]
+                                    ;      6: $a3c0 [ZtsPunches]            14: $a3f9 [ZtsWhacks]
+                                    ;      7: $a3c8 [ZtsHits]               15: $a400 [ZtsHits2]
+                                    ;
+                                    ;      Natural/Intrinsic weapon attacks (teeth, claws, tentacles, etc)
+                                    ;      Primary Desc                     Secondary Desc
+                                    ;      ---                              ---
+                                    ;     16: $a405 [ZtsClaws]              24: $a438 [ZtsRips]
+                                    ;     17: $a40b [ZtsKicks]              25: $a43d [ZtsStomps]
+                                    ;     18: $a411 [ZtsBites]              26: $a444 [ZtsGnaws]
+                                    ;     19: $a417 [ZtsTears]              27: $a44a [ZtsRends]
+                                    ;     20: $a41d [ZtsChokes]             28: $a450 [ZtsAsphyxiates]
+                                    ;     21: $a424 [ZtsLashes2]            29: $a45c [ZtsWallops]
+                                    ;     22: $a42b [ZtsBurns]              30: $a464 [ZtsFries]
+                                    ;     23: $a431 [ZtsStings]             31: $a46a [ZtsStings2]
+
+rw  a4b1,20  StrYouBlock            ; "You block with your ?"
+rw  a4d1,b   StrItFlees             ; "? flees!"
+rw  a4dc,10  StrItFliesAway         ; "? flies away!"
+rw  a4ec,c   StrItLeaves            ; "? leaves."
+
+rw  a4f8,b   ZtsProtection          ; "Protection\0"
+rw  a503,9   ZtsStrength            ; "Strength\0"
+rw  a50c,8   ZtsAgility             ; "Agility\0"
+rw  a514,10  ZtsFngrOfDeath         ; "Finger of death\0"
+rw  a524,a   ZtsParalysis           ; "Paralysis\0"
+rw  a52e,9   ZtsFireball            ; "Fireball\0"
+rw  a537,a   ZtsColdCone            ; "Cold Cone\0"
+rw  a541,a   ZtsLightning           ; "Lightning\0"
+rw  a54b,b   ZtsMindFlail           ; "Mind Flail\0"
+rw  a556,c   ZtsSuffocation         ; "Suffocation\0"
+rw  a562,a   ZtsRepulsion           ; "Repulsion\0"
+rw  a56c,6   ZtsBlink               ; "Blink\0"
+
+rw  a572,c   SpellNames_L           ; 12 bytes: LSB of spell name Zts address
+rw  a57e,c   SpellNames_H           ; 12 bytes: MSB of spell name Zts address
+                                    ;     0: $a4f8 [ZtsProtection]      6: $a537 [ZtsColdCone]
+                                    ;     1: $a503 [ZtsStrength]        7: $a541 [ZtsLightning]
+                                    ;     2: $a50c [ZtsAgility]         8: $a54b [ZtsMindFlail]
+                                    ;     3: $a514 [ZtsFngrOfDeath]     9: $a556 [ZtsSuffocation]
+                                    ;     4: $a524 [ZtsParalysis]      10: $a562 [ZtsRepulsion]
+                                    ;     5: $a52e [ZtsFireball]       11: $a56c [ZtsBlink]
+
+rw  a58a,35  StrYouTheSpell         ; "You ? the spell and are hit for ?"
+
+rw  a5bf,6   ZtsRepel               ; "repel\0"
+rw  a5c5,7   ZtsResist              ; "resist\0"
+rw  a5cc,f   ZtsFail2Resist         ; "fail to resist\0"
+
+rw  a5db,3   ResistDesc_L           ; 3 bytes: LSB of spell resistance description Zts address
+rw  a5de,3   ResistDesc_H           ; 3 bytes: MSB of spell resistance description Zts address
+                                    ;    0: $a5bf [ZtsRepel]
+                                    ;    1: $a5c5 [ZtsResist]
+                                    ;    2: $a5cc [ZtsFail2Resist]
+
+rw  a5e1,2b  StrHrldFrmGrsp         ; "Your ? is hurled from your grasp!"
+rw  a60c,19  StrItsPower            ; "You ? its power."
+
+rw  a625,6   StrYouEncnter2         ; "You encounter"
+
+rwx a659,20  setFoeName             ; Sets GrbItemName_L/H to either FoeNameZts_L/H or FoeNameZts2_L/H
+
+rw  a679,10  ZtsDieOutcast          ; '"Die, outcast!"\0'
+rw  a689,f   ZtsHailFriend          ; '"Hail, friend!"\0'
+rw  a698,10  ZtsBegoneOffl          ; '"Begone offal!"\0'
+
+rwx a6a8,f   setFactionName         ; Sets FactionNmZts_L/H to the faction name from FactionNames_L/H with
+                                    ;     index FactionNum.
+
+rw  a6b7,d   StrDiskPrompt          ; Calls setDiskPrompt and displays the result
+
+rw  a6c4,17  ZtsCheckDisk           ; "Check disk in drive .\0"
+rw  a6db,16  ZtsInsertD3S1          ; "Insert Disk 3 Side 1.\0"
+
+rwx a6f1,25  setDiskPrompt          ; Sets GrbItemName_L/H to either ZtsInsertD3S1 or ZtsCheckDisk depending on amount
+                                    ;     of system memory.
+
+rw  a716,16  StrNotEscape           ; "You ? escape."
+
+rw  a72c,7   ZtsDidnt               ; "didn't\0"
+rw  a733,6   ZtsCant                ; "can't\0"
+
+rw  a739,18  StrNotIntrstd          ; "? seems uninterested."
+rw  a751,27  StrMumbles             ; "? mumbles something unintelligible."
+rw  a778,48  StrPearCheese          ; '"Don't tell the peasants how good the pears are with the cheese!"
+rw  a7c0,20  StrDevourer            ; '"Run! The Devourer comes!"'
+rw  a7e0,29  StrNoGoodDeed          ; '"No good deed ever goes un?"'
+
+rwx a809,1a  setRwrdOrPnshd         ; Sets GrbItemName_L/H to ZtsRewarded if FoeAlign < 0 and ZtsPunished otherwise.
+
+rw  a823,9   ZtsRewarded            ; "rewarded\0"
+rw  a82c,9   ZtsPunished            ; "punished\0"
+
+rw  a835,28  StrApclypsSoon         ; '"Prepare, the Apocalypse is soon."'
+rw  a85d,1f  StrFalseAlarms         ; '"Beware of false alarms."
+
+rw  a87c,6   HailRspnses_L          ; 6 bytes: LSB of hail response string address
+rw  a882,6   HailRspnses_H          ; 6 bytes: MSB of hail response string address
+                                    ;     0: $a751 [StrMumbles]         3: $a7e0 [StrNoGoodDeed]
+                                    ;     1: $a778 [StrPearCheese]      4: $a835 [StrApclypsSoon]
+                                    ;     2: $a7c0 [StrDevourer]        5: $a85d [StrFalseAlarms]
+
+rw  a888,7   ZtsCorpse              ; "corpse\0"
+
+rw  a88f,3   tbl_a88f               ; 3? bytes:
+
+rw  a892,1   ModuleStatusPg         ; The number of the status page added when the module was initialized
+
+rw  a893,1   dat_a893               ;
+rw  a894,1   dat_a894               ; cont_77fa: Assigned the user's selected battle menu option (1 = Attack, 2 = Charge,
+                                    ;     3 = Aimed Attack, 4 = Transact, 5 = Switch Weapon, 0 = Turn and run!)
+                                    ; sub_7ece: used to select a continuation action (0..6) to execute
+
+rw  a895,1   dat_a895               ;
+rw  a896,1   TmpRollDiceX           ; rollDiceA: Temp storage used to ensure X is unchanged on return to caller
+                                    ; rollDice: Assigned to X before returning to caller
+rw  a897,1   TmpRollDiceY           ; rollDiceA: Temp storage used to ensure Y is unchanged on return to caller
+                                    ; rollDice: Assigned to Y before returning to caller
+
+rw  a89c,1   dat_a89c               ;
+rw  a89d,1   dat_a89d               ;
+rw  a89e,1   dat_a89e               ;
+rw  a89f,1   dat_a89f               ; A foe spell number (0..11)
+
+rw  a8a0,1   dat_a8a0               ;
+rw  a8a1,1   dat_a8a1               ;
+
+rwx a8f9,1   sub_a8f9               ;
+rwx a90b,1   sub_a90b               ; not actually a standalone sub?
+
+x   aa00,1   sub_aa00               ; This sub is called once after the module is loaded and then the space is used
+                                    ;     for data.
+
+rw  aa00,42  FoeData                ; 66 bytes: The basic details describing the foe
+rw  aa00,1   FoeCount               ; The number of foes
+rw  aa01,1   FoeNameZts_L           ; LSB of foe name Zts address
+rw  aa02,1   FoeNameZts_H           ; MSB of foe name Zts address
+rw  aa03,1   FoeNameZts2_L          ; LSB of foe name Zts address  TODO: Perhaps this is the plural form? Related to FoeCount, Chr_MagicalDmg
+rw  aa04,1   FoeNameZts2_H          ; MSB of foe name Zts address  TODO: Perhaps this is the plural form? Related to FoeCount, Chr_MagicalDmg
+rw  aa05,6   FoeWpnAdrs             ; 6 bytes: Weapon item addresses (2 byte entries: LSB/MSB)
+rw  aa0b,1   Foe_aa0b               ; ? May be treasure type bitset? ?
+rw  aa0c,1   FoeAlign               ; Foe alignment
+rw  aa0d,1   FoeLevel               ; Foe level (base on load, may be randomly adjusted during init)
+rw  aa0e,1   FoeLevelAdj            ; Foe level adjustment range
+                                    ;   - cont_7c9e: Updated to min(FoeLevelAdj, random between 0 and ChrExpLevel/2)
+rw  aa0f,1   dat_aa0f               ;
+rw  aa10,1   dat_aa10               ;
+rw  aa11,1   FoeInit_L              ; LSB of init code address OR an action index in FoeInitCont_L/H when FoeInit_H == 0
+rw  aa12,1   FoeInit_H              ; MSB of init code address OR 0 if FoeInit_L is a pre-defined action index
+rw  aa13,1   FoeSrprseYou_L         ; LSB of code to execute when the player is surprised FoeSrprseYou_H != 0
+rw  aa14,1   FoeSrprseYou_H         ; MSB of code to execute when the player is surprised
+rw  aa15,1   FoePreEncntr_L         ; LSB of "pre-encounter" code - executed if FoePreEncntr_H != 0
+rw  aa16,1   FoePreEncntr_H         ; MSB of "pre-encounter" code OR 0 if no action defined
+rw  aa17,1   dat_aa17_L             ; LSB of code address OR an action index in ContTbl_8b30_L/H when dat_aa17_H == 0?
+                                    ;   cont_8abf: transact code/action index?
+rw  aa18,1   dat_aa17_H             ; MSB of code address OR 0 if dat_aa17_L is a pre-defined action index
+rw  aa19,1   dat_aa19_L             ; LSB of code OR an action index in ContTbl_8630_L/H when dat_aa19_H == 0?
+rw  aa1a,1   dat_aa19_H             ; MSB of code address OR 0 if dat_aa19_L is a pre-defined action index
+rw  aa1b,1   FoeDeath_L             ; LSB of ?"on death"? code - executed if FoeDeath_H != 0
+rw  aa1c,1   FoeDeath_H             ; MSB of ?"on death"? code OR 0 if no action defined
+rw  aa1d,1   FoePicture_L           ; LSB/ID of picture to use (low integer)?
+rw  aa1e,1   Foe_aa1e               ;
+rw  aa1f,1   Foe_aa1f               ; sub_84cf: used as corpse item weight / indicator a corpse is left behind
+rw  aa20,1   Foe_aa20               ;
+rw  aa21,1   Foe_aa21               ; Appears to be a bitfield
+                                    ;     $80 - (sub_7b59) set when player and foe alignment are different
+                                    ;           (sub_7b59) set when player is a member of or has reputation with the
+                                    ;                      foe's opposing faction
+                                    ;           (cont_7d82) set when
+                                    ;           () no "it leaves" message displayed when set
+                                    ;     $40 - (sub_7b59) set when member of same faction as foe
+                                    ;           (sub_7b59) cleared when player is a member of or has reputation with the
+                                    ;                      foe's opposing faction
+                                    ;     $20 - (sub_7b59) cleared when member of same faction as foe
+                                    ;           (sub_7b59) set when player is a member of or has reputation with the
+                                    ;                      foe's opposing faction
+                                    ;           (cont_77fa) set when ???
+                                    ;     $10 -
+
+rw  aa22,1   FoeHp_H                ; MSB of big endian uint16 foe HP
+rw  aa23,1   FoeHp_L                ; LSB of big endian uint16 foe HP
+rw  aa24,1   FoeStats               ; Foe stats - 0: Stamina, 1: Charisma, 2: Strength, 3: Intelligence,
+                                    ;             4: Wisdom, 5: Skill, 6: Speed
+rw  aa24,1   FoeSta                 ; Foe Stamina stat
+rw  aa25,1   FoeChr                 ; Foe Charisma stat
+rw  aa26,1   FoeStr                 ; Foe Strength stat
+rw  aa27,1   FoeInt                 ; Foe Intelligence stat
+rw  aa28,1   FoeWis                 ; Foe Wisdom stat
+rw  aa29,1   FoeSkl                 ; Foe Skill stat
+rw  aa2a,1   FoeSpd                 ; Foe Speed stat
+rw  aa2b,c   FoeMaxProvsion         ; 12 bytes: Max amounts for provision item drops
+rw  aa2b,1   FoeMaxFood             ; Max Food packet drops
+rw  aa2c,1   FoeMaxWater            ; Max Water flask drops
+rw  aa2d,1   FoeMaxTorch            ; Max Torch drops
+rw  aa2e,1   FoeMaxTimepce          ; Max timepiece drops
+rw  aa2f,1   FoeMaxCompass          ; Max Compass drops
+rw  aa30,1   FoeMaxKey              ; Max Key drops
+rw  aa31,1   FoeMaxCrystal          ; Max Crystal drops
+rw  aa32,1   FoeMaxGem              ; Max Gem drops
+rw  aa33,1   FoeMaxJewel            ; Max Jewel drops
+rw  aa34,1   FoeMaxGold             ; Max Gold drops
+rw  aa35,1   FoeMaxSilver           ; Max Silver drops
+rw  aa36,1   FoeMaxCopper           ; Max Copper drops
+rw  aa37,b   FoeProt                ; 11 bytes: Foe protection stats
+rw  aa37,1   FoeProtBlunt           ; Blunt protection
+rw  aa38,1   FoeProtSharp           ; Sharp protection
+rw  aa39,1   FoeProtEarth           ; Earth protection
+rw  aa3a,1   FoeProtAir             ; Air protection
+rw  aa3b,1   FoeProtFire            ; Fire protection
+rw  aa3c,1   FoeProtWater           ; Water protection
+rw  aa3d,1   FoeProtPower           ; Power protection
+rw  aa3e,1   FoeProtMagic           ; Magic protection
+rw  aa3f,1   FoeProtGood            ; Good protection
+rw  aa40,1   FoeProtEvil            ; Evil protection
+rw  aa41,1   FoeProtCold            ; Cold protection
+
+rw  aa42,1   Foe_aa42               ; Template string referenced by Str_9cc9
+
+rw  ab32,1   cont_ab32_Rts          ; Returns to caller
+
+rw  ab33,10  EnemyFactions          ; 16 bytes: sub_aa00 assigns faction indexes you have become an enemy of into this
+                                    ;           table for randomly choosing a faction foe.
+
+rw  aa37,b   tbl_aa37               ; 11? bytes:
+
+rw  aa42,30  Str_aa42               ;
+
+rw  ab43,10  FactionFoes            ; 16 bytes: Foes sent by the various factions you have become an enemy of, indexed
+                                    ;           by faction number.
+                                    ;      0: $0e -                8: $0e -
+                                    ;      1: $05 -                9: $0d -
+                                    ;      2: $0e -               10: $0e -
+                                    ;      3: $0d -               11: $05 -
+                                    ;      4: $0e -               12: $0e -
+                                    ;      5: $05 -               13: $3c -
+                                    ;      6: $0e -               14: $05 -
+                                    ;      7: $05 -               15: $0b -
+
+rw  ab53,20  SpclEncntrTbl          ; 32 bytes: Special encounter foe IDs, indexed by map cell special code
+                                    ;           index (MapLocSpclNum)
+                                    ;      0: $09 - Undead Knight      16: $25 - Whirlwind
+                                    ;      1: $09 - Undead Knight      17: $27 - Small Dragon
+                                    ;      2: $09 - Undead Knight      18: $36 - 3 Giant Wolves
+                                    ;      3: $09 - Undead Knight      19: $3d - Doppleganger
+                                    ;      4: $09 - Undead Knight      20: $4c - Horned devil
+                                    ;      5: $09 - Undead Knight      21: $22 - 7 Homunculii of The Blue Wizards
+                                    ;      6: $09 - Undead Knight      22: $28 - 8 Skeletons
+                                    ;      7: $47 - Basilisk           23: $23 - Phoenix
+                                    ;      8: $3d - Doppleganger       24: $2b - Ghost
+                                    ;      9: $08 - Lich               25: $34 - 4 Flame demons
+                                    ;     10: $3a - Valkyrie           26: $3a - Valkyrie
+                                    ;     11: $45 - Great Naga         27: $4c - Horned devil
+                                    ;     12: $2d - 3 Wraiths          28: $2e - Vampire
+                                    ;     13: $34 - 4 Flame Demons     29: $27 - Small dragon
+                                    ;     14: $1f - 7 Dwarves          30: $3d - Doppleganger
+                                    ;     15: $2e - Vampire            31: #00 - Devourer
+
+rw  ac73,12  tbl_ac73_L             ; 18? bytes: LSB of address
+rw  ac85,12  tbl_ac73_H             ; 18? bytes: MSB of address
+
+rw  ac97,1   dat_ac97               ; ? bytes: ?
+
+rw  ad31,cf  unk_ad31               ; 207 bytes: Appears to be a copy of $a4af thru $a57d
+
+rw  bc00,400 dat_bc00               ; 1024 bytes
+;rw  bc51,?   dat_bc51               ;

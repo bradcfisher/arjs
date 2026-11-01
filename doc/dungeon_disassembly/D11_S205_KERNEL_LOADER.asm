@@ -893,7 +893,7 @@
                 ; This is an unused copy of contEquipApprl
                 ;
 84d7: a2 00                     LDX #$00
-84d9: bd a2 63  loc_84d9        LDA CHR_APPAREL,X
+84d9: bd a2 63  loc_84d9        LDA ChrApparel,X
 84dc: c9 ff                     CMP #$ff
 84de: f0 07                     BEQ loc_84e7
 84e0: e8                        INX
@@ -920,7 +920,7 @@
 850e: a9 5f                     LDA #$5f
 8510: 8d 45 19                  STA MenuFootrAdr_H
 8513: a2 03                     LDX #$03
-8515: bd a2 63  loc_8515        LDA CHR_APPAREL,X
+8515: bd a2 63  loc_8515        LDA ChrApparel,X
 8518: 9d 46 19                  STA MenuItmIndices,X
 851b: ca                        DEX
 851c: 10 f7                     BPL loc_8515
@@ -976,7 +976,7 @@
 8578: 09 80                     ORA #$80
 857a: 85 51                     STA AttrAdjAmt
 857c: 98                        TYA
-857d: 9d 90 63                  STA CHR_NumLights,X
+857d: 9d 90 63                  STA ChrNumLights,X
 8580: 20 b7 55                  JSR sub_55b7
 8583: 20 02 56                  JSR sub_5602
 8586: 4c 09 52                  JMP cont_5209
@@ -1011,10 +1011,10 @@
 85bb: d0 16                     BNE loc_85d3
 85bd: aa                        TAX
 85be: a9 00                     LDA #$00
-85c0: 9d 90 63                  STA CHR_NumLights,X
+85c0: 9d 90 63                  STA ChrNumLights,X
 85c3: a2 00                     LDX #$00
 85c5: a9 00     loc_85c5        LDA #$00
-85c7: 9d 50 63                  STA CHR_STA_UNKNOWN,X
+85c7: 9d 50 63                  STA ChrStaUnknown,X
 85ca: 8a                        TXA
 85cb: 18                        CLC
 85cc: 69 08                     ADC #$08
@@ -1084,10 +1084,10 @@
 
                 ; This is an unused copy of useFoodPacket
                 ;
-8639: ad bb 63                  LDA INV_FOOD
+8639: ad bb 63                  LDA InvFood
 863c: d0 03                     BNE loc_8641
 863e: 4c 74 57                  JMP contYouHaveNone
-8641: ce bb 63  loc_8641        DEC INV_FOOD
+8641: ce bb 63  loc_8641        DEC InvFood
 8644: ad 98 63                  LDA CHR_STOMACH
 8647: 30 1a                     BMI loc_8663
 8649: ad 99 63                  LDA CHR_HUNGER
@@ -1115,10 +1115,10 @@
 
                 ; This is an unused copy of useWaterFlask
                 ;
-8679: ad bc 63                  LDA INV_WATER
+8679: ad bc 63                  LDA InvWater
 867c: d0 03                     BNE loc_8681
 867e: 4c 74 57                  JMP contYouHaveNone
-8681: ce bc 63  loc_8681        DEC INV_WATER
+8681: ce bc 63  loc_8681        DEC InvWater
 8684: ad 98 63                  LDA CHR_STOMACH
 8687: 30 0a                     BMI loc_8693
 8689: a9 10                     LDA #$10
@@ -1152,7 +1152,7 @@
 
                 ; This is an unused copy of useUnlitTorch
                 ;
-86bc: ad bd 63                  LDA INV_TORCHES
+86bc: ad bd 63                  LDA InvTorches
 86bf: d0 06                     BNE loc_86c7
 86c1: 4c 74 57                  JMP contYouHaveNone
 86c4: 4c 25 52  loc_86c4        JMP cont_5225
@@ -1173,13 +1173,13 @@
 86e6: d0 f6                     BNE loc_86de
 86e8: a5 4b                     LDA ItemIndex
 86ea: 91 3d                     STA (EffectAdr_L),Y
-86ec: ce bd 63                  DEC INV_TORCHES
-86ef: ee 90 63                  INC CHR_NumLights
+86ec: ce bd 63                  DEC InvTorches
+86ef: ee 90 63                  INC ChrNumLights
 86f2: 4c af 54                  JMP contEquipWeapn
 
                 ; This is an unused copy of useTimepiece
                 ;
-86f5: ad c1 63                  LDA INV_TIMEPIECES
+86f5: ad c1 63                  LDA InvTimepieces
 86f8: f0 4c                     BEQ loc_8746
 86fa: a9 61                     LDA #$61
 86fc: 85 16                     STA StrTmplate_L
@@ -1317,7 +1317,7 @@
                 ; This is an unused copy of equipItem
                 ;
 8807: ae 83 62                  LDX dat_6283
-880a: bd 9c 63                  LDA CHR_PRI_WEAPON,X
+880a: bd 9c 63                  LDA ChrPriWeapon,X
 880d: 30 07                     BMI loc_8816
 880f: c5 4b                     CMP ItemIndex
 8811: f0 03                     BEQ loc_8816
@@ -1328,7 +1328,7 @@
 881c: 20 a2 4e                  JSR sub_4ea2
 881f: a5 4b                     LDA ItemIndex
 8821: ae 83 62                  LDX dat_6283
-8824: 9d 9c 63                  STA CHR_PRI_WEAPON,X
+8824: 9d 9c 63                  STA ChrPriWeapon,X
 8827: 28                        PLP
 8828: 60                        RTS
 
